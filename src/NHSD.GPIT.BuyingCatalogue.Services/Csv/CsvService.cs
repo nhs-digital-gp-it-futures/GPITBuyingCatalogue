@@ -33,27 +33,50 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             this.supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService));
         }
 
-        public async Task CreateFullOrderCsvAsync(int orderId, MemoryStream stream, bool showRevisions = false)
+        public async Task CreateFullOrderCsvAsync(int orderId, OrderType orderType, MemoryStream stream, bool showRevisions = false)
         {
-            var items = await CreateFullOrderCsv(orderId);
+            ArgumentNullException.ThrowIfNull(orderType);
 
-            if (showRevisions)
+            switch (orderType.Value)
             {
-                var order = await dbContext.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.Id == orderId);
+                case OrderTypeEnum.AssociatedServiceMerger:
+                    {
+                        var items = await GetModelListForMergerCsv(orderId);
+                        var map = new MergerOrderCsvModelMap(FullOrderCsvModelMap.Names);
+                        await WriteRecordsAsync(map, stream, items);
+                        break;
+                    }
 
-                var revisions = await dbContext.Orders
-                    .AsNoTracking()
-                    .Where(x => x.OrderNumber == order.OrderNumber && x.Revision < order.Revision)
-                    .OrderByDescending(x => x.Revision)
-                    .Select(y => y.Id).ToListAsync();
+                case OrderTypeEnum.AssociatedServiceSplit:
+                    {
+                        var items = await GetModelListFormSplitCsv(orderId);
+                        var map = new SplitOrderCsvModelMap(FullOrderCsvModelMap.Names);
+                        await WriteRecordsAsync(map, stream, items);
+                        break;
+                    }
 
-                foreach (var id in revisions)
-                {
-                    items.AddRange(await CreateFullOrderCsv(id));
-                }
+                default:
+                    {
+                        var items = await GetModelListForCsv(orderId);
+
+                        if (showRevisions)
+                        {
+                            var order = await dbContext.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.Id == orderId);
+
+                            var revisions = await dbContext.Orders
+                                .AsNoTracking()
+                                .Where(x => x.OrderNumber == order.OrderNumber && x.Revision < order.Revision)
+                                .OrderByDescending(x => x.Revision)
+                                .Select(y => y.Id).ToListAsync();
+
+                            foreach (var id in revisions)
+                                items.AddRange(await GetModelListForCsv(id));
+                        }
+
+                        await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
+                        break;
+                    }
             }
-
-            await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
         }
 
         public async Task<int> CreatePatientNumberCsvAsync(int orderId, MemoryStream stream)
@@ -69,32 +92,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .AsNoTracking()
                 .Where(oir => oir.OrderId == orderId)
                 .SelectMany(or => or.OrderItemRecipients, (or, oir) => new PatientOrderCsvModel
-                    {
-                        CallOffId = or.Order.CallOffId,
-                        OdsCode = or.Order.OrderingParty.ExternalIdentifier,
-                        OrganisationName = or.Order.OrderingParty.Name,
-                        CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
-                        ServiceRecipientName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
-                        SupplierId = supplierId,
-                        SupplierName = supplierName,
-                        ProductId = oir.OrderItem.CatalogueItemId.ToString(),
-                        ProductName = oir.OrderItem.CatalogueItem.Name,
-                        ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
-                        ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
-                        QuantityOrdered = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                {
+                    CallOffId = or.Order.CallOffId,
+                    OdsCode = or.Order.OrderingParty.ExternalIdentifier,
+                    OrganisationName = or.Order.OrderingParty.Name,
+                    CommencementDate = or.Order.CommencementDate,
+                    ServiceRecipientId = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.ExternalIdentifier : or.OdsCode,
+                    ServiceRecipientName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient() ? or.Order.OrderingParty.Name : or.OdsOrganisation.Name,
+                    SupplierId = supplierId,
+                    SupplierName = supplierName,
+                    ProductId = oir.OrderItem.CatalogueItemId.ToString(),
+                    ProductName = oir.OrderItem.CatalogueItem.Name,
+                    ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
+                    ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
+                    QuantityOrdered = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                             ? (oir.OrderItem.Quantity ?? 0)
                             : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).Quantity ?? oir.OrderItem.Quantity ?? 0,
-                        UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
-                        Price = prices[oir.OrderItem.CatalogueItemId],
-                        FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
-                        M1Planned = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                    UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
+                    Price = prices[oir.OrderItem.CatalogueItemId],
+                    FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
+                    M1Planned = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                             ? null
                             : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).DeliveryDate,
-                        Framework = or.Order.SelectedFrameworkId,
-                        InitialTerm = or.Order.InitialPeriod,
-                        MaximumTerm = or.Order.MaximumTerm,
-                    })
+                    Framework = or.Order.SelectedFrameworkId,
+                    InitialTerm = or.Order.InitialPeriod,
+                    MaximumTerm = or.Order.MaximumTerm,
+                })
                 .ToListAsync();
 
             if (items.Count == 0)
@@ -180,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             return (output?.Id ?? 0, string.Equals(name, legalName, StringComparison.OrdinalIgnoreCase) ? name : legalName);
         }
 
-        private async Task<List<FullOrderCsvModel>> CreateFullOrderCsv(int orderId)
+        private async Task<List<FullOrderCsvModel>> GetModelListForCsv(int orderId)
         {
             var billingPeriods = await GetBillingPeriods(orderId);
             var fundingTypes = await GetFundingTypes(orderId);
@@ -230,10 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers) : string.Empty,
                 }).ToListAsync();
 
-            for (int i = 0; i < items.Count; i++)
-                items[i].ServiceRecipientItemId = $"{items[i].CallOffId}-{items[i].ServiceRecipientId}-{i}";
-
-            return items.DistinctBy(item => new
+            var distinctItems = items.DistinctBy(item => new
             {
                 item.ServiceRecipientId,
                 item.ProductId,
@@ -241,6 +261,136 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
               .ThenBy(o => o.ProductName)
               .ThenBy(o => o.ServiceRecipientName)
               .ToList();
+
+            for (int i = 0; i < distinctItems.Count; i++)
+                distinctItems[i].ServiceRecipientItemId = $"{distinctItems[i].CallOffId}-{distinctItems[i].ServiceRecipientId}-{i}";
+
+            return distinctItems;
+        }
+
+        private async Task<List<MergerOrderCsvModel>> GetModelListForMergerCsv(int orderId)
+        {
+            var billingPeriods = await GetBillingPeriods(orderId);
+            var fundingTypes = await GetFundingTypes(orderId);
+            var prices = await GetPrices(orderId);
+            var (supplierId, supplierName) = await GetSupplierDetails(orderId);
+
+            var items = await dbContext.OrderRecipients
+                .Include(x => x.OrderItemRecipients)
+                    .ThenInclude(x => x.OrderItem)
+                    .ThenInclude(x => x.OrderItemFunding)
+                .AsNoTracking()
+                .Where(or => or.OrderId == orderId)
+                .SelectMany(or => or.OrderItemRecipients, (or, oir) => new MergerOrderCsvModel
+                {
+                    CallOffId = or.Order.CallOffId,
+                    OdsCode = or.Order.OrderingParty.ExternalIdentifier,
+                    OrganisationName = or.Order.OrderingParty.Name,
+                    CommencementDate = or.Order.CommencementDate,
+                    ServiceRecipientId = or.OdsCode,
+                    ServiceRecipientName = or.OdsOrganisation.Name,
+                    ServiceRecipientToClose = $"{or.OdsOrganisation.Name} ({or.OdsCode})",
+                    ServiceRecipientToRetain = $"{or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Name} ({or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode})",
+                    SupplierId = $"{supplierId}",
+                    SupplierName = supplierName,
+                    ProductId = oir.OrderItem.CatalogueItemId.ToString(),
+                    ProductName = oir.OrderItem.CatalogueItem.Name,
+                    ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
+                    ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
+                    QuantityOrdered = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                        ? (oir.OrderItem.Quantity ?? 0)
+                        : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).Quantity ?? oir.OrderItem.Quantity ?? 0,
+                    UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
+                    UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
+                    EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
+                    Price = prices[oir.OrderItem.CatalogueItemId],
+                    OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
+                    M1Planned = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                        ? null
+                        : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).DeliveryDate,
+                    FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
+                    Framework = or.Order.SelectedFrameworkId,
+                    InitialTerm = or.Order.InitialPeriod,
+                    MaximumTerm = or.Order.MaximumTerm,
+                    CeaseDate = or.Order.IsTerminated ? or.Order.OrderTermination.DateOfTermination : null,
+                    PricingType = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered ?
+                        $"{oir.OrderItem.OrderItemPrice.CataloguePriceType} {oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType}" :
+                        $"{oir.OrderItem.OrderItemPrice.CataloguePriceType}",
+                    TieredArray = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative ?
+                        GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers) : string.Empty,
+                }).ToListAsync();
+
+            var ordered = items.OrderBy(o => o.ProductTypeId)
+              .ThenBy(o => o.ProductName)
+              .ThenBy(o => o.ServiceRecipientName)
+              .ToList();
+
+            for (int i = 0; i < ordered.Count; i++)
+                ordered[i].ServiceRecipientItemId = $"{ordered[i].CallOffId}-{ordered[i].ServiceRecipientId}-{i}";
+
+            return ordered;
+        }
+
+        private async Task<List<SplitOrderCsvModel>> GetModelListFormSplitCsv(int orderId)
+        {
+            var billingPeriods = await GetBillingPeriods(orderId);
+            var fundingTypes = await GetFundingTypes(orderId);
+            var prices = await GetPrices(orderId);
+            var (supplierId, supplierName) = await GetSupplierDetails(orderId);
+
+            var items = await dbContext.OrderRecipients
+                .Include(x => x.OrderItemRecipients)
+                    .ThenInclude(x => x.OrderItem)
+                    .ThenInclude(x => x.OrderItemFunding)
+                .AsNoTracking()
+                .Where(or => or.OrderId == orderId)
+                .SelectMany(or => or.OrderItemRecipients, (or, oir) => new SplitOrderCsvModel
+                {
+                    CallOffId = or.Order.CallOffId,
+                    OdsCode = or.Order.OrderingParty.ExternalIdentifier,
+                    OrganisationName = or.Order.OrderingParty.Name,
+                    CommencementDate = or.Order.CommencementDate,
+                    ServiceRecipientId = or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode,
+                    ServiceRecipientName = or.OdsOrganisation.Name,
+                    ServiceRecipientToRetain = $"{or.OdsOrganisation.Name} ({or.OdsCode})",
+                    ServiceRecipientToSplit = $"{or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Name} ({or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode})",
+                    SupplierId = $"{supplierId}",
+                    SupplierName = supplierName,
+                    ProductId = oir.OrderItem.CatalogueItemId.ToString(),
+                    ProductName = oir.OrderItem.CatalogueItem.Name,
+                    ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
+                    ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
+                    QuantityOrdered = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                        ? (oir.OrderItem.Quantity ?? 0)
+                        : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).Quantity ?? oir.OrderItem.Quantity ?? 0,
+                    UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
+                    UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
+                    EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
+                    Price = prices[oir.OrderItem.CatalogueItemId],
+                    OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
+                    M1Planned = or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                        ? null
+                        : or.OrderItemRecipients.FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId).DeliveryDate,
+                    FundingType = fundingTypeService.GetFundingType(fundingTypes, oir.OrderItem.FundingType).Description(),
+                    Framework = or.Order.SelectedFrameworkId,
+                    InitialTerm = or.Order.InitialPeriod,
+                    MaximumTerm = or.Order.MaximumTerm,
+                    CeaseDate = or.Order.IsTerminated ? or.Order.OrderTermination.DateOfTermination : null,
+                    PricingType = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered ?
+                        $"{oir.OrderItem.OrderItemPrice.CataloguePriceType} {oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType}" :
+                        $"{oir.OrderItem.OrderItemPrice.CataloguePriceType}",
+                    TieredArray = oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative ?
+                        GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers) : string.Empty,
+                }).ToListAsync();
+
+            var ordered = items
+                .OrderBy(o => o.ServiceRecipientName)
+                .ToList();
+
+            for (int i = 0; i < ordered.Count; i++)
+                ordered[i].ServiceRecipientItemId = $"{ordered[i].CallOffId}-{ordered[i].ServiceRecipientId}-{i}";
+
+            return ordered;
         }
     }
 }

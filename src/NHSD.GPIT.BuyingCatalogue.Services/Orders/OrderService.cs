@@ -378,7 +378,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             await dbContext.SaveChangesAsync();
 
-            await SendEmail(orderWrapper.Order, callOffId, userId, true);
+            await SendEmailsAndSave(orderWrapper.Order, callOffId, userId, true);
         }
 
         public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId)
@@ -386,7 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = (await GetOrderThin(callOffId, internalOrgId)).Order;
             order.Complete();
 
-            await SendEmail(order, callOffId, userId);
+            await SendEmailsAndSave(order, callOffId, userId);
         }
 
         public async Task<List<Order>> GetUserOrders(int userId)
@@ -477,19 +477,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             };
         }
 
-        private async Task SendEmail(Order order, CallOffId callOffId, int userId, bool showRevisions = false)
+        private async Task SendEmailsAndSave(Order order, CallOffId callOffId, int userId, bool showRevisions = false)
         {
             await using var fullOrderStream = new MemoryStream();
             await using var patientOrderStream = new MemoryStream();
 
-            await csvService.CreateFullOrderCsvAsync(order.Id, fullOrderStream, showRevisions);
+            await csvService.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream, showRevisions);
 
             fullOrderStream.Position = 0;
+            var fullOrderBytes = fullOrderStream.ToArray();
 
             var adminTokens = new Dictionary<string, dynamic>
             {
                 { OrganisationNameToken, order.OrderingParty.Name },
-                { FullOrderCsvToken, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
+                { FullOrderCsvToken, NotificationClient.PrepareUpload(fullOrderBytes, true) },
             };
 
             var templateId = order.IsTerminated ? orderMessageSettings.OrderTerminatedAdminTemplateId : orderMessageSettings.SingleCsvTemplateId;
@@ -501,11 +502,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 templateId = orderMessageSettings.DualCsvTemplateId;
             }
 
-            fullOrderStream.Position = 0;
             var userTokens = new Dictionary<string, dynamic>
             {
                 { OrderIdToken, $"{callOffId}" },
-                { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
+                { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderBytes, true) },
             };
 
             dbContext.Entry(order).State = EntityState.Modified;
@@ -515,8 +515,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
 
             await Task.WhenAll(
-                emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),
-                emailService.SendEmailAsync(userEmail, GetUserTemplateId(order), userTokens),
+                emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens), // full_order_csv
+                emailService.SendEmailAsync(userEmail, GetUserTemplateId(order), userTokens), // order_summary_csv
                 dbContext.SaveChangesAsync());
         }
 
