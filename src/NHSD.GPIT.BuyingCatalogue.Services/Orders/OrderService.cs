@@ -513,12 +513,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private string GetUserTemplateId(Order order)
         {
-            return order.IsTerminated ? orderMessageSettings.OrderTerminatedUserTemplateId
-                : order.AssociatedServicesOnly
-                ? orderMessageSettings.UserAssociatedServiceTemplateId
-                : order.IsAmendment
-                    ? orderMessageSettings.UserAmendTemplateId
-                    : orderMessageSettings.UserTemplateId;
+            return order.IsTerminated
+                ? orderMessageSettings.OrderTerminatedUserTemplateId
+                : order.OrderType.AssociatedServicesOnly
+                    ? orderMessageSettings.UserAssociatedServiceTemplateId
+                    : order.IsAmendment
+                        ? orderMessageSettings.UserAmendTemplateId
+                        : orderMessageSettings.UserTemplateId;
         }
 
         private async Task<List<Order>> OrdersForSummary(CallOffId callOffId, string internalOrgId)

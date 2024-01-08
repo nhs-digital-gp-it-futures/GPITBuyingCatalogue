@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
 
             var solution = order.GetSolutionOrderItem();
 
-            if (order.AssociatedServicesOnly
+            if (order.OrderType.AssociatedServicesOnly
                 || solution == null)
             {
                 return new RoutingResult

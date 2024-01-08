@@ -46,9 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderType OrderType { get; set; } = OrderTypeEnum.Unknown;
 
-        // TODO: References will be evaluated and changed to use OrderType as part of subsequent mergers and splits stories
-        public bool AssociatedServicesOnly => OrderType.Value == OrderTypeEnum.AssociatedServiceOther;
-
         public OrderTriageValue? OrderTriageValue { get; set; }
 
         public string SelectedFrameworkId { get; set; }

@@ -333,10 +333,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new SelectServicesModel(currentItems, services)
             {
                 InternalOrgId = internalOrgId,
-                AssociatedServicesOnly = order.AssociatedServicesOnly,
-                SolutionName = order.AssociatedServicesOnly
-                    ? orderWrapper.RolledUp.AssociatedServicesOnlyDetails.Solution.Name
-                    : orderWrapper.RolledUp.GetSolutionOrderItem()?.CatalogueItem.Name,
+                AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
+                SolutionName = order.OrderType.GetSolutionNameFromOrder(orderWrapper.RolledUp),
                 SolutionId = order.GetSolutionId(),
             };
 
