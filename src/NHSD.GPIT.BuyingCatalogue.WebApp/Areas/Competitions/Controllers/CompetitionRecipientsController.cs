@@ -70,7 +70,7 @@ public class CompetitionRecipientsController : Controller
             return RedirectToAction(
             nameof(CompetitionImportServiceRecipientsController.Index),
             typeof(CompetitionImportServiceRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId});
+            new { internalOrgId, competitionId });
         }
         else
         {
