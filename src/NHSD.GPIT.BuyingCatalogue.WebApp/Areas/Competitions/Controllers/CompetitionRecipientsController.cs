@@ -34,6 +34,50 @@ public class CompetitionRecipientsController : Controller
         this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
     }
 
+    [HttpGet("upload-or-select-service-recipients")]
+    public async Task<IActionResult> UploadOrSelectServiceRecipients(
+        string internalOrgId,
+        int competitionId)
+    {
+        var competition = await competitionsService.GetCompetitionWithRecipients(internalOrgId, competitionId);
+        var model = new UploadOrSelectServiceRecipientModel()
+        {
+            Title = "Service Recipients",
+            Caption = competition.Name,
+            BackLink = Url.Action(
+                nameof(CompetitionTaskListController.Index),
+                typeof(CompetitionTaskListController).ControllerName(),
+                new { internalOrgId, competitionId }),
+            ImportRecipientsLink = Url.Action(
+                nameof(CompetitionImportServiceRecipientsController.Index),
+                typeof(CompetitionImportServiceRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId }),
+        };
+        return View("ServiceRecipients/UploadOrSelectServiceRecipient", model);
+    }
+
+    [HttpPost("upload-or-select-service-recipients")]
+    public async Task<IActionResult> UploadOrSelectServiceRecipients(
+        UploadOrSelectServiceRecipientModel model,
+        string internalOrgId,
+        int competitionId)
+    {
+        if (!ModelState.IsValid)
+            return View("ServiceRecipients/UploadOrSelectServiceRecipient", model);
+
+        if (model.SelectedServiceRecipientOptions == "Upload")
+        {
+            return RedirectToAction(
+            nameof(CompetitionImportServiceRecipientsController.Index),
+            typeof(CompetitionImportServiceRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId});
+        }
+        else
+        {
+            return await Index(internalOrgId, competitionId);
+        }
+    }
+
     [HttpGet("select-recipients")]
     public async Task<IActionResult> Index(
         string internalOrgId,
@@ -63,15 +107,11 @@ public class CompetitionRecipientsController : Controller
         {
             Title = "Service Recipients",
             BackLink = Url.Action(
-                nameof(CompetitionTaskListController.Index),
-                typeof(CompetitionTaskListController).ControllerName(),
+                nameof(UploadOrSelectServiceRecipients),
+                typeof(CompetitionRecipientsController).ControllerName(),
                 new { internalOrgId, competitionId }),
             Caption = competition.Name,
             Advice = pageAdvice,
-            ImportRecipientsLink = Url.Action(
-                nameof(CompetitionImportServiceRecipientsController.Index),
-                typeof(CompetitionImportServiceRecipientsController).ControllerName(),
-                new { internalOrgId, competitionId }),
             HasImportedRecipients = !string.IsNullOrWhiteSpace(importedRecipients),
         };
 

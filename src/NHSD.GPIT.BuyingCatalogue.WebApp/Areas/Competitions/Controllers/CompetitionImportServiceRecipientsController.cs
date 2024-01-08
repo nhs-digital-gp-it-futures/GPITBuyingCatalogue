@@ -58,7 +58,7 @@ public class CompetitionImportServiceRecipientsController : Controller
         var model = new ImportServiceRecipientModel
         {
             BackLink = Url.Action(
-                nameof(CompetitionRecipientsController.Index),
+                nameof(CompetitionRecipientsController.UploadOrSelectServiceRecipients),
                 typeof(CompetitionRecipientsController).ControllerName(),
                 new { internalOrgId, competitionId }),
             Caption = competitionName,

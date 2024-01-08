@@ -1,0 +1,24 @@
+@using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.UploadOrSelectServiceRecipientModel;
+<partial name="Partials/_BackLink" model="@Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title model="@Model" />
+        <form method="post">
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="BackLinkText" />
+
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Select how you want to add Service Recipients."
+                                     size="Medium">
+                <nhs-radio-buttons asp-for="SelectedServiceRecipientOptions"
+                                   values="Model.ServiceRecipientOptions"
+                                   display-name="Text"
+                                   value-name="Value" />
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button text="Save and continue" />
+        </form>
+    </div>
+</div>

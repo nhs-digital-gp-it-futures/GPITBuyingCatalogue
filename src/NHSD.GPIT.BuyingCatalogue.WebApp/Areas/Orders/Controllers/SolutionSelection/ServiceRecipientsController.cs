@@ -22,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         private const string SelectViewName = "ServiceRecipients/SelectRecipients";
         private const string ConfirmViewName = "ServiceRecipients/ConfirmChanges";
+        private const string UploadOrSelectViewName = "ServiceRecipients/UploadOrSelectServiceRecipient";
 
         private readonly IOdsService odsService;
         private readonly IOrderService orderService;
@@ -44,6 +45,50 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.orderItemService =
                 orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
+        }
+
+        [HttpGet("upload-or-select-service-recipients")]
+        public IActionResult UploadOrSelectServiceRecipients(
+            string internalOrgId,
+            CallOffId callOffId)
+        {
+            var model = new UploadOrSelectServiceRecipientModel()
+            {
+                Title = "Service Recipients",
+                Caption = $"Order {callOffId}",
+                BackLink =
+                        Url.Action(
+                            nameof(OrderController.Order),
+                            typeof(OrderController).ControllerName(),
+                            new { internalOrgId, callOffId }),
+                ImportRecipientsLink = Url.Action(
+                        nameof(ImportServiceRecipientsController.Index),
+                        typeof(ImportServiceRecipientsController).ControllerName(),
+                        new { internalOrgId, callOffId }),
+            };
+            return View(UploadOrSelectViewName, model);
+        }
+
+        [HttpPost("upload-or-select-service-recipients")]
+        public async Task<IActionResult> UploadOrSelectServiceRecipients(
+            UploadOrSelectServiceRecipientModel model,
+            string internalOrgId,
+            CallOffId callOffId)
+        {
+            if (!ModelState.IsValid)
+                return View(UploadOrSelectViewName, model);
+
+            if (model.SelectedServiceRecipientOptions == "Upload")
+            {
+                return RedirectToAction(
+                nameof(Index),
+                typeof(ImportServiceRecipientsController).ControllerName(),
+                new { internalOrgId, callOffId });
+            }
+            else
+            {
+                return await SelectServiceRecipients(internalOrgId, callOffId);
+            }
         }
 
         [HttpGet("select-recipients")]
@@ -71,15 +116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     Title = "Service Recipients for this order",
                     BackLink =
                         Url.Action(
-                            nameof(OrderController.Order),
-                            typeof(OrderController).ControllerName(),
+                            nameof(UploadOrSelectServiceRecipients),
+                            typeof(ServiceRecipientsController).ControllerName(),
                             new { internalOrgId, callOffId }),
                     Caption = $"Order {callOffId}",
                     Advice = "Select the organisations you want to receive the items you’re ordering.",
-                    ImportRecipientsLink = Url.Action(
-                        nameof(ImportServiceRecipientsController.Index),
-                        typeof(ImportServiceRecipientsController).ControllerName(),
-                        new { internalOrgId, callOffId }),
                     HasImportedRecipients = !string.IsNullOrWhiteSpace(importedRecipients),
                 };
 

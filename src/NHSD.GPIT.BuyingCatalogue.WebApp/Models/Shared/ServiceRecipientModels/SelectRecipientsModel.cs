@@ -39,8 +39,6 @@ public class SelectRecipientsModel : NavBaseModel
         SelectServiceRecipients(existingRecipients, preSelectedRecipients);
     }
 
-    public string ImportRecipientsLink { get; set; }
-
     public string OrganisationName { get; set; }
 
     public OrganisationType OrganisationType { get; set; }

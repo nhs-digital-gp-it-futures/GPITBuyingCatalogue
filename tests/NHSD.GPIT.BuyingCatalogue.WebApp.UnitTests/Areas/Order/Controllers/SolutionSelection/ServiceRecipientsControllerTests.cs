@@ -113,7 +113,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Excluding(o => o.Caption)
                 .Excluding(o => o.Advice)
                 .Excluding(o => o.Advice)
-                .Excluding(o => o.ImportRecipientsLink)
                 .Excluding(o => o.HasImportedRecipients));
         }
 
