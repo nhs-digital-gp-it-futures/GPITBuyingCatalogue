@@ -213,72 +213,6 @@ public static class CompetitionResultsControllerTests
 
     [Theory]
     [CommonAutoData]
-    public static async Task SelectWinningSolution_ReturnsViewWithModel(
-        string internalOrgId,
-        Competition competition,
-        Solution solution,
-        Solution secondSolution,
-        List<CompetitionSolution> competitionSolutions,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        CompetitionResultsController controller)
-    {
-        var winningSolutions = competitionSolutions.Take(1).ToList();
-        winningSolutions.ForEach(
-            x =>
-            {
-                x.Solution = solution;
-                x.IsWinningSolution = true;
-            });
-        competitionSolutions.ForEach(x =>
-        {
-            x.Solution ??= secondSolution;
-        });
-
-        competition.CompetitionSolutions = competitionSolutions;
-
-        var expectedModel = new SelectWinningSolutionModel(competition.Name, winningSolutions.Select(x => x.Solution));
-
-        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
-
-        var result = (await controller.SelectWinningSolution(internalOrgId, competition.Id)).As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
-    }
-
-    [Theory]
-    [CommonAutoData]
-    public static void SelectWinningSolution_InvalidModel_ReturnsViewWithModel(
-        string internalOrgId,
-        int competitionId,
-        SelectWinningSolutionModel model,
-        CompetitionResultsController controller)
-    {
-        controller.ModelState.AddModelError("some-key", "some-error");
-
-        var result = controller.SelectWinningSolution(internalOrgId, competitionId, model).As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should().Be(model);
-    }
-
-    [Theory]
-    [CommonAutoData]
-    public static void SelectWinningSolution_ValidModel_Redirects(
-        string internalOrgId,
-        int competitionId,
-        SelectWinningSolutionModel model,
-        CompetitionResultsController controller)
-    {
-        var result = controller.SelectWinningSolution(internalOrgId, competitionId, model).As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.OrderingInformation));
-    }
-
-    [Theory]
-    [CommonAutoData]
     public static async Task OrderingInformation_NoWinningSolution_Redirects(
         string internalOrgId,
         Competition competition,
@@ -314,38 +248,7 @@ public static class CompetitionResultsControllerTests
 
     [Theory]
     [CommonAutoData]
-    public static async Task OrderingInformation_MultipleWinningSolutions_SetsCorrectBacklink(
-        Organisation organisation,
-        Competition competition,
-        CompetitionSolution competitionSolution,
-        Solution solution,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IUrlHelper> urlHelper,
-        CompetitionResultsController controller)
-    {
-        competitionSolution.IsWinningSolution = true;
-        competitionSolution.IsShortlisted = true;
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-
-        competition.Organisation = organisation;
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
-
-        competitionsService.Setup(x => x.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
-
-        _ = await controller.OrderingInformation(
-            organisation.InternalIdentifier,
-            competition.Id,
-            solution.CatalogueItemId);
-
-        urlHelper.Verify(
-            x => x.Action(It.Is<UrlActionContext>(y => y.Action == nameof(controller.SelectWinningSolution))));
-    }
-
-    [Theory]
-    [CommonAutoData]
-    public static async Task OrderingInformation_SingleWinningSolution_SetsCorrectBacklink(
+    public static async Task OrderingInformation_SetsCorrectBacklink(
         Organisation organisation,
         Competition competition,
         CompetitionSolution competitionSolution,

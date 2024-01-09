@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [Theory]
         [CommonInlineAutoData(TaskProgress.Completed)]
         [CommonInlineAutoData(TaskProgress.Amended)]
-        public static void Get_CommencementDateIsNull_ReturnsNotStarted(
+        public static void Get_TimescalesNotStarted_ReturnsNotStarted(
             TaskProgress supplierStatus,
             Order order,
             CommencementDateStatusProvider service)
@@ -78,6 +78,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             };
 
             order.CommencementDate = null;
+            order.MaximumTerm = null;
+            order.InitialPeriod = null;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -87,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [Theory]
         [CommonInlineAutoData(TaskProgress.Completed)]
         [CommonInlineAutoData(TaskProgress.Amended)]
-        public static void Get_CommencementDateIsNotNull_ReturnsCompleted(
+        public static void Get_OnlyCommencementDateSpecified_ReturnsInProgress(
             TaskProgress supplierStatus,
             Order order,
             CommencementDateStatusProvider service)
@@ -97,7 +99,57 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 SupplierStatus = supplierStatus,
             };
 
-            order.CommencementDate = DateTime.Today;
+            order.CommencementDate = DateTime.UtcNow;
+            order.MaximumTerm = null;
+            order.InitialPeriod = null;
+
+            var actual = service.Get(new OrderWrapper(order), state);
+
+            actual.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(TaskProgress.Completed, 10, null)]
+        [CommonInlineAutoData(TaskProgress.Amended, 10, null)]
+        [CommonInlineAutoData(TaskProgress.Completed, null, 6)]
+        [CommonInlineAutoData(TaskProgress.Amended, null, 6)]
+        public static void Get_MaximumTermAndInitialPeriod_ReturnsInProgress(
+            TaskProgress supplierStatus,
+            int? maximumTerm,
+            int? initialPeriod,
+            Order order,
+            CommencementDateStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                SupplierStatus = supplierStatus,
+            };
+
+            order.CommencementDate = null;
+            order.MaximumTerm = maximumTerm;
+            order.InitialPeriod = initialPeriod;
+
+            var actual = service.Get(new OrderWrapper(order), state);
+
+            actual.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(TaskProgress.Completed)]
+        [CommonInlineAutoData(TaskProgress.Amended)]
+        public static void Get_ReturnsCompleted(
+            TaskProgress supplierStatus,
+            Order order,
+            CommencementDateStatusProvider service)
+        {
+            var state = new OrderProgress
+            {
+                SupplierStatus = supplierStatus,
+            };
+
+            order.CommencementDate = DateTime.UtcNow;
+            order.MaximumTerm = 5;
+            order.InitialPeriod = 6;
 
             var actual = service.Get(new OrderWrapper(order), state);
 
