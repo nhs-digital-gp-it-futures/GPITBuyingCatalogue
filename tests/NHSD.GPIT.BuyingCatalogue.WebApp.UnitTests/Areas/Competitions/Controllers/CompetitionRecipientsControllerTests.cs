@@ -158,7 +158,7 @@ public static class CompetitionRecipientsControllerTests
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionRecipientsController controller)
     {
-        competitionsService.Setup(x => x.GetCompetitionWithRecipients(internalOrgId, competitionId))
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
             .ReturnsAsync(competition);
 
         var result = await controller.UploadOrSelectServiceRecipients(internalOrgId, competitionId);
@@ -182,7 +182,7 @@ public static class CompetitionRecipientsControllerTests
         CompetitionRecipientsController controller)
     {
         controller.ModelState.AddModelError("SomeError", "Error message");
-        competitionsService.Setup(x => x.GetCompetitionWithRecipients(internalOrgId, competitionId))
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
             .ReturnsAsync(competition);
 
         var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
@@ -203,7 +203,7 @@ public static class CompetitionRecipientsControllerTests
         CompetitionRecipientsController controller)
     {
         model.ShouldUploadRecipients = true;
-        competitionsService.Setup(x => x.GetCompetitionWithRecipients(internalOrgId, competitionId))
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
             .ReturnsAsync(new Competition());
 
         var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
@@ -223,7 +223,7 @@ public static class CompetitionRecipientsControllerTests
         CompetitionRecipientsController controller)
     {
         model.ShouldUploadRecipients = false;
-        competitionsService.Setup(x => x.GetCompetitionWithRecipients(internalOrgId, competitionId))
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
             .ReturnsAsync(new Competition());
 
         var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);

@@ -39,7 +39,7 @@ public class CompetitionRecipientsController : Controller
         string internalOrgId,
         int competitionId)
     {
-        var competition = await competitionsService.GetCompetitionWithRecipients(internalOrgId, competitionId);
+        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
         var model = new UploadOrSelectServiceRecipientModel()
         {
             Caption = competition.Name,
