@@ -14,18 +14,35 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
         {
         }
 
+        public static List<string> AllNonPriceElements()
+        {
+            var elementtype = Enum.GetValues(typeof(NonPriceElementType))
+                        .Cast<NonPriceElementType>()
+                        .Select(v => v.ToString())
+                        .ToList().GetRange(1, 4);
+
+            return elementtype;
+        }
+
+        public static List<string> MultipleNonPriceElements()
+        {
+            var elementtype = Enum.GetValues(typeof(NonPriceElementType))
+                        .Cast<NonPriceElementType>()
+                        .Select(v => v.ToString())
+                        .ToList().GetRange(1, 2);
+
+            return elementtype;
+        }
+
         public void CompareAndScoreShortlistedSolutions(NonPriceElementType elementType)
         {
             if (elementType == NonPriceElementType.All)
             {
-                var nonPriceElements = Enum.GetValues(typeof(NonPriceElementType))
-                        .Cast<NonPriceElementType>()
-                        .Select(v => v.ToString().ToLower())
-                        .ToList().GetRange(1, 4);
+                var nonPriceElements = AllNonPriceElements();
 
                 foreach (var element in nonPriceElements)
                 {
-                    if (element == NonPriceElementType.ServiceLevelAgreement.ToString().ToLower())
+                    if (element.ToLower() == NonPriceElementType.ServiceLevelAgreement.ToString().ToLower())
                     {
                         string slaElementType = "service-level";
                         CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(slaElementType));
@@ -34,30 +51,39 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
                     }
                     else
                     {
-                        CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(element));
+                        CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(element.ToLower()));
                         CatalogueSolutionScore();
                         ReasonOfScore();
                     }
                 }
-
-                ReviewCompareAndScore();
             }
-            else if (elementType == NonPriceElementType.ServiceLevelAgreement)
+            else if (elementType == NonPriceElementType.Multiple)
             {
-                string slaElementType = "service-level";
-                CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(slaElementType));
-                CatalogueSolutionScore();
-                ReasonOfScore();
-                ReviewCompareAndScore();
+                var nonPriceElements = MultipleNonPriceElements();
+                foreach (var element in nonPriceElements)
+                {
+                    CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(element.ToLower()));
+                    CatalogueSolutionScore();
+                    ReasonOfScore();
+                }
             }
             else
             {
-                string elementtype = elementType.ToString().ToLower();
-                CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(elementtype));
+                switch (elementType)
+                {
+                    case NonPriceElementType.ServiceLevelAgreement:
+                        CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink("service-level"));
+                        break;
+                    default:
+                        CommonActions.ClickLinkElement(NonPriceObjects.EditCompareAndScoreLink(elementType.ToString().ToLower()));
+                        break;
+                }
+
                 CatalogueSolutionScore();
                 ReasonOfScore();
-                ReviewCompareAndScore();
             }
+
+            ReviewCompareAndScore();
         }
 
         public void ReasonOfScore()
