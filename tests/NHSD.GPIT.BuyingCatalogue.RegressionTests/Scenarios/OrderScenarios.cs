@@ -2127,9 +2127,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void CompetitionPriceOnlyAllRecipients()
+        public void CompetitionPriceOnlyAllRecipientsForAnICB()
         {
-            string competitionName = "CompetitionPriceOnlyAllRecipients";
+            string competitionName = "CompetitionPriceOnlyAllRecipientsForAnICB";
 
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
@@ -2211,6 +2211,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.All);
+        }
+
+        [Fact]
+        public void CompetitionMultipleNonPriceElements()
+        {
+            string competitionName = "CompetitionMultipleNonPriceElements";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+
+            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Multiple);
         }
 
         [Fact]

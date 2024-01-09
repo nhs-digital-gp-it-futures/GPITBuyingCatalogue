@@ -1,5 +1,6 @@
 ﻿using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
@@ -151,13 +152,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 AwardCriteriaWeightings.PriceNonPriceAwardCriteriaWeightings();
                 CompetitionTaskList.NonPriceElements();
                 NonPriceElements.AddNonPriceElements(elementtype);
-                if (elementtype == NonPriceElementType.All)
+                switch (elementtype)
                 {
-                    NonPriceElements.AllNonPriceElementsReview();
-                }
-                else
-                {
-                    NonPriceElements.AddNonPriceElement();
+                    case NonPriceElementType.All:
+                        NonPriceElements.AllNonPriceElementsReview();
+                        break;
+                    default:
+                        NonPriceElements.AddNonPriceElement();
+                        break;
                 }
 
                 CompetitionTaskList.NonPriceWeightings();
