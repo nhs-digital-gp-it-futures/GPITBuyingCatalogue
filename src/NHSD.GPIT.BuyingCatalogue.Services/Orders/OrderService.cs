@@ -29,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public const string OrderIdToken = "order_id";
         public const string OrderSummaryLinkToken = "order_summary_link";
         public const string OrderSummaryCsv = "order_summary_csv";
-        public const string PatientOrderCsvToken = "patient_order_csv";
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly ICsvService csvService;
@@ -378,7 +377,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             await dbContext.SaveChangesAsync();
 
-            await SendEmail(orderWrapper.Order, callOffId, userId, true);
+            await SendEmailsAndSave(orderWrapper.Order, callOffId, userId, true);
         }
 
         public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId)
@@ -386,7 +385,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = (await GetOrderThin(callOffId, internalOrgId)).Order;
             order.Complete();
 
-            await SendEmail(order, callOffId, userId);
+            await SendEmailsAndSave(order, callOffId, userId);
         }
 
         public async Task<List<Order>> GetUserOrders(int userId)
@@ -477,35 +476,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             };
         }
 
-        private async Task SendEmail(Order order, CallOffId callOffId, int userId, bool showRevisions = false)
+        private async Task SendEmailsAndSave(Order order, CallOffId callOffId, int userId, bool showRevisions = false)
         {
             await using var fullOrderStream = new MemoryStream();
-            await using var patientOrderStream = new MemoryStream();
 
-            await csvService.CreateFullOrderCsvAsync(order.Id, fullOrderStream, showRevisions);
+            await csvService.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream, showRevisions);
 
             fullOrderStream.Position = 0;
+            var fullOrderBytes = fullOrderStream.ToArray();
 
             var adminTokens = new Dictionary<string, dynamic>
             {
                 { OrganisationNameToken, order.OrderingParty.Name },
-                { FullOrderCsvToken, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
+                { FullOrderCsvToken, NotificationClient.PrepareUpload(fullOrderBytes, true) },
             };
 
             var templateId = order.IsTerminated ? orderMessageSettings.OrderTerminatedAdminTemplateId : orderMessageSettings.SingleCsvTemplateId;
 
-            if (!order.IsTerminated && await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream) > 0)
-            {
-                patientOrderStream.Position = 0;
-                adminTokens.Add(PatientOrderCsvToken, NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
-                templateId = orderMessageSettings.DualCsvTemplateId;
-            }
-
-            fullOrderStream.Position = 0;
             var userTokens = new Dictionary<string, dynamic>
             {
                 { OrderIdToken, $"{callOffId}" },
-                { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
+                { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderBytes, true) },
             };
 
             dbContext.Entry(order).State = EntityState.Modified;
@@ -522,12 +513,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private string GetUserTemplateId(Order order)
         {
-            return order.IsTerminated ? orderMessageSettings.OrderTerminatedUserTemplateId
-                : order.AssociatedServicesOnly
-                ? orderMessageSettings.UserAssociatedServiceTemplateId
-                : order.IsAmendment
-                    ? orderMessageSettings.UserAmendTemplateId
-                    : orderMessageSettings.UserTemplateId;
+            return order.IsTerminated
+                ? orderMessageSettings.OrderTerminatedUserTemplateId
+                : order.OrderType.AssociatedServicesOnly
+                    ? orderMessageSettings.UserAssociatedServiceTemplateId
+                    : order.IsAmendment
+                        ? orderMessageSettings.UserAmendTemplateId
+                        : orderMessageSettings.UserTemplateId;
         }
 
         private async Task<List<Order>> OrdersForSummary(CallOffId callOffId, string internalOrgId)

@@ -31,13 +31,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Services
             var model = new SelectServicesModel(currentItems, services)
             {
                 InternalOrgId = order.OrderingParty.InternalIdentifier,
-                AssociatedServicesOnly = order.AssociatedServicesOnly,
+                AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
                 IsAmendment = order.IsAmendment,
             };
 
             model.InternalOrgId.Should().Be(order.OrderingParty.InternalIdentifier);
             model.IsAmendment.Should().BeFalse();
-            model.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
+            model.AssociatedServicesOnly.Should().Be(order.OrderType.AssociatedServicesOnly);
         }
 
         [Theory]

@@ -9,7 +9,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -403,7 +402,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
 
-            mockCsvService.Verify(x => x.CreateFullOrderCsvAsync(order.Id, It.IsAny<MemoryStream>(), true), Times.Once);
+            mockCsvService.Verify(x => x.CreateFullOrderCsvAsync(order.Id, order.OrderType, It.IsAny<MemoryStream>(), true), Times.Once);
             mockCsvService.Verify(x => x.CreatePatientNumberCsvAsync(order.Id, It.IsAny<MemoryStream>()), Times.Never);
             mockEmailService.Verify(x => x.SendEmailAsync(settings.Recipient.Address, settings.OrderTerminatedAdminTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
             adminTokens.Should().NotBeNull();
@@ -513,9 +512,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.ChangeTracker.Clear();
 
-            mockCsvService.Setup(x => x.CreatePatientNumberCsvAsync(order.Id, It.IsAny<MemoryStream>()))
-                .ReturnsAsync(0);
-
             mockEmailService
                 .Setup(x => x.SendEmailAsync(settings.Recipient.Address, settings.SingleCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
                 .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => adminTokens = x)
@@ -540,52 +536,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var fullOrderCsv = adminTokens.Should().ContainKey(OrderService.FullOrderCsvToken).WhoseValue as JObject;
             organisationName.Should().Be(order.OrderingParty.Name);
             fullOrderCsv.Should().BeEquivalentTo(expectedToken);
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
-        public static async Task CompleteOrder_ContainsRecipients_SendsDualCsvEmails(
-            AspNetUser user,
-            Order order,
-            [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
-            [Frozen] Mock<ICsvService> mockCsvService,
-            [Frozen] Mock<IOrderPdfService> mockPdfService,
-            OrderMessageSettings settings)
-        {
-            Dictionary<string, dynamic> adminTokens = null;
-
-            await context.Orders.AddAsync(order);
-            await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
-
-            context.ChangeTracker.Clear();
-
-            mockCsvService.Setup(x => x.CreatePatientNumberCsvAsync(order.Id, It.IsAny<MemoryStream>()))
-                .ReturnsAsync(1);
-
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(settings.Recipient.Address, settings.DualCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => adminTokens = x)
-                .Returns(Task.CompletedTask);
-
-            var expectedToken = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
-
-            var service = new OrderService(
-                context,
-                mockCsvService.Object,
-                mockEmailService.Object,
-                mockPdfService.Object,
-                settings);
-
-            await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
-
-            mockCsvService.VerifyAll();
-            mockEmailService.Verify(x => x.SendEmailAsync(settings.Recipient.Address, settings.DualCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
-            adminTokens.Should().NotBeNull();
-            adminTokens.Should().HaveCount(3);
-            var patientOrderCsv = adminTokens.Should().ContainKey(OrderService.PatientOrderCsvToken).WhoseValue as JObject;
-            patientOrderCsv.Should().BeEquivalentTo(expectedToken);
         }
 
         [Theory]
