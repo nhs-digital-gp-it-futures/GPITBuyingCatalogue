@@ -60,10 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                             nameof(OrderController.Order),
                             typeof(OrderController).ControllerName(),
                             new { internalOrgId, callOffId }),
-                ImportRecipientsLink = Url.Action(
-                        nameof(ImportServiceRecipientsController.Index),
-                        typeof(ImportServiceRecipientsController).ControllerName(),
-                        new { internalOrgId, callOffId }),
             };
             return View(UploadOrSelectViewName, model);
         }
@@ -80,9 +76,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (model.ShouldUploadRecipients.GetValueOrDefault())
             {
                 return RedirectToAction(
-                nameof(Index),
-                typeof(ImportServiceRecipientsController).ControllerName(),
-                new { internalOrgId, callOffId });
+                    nameof(Index),
+                    typeof(ImportServiceRecipientsController).ControllerName(),
+                    new { internalOrgId, callOffId });
             }
 
             return RedirectToAction(

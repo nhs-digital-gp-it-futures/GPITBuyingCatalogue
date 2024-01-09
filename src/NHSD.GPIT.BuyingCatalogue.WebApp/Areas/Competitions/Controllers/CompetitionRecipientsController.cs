@@ -47,10 +47,6 @@ public class CompetitionRecipientsController : Controller
                 nameof(CompetitionTaskListController.Index),
                 typeof(CompetitionTaskListController).ControllerName(),
                 new { internalOrgId, competitionId }),
-            ImportRecipientsLink = Url.Action(
-                nameof(CompetitionImportServiceRecipientsController.Index),
-                typeof(CompetitionImportServiceRecipientsController).ControllerName(),
-                new { internalOrgId, competitionId }),
         };
         return View("ServiceRecipients/UploadOrSelectServiceRecipient", model);
     }
@@ -67,9 +63,9 @@ public class CompetitionRecipientsController : Controller
         if (model.ShouldUploadRecipients.GetValueOrDefault())
         {
             return RedirectToAction(
-            nameof(CompetitionImportServiceRecipientsController.Index),
-            typeof(CompetitionImportServiceRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId });
+                nameof(CompetitionImportServiceRecipientsController.Index),
+                typeof(CompetitionImportServiceRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId });
         }
 
         return RedirectToAction(

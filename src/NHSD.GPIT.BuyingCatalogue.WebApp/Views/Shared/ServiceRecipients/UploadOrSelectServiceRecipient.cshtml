@@ -8,20 +8,13 @@
         <form method="post">
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="BackLinkText" />
-            <input type="hidden" asp-for="@Model.SelectedServiceRecipient" />
 
             <nhs-fieldset-form-label asp-for="@Model"
                                      size="Medium">
-                <nhs-radio-button-container>
-                    @for (int i = 0; i < Model.ServiceRecipientOptions.Count();i++)
-                    {
-                        <nhs-radio-button asp-for="ShouldUploadRecipients"
-                                          display-name="Text"
-                                          value="Model.ServiceRecipientOptions.ElementAt(i)"
-                                          value-name="Value" 
-                                          index="i" />
-                    }
-                </nhs-radio-button-container>
+                <nhs-radio-buttons asp-for="ShouldUploadRecipients"
+                                   display-name="Text"
+                                   values="Model.ServiceRecipientOptions.Cast<object>()"
+                                   value-name="Value" />
             </nhs-fieldset-form-label>
 
             <div class="nhsuk-u-margin-top-9">
