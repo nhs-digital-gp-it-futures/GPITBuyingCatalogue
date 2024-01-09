@@ -42,7 +42,6 @@ public class CompetitionRecipientsController : Controller
         var competition = await competitionsService.GetCompetitionWithRecipients(internalOrgId, competitionId);
         var model = new UploadOrSelectServiceRecipientModel()
         {
-            Title = "Service Recipients",
             Caption = competition.Name,
             BackLink = Url.Action(
                 nameof(CompetitionTaskListController.Index),
@@ -57,7 +56,7 @@ public class CompetitionRecipientsController : Controller
     }
 
     [HttpPost("upload-or-select-service-recipients")]
-    public async Task<IActionResult> UploadOrSelectServiceRecipients(
+    public IActionResult UploadOrSelectServiceRecipients(
         UploadOrSelectServiceRecipientModel model,
         string internalOrgId,
         int competitionId)
@@ -65,17 +64,18 @@ public class CompetitionRecipientsController : Controller
         if (!ModelState.IsValid)
             return View("ServiceRecipients/UploadOrSelectServiceRecipient", model);
 
-        if (model.SelectedServiceRecipientOptions == "Upload")
+        if (model.ShouldUploadRecipients.GetValueOrDefault())
         {
             return RedirectToAction(
             nameof(CompetitionImportServiceRecipientsController.Index),
             typeof(CompetitionImportServiceRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
         }
-        else
-        {
-            return await Index(internalOrgId, competitionId);
-        }
+
+        return RedirectToAction(
+            nameof(Index),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
     }
 
     [HttpGet("select-recipients")]

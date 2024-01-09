@@ -5,13 +5,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 public class UploadOrSelectServiceRecipientModel : NavBaseModel
 {
-    public string SelectedServiceRecipientOptions { get; set; }
+    public const string YesUploadRecipientsOption = "Upload Service Recipients using a CSV file";
+    public const string NoUploadRecipientsOption = "Select Service Recipients manually";
+
+    public string SelectedServiceRecipient { get; set; }
+
+    public bool? ShouldUploadRecipients { get; set; }
 
     public string ImportRecipientsLink { get; set; }
 
-    public IEnumerable<SelectOption<string>> ServiceRecipientOptions => new List<SelectOption<string>>
+    public override string Title
+    {
+        get => base.Title ?? "Service Recipients";
+        set => base.Title = value;
+    }
+
+    public override string Advice
+    {
+        get => base.Advice ?? "Select how you want to add Service Recipients.";
+        set => base.Advice = value;
+    }
+
+    public IEnumerable<SelectOption<bool>> ServiceRecipientOptions => new List<SelectOption<bool>>
         {
-            new("Upload Service Recipients using a CSV file", "Upload"),
-            new("Select Service Recipients manually", "Select"),
+            new(YesUploadRecipientsOption, true),
+            new(NoUploadRecipientsOption, false),
         };
 }

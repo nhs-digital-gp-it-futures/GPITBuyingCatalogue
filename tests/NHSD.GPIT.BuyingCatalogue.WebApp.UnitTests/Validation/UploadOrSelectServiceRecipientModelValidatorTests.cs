@@ -14,11 +14,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
             UploadOrSelectServiceRecipientModel model,
             UploadOrSelectServiceRecipientModelValidator validator)
         {
-            model.SelectedServiceRecipientOptions = null;
+            model.ShouldUploadRecipients = null;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.SelectedServiceRecipientOptions)
+            result.ShouldHaveValidationErrorFor(m => m.ShouldUploadRecipients)
                 .WithErrorMessage(UploadOrSelectServiceRecipientModelValidator.SelectedServiceRecipientOptionsError);
         }
 

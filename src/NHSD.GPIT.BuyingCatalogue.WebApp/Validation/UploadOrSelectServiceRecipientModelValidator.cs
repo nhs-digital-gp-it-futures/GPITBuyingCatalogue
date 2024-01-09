@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
 
         public UploadOrSelectServiceRecipientModelValidator()
         {
-            RuleFor(m => m.SelectedServiceRecipientOptions)
+            RuleFor(m => m.ShouldUploadRecipients)
                 .NotNull()
                 .WithMessage(SelectedServiceRecipientOptionsError);
         }

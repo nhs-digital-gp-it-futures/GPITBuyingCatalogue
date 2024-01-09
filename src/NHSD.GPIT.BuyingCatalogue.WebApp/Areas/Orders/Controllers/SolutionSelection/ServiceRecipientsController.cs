@@ -54,7 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var model = new UploadOrSelectServiceRecipientModel()
             {
-                Title = "Service Recipients",
                 Caption = $"Order {callOffId}",
                 BackLink =
                         Url.Action(
@@ -70,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("upload-or-select-service-recipients")]
-        public async Task<IActionResult> UploadOrSelectServiceRecipients(
+        public IActionResult UploadOrSelectServiceRecipients(
             UploadOrSelectServiceRecipientModel model,
             string internalOrgId,
             CallOffId callOffId)
@@ -78,17 +77,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (!ModelState.IsValid)
                 return View(UploadOrSelectViewName, model);
 
-            if (model.SelectedServiceRecipientOptions == "Upload")
+            if (model.ShouldUploadRecipients.GetValueOrDefault())
             {
                 return RedirectToAction(
                 nameof(Index),
                 typeof(ImportServiceRecipientsController).ControllerName(),
                 new { internalOrgId, callOffId });
             }
-            else
-            {
-                return await SelectServiceRecipients(internalOrgId, callOffId);
-            }
+
+            return RedirectToAction(
+                nameof(SelectServiceRecipients),
+                typeof(ServiceRecipientsController).ControllerName(),
+                new { internalOrgId, callOffId });
         }
 
         [HttpGet("select-recipients")]
