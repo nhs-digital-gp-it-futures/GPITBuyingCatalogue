@@ -33,6 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
                 case NonPriceElementType.All:
                     AllNonPriceElementsWeightings(weightingssingle / 4);
                     break;
+                case NonPriceElementType.Multiple:
+                    MultipleNonPriceElementsWeightings(weightingssingle / 2);
+                    break;
                 default:
                     break;
             }
@@ -68,6 +71,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             Driver.FindElement(NonPriceObjects.ImplementationWeighting).SendKeys(weightings.ToString());
             Driver.FindElement(NonPriceObjects.InteroperabilityWeightings).SendKeys(weightings.ToString());
             Driver.FindElement(NonPriceObjects.ServieLevelWeightings).SendKeys(weightings.ToString());
+            CommonActions.ClickSave();
+        }
+
+        public void MultipleNonPriceElementsWeightings(int weightings)
+        {
+            Driver.FindElement(NonPriceObjects.FeatureWeighting).SendKeys(weightings.ToString());
+            Driver.FindElement(NonPriceObjects.ImplementationWeighting).SendKeys(weightings.ToString());
             CommonActions.ClickSave();
         }
     }
