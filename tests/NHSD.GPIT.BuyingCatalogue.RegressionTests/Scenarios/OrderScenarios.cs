@@ -2127,6 +2127,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void CompetitionPriceOnlyMultipleResults()
+        {
+            string competitionName = "CompetitionPriceOnlyMultipleResults";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+
+            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+
+            CompetitionPages.ViewMultipleResults();
+        }
+
+        [Fact]
         public void CompetitionPriceOnlyAllRecipients()
         {
             string competitionName = "CompetitionPriceOnlyAllRecipients";

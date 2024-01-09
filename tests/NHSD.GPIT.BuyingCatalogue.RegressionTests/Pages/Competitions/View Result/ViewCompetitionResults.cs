@@ -22,5 +22,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.View_Resu
             CommonActions.ClickSave();
             CommonActions.LedeText().Should().Be("These are the results for this competition.".FormatForComparison());
         }
+
+        public void ViewMultipleWinningResults()
+        {
+            CommonActions.ClickSave();
+            CommonActions.InsetText().Should().Be("Information:Your competition has produced more than 1 solution with a winning score. You can therefore choose to procure any of the winning solutions.".FormatForComparison());
+        }
     }
 }
