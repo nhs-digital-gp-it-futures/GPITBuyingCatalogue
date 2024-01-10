@@ -150,4 +150,88 @@ public static class CompetitionRecipientsControllerTests
         result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
         result.ControllerName.Should().Be(typeof(CompetitionTaskListController).ControllerName());
     }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task UploadOrSelectServiceRecipients_ReturnsViewWithModel(
+        string internalOrgId,
+        int competitionId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
+            .ReturnsAsync(competition);
+
+        var result = await controller.UploadOrSelectServiceRecipients(internalOrgId, competitionId);
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        var model = viewResult.Model.Should().BeOfType<UploadOrSelectServiceRecipientModel>().Subject;
+
+        model.Should().NotBeNull();
+        model.Caption.Should().Be(competition.Name);
+        model.BackLink.Should().NotBeNull();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void UploadOrSelectServiceRecipients_InvalidModel_ReturnsViewWithModel(
+        UploadOrSelectServiceRecipientModel model,
+        string internalOrgId,
+        int competitionId,
+        Competition competition,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        controller.ModelState.AddModelError("SomeError", "Error message");
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
+            .ReturnsAsync(competition);
+
+        var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        var returnedModel = viewResult.Model.Should().BeOfType<UploadOrSelectServiceRecipientModel>().Subject;
+
+        returnedModel.Should().BeEquivalentTo(model);
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void UploadOrSelectServiceRecipients_UploadRecipients_RedirectsToImportController(
+        UploadOrSelectServiceRecipientModel model,
+        string internalOrgId,
+        int competitionId,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        model.ShouldUploadRecipients = true;
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
+            .ReturnsAsync(new Competition());
+
+        var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
+
+        var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirectToActionResult.ActionName.Should().Be(nameof(CompetitionImportServiceRecipientsController.Index));
+        redirectToActionResult.ControllerName.Should().Be(typeof(CompetitionImportServiceRecipientsController).ControllerName());
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static void UploadOrSelectServiceRecipients_DoNotUploadRecipients_RedirectsToIndexAction(
+        UploadOrSelectServiceRecipientModel model,
+        string internalOrgId,
+        int competitionId,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        model.ShouldUploadRecipients = false;
+        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
+            .ReturnsAsync(new Competition());
+
+        var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
+
+        var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirectToActionResult.ActionName.Should().Be(nameof(CompetitionRecipientsController.Index));
+        redirectToActionResult.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
+    }
 }
