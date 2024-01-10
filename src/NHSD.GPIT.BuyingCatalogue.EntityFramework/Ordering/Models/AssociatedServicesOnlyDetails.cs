@@ -12,5 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public string PracticeReorganisationOdsCode { get; set; }
 
         public OdsOrganisation PracticeReorganisationRecipient { get; set; }
+
+        public string PracticeReorganisationNameAndCode => $"{PracticeReorganisationRecipient?.Name ?? string.Empty} ({PracticeReorganisationOdsCode})";
     }
 }

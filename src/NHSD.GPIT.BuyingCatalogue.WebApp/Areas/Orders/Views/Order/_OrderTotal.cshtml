@@ -1,0 +1,44 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
+@model OrderTotalModel
+@{
+    var contractTerm = Model.MaximumTerm.HasValue ? $" ({Model.MaximumTerm} months)" : " (estimated)";
+}
+
+<h4 data-test-id="indicative-costs-title">Indicative costs not including VAT</h4>
+<nhs-summary-list>
+    <nhs-summary-list-row label-text="Total one-off cost:" data-test-id="one-off-cost-summary">
+        £@($"{Model.TotalOneOffCost:N2}")
+    </nhs-summary-list-row>
+
+
+    @if (!Model.OrderType.MergerOrSplit
+    || (Model.OrderType.MergerOrSplit && !Model.OneOffCostOnly))
+    {
+        <nhs-summary-list-row label-text="Total monthly cost:" data-test-id="monthly-cost-summary">
+            £@($"{Model.TotalMonthlyCost:N2}")
+        </nhs-summary-list-row>
+
+        <nhs-summary-list-row label-text="Total cost for one year:" data-test-id="one-year-cost-summary">
+            £@($"{Model.TotalAnnualCost:N2}")
+        </nhs-summary-list-row>
+
+        <nhs-summary-list-row label-text="@($"Total cost of contract{contractTerm}:")" data-test-id="total-cost-summary">
+            £@($"{Model.TotalCost:N2}")
+            @if (!Model.MaximumTerm.HasValue)
+            {
+                <br />
+                <br />
+                <p>
+                    This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
+                    The figure is made up of the one-off costs and the yearly cost multiplied by 3.
+                </p>
+            }
+        </nhs-summary-list-row>
+    }
+    else
+    {
+        <nhs-summary-list-row label-text="@($"Total cost:")" data-test-id="total-cost-summary">
+            £@($"{Model.TotalCost:N2}")
+        </nhs-summary-list-row>
+    }
+</nhs-summary-list>

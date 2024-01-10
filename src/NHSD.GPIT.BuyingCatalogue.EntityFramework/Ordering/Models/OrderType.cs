@@ -90,6 +90,13 @@ public record OrderType(OrderTypeEnum Value) : IParsable<OrderType>
         _ => throw new InvalidOperationException($"Unsupported orderType {Value}"),
     };
 
+    public string GetServiceRecipientsTitle() => Value switch
+    {
+        OrderTypeEnum.AssociatedServiceSplit => "Service Recipients to receive patients",
+        OrderTypeEnum.AssociatedServiceMerger => "Service Recipients to be merged",
+        _ => "Service Recipients",
+    };
+
     public static OrderType Parse(string s, IFormatProvider provider)
     {
         if (!TryParse(s, provider, out var result))

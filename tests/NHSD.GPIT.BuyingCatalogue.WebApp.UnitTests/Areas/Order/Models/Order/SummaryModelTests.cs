@@ -118,20 +118,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.HasBespokeBilling.Should().BeTrue();
             model.HasSpecificRequirements.Should().BeTrue();
         }
-
-        [Theory]
-        [CommonAutoData]
-        public static void FundingTypeDescription_PropertiesCorrectlySet(
-            string internalOrgId,
-            bool hasSubsequentRevisions,
-            EntityFramework.Ordering.Models.Order order,
-            CatalogueItemId catalogueItemId)
-        {
-            var model = new SummaryModel(new OrderWrapper(order), internalOrgId, hasSubsequentRevisions, new ImplementationPlan());
-
-            var result = model.FundingTypeDescription(catalogueItemId);
-            var actual = result.Should().BeOfType<FundingTypeDescriptionModel>().Subject;
-            actual.Should().NotBeNull();
-        }
     }
 }

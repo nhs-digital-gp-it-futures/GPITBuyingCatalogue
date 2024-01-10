@@ -14,20 +14,32 @@
     var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
 }
 
-<nhs-expander colour-mode="BlackAndWhite"
-              label-text="@Model.CatalogueItem.Name"
+<nhs-expander label-text="@Model.CatalogueItem.Name"
               added-sticker="@Model.IsAmendment && @Model.IsOrderItemAdded"
               open="true"
               bold-title="true">
+
+    @if (Model.OrderType.MergerOrSplit)
+    {
+        <nhs-table label-text="@Model.OrderType.GetPracticeReorganisationRecipientTitle()" catches-errors="false">
+            <nhs-table-row-container>
+                <nhs-table-cell>@Model.PracticeReorganisationName</nhs-table-cell>
+            </nhs-table-row-container>
+        </nhs-table>
+    }
+
     @if (Model.RolledUpRecipientsForItem.Any())
     {
+
+        var labelText = Model.OrderType.GetServiceRecipientsTitle();
+
         <br />
-        <nhs-table label-text="Service Recipients" catches-errors="false">
+        <nhs-table label-text="@labelText" catches-errors="false">
             @if (Model.IsAmendment)
             {
                 <nhs-table-column>Status</nhs-table-column>
             }
-            <nhs-table-column>Recipient (ODS code)</nhs-table-column>
+            <nhs-table-column>Organisation (ODS code)</nhs-table-column>
             <nhs-table-column>Item ID</nhs-table-column>
             <nhs-table-column>Planned delivery date</nhs-table-column>
             <nhs-table-column>Quantity</nhs-table-column>
@@ -127,6 +139,12 @@
         </nhs-table>
     }
 
-    <br />
-    <b>@Model.FundingTypeDescription</b>
+    <p>
+        <b>@Model.FundingTypeDescription</b>
+    </p>
+
+    @if (Model.OrderTotals != null)
+    {
+        <partial name="_OrderTotal" model="@Model.OrderTotals" />
+    }
 </nhs-expander>

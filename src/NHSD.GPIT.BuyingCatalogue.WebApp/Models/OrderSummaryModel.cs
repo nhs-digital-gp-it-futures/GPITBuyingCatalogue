@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
@@ -42,9 +41,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public bool HasSpecificRequirements => BespokeBilling != null && BespokeBilling.Requirements.Any();
 
-        public FundingTypeDescriptionModel FundingTypeDescription(CatalogueItemId catalogueItemId)
+        public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem solution)
         {
-            return new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(catalogueItemId));
+            var model = new AmendOrderItemModel(
+                CallOffId,
+                Order.OrderType,
+                RolledUp.OrderRecipients,
+                Previous?.OrderRecipients,
+                solution,
+                Previous?.OrderItem(solution.CatalogueItemId),
+                Order.IsAmendment,
+                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(solution.CatalogueItemId)));
+
+            if (Order.OrderType.MergerOrSplit)
+            {
+                model.PracticeReorganisationName = Order.AssociatedServicesOnlyDetails.PracticeReorganisationNameAndCode;
+            }
+
+            return model;
         }
     }
 }

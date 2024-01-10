@@ -256,62 +256,67 @@
                         }
                     </pdf-summary-list>
 
-                @if (Model.Order.OrderStatus == OrderStatus.Terminated)
-                {
-                    <h2>Termination details</h2>
-                    <pdf-summary-list>
-                        <pdf-summary-list-row label-text="Reason for termination" data-test-id="termination-reason-summary">
-                            @Model.Order.OrderTermination.Reason
-                        </pdf-summary-list-row>
+                    @if (Model.Order.OrderStatus == OrderStatus.Terminated)
+                    {
+                        <h2>Termination details</h2>
+                        <pdf-summary-list>
+                            <pdf-summary-list-row label-text="Reason for termination" data-test-id="termination-reason-summary">
+                                @Model.Order.OrderTermination.Reason
+                            </pdf-summary-list-row>
 
-                        <pdf-summary-list-row label-text="Date of termination" data-test-id="termination-date-summary">
-                            @($"{Model.Order.OrderTermination.DateOfTermination:d MMMM yyyy}")
-                        </pdf-summary-list-row>
-                    </pdf-summary-list>
-                }
-                else
-                {
-                    <div style="page-break-after: always"></div>
-                }
+                            <pdf-summary-list-row label-text="Date of termination" data-test-id="termination-date-summary">
+                                @($"{Model.Order.OrderTermination.DateOfTermination:d MMMM yyyy}")
+                            </pdf-summary-list-row>
+                        </pdf-summary-list>
+                    }
+                    else
+                    {
+                        <div style="page-break-after: always"></div>
+                    }
 
-                    <h1>Service Recipients</h1>
+                    @if (!Model.Order.OrderType.MergerOrSplit)
+                    {
+                        <h1>Service Recipients</h1>
 
-                    <pdf-summary-list>
-                        <pdf-summary-list-row label-text="Number of Service Recipients">
-                            @Model.RolledUp.OrderRecipients.Count
-                        </pdf-summary-list-row>
-                    </pdf-summary-list>
+                        <pdf-summary-list>
+                            <pdf-summary-list-row label-text="Number of Service Recipients">
+                                @Model.RolledUp.OrderRecipients.Count
+                            </pdf-summary-list-row>
+                        </pdf-summary-list>
 
-                    <p>You can find the list of Service Recipients and their planned delivery dates by logging into the Buying Catalogue and viewing the summary of this order.</p>
+                        <p>You can find the list of Service Recipients and their planned delivery dates by logging into the Buying Catalogue and viewing the summary of this order.</p>
 
-                    <div style="page-break-after: always"></div>
-
-                    <h1>Solution and services</h1>
+                        <div style="page-break-after: always"></div>
+                        <h1>Solution and services</h1>
+                    }
 
                     @if (Model.RolledUp.GetSolutions().Any())
                     {
                         <h2>@(Model.RolledUp.GetSolutions().Count() > 1 ? "Catalogue Solutions" : "Catalogue Solution")</h2>
                         @foreach (var solution in Model.RolledUp.GetSolutions())
                         {
-                            <partial name="OrderItem" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, solution, Model.Previous?.OrderItem(solution.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(solution.CatalogueItemId)))" />
+                            var itemModel = Model.BuildAmendOrderItemModel(solution);
+                            <partial name="OrderItem" model="@itemModel" />
                         }
                     }
 
                     @if (Model.RolledUp.GetAdditionalServices().Any())
                     {
-                        <h2>Additional Services</h2>
+                        <h2>@(Model.RolledUp.GetAdditionalServices().Count() > 1 ? "Additional Services" : "Additional Service")</h2>
                         @foreach (var service in Model.RolledUp.GetAdditionalServices())
                         {
-                            <partial name="OrderItem" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(service.CatalogueItemId)))" />
+                            var itemModel = Model.BuildAmendOrderItemModel(service);
+                            <partial name="OrderItem" model="@itemModel" />
                         }
                     }
 
                     @if (Model.RolledUp.GetAssociatedServices().Any())
                     {
-                        <h2>Associated Services</h2>
+                        <h2>@(Model.RolledUp.GetAdditionalServices().Count() > 1 ? "Associated Services" : "Associated Service")</h2>
                         @foreach (var service in Model.RolledUp.GetAssociatedServices())
                         {
-                            <partial name="OrderItem" model="@(new AmendOrderItemModel(Model.CallOffId, Model.RolledUp.OrderRecipients, Model.Previous?.OrderRecipients, service, Model.Previous?.OrderItem(service.CatalogueItemId), Model.Order.IsAmendment, Model.FundingTypeDescription(service.CatalogueItemId)))" />
+                            var itemModel = Model.BuildAmendOrderItemModel(service);
+                            <partial name="OrderItem" model="@itemModel" />
                         }
                     }
 
@@ -331,7 +336,7 @@
                                 <tbody>
                                     <tr class="alternating">
                                         <td>
-                                            <strong>Total one-off cost</strong>
+                                            Total one-off cost
                                         </td>
                                         <td>
                                             £@($"{Model.Previous.TotalOneOffCost(null, true):N2}")
@@ -345,7 +350,7 @@
                                     </tr>
                                     <tr class="alternating">
                                         <td>
-                                            <strong>Total monthly cost</strong>
+                                            Total monthly cost
                                         </td>
                                         <td>
                                             £@($"{Model.Previous.TotalMonthlyCost(null, true):N2}")
@@ -359,7 +364,7 @@
                                     </tr>
                                     <tr class="alternating">
                                         <td>
-                                            <strong>Total annual cost</strong>
+                                            Total annual cost
                                         </td>
                                         <td>
                                             £@($"{Model.Previous.TotalAnnualCost(null, true):N2}")
@@ -390,47 +395,65 @@
                         }
                         else
                         {
+                            var oneOffCostOnly = Model.Order.TotalOneOffCost(null) > 0M
+                            && Model.Order.TotalMonthlyCost(null) == 0M
+                            && Model.Order.TotalAnnualCost(null) == 0M;
                             <table>
                                 <tbody>
                                     <tr class="alternating">
-                                        <td><strong>Total one-off cost</strong></td>
+                                        <td>Total one-off cost</td>
                                         <td>
                                             @($"£{Model.Order.TotalOneOffCost(null):N2}")
                                         </td>
                                     </tr>
-                                    <tr class="alternating">
-                                        <td><strong>Total monthly cost</strong></td>
-                                        <td>
-                                            @($"£{Model.Order.TotalMonthlyCost(null):N2}")
-                                        </td>
-                                    </tr>
-                                    <tr class="alternating">
-                                        <td><strong>Total annual cost</strong></td>
-                                        <td>
-                                            @($"£{Model.Order.TotalAnnualCost(null):N2}")
-                                        </td>
-                                    </tr>
-                                    <tr class="alternating">
-                                        <td><strong>Total cost of contract @contractTerm</strong></td>
-                                        <td>
-                                            @($"£{Model.OrderWrapper.TotalCost():N2}")
-                                            @if (!Model.Order.MaximumTerm.HasValue)
-                                            {
-                                                <br />
-                                                <br />
-                                                <p>
-                                                    This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
-                                                    The figure is made up of the one-off costs and the yearly cost multiplied by 3.
-                                                </p>
-                                            }
-                                        </td>
-                                    </tr>
+
+                                    @if (!Model.Order.OrderType.MergerOrSplit
+                                   || (Model.Order.OrderType.MergerOrSplit && !oneOffCostOnly))
+                                    {
+                                        <tr class="alternating">
+                                            <td>Total monthly cost</td>
+                                            <td>
+                                                @($"£{Model.Order.TotalMonthlyCost(null):N2}")
+                                            </td>
+                                        </tr>
+                                        <tr class="alternating">
+                                            <td>Total annual cost</td>
+                                            <td>
+                                                @($"£{Model.Order.TotalAnnualCost(null):N2}")
+                                            </td>
+                                        </tr>
+                                        <tr class="alternating">
+                                            <td><strong>Total cost of contract @contractTerm</strong></td>
+                                            <td>
+                                                @($"£{Model.OrderWrapper.TotalCost():N2}")
+                                                @if (!Model.Order.MaximumTerm.HasValue)
+                                                {
+                                                    <br />
+                                                    <br />
+                                                    <p>
+                                                        This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
+                                                        The figure is made up of the one-off costs and the yearly cost multiplied by 3.
+                                                    </p>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr class="alternating">
+                                            <td><strong>Total cost of contract</strong></td>
+                                            <td>
+                                                @($"£{Model.OrderWrapper.TotalCost():N2}")
+                                            </td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         }
                     </div>
 
                     <div style="page-break-after: always"></div>
+
 
                     @if (!Model.Order.OrderType.AssociatedServicesOnly)
                     {
@@ -440,19 +463,19 @@
                             <h3>Default milestones and payment triggers</h3>
                             <table>
                                 <thead>
-                                <tr>
-                                    <th>Milestone</th>
-                                    <th>Payment trigger</th>
-                                </tr>
+                                    <tr>
+                                        <th>Milestone</th>
+                                        <th>Payment trigger</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                @foreach (var milestone in Model.DefaultImplementationPlan.Milestones)
-                                {
-                                    <tr>
-                                        <td>@milestone.Title</td>
-                                        <td>@milestone.PaymentTrigger</td>
-                                    </tr>
-                                }
+                                    @foreach (var milestone in Model.DefaultImplementationPlan.Milestones)
+                                    {
+                                        <tr>
+                                            <td>@milestone.Title</td>
+                                            <td>@milestone.PaymentTrigger</td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -463,19 +486,19 @@
                                 <h3>Bespoke milestones and payment triggers</h3>
                                 <table>
                                     <thead>
-                                    <tr>
-                                        <th>Milestone name</th>
-                                        <th>Payment trigger</th>
-                                    </tr>
+                                        <tr>
+                                            <th>Milestone name</th>
+                                            <th>Payment trigger</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach (var milestone in Model.BespokePlan.Milestones)
-                                    {
-                                        <tr>
-                                            <td>@milestone.Title</td>
-                                            <td>@milestone.PaymentTrigger</td>
-                                        </tr>
-                                    }
+                                        @foreach (var milestone in Model.BespokePlan.Milestones)
+                                        {
+                                            <tr>
+                                                <td>@milestone.Title</td>
+                                                <td>@milestone.PaymentTrigger</td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>
@@ -500,23 +523,23 @@
                                     <h3>Bespoke milestones and payment triggers</h3>
                                     <table>
                                         <thead>
-                                        <tr>
-                                            <th>Associated Service name</th>
-                                            <th>Milestone name</th>
-                                            <th>Payment trigger</th>
-                                            <th>Number of units to be billed</th>
-                                        </tr>
+                                            <tr>
+                                                <th>Associated Service name</th>
+                                                <th>Milestone name</th>
+                                                <th>Payment trigger</th>
+                                                <th>Number of units to be billed</th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach (var item in Model.BespokeBilling.ContractBillingItems)
-                                        {
-                                            <tr>
-                                                <td>@item.OrderItem.CatalogueItem.Name</td>
-                                                <td>@item.Milestone.Title</td>
-                                                <td>@item.Milestone.PaymentTrigger</td>
-                                                <td>@item.Quantity</td>
-                                            </tr>
-                                        }
+                                            @foreach (var item in Model.BespokeBilling.ContractBillingItems)
+                                            {
+                                                <tr>
+                                                    <td>@item.OrderItem.CatalogueItem.Name</td>
+                                                    <td>@item.Milestone.Title</td>
+                                                    <td>@item.Milestone.PaymentTrigger</td>
+                                                    <td>@item.Quantity</td>
+                                                </tr>
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -532,19 +555,19 @@
                                     <h3>Specific requirements</h3>
                                     <table>
                                         <thead>
-                                        <tr>
-                                            <th>Associated Service name</th>
-                                            <th>Requirement</th>
-                                        </tr>
+                                            <tr>
+                                                <th>Associated Service name</th>
+                                                <th>Requirement</th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach (var item in Model.BespokeBilling.Requirements)
-                                        {
-                                            <tr>
-                                                <td>@item.OrderItem.CatalogueItem.Name</td>
-                                                <td>@item.Details</td>
-                                            </tr>
-                                        }
+                                            @foreach (var item in Model.BespokeBilling.Requirements)
+                                            {
+                                                <tr>
+                                                    <td>@item.OrderItem.CatalogueItem.Name</td>
+                                                    <td>@item.Details</td>
+                                                </tr>
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -640,7 +663,6 @@
                             </table>
                         </div>
                     </div>
-                    <br />
                 </div>
             </div>
         </main>

@@ -11,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
     {
         public AmendOrderItemModel(
             CallOffId callOffId,
+            OrderType orderType,
             ICollection<OrderRecipient> recipients,
             ICollection<OrderRecipient> previousRecipients,
             OrderItem orderItem,
@@ -21,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             ArgumentNullException.ThrowIfNull(orderItem);
 
             CallOffId = callOffId;
+            OrderType = orderType;
             IsAmendment = isAmendment;
             IsOrderItemAdded = previous == null;
             OrderItem = orderItem;
@@ -33,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         }
 
         public CallOffId CallOffId { get; }
+
+        public OrderType OrderType { get; }
 
         public bool IsAmendment { get; }
 
@@ -56,6 +60,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 return FundingTypeDescriptionModel.Value(itemType);
             }
         }
+
+        public OrderTotalModel OrderTotals { get; set; }
+
+        public string PracticeReorganisationName { get; set; }
 
         private List<OrderRecipient> PreviousRecipientsForItem { get; }
 

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
@@ -54,9 +53,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public string RequirementLabelText => "Specific requirements";
 
-        public FundingTypeDescriptionModel FundingTypeDescription(CatalogueItemId catalogueItemId)
+        public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem item)
         {
-            return new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(catalogueItemId));
+            return new AmendOrderItemModel(
+                CallOffId,
+                Order.OrderType,
+                RolledUp.OrderRecipients,
+                Previous?.OrderRecipients,
+                item,
+                Previous?.OrderItem(item.CatalogueItemId),
+                Order.IsAmendment,
+                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)));
+        }
+
+        public OrderTotalModel BuildOrderTotals()
+        {
+            return new OrderTotalModel(
+                 Order.OrderType,
+                 Order.MaximumTerm,
+                 Order.TotalOneOffCost(null),
+                 Order.TotalMonthlyCost(null),
+                 Order.TotalAnnualCost(null),
+                 OrderWrapper.TotalCost());
         }
     }
 }
