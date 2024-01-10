@@ -16,12 +16,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSec
             Delete = 2,
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(string text, string url, ButtonType type)
+        public async Task<IViewComponentResult> InvokeAsync(string text, string url, ButtonType type, string id = null)
         {
             var model = new NhsSecondaryButtonModel
             {
                 Text = text,
                 Url = url,
+                Id = id,
             };
 
             model.ButtonClass = type switch

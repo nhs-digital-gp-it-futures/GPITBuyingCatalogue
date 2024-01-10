@@ -1,0 +1,21 @@
+.modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: solid 1px #d8dde0;
+    padding: 24px;
+}
+
+.modal__container {
+    background-color: #fff;
+    padding: 0px;
+    width: 700px;
+    max-height: 400vh;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    border-width: 1px;
+}
+
+.modal__content {
+    padding: 24px;
+}

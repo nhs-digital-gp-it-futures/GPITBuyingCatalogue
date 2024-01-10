@@ -1,15 +1,11 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
-@using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectRecipientsModel;
 
 <partial name="Partials/_BackLink" model="Model" />
 <script type="text/javascript" src="@Url.Content("~/js/Recipients.min.js")" asp-append-version="true"></script>
+<script type="text/javascript" src="@Url.Content("~/js/Modal.min.js")" asp-append-version="true"></script>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
@@ -19,7 +15,7 @@
         @if ((Model.SubLocations?.Any() ?? false) && Model.OrganisationType != OrganisationType.GP)
         {
             if (Model.HasImportedRecipients
-            || (Model.PreviouslySelected?.Any() ?? false))
+                || (Model.PreviouslySelected?.Any() ?? false))
             {
                 <nhs-inset-text>
                     @if (Model.HasImportedRecipients)
@@ -41,20 +37,19 @@
             }
 
             <hr />
-            <h2>Upload your Service Recipients</h2>
-            <p>
-                You can upload your Service Recipients using a CSV file or select them manually below.
-            </p>
-            <vc:nhs-action-link text="Upload Service Recipients"
-                            url="@Model.ImportRecipientsLink" />
-            <hr />
 
             <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.All })"
-                                 text="Select all"
-                                 type="Secondary" />
+                                     text="Select all"
+                                     type="Secondary" />
             <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.None })"
-                                 text="Deselect all"
-                                 type="Secondary" />
+                                     text="Deselect all"
+                                     type="Secondary" />
+
+            <vc:nhs-secondary-button url="#"
+                                     text="Search for Service Recipients"
+                                     type="Secondary"
+                                     id="showDialog"/>
+
         }
 
         <form method="post">
@@ -87,8 +82,8 @@
                                     <nhs-table-cell>
                                         <nhs-checkbox-container>
                                             <nhs-checkbox asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Selected"
-                                              label-text="@item.Name"
-                                              hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" />
+                                                          label-text="@item.Name"
+                                                          hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" />
                                         </nhs-checkbox-container>
                                     </nhs-table-cell>
                                     <nhs-table-cell>
@@ -110,3 +105,85 @@
         </form>
     </div>
 </div>
+
+<output></output>
+
+<!-- A modal dialog containing a form -->
+<dialog id="ods-search" class="modal__container">
+    <form>
+        <header class="modal__header">
+            <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="modal-1-title">
+                Search for Service Recipients
+            </h2>
+            <button value="cancel" formmethod="dialog" class="nhsuk-button nhsuk-button--secondary">Close</button>
+        </header>
+        <div class="modal__content">
+            <p class="nhsuk-body">
+                Find and select the Service Recipients you want to include in this order.
+            </p>
+            <nhs-auto-complete asp-for="SelectedOrganisationId"
+                               asp-items="@Model.SubLocations"
+                               label-text="Search by ODS code or organisation name"/>
+            <p>
+                <label>
+                    Favorite animal:
+                    <select>
+                        <option value="default">Choose…</option>
+                        <option>Brine shrimp</option>
+                        <option>Red panda</option>
+                        <option>Spider monkey</option>
+                    </select>
+                </label>
+            </p>
+            <div>
+                <button value="cancel" formmethod="dialog">Cancel</button>
+                <button id="confirmBtn" value="default" class="nhsuk-button">Apply recipients</button>
+                <vc:nhs-secondary-button url="#"
+                                         text="Apply recipients"
+                                         type="Primary"
+                                         id="applyRecipientsBtn" />
+                <a value="cancel" formmethod="dialog">Cancel</a>
+            </div>
+        </div>
+    </form>
+</dialog>
+
+<script>
+    const showButton = document.getElementById("showDialog");
+    const dialog = document.getElementById("ods-search");
+    const outputBox = document.querySelector("output");
+    const selectEl = dialog.querySelector("select");
+    const confirmBtn = dialog.querySelector("#confirmBtn");
+    const applyRecipientsBtn = dialog.querySelector("#applyRecipientsBtn");
+
+    // "Show the dialog" button opens the <dialog> modally
+    showButton.addEventListener("click", () => {
+        dialog.showModal();
+    });
+
+    // "Favorite animal" input sets the value of the submit button
+    selectEl.addEventListener("change", (e) => {
+        confirmBtn.value = selectEl.value;
+        applyRecipientsBtn.value = selectEl.value;
+    });
+
+    // "Cancel" button closes the dialog without submitting because of [formmethod="dialog"], triggering a close event.
+    dialog.addEventListener("close", (e) => {
+        outputBox.value =
+            dialog.returnValue === "default"
+                ? "No return value."
+                : `ReturnValue: ${dialog.returnValue}.`; // Have to check for "default" rather than empty string
+    });
+
+    // Prevent the "confirm" button from the default behavior of submitting the form, and close the dialog with the `close()` method, which triggers the "close" event.
+    confirmBtn.addEventListener("click", (event) => {
+        event.preventDefault(); // We don't want to submit this fake form
+        dialog.close(selectEl.value); // Have to send the select box value here.
+    });
+
+    // Prevent the "confirm" button from the default behavior of submitting the form, and close the dialog with the `close()` method, which triggers the "close" event.
+    applyRecipientsBtn.addEventListener("click", (event) => {
+        event.preventDefault(); // We don't want to submit this fake form
+        dialog.close(selectEl.value); // Have to send the select box value here.
+    });
+</script>
