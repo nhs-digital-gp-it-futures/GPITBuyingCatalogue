@@ -2143,9 +2143,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void CompetitionPriceOnlyAllRecipients()
+        public void CompetitionPriceOnlyAllICBRecipients()
         {
-            string competitionName = "CompetitionPriceOnlyAllRecipients";
+            string competitionName = "CompetitionPriceOnlyAllICBRecipients";
 
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
