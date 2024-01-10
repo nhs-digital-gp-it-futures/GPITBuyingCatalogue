@@ -58,7 +58,7 @@
                 <nhs-task-list-section label-text="@Model.SolutionsAndServicesSectionLabel">
                     <nhs-task-list-item label-text="Service Recipients"
                                         label-hint="@Model.StatusDescription(OrderSummaryField.ServiceRecipients, Model.IsAmendment)"
-                                        url="@Url.Action(nameof(ServiceRecipientsController.SelectServiceRecipients), typeof(ServiceRecipientsController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"
+                                        url="@Url.Action(nameof(ServiceRecipientsController.UploadOrSelectServiceRecipients), typeof(ServiceRecipientsController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"
                                         status="@Model.Progress.ServiceRecipients"/>
 
                     <nhs-task-list-item label-text="Select solutions and services"

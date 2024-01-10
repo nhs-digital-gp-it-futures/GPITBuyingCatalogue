@@ -40,15 +40,6 @@
                 </nhs-inset-text>
             }
 
-            <hr />
-            <h2>Upload your Service Recipients</h2>
-            <p>
-                You can upload your Service Recipients using a CSV file or select them manually below.
-            </p>
-            <vc:nhs-action-link text="Upload Service Recipients"
-                            url="@Model.ImportRecipientsLink" />
-            <hr />
-
             <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.All })"
                                  text="Select all"
                                  type="Secondary" />
@@ -58,7 +49,6 @@
         }
 
         <form method="post">
-            <input type="hidden" asp-for="ImportRecipientsLink" />
             @if (Model.SubLocations?.Any() ?? false)
             {
                 @if (Model.OrganisationType != OrganisationType.GP)
