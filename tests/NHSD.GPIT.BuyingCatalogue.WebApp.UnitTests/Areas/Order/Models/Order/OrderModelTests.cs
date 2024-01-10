@@ -28,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.Description.Should().Be(order.Description);
             model.LastUpdatedByUserName.Should().Be(aspNetUser.FullName);
             model.LastUpdated.Should().Be(order.LastUpdated);
+            model.IsAmendment.Should().Be(order.IsAmendment);
         }
 
         [Theory]
@@ -42,6 +43,65 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.Title.Should().Be("New order");
             model.CallOffId.Should().BeEquivalentTo(default(CallOffId));
             model.Description.Should().Be(default);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Construct_IsAmendment_SetsTitle(
+            string internalOrgId,
+            AspNetUser aspNetUser,
+            EntityFramework.Ordering.Models.Order order,
+            OrderProgress progress)
+        {
+            const string expected =
+                "You can amend parts of this order as required and will need to review other parts that cannot be changed. Your amendments will be saved as you progress through each section.";
+
+            order.LastUpdatedByUser = aspNetUser;
+            order.Revision = 2;
+
+            var model = new OrderModel(internalOrgId, order, progress);
+
+            model.TitleAdvice.Should().Be(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Construct_OriginalOrder_SetsTitle(
+            string internalOrgId,
+            AspNetUser aspNetUser,
+            EntityFramework.Ordering.Models.Order order,
+            OrderProgress progress)
+        {
+            const string expected =
+                "Complete the following steps to create an order summary.";
+
+            order.LastUpdatedByUser = aspNetUser;
+            order.CompetitionId = null;
+            order.Revision = 1;
+
+            var model = new OrderModel(internalOrgId, order, progress);
+
+            model.TitleAdvice.Should().Be(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Construct_CompetitionOrder_SetsTitle(
+            string internalOrgId,
+            AspNetUser aspNetUser,
+            EntityFramework.Ordering.Models.Order order,
+            OrderProgress progress)
+        {
+            const string expected =
+                "The information you included in your competition has already been added. Your progress will be saved as you complete each section.";
+
+            order.LastUpdatedByUser = aspNetUser;
+            order.CompetitionId = 1;
+            order.Revision = 1;
+
+            var model = new OrderModel(internalOrgId, order, progress);
+
+            model.TitleAdvice.Should().Be(expected);
         }
 
         [Theory]
@@ -131,6 +191,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             var model = new OrderModel(internalOrgId, order, progress);
 
             model.StatusDescription(summaryField).Should().Be(expected);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void StatusDescription_InvalidSummaryField_ReturnsExpected(
+            string internalOrgId,
+            AspNetUser aspNetUser,
+            EntityFramework.Ordering.Models.Order order,
+            OrderProgress progress)
+        {
+            order.LastUpdatedByUser = aspNetUser;
+            order.CompetitionId = 1;
+            order.Revision = 1;
+
+            var model = new OrderModel(internalOrgId, order, progress);
+
+            model.StatusDescription((OrderSummaryField)int.MaxValue).Should().BeEmpty();
         }
     }
 }

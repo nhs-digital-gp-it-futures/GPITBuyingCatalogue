@@ -71,7 +71,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 IsAmendment = order.IsAmendment;
                 TitleAdvice = order.IsAmendment
                     ? "You can amend parts of this order as required and will need to review other parts that cannot be changed. Your amendments will be saved as you progress through each section."
-                    : "Complete the following steps to create an order summary.";
+                    : IsCompetitionOrder
+                        ? "The information you included in your competition has already been added. Your progress will be saved as you complete each section."
+                        : "Complete the following steps to create an order summary.";
                 Description = order.Description;
                 OrganisationName = order.OrderingParty.Name;
 

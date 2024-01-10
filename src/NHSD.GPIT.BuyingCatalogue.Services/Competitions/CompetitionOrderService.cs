@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -60,6 +61,20 @@ public class CompetitionOrderService : ICompetitionOrderService
                 nameof(solutionId));
         }
 
+        var orderItems = CreateOrderItems(winningSolution);
+        var nextOrderNumber = await dbContext.NextOrderNumber();
+
+        var order = CreateOrder(nextOrderNumber, competition, winningSolution, orderItems);
+        AssignRecipientQuantities(order, winningSolution);
+
+        dbContext.Orders.Add(order);
+        await dbContext.SaveChangesAsync();
+
+        return order.CallOffId;
+    }
+
+    private static IEnumerable<OrderItem> CreateOrderItems(CompetitionSolution winningSolution)
+    {
         var orderItems = winningSolution.SolutionServices.Select(
                 x => CreateOrderItem(x.ServiceId, x.Quantity, x.Price, x.Price.Tiers))
             .ToList();
@@ -71,38 +86,7 @@ public class CompetitionOrderService : ICompetitionOrderService
                 winningSolution.Price,
                 winningSolution.Price.Tiers));
 
-        var order = new Order
-        {
-            OrderNumber = await dbContext.NextOrderNumber(),
-            Revision = 1,
-            Description = $"Order created from competition: {competition.Id}",
-            Created = DateTime.UtcNow,
-            MaximumTerm = competition.ContractLength,
-            OrderRecipients = competition.Recipients.Select(x => new OrderRecipient(x.Id)).ToList(),
-            OrderItems = orderItems.ToList(),
-            OrderingPartyId = competition.OrganisationId,
-            SupplierId = winningSolution.Solution.CatalogueItem.SupplierId,
-            CompetitionId = competition.Id,
-        };
-
-        var competitionItemQuantities = winningSolution.Quantities
-            .Select(x => new { ItemId = x.SolutionId, x.Quantity, x.CompetitionRecipient.OdsCode })
-            .Concat(
-                winningSolution.SolutionServices.SelectMany(
-                    x => x.Quantities.Select(
-                        y => new { ItemId = y.ServiceId, y.Quantity, y.CompetitionRecipient.OdsCode })));
-
-        foreach (var itemQuantity in competitionItemQuantities)
-        {
-            var orderRecipient = order.OrderRecipients.FirstOrDefault(x => x.OdsCode == itemQuantity.OdsCode);
-
-            orderRecipient?.SetQuantityForItem(itemQuantity.ItemId, itemQuantity.Quantity);
-        }
-
-        dbContext.Orders.Add(order);
-        await dbContext.SaveChangesAsync();
-
-        return order.CallOffId;
+        return orderItems.ToList();
     }
 
     private static OrderItem CreateOrderItem(
@@ -121,4 +105,36 @@ public class CompetitionOrderService : ICompetitionOrderService
                     .ToList(),
             },
         };
+
+    private static Order CreateOrder(int orderNumber, Competition competition, CompetitionSolution winningSolution, IEnumerable<OrderItem> orderItems) => new Order
+    {
+        OrderNumber = orderNumber,
+        Revision = 1,
+        Description = $"Order created from competition: {competition.Id}",
+        Created = DateTime.UtcNow,
+        MaximumTerm = competition.ContractLength,
+        OrderRecipients = competition.Recipients.Select(x => new OrderRecipient(x.Id)).ToList(),
+        OrderItems = orderItems.ToList(),
+        OrderingPartyId = competition.OrganisationId,
+        SupplierId = winningSolution.Solution.CatalogueItem.SupplierId,
+        CompetitionId = competition.Id,
+        OrderTriageValue = OrderTriageValue.Between40KTo250K,
+    };
+
+    private static void AssignRecipientQuantities(Order order, CompetitionSolution winningSolution)
+    {
+        var competitionItemQuantities = winningSolution.Quantities
+            .Select(x => new { ItemId = x.SolutionId, x.Quantity, x.CompetitionRecipient.OdsCode })
+            .Concat(
+                winningSolution.SolutionServices.SelectMany(
+                    x => x.Quantities.Select(
+                        y => new { ItemId = y.ServiceId, y.Quantity, y.CompetitionRecipient.OdsCode })));
+
+        foreach (var itemQuantity in competitionItemQuantities)
+        {
+            var orderRecipient = order.OrderRecipients.FirstOrDefault(x => x.OdsCode == itemQuantity.OdsCode);
+
+            orderRecipient?.SetQuantityForItem(itemQuantity.ItemId, itemQuantity.Quantity);
+        }
+    }
 }
