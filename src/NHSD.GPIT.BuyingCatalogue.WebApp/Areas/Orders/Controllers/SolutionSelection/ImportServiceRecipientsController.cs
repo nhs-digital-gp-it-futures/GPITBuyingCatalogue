@@ -12,7 +12,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 using ServiceRecipient = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceRecipient;
 
@@ -59,7 +58,7 @@ public class ImportServiceRecipientsController : Controller
         var model = new ImportServiceRecipientModel
         {
             BackLink = Url.Action(
-                nameof(ServiceRecipientsController.SelectServiceRecipients),
+                nameof(ServiceRecipientsController.UploadOrSelectServiceRecipients),
                 typeof(ServiceRecipientsController).ControllerName(),
                 new { internalOrgId, callOffId }),
             Caption = callOffId.ToString(),

@@ -113,7 +113,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Excluding(o => o.Caption)
                 .Excluding(o => o.Advice)
                 .Excluding(o => o.Advice)
-                .Excluding(o => o.ImportRecipientsLink)
                 .Excluding(o => o.HasImportedRecipients));
         }
 
@@ -286,6 +285,75 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             actual.ControllerName.Should().Be(typeof(OrderController).ControllerName());
             actual.ActionName.Should().Be(nameof(OrderController.Order));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void UploadOrSelectServiceRecipients_Get_ReturnsViewWithModel(
+        string internalOrgId,
+        CallOffId callOffId,
+        ServiceRecipientsController controller)
+        {
+            var result = controller.UploadOrSelectServiceRecipients(internalOrgId, callOffId);
+
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            var model = viewResult.Model.Should().BeOfType<UploadOrSelectServiceRecipientModel>().Subject;
+
+            model.Should().NotBeNull();
+            model.Caption.Should().Be($"Order {callOffId}");
+            model.BackLink.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void UploadOrSelectServiceRecipients_Post_InvalidModel_ReturnsViewWithModel(
+            UploadOrSelectServiceRecipientModel model,
+            string internalOrgId,
+            CallOffId callOffId,
+            ServiceRecipientsController controller)
+        {
+            controller.ModelState.AddModelError("SomeError", "Error message");
+
+            var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
+
+            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            var returnedModel = viewResult.Model.Should().BeOfType<UploadOrSelectServiceRecipientModel>().Subject;
+
+            returnedModel.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void UploadOrSelectServiceRecipients_Post_UploadRecipients_RedirectsToImportController(
+            UploadOrSelectServiceRecipientModel model,
+            string internalOrgId,
+            CallOffId callOffId,
+            ServiceRecipientsController controller)
+        {
+            model.ShouldUploadRecipients = true;
+
+            var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
+
+            var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            redirectToActionResult.ActionName.Should().Be(nameof(ImportServiceRecipientsController.Index));
+            redirectToActionResult.ControllerName.Should().Be(typeof(ImportServiceRecipientsController).ControllerName());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void UploadOrSelectServiceRecipients_Post_DoNotUploadRecipients_RedirectsToSelectServiceRecipientsAction(
+            UploadOrSelectServiceRecipientModel model,
+            string internalOrgId,
+            CallOffId callOffId,
+            ServiceRecipientsController controller)
+        {
+            model.ShouldUploadRecipients = false;
+
+            var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
+
+            var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            redirectToActionResult.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectServiceRecipients));
+            redirectToActionResult.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
         }
     }
 }

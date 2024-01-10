@@ -25,7 +25,7 @@
 
                 <nhs-task-list-item label-text="Service Recipients"
                                     label-hint="Confirm who’ll be receiving the winning solution to help calculate total costs."
-                                    url="@Url.Action(nameof(CompetitionRecipientsController.Index), typeof(CompetitionRecipientsController).ControllerName(), routeValues)"
+                                    url="@Url.Action(nameof(CompetitionRecipientsController.UploadOrSelectServiceRecipients), typeof(CompetitionRecipientsController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.ServiceRecipients"/>
 
                 <nhs-task-list-item label-text="Contract length"
