@@ -51,10 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard
         {
             OrderStatus.Terminated => NhsTagsTagHelper.TagColour.Red,
             OrderStatus.Completed => NhsTagsTagHelper.TagColour.Green,
-            OrderStatus.InProgress => NhsTagsTagHelper.TagColour.Yellow,
+            OrderStatus.InProgress => NhsTagsTagHelper.TagColour.Blue,
             _ => throw new ArgumentOutOfRangeException(nameof(orderStatus)),
         };
-
-        private bool AnySubsequentRevisions(CallOffId callOffId) => OrderIds.Any(x => x.OrderNumber == callOffId.OrderNumber && x.Revision > callOffId.Revision);
     }
 }

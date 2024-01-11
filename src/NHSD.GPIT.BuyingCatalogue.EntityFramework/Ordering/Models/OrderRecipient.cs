@@ -12,11 +12,17 @@ public class OrderRecipient
     }
 
     public OrderRecipient(
-        int orderId,
         string odsCode)
     {
-        OrderId = orderId;
         OdsCode = odsCode;
+    }
+
+    public OrderRecipient(
+        int orderId,
+        string odsCode)
+        : this(odsCode)
+    {
+        OrderId = orderId;
     }
 
     public int OrderId { get; set; }

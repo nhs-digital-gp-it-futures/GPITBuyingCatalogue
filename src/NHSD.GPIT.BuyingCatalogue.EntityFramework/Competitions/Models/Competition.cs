@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
@@ -58,4 +59,6 @@ public class Competition
     public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
 
     public ICollection<OdsOrganisation> Recipients { get; set; }
+
+    public ICollection<Order> Orders { get; set; }
 }

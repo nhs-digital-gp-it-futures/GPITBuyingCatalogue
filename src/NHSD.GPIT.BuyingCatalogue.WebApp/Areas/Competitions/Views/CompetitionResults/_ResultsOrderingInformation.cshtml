@@ -18,29 +18,7 @@
                                 url="@Model.PdfUrl"
                                 type="Secondary" />
 
-    @if (!Model.IsDirectAward)
-    {
-        @if (Model.HasMultipleWinners)
-        {
-            <h2>Winning solution</h2>
-            <p>As your competition produced more than 1 solution with a winning score, you can choose to procure any of the winning solutions.</p>
-
-            <vc:nhs-secondary-button text="Select a winning solution"
-                             url="@Url.Action(nameof(CompetitionResultsController.SelectWinningSolution), typeof(CompetitionResultsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })"
-                             type="Primary" />
-        }
-        else
-        {
-            <h2>Ordering information</h2>
-            <p>Download the information you’ll need to create an order for this solution. It includes the Service Recipients you added and any services you may also need to order.</p>
-
-            <vc:nhs-secondary-button text="View ordering information"
-                             url="@Url.Action(nameof(CompetitionResultsController.OrderingInformation), typeof(CompetitionResultsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })"
-                             type="Primary" />
-        }
-
-    }
-    else
+    @if (Model.IsDirectAward)
     {
         <h2>Ordering information</h2>
         <p>As you only have one result, you can procure this solution using a direct award.</p>

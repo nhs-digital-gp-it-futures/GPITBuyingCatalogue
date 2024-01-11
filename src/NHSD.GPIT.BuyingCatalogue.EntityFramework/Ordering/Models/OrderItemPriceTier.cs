@@ -1,14 +1,45 @@
 ﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     [Serializable]
-    public sealed partial class OrderItemPriceTier : IAudited, IPriceTier
+    public sealed class OrderItemPriceTier : IAudited, IOrderablePriceTier
     {
         public OrderItemPriceTier()
         {
+        }
+
+        public OrderItemPriceTier(OrderItemPrice price, CataloguePriceTier tier)
+        {
+            OrderId = price.OrderId;
+            CatalogueItemId = price.CatalogueItemId;
+            Price = tier.Price;
+            ListPrice = tier.Price;
+            LowerRange = tier.LowerRange;
+            UpperRange = tier.UpperRange;
+            OrderItemPrice = price;
+        }
+
+        public OrderItemPriceTier(IOrderablePriceTier priceTier)
+        {
+            Price = priceTier.Price;
+            ListPrice = priceTier.ListPrice;
+            LowerRange = priceTier.LowerRange;
+            UpperRange = priceTier.UpperRange;
+        }
+
+        internal OrderItemPriceTier(OrderItemPrice price, IOrderablePriceTier tier)
+        {
+            OrderId = price.OrderId;
+            CatalogueItemId = price.CatalogueItemId;
+            Price = tier.Price;
+            ListPrice = tier.Price;
+            LowerRange = tier.LowerRange;
+            UpperRange = tier.UpperRange;
+            OrderItemPrice = price;
         }
 
         public int Id { get; set; }
@@ -32,5 +63,14 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public OrderItemPrice OrderItemPrice { get; set; }
+
+        public string GetRangeDescription()
+        {
+            var upperRange = UpperRange == null
+                ? "+"
+                : $" to {UpperRange.Value}";
+
+            return $"{LowerRange}{upperRange} {OrderItemPrice?.RangeDescription}".Trim();
+        }
     }
 }

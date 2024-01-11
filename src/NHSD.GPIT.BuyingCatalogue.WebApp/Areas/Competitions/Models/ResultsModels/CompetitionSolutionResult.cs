@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels;
@@ -11,6 +12,10 @@ public class CompetitionSolutionResult
         Competition competition,
         CompetitionSolution competitionSolution)
     {
+        CompetitionId = competition.Id;
+        InternalOrgId = competition.Organisation.InternalIdentifier;
+
+        SolutionId = competitionSolution.SolutionId;
         SolutionName = competitionSolution.Solution.CatalogueItem.Name;
         SupplierName = competitionSolution.Solution.CatalogueItem.Supplier.LegalName;
         IncludesNonPriceElements = competition.IncludesNonPrice.GetValueOrDefault();
@@ -20,6 +25,12 @@ public class CompetitionSolutionResult
         NonPriceElementWeights = GetNonPriceElementWeightings(competition, competitionSolution);
         PriceScoreWeighting = GetPriceScoreWeighting(competition, competitionSolution);
     }
+
+    public string InternalOrgId { get; set; }
+
+    public int CompetitionId { get; set; }
+
+    public CatalogueItemId SolutionId { get; set; }
 
     public string SolutionName { get; set; }
 

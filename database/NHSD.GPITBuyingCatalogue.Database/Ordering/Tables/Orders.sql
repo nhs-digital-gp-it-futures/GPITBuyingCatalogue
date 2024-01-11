@@ -29,6 +29,7 @@
     [SolutionId] NVARCHAR(14) NULL,
     SelectedFrameworkId NVARCHAR(36) NULL,
     [DeliveryDate] DATE NULL,
+    [CompetitionId] INT NULL,
     CONSTRAINT PK_Orders PRIMARY KEY (Id),
     CONSTRAINT FK_Orders_OrderingParty FOREIGN KEY (OrderingPartyId) REFERENCES organisations.Organisations (Id),
     CONSTRAINT FK_Orders_OrderingPartyContact FOREIGN KEY (OrderingPartyContactId) REFERENCES ordering.Contacts (Id),
@@ -39,6 +40,7 @@
     CONSTRAINT FK_Orders_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers(Id),
     CONSTRAINT FK_Orders_Solution FOREIGN KEY (SolutionId) REFERENCES catalogue.CatalogueItems(Id),
     CONSTRAINT FK_Orders_SelectedFramework FOREIGN KEY (SelectedFrameworkId) REFERENCES catalogue.Frameworks(Id),
+    CONSTRAINT FK_Orders_Competition FOREIGN KEY (CompetitionId) REFERENCES competitions.Competitions(Id),
     INDEX IX_Orders_IsDeleted (IsDeleted)
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = ordering.Orders_History));
 

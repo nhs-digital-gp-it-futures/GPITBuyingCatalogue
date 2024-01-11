@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
@@ -38,6 +39,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             { OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete your order." },
         };
 
+        private readonly Dictionary<OrderSummaryField, string> competitionOrderDescriptions = new()
+        {
+            { OrderSummaryField.OrderDescription, "Edit the description for this order if needed." },
+            { OrderSummaryField.Supplier, "Provide information about the supplier contact for your order." },
+            { OrderSummaryField.CommencementDate, "Review the maximum term of your contract and provide a commencement date and initial period." },
+            { OrderSummaryField.ServiceRecipients, "Review the organisations you’re ordering for." },
+            { OrderSummaryField.SolutionsAndServices, "Review the items you’re ordering and their prices and quantities." },
+        };
+
         public OrderModel(
             string internalOrgId,
             Order order,
@@ -57,10 +67,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             {
                 Title = $"Order {order.CallOffId}";
                 CallOffId = order.CallOffId;
+                IsCompetitionOrder = order.CompetitionId is not null;
                 IsAmendment = order.IsAmendment;
                 TitleAdvice = order.IsAmendment
                     ? "You can amend parts of this order as required and will need to review other parts that cannot be changed. Your amendments will be saved as you progress through each section."
-                    : "Complete the following steps to create an order summary.";
+                    : IsCompetitionOrder
+                        ? "The information you included in your competition has already been added. Your progress will be saved as you complete each section."
+                        : "Complete the following steps to create an order summary.";
                 Description = order.Description;
                 OrganisationName = order.OrderingParty.Name;
 
@@ -71,6 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         }
 
         public CallOffId CallOffId { get; set; }
+
+        public bool IsCompetitionOrder { get; set; }
 
         public bool IsAmendment { get; set; }
 
@@ -94,15 +109,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public bool ShowSelectFrameworkPage { get; set; }
 
-        public string StatusDescription(OrderSummaryField field, bool isAmendment)
-        {
-            var descriptions = isAmendment
-                ? amendmentDescriptions
-                : orderDescriptions;
+        private Dictionary<OrderSummaryField, string> CompetitionOrderDescriptions => competitionOrderDescriptions
+            .Union(orderDescriptions.Where(x => !competitionOrderDescriptions.ContainsKey(x.Key)))
+            .ToDictionary(x => x.Key, x => x.Value);
 
-            return descriptions.ContainsKey(field)
-                ? descriptions[field]
-                : string.Empty;
+        public string StatusDescription(OrderSummaryField field)
+        {
+            var descriptions = IsAmendment
+                ? amendmentDescriptions
+                : IsCompetitionOrder
+                    ? CompetitionOrderDescriptions
+                    : orderDescriptions;
+
+            return descriptions.TryGetValue(field, out var value) ? value : string.Empty;
         }
     }
 }

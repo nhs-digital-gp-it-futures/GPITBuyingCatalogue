@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
                 TaskProgress.NotStarted => TagColour.Grey,
                 TaskProgress.CannotStart => TagColour.Grey,
                 TaskProgress.Optional => TagColour.White,
-                TaskProgress.InProgress => TagColour.Yellow,
+                TaskProgress.InProgress => TagColour.Blue,
                 TaskProgress.Completed => TagColour.Green,
                 TaskProgress.Amended => TagColour.Orange,
                 _ => TagColour.Grey,
@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
             var selectedColourClass = orderStatus switch
             {
                 OrderStatus.Completed => TagColour.Green,
-                OrderStatus.InProgress => TagColour.Yellow,
+                OrderStatus.InProgress => TagColour.Blue,
                 OrderStatus.Deleted => TagColour.Red,
                 _ => TagColour.Grey,
             };
