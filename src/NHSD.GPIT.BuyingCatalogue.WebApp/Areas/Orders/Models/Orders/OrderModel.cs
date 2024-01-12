@@ -43,11 +43,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         internal static readonly KeyValuePair<OrderSummaryField, string>[] CompetitionOrderDescriptions =
         {
-            new(OrderSummaryField.OrderDescription, "Edit the description for this order if needed." ),
-            new(OrderSummaryField.Supplier, "Provide information about the supplier contact for your order." ),
-            new(OrderSummaryField.CommencementDate, "Review the maximum term of your contract and provide a commencement date and initial period." ),
-            new(OrderSummaryField.ServiceRecipients, "Review the organisations you’re ordering for." ),
-            new(OrderSummaryField.SolutionsAndServices, "Review the items you’re ordering and their prices and quantities." ),
+            new(OrderSummaryField.OrderDescription, "Edit the description for this order if needed."),
+            new(OrderSummaryField.Supplier, "Provide information about the supplier contact for your order."),
+            new(OrderSummaryField.CommencementDate, "Review the maximum term of your contract and provide a commencement date and initial period."),
+            new(OrderSummaryField.ServiceRecipients, "Review the organisations you’re ordering for."),
+            new(OrderSummaryField.SolutionsAndServices, "Review the items you’re ordering and their prices and quantities."),
         };
 
         public OrderModel(
