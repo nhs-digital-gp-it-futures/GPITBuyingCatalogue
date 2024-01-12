@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 public class SelectRecipientsModel : NavBaseModel
@@ -46,6 +48,8 @@ public class SelectRecipientsModel : NavBaseModel
     public OrganisationType OrganisationType { get; set; }
 
     public SublocationModel[] SubLocations { get; set; } = Array.Empty<SublocationModel>();
+
+    public ServiceRecipientModel[] SearchRecipients => SubLocations.SelectMany(x => x.ServiceRecipients).ToArray();
 
     public bool HasImportedRecipients { get; set; }
 
