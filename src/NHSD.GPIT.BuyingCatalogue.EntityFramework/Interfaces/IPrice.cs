@@ -19,6 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 
         public TimeUnit? BillingPeriod { get; }
 
+        public int CataloguePriceId { get; }
+
         public CataloguePriceType CataloguePriceType { get; set; }
 
         public string CurrencyCode { get; set; }

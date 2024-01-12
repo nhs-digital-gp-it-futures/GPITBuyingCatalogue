@@ -30,4 +30,5 @@
     PracticeReorganisationOdsCode NVARCHAR(10) NULL,
     SelectedFrameworkId NVARCHAR(36) NULL,
     DeliveryDate DATE NULL,
+    [CompetitionId] INT NULL,
 );

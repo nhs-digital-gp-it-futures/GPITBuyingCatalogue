@@ -43,6 +43,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
         }
 
+        public OrderItemPrice(IPrice price)
+        {
+            CataloguePriceId = price.CataloguePriceId;
+            ProvisioningType = price.ProvisioningType;
+            CataloguePriceType = price.CataloguePriceType;
+            CataloguePriceCalculationType = price.CataloguePriceCalculationType;
+            CataloguePriceQuantityCalculationType = price.CataloguePriceQuantityCalculationType;
+            BillingPeriod = price.BillingPeriod;
+            CurrencyCode = price.CurrencyCode;
+            Description = price.Description;
+            RangeDescription = price.RangeDescription;
+        }
+
         private OrderItemPrice(OrderItemPrice existingPrice)
             : this()
         {

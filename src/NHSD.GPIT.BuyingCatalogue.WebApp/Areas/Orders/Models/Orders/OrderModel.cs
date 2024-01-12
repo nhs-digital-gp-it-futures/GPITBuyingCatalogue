@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
@@ -40,6 +41,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             new(OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete your order."),
         };
 
+        internal static readonly KeyValuePair<OrderSummaryField, string>[] CompetitionOrderDescriptions =
+        {
+            new(OrderSummaryField.OrderDescription, "Edit the description for this order if needed." ),
+            new(OrderSummaryField.Supplier, "Provide information about the supplier contact for your order." ),
+            new(OrderSummaryField.CommencementDate, "Review the maximum term of your contract and provide a commencement date and initial period." ),
+            new(OrderSummaryField.ServiceRecipients, "Review the organisations you’re ordering for." ),
+            new(OrderSummaryField.SolutionsAndServices, "Review the items you’re ordering and their prices and quantities." ),
+        };
+
         public OrderModel(
             string internalOrgId,
             OrderType orderType,
@@ -50,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             Title = "New order";
             TitleAdvice = "You must provide an order description before a unique ID is created for this order.";
             OrganisationName = organisationName;
-            Descriptions = BuildDescriptions(orderType, false);
+            Descriptions = BuildDescriptions(orderType, false, false);
         }
 
         public OrderModel(
@@ -61,9 +71,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         {
             Title = $"Order {order.CallOffId}";
             CallOffId = order.CallOffId;
+            IsCompetitionOrder = order.CompetitionId is not null;
             IsAmendment = order.IsAmendment;
             TitleAdvice = order.IsAmendment
                 ? "You can amend parts of this order as required and will need to review other parts that cannot be changed. Your amendments will be saved as you progress through each section."
+                    : IsCompetitionOrder
+                        ? "The information you included in your competition has already been added. Your progress will be saved as you complete each section."
                 : "Complete the following steps to create an order summary.";
             Description = order.Description;
             OrganisationName = order.OrderingParty.Name;
@@ -71,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             LastUpdatedByUserName = order.LastUpdatedByUser.FullName;
             LastUpdated = order.LastUpdated;
             ShowSelectFrameworkPage = string.IsNullOrWhiteSpace(order.SelectedFrameworkId);
-            Descriptions = BuildDescriptions(order.OrderType, order.IsAmendment);
+            Descriptions = BuildDescriptions(order.OrderType, order.IsAmendment, IsCompetitionOrder);
         }
 
         private OrderModel(
@@ -85,6 +98,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public CallOffId CallOffId { get; set; }
 
         public bool IsAmendment { get; }
+
+        public bool IsCompetitionOrder { get; set; }
 
         public string Description { get; set; }
 
@@ -125,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             }
         }
 
-        private ReadOnlyDictionary<OrderSummaryField, string> BuildDescriptions(OrderType orderType, bool isAmendment)
+        private ReadOnlyDictionary<OrderSummaryField, string> BuildDescriptions(OrderType orderType, bool isAmendment, bool isCompetitionOrder)
         {
             var descriptions = DefaultDescriptions.ToDictionary();
 
@@ -137,6 +152,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             if (isAmendment)
             {
                 Apply(descriptions, AmendmentSpecificDescriptions);
+            }
+            else if (isCompetitionOrder)
+            {
+                Apply(descriptions, CompetitionOrderDescriptions);
             }
 
             return descriptions.AsReadOnly();

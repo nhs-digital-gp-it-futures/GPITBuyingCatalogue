@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
@@ -107,6 +108,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public virtual ContractFlags ContractFlags { get; set; }
 
         public virtual Contract Contract { get; set; }
+
+        public int? CompetitionId { get; set; }
+
+        public Competition Competition { get; set; }
 
         public IEnumerable<CatalogueItem> GetServices(CatalogueItemType catalogueItemType)
         {

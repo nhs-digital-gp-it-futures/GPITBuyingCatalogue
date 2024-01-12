@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
-public class CompetitionCatalogueItemPriceTier : IPriceTier
+public class CompetitionCatalogueItemPriceTier : IOrderablePriceTier
 {
     public CompetitionCatalogueItemPriceTier()
     {

@@ -1,5 +1,5 @@
 .nhsuk-expander-index .nhsuk-details__summary .nhsuk-details__summary-text {
-   white-space: pre-line;
+  white-space: pre-line;
 }
 
 .nhsuk-checkboxes__subhint {
@@ -18,4 +18,13 @@
 .section-content {
   margin-top: 32px;
   margin-bottom: 32px;
+}
+
+.order-this-now {
+  margin-top: 16px;
+  min-height: 50px;
+  padding-right: 32px;
+  padding-left: 32px;
+  background-color: #fafafa;
+  padding-top: 8px;
 }

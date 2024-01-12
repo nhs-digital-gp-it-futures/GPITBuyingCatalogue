@@ -13,7 +13,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.SolutionSelection.TaskList
 {
-    public class TaskListModelTests
+    public static class TaskListModelTests
     {
         [Theory]
         [CommonAutoData]

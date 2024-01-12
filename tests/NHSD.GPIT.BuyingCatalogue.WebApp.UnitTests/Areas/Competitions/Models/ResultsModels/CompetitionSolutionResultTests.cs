@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels;
@@ -15,6 +16,7 @@ public static class CompetitionSolutionResultTests
     [Theory]
     [CommonAutoData]
     public static void Construct_SetsPropertiesAsExpected(
+        Organisation organisation,
         Supplier supplier,
         Solution solution,
         Weightings weightings,
@@ -27,6 +29,7 @@ public static class CompetitionSolutionResultTests
 
         solutionPriceScore.ScoreType = ScoreType.Price;
 
+        competition.Organisation = organisation;
         competitionSolution.Solution = solution;
         competitionSolution.Scores = new List<SolutionScore> { solutionPriceScore };
 
@@ -42,6 +45,7 @@ public static class CompetitionSolutionResultTests
     [Theory]
     [CommonAutoData]
     public static void Construct_SetsPriceScoreWeighting(
+        Organisation organisation,
         Supplier supplier,
         Solution solution,
         Weightings weightings,
@@ -54,6 +58,7 @@ public static class CompetitionSolutionResultTests
 
         solutionPriceScore.ScoreType = ScoreType.Price;
 
+        competition.Organisation = organisation;
         competitionSolution.Solution = solution;
         competitionSolution.Scores = new List<SolutionScore> { solutionPriceScore };
 
@@ -71,6 +76,7 @@ public static class CompetitionSolutionResultTests
     [Theory]
     [CommonAutoData]
     public static void Construct_SetsNonPriceElementWeights(
+        Organisation organisation,
         Supplier supplier,
         Solution solution,
         Weightings weightings,
@@ -88,6 +94,7 @@ public static class CompetitionSolutionResultTests
 
         solution.CatalogueItem.Supplier = supplier;
 
+        competition.Organisation = organisation;
         competition.Weightings = weightings;
         competition.NonPriceElements = new()
         {
