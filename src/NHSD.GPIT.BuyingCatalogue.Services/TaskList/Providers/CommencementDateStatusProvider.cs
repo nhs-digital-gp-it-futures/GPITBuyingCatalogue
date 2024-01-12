@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
@@ -20,9 +21,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            return wrapper.Order.CommencementDate != null
+            var values = new[]
+            {
+                wrapper.Order.CommencementDate.HasValue,
+                wrapper.Order.InitialPeriod.HasValue,
+                wrapper.Order.MaximumTerm.HasValue,
+            };
+
+            return values.All(x => x)
                 ? TaskProgress.Completed
-                : TaskProgress.NotStarted;
+                : values.All(x => !x)
+                    ? TaskProgress.NotStarted
+                    : TaskProgress.InProgress;
         }
     }
 }

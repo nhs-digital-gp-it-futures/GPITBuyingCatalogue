@@ -8,6 +8,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     [Serializable]
     public sealed partial class OrderItem : IAudited
     {
+        public OrderItem()
+        {
+        }
+
+        public OrderItem(
+            CatalogueItemId catalogueItemId)
+        {
+            CatalogueItemId = catalogueItemId;
+        }
+
         public int OrderId { get; set; }
 
         public Order Order { get; set; }

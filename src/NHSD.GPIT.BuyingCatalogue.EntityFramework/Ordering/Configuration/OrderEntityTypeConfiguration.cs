@@ -73,6 +73,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasForeignKey(o => o.SelectedFrameworkId)
                 .HasConstraintName("FK_Orders_SelectedFramework");
 
+            builder.HasOne(x => x.Competition)
+                .WithMany(x => x.Orders)
+                .HasForeignKey(x => x.CompetitionId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
+
             builder.HasIndex(o => o.IsDeleted, "IX_Orders_IsDeleted");
 
             builder.HasIndex(
