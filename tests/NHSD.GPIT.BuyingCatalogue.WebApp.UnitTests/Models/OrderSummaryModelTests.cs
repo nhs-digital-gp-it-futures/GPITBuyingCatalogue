@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -66,6 +67,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
             var model = new OrderSummaryModel(new OrderWrapper(order), defaultPlan);
 
             model.HasBespokeMilestones.Should().BeFalse();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void BuildAmendOrderItemModel_PropertiesCorrectlySet(
+            ImplementationPlan implementationPlan,
+            Order order)
+        {
+            var orderItem = order.OrderItems.First();
+            var wrapper = new OrderWrapper(order);
+            var model = new OrderSummaryModel(wrapper, implementationPlan);
+
+            var result = model.BuildAmendOrderItemModel(orderItem);
+            result.CallOffId.Should().Be(order.CallOffId);
+            result.OrderType.Should().Be(order.OrderType);
+            result.IsAmendment.Should().Be(order.IsAmendment);
+            result.IsOrderItemAdded.Should().BeTrue();
+            result.OrderItemPrice.Should().Be(orderItem.OrderItemPrice);
+            result.CatalogueItem.Should().Be(orderItem.CatalogueItem);
+            result.RolledUpRecipientsForItem.Should().BeEquivalentTo(wrapper.RolledUp.OrderRecipients.ForCatalogueItem(orderItem.CatalogueItemId));
+            result.RolledUpTotalQuantity.Should().Be(orderItem.TotalQuantity(wrapper.RolledUp.OrderRecipients.ForCatalogueItem(orderItem.CatalogueItemId)));
+            result.PreviousTotalQuantity.Should().Be(0);
         }
     }
 }

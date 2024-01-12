@@ -91,7 +91,7 @@
         var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? "one-off";
 
         <br />
-        <nhs-table label-text="Pricing" catches-errors="false">
+        <nhs-table label-text="Pricing and quantities" catches-errors="false">
             @if (hasTieredPricing)
             {
                 <nhs-table-column>Pricing tier</nhs-table-column>

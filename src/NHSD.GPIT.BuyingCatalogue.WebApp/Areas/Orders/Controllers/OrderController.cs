@@ -304,7 +304,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend or terminate the contract if needed.",
                 OrderStatus.Completed => "There is an amendment currently in progress for this contract.",
                 _ => orderWrapper.CanComplete()
-                    ? "Review the items you’ve added to your order before completing it."
+                    ? !order.OrderType.AssociatedServicesOnly
+                        ? "Review the items you’ve added to your order before completing it."
+                        : "Review the items you’ve added to your order before completing it. Once the order is completed, you’ll be unable to make changes."
                     : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
             };
         }
@@ -318,7 +320,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 OrderStatus.Terminated => "Terminated contract details",
                 OrderStatus.Completed => "Order confirmed",
                 _ => orderWrapper.CanComplete()
-                    ? "Review order summary"
+                    ? "Review and complete order"
                     : "Order summary",
             };
         }

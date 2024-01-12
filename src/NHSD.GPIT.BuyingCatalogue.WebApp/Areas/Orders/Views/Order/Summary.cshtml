@@ -23,13 +23,16 @@
     var solutionsTitle = solutions.Count > 1 ? "Catalogue Solutions" : "Catalogue Solution";
     var pdfButton = Model.Order.OrderStatus == OrderStatus.Terminated ? "Download summary (PDF)" : "Download order form (PDF)";
     var totalDisplayed = false;
+    var caption = Model.Order.OrderType.MergerOrSplit && associatedServices.Count == 1
+        ? associatedServices.First().CatalogueItem.Name
+        : $"{Model.Order.CallOffId}";
 }
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.Order.CallOffId" />
+                        caption="@caption" />
 
         @if (frameworks.Any(x => x.IsExpired))
         {
@@ -239,11 +242,12 @@
                     <p>
                         N/A
                     </p>
+                    <br/>
                 }
             }
 
+            <h3>Data processing information</h3>
             <nhs-inset-text>
-                <h2 class="nhsuk-heading-s">Data processing information</h2>
                 <p id="bespoke-data-processing">
                     Data processing information will be captured in a separate template
                     that must be included with this Call-off Order Form.
@@ -254,7 +258,7 @@
             {
                 if (Model.Order.IsAmendment)
                 {
-                    <nhs-table id="review-solutions-amended-indicative-costs" label-text="Indicative costs not including VAT">
+                    <nhs-table id="review-solutions-amended-indicative-costs" label-text="Total indicative costs excluding VAT">
                         <nhs-table-column>Cost type</nhs-table-column>
                         <nhs-table-column numeric="true">Previous cost</nhs-table-column>
                         <nhs-table-column numeric="true">Difference</nhs-table-column>

@@ -7,19 +7,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
 {
     public class SelectSupplierModel : OrderingBaseModel
     {
-        private const string TitleText = "Supplier information";
-
-        private static readonly PageTitleModel StandardPageTitle = new()
+        internal static readonly PageTitleModel StandardPageTitle = new()
         {
             Title = TitleText,
             Advice = "Search for the supplier you want to order from. You'll only be able to find suppliers with solutions published on the Buying Catalogue.",
         };
 
-        private static readonly PageTitleModel SelectionPageTitle = new()
+        internal static readonly PageTitleModel SelectionPageTitle = new()
         {
             Title = TitleText,
             Advice = "You'll only be able to select suppliers that offer either mergers or splits as Additional Services with their solutions.",
         };
+
+        private const string TitleText = "Supplier information";
 
         public CallOffId CallOffId { get; set; }
 

@@ -6,13 +6,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
 {
     public class ConfirmSupplierModel : OrderingBaseModel
     {
-        private static readonly PageTitleModel StandardSupplierConfirmationPageTitle = new()
+        internal static readonly PageTitleModel StandardSupplierConfirmationPageTitle = new()
         {
             Title = "Supplier details",
             Advice = "Confirm this is the supplier you want to order from",
         };
 
-        private static readonly PageTitleModel SingleSupplierConfirmationPageTitle = new()
+        internal static readonly PageTitleModel SingleSupplierConfirmationPageTitle = new()
         {
             Title = "Supplier information",
             Advice = "There is only one supplier that provides an Associated Service supporting mergers and splits.",

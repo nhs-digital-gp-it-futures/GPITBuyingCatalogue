@@ -28,58 +28,71 @@ else
             <td>@Model.PracticeReorganisationName</td>
         </tr>
     </table>
-    <table>
-        <caption>@Model.OrderType.GetServiceRecipientsTitle()</caption>
-        <thead>
-            <tr>
-                <th>Organisation (ODS code)</th>
-                <th>Item ID</th>
-                <th>Planned delivery date</th>
 
-                @if (hasServiceRecipientQuantities)
-                {
-                    <th class="numeric">Quantity</th>
-                }
-            </tr>
-        </thead>
+    @if (Model.RolledUpRecipientsForItem.Count > 20)
+    {
 
-        @if (!(Model.RolledUpRecipientsForItem?.Any() ?? false))
-        {
-            <tr>
-                <td style="column-span: all">No Service Recipients have been entered for this @itemType.</td>
-            </tr>
-        }
-        else
-        {
-            @foreach (var recipient in Model.RolledUpRecipientsForItem)
-            {
-                var quantity = recipient.GetQuantityForItem(Model.CatalogueItem.Id);
-                var deliveryDate = recipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
-                var deliveryDateText = deliveryDate.HasValue
-                ? $"{deliveryDate.Value:d MMM yyyy}"
-                : "No date entered";
+        <h4>Number of @Model.OrderType.GetServiceRecipientsTitle(): @Model.RolledUpRecipientsForItem.Count</h4>
+        <p>You can find the list of Service Recipients and their planned delivery dates by logging into the Buying Catalogue and viewing the summary of this order.</p>
+        <br />
+    }
+    else
+    {
 
-                <tr class="alternating">
-                    <td>
-                        @($"{recipient.OdsOrganisation.Name} ({recipient.OdsCode})")
-                    </td>
-                    <td>
-                        @($"{Model.CallOffId}-{recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
-                    </td>
-                    <td>
-                        @deliveryDateText
-                    </td>
+        <table>
+            <caption>@Model.OrderType.GetServiceRecipientsTitle()</caption>
+            <thead>
+                <tr>
+                    <th>Organisation (ODS code)</th>
+                    <th>Item ID</th>
+                    <th>Planned delivery date</th>
 
                     @if (hasServiceRecipientQuantities)
                     {
-                        <td class="numeric">
-                            @(quantity.HasValue ? $"{quantity:N0}" : "-")
-                        </td>
+                        <th class="numeric">Quantity</th>
                     }
                 </tr>
+            </thead>
+
+            @if (!(Model.RolledUpRecipientsForItem?.Any() ?? false))
+            {
+                <tr>
+                    <td style="column-span: all">No Service Recipients have been entered for this @itemType.</td>
+                </tr>
             }
-        }
-    </table>
+            else
+            {
+                @foreach (var recipient in Model.RolledUpRecipientsForItem)
+                {
+                    var quantity = recipient.GetQuantityForItem(Model.CatalogueItem.Id);
+                    var deliveryDate = recipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
+                    var deliveryDateText = deliveryDate.HasValue
+                    ? $"{deliveryDate.Value:d MMMM yyyy}"
+                    : "No date entered";
+
+                    <tr class="alternating">
+                        <td>
+                            @($"{recipient.OdsOrganisation.Name} ({recipient.OdsCode})")
+                        </td>
+                        <td>
+                            @($"{Model.CallOffId}-{recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
+                        </td>
+                        <td>
+                            @deliveryDateText
+                        </td>
+
+                        @if (hasServiceRecipientQuantities)
+                        {
+                            <td class="numeric">
+                                @(quantity.HasValue ? $"{quantity:N0}" : "-")
+                            </td>
+                        }
+                    </tr>
+                }
+
+            }
+        </table>
+    }
 }
 
 @{

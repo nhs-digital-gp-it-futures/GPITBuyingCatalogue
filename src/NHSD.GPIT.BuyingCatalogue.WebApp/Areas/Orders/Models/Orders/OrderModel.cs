@@ -9,12 +9,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
     public sealed class OrderModel : OrderingBaseModel
     {
-        private static readonly KeyValuePair<OrderSummaryField, string>[] MergerSplitSpecificDescriptions =
+        internal static readonly KeyValuePair<OrderSummaryField, string>[] MergerSplitSpecificDescriptions =
         {
             new(OrderSummaryField.SolutionsAndServices, "Select the solution involved, confirm the price and review the quantity you’re ordering."),
         };
 
-        private static readonly KeyValuePair<OrderSummaryField, string>[] AmendmentSpecificDescriptions =
+        internal static readonly KeyValuePair<OrderSummaryField, string>[] AmendmentSpecificDescriptions =
         {
             new(OrderSummaryField.OrderDescription, "Update the description of this order if needed."),
             new(OrderSummaryField.OrderingParty, "Change the primary contact for this order if needed."),
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             new(OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete this amended order."),
         };
 
-        private static readonly KeyValuePair<OrderSummaryField, string>[] DefaultDescriptions =
+        internal static readonly KeyValuePair<OrderSummaryField, string>[] DefaultDescriptions =
         {
             new(OrderSummaryField.OrderDescription, "Provide a description of your order."),
             new(OrderSummaryField.OrderingParty, "Provide information about the primary contact for your order."),
