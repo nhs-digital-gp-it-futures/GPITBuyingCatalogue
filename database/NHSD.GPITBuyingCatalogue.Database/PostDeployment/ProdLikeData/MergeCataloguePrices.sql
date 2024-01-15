@@ -184,9 +184,9 @@ BEGIN
       --per training environment
                 (1090, N'10052-S-005', 2, 1, @trainingEnvironment, NULL, 1, NULL, 'GBP', GETUTCDATE(), 953.03, 3),
       --per unit merge
-                (1091, N'10052-S-009', 2, 1, @unitMerge, NULL, 1, NULL, 'GBP', GETUTCDATE(), 2089.16, 3),
+                (1091, N'10052-S-009', 2, 1, @unitMerge, NULL, 3, 2, 'GBP', GETUTCDATE(), 2089.16, 3),
       --per unit split
-                (1092, N'10052-S-010', 2, 1, @unitSplit, NULL, 1, NULL, 'GBP', GETUTCDATE(), 2089.16, 3),
+                (1092, N'10052-S-010', 2, 1, @unitSplit, NULL, 3, 2, 'GBP', GETUTCDATE(), 2089.16, 3),
       --per user
                 (1093, N'10046-S-008', 2, 1, @user, NULL, 1, NULL, 'GBP', GETUTCDATE(), 40, 3);
 

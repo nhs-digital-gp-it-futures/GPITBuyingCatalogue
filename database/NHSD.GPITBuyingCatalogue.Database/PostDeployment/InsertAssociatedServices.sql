@@ -114,8 +114,8 @@ BEGIN
 
     INSERT INTO @AssociatedServicesPrices (CatalogueItemId, ProvisioningTypeId, CataloguePriceTypeId, PricingUnitId, TimeUnitId, CataloguePriceCalculationTypeId, CataloguePriceQuantityCalculationTypeId, CurrencyCode, LastUpdated, Price, PublishedStatusId)
     VALUES
-    ('100000-S-001', @declarative, @flat, @course, NULL, 1, NULL, @gbp, @now, 99.99, 3),
-    ('100000-S-001', @onDemand, @flat, @halfDay, NULL, 1, NULL, @gbp, @now, 150.00, 3),
+    ('100000-S-001', @declarative, @flat, @course, NULL, 3, @perServiceRecipient, @gbp, @now, 99.99, 3),
+    ('100000-S-001', @declarative, @flat, @halfDay, NULL, 3, @perServiceRecipient, @gbp, @now, 150.00, 3),
     ('100000-S-002', @onDemand, @tiered, @hour, NULL, 1, NULL, @gbp, @now, 595, 3),
     ('100000-S-003', @onDemand, @flat, @hour, NULL, 1, NULL, @gbp, @now, 4.35, 3),
     ('100000-S-004', @onDemand, @flat, @hour, NULL, 3, @perServiceRecipient, @gbp, @now, 1.25, 3),
