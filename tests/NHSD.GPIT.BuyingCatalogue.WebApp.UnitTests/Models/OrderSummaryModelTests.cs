@@ -90,5 +90,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
             result.RolledUpTotalQuantity.Should().Be(orderItem.TotalQuantity(wrapper.RolledUp.OrderRecipients.ForCatalogueItem(orderItem.CatalogueItemId)));
             result.PreviousTotalQuantity.Should().Be(0);
         }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        public static void BuildAmendOrderItemModel_PracticeReorganisationName(
+            OrderTypeEnum orderType,
+            ImplementationPlan implementationPlan,
+            Order order)
+        {
+            order.OrderType = orderType;
+
+            var orderItem = order.OrderItems.First();
+            var wrapper = new OrderWrapper(order);
+            var model = new OrderSummaryModel(wrapper, implementationPlan);
+
+            var result = model.BuildAmendOrderItemModel(orderItem);
+            result.PracticeReorganisationName.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        public static void BuildAmendOrderItemModel_MergerSplit_PracticeReorganisationName(
+            OrderTypeEnum orderType,
+            ImplementationPlan implementationPlan,
+            Order order)
+        {
+            order.OrderType = orderType;
+            var orderItem = order.OrderItems.First();
+            var wrapper = new OrderWrapper(order);
+            var model = new OrderSummaryModel(wrapper, implementationPlan);
+
+            var result = model.BuildAmendOrderItemModel(orderItem);
+            var expectedName = $"{order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Name} ({order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode})";
+            result.PracticeReorganisationName.Should().Be(expectedName);
+        }
     }
 }

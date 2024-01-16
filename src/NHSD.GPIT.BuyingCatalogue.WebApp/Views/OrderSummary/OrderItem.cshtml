@@ -31,14 +31,12 @@ else
 
     @if (Model.RolledUpRecipientsForItem.Count > 20)
     {
-
         <h4>Number of @Model.OrderType.GetServiceRecipientsTitle(): @Model.RolledUpRecipientsForItem.Count</h4>
         <p>You can find the list of Service Recipients and their planned delivery dates by logging into the Buying Catalogue and viewing the summary of this order.</p>
         <br />
     }
     else
     {
-
         <table>
             <caption>@Model.OrderType.GetServiceRecipientsTitle()</caption>
             <thead>

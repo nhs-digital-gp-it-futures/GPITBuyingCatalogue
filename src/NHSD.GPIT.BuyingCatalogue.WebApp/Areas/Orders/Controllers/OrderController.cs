@@ -87,20 +87,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             }
             else
             {
-                if (User.GetSecondaryOrganisationInternalIdentifiers().Any())
-                {
-                    backLink = Url.Action(
-                    nameof(OrderTriageController.SelectOrganisation),
+                var actionName = User.GetSecondaryOrganisationInternalIdentifiers().Any()
+                    ? nameof(OrderTriageController.SelectOrganisation)
+                    : nameof(OrderTriageController.DetermineAssociatedServiceType);
+
+                backLink = Url.Action(
+                    actionName,
                     typeof(OrderTriageController).ControllerName(),
                     new { internalOrgId, orderType = orderType.Value });
-                }
-                else
-                {
-                    backLink = Url.Action(
-                    nameof(OrderTriageController.DetermineAssociatedServiceType),
-                    typeof(OrderTriageController).ControllerName(),
-                    new { internalOrgId, orderType = orderType.Value });
-                }
             }
 
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);

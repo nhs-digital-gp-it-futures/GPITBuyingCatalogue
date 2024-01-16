@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.CodeAnalysis.Options;
 using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -258,7 +259,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             var result = await controller.ReadyToStart(organisation.InternalIdentifier, orderType);
 
-            result.As<ViewResult>().Should().NotBeNull();
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+            var model = actual.Model.Should().BeAssignableTo<ReadyToStartModel>().Subject;
+
+            model.OrderType.Value.Should().Be(orderType);
         }
 
         [Theory]

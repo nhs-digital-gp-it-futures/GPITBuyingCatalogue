@@ -189,14 +189,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
         public static async Task Get_SelectSupplier_WithSupplier_RedirectsCorrectly(
+            OrderTypeEnum orderType,
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             SupplierController controller)
         {
+            order.OrderType = orderType;
+
             orderServiceMock
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
@@ -251,6 +256,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             {
                 model.Suppliers.Should().Contain(x => x.Text == supplier.Name && x.Value == $"{supplier.Id}");
             }
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        public static async Task Get_SelectSupplier_Split_Or_Merger_NoSupplier_SingleSearchResult_ReturnsExpectedResult(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            Supplier supplier,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<ISupplierService> supplierService,
+            SupplierController controller)
+        {
+            order.Supplier = null;
+            order.OrderType = orderType;
+
+            orderService
+                .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            supplierService
+                .Setup(x => x.GetAllSuppliersWithAssociatedServices(order.OrderType.ToPracticeReorganisationType))
+                .ReturnsAsync(new List<Supplier>() { supplier });
+
+            var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
+
+            orderService.VerifyAll();
+            supplierService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(SupplierController.ConfirmSupplier));
+            actualResult.ControllerName.Should().Be(typeof(SupplierController).ControllerName());
         }
 
         [Theory]
