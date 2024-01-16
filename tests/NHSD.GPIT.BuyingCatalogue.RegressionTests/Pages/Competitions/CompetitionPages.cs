@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+﻿using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
@@ -217,6 +215,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             ViewCompetitionResults.ViewResults();
         }
 
+        public void ViewMultipleResults()
+        {
+            int competitionid = CompetitionId();
+            CompetitionTaskList.ViewResult();
+            MultipleResults(competitionid);
+        }
+
         private int CompetitionId()
         {
             const string lookupString = "competitions/";
@@ -287,6 +292,30 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             var prices = dbContext.CatalogueItems
                 .SelectMany(x => x.CataloguePrices).Where(y => y.CatalogueItemId == competitionservice);
             return prices.Count() > 1;
+        }
+
+        private void MultipleResults(int competitionId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var solutions = dbContext.Competitions
+                .SelectMany(x => x.CompetitionSolutions)
+                .Where(y => y.CompetitionId == competitionId && !y.IsWinningSolution && y.IsShortlisted)
+                .ToList();
+
+            if (solutions.Any())
+            {
+                var nextWinningSolution = solutions.First();
+                nextWinningSolution.IsWinningSolution = true;
+
+                dbContext.SaveChanges();
+
+                ViewCompetitionResults.ViewMultipleWinningResults();
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(competitionId));
+            }
         }
     }
 }
