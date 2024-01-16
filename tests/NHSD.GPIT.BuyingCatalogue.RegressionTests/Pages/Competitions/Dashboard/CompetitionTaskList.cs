@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard
         public void CompetitionServiceRecipientsTask()
         {
             CommonActions.ClickLinkElement(CompetitionsDashboardObjects.ServiceRecipientsLink);
+            SelectServiceRecipientsManually();
             CommonActions.LedeText().Should().Be("Select the organisations that will receive the winning solution for this competition or upload them using a CSV file.".FormatForComparison());
 
             CommonActions.ClickExpander();
@@ -85,6 +86,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard
         {
             CommonActions.ClickLinkElement(CompetitionsDashboardObjects.CompareAndScoreNonPriceElementLink);
             CommonActions.LedeText().Should().Be("Compare and score shortlisted solutions based on the non-price elements you’ve added.".FormatForComparison());
+        }
+
+        public void SelectServiceRecipientsManually()
+        {
+            CommonActions.LedeText().Should().Be("Select how you want to add Service Recipients.".FormatForComparison());
+            CommonActions.ClickRadioButtonWithText("Select Service Recipients manually");
+            CommonActions.ClickSave();
         }
     }
 }

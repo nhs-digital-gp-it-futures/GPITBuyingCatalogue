@@ -3,6 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contracts;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
@@ -17,7 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
         public TaskList(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
+            CompetitionTaskList = new CompetitionTaskList(driver, commonActions);
         }
+
+        public CompetitionTaskList CompetitionTaskList { get; }
 
         public void OrderDescriptionTask()
         {
@@ -66,7 +70,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                     .Should().BeTrue();
         }
 
-        public void SelectOrderRecipients()
+        public void SelectOrderRecipientsManually()
+        {
+            CommonActions.ClickLinkElement(OrderRecipientsObjects.ServiceRecipientsLink);
+            CompetitionTaskList.SelectServiceRecipientsManually();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(ServiceRecipientsController),
+               nameof(ServiceRecipientsController.SelectServiceRecipients))
+                   .Should().BeTrue();
+        }
+
+        public void SelectOrderRecipientsUploadCSV()
         {
             CommonActions.ClickLinkElement(OrderRecipientsObjects.ServiceRecipientsLink);
 
