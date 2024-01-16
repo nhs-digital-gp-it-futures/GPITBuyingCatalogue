@@ -8,10 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static TaskProgress Status(this PublicCloud publicCloud)
         {
-            if (publicCloud is null)
-                throw new ArgumentNullException(nameof(publicCloud));
-
-            return string.IsNullOrEmpty(publicCloud.Summary)
+            return publicCloud is null || string.IsNullOrEmpty(publicCloud.Summary)
                 ? TaskProgress.NotStarted
                 : TaskProgress.Completed;
         }

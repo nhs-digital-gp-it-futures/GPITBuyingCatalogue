@@ -14,9 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public OnPremise OnPremise { get; set; } = new();
 
         public bool IsValid()
-            => PublicCloud.IsValid()
-               || PrivateCloud.IsValid()
-               || HybridHostingType.IsValid()
-               || OnPremise.IsValid();
+            => (PublicCloud?.IsValid() ?? false)
+               || (PrivateCloud?.IsValid() ?? false)
+               || (HybridHostingType?.IsValid() ?? false)
+               || (OnPremise?.IsValid() ?? false);
     }
 }
