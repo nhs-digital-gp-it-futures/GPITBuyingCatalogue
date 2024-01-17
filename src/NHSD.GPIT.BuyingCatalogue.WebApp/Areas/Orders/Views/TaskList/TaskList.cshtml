@@ -44,14 +44,15 @@
                     <h3>@Model.SolutionName</h3>
                 }
 
-            @if (Model.CatalogueSolution != null)
-            {
-                <nhs-card>
-                    <partial name="TaskListOrderItem"
-                             model="@Model.OrderItemModel(Model.CatalogueSolution.CatalogueItemId)" />
-                </nhs-card>
-            }
-        </div>
+                @if (Model.CatalogueSolution != null)
+                {
+                    <nhs-card>
+                        <partial name="TaskListOrderItem"
+                                 model="@Model.OrderItemModel(Model.CatalogueSolution.CatalogueItemId)" />
+                    </nhs-card>
+                }
+            </div>
+        }
 
         @if (!Model.OrderType.AssociatedServicesOnly)
         {

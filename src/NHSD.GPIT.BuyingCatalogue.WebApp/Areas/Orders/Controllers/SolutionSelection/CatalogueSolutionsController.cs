@@ -137,8 +137,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
 
-            var solutionId = order.Solution.Id;
-            var solution = await solutionsService.GetSolutionThin(solutionId);
+            var solutionId = order.GetSolutionId();
+            var solution = await solutionsService.GetSolutionThin(solutionId.GetValueOrDefault());
 
             var model = new EditSolutionServices()
             {

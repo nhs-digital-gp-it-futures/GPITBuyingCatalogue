@@ -22,10 +22,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             IEnumerable<CatalogueItem> additionalServices)
         {
             Order = order;
-            AssociatedServicesOnly = order.AssociatedServicesOnly;
+            AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly;
             CallOffId = order.CallOffId;
             SupplierName = order.Supplier?.Name;
-            SolutionId = order.SolutionId;
+            SolutionId = order.GetSolutionId();
             CatalogueSolutions = solutions
                 .Select(x => new SelectOption<string>(x.Name, $"{x.Id}"))
                 .ToList();
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public List<ServiceModel> AdditionalServices { get; set; }
 
         public TaskProgress PriceProgress() =>
-            Order.Solution.CataloguePrices is null
+            Order.GetSolutionOrderItem().OrderItemPrice is null
             ? TaskProgress.NotStarted : TaskProgress.Completed;
 
         public IEnumerable<CatalogueItemId> GetAdditionalServicesIdsForSelectedCatalogueSolution()
