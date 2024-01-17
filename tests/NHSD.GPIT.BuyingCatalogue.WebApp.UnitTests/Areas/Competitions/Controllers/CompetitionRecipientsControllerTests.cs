@@ -127,7 +127,9 @@ public static class CompetitionRecipientsControllerTests
             string.Join(',', serviceRecipients.Select(x => x.OrgId)))).As<ViewResult>();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt
+            .Excluding(m => m.BackLink)
+            .Excluding(m => m.AddRemoveRecipientsLink));
     }
 
     [Theory]

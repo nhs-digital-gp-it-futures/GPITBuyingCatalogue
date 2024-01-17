@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -58,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var orderProgress = await orderProgressService.GetOrderProgress(internalOrgId, callOffId);
 
-            var orderModel = new OrderModel(internalOrgId, order, orderProgress)
+            var orderModel = new OrderModel(internalOrgId, orderProgress, order)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.OrderDescription),
@@ -75,32 +74,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public async Task<IActionResult> ReadyToStart(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> ReadyToStart(string internalOrgId, OrderType orderType, OrderTriageValue? option = null)
         {
             string backLink;
 
-            if (orderType != CatalogueItemType.AssociatedService)
+            if (orderType.ToCatalogueItemType != CatalogueItemType.AssociatedService)
             {
                 backLink = Url.Action(
                     nameof(OrderTriageController.TriageSelection),
                     typeof(OrderTriageController).ControllerName(),
-                    new { internalOrgId, option, selected = true, orderType });
+                    new { internalOrgId, option, selected = true, orderType = orderType.Value });
             }
             else
             {
                 var actionName = User.GetSecondaryOrganisationInternalIdentifiers().Any()
                     ? nameof(OrderTriageController.SelectOrganisation)
-                    : nameof(OrderTriageController.OrderItemType);
+                    : nameof(OrderTriageController.DetermineAssociatedServiceType);
 
                 backLink = Url.Action(
                     actionName,
                     typeof(OrderTriageController).ControllerName(),
-                    new { internalOrgId, orderType });
+                    new { internalOrgId, orderType = orderType.Value });
             }
 
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var model = new ReadyToStartModel(organisation)
+            var model = new ReadyToStartModel(organisation, orderType)
             {
                 Option = option,
                 BackLink = backLink,
@@ -110,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpPost("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
+        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, OrderTypeEnum orderType, OrderTriageValue? option = null)
         {
             return RedirectToAction(
                 nameof(NewOrder),
@@ -118,11 +117,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/new-order")]
-        public async Task<IActionResult> NewOrder(string internalOrgId, OrderTriageValue? option = null, CatalogueItemType? orderType = null)
+        public async Task<IActionResult> NewOrder(string internalOrgId, OrderTypeEnum orderType, OrderTriageValue? option = null)
         {
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var orderModel = new OrderModel(internalOrgId, null, new OrderProgress(), organisation.Name)
+            var orderModel = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name)
             {
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.NewOrderDescription),
@@ -295,11 +294,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             {
                 OrderStatus.Terminated => "This contract has been terminated, but you can still view the details.",
                 OrderStatus.Completed when order.ContractExpired => $"This order expired on {order.EndDate.DisplayValue}, but you can still view the details.",
-                OrderStatus.Completed when order.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
+                OrderStatus.Completed when order.OrderType.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
                 OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend or terminate the contract if needed.",
                 OrderStatus.Completed => "There is an amendment currently in progress for this contract.",
                 _ => orderWrapper.CanComplete()
-                    ? "Review the items you’ve added to your order before completing it."
+                    ? !order.OrderType.AssociatedServicesOnly
+                        ? "Review the items you’ve added to your order before completing it."
+                        : "Review the items you’ve added to your order before completing it. Once the order is completed, you’ll be unable to make changes."
                     : "This is what's been added to your order so far. You must complete all mandatory steps before you can confirm your order.",
             };
         }
@@ -313,7 +314,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 OrderStatus.Terminated => "Terminated contract details",
                 OrderStatus.Completed => "Order confirmed",
                 _ => orderWrapper.CanComplete()
-                    ? "Review order summary"
+                    ? "Review and complete order"
                     : "Order summary",
             };
         }

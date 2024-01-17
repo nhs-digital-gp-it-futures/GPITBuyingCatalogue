@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
@@ -19,17 +20,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     [Route("order/organisation/{internalOrgId}/order/{callOffId}/task-list")]
     public class TaskListController : Controller
     {
+        private readonly ISolutionsService solutionsService;
         private readonly IAdditionalServicesService additionalServicesService;
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IOrderService orderService;
         private readonly IRoutingService routingService;
 
         public TaskListController(
+            ISolutionsService solutionsService,
             IAdditionalServicesService additionalServicesService,
             IAssociatedServicesService associatedServicesService,
             IOrderService orderService,
             IRoutingService routingService)
         {
+            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
@@ -48,6 +52,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var order = wrapper.IsAmendment ? wrapper.RolledUp : wrapper.Order;
 
+            var solutions = order.OrderType.AssociatedServicesOnly
+                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType)
+                : await solutionsService.GetSupplierSolutions(order.SupplierId);
+
             var backRoute = routingService.GetRoute(
                 RoutingPoint.TaskListBackLink,
                 wrapper,
@@ -60,16 +68,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var solutionId = order.GetSolutionId();
 
-            var additionalServices = order.AssociatedServicesOnly
+            var additionalServices = order.OrderType.AssociatedServicesOnly
                 ? new List<CatalogueItem>()
                 : await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId, publishedOnly: true);
 
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId);
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId, PracticeReorganisationTypeEnum.None);
 
             return View(new TaskListModel(internalOrgId, callOffId, wrapper)
             {
                 BackLink = Url.Action(backRoute.ActionName, backRoute.ControllerName, backRoute.RouteValues),
                 OnwardLink = Url.Action(onwardRoute.ActionName, onwardRoute.ControllerName, onwardRoute.RouteValues),
+                AlternativeSolutionsAvailable = solutions.Count > 1,
                 AdditionalServicesAvailable = additionalServices.Any(),
                 AssociatedServicesAvailable = associatedServices.Any(),
             });

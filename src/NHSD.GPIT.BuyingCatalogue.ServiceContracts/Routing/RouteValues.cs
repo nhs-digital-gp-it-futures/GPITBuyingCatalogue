@@ -27,14 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 
         public CatalogueItemId? CatalogueItemId { get; set; }
 
-        public JourneyType? Journey { get; set; }
-
         public RoutingSource? Source { get; set; }
 
         public int? SelectedPriceId { get; set; }
-
-        public string RecipientIds { get; set; }
-
-        public bool FromPreviousRevision { get; set; }
     }
 }

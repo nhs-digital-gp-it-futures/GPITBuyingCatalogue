@@ -146,13 +146,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var previousRecipients = wrapper.Previous?.OrderRecipients?.Select(
                 x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
 
+            var practiceReorganisation = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient;
+
             var model = new SelectServiceRecipientQuantityModel(
+                order.OrderType,
+                practiceReorganisation,
                 orderItem.CatalogueItem,
                 orderItem.OrderItemPrice,
                 recipients,
                 previousRecipients)
             {
-                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues), Source = source,
+                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
+                Source = source,
             };
 
             if (orderItem.OrderItemPrice.ProvisioningType != ProvisioningType.Patient)
@@ -160,12 +165,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View(ServiceRecipientViewName, model);
             }
 
-            var solution = order.GetSolution();
+            var solution = order.GetSolutionOrderItem();
 
             if (solution?.OrderItemPrice?.ProvisioningType is ProvisioningType.Patient
                 && solution.CatalogueItemId != catalogueItemId)
             {
-                await SetPracticeSizes(model, solution,  wrapper.DetermineOrderRecipients(solution.CatalogueItemId));
+                await SetPracticeSizes(model, solution, wrapper.DetermineOrderRecipients(solution.CatalogueItemId));
             }
             else
             {

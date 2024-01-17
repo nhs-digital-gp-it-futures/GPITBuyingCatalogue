@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm);
 
-        public Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, bool isAssociatedServiceOnly);
+        public Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, OrderTypeEnum orderType);
 
         public Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId);
 
@@ -50,6 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         public Task<List<Order>> GetUserOrders(int userId);
 
         public Task SetSolutionId(string internalOrgId, CallOffId callOffId, CatalogueItemId solutionId);
+
+        public Task SetOrderPracticeReorganisationRecipient(string internalOrgId, CallOffId callOffId, string odsCode);
 
         public Task SetFundingSourceForForceFundedItems(string internalOrgId, CallOffId callOffId);
 

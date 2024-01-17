@@ -1,0 +1,30 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage.DetermineAssociatedServiceTypeModel
+@{
+    ViewBag.Title = "What type of Associated Service do you want to order?";
+}
+
+<div>
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary RadioId="@nameof(Model.OrderType)" />
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.OrganisationName"
+                            advice="Select if you want to order a practice merger or split or something else." />
+
+            <form method="post">
+                <input type="hidden" asp-for="OrganisationName" />
+                <input type="hidden" asp-for="BackLink" />
+                <nhs-fieldset-form-label asp-for="OrderType">
+                    <nhs-radio-buttons asp-for="OrderType"
+                                       values="Model.AvailableOrderTypes"
+                                       display-name="Text"
+                                       value-name="Value"
+                                       hint-name="Advice" />
+                </nhs-fieldset-form-label>
+
+                <nhs-submit-button />
+            </form>
+        </div>
+    </div>
+</div>

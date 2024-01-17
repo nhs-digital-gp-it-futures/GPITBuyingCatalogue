@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            if (order.AssociatedServicesOnly)
+            if (order.OrderType.AssociatedServicesOnly)
             {
                 return RedirectToAction(
                     nameof(SelectSolutionAssociatedServicesOnly),
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     new { internalOrgId, callOffId });
             }
 
-            var model = await GetSelectModel(internalOrgId, callOffId);
+            var model = await GetSelectModel(internalOrgId, callOffId, includeAdditionalServices: true);
 
             return View(model);
         }
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid)
             {
-                model = await GetSelectModel(internalOrgId, callOffId, model.SelectedCatalogueSolutionId);
+                model = await GetSelectModel(internalOrgId, callOffId, model.SelectedCatalogueSolutionId, includeAdditionalServices: true);
 
                 return View(model);
             }
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            if (order.SolutionId is not null
+            if (order.AssociatedServicesOnlyDetails.SolutionId is not null
                 && source != RoutingSource.SelectAssociatedServices)
             {
                 return RedirectToAction(
@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            if (order.AssociatedServicesOnly)
+            if (order.OrderType.AssociatedServicesOnly)
             {
                 return RedirectToAction(
                     nameof(EditSolutionAssociatedServicesOnly),
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             }
 
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
-            var solution = order.GetSolution();
+            var solution = order.GetSolutionOrderItem();
             var catalogueItemId = CatalogueItemId.ParseExact(model.SelectedCatalogueSolutionId);
 
             if (solution.CatalogueItemId == catalogueItemId)
@@ -198,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
-            if (order.Solution is null)
+            if (order.AssociatedServicesOnlyDetails.Solution is null)
             {
                 return RedirectToAction(
                     nameof(SelectSolutionAssociatedServicesOnly),
@@ -233,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var catalogueItemId = CatalogueItemId.ParseExact(model.SelectedCatalogueSolutionId);
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
 
-            if (order.Solution.Id == catalogueItemId)
+            if (order.AssociatedServicesOnlyDetails.Solution.Id == catalogueItemId)
             {
                 return RedirectToAction(
                     nameof(TaskListController.TaskList),
@@ -251,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> ConfirmSolutionChanges(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
-            var solution = order.GetSolution();
+            var solution = order.GetSolutionOrderItem();
             var newSolution = await solutionsService.GetSolutionThin(catalogueItemId);
 
             var toAdd = new[]
@@ -357,8 +357,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             {
                 new()
                 {
-                    CatalogueItemId = order.Solution.Id,
-                    Description = order.Solution.Name,
+                    CatalogueItemId = order.AssociatedServicesOnlyDetails.Solution.Id,
+                    Description = order.AssociatedServicesOnlyDetails.Solution.Name,
                 },
             };
 
@@ -420,8 +420,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var solutionId = order.GetSolutionId();
 
-            var solutions = order.AssociatedServicesOnly
-                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId)
+            var solutions = order.OrderType.AssociatedServicesOnly
+                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType)
                 : await solutionsService.GetSupplierSolutions(order.SupplierId);
 
             var additionalServices = includeAdditionalServices

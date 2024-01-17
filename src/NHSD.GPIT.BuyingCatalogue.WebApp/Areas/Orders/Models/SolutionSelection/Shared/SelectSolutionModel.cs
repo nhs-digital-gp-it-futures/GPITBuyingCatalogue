@@ -20,10 +20,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             IEnumerable<CatalogueItem> solutions,
             IEnumerable<CatalogueItem> additionalServices)
         {
-            AssociatedServicesOnly = order.AssociatedServicesOnly;
+            OrderType = order.OrderType;
             CallOffId = order.CallOffId;
             SupplierName = order.Supplier?.Name;
-            SolutionId = order.SolutionId;
+            SolutionId = order.AssociatedServicesOnlyDetails.SolutionId;
             CatalogueSolutions = solutions
                 .Select(x => new SelectOption<string>(x.Name, $"{x.Id}"))
                 .ToList();
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 .ToList();
         }
 
-        public bool AssociatedServicesOnly { get; set; }
+        public OrderType OrderType { get; set; }
 
         public CallOffId CallOffId { get; set; }
 

@@ -39,8 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
             EntityFramework.Ordering.Models.Order order,
             OrganisationModel model)
         {
-            order.Revision = 1;
-            order.AssociatedServicesOnly = false;
             order.Completed = DateTime.UtcNow;
             order.IsDeleted = false;
             order.IsTerminated = true;
@@ -56,8 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
             EntityFramework.Ordering.Models.Order order,
             OrganisationModel model)
         {
-            order.Revision = 1;
-            order.AssociatedServicesOnly = false;
             order.Completed = DateTime.UtcNow;
             order.IsDeleted = false;
 
@@ -72,8 +68,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
             EntityFramework.Ordering.Models.Order order,
             OrganisationModel model)
         {
-            order.Revision = 1;
-            order.AssociatedServicesOnly = false;
             order.Completed = null;
             order.IsDeleted = false;
 
@@ -88,8 +82,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
             EntityFramework.Ordering.Models.Order order,
             OrganisationModel model)
         {
-            order.Revision = 1;
-            order.AssociatedServicesOnly = false;
             order.Completed = DateTime.UtcNow;
             order.IsDeleted = false;
 
@@ -104,8 +96,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
             EntityFramework.Ordering.Models.Order order,
             OrganisationModel model)
         {
-            order.Revision = 1;
-            order.AssociatedServicesOnly = false;
             order.Completed = null;
             order.IsDeleted = false;
 
@@ -120,7 +110,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
             EntityFramework.Ordering.Models.Order order,
             OrganisationModel model)
         {
-            order.AssociatedServicesOnly = true;
             order.Completed = DateTime.UtcNow;
             order.IsDeleted = false;
 
@@ -135,7 +124,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
             EntityFramework.Ordering.Models.Order order,
             OrganisationModel model)
         {
-            order.AssociatedServicesOnly = true;
             order.Completed = null;
             order.IsDeleted = false;
 

@@ -9,7 +9,6 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -17,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -160,6 +160,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
+        public static async Task CreateOrder_OrderType_Unknown_Throws(
+            [Frozen] BuyingCatalogueDbContext context,
+            string description,
+            OrderTriageValue orderTriageValue,
+            Organisation organisation,
+            OrderService service)
+        {
+            await context.Organisations.AddAsync(organisation);
+            await context.SaveChangesAsync();
+
+            await FluentActions.Invoking(async () => await service.CreateOrder(description, organisation.InternalIdentifier, orderTriageValue, OrderTypeEnum.Unknown))
+                .Should()
+                .ThrowAsync<InvalidOperationException>();
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
         public static async Task CreateOrder_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
@@ -170,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Organisations.AddAsync(organisation);
             await context.SaveChangesAsync();
 
-            await service.CreateOrder(description, organisation.InternalIdentifier, orderTriageValue, false);
+            await service.CreateOrder(description, organisation.InternalIdentifier, orderTriageValue, OrderTypeEnum.Solution);
 
             var order = await context.Orders.Include(o => o.OrderingParty).FirstAsync();
 
@@ -194,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             result.OrderNumber.Should().Be(order.OrderNumber);
             result.Revision.Should().Be(order.CallOffId.Revision + 1);
-            result.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
+            result.OrderType.Should().Be(order.OrderType);
             result.CommencementDate.Should().Be(order.CommencementDate);
             result.Description.Should().Be(order.Description);
             result.InitialPeriod.Should().Be(order.InitialPeriod);
@@ -385,7 +402,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
 
-            mockCsvService.Verify(x => x.CreateFullOrderCsvAsync(order.Id, It.IsAny<MemoryStream>(), true), Times.Once);
+            mockCsvService.Verify(x => x.CreateFullOrderCsvAsync(order.Id, order.OrderType, It.IsAny<MemoryStream>(), true), Times.Once);
             mockCsvService.Verify(x => x.CreatePatientNumberCsvAsync(order.Id, It.IsAny<MemoryStream>()), Times.Never);
             mockEmailService.Verify(x => x.SendEmailAsync(settings.Recipient.Address, settings.OrderTerminatedAdminTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
             adminTokens.Should().NotBeNull();
@@ -495,9 +512,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.ChangeTracker.Clear();
 
-            mockCsvService.Setup(x => x.CreatePatientNumberCsvAsync(order.Id, It.IsAny<MemoryStream>()))
-                .ReturnsAsync(0);
-
             mockEmailService
                 .Setup(x => x.SendEmailAsync(settings.Recipient.Address, settings.SingleCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
                 .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => adminTokens = x)
@@ -526,52 +540,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task CompleteOrder_ContainsRecipients_SendsDualCsvEmails(
-            AspNetUser user,
-            Order order,
-            [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
-            [Frozen] Mock<ICsvService> mockCsvService,
-            [Frozen] Mock<IOrderPdfService> mockPdfService,
-            OrderMessageSettings settings)
-        {
-            Dictionary<string, dynamic> adminTokens = null;
-
-            await context.Orders.AddAsync(order);
-            await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
-
-            context.ChangeTracker.Clear();
-
-            mockCsvService.Setup(x => x.CreatePatientNumberCsvAsync(order.Id, It.IsAny<MemoryStream>()))
-                .ReturnsAsync(1);
-
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(settings.Recipient.Address, settings.DualCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => adminTokens = x)
-                .Returns(Task.CompletedTask);
-
-            var expectedToken = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
-
-            var service = new OrderService(
-                context,
-                mockCsvService.Object,
-                mockEmailService.Object,
-                mockPdfService.Object,
-                settings);
-
-            await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
-
-            mockCsvService.VerifyAll();
-            mockEmailService.Verify(x => x.SendEmailAsync(settings.Recipient.Address, settings.DualCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
-            adminTokens.Should().NotBeNull();
-            adminTokens.Should().HaveCount(3);
-            var patientOrderCsv = adminTokens.Should().ContainKey(OrderService.PatientOrderCsvToken).WhoseValue as JObject;
-            patientOrderCsv.Should().BeEquivalentTo(expectedToken);
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
         public static async Task CompleteOrder_RequestIsValid_SendsUserEmails(
             AspNetUser user,
             Order order,
@@ -587,7 +555,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var pdfData = new MemoryStream(pdfContents);
 
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             await context.Orders.AddAsync(order);
 
             user.Email = email;
@@ -641,7 +609,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] Mock<IOrderPdfService> mockPdfService,
             OrderMessageSettings orderMessageSettings)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             await context.Orders.AddAsync(order);
 
             user.Email = email;
@@ -674,7 +642,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] Mock<IOrderPdfService> mockPdfService,
             OrderMessageSettings orderMessageSettings)
         {
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             await context.Orders.AddAsync(order);
 
             user.Email = email;
@@ -1025,18 +993,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            order.SolutionId = null;
-            order.Solution = null;
+            order.AssociatedServicesOnlyDetails.SolutionId = null;
+            order.AssociatedServicesOnlyDetails.Solution = null;
 
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
-            (await context.Orders.FirstAsync(x => x.Id == order.Id)).SolutionId.Should().BeNull();
+            (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.SolutionId.Should().BeNull();
 
             await service.SetSolutionId(order.OrderingParty.InternalIdentifier, order.CallOffId, solutionId);
 
-            (await context.Orders.FirstAsync(x => x.Id == order.Id)).SolutionId.Should().Be(solutionId);
+            (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.SolutionId.Should().Be(solutionId);
+        }
+
+        [Theory]
+        [InMemoryDbAutoData]
+        public static async Task SetOrderPracticeReorganisationRecipient_UpdatesDatabase(
+            Order order,
+            OdsOrganisation odsOrganisation,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient = null;
+            order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode = null;
+            context.OdsOrganisations.Add(odsOrganisation);
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode.Should().BeNull();
+
+            await service.SetOrderPracticeReorganisationRecipient(order.OrderingParty.InternalIdentifier, order.CallOffId, odsOrganisation.Id);
+
+            (await context.Orders.FirstAsync(x => x.Id == order.Id)).AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode.Should().Be(odsOrganisation.Id);
         }
 
         [Theory]

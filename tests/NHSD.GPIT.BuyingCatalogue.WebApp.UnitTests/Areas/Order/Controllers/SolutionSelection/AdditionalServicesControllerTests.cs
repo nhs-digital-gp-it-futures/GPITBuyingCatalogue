@@ -113,10 +113,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new SelectServicesModel(previousItems,  currentItems, services)
             {
                 InternalOrgId = internalOrgId,
-                AssociatedServicesOnly = order.AssociatedServicesOnly,
-                SolutionName = order.AssociatedServicesOnly
-                    ? orderWrapper.RolledUp.Solution.Name
-                    : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
+                SolutionName = order.OrderType.GetSolutionNameFromOrder(orderWrapper.RolledUp),
                 SolutionId = solutionId,
             };
 
@@ -257,10 +255,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new SelectServicesModel(previousItems, currentItems, services)
             {
                 InternalOrgId = internalOrgId,
-                AssociatedServicesOnly = order.AssociatedServicesOnly,
-                SolutionName = order.AssociatedServicesOnly
-                    ? orderWrapper.RolledUp.Solution.Name
-                    : orderWrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
+                SolutionName = order.OrderType.GetSolutionNameFromOrder(order),
                 SolutionId = solutionId,
             };
 

@@ -107,6 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Get_NewOrderDescription_ReturnsExpectedResult(
             string internalOrgId,
+            OrderTypeEnum orderType,
             string organisationName,
             [Frozen] Mock<IUsersService> mockUsersService,
             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
@@ -130,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             var expectedViewData = new OrderDescriptionModel(internalOrgId, organisationName) { BackLink = "testUrl" };
 
-            var actualResult = await controller.NewOrderDescription(internalOrgId);
+            var actualResult = await controller.NewOrderDescription(internalOrgId, orderType);
 
             mockUsersService.VerifyAll();
             mockOrganisationsService.VerifyAll();
@@ -144,36 +145,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
         [CommonInlineAutoData(CatalogueItemType.Solution)]
         public static async Task Post_NewOrderDescription_AssociatedServicesOnly_AsExpected(
-            CatalogueItemType? catalogueItemType,
+            OrderTypeEnum orderType,
             OrderDescriptionModel model,
             OrderTriageValue value,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderDescriptionController controller)
         {
-            var isAssociatedServiceOnly = catalogueItemType.HasValue
-                && catalogueItemType!.Value == CatalogueItemType.AssociatedService;
+            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId, value, orderType)).ReturnsAsync(order);
 
-            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId, value, isAssociatedServiceOnly)).ReturnsAsync(order);
+            _ = await controller.NewOrderDescription(model.InternalOrgId, model, orderType, value);
 
-            _ = await controller.NewOrderDescription(model.InternalOrgId, model, value, catalogueItemType);
-
-            orderServiceMock.Verify(s => s.CreateOrder(model.Description, model.InternalOrgId, value, isAssociatedServiceOnly));
+            orderServiceMock.Verify(s => s.CreateOrder(model.Description, model.InternalOrgId, value, orderType));
         }
 
         [Theory]
         [CommonAutoData]
         public static async Task Post_NewOrderDescription_CreatesOrder_CorrectlyRedirects(
             string internalOrgId,
+            OrderTypeEnum orderType,
             OrderTriageValue option,
             OrderDescriptionModel model,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             OrderDescriptionController controller)
         {
-            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId, It.IsAny<OrderTriageValue>(), It.IsAny<bool>())).ReturnsAsync(order);
+            orderServiceMock.Setup(s => s.CreateOrder(model.Description, model.InternalOrgId, It.IsAny<OrderTriageValue>(), It.IsAny<OrderTypeEnum>())).ReturnsAsync(order);
 
-            var actualResult = await controller.NewOrderDescription(internalOrgId, model, option);
+            var actualResult = await controller.NewOrderDescription(internalOrgId, model, orderType, option: option);
 
             actualResult.Should().BeOfType<RedirectToActionResult>();
             actualResult.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.Order));
@@ -185,6 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Post_NewOrderDescription_InvalidModelState_ReturnsView(
             string internalOrgId,
+            OrderTypeEnum orderType,
             string errorKey,
             string errorMessage,
             OrderDescriptionModel model,
@@ -192,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             controller.ModelState.AddModelError(errorKey, errorMessage);
 
-            var actualResult = (await controller.NewOrderDescription(internalOrgId, model)).As<ViewResult>();
+            var actualResult = (await controller.NewOrderDescription(internalOrgId, model, orderType)).As<ViewResult>();
 
             actualResult.Should().NotBeNull();
             actualResult.ViewName.Should().Be("OrderDescription");

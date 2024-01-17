@@ -5,28 +5,56 @@
 
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-validation-summary/>
+            @{
+                var radioId = Model.OrderType.UsesSupplierSearch
+                ? ""
+                : nameof(Model.SelectedSupplierId);
+            }
+            <nhs-validation-summary RadioId="@radioId" />
+            @{
+                var pageTitle = Model.GetPageTitle();
+            }
+            <nhs-page-title model="@pageTitle" />
+            @{
+                var insetText = Model.GetInsetText();
 
-            <nhs-page-title title="Supplier information"
-                            caption="Order @(Model.CallOffId)"
-                            advice="Search for the supplier you want to order from. You’ll only be able to find suppliers with solutions published on the Buying Catalogue." />
-
-            @if (Model.AssociatedServicesOnly)
-            {
-                <div id="associated-services-inset">
-                    <nhs-inset-text>
-                        <p>You’ll only be able to find suppliers that offer Associated Services with their solutions.</p>
-                    </nhs-inset-text>
-                </div>
+                if (!string.IsNullOrEmpty(insetText))
+                {
+                    <div id="associated-services-inset">
+                        <nhs-inset-text>
+                            <p>@insetText</p>
+                        </nhs-inset-text>
+                    </div>
+                }
             }
 
             <form method="post">
-                <input type="hidden" asp-for="AssociatedServicesOnly"/>
-                <nhs-auto-complete label-text="Enter supplier name"
-                                   asp-for="SelectedSupplierId"
-                                   asp-items="@Model.Suppliers" />
-                <br/>
-                <nhs-submit-button/>
+                <input type="hidden" asp-for="OrderType.Value" name="@nameof(Model.OrderType)" />
+                @for (var i = 0; i < Model.Suppliers.Count; i++)
+                {
+                    <input type="hidden" asp-for="Suppliers[i].Text" />
+                    <input type="hidden" asp-for="Suppliers[i].Value" />
+                }
+
+                @if (Model.OrderType.UsesSupplierSearch)
+                {
+                    <nhs-auto-complete label-text="Enter supplier name"
+                                       asp-for="SelectedSupplierId"
+                                       asp-items="@Model.Suppliers" />
+                    <br />
+                    <nhs-submit-button />
+                }
+                else
+                {
+                    <nhs-fieldset-form-label asp-for="SelectedSupplierId" label-text="Which supplier you want to order from?" label-hint="Select a supplier" size="Medium">
+                        <nhs-radio-buttons asp-for="SelectedSupplierId"
+                                           values="Model.Suppliers.Cast<object>()"
+                                           display-name="Text"
+                                           value-name="Value" />
+                    </nhs-fieldset-form-label>
+                    <br />
+                    <nhs-submit-button />
+                }
             </form>
         </div>
     </div>

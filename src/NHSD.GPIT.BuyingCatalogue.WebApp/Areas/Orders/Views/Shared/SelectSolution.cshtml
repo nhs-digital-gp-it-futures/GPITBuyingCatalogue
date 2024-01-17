@@ -5,59 +5,74 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-validation-summary RadioId="SelectedCatalogueSolutionId"/>
-        
+        <nhs-validation-summary RadioId="SelectedCatalogueSolutionId" />
+
         @{
-            var title = Model.AssociatedServicesOnly
-                ? "Which Catalogue Solution does the service help implement?"
-                : "Catalogue Solutions";
+            var title = Model.OrderType.AssociatedServicesOnly
+            ? "Which Catalogue Solution does the service help implement?"
+            : "Catalogue Solutions";
 
             const string prefix = "These are the Catalogue Solutions provided by the supplier you’ve chosen. Select the one you want ";
 
             var suffix = Model.AdditionalServices?.Any() ?? false
-                ? "and any of its Additional Services you want to order."
-                : "to order.";
+            ? "and any of its Additional Services you want to order."
+            : "to order.";
 
-            var advice = Model.AssociatedServicesOnly
-                ? "Select the Catalogue Solution the Associated Service you want to order supports."
-                : $"{prefix}{suffix}";
+            var associatedServiceAdvice = Model.CatalogueSolutions.Count > 1
+            ? "Select the Catalogue Solution the Associated Service you want to order supports."
+            : "There is only one solution with this type of Associated Service.";
 
-            var caption = Model.AssociatedServicesOnly
-                ? $"Order {Model.CallOffId}"
-                : Model.SupplierName;
+            var advice = Model.OrderType.AssociatedServicesOnly
+            ? associatedServiceAdvice
+            : $"{prefix}{suffix}";
+
+            var caption = Model.OrderType.AssociatedServicesOnly
+            ? $"Order {Model.CallOffId}"
+            : Model.SupplierName;
+
+            var submitButton = string.Empty; // uses the default text
         }
 
         <nhs-page-title title="@title"
                         caption="@caption"
-                        advice="@advice"/>
+                        advice="@advice" />
 
         <form method="post">
-            <input type="hidden" asp-for="@Model.SupplierName"/>
-            
-            @if (Model.AssociatedServicesOnly)
+            <input type="hidden" asp-for="@Model.SupplierName" />
+
+            @if (Model.OrderType.AssociatedServicesOnly)
             {
                 if (Model.CatalogueSolutions.Count > 1)
                 {
+
                     <h3>Which Catalogue Solution is the service linked with?</h3>
-                    <p>These are the solutions from this supplier that have Associated Services.</p>
+                    if (Model.OrderType.MergerOrSplit)
+                    {
+                        <p>These are the solutions from this supplier that have Associated Services supporting mergers or splits.</p>
+                    }
+                    else
+                    {
+                        <p>These are the solutions from this supplier that have Associated Services.</p>
+                    }
                 }
                 else
                 {
+                    submitButton = "Confirm solution";
+
                     <input type="hidden"
                            asp-for="SelectedCatalogueSolutionId"
-                           value="@Model.CatalogueSolutions[0].Value"/>
+                           value="@Model.CatalogueSolutions[0].Value" />
 
-                    <p>
-                        There is only one solution from this supplier that has Associated Services.
-                    </p>
-                    <ul>
-                        <li>@Model.CatalogueSolutions[0].Text</li>
-                    </ul>
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Solution">
+                            @Model.CatalogueSolutions[0].Text
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
                 }
             }
 
-            @if (!Model.AssociatedServicesOnly 
-                || Model.AssociatedServicesOnly && Model.CatalogueSolutions.Count > 1)
+            @if (!Model.OrderType.AssociatedServicesOnly
+            || Model.OrderType.AssociatedServicesOnly && Model.CatalogueSolutions.Count > 1)
             {
                 <nhs-fieldset-form-label asp-for="@Model">
                     <nhs-radio-button-container>
@@ -86,10 +101,10 @@
                                             if (!$"{service.CatalogueItemId}".StartsWith(selectListItem.Value))
                                                 continue;
 
-                                            <input type="hidden" asp-for="@Model.AdditionalServices[j].CatalogueItemId"/>
-                                            <input type="hidden" asp-for="@Model.AdditionalServices[j].Description"/>
+                                            <input type="hidden" asp-for="@Model.AdditionalServices[j].CatalogueItemId" />
+                                            <input type="hidden" asp-for="@Model.AdditionalServices[j].Description" />
                                             <nhs-checkbox asp-for="@Model.AdditionalServices[j].IsSelected"
-                                                          label-text="@service.Description"/>
+                                                          label-text="@service.Description" />
                                         }
                                     </nhs-checkbox-container>
                                 }
@@ -98,9 +113,9 @@
                     </nhs-radio-button-container>
                 </nhs-fieldset-form-label>
             }
-                
+
             <div class="nhsuk-u-margin-top-9">
-                <nhs-submit-button/>
+                <nhs-submit-button text="@submitButton" />
             </div>
         </form>
     </div>

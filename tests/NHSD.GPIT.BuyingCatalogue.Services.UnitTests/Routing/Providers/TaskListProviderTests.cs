@@ -39,20 +39,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
         public void Process_ExpectedResult(
-            bool associatedServicesOnly,
+            OrderTypeEnum associatedServicesOnly,
             string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             Order order,
             TaskListProvider provider)
         {
-            order.AssociatedServicesOnly = associatedServicesOnly;
+            order.OrderType = associatedServicesOnly;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
 
-            if (!associatedServicesOnly)
+            if (order.OrderType == OrderTypeEnum.Solution)
             {
                 order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             }
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             TaskListProvider provider)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             var solution = order.OrderItems.First();
@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 2);
 
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x =>
             {
                 x.Quantity = 1;
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             TaskListProvider provider)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x =>
             {
                 x.Quantity = 0;
@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             TaskListProvider provider)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.ElementAt(1).OrderItemPrice = null;
@@ -207,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             TaskListProvider provider)
         {
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
             order.OrderItems.ElementAt(2).OrderItemPrice = null;
 
@@ -233,7 +233,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             TaskListProvider provider)
         {
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
             order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
 
@@ -259,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             Order order,
             TaskListProvider provider)
         {
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
 
             var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));

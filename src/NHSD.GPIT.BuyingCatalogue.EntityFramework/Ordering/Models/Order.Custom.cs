@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && HaveAllQuantities(orderRecipients)
                 && orderItems.All(oi => oi.OrderItemFunding is not null)
                 && ContractFlags is not null
-                && (AssociatedServicesOnly || Contract?.ImplementationPlan is not null)
+                && (!OrderType.ImplementationPlanRequired || Contract?.ImplementationPlan is not null)
                 && (IsAmendment || !HasAssociatedService() || Contract?.ContractBilling is not null)
                 && ContractFlags?.UseDefaultDataProcessing == true
                 && OrderStatus != OrderStatus.Completed;
@@ -57,15 +57,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId? GetSolutionId()
         {
-            return AssociatedServicesOnly
-                ? SolutionId
-                : GetSolution()?.CatalogueItemId;
+            return OrderType.AssociatedServicesOnly
+                ? AssociatedServicesOnlyDetails.SolutionId
+                : GetSolutionOrderItem()?.CatalogueItemId;
         }
 
         public List<CatalogueItemId> GetOrderItemIds()
         {
             var output = new List<CatalogueItemId>();
-            var solution = GetSolution();
+            var solution = GetSolutionOrderItem();
 
             if (solution != null)
             {
@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return OrderItems.FirstOrDefault(x => x.CatalogueItem.Id == catalogueItemId);
         }
 
-        public OrderItem GetSolution()
+        public OrderItem GetSolutionOrderItem()
         {
             return OrderItems
                 .FirstOrDefault(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
@@ -241,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             {
                 OrderNumber = OrderNumber,
                 Revision = newRevision,
-                AssociatedServicesOnly = AssociatedServicesOnly,
+                OrderType = OrderType,
                 CommencementDate = CommencementDate,
                 Description = Description,
                 InitialPeriod = InitialPeriod,

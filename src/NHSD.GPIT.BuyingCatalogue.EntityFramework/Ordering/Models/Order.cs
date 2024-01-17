@@ -45,11 +45,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int? MaximumTerm { get; set; }
 
-        public bool AssociatedServicesOnly { get; set; }
+        public OrderType OrderType { get; set; } = OrderTypeEnum.Unknown;
 
         public OrderTriageValue? OrderTriageValue { get; set; }
-
-        public CatalogueItemId? SolutionId { get; set; }
 
         public string SelectedFrameworkId { get; set; }
 
@@ -103,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<OrderRecipient> OrderRecipients { get; set; }
 
-        public CatalogueItem Solution { get; set; }
+        public AssociatedServicesOnlyDetails AssociatedServicesOnlyDetails { get; set; }
 
         public Framework SelectedFramework { get; set; }
 

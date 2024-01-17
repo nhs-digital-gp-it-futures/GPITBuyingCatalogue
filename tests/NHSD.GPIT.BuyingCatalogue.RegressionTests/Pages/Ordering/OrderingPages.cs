@@ -685,7 +685,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             using var dbContext = Factory.DbContext;
 
             var result = dbContext.Orders
-               .Any(o => o.Id == orderId && o.AssociatedServicesOnly == true);
+               .Any(o => o.Id == orderId && o.OrderType.Value == OrderTypeEnum.AssociatedServiceOther);
 
             return result;
         }

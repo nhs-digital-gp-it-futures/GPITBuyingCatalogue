@@ -1,4 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList.TaskListModel
 
 @{
@@ -12,33 +13,48 @@
         <nhs-validation-summary />
         <nhs-page-title model="Model" />
 
-        <div id="SolutionDetails" class="nhsuk-u-margin-bottom-9">
-            <h2>Catalogue Solution</h2>
-            
-            @if (!Model.IsAmendment)
+        @if (Model.OrderType.MergerOrSplit)
+        {
+            if (Model.AlternativeSolutionsAvailable)
             {
                 <vc:nhs-action-link text="Change Catalogue Solution"
                                     url="@Url.Action(
                                              nameof(CatalogueSolutionsController.EditSolution),
                                              typeof(CatalogueSolutionsController).ControllerName(),
-                                             new { Model.InternalOrgId, Model.CallOffId })"/>
-            }
+                                             new { Model.InternalOrgId, Model.CallOffId })" />
 
-            @if (Model.AssociatedServicesOnly)
-            {
-                <h3>@Model.SolutionName</h3>
             }
+        }
+        else
+        {
+            <div id="SolutionDetails" class="nhsuk-u-margin-bottom-9">
+                <h2>Catalogue Solution</h2>
 
-            @if (Model.CatalogueSolution != null)
-            {
-                <div class="nhsuk-u-margin-bottom-9">
-                    <partial name="TaskListOrderItem"
-                             model="@Model.OrderItemModel(Model.CatalogueSolution.CatalogueItemId)"/>
-                </div>
-            }
-        </div>
+                @if (!Model.IsAmendment)
+                {
+                    <vc:nhs-action-link text="Change Catalogue Solution"
+                                        url="@Url.Action(
+                                             nameof(CatalogueSolutionsController.EditSolution),
+                                             typeof(CatalogueSolutionsController).ControllerName(),
+                                             new { Model.InternalOrgId, Model.CallOffId })" />
+                }
 
-        @if (!Model.AssociatedServicesOnly)
+                @if (Model.OrderType.Value == OrderTypeEnum.AssociatedServiceOther)
+                {
+                    <h3>@Model.SolutionName</h3>
+                }
+
+                @if (Model.CatalogueSolution != null)
+                {
+                    <div class="nhsuk-u-margin-bottom-9">
+                        <partial name="TaskListOrderItem"
+                                 model="@Model.OrderItemModel(Model.CatalogueSolution.CatalogueItemId)" />
+                    </div>
+                }
+            </div>
+        }
+
+        @if (!Model.OrderType.AssociatedServicesOnly)
         {
             <div id="AdditionalServiceDetails" class="nhsuk-u-margin-bottom-9">
                 <h2>Additional Services</h2>
@@ -49,7 +65,7 @@
                                             url="@Url.Action(
                                                      nameof(AdditionalServicesController.EditAdditionalServices),
                                                      typeof(AdditionalServicesController).ControllerName(),
-                                                     new { Model.InternalOrgId, Model.CallOffId })"/>
+                                                     new { Model.InternalOrgId, Model.CallOffId })" />
                     </span>
                 }
                 else
@@ -61,36 +77,41 @@
                 {
                     <div class="nhsuk-u-margin-bottom-9">
                         <partial name="TaskListOrderItem"
-                                 model="@Model.OrderItemModel(service.CatalogueItemId)"/>
+                                 model="@Model.OrderItemModel(service.CatalogueItemId)" />
                     </div>
                 }
             </div>
         }
-        
+
         @if (!Model.IsAmendment)
         {
             <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
-                <h2>Associated Services</h2>
-                @if (Model.AssociatedServicesAvailable)
+                @if (!Model.OrderType.MergerOrSplit)
                 {
-                    <span data-test-id="associated-services-action">
-                        <vc:nhs-action-link text="@Model.AssociatedServicesActionText"
-                                            url="@Url.Action(
+                    <h2>Associated Services</h2>
+                    @if (Model.AssociatedServicesAvailable)
+                    {
+                        <span data-test-id="associated-services-action">
+                            <vc:nhs-action-link text="@Model.AssociatedServicesActionText"
+                                                url="@Url.Action(
                                                      nameof(AssociatedServicesController.EditAssociatedServices),
                                                      typeof(AssociatedServicesController).ControllerName(),
-                                                     new { Model.InternalOrgId, Model.CallOffId })"/>
-                    </span>
-                }
-                else
-                {
-                    <p>There are no Associated Services available for this Catalogue Solution.</p>
+                                                     new { Model.InternalOrgId, Model.CallOffId })" />
+                        </span>
+                    }
+                    else
+                    {
+                        <p>There are no Associated Services available for this Catalogue Solution.</p>
+                    }
                 }
 
                 @foreach (var service in Model.AssociatedServices)
                 {
+                    var serviceModel = Model.OrderItemModel(service.CatalogueItemId);
+
                     <div class="nhsuk-u-margin-bottom-9">
                         <partial name="TaskListOrderItem"
-                                 model="@Model.OrderItemModel(service.CatalogueItemId)"/>
+                                 model="@serviceModel" />
                     </div>
                 }
             </div>
@@ -98,6 +119,6 @@
 
         <vc:nhs-secondary-button text="Continue"
                                  url="@Model.OnwardLink"
-                                 type="Primary"/>
+                                 type="Primary" />
     </div>
 </div>

@@ -83,8 +83,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)
             .ToList();
 
-        public ICollection<OrderRecipient> ExistingOrderRecipients => Previous?.OrderRecipients ?? Enumerable.Empty<OrderRecipient>().ToList();
-
         public Order Last => previous.Any()
             ? previous.Last()
             : null;
@@ -95,7 +93,23 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Order RolledUp => rolledUpLazy.Value;
 
-        public ICollection<OrderRecipient> AddedOrderRecipients() => Order.AddedOrderRecipients(Previous);
+        public IEnumerable<string> AddedRecipientsOdsCodes()
+        {
+            var codes = Order.AddedOrderRecipients(Previous)
+                .Select(r => r.OdsCode);
+            if (Order.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode != null)
+            {
+                codes = codes.Append(Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode);
+            }
+
+            return codes;
+        }
+
+        public IEnumerable<string> PreviousRecipientsOdsCodes()
+        {
+            return (Previous?.OrderRecipients ?? Enumerable.Empty<OrderRecipient>())
+                .Select(r => r.OdsCode);
+        }
 
         public ICollection<OrderRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId) => Order.DetermineOrderRecipients(Previous, catalogueItemId);
 
@@ -117,6 +131,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                     {
                         newRecipient.SetDeliveryDateForItem(i.CatalogueItemId, Order.DeliveryDate.Value);
                     }
+                });
+            }
+
+            if (Order.OrderType.MergerOrSplit)
+            {
+                Order.OrderItems.ToList().ForEach(i =>
+                {
+                    newRecipient.SetQuantityForItem(i.CatalogueItemId, 1);
                 });
             }
 

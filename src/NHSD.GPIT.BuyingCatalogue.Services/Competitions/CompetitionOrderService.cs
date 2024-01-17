@@ -109,6 +109,7 @@ public class CompetitionOrderService : ICompetitionOrderService
     private static Order CreateOrder(int orderNumber, Competition competition, CompetitionSolution winningSolution, IEnumerable<OrderItem> orderItems) => new Order
     {
         OrderNumber = orderNumber,
+        OrderType = OrderTypeEnum.Solution,
         Revision = 1,
         Description = $"Order created from competition: {competition.Id}",
         Created = DateTime.UtcNow,

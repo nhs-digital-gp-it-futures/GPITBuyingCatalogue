@@ -92,9 +92,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{callOffId}/download/full-order-csv")]
         public async Task<IActionResult> DownloadFullOrderCsv(CallOffId callOffId, string externalOrgId)
         {
-            var orderId = await orderService.GetOrderId(callOffId);
+            var order = await orderAdminService.GetOrder(callOffId);
             using var memoryStream = new MemoryStream();
-            await csvService.CreateFullOrderCsvAsync(orderId, memoryStream);
+            await csvService.CreateFullOrderCsvAsync(order.Id, order.OrderType, memoryStream);
             memoryStream.Position = 0;
             var callOffIdPrefix = GetFileNamePrefix(callOffId);
 

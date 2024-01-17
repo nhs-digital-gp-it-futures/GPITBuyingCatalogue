@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
@@ -12,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
     {
         [Theory]
         [CommonAutoData]
-        public static void WithValidArguments_PropertiesCorrectlySet(
+        public static void InProgressOrder_WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
@@ -20,10 +22,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         {
             order.LastUpdatedByUser = aspNetUser;
 
-            var model = new OrderModel(internalOrgId, order, progress);
+            var model = new OrderModel(internalOrgId, progress, order);
 
             model.Progress.Should().BeEquivalentTo(progress);
             model.Title.Should().Be($"Order {order.CallOffId}");
+            model.OrganisationName.Should().Be(order.OrderingParty.Name);
             model.CallOffId.Should().Be(order.CallOffId);
             model.Description.Should().Be(order.Description);
             model.LastUpdatedByUserName.Should().Be(aspNetUser.FullName);
@@ -33,21 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
 
         [Theory]
         [CommonAutoData]
-        public static void WithNoOrder_PropertiesCorrectlySet(
-            string internalOrgId,
-            OrderProgress progress)
-        {
-            var model = new OrderModel(internalOrgId, null, progress);
-
-            model.Progress.Should().BeEquivalentTo(progress);
-            model.Title.Should().Be("New order");
-            model.CallOffId.Should().BeEquivalentTo(default(CallOffId));
-            model.Description.Should().Be(default);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Construct_IsAmendment_SetsTitle(
+        public static void InProgressOrder_IsAmendment_SetsTitle(
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
@@ -59,14 +48,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.LastUpdatedByUser = aspNetUser;
             order.Revision = 2;
 
-            var model = new OrderModel(internalOrgId, order, progress);
+            var model = new OrderModel(internalOrgId, progress, order);
 
             model.TitleAdvice.Should().Be(expected);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Construct_OriginalOrder_SetsTitle(
+        public static void InProgressOrder_OriginalOrder_SetsTitle(
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
@@ -79,14 +68,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.CompetitionId = null;
             order.Revision = 1;
 
-            var model = new OrderModel(internalOrgId, order, progress);
+            var model = new OrderModel(internalOrgId, progress, order);
 
             model.TitleAdvice.Should().Be(expected);
         }
 
         [Theory]
         [CommonAutoData]
-        public static void Construct_CompetitionOrder_SetsTitle(
+        public static void InProgressOrder_CompetitionOrder_SetsTitle(
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
@@ -99,115 +88,296 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.CompetitionId = 1;
             order.Revision = 1;
 
-            var model = new OrderModel(internalOrgId, order, progress);
+            var model = new OrderModel(internalOrgId, progress, order);
 
             model.TitleAdvice.Should().Be(expected);
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderSummaryField.OrderDescription, "Update the description of this order if needed.")]
-        [CommonInlineAutoData(OrderSummaryField.OrderingParty, "Change the primary contact for this order if needed.")]
-        [CommonInlineAutoData(OrderSummaryField.Supplier, "Select a different supplier contact if needed.")]
-        [CommonInlineAutoData(OrderSummaryField.CommencementDate, "Review the commencement date, maximum term and initial period for this contract.")]
-        [CommonInlineAutoData(OrderSummaryField.ServiceRecipients, "Select the organisations you want to receive this solution.")]
-        [CommonInlineAutoData(OrderSummaryField.SolutionsAndServices, "Select a solution or services, prices and quantities.")]
-        [CommonInlineAutoData(OrderSummaryField.PlannedDeliveryDates, "Enter the planned delivery dates for the items you're ordering.")]
-        [CommonInlineAutoData(OrderSummaryField.FundingSources, "Allocate funding sources for items in this order.")]
-        [CommonInlineAutoData(OrderSummaryField.ImplementationPlan, "Review the default milestones that will act as payment triggers and create bespoke ones.")]
-        [CommonInlineAutoData(OrderSummaryField.DataProcessing, "Download the data processing information template for the supplier to complete.")]
-        [CommonInlineAutoData(OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete this amended order.")]
-        public static void StatusDescription_IsAmendment_ReturnsExpected(
-            OrderSummaryField summaryField,
-            string expected,
+        [CommonInlineAutoData(OrderSummaryField.OrderDescription, true)]
+        [CommonInlineAutoData(OrderSummaryField.OrderingParty, true)]
+        [CommonInlineAutoData(OrderSummaryField.Supplier, true)]
+        [CommonInlineAutoData(OrderSummaryField.CommencementDate, true)]
+        [CommonInlineAutoData(OrderSummaryField.ServiceRecipients, false)]
+        [CommonInlineAutoData(OrderSummaryField.SolutionsAndServices, false)]
+        [CommonInlineAutoData(OrderSummaryField.PlannedDeliveryDates, false)]
+        [CommonInlineAutoData(OrderSummaryField.FundingSources, true)]
+        [CommonInlineAutoData(OrderSummaryField.ImplementationPlan, false)]
+        [CommonInlineAutoData(OrderSummaryField.AssociatedServicesBilling, false)]
+        [CommonInlineAutoData(OrderSummaryField.DataProcessing, false)]
+        [CommonInlineAutoData(OrderSummaryField.ReviewAndComplete, true)]
+        public static void InProgressOrder_StausDecription_IsAmendment_ReturnsExpected(
+            OrderSummaryField key,
+            bool amendmentSpecific,
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
             OrderProgress progress)
         {
+            order.OrderType = OrderTypeEnum.Solution;
             order.LastUpdatedByUser = aspNetUser;
             order.CompetitionId = null;
             order.Revision = 2;
 
-            var model = new OrderModel(internalOrgId, order, progress);
+            var model = new OrderModel(internalOrgId, progress, order);
 
-            model.StatusDescription(summaryField).Should().Be(expected);
+            if (amendmentSpecific)
+            {
+                model.StatusDescription(key)
+                    .Should().Be(OrderModel.AmendmentSpecificDescriptions.Value(key));
+            }
+            else
+            {
+                model.StatusDescription(key)
+                    .Should().Be(OrderModel.DefaultDescriptions.Value(key));
+            }
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderSummaryField.OrderDescription, "Provide a description of your order.")]
-        [CommonInlineAutoData(OrderSummaryField.OrderingParty, "Provide information about the primary contact for your order.")]
-        [CommonInlineAutoData(OrderSummaryField.Supplier, "Find the supplier you want to order from and select a supplier contact.")]
-        [CommonInlineAutoData(OrderSummaryField.CommencementDate, "Provide the commencement date, the length of the contract and its initial period.")]
-        [CommonInlineAutoData(OrderSummaryField.ServiceRecipients, "Select the organisations you want to receive this solution.")]
-        [CommonInlineAutoData(OrderSummaryField.SolutionsAndServices, "Select a solution or services, prices and quantities.")]
-        [CommonInlineAutoData(OrderSummaryField.PlannedDeliveryDates, "Enter the planned delivery dates for the items you're ordering.")]
-        [CommonInlineAutoData(OrderSummaryField.FundingSources, "Review how you’ll be paying for your order.")]
-        [CommonInlineAutoData(OrderSummaryField.ImplementationPlan, "Review the default milestones that will act as payment triggers and create bespoke ones.")]
-        [CommonInlineAutoData(OrderSummaryField.AssociatedServicesBilling, "Review the default milestones, create bespoke ones and add specific requirements.")]
-        [CommonInlineAutoData(OrderSummaryField.DataProcessing, "Download the data processing information template for the supplier to complete.")]
-        [CommonInlineAutoData(OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete your order.")]
-        public static void StatusDescription_IsOriginalOrder_ReturnsExpected(
-            OrderSummaryField summaryField,
-            string expected,
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderDescription)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderingParty)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.Supplier)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.CommencementDate)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ServiceRecipients)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.SolutionsAndServices)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.PlannedDeliveryDates)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.FundingSources)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ImplementationPlan)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.AssociatedServicesBilling)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.DataProcessing)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ReviewAndComplete)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderDescription)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderingParty)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.Supplier)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.CommencementDate)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ServiceRecipients)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.SolutionsAndServices)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.PlannedDeliveryDates)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.FundingSources)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ImplementationPlan)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.AssociatedServicesBilling)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.DataProcessing)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ReviewAndComplete)]
+        public static void InProgressOrder_StausDecription_IsOriginalOrder_ReturnsExpected(
+            OrderTypeEnum orderType,
+            OrderSummaryField key,
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
             OrderProgress progress)
         {
+            order.OrderType = orderType;
             order.LastUpdatedByUser = aspNetUser;
             order.CompetitionId = null;
             order.Revision = 1;
 
-            var model = new OrderModel(internalOrgId, order, progress);
+            var model = new OrderModel(internalOrgId, progress, order);
 
-            model.StatusDescription(summaryField).Should().Be(expected);
+            model.StatusDescription(key)
+                .Should().Be(OrderModel.DefaultDescriptions.Value(key));
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderSummaryField.OrderDescription, "Edit the description for this order if needed.")]
-        [CommonInlineAutoData(OrderSummaryField.OrderingParty, "Provide information about the primary contact for your order.")]
-        [CommonInlineAutoData(OrderSummaryField.Supplier, "Provide information about the supplier contact for your order.")]
-        [CommonInlineAutoData(OrderSummaryField.CommencementDate, "Review the maximum term of your contract and provide a commencement date and initial period.")]
-        [CommonInlineAutoData(OrderSummaryField.ServiceRecipients, "Review the organisations you’re ordering for.")]
-        [CommonInlineAutoData(OrderSummaryField.SolutionsAndServices, "Review the items you’re ordering and their prices and quantities.")]
-        [CommonInlineAutoData(OrderSummaryField.PlannedDeliveryDates, "Enter the planned delivery dates for the items you're ordering.")]
-        [CommonInlineAutoData(OrderSummaryField.FundingSources, "Review how you’ll be paying for your order.")]
-        [CommonInlineAutoData(OrderSummaryField.ImplementationPlan, "Review the default milestones that will act as payment triggers and create bespoke ones.")]
-        [CommonInlineAutoData(OrderSummaryField.AssociatedServicesBilling, "Review the default milestones, create bespoke ones and add specific requirements.")]
-        [CommonInlineAutoData(OrderSummaryField.DataProcessing, "Download the data processing information template for the supplier to complete.")]
-        [CommonInlineAutoData(OrderSummaryField.ReviewAndComplete, "Check the information you’ve provided is correct and complete your order.")]
-        public static void StatusDescription_IsCompetitionOrder_ReturnsExpected(
-            OrderSummaryField summaryField,
-            string expected,
+        [CommonInlineAutoData(OrderSummaryField.OrderDescription, true)]
+        [CommonInlineAutoData(OrderSummaryField.OrderingParty, false)]
+        [CommonInlineAutoData(OrderSummaryField.Supplier, true)]
+        [CommonInlineAutoData(OrderSummaryField.CommencementDate, true)]
+        [CommonInlineAutoData(OrderSummaryField.ServiceRecipients, true)]
+        [CommonInlineAutoData(OrderSummaryField.SolutionsAndServices, true)]
+        [CommonInlineAutoData(OrderSummaryField.PlannedDeliveryDates, false)]
+        [CommonInlineAutoData(OrderSummaryField.FundingSources, false)]
+        [CommonInlineAutoData(OrderSummaryField.ImplementationPlan, false)]
+        [CommonInlineAutoData(OrderSummaryField.AssociatedServicesBilling, false)]
+        [CommonInlineAutoData(OrderSummaryField.DataProcessing, false)]
+        [CommonInlineAutoData(OrderSummaryField.ReviewAndComplete, false)]
+        public static void InProgressOrder_StausDecription_IsCompetitionOrder_ReturnsExpected(
+            OrderSummaryField key,
+            bool competitionSpecific,
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
             OrderProgress progress)
         {
+            order.OrderType = OrderTypeEnum.Solution;
             order.LastUpdatedByUser = aspNetUser;
             order.CompetitionId = 1;
             order.Revision = 1;
 
-            var model = new OrderModel(internalOrgId, order, progress);
+            var model = new OrderModel(internalOrgId, progress, order);
 
-            model.StatusDescription(summaryField).Should().Be(expected);
+            if (competitionSpecific)
+            {
+                model.StatusDescription(key)
+                    .Should().Be(OrderModel.CompetitionOrderDescriptions.Value(key));
+            }
+            else
+            {
+                model.StatusDescription(key)
+                    .Should().Be(OrderModel.DefaultDescriptions.Value(key));
+            }
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void StatusDescription_InvalidSummaryField_ReturnsExpected(
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderDescription, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderingParty, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.Supplier, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.CommencementDate, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ServiceRecipients, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.SolutionsAndServices, true)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.PlannedDeliveryDates, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.FundingSources, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ImplementationPlan, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.AssociatedServicesBilling, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.DataProcessing, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ReviewAndComplete, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderDescription, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderingParty, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.Supplier, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.CommencementDate, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ServiceRecipients, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.SolutionsAndServices, true)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.PlannedDeliveryDates, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.FundingSources, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ImplementationPlan, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.AssociatedServicesBilling, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.DataProcessing, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ReviewAndComplete, false)]
+        public static void InProgressOrder_StausDecription_MergerSplitOrder_ReturnsExpected(
+            OrderTypeEnum orderType,
+            OrderSummaryField key,
+            bool mergerSplitSpecific,
             string internalOrgId,
             AspNetUser aspNetUser,
             EntityFramework.Ordering.Models.Order order,
             OrderProgress progress)
         {
+            order.OrderType = orderType;
             order.LastUpdatedByUser = aspNetUser;
-            order.CompetitionId = 1;
+            order.CompetitionId = null;
             order.Revision = 1;
 
-            var model = new OrderModel(internalOrgId, order, progress);
+            var model = new OrderModel(internalOrgId, progress, order);
 
-            model.StatusDescription((OrderSummaryField)int.MaxValue).Should().BeEmpty();
+            if (mergerSplitSpecific)
+            {
+                model.StatusDescription(key)
+                    .Should().Be(OrderModel.MergerSplitSpecificDescriptions.Value(key));
+            }
+            else
+            {
+                model.StatusDescription(key)
+                    .Should().Be(OrderModel.DefaultDescriptions.Value(key));
+            }
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        public static void NewOrder_WithValidArguments_PropertiesCorrectlySet(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            OrderProgress progress,
+            string organisationName)
+        {
+            var model = new OrderModel(internalOrgId, orderType, progress, organisationName);
+
+            model.Progress.Should().BeEquivalentTo(progress);
+            model.Title.Should().Be("New order");
+            model.OrganisationName.Should().Be(organisationName);
+            model.CallOffId.Should().BeEquivalentTo(default(CallOffId));
+            model.Description.Should().Be(default);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderDescription)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderingParty)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.Supplier)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.CommencementDate)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ServiceRecipients)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.SolutionsAndServices)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.PlannedDeliveryDates)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.FundingSources)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ImplementationPlan)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.AssociatedServicesBilling)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.DataProcessing)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ReviewAndComplete)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderDescription)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderingParty)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.Supplier)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.CommencementDate)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ServiceRecipients)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.SolutionsAndServices)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.PlannedDeliveryDates)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.FundingSources)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ImplementationPlan)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.AssociatedServicesBilling)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.DataProcessing)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ReviewAndComplete)]
+        public static void NewOrder_StausDecription_IsOriginalOrder_ReturnsExpected(
+            OrderTypeEnum orderType,
+            OrderSummaryField key,
+            string internalOrgId,
+            OrderProgress progress,
+            string organisationName)
+        {
+            var model = new OrderModel(internalOrgId, orderType, progress, organisationName);
+
+            model.StatusDescription(key)
+                .Should().Be(OrderModel.DefaultDescriptions.Value(key));
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderDescription, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderingParty, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.Supplier, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.CommencementDate, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ServiceRecipients, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.SolutionsAndServices, true)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.PlannedDeliveryDates, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.FundingSources, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ImplementationPlan, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.AssociatedServicesBilling, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.DataProcessing, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ReviewAndComplete, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderDescription, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderingParty, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.Supplier, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.CommencementDate, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ServiceRecipients, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.SolutionsAndServices, true)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.PlannedDeliveryDates, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.FundingSources, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ImplementationPlan, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.AssociatedServicesBilling, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.DataProcessing, false)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ReviewAndComplete, false)]
+        public static void NewOrder_StausDecription_MergerSplitOrder_ReturnsExpected(
+            OrderTypeEnum orderType,
+            OrderSummaryField key,
+            bool mergerSplitSpecific,
+            string internalOrgId,
+            OrderProgress progress,
+            string organisationName)
+        {
+            var model = new OrderModel(internalOrgId, orderType, progress, organisationName);
+
+            if (mergerSplitSpecific)
+            {
+                model.StatusDescription(key)
+                    .Should().Be(OrderModel.MergerSplitSpecificDescriptions.Value(key));
+            }
+            else
+            {
+                model.StatusDescription(key)
+                    .Should().Be(OrderModel.DefaultDescriptions.Value(key));
+            }
+        }
+
+        public static string Value(this IEnumerable<KeyValuePair<OrderSummaryField, string>> source, OrderSummaryField key)
+        {
+            return source.Single(kv => kv.Key == key).Value;
         }
     }
 }

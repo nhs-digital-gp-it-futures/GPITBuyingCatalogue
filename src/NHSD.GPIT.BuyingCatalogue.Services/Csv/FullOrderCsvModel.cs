@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
     [ExcludeFromCodeCoverage(Justification = "Class currently only contains automatic properties")]
-    public sealed class FullOrderCsvModel
+    public class FullOrderCsvModel
     {
         public CallOffId CallOffId { get; set; }
 

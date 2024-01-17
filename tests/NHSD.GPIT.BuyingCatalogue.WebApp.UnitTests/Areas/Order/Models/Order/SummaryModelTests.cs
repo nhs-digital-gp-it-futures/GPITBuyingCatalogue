@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 using Xunit;
 
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.Order.Should().BeEquivalentTo(order);
             model.HasSubsequentRevisions.Should().Be(hasSubsequentRevisions);
             model.CanBeTerminated.Should().Be(order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions);
-            model.CanBeAmended.Should().Be(!order.AssociatedServicesOnly && order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions && !order.ContractExpired);
+            model.CanBeAmended.Should().Be(!order.OrderType.AssociatedServicesOnly && order.OrderStatus == OrderStatus.Completed && !hasSubsequentRevisions && !order.ContractExpired);
         }
 
         [Theory]
@@ -75,7 +75,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         {
             order.CommencementDate = contractExpired ? DateTime.Now.AddMonths(-2) : null;
             order.MaximumTerm = contractExpired ? 1 : null;
-            order.AssociatedServicesOnly = associatedServicesOnly;
+            order.OrderType = associatedServicesOnly
+                ? OrderTypeEnum.AssociatedServiceOther
+                : OrderTypeEnum.Solution;
             order.Completed = completed ? DateTime.Now : null;
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, hasSubsequentRevisions, new ImplementationPlan());
 
@@ -119,17 +121,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
 
         [Theory]
         [CommonAutoData]
-        public static void FundingTypeDescription_PropertiesCorrectlySet(
+        public static void BuildAmendOrderItemModel_PropertiesCorrectlySet(
             string internalOrgId,
             bool hasSubsequentRevisions,
-            EntityFramework.Ordering.Models.Order order,
-            CatalogueItemId catalogueItemId)
+            ImplementationPlan implementationPlan,
+            EntityFramework.Ordering.Models.Order order)
         {
-            var model = new SummaryModel(new OrderWrapper(order), internalOrgId, hasSubsequentRevisions, new ImplementationPlan());
+            var orderItem = order.OrderItems.First();
+            var wrapper = new OrderWrapper(order);
+            var model = new SummaryModel(wrapper, internalOrgId, hasSubsequentRevisions, implementationPlan);
 
-            var result = model.FundingTypeDescription(catalogueItemId);
-            var actual = result.Should().BeOfType<FundingTypeDescriptionModel>().Subject;
-            actual.Should().NotBeNull();
+            var result = model.BuildAmendOrderItemModel(orderItem);
+            result.CallOffId.Should().Be(order.CallOffId);
+            result.OrderType.Should().Be(order.OrderType);
+            result.IsAmendment.Should().Be(order.IsAmendment);
+            result.IsOrderItemAdded.Should().BeTrue();
+            result.OrderItemPrice.Should().Be(orderItem.OrderItemPrice);
+            result.CatalogueItem.Should().Be(orderItem.CatalogueItem);
+            result.RolledUpRecipientsForItem.Should().BeEquivalentTo(wrapper.RolledUp.OrderRecipients.ForCatalogueItem(orderItem.CatalogueItemId));
+            result.RolledUpTotalQuantity.Should().Be(orderItem.TotalQuantity(wrapper.RolledUp.OrderRecipients.ForCatalogueItem(orderItem.CatalogueItemId)));
+            result.PreviousTotalQuantity.Should().Be(0);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void BuildOrderTotals_PropertiesCorrectlySet(
+            string internalOrgId,
+            bool hasSubsequentRevisions,
+            ImplementationPlan implementationPlan,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            var wrapper = new OrderWrapper(order);
+            var model = new SummaryModel(wrapper, internalOrgId, hasSubsequentRevisions, implementationPlan);
+
+            var result = model.BuildOrderTotals();
+            result.OrderType.Should().Be(order.OrderType);
+            result.MaximumTerm.Should().Be(order.MaximumTerm);
+            result.TotalOneOffCost.Should().Be(order.TotalOneOffCost(null));
+            result.TotalMonthlyCost.Should().Be(order.TotalMonthlyCost(null));
+            result.TotalAnnualCost.Should().Be(order.TotalAnnualCost(null));
+            result.TotalCost.Should().Be(wrapper.TotalCost());
         }
     }
 }

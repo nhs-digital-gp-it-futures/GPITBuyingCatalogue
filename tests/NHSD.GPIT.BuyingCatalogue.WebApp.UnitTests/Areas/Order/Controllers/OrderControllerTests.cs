@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.CodeAnalysis.Options;
 using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -80,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             orderServiceMock.VerifyAll();
             orderProgressService.VerifyAll();
 
-            var expected = new OrderModel(internalOrgId, order, orderTaskList)
+            var expected = new OrderModel(internalOrgId, orderTaskList, order)
             {
                 DescriptionUrl = "testUrl",
             };
@@ -218,6 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         [CommonAutoData]
         public static async Task Get_NewOrder_ReturnsExpectedResult(
             string internalOrgId,
+            OrderTypeEnum orderType,
             [Frozen] Mock<IOrganisationsService> organisationsService,
             Organisation organisation,
             OrderController controller)
@@ -226,11 +228,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
                 .Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId))
                 .ReturnsAsync(organisation);
 
-            var result = await controller.NewOrder(internalOrgId);
+            var result = await controller.NewOrder(internalOrgId, orderType);
 
             organisationsService.VerifyAll();
 
-            var expected = new OrderModel(internalOrgId, null, new OrderProgress(), organisation.Name)
+            var expected = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name)
             {
                 DescriptionUrl = "testUrl",
             };
@@ -241,8 +243,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(OrderTypeEnum.Unknown)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static async Task Get_ReadyToStart_ReturnsView(
+            OrderTypeEnum orderType,
             Organisation organisation,
             [Frozen] Mock<IOrganisationsService> service,
             OrderController controller)
@@ -250,9 +257,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
                 .ReturnsAsync(organisation);
 
-            var result = await controller.ReadyToStart(organisation.InternalIdentifier);
+            var result = await controller.ReadyToStart(organisation.InternalIdentifier, orderType);
 
-            result.As<ViewResult>().Should().NotBeNull();
+            var actual = result.Should().BeOfType<ViewResult>().Subject;
+            var model = actual.Model.Should().BeAssignableTo<ReadyToStartModel>().Subject;
+
+            model.OrderType.Value.Should().Be(orderType);
         }
 
         [Theory]
@@ -283,10 +293,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             string internalOrgId,
             ReadyToStartModel model,
             OrderTriageValue option,
-            CatalogueItemType orderType,
+            OrderTypeEnum orderType,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId, model, option, orderType).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, orderType, option).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.NewOrder));
@@ -305,10 +315,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             string internalOrgId,
             ReadyToStartModel model,
             OrderTriageValue option,
-            CatalogueItemType orderType,
+            OrderTypeEnum orderType,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId, model, option, orderType).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, orderType, option).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.NewOrder));
@@ -564,7 +574,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         public static void GetAdvice_CompletedAssociatedServicesOnlyOrder_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
-            order.AssociatedServicesOnly = true;
+            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.Completed = DateTime.UtcNow;
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
@@ -577,7 +587,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         public static void GetAdvice_CompletedOrderIsLatest_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.Completed = DateTime.UtcNow;
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
@@ -590,7 +600,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         public static void GetAdvice_CompletedOrderIsNotLatest_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
-            order.AssociatedServicesOnly = false;
+            order.OrderType = OrderTypeEnum.Solution;
             order.Completed = DateTime.UtcNow;
 
             OrderController.GetAdvice(new OrderWrapper(order), false)

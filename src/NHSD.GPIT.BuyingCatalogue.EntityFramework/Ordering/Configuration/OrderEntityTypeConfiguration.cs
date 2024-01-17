@@ -28,6 +28,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasConversion<int>()
                 .HasColumnName("OrderTriageValueId");
 
+            builder.Property(o => o.OrderType)
+                .HasConversion<int>(
+                    v => (int)v.Value,
+                    v => (OrderTypeEnum)v)
+                .HasColumnName("OrderTypeId");
+
+            builder.Property<CatalogueItemId?>(nameof(AssociatedServicesOnlyDetails.SolutionId))
+                 .HasMaxLength(14)
+                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id))
+                 .HasColumnName("SolutionId");
+
             builder.Property(o => o.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.Property(o => o.SupplierId).HasMaxLength(6);
@@ -63,10 +74,29 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasForeignKey(o => o.LastUpdatedBy)
                 .HasConstraintName("FK_Orders_LastUpdatedBy");
 
-            builder.HasOne(x => x.Solution)
-                .WithMany()
-                .HasForeignKey(x => x.SolutionId)
-                .HasConstraintName("FK_Orders_Solution");
+            builder.OwnsOne(
+                o => o.AssociatedServicesOnlyDetails,
+                a =>
+                {
+                    a.Property(p => p.SolutionId)
+                        .HasColumnName("SolutionId");
+
+                    a.Property(p => p.PracticeReorganisationOdsCode)
+                        .HasColumnName("PracticeReorganisationOdsCode");
+
+                    a.HasOne(p => p.Solution)
+                        .WithMany()
+                        .HasForeignKey(x => x.SolutionId)
+                        .HasConstraintName("FK_Orders_Solution");
+
+                    a.HasOne(p => p.PracticeReorganisationRecipient)
+                        .WithMany()
+                        .HasForeignKey(x => x.PracticeReorganisationOdsCode)
+                        .HasConstraintName("FK_Orders_PraticeReorganisationRecipient");
+                });
+
+            builder.Navigation(o => o.AssociatedServicesOnlyDetails)
+                .IsRequired();
 
             builder.HasOne(o => o.SelectedFramework)
                 .WithMany()
@@ -82,13 +112,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
             builder.HasIndex(o => o.IsDeleted, "IX_Orders_IsDeleted");
 
             builder.HasIndex(
-                o => new
+                new string[]
                 {
-                    o.OrderNumber,
-                    o.IsDeleted,
-                    o.Revision,
-                    o.OrderingPartyId,
-                    o.SolutionId,
+                    nameof(Order.OrderNumber),
+                    nameof(Order.IsDeleted),
+                    nameof(Order.Revision),
+                    nameof(Order.OrderingPartyId),
+                    nameof(AssociatedServicesOnlyDetails.SolutionId),
                 },
                 "IX_OrderNum_IsDeleted_Revision");
 
