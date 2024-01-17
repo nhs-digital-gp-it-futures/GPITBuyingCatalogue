@@ -105,84 +105,84 @@
     </div>
 </div>
 
- <dialog class="modal micromodal-slide" id="search-modal" aria-hidden="true">
+<dialog class="modal micromodal-slide" id="search-modal" aria-hidden="true">
+    <form method="dialog">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
-        <header class="modal__header">
-          <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="modal-1-title">
-            Search for Service Recipients
-          </h2>
-            <vc:nhs-secondary-button text="Close"
-                                     type="Secondary"
-                                     id="close-modal-btn" />
-        </header>
-        <main class="modal__content" id="modal-1-content">
-          <p class="nhsuk-body">
-            Find and select the Service Recipients you want to include in this order.
-          </p>
-          <div>
-              <form action="" method="post">
-                <div class="app-search__contents">
-                <label class="c-search__label visually-hidden" for="query">Filter Catalogue Solutions</label>
-                <input class="app-search__input ui-autocomplete-input" id="filter-term"
-                  placeholder="Search by ODS code or organisation name"  autocomplete="off" name="query" type="search"
-                  maxlength="50">
+        <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+            <header class="modal__header">
+                <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="modal-1-title">
+                    Search for Service Recipients
+                </h2>
+                    <button class="nhsuk-button nhsuk-button--secondary" value="cancel">
+                        Close
+                    </button>
+            </header>
+            <main class="modal__content" id="modal-1-content">
+                <p class="nhsuk-body">
+                    Find and select the Service Recipients you want to include in this order.
+                </p>
+                <div>
+                    <div class="app-search__contents">
+                        <label class="c-search__label visually-hidden" for="query">Filter Catalogue Solutions</label>
+                        <input class="app-search__input ui-autocomplete-input" id="filter-term"
+                               placeholder="Search by ODS code or organisation name"  autocomplete="off" name="query" type="search"
+                               maxlength="50">
                   
-                 <button type="button" class="app-search__submit">
-                    <svg class="icon icon__search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
-                         focusable="false">
-                        <path
-                            d="M19.71 18.29l-4.11-4.1a7 7 0 1 0-1.41 1.41l4.1 4.11a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42zM5 10a5 5 0 1 1 5 5 5 5 0 0 1-5-5z">
-                        </path>
-                        <image class="icon__search icon__search--fallback"
-                               src="/apps-library/static/apps_library/images/icon-search-blue.352e1118d687.png" xlink:href=""></image>
-                    </svg>
-                    <span class="visually-hidden">Search</span>
-                </button>
-                        </div>
-            </form>
-          </div>
-          <div class="search-results-container">
-              <nhs-table id="search-table">
-                  <nhs-table-column>
-                      <div class="nhsuk-checkboxes__item">
-                          <label class="nhsuk-label nhsuk-checkboxes__label">
-                              Organisation
-                          </label>
-                      </div>
-                  </nhs-table-column>
-                  <nhs-table-column>ODS code</nhs-table-column>
-                  @foreach (var (item, rIndex) in @Model.SearchRecipients.Select((x, i) => (x, i)))
-                  {
+                        <button type="button" class="app-search__submit" value="search">
+                            <svg class="icon icon__search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
+                                 focusable="false">
+                                <path
+                                    d="M19.71 18.29l-4.11-4.1a7 7 0 1 0-1.41 1.41l4.1 4.11a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42zM5 10a5 5 0 1 1 5 5 5 5 0 0 1-5-5z">
+                                </path>
+                                <image class="icon__search icon__search--fallback"
+                                       src="/apps-library/static/apps_library/images/icon-search-blue.352e1118d687.png" xlink:href=""></image>
+                            </svg>
+                            <span class="visually-hidden">Search</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="search-results-container">
+                    <nhs-table id="search-table">
+                        <nhs-table-column>
+                            <div class="nhsuk-checkboxes__item">
+                                <label class="nhsuk-label nhsuk-checkboxes__label">
+                                    Organisation
+                                </label>
+                            </div>
+                        </nhs-table-column>
+                        <nhs-table-column>ODS code</nhs-table-column>
+                        @foreach (var (item, rIndex) in @Model.SearchRecipients.Select((x, i) => (x, i)))
+                        {
                             <nhs-table-row-container id="@item.OdsCode">
-                          <nhs-table-cell>
-                              <nhs-checkbox-container>
-                                  <nhs-checkbox asp-for="@Model.SearchRecipients[rIndex].Selected"
-                                                label-text="@item.Name"
-                                                hidden-input="@Model.SearchRecipients[rIndex].Name"
+                                <nhs-table-cell>
+                                    <nhs-checkbox-container>
+                                        <nhs-checkbox asp-for="@Model.SearchRecipients[rIndex].Selected"
+                                                      label-text="@item.Name"
+                                                      hidden-input="@Model.SearchRecipients[rIndex].Name"
                                                       checkbox-class="modal-checkbox"/>
-                              </nhs-checkbox-container>
-                          </nhs-table-cell>
-                          <nhs-table-cell>
-                              <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
+                                    </nhs-checkbox-container>
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
                                     <input id="ods-code-hidden" type="hidden" asp-for="@Model.SearchRecipients[rIndex].OdsCode" />
-                          </nhs-table-cell>
-                      </nhs-table-row-container>
-                  }
-              </nhs-table>
-            <div id="no-records-found" style="display: none;"><p class="nhsuk-body nhsuk-u-margin-top-3">There are no Service Recipients that match. Try entering different search criteria.</p></div>
-          </div>
-        </main>
-        <footer class="modal__footer">
-            <div style="display: inline">
-                <vc:nhs-secondary-button text="Apply recipients"
-                                         type="Primary"
-                                         id="submit-modal-btn" />
-                <a href="#" id="cancel-link">Cancel</a>
-            </div>
-        </footer>
-      </div>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                    <div id="no-records-found" style="display: none;"><p class="nhsuk-body nhsuk-u-margin-top-3">There are no Service Recipients that match. Try entering different search criteria.</p></div>
+                </div>
+            </main>
+            <footer class="modal__footer">
+                <div style="display: inline">
+                    <button class="nhsuk-button" value="apply">
+                            Apply recipients
+                    </button>
+                    <button href="#" id="cancel-link">Cancel</button>
+                </div>
+            </footer>
+        </div>
     </div>
+    </form>
   </dialog>
 
 <script>
@@ -194,52 +194,36 @@
     const dialog = document.getElementById(dialogId);
     const showDialogButton = document.getElementById(showDialogButtonId);
 
-    //Modal constants
-    const closeButtonId = "close-modal-btn";
-    const cancelLinkId = "cancel-link";
-    const submitButtonId = "submit-modal-btn";
-
     showDialogButton.addEventListener("click", () => {
         dialog.showModal();
     });
 
-    dialog.addEventListener("click", () => {
-        switch (event.target.id) {
-            case closeButtonId:
-            case cancelLinkId:
-                dialog.close();
-                break;
-            case submitButtonId:
+    dialog.addEventListener('close', () => {
+         if (dialog.returnValue === 'apply') {
                 var checkedboxes = document.querySelectorAll('.modal-checkbox:checked');
-                checkedboxes.forEach(function (item) {
+                    checkedboxes.forEach(function (item) {
 
-                    // Find the checkbox with matchingods code
-                    var row = item.closest('tr');
-                    var query = "#sr-table #" + row.id + " input[type='checkbox'].main-srs";
-                    var checkbox = document.querySelector(query);
+                        // Find the checkbox with matchingods code
+                        var row = item.closest('tr');
+                        var query = "#sr-table #" + row.id + " input[type='checkbox'].main-srs";
+                        var checkbox = document.querySelector(query);
 
-                    // Check if the checkbox exists
-                    if (checkbox) {
-                        // Set the checkbox to checked
-                        checkbox.checked = true;
-                    }
-                });
-                var expanders = document.querySelectorAll('.nhsuk-expander');
-                expanders.forEach(function (container) {
-                    var checks = container.querySelectorAll('.main-srs:checked:not(.sub-sr-selector)');
-                    var checkboxCount = checks.length;
+                        // Check if the checkbox exists
+                        if (checkbox) {
+                            // Set the checkbox to checked
+                            checkbox.checked = true;
+                        }
+                    });
+                    var expanders = document.querySelectorAll('.nhsuk-expander');
+                    expanders.forEach(function (container) {
+                        var checks = container.querySelectorAll('.main-srs:checked:not(.sub-sr-selector)');
+                        var checkboxCount = checks.length;
 
-                    var countBox = container.querySelector('.nhsuk-details__summary-text_secondary b');
-                    countBox.innerHTML = checkboxCount + " ";
-                });
-
-                dialog.close();
-                break;
-            default:
-                break;
+                        var countBox = container.querySelector('.nhsuk-details__summary-text_secondary b');
+                        countBox.innerHTML = checkboxCount + " ";
+                    });
         }
-        
-    });
+    })
 
     //Auto-complete
     const searchInput = document.getElementById("filter-term");
