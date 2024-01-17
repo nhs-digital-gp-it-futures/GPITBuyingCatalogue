@@ -16,6 +16,7 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
     public const string AdviceText = "Enter the quantity you want for each practice for the duration of your order.";
     public const string AdviceTextPatient = "We’ve included the latest practice list sizes published by NHS Digital.";
     public const string AdviceTextServiceRecipient = "You can only order one solution per Service Recipient.";
+    public const string AdviceTextMergerSplit = "Review the quantity you’ll be ordering based on the Service Recipients you’ve selected.";
     public const string QuantityColumnTitleText = "Quantity";
     public const string QuantityColumnTitleTextPatient = "Practice list size";
     public const string TitleText = "Quantity of {0}";
@@ -58,7 +59,7 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
         PracticeReorganisationRecipient = $"{practiceReorganisationRecipient?.Name} ({practiceReorganisationRecipient?.Id})";
         if (orderType.MergerOrSplit)
         {
-            Advice = "Review the quantity you’ll be ordering based on the Service Recipients you’ve selected.";
+            Advice = AdviceTextMergerSplit;
         }
 
         PreviouslySelected = previousRecipients?
