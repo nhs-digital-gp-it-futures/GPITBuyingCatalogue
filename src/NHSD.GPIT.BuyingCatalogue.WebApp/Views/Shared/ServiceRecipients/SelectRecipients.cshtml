@@ -44,10 +44,9 @@
                                      text="Deselect all"
                                      type="Secondary" />
 
-            <vc:nhs-secondary-button url="#"
-                                     text="Search for Service Recipients"
+            <vc:nhs-secondary-button text="Search for Service Recipients"
                                      type="Secondary"
-                                     id="showDialog"/>
+                                     id="show-dialog"/>
 
         }
 
@@ -113,7 +112,9 @@
           <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="modal-1-title">
             Search for Service Recipients
           </h2>
-          <button class="nhsuk-button nhsuk-button--secondary bc-small-button nhsuk-u-margin-bottom-0" aria-label="Close modal" data-micromodal-close>Close</button>
+            <vc:nhs-secondary-button text="Close"
+                                     type="Secondary"
+                                     id="close-modal-btn" />
         </header>
         <main class="modal__content" id="modal-1-content">
           <p class="nhsuk-body">
@@ -127,7 +128,7 @@
                   placeholder="Search by ODS code or organisation name"  autocomplete="off" name="query" type="search"
                   maxlength="50">
                   
-                <button type="button" class="app-search__submit">
+                 <button type="button" class="app-search__submit">
                     <svg class="icon icon__search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
                          focusable="false">
                         <path
@@ -169,93 +170,85 @@
                       </nhs-table-row-container>
                   }
               </nhs-table>
-            <div id="noRecordsFound" style="display: none;"><p class="nhsuk-body nhsuk-u-margin-top-3">There are no Service Recipients that match. Try entering different search criteria.</p></div>
+            <div id="no-records-found" style="display: none;"><p class="nhsuk-body nhsuk-u-margin-top-3">There are no Service Recipients that match. Try entering different search criteria.</p></div>
           </div>
         </main>
         <footer class="modal__footer">
             <div style="display: inline">
-                    <button value="cancel" formmethod="dialog">Cancel</button>
-                    <button id="submit-modal-btn" value="default" class="nhsuk-button  bc-small-button nhsuk-u-margin-bottom-0">Apply recipients</button>
-                <a href="#" class="nhsuk-link nhsuk-u-margin-left-2 nhsuk-u-margin-bottom-0" aria-label="Close this dialog window">Cancel</a>
+                <vc:nhs-secondary-button text="Apply recipients"
+                                         type="Primary"
+                                         id="submit-modal-btn" />
+                <a href="#" id="cancel-link">Cancel</a>
             </div>
         </footer>
       </div>
     </div>
   </dialog>
-  
-<div style="display:inline-block;">
-    <input type="hidden" id="sr-json-data" name="sr-json-data" />
-</div>
-
 
 <script>
-    //Form constants
-    const showDialogButton = document.getElementById("showDialog");
-    const mainForm = document.getElementById("sr-form");
-    const mainCheckboxSelectedHidden = document.getElementById("sr-json-data");
+    //Config
+    const showDialogButtonId = "show-dialog";
+    const dialogId = "search-modal";
 
+    //Modal Variables
+    const dialog = document.getElementById(dialogId);
+    const showDialogButton = document.getElementById(showDialogButtonId);
 
     //Modal constants
-    const dialog = document.getElementById("search-modal");
-    const table = document.getElementById("search-table");
-    const searchInput = document.getElementById("filter-term");
-    const noRecordsFound = document.getElementById("noRecordsFound");
-    const submitModalButton = document.getElementById("submit-modal-btn");
+    const closeButtonId = "close-modal-btn";
+    const cancelLinkId = "cancel-link";
+    const submitButtonId = "submit-modal-btn";
 
     showDialogButton.addEventListener("click", () => {
         dialog.showModal();
     });
 
-    mainForm.onsubmit = function (e) {
-        var data = [];
-        document.querySelectorAll(".gather-data:checked").forEach(function (checkbox) {
-            data.push({
-                orgCode: checkbox.data('orgcode'),
-                category: checkbox.data('category'),
-                name: checkbox.val()
-            });
-        });
-        console.log('in submit function and data is >>> ', data);
-        // Convert the data array into a JSON string
-        var jsonData = JSON.stringify(data);
+    dialog.addEventListener("click", () => {
+        switch (event.target.id) {
+            case closeButtonId:
+            case cancelLinkId:
+                dialog.close();
+                break;
+            case submitButtonId:
+                var checkedboxes = document.querySelectorAll('.modal-checkbox:checked');
+                checkedboxes.forEach(function (item) {
 
-        // Put the JSON data into the hidden input field
-        mainCheckboxSelectedHidden.val(jsonData);
-    };
+                    // Find the checkbox with matchingods code
+                    var row = item.closest('tr');
+                    var query = "#sr-table #" + row.id + " input[type='checkbox'].main-srs";
+                    var checkbox = document.querySelector(query);
 
-    submitModalButton.addEventListener("click", () => {
+                    // Check if the checkbox exists
+                    if (checkbox) {
+                        // Set the checkbox to checked
+                        checkbox.checked = true;
+                    }
+                });
+                var expanders = document.querySelectorAll('.nhsuk-expander');
+                expanders.forEach(function (container) {
+                    var checks = container.querySelectorAll('.main-srs:checked:not(.sub-sr-selector)');
+                    var checkboxCount = checks.length;
 
-        var checkedboxes = document.querySelectorAll('.modal-checkbox:checked');
-        checkedboxes.forEach(function (item) {
+                    var countBox = container.querySelector('.nhsuk-details__summary-text_secondary b');
+                    countBox.innerHTML = checkboxCount + " ";
+                });
 
-            // Find the checkbox with matchingods code
-            var row = item.closest('tr');
-            var query = "#sr-table #" + row.id + " input[type='checkbox'].main-srs";
-            var checkbox = document.querySelector(query);
-
-            // Check if the checkbox exists
-            if (checkbox) {
-                // Set the checkbox to checked
-                checkbox.checked = true;
-            }
-        });
-        var expanders = document.querySelectorAll('.nhsuk-expander');
-        expanders.forEach(function (container) {
-            //var container = $(this);
-            var checks = container.querySelectorAll('.main-srs:checked:not(.sub-sr-selector)');
-            var checkboxCount = checks.length;
-
-            var countBox = container.querySelector('.nhsuk-details__summary-text_secondary b');
-            countBox.innerHTML = checkboxCount + " ";
-        });
-
-        dialog.close();
-
+                dialog.close();
+                break;
+            default:
+                break;
+        }
+        
     });
 
+    //Auto-complete
+    const searchInput = document.getElementById("filter-term");
+    const noRecordsFound = document.getElementById("no-records-found");
+
     searchInput.addEventListener("input", function () {
-        const searchTerm = searchInput.value.toLowerCase();
-        const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+        var searchTerm = searchInput.value.toLowerCase();
+        var table = document.getElementById("search-table");
+        var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
 
         let hasMatch = false;
 

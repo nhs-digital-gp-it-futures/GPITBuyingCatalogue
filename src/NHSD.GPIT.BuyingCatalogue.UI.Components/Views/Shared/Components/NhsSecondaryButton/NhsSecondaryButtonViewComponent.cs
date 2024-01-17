@@ -8,6 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSec
     {
         private const string NhsSecondary = "nhsuk-button--secondary";
         private const string NhsDelete = "nhsuk-button--delete";
+        private const string DefaultHref = "#";
 
         public enum ButtonType
         {
@@ -16,12 +17,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSec
             Delete = 2,
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(string text, string url, ButtonType type, string id = null)
+        public async Task<IViewComponentResult> InvokeAsync(string text, ButtonType type, string url = null, string id = null)
         {
             var model = new NhsSecondaryButtonModel
             {
                 Text = text,
-                Url = url,
+                Url = !string.IsNullOrEmpty(url) ? url : DefaultHref,
                 Id = id,
             };
 
