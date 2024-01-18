@@ -38,9 +38,8 @@ services:
     container_name: "nhsd_gpitbc_blob_store"
     ports:
       - "10000:10000"
-      - "10001:10001"
+      - "10003:10001"
       - "10002:10002"
-
 
   nhsd_gpitbc_azurite_seed:
     image: "mcr.microsoft.com/azure-cli"
@@ -48,5 +47,5 @@ services:
       - nhsd_gpitbc_azurite
     restart: "no"
     environment:
-      AZURE_STORAGE_CONNECTION_STRING: "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://nhsd_gpitbc_azurite:10000/devstoreaccount1;QueueEndpoint=http://nhsd_gpitbc_azurite:10001/devstoreaccount1;"
+      AZURE_STORAGE_CONNECTION_STRING: "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://nhsd_gpitbc_azurite:10000/devstoreaccount1;QueueEndpoint=http://nhsd_gpitbc_azurite:10003/devstoreaccount1;"
     entrypoint: ["bash", "-c", "sleep 10 && az storage container create -n orderpdfs && az storage container create -n publicdocs && az storage container create -n capabilities-update"]
