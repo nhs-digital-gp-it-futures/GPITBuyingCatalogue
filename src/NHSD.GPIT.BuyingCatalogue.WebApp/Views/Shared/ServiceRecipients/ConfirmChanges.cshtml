@@ -12,14 +12,14 @@
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="AddRemoveRecipientsLink" />
             <input type="hidden" asp-for="OrderType.Value" name="@nameof(Model.OrderType)" />
-            <input type="hidden" asp-for="PracticeReorganisationRecipient.Name" />
-            <input type="hidden" asp-for="PracticeReorganisationRecipient.OdsCode" />
 
-            @if (Model.OrderType.MergerOrSplit)
+            @if (Model.OrderType?.MergerOrSplit ?? false)
             {
                 var recipientTitle = Model.OrderType.GetPracticeReorganisationRecipientTitle();
                 var recipientsTitle = Model.OrderType.GetServiceRecipientsTitle();
 
+                <input type="hidden" asp-for="PracticeReorganisationRecipient.Name" />
+                <input type="hidden" asp-for="PracticeReorganisationRecipient.OdsCode" />
                 <div id="selected-service-recipients-practice-reorganisation">
 
                     <h3 style="white-space:nowrap">@recipientTitle</h3>
