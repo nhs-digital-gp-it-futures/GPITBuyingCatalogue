@@ -1,0 +1,89 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsModalSearch.NhsModalSearchModel;
+
+<dialog class="modal micromodal-slide" id="@Model.Id" aria-hidden="true">
+    <form method="dialog">
+        <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+            <div class="modal__container" aria-modal="true" aria-labelledby="modal-1-title">
+                <header class="modal__header">
+                    <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="modal-1-title">
+                        @Model.Title
+                    </h2>
+                    <button class="nhsuk-button nhsuk-button--secondary" value="cancel">
+                        Close
+                    </button>
+                </header>
+                <main class="modal__content" id="modal-1-content">
+                    <p class="nhsuk-body">
+                        @Model.Advice
+                    </p>
+                    <div>
+                        <div class="app-search__contents">
+                            <label class="c-search__label visually-hidden" for="query">@Model.Placeholder</label>
+                            <input class="app-search__input ui-autocomplete-input" id="@(Model.Id + "-filter-term")"
+                                   placeholder="@Model.Placeholder" autocomplete="off" name="query" type="search"
+                                   maxlength="50">
+
+                            <button type="button" class="app-search__submit" value="search">
+                                <svg class="icon icon__search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
+                                     focusable="false">
+                                    <path d="M19.71 18.29l-4.11-4.1a7 7 0 1 0-1.41 1.41l4.1 4.11a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42zM5 10a5 5 0 1 1 5 5 5 5 0 0 1-5-5z">
+                                    </path>
+                                    <image class="icon__search icon__search--fallback"
+                                           src="/apps-library/static/apps_library/images/icon-search-blue.352e1118d687.png" xlink:href=""></image>
+                                </svg>
+                                <span class="visually-hidden">Search</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="search-results-container">
+                        <div id="@(Model.Id + "-search-table")">
+                            <partial name="@Model.TablePartialView" model="@Model.TableData"/>
+                        </div>
+                        <div id="@(Model.Id + "-no-records-found")" style="display: none;">
+                            <p class="nhsuk-body nhsuk-u-margin-top-3">@Model.NotFoundText</p></div>
+                    </div>
+                </main>
+                <footer class="modal__footer">
+                    <div style="display: inline">
+                        <button class="nhsuk-button" value="apply">
+                            @Model.ApplyButtonText
+                        </button>
+                        <button href="#" id="cancel-link">Cancel</button>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </form>
+</dialog>
+
+<script type="text/javascript" src="@Url.Content("~/js/ModalSearch.min.js")" asp-append-version="true"></script>
+<script type="text/javascript">
+    //Configure the modal
+
+    function updateRecipients() {
+        var checkedboxes = document.querySelectorAll('.modal-checkbox:checked');
+        checkedboxes.forEach(function (item) {
+
+            // Find the checkbox with matching ods code
+            var row = item.closest('tr');
+            var query = "#sr-table #" + row.id + " input[type='checkbox'].main-srs";
+            var checkbox = document.querySelector(query);
+
+            // Check if the checkbox exists
+            if (checkbox) {
+                // Set the checkbox to checked
+                checkbox.checked = true;
+            }
+        });
+        var expanders = document.querySelectorAll('.nhsuk-expander');
+        expanders.forEach(function (container) {
+            var checks = container.querySelectorAll('.main-srs:checked:not(.sub-sr-selector)');
+            var checkboxCount = checks.length;
+
+            var countBox = container.querySelector('.nhsuk-details__summary-text_secondary b');
+            countBox.innerHTML = checkboxCount + " ";
+        });
+    }
+
+    new modalSearchConfig('@Model.Id', '@Model.ShowDialogButton', () => updateRecipients());
+</script>

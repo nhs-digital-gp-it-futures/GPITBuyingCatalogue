@@ -54,6 +54,12 @@
     ]
   },
   {
+    "outputFileName": "wwwroot/js/ModalSearch.min.js",
+    "inputFiles": [
+      "wwwroot/js/ModalSearch.js"
+    ]
+  },
+  {
     "outputFileName": "wwwroot/govuk-frontend/assets/js/govuk-frontend.min.js",
     "inputFiles": [
       "wwwroot/govuk-frontend/assets/js/govuk-frontend.min.js"
