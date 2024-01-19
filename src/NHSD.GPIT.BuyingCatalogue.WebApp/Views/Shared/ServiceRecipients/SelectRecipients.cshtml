@@ -14,7 +14,7 @@
         @if ((Model.SubLocations?.Any() ?? false) && Model.OrganisationType != OrganisationType.GP)
         {
             if (Model.HasImportedRecipients
-                || (Model.PreviouslySelected?.Any() ?? false))
+            || (Model.PreviouslySelected?.Any() ?? false))
             {
                 <nhs-inset-text>
                     @if (Model.HasImportedRecipients)
@@ -39,12 +39,12 @@
                                  text="Select all"
                                  type="Secondary" />
             <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.None })"
-                                     text="Deselect all"
-                                     type="Secondary" />
+                                 text="Deselect all"
+                                 type="Secondary" />
 
             <vc:nhs-secondary-button text="Search for Service Recipients"
-                                     type="Secondary"
-                                     id="show-dialog"/>
+                                 type="Secondary"
+                                 id="show-dialog"/>
         }
 
         <form method="post" id = "sr-form">
@@ -83,9 +83,9 @@
                                     <nhs-table-cell>
                                         <nhs-checkbox-container>
                                             <nhs-checkbox asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Selected"
-                                                          label-text="@item.Name"
-                                                          hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" 
-                                                          checkbox-class="main-srs gather-data"/>
+                                              label-text="@item.Name"
+                                              hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" 
+                                              checkbox-class="main-srs gather-data"/>
                                         </nhs-checkbox-container>
                                     </nhs-table-cell>
                                     <nhs-table-cell>
