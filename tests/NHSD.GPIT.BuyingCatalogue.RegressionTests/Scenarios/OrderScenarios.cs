@@ -625,7 +625,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, Pages.Ordering.OrderType.AssociatedServiceType.AssociatedServiceOther);
 
             OrderingPages.StartOrder.ReadyToStart();
 

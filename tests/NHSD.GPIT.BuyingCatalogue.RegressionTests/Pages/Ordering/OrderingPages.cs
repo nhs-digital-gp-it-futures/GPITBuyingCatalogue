@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using EnumsNET;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
@@ -684,8 +685,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             using var dbContext = Factory.DbContext;
 
-            var result = dbContext.Orders
-               .Any(o => o.Id == orderId && o.OrderType.Value == OrderTypeEnum.AssociatedServiceOther);
+            //var result = dbContext.Orders
+            //   .Any(o => o.Id == orderId && o.OrderType.Value == OrderTypeEnum.AssociatedServiceOther);
+
+            var orderType = dbContext.Orders
+               .Where(o => o.Id == orderId)
+               .Select(z => z.OrderType).ToList();
+
+            var result = orderType.Any(a => a.AssociatedServicesOnly );
 
             return result;
         }
