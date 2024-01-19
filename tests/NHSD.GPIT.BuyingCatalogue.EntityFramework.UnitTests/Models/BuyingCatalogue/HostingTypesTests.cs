@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
@@ -7,6 +8,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
 {
     public static class HostingTypesTests
     {
+        public static IEnumerable<object[]> HostingTestData => new[]
+        {
+            new object[] { null, null, null, null, false },
+            new object[] { null, new PrivateCloud(), new HybridHostingType(), new OnPremise(), false },
+            new object[] { new PublicCloud(), null, new HybridHostingType(), new OnPremise(), false },
+            new object[] { new PublicCloud(), new PrivateCloud(), null, new OnPremise(), false },
+            new object[] { new PublicCloud(), new PrivateCloud(), new HybridHostingType(), null, false },
+            new object[] { new PublicCloud(), new PrivateCloud(), new HybridHostingType(), new OnPremise(), false },
+            new object[] { new PublicCloud { Summary = "Test " }, null, null, null, true },
+            new object[] { null, new PrivateCloud { HostingModel = "Test", Summary = "Test" }, null, null, true },
+            new object[]
+            {
+                null, null, new HybridHostingType { HostingModel = "Test", Summary = "Test" }, null, true,
+            },
+            new object[] { null, null, null, new OnPremise { HostingModel = "Test", Summary = "Test" }, true },
+        };
+
         [Fact]
         public static void PublicCloud_IsValid_False()
         {
@@ -29,12 +47,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         public static void OnPremise_IsValid_False()
         {
             new OnPremise().IsValid().Should().BeFalse();
-        }
-
-        [Fact]
-        public static void Hosting_IsValid_False()
-        {
-            new Hosting().IsValid().Should().BeFalse();
         }
 
         [Theory]
@@ -77,12 +89,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonMemberAutoData(nameof(HostingTestData))]
         public static void Hosting_IsValid_True(
             PublicCloud publicCloud,
             PrivateCloud privateCloud,
             HybridHostingType hybrid,
-            OnPremise onPremise)
+            OnPremise onPremise,
+            bool expected)
         {
             var hosting = new Hosting
             {
@@ -92,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
                 OnPremise = onPremise,
             };
 
-            hosting.IsValid().Should().BeTrue();
+            hosting.IsValid().Should().Be(expected);
         }
     }
 }
