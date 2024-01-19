@@ -6,7 +6,7 @@ class modalSearchConfig {
         this.showDialogButton.addEventListener("click", () => { this.dialog.showModal(); });
         this.dialog.addEventListener('close', () => {
             if (this.dialog.returnValue === 'apply') {
-                this.applyCallback();
+                window[this.applyCallback]();
             }
         });
         this.searchInput = document.getElementById(dialogId + "-filter-term");

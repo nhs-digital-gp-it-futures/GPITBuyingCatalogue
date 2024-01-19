@@ -19,5 +19,7 @@
         public string TablePartialView { get; set; }
 
         public object TableData { get; set; }
+
+        public string CallbackFunction { get; set; }
     }
 }

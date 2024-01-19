@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsMod
         private const string DefaultNotFoundText = "There are no Service Recipients that match. Try entering different search criteria.";
         private const string DefaultApplyButtonText = "Apply recipients";
 
-        public async Task<IViewComponentResult> InvokeAsync(string id, string showDialogButtonId, string tablePartialView, object tableData, string title = null, string advice = null, string placeholder = null, string notFoundText = null, string applyButtonText = null)
+        public async Task<IViewComponentResult> InvokeAsync(string id, string showDialogButtonId, string tablePartialView, object tableData, string callbackFunction, string title = null, string advice = null, string placeholder = null, string notFoundText = null, string applyButtonText = null)
         {
             var model = new NhsModalSearchModel
             {
@@ -20,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsMod
                 ShowDialogButton = showDialogButtonId,
                 TablePartialView = tablePartialView,
                 TableData = tableData,
+                CallbackFunction = callbackFunction,
                 Title = !string.IsNullOrEmpty(title) ? title : DefaultTitle,
                 Placeholder = !string.IsNullOrEmpty(placeholder) ? placeholder : DefaultPlaceholder,
                 Advice = !string.IsNullOrEmpty(advice) ? advice : DefaultAdvice,

@@ -3,7 +3,7 @@ class modalSearchConfig {
     dialog: HTMLDialogElement;
     showDialogButton: HTMLElement;
     searchInput: HTMLInputElement;
-    applyCallback: any;
+    applyCallback: string;
     constructor(dialogId, showDialogButtonId, applyCallback) {
         this.dialog = document.getElementById(dialogId) as HTMLDialogElement;
         this.showDialogButton = document.getElementById(showDialogButtonId);
@@ -11,7 +11,7 @@ class modalSearchConfig {
         this.showDialogButton.addEventListener("click", () => { this.dialog.showModal(); });
 
         this.dialog.addEventListener('close', () => {
-            if (this.dialog.returnValue === 'apply') { this.applyCallback(); }
+            if (this.dialog.returnValue === 'apply') { window[this.applyCallback]() }
         });
 
         this.searchInput = document.getElementById(dialogId + "-filter-term") as HTMLInputElement;
