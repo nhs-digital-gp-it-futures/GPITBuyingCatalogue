@@ -65,3 +65,12 @@
 {
     <h4>Total weighted score: @Model.TotalWeightedScore.ToString("N2")</h4>
 }
+
+@if (Model.IsWinningSolution)
+{
+    <div class="order-this-now">
+        <h4 class="nhsuk-heading-s nhsuk-u-margin-top-3">Order winning solution</h4>
+        <p class="nhsuk-body">The information you entered for this competition, such as the solution and recipients, will be carried over to the order.</p>
+        <vc:nhs-secondary-button type="Primary" text="Order @Model.SolutionName" url="@Url.Action(nameof(CompetitionResultsController.OrderingInformation), typeof(CompetitionResultsController).ControllerName(), new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, solutionId = Model.SolutionId})"/>
+    </div>
+}

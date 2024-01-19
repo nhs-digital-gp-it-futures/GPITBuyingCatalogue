@@ -148,8 +148,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
         public static async Task GetAllSuppliersWithAssociatedServices_NoMatchingSuppliers_ReturnsEmptySet(
+            PracticeReorganisationTypeEnum practiceReorganisationType,
             [Frozen] BuyingCatalogueDbContext context,
             List<Supplier> suppliers,
             SupplierService service)
@@ -159,15 +162,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Suppliers.AddRange(suppliers);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
-            var result = await service.GetAllSuppliersWithAssociatedServices();
+            var result = await service.GetAllSuppliersWithAssociatedServices(practiceReorganisationType);
 
             result.Should().BeEmpty();
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
         public static async Task GetAllSuppliersWithAssociatedServices_NoServiceAssociations_ReturnsExpected(
+            PracticeReorganisationTypeEnum practiceReorganisationType,
             [Frozen] BuyingCatalogueDbContext context,
             List<Solution> solutions,
             List<Supplier> suppliers,
@@ -192,15 +199,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Suppliers.AddRange(suppliers);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
-            var results = await service.GetAllSuppliersWithAssociatedServices();
+            var results = await service.GetAllSuppliersWithAssociatedServices(practiceReorganisationType);
 
             results.Should().HaveCount(0);
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
         public static async Task GetAllSuppliersWithAssociatedServices_WithServiceAssociations_ReturnsExpected(
+            PracticeReorganisationTypeEnum practiceReorganisationType,
             [Frozen] BuyingCatalogueDbContext dbContext,
             List<Solution> solutions,
             List<AssociatedService> associatedServices,
@@ -217,6 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             solution.CatalogueItem.SupplierServiceAssociations.Add(new(solution.CatalogueItemId, associatedService.CatalogueItemId));
             solution.CatalogueItem.Supplier = supplier;
             associatedService.CatalogueItem.Supplier = supplier;
+            associatedService.PracticeReorganisationType = practiceReorganisationType;
 
             supplier.IsActive = true;
             supplier.CatalogueItems.Add(solution.CatalogueItem);
@@ -226,16 +238,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             dbContext.Suppliers.AddRange(suppliers);
 
             await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
 
-            var results = await service.GetAllSuppliersWithAssociatedServices();
+            var results = await service.GetAllSuppliersWithAssociatedServices(practiceReorganisationType);
 
             results.Should().HaveCount(1);
             results[0].Should().BeEquivalentTo(supplier, opt => opt.Excluding(s => s.SupplierContacts).Excluding(s => s.CatalogueItems));
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
         public static async Task GetAllSuppliersWithAssociatedServices_ExpiredFramework_ReturnsExpected(
+            PracticeReorganisationTypeEnum practiceReorganisationType,
             [Frozen] BuyingCatalogueDbContext dbContext,
             List<Solution> solutions,
             List<AssociatedService> associatedServices,
@@ -253,6 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             solution.CatalogueItem.SupplierServiceAssociations.Add(new(solution.CatalogueItemId, associatedService.CatalogueItemId));
             solution.CatalogueItem.Supplier = supplier;
             associatedService.CatalogueItem.Supplier = supplier;
+            associatedService.PracticeReorganisationType = practiceReorganisationType;
 
             supplier.IsActive = true;
             supplier.CatalogueItems.Add(solution.CatalogueItem);
@@ -263,7 +280,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await dbContext.SaveChangesAsync();
 
-            var results = await service.GetAllSuppliersWithAssociatedServices();
+            var results = await service.GetAllSuppliersWithAssociatedServices(practiceReorganisationType);
 
             results.Should().BeEmpty();
         }

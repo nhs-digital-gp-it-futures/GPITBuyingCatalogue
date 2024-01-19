@@ -12,8 +12,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         public SelectEditCatalogueSolutionServiceRecipients(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
             : base(driver, commonActions)
         {
+            ImportServiceReceipients = new ImportServiceReceipients(driver, commonActions);
             Factory = factory;
         }
+
+        internal ImportServiceReceipients ImportServiceReceipients { get; }
 
         public LocalWebApplicationFactory Factory { get; }
 
@@ -68,11 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void AmendImportServiceRecipients(string solutionName, string fileName)
         {
-            CommonActions.PageLoadedCorrectGetIndex(
-            typeof(ServiceRecipientsController),
-            nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
-
-            CommonActions.ClickLinkElement(ServiceRecipientObjects.ImportServiceRecipients);
+            ImportServiceReceipients.UploadServiceRecipients();
 
             var importFile = CommonActions.GetRecipientImportCsv(fileName);
 

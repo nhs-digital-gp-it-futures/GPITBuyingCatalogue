@@ -86,5 +86,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task SetServiceRecipientQuantitiesToSameValue(int orderId, CatalogueItemId catalogueItemId, int quantity)
+        {
+            var recipients = await dbContext.OrderRecipients.Include(x => x.OrderItemRecipients).Where(x => x.OrderId == orderId).ToListAsync();
+            if (recipients.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var recipient in recipients)
+            {
+                recipient.SetQuantityForItem(catalogueItemId, quantity);
+            }
+
+            await dbContext.SaveChangesAsync();
+        }
     }
 }

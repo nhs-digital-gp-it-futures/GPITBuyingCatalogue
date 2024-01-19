@@ -1489,7 +1489,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                AssociatedServicesOnly = true,
+                OrderType = OrderTypeEnum.AssociatedServiceOther,
                 OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
@@ -1512,7 +1512,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
-                SolutionId = new CatalogueItemId(99998, "001"),
+                AssociatedServicesOnlyDetails = new AssociatedServicesOnlyDetails() { SolutionId = new CatalogueItemId(99998, "001") },
                 LastUpdatedBy = user.Id,
             };
 
@@ -1562,7 +1562,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                AssociatedServicesOnly = true,
+                OrderType = OrderTypeEnum.AssociatedServiceOther,
                 OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
@@ -1603,7 +1603,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                AssociatedServicesOnly = true,
+                OrderType = OrderTypeEnum.AssociatedServiceOther,
                 OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
@@ -1636,7 +1636,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                AssociatedServicesOnly = true,
+                OrderType = OrderTypeEnum.AssociatedServiceOther,
                 OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
@@ -1659,7 +1659,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
-                SolutionId = new CatalogueItemId(99998, "001"),
+                AssociatedServicesOnlyDetails = new AssociatedServicesOnlyDetails { SolutionId = new CatalogueItemId(99998, "001") },
                 LastUpdatedBy = user.Id,
             };
 
@@ -1687,7 +1687,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Id = orderId,
                 OrderNumber = orderId,
                 Revision = 1,
-                AssociatedServicesOnly = true,
+                OrderType = OrderTypeEnum.AssociatedServiceOther,
                 OrderingPartyId = organisation,
                 Created = timeNow,
                 IsDeleted = false,
@@ -1710,7 +1710,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddDays(1),
                 InitialPeriod = 6,
                 MaximumTerm = 36,
-                SolutionId = new CatalogueItemId(99998, "001"),
+                AssociatedServicesOnlyDetails = new AssociatedServicesOnlyDetails { SolutionId = new CatalogueItemId(99998, "001") },
                 LastUpdatedBy = user.Id,
             };
 

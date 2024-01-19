@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (!ModelState.IsValid)
             {
                 var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-                var solutionWithPrices = await listPriceService.GetCatalogueItemWithPublishedListPrices(order.GetSolution().CatalogueItemId);
+                var solutionWithPrices = await listPriceService.GetCatalogueItemWithPublishedListPrices(order.GetSolutionOrderItem().CatalogueItemId);
                 model.Prices = solutionWithPrices.CataloguePrices.OrderBy(cp => cp.CataloguePriceType).ToList();
                 return View("PriceSelection/SelectPrice", model);
             }

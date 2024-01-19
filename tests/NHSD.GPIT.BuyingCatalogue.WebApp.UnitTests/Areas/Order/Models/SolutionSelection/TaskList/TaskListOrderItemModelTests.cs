@@ -18,11 +18,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void WithValidArguments_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
+            OrderTypeEnum orderType,
             OrderItem orderItem,
             int numberOfPrices,
             int priceId)
         {
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, orderItem)
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, orderType, null, orderItem)
             {
                 NumberOfPrices = numberOfPrices,
                 PriceId = priceId,
@@ -30,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(callOffId);
+            model.OrderType.Value.Should().Be(orderType);
             model.CatalogueItemId.Should().Be(orderItem.CatalogueItemId);
             model.Name.Should().Be(orderItem.CatalogueItem.Name);
             model.IsAmendment.Should().Be(callOffId.IsAmendment);
@@ -46,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             orderItem.OrderItemPrice.OrderItemPriceTiers.Clear();
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, null, orderItem);
 
             model.PriceStatus.Should().Be(TaskProgress.NotStarted);
         }
@@ -58,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             CallOffId callOffId,
             OrderItem orderItem)
         {
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, null, orderItem);
 
             model.PriceStatus.Should().Be(TaskProgress.Completed);
         }
@@ -72,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             orderItem.OrderItemPrice.OrderItemPriceTiers.Clear();
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, null, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.CannotStart);
         }
@@ -88,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             orderItem.Quantity = null;
             recipients.ForEach(x => x.OrderItemRecipients.Clear());
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.NotStarted);
         }
@@ -106,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             orderItem.Quantity = 1;
             recipients.ForEach(x => x.OrderItemRecipients.Clear());
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.NotStarted);
         }
@@ -124,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             orderItem.Quantity = null;
             recipients.ForEach(x => x.SetQuantityForItem(orderItem.CatalogueItemId, 1));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, null, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.Completed);
         }
@@ -142,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             orderItem.Quantity = null;
             recipients.ForEach(x => x.SetQuantityForItem(orderItem.CatalogueItemId, 1));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem)
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem)
             {
                 FromPreviousRevision = true,
                 HasNewRecipients = true,
@@ -166,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             orderItem.Quantity = 1;
             recipients.ForEach(x => x.OrderItemRecipients.Clear());
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.Completed);
         }
@@ -186,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             orderItem.Quantity = 1;
             recipients.ForEach(x => x.OrderItemRecipients.Clear());
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem)
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem)
             {
                 FromPreviousRevision = true,
                 HasNewRecipients = true,
@@ -210,7 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             orderItem.Quantity = null;
             recipients.ForEach(x => x.SetQuantityForItem(orderItem.CatalogueItemId, 1));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.NotStarted);
         }
@@ -229,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             recipients.ForEach(x => x.OrderItemRecipients.Clear());
             recipients.First().SetQuantityForItem(orderItem.CatalogueItemId, 1);
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.InProgress);
         }
@@ -242,7 +244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             OrderItem orderItem,
             OrderRecipient[] recipients)
         {
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
             model.DeliveryDatesStatus.Should().Be(TaskProgress.CannotStart);
         }
@@ -258,7 +260,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             recipients.ForEach(r => r.OrderItemRecipients.Clear());
             recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
             model.DeliveryDatesStatus.Should().Be(TaskProgress.NotStarted);
         }
@@ -275,7 +277,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
             recipients.First().SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today);
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
             model.DeliveryDatesStatus.Should().Be(TaskProgress.InProgress);
         }
@@ -291,7 +293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
             recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem);
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
             model.DeliveryDatesStatus.Should().Be(TaskProgress.Completed);
         }
@@ -307,7 +309,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
             recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today));
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, recipients, orderItem)
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem)
             {
                 FromPreviousRevision = true,
                 HasNewRecipients = true,

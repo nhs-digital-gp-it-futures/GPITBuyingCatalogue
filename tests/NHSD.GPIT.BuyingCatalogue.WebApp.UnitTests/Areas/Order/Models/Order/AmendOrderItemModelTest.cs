@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
-            FluentActions.Invoking(() => new AmendOrderItemModel(callOffId, Array.Empty<OrderRecipient>(), null, null, null, isAmendment, fundingTypeDescription))
+            FluentActions.Invoking(() => new AmendOrderItemModel(callOffId, OrderTypeEnum.Solution, Array.Empty<OrderRecipient>(), null, null, null, isAmendment, fundingTypeDescription))
                 .Should()
                 .Throw<ArgumentNullException>();
         }
@@ -31,7 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
-            var model = new AmendOrderItemModel(callOffId, Array.Empty<OrderRecipient>(), null, orderItem, null, isAmendment, fundingTypeDescription);
+            var model = new AmendOrderItemModel(callOffId, OrderTypeEnum.Solution, Array.Empty<OrderRecipient>(), null, orderItem, null, isAmendment, fundingTypeDescription);
+
             model.IsOrderItemAdded.Should().BeTrue();
         }
 
@@ -43,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
-            var model = new AmendOrderItemModel(callOffId, Array.Empty<OrderRecipient>(), null, orderItem, null, isAmendment, fundingTypeDescription);
+            var model = new AmendOrderItemModel(callOffId, OrderTypeEnum.Solution, Array.Empty<OrderRecipient>(), null, orderItem, null, isAmendment, fundingTypeDescription);
             model.PreviousTotalQuantity.Should().Be(0);
         }
 
@@ -55,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
-            var model = new AmendOrderItemModel(callOffId, Array.Empty<OrderRecipient>(), null, orderItem, orderItem, isAmendment, fundingTypeDescription);
+            var model = new AmendOrderItemModel(callOffId, OrderTypeEnum.Solution, Array.Empty<OrderRecipient>(), null, orderItem, orderItem, isAmendment, fundingTypeDescription);
             model.IsOrderItemAdded.Should().BeFalse();
         }
 
@@ -70,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         {
             recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Now));
 
-            var model = new AmendOrderItemModel(callOffId, recipients, null, orderItem, orderItem, isAmendment, fundingTypeDescription);
+            var model = new AmendOrderItemModel(callOffId, OrderTypeEnum.Solution, recipients, null, orderItem, orderItem, isAmendment, fundingTypeDescription);
             recipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeTrue());
         }
 
@@ -86,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         {
             recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Now));
 
-            var model = new AmendOrderItemModel(callOffId, recipients, previousRecipients, orderItem, orderItem, isAmendment, fundingTypeDescription);
+            var model = new AmendOrderItemModel(callOffId, OrderTypeEnum.Solution, recipients, previousRecipients, orderItem, orderItem, isAmendment, fundingTypeDescription);
             recipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeTrue());
             previousRecipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeFalse());
         }
@@ -100,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             OrderRecipient[] recipients,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
-            var model = new AmendOrderItemModel(callOffId, recipients, recipients, orderItem, orderItem, isAmendment, fundingTypeDescription);
+            var model = new AmendOrderItemModel(callOffId, OrderTypeEnum.Solution, recipients, recipients, orderItem, orderItem, isAmendment, fundingTypeDescription);
             recipients.ForEach(x => model.IsServiceRecipientAdded(x.OdsCode).Should().BeFalse());
         }
 
@@ -113,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
-            var model = new AmendOrderItemModel(callOffId, Array.Empty<OrderRecipient>(), null, orderItem, previousOrderItem, isAmendment, fundingTypeDescription);
+            var model = new AmendOrderItemModel(callOffId, OrderTypeEnum.Solution, Array.Empty<OrderRecipient>(), null, orderItem, previousOrderItem, isAmendment, fundingTypeDescription);
 
             model.CallOffId.Should().Be(callOffId);
             model.IsAmendment.Should().Be(isAmendment);

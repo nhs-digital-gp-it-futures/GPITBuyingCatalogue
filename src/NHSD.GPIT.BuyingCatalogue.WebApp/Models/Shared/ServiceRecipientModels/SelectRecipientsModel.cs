@@ -16,7 +16,7 @@ public class SelectRecipientsModel : NavBaseModel
 
     public SelectRecipientsModel(
         Organisation organisation,
-        IEnumerable<ServiceRecipientModel> serviceRecipients,
+        IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
         IEnumerable<string> existingRecipients,
         IEnumerable<string> excludeRecipients,
         IEnumerable<string> preSelectedRecipients,
@@ -29,7 +29,7 @@ public class SelectRecipientsModel : NavBaseModel
 
         PreviouslySelected = excludeRecipients.ToList();
 
-        SubLocations = serviceRecipients
+        SubLocations = possibleServiceRecipients
             .GroupBy(x => x.Location)
             .Select(
                 x => new SublocationModel(
@@ -40,8 +40,6 @@ public class SelectRecipientsModel : NavBaseModel
 
         SelectServiceRecipients(existingRecipients, preSelectedRecipients);
     }
-
-    public string ImportRecipientsLink { get; set; }
 
     public string OrganisationName { get; set; }
 
@@ -56,6 +54,8 @@ public class SelectRecipientsModel : NavBaseModel
     public List<string> PreviouslySelected { get; set; }
 
     public bool ShouldExpand { get; set; }
+
+    public int? SelectAtLeast { get; set; }
 
     public IEnumerable<ServiceRecipientModel> GetServiceRecipients()
     {

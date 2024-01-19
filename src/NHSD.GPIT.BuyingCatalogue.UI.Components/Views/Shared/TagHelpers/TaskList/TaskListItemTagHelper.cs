@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
                 {
                     TaskProgress.NotApplicable => NhsTagsTagHelper.TagColour.White,
                     TaskProgress.Completed => NhsTagsTagHelper.TagColour.Green,
-                    TaskProgress.InProgress => NhsTagsTagHelper.TagColour.Yellow,
+                    TaskProgress.InProgress => NhsTagsTagHelper.TagColour.Blue,
                     TaskProgress.Optional => NhsTagsTagHelper.TagColour.White,
                     TaskProgress.Amended => NhsTagsTagHelper.TagColour.Orange,
                     _ => NhsTagsTagHelper.TagColour.Grey,

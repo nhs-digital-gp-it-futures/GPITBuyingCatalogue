@@ -14,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         public const string SecondaryTextTitleName = "secondary-text-title";
         public const string SecondaryTextName = "secondary-text";
         public const string OpenName = "open";
+        public const string ContentOnlyName = "content-only";
 
         private const string ExpanderClass = "nhsuk-expander";
         private const string ExpanderIndexClass = "nhsuk-expander-index";
@@ -46,6 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         [HtmlAttributeName(OpenName)]
         public bool Open { get; set; }
 
+        [HtmlAttributeName(ContentOnlyName)]
+        public bool ContentOnly { get; set; }
+
         [HtmlAttributeName(DetailsAndExpanderTagHelperBuilders.BoldTitle)]
         public bool BoldTitle { get; set; }
 
@@ -57,6 +61,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
+            if (ContentOnly)
+            {
+                output.TagName = null;
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(SecondaryText) != string.IsNullOrWhiteSpace(SecondaryTextTitle))
                 throw new ArgumentException($"you must set both {SecondaryTextName} and {SecondaryTextTitleName} or set neither.");
 

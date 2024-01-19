@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 {
-    [HtmlTargetElement(TagHelperName, ParentTag = RadioButtonContainerTagHelper.TagHelperName)]
+    [HtmlTargetElement(TagHelperName)]
     public sealed class RadioButtonTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-radio-button";

@@ -10,12 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
     {
         private readonly OrderItem rolledUpOrderItem;
 
-        public TaskListOrderItemModel(string internalOrgId, CallOffId callOffId, IEnumerable<OrderRecipient> rolledUpOrderRecipients, OrderItem rolledUpOrderItem)
+        public TaskListOrderItemModel(string internalOrgId, CallOffId callOffId, OrderType orderType, IEnumerable<OrderRecipient> rolledUpOrderRecipients, OrderItem rolledUpOrderItem)
         {
             this.rolledUpOrderItem = rolledUpOrderItem;
 
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
+            OrderType = orderType;
 
             CatalogueItemId = rolledUpOrderItem?.CatalogueItemId ?? default;
             Name = rolledUpOrderItem?.CatalogueItem?.Name ?? string.Empty;
@@ -25,6 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public string InternalOrgId { get; set; }
 
         public CallOffId CallOffId { get; set; }
+
+        public OrderType OrderType { get; set; }
 
         public bool IsAmendment => CallOffId.IsAmendment;
 

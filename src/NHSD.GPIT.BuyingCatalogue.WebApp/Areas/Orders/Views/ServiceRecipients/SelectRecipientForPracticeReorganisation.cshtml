@@ -1,0 +1,59 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients.RecipientForPracticeReorganisationModel;
+
+<partial name="Partials/_BackLink" model="Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary RadioId="@nameof(Model.SelectedOdsCode)" />
+        <nhs-page-title model="@Model" />
+        <form method="post">
+            <input type="hidden" asp-for="Title" />
+            <input type="hidden" asp-for="Caption" />
+            <input type="hidden" asp-for="Advice" />
+            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="OrganisationName" />
+
+            @if (Model.OrganisationType != OrganisationType.GP)
+            {
+                <h3 style="white-space:nowrap">Sublocations for @Model.OrganisationName</h3>
+            }
+
+            @{
+                var radioButtonIndex = 0;
+
+                foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
+                {
+
+                    <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
+                    <nhs-expander label-text="@location.Name" bold-title="true" open="@(true)">
+
+                        <nhs-table>
+                            <nhs-table-column>Organisation</nhs-table-column>
+                            <nhs-table-column>ODS code</nhs-table-column>
+                            @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
+                            {
+                                <input type="hidden" asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].OdsCode" />
+                                <input type="hidden" asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" />
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>
+                                        <nhs-radio-button asp-for="SelectedOdsCode"
+                                                          value="@item.OdsCode"
+                                                          display-text="@item.Name"
+                                                          index="@radioButtonIndex++" />
+
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
+                    </nhs-expander>
+
+                }
+            }
+            <br />
+            <nhs-submit-button />
+        </form>
+    </div>
+</div>

@@ -2127,9 +2127,25 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        public void CompetitionPriceOnlyAllRecipients()
+        public void CompetitionPriceOnlyMultipleResults()
         {
-            string competitionName = "CompetitionPriceOnlyAllRecipients";
+            string competitionName = "CompetitionPriceOnlyMultipleResults";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+
+            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+
+            CompetitionPages.ViewMultipleResults();
+        }
+
+        [Fact]
+        public void CompetitionPriceOnlyAllICBRecipients()
+        {
+            string competitionName = "CompetitionPriceOnlyAllICBRecipients";
 
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
@@ -2154,6 +2170,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Feature);
+
+            CompetitionPages.ViewResults();
         }
 
         [Fact]
@@ -2168,8 +2186,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Implementation);
-        }
 
+            CompetitionPages.ViewResults();
+        }
 
         [Fact]
         public void CompetitionPricAndNonPriceElementInteroperability()
@@ -2183,6 +2202,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Interoperability);
+
+            CompetitionPages.ViewResults();
         }
 
         [Fact]
@@ -2197,6 +2218,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.ServiceLevelAgreement);
+
+            CompetitionPages.ViewResults();
         }
 
         [Fact]
@@ -2211,6 +2234,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.All);
+
+            CompetitionPages.ViewResults();
         }
 
         [Fact]

@@ -19,6 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             var order = orderWrapper.Order;
             InternalOrgId = order.OrderingParty.InternalIdentifier;
             CallOffId = order.CallOffId;
+            OrderType = order.OrderType;
+            SolutionName = order.OrderType.GetSolutionNameFromOrder(order);
+            PracticeReorganisationName = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient?.Name ?? string.Empty;
             CatalogueItemId = catalogueItemId;
             DeliveryDate = order.DeliveryDate;
             Source = source;
@@ -37,6 +40,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         public string InternalOrgId { get; set; }
 
         public CallOffId CallOffId { get; set; }
+
+        public OrderType OrderType { get; set; }
+
+        public string SolutionName { get; set; }
+
+        public string PracticeReorganisationName { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }
 

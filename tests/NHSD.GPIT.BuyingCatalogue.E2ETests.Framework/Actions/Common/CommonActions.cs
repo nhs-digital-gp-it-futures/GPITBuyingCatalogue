@@ -266,6 +266,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public string LedeText() =>
             Driver.FindElement(By.ClassName("nhsuk-lede-text")).Text.FormatForComparison();
 
+        public string InsetText() =>
+            Driver.FindElement(By.ClassName("nhsuk-inset-text")).Text.FormatForComparison();
+
         public int GetNumberOfSelectedCheckBoxes() =>
             Driver
             .FindElements(By.ClassName("nhsuk-checkboxes__input"))

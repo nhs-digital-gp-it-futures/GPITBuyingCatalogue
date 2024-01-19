@@ -36,12 +36,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
 
             model.InternalOrgId.Should().Be(order.OrderingParty.InternalIdentifier);
             model.CallOffId.Should().Be(order.CallOffId);
+            model.OrderType.Should().Be(order.OrderType);
+            model.SolutionName.Should().Be(order.OrderType.GetSolutionNameFromOrder(order));
+            model.PracticeReorganisationName.Should().Be(order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Name);
             model.OrderWrapper.Order.Should().Be(order);
             model.DeliveryDate.Should().Be(order.DeliveryDate);
             model.AdditionalServiceIds.Count.Should().Be(1);
             model.AssociatedServiceIds.Count.Should().Be(1);
 
-            model.SolutionId.Should().Be(order.GetSolution()?.CatalogueItemId);
+            model.SolutionId.Should().Be(order.GetSolutionOrderItem()?.CatalogueItemId);
         }
 
         [Theory]

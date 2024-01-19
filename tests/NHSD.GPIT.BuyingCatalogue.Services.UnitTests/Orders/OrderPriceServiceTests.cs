@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            var solutionId = order.GetSolution().CatalogueItemId;
+            var solutionId = order.GetSolutionOrderItem().CatalogueItemId;
 
             await service.UpdatePrice(order.Id, solutionId, new List<PricingTierDto>());
 
@@ -287,7 +287,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            var solutionId = order.GetSolution().CatalogueItemId;
+            var solutionId = order.GetSolutionOrderItem().CatalogueItemId;
 
             var expected = context.OrderItemPrices
                 .First(x => x.OrderId == order.Id
@@ -317,7 +317,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            var solution = order.GetSolution();
+            var solution = order.GetSolutionOrderItem();
 
             for (var i = 0; i < agreedPrices.Count; i++)
             {

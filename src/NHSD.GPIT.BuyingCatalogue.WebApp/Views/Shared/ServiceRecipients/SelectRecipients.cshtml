@@ -35,11 +35,9 @@
                 </nhs-inset-text>
             }
 
-            <hr />
-
             <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.All })"
-                                     text="Select all"
-                                     type="Secondary" />
+                                 text="Select all"
+                                 type="Secondary" />
             <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.None })"
                                      text="Deselect all"
                                      type="Secondary" />
@@ -47,11 +45,14 @@
             <vc:nhs-secondary-button text="Search for Service Recipients"
                                      type="Secondary"
                                      id="show-dialog"/>
-
         }
 
         <form method="post" id = "sr-form">
-            <input type="hidden" asp-for="ImportRecipientsLink" />
+            <input type="hidden" asp-for="Title" />
+            <input type="hidden" asp-for="Caption" />
+            <input type="hidden" asp-for="Advice" />
+            <input type="hidden" asp-for="SelectAtLeast" />
+            <input type="hidden" asp-for="OrganisationName" />
             @if (Model.SubLocations?.Any() ?? false)
             {
                 @if (Model.OrganisationType != OrganisationType.GP)
@@ -61,8 +62,10 @@
 
                 @foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
                 {
+                    var expandWhenNotValid = !ViewData.ModelState.IsValid && lIndex == 0;
+
                     <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
-                    <nhs-expander label-text="@location.Name" secondary-text-title="@(location.ServiceRecipients.Count(r => r.Selected)) " secondary-text="recipients selected" bold-title="true" open="@(Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))">
+                    <nhs-expander label-text="@location.Name" secondary-text-title="@(location.ServiceRecipients.Count(r => r.Selected)) " secondary-text="recipients selected" bold-title="true" open="@(expandWhenNotValid || Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))">
 
                         <nhs-table id="sr-table">
                             <nhs-table-column>

@@ -13,6 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels.OrderingInformationModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -23,17 +24,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 public class CompetitionResultsController : Controller
 {
     private readonly ICompetitionsService competitionsService;
+    private readonly ICompetitionOrderService competitionOrderService;
     private readonly IManageFiltersService filtersService;
     private readonly IPdfService pdfService;
     private readonly IServiceRecipientImportService serviceRecipientImportService;
 
     public CompetitionResultsController(
         ICompetitionsService competitionsService,
+        ICompetitionOrderService competitionOrderService,
         IManageFiltersService filtersService,
         IPdfService pdfService,
         IServiceRecipientImportService serviceRecipientImportService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+        this.competitionOrderService =
+            competitionOrderService ?? throw new ArgumentNullException(nameof(competitionOrderService));
         this.filtersService = filtersService ?? throw new ArgumentNullException(nameof(filtersService));
         this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
         this.serviceRecipientImportService = serviceRecipientImportService
@@ -155,39 +160,6 @@ public class CompetitionResultsController : Controller
         return File(result, "application/pdf", fileName);
     }
 
-    [HttpGet("select-winning-solution")]
-    public async Task<IActionResult> SelectWinningSolution(
-        string internalOrgId,
-        int competitionId)
-    {
-        var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
-        var winningSolutions = competition.CompetitionSolutions.Where(x => x.IsWinningSolution);
-
-        var model = new SelectWinningSolutionModel(competition.Name, winningSolutions.Select(x => x.Solution))
-        {
-            BackLink = Url.Action(nameof(ViewResults), new { internalOrgId, competitionId }),
-        };
-
-        return View(model);
-    }
-
-    [HttpPost("select-winning-solution")]
-    public IActionResult SelectWinningSolution(
-        string internalOrgId,
-        int competitionId,
-        SelectWinningSolutionModel model)
-    {
-        _ = internalOrgId;
-        _ = competitionId;
-
-        if (!ModelState.IsValid)
-            return View(model);
-
-        return RedirectToAction(
-            nameof(OrderingInformation),
-            new { internalOrgId, competitionId, solutionId = model.SolutionId });
-    }
-
     [HttpGet("ordering-information")]
     public async Task<IActionResult> OrderingInformation(
         string internalOrgId,
@@ -209,12 +181,27 @@ public class CompetitionResultsController : Controller
 
         var model = new OrderingInformationModel(competition, solution)
         {
-            BackLink = Url.Action(
-                solutionId is not null ? nameof(SelectWinningSolution) : nameof(ViewResults),
-                new { internalOrgId, competitionId }),
+            BackLink = Url.Action(nameof(ViewResults), new { internalOrgId, competitionId }),
         };
 
         return View(model);
+    }
+
+    [HttpPost("ordering-information")]
+    public async Task<IActionResult> OrderingInformation(
+        string internalOrgId,
+        int competitionId,
+        OrderingInformationModel model,
+        CatalogueItemId? solutionId = null)
+    {
+        _ = model;
+
+        var callOffId = await competitionOrderService.CreateOrder(internalOrgId, competitionId, solutionId.GetValueOrDefault());
+
+        return RedirectToAction(
+            nameof(OrderController.Order),
+            typeof(OrderController).ControllerName(),
+            new { internalOrgId, callOffId, area = typeof(OrderController).AreaName() });
     }
 
     [HttpGet("recipients-csv")]

@@ -29,7 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public const string OrderIdToken = "order_id";
         public const string OrderSummaryLinkToken = "order_summary_link";
         public const string OrderSummaryCsv = "order_summary_csv";
-        public const string PatientOrderCsvToken = "patient_order_csv";
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly ICsvService csvService;
@@ -70,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<OrderWrapper> GetOrderThin(CallOffId callOffId, string internalOrgId)
         {
             var orders = await dbContext.Orders
-                .Include(o => o.Solution)
+                .Include(o => o.AssociatedServicesOnlyDetails.Solution)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.Supplier)
@@ -92,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var orders = await dbContext.Orders
                 .Include(x => x.OrderingParty)
-                .Include(x => x.Solution)
+                .Include(x => x.AssociatedServicesOnlyDetails.Solution)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
                     .ThenInclude(x => x.CataloguePrices.Where(p => p.PublishedStatus == PublicationStatus.Published))
@@ -116,7 +115,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var orders = await dbContext.Orders
                 .Include(x => x.OrderingParty)
-                .Include(x => x.Solution)
+                .Include(x => x.AssociatedServicesOnlyDetails.Solution)
+                .Include(x => x.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient)
                 .Include(o => o.OrderItems)
                     .ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems)
@@ -284,8 +284,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return matches.ToList();
         }
 
-        public async Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, bool isAssociatedServiceOnly)
+        public async Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, OrderTypeEnum orderType)
         {
+            if (orderType == OrderTypeEnum.Unknown)
+            {
+                throw new InvalidOperationException($"Something has gone wrong during order triage. Cannot create an order if we dont know the order type {orderType}");
+            }
+
             var orderingParty = await dbContext.Organisations.FirstAsync(o => o.InternalIdentifier == internalOrgId);
 
             var order = new Order
@@ -294,7 +299,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 Revision = 1,
                 Description = description,
                 OrderingParty = orderingParty,
-                AssociatedServicesOnly = isAssociatedServiceOnly,
+                OrderType = orderType,
                 OrderTriageValue = orderTriageValue,
             };
 
@@ -372,7 +377,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             await dbContext.SaveChangesAsync();
 
-            await SendEmail(orderWrapper.Order, callOffId, userId, true);
+            await SendEmailsAndSave(orderWrapper.Order, callOffId, userId, true);
         }
 
         public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId)
@@ -380,7 +385,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = (await GetOrderThin(callOffId, internalOrgId)).Order;
             order.Complete();
 
-            await SendEmail(order, callOffId, userId);
+            await SendEmailsAndSave(order, callOffId, userId);
         }
 
         public async Task<List<Order>> GetUserOrders(int userId)
@@ -396,7 +401,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             var order = await dbContext.Order(internalOrgId, callOffId);
 
-            order.SolutionId = solutionId;
+            order.AssociatedServicesOnlyDetails.SolutionId = solutionId;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SetOrderPracticeReorganisationRecipient(string internalOrgId, CallOffId callOffId, string odsCode)
+        {
+            var order = await dbContext.Order(internalOrgId, callOffId);
+
+            order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode = odsCode;
 
             await dbContext.SaveChangesAsync();
         }
@@ -462,35 +476,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             };
         }
 
-        private async Task SendEmail(Order order, CallOffId callOffId, int userId, bool showRevisions = false)
+        private async Task SendEmailsAndSave(Order order, CallOffId callOffId, int userId, bool showRevisions = false)
         {
             await using var fullOrderStream = new MemoryStream();
-            await using var patientOrderStream = new MemoryStream();
 
-            await csvService.CreateFullOrderCsvAsync(order.Id, fullOrderStream, showRevisions);
+            await csvService.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream, showRevisions);
 
             fullOrderStream.Position = 0;
+            var fullOrderBytes = fullOrderStream.ToArray();
 
             var adminTokens = new Dictionary<string, dynamic>
             {
                 { OrganisationNameToken, order.OrderingParty.Name },
-                { FullOrderCsvToken, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
+                { FullOrderCsvToken, NotificationClient.PrepareUpload(fullOrderBytes, true) },
             };
 
             var templateId = order.IsTerminated ? orderMessageSettings.OrderTerminatedAdminTemplateId : orderMessageSettings.SingleCsvTemplateId;
 
-            if (!order.IsTerminated && await csvService.CreatePatientNumberCsvAsync(order.Id, patientOrderStream) > 0)
-            {
-                patientOrderStream.Position = 0;
-                adminTokens.Add(PatientOrderCsvToken, NotificationClient.PrepareUpload(patientOrderStream.ToArray(), true));
-                templateId = orderMessageSettings.DualCsvTemplateId;
-            }
-
-            fullOrderStream.Position = 0;
             var userTokens = new Dictionary<string, dynamic>
             {
                 { OrderIdToken, $"{callOffId}" },
-                { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderStream.ToArray(), true) },
+                { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderBytes, true) },
             };
 
             dbContext.Entry(order).State = EntityState.Modified;
@@ -507,12 +513,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private string GetUserTemplateId(Order order)
         {
-            return order.IsTerminated ? orderMessageSettings.OrderTerminatedUserTemplateId
-                : order.AssociatedServicesOnly
-                ? orderMessageSettings.UserAssociatedServiceTemplateId
-                : order.IsAmendment
-                    ? orderMessageSettings.UserAmendTemplateId
-                    : orderMessageSettings.UserTemplateId;
+            return order.IsTerminated
+                ? orderMessageSettings.OrderTerminatedUserTemplateId
+                : order.OrderType.AssociatedServicesOnly
+                    ? orderMessageSettings.UserAssociatedServiceTemplateId
+                    : order.IsAmendment
+                        ? orderMessageSettings.UserAmendTemplateId
+                        : orderMessageSettings.UserTemplateId;
         }
 
         private async Task<List<Order>> OrdersForSummary(CallOffId callOffId, string internalOrgId)
@@ -538,10 +545,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                                 .ThenInclude(m => m.CatalogueItem)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
-                .Include(o => o.Solution)
+                .Include(o => o.AssociatedServicesOnlyDetails.Solution)
                 .ThenInclude(o => o.Solution)
                 .ThenInclude(o => o.FrameworkSolutions)
                 .ThenInclude(o => o.Framework)
+                .Include(x => x.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient)
                 .Include(o => o.Supplier)
                 .Include(o => o.SupplierContact)
                 .Include(o => o.LastUpdatedByUser)

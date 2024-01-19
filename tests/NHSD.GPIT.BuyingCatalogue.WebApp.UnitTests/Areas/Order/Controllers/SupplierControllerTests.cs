@@ -189,16 +189,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
         public static async Task Get_SelectSupplier_WithSupplier_RedirectsCorrectly(
-            bool associatedServicesOnly,
+            OrderTypeEnum orderType,
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] Mock<IOrderService> orderServiceMock,
             SupplierController controller)
         {
-            order.AssociatedServicesOnly = associatedServicesOnly;
+            order.OrderType = orderType;
 
             orderServiceMock
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
@@ -248,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
-            model.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
+            model.OrderType.Should().Be(order.OrderType);
 
             foreach (var supplier in suppliers)
             {
@@ -257,8 +259,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task Get_SelectSupplier_AssociatedServicesOnly_NoSupplier_ReturnsExpectedResult(
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        public static async Task Get_SelectSupplier_Split_Or_Merger_NoSupplier_SingleSearchResult_ReturnsExpectedResult(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            Supplier supplier,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<ISupplierService> supplierService,
+            SupplierController controller)
+        {
+            order.Supplier = null;
+            order.OrderType = orderType;
+
+            orderService
+                .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            supplierService
+                .Setup(x => x.GetAllSuppliersWithAssociatedServices(order.OrderType.ToPracticeReorganisationType))
+                .ReturnsAsync(new List<Supplier>() { supplier });
+
+            var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
+
+            orderService.VerifyAll();
+            supplierService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(SupplierController.ConfirmSupplier));
+            actualResult.ControllerName.Should().Be(typeof(SupplierController).ControllerName());
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, PracticeReorganisationTypeEnum.None)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, PracticeReorganisationTypeEnum.Split)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, PracticeReorganisationTypeEnum.Merger)]
+        public static async Task Get_SelectSupplier_Other_Split_Or_Merger_NoSupplier_ReturnsExpectedResult(
+            OrderTypeEnum orderType,
+            PracticeReorganisationTypeEnum practiceReorganisationType,
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             List<Supplier> suppliers,
@@ -267,14 +307,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             SupplierController controller)
         {
             order.Supplier = null;
-            order.AssociatedServicesOnly = true;
+            order.OrderType = orderType;
 
             orderService
                 .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
             supplierService
-                .Setup(x => x.GetAllSuppliersWithAssociatedServices())
+                .Setup(x => x.GetAllSuppliersWithAssociatedServices(practiceReorganisationType))
                 .ReturnsAsync(suppliers);
 
             var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
@@ -288,7 +328,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
-            model.AssociatedServicesOnly.Should().Be(order.AssociatedServicesOnly);
+            model.OrderType.Should().Be(order.OrderType);
 
             foreach (var supplier in suppliers)
             {
@@ -297,24 +337,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task Post_SelectSupplier_WithModelErrors_ReturnsExpectedResult(
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        public static void Post_SelectSupplier_WithModelErrors_ReturnsExpectedResult(
+            OrderTypeEnum orderType,
             SelectSupplierModel model,
-            List<Supplier> suppliers,
-            [Frozen] Mock<ISupplierService> mockSupplierService,
             SupplierController controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
-            model.AssociatedServicesOnly = false;
+            model.OrderType = new OrderType(orderType);
 
-            mockSupplierService
-                .Setup(x => x.GetAllSuppliersFromBuyingCatalogue())
-                .ReturnsAsync(suppliers);
-
-            var result = await controller.SelectSupplier(model.InternalOrgId, model.CallOffId, model);
-
-            mockSupplierService.VerifyAll();
+            var result = controller.SelectSupplier(model.InternalOrgId, model.CallOffId, model);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -322,48 +358,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             actualModel.CallOffId.Should().Be(model.CallOffId);
             actualModel.InternalOrgId.Should().Be(model.InternalOrgId);
-
-            foreach (var supplier in suppliers)
-            {
-                actualModel.Suppliers.Should().Contain(x => x.Text == supplier.Name && x.Value == $"{supplier.Id}");
-            }
         }
 
         [Theory]
         [CommonAutoData]
-        public static async Task Post_SelectSupplier_WithModelErrors_AssociatedServicesOnly_ReturnsExpectedResult(
-            SelectSupplierModel model,
-            List<Supplier> suppliers,
-            [Frozen] Mock<ISupplierService> mockSupplierService,
-            SupplierController controller)
-        {
-            controller.ModelState.AddModelError("key", "errorMessage");
-
-            model.AssociatedServicesOnly = true;
-
-            mockSupplierService
-                .Setup(x => x.GetAllSuppliersWithAssociatedServices())
-                .ReturnsAsync(suppliers);
-
-            var result = await controller.SelectSupplier(model.InternalOrgId, model.CallOffId, model);
-
-            mockSupplierService.VerifyAll();
-
-            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
-            var actualModel = actualResult.ViewData.Model.Should().BeAssignableTo<SelectSupplierModel>().Subject;
-
-            actualModel.CallOffId.Should().Be(model.CallOffId);
-            actualModel.InternalOrgId.Should().Be(model.InternalOrgId);
-
-            foreach (var supplier in suppliers)
-            {
-                actualModel.Suppliers.Should().Contain(x => x.Text == supplier.Name && x.Value == $"{supplier.Id}");
-            }
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_SelectSupplier_RedirectsCorrectly(
+        public static void Post_SelectSupplier_RedirectsCorrectly(
             string internalOrgId,
             CallOffId callOffId,
             SelectSupplierModel model,
@@ -371,7 +370,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             model.SelectedSupplierId = $"{1}";
 
-            var result = await controller.SelectSupplier(internalOrgId, callOffId, model);
+            var result = controller.SelectSupplier(internalOrgId, callOffId, model);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 

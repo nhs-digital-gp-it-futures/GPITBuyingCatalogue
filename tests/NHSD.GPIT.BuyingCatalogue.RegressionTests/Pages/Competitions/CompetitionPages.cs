@@ -1,5 +1,4 @@
-﻿using System.Xml.Linq;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
@@ -151,13 +150,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 AwardCriteriaWeightings.PriceNonPriceAwardCriteriaWeightings();
                 CompetitionTaskList.NonPriceElements();
                 NonPriceElements.AddNonPriceElements(elementtype);
-                if (elementtype == NonPriceElementType.All)
+                switch (elementtype)
                 {
-                    NonPriceElements.AllNonPriceElementsReview();
-                }
-                else
-                {
-                    NonPriceElements.AddNonPriceElement();
+                    case NonPriceElementType.All:
+                        NonPriceElements.AllNonPriceElementsReview();
+                        break;
+                    default:
+                        NonPriceElements.AddNonPriceElement();
+                        break;
                 }
 
                 CompetitionTaskList.NonPriceWeightings();
@@ -213,6 +213,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         {
             CompetitionTaskList.ViewResult();
             ViewCompetitionResults.ViewResults();
+        }
+
+        public void ViewMultipleResults()
+        {
+            int competitionid = CompetitionId();
+            CompetitionTaskList.ViewResult();
+            MultipleResults(competitionid);
         }
 
         private int CompetitionId()
@@ -285,6 +292,30 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             var prices = dbContext.CatalogueItems
                 .SelectMany(x => x.CataloguePrices).Where(y => y.CatalogueItemId == competitionservice);
             return prices.Count() > 1;
+        }
+
+        private void MultipleResults(int competitionId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var solutions = dbContext.Competitions
+                .SelectMany(x => x.CompetitionSolutions)
+                .Where(y => y.CompetitionId == competitionId && !y.IsWinningSolution && y.IsShortlisted)
+                .ToList();
+
+            if (solutions.Any())
+            {
+                var nextWinningSolution = solutions.First();
+                nextWinningSolution.IsWinningSolution = true;
+
+                dbContext.SaveChanges();
+
+                ViewCompetitionResults.ViewMultipleWinningResults();
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(competitionId));
+            }
         }
     }
 }

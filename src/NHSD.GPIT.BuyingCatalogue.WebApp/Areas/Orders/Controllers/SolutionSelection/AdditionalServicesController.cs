@@ -10,7 +10,6 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
@@ -45,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            if (order.GetSolution() == null)
+            if (order.GetSolutionOrderItem() == null)
             {
                 return RedirectToAction(
                     nameof(OrderController.Order),
@@ -135,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> ConfirmAdditionalServiceChanges(string internalOrgId, CallOffId callOffId, string serviceIds)
         {
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
-            var solution = wrapper.RolledUp.GetSolution();
+            var solution = wrapper.RolledUp.GetSolutionOrderItem();
 
             var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(
                 solution.CatalogueItemId,
@@ -242,7 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.RolledUp;
 
             var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(
-                order.GetSolution().CatalogueItemId,
+                order.GetSolutionOrderItem().CatalogueItemId,
                 publishedOnly: true);
 
             var backLink = returnToTaskList
@@ -256,11 +255,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             {
                 BackLink = backLink,
                 InternalOrgId = internalOrgId,
-                AssociatedServicesOnly = order.AssociatedServicesOnly,
                 IsAmendment = wrapper.IsAmendment,
-                SolutionName = order.AssociatedServicesOnly
-                    ? wrapper.RolledUp.Solution.Name
-                    : wrapper.RolledUp.GetSolution()?.CatalogueItem.Name,
+                SolutionName = order.OrderType.GetSolutionNameFromOrder(order),
                 SolutionId = order.GetSolutionId(),
             };
         }

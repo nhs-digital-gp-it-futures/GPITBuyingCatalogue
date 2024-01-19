@@ -851,8 +851,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
-        public static async Task GetSupplierSolutionsWithAssociatedServices_ReturnsExpectedResults(
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        public static async Task GetSupplierSolutionsWithAssociatedServices_ReturnsMatchingResults(
+            PracticeReorganisationTypeEnum practiceReorganisationType,
             Supplier supplier,
             AssociatedService associatedService,
             List<Solution> solutions,
@@ -862,6 +865,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             supplier.CatalogueItems.Clear();
             associatedService.CatalogueItem.Supplier = supplier;
             associatedService.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            associatedService.PracticeReorganisationType = practiceReorganisationType;
 
             solutions.ForEach(
                 x =>
@@ -883,10 +887,51 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.Suppliers.Add(supplier);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
-            var result = await service.GetSupplierSolutionsWithAssociatedServices(supplier.Id);
+            var result = await service.GetSupplierSolutionsWithAssociatedServices(supplier.Id, practiceReorganisationType);
 
+            result.Should().NotBeEmpty();
             result.Should().HaveCount(expectedSolutions.Count);
+        }
+
+        [Theory]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        public static async Task GetSupplierSolutionsWithAssociatedServices_WithMergerOrSplit_OnlyReturnsMergersOrSplits(
+            PracticeReorganisationTypeEnum practiceReorganisationType,
+            Supplier supplier,
+            AssociatedService associatedService,
+            List<Solution> solutions,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            supplier.CatalogueItems.Clear();
+            associatedService.CatalogueItem.Supplier = supplier;
+            associatedService.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            associatedService.PracticeReorganisationType = PracticeReorganisationTypeEnum.None;
+
+            solutions.ForEach(
+                x =>
+                {
+                    x.CatalogueItem.Supplier = supplier;
+                    x.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+                    x.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>
+                    {
+                        new(x.CatalogueItemId, associatedService.CatalogueItemId),
+                    };
+                });
+
+            context.AssociatedServices.Add(associatedService);
+            context.Solutions.AddRange(solutions);
+            context.Suppliers.Add(supplier);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = await service.GetSupplierSolutionsWithAssociatedServices(supplier.Id, practiceReorganisationType);
+
+            result.Should().BeEmpty();
         }
 
         private static List<CatalogueItem> GetSolutionsForSearchTerm(string searchTerm)

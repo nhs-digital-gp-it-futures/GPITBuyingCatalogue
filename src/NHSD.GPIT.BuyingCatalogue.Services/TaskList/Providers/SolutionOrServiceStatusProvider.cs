@@ -49,9 +49,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return false;
             }
 
-            if (order.AssociatedServicesOnly)
+            if (order.OrderType.AssociatedServicesOnly)
             {
-                return order.SolutionId != null;
+                return order.AssociatedServicesOnlyDetails.SolutionId != null;
             }
 
             return order.OrderItems.Any(x => x.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution);
