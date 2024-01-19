@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
@@ -131,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         }
 
         private static void Apply(
-            Dictionary<OrderSummaryField, string> descriptions,
+            IDictionary<OrderSummaryField, string> descriptions,
             IEnumerable<KeyValuePair<OrderSummaryField, string>> overrideDescriptions)
         {
             foreach (var item in overrideDescriptions)
@@ -140,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             }
         }
 
-        private ReadOnlyDictionary<OrderSummaryField, string> BuildDescriptions(OrderType orderType, bool isAmendment, bool isCompetitionOrder)
+        private static ReadOnlyDictionary<OrderSummaryField, string> BuildDescriptions(OrderType orderType, bool isAmendment, bool isCompetitionOrder)
         {
             var descriptions = DefaultDescriptions.ToDictionary();
 
