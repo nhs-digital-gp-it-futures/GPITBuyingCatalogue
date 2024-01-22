@@ -2,7 +2,7 @@ variables:
   - name: buildConfiguration
     value: Release
   - name: dotnetVersion
-    value: '7.0.203'
+    value: '8.0.100'
 
 trigger:
   branches:
