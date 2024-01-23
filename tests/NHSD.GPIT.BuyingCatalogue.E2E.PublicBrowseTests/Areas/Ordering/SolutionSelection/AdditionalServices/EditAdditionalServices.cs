@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         };
 
         public EditAdditionalServices(LocalWebApplicationFactory factory)
-            : base(factory, typeof(AdditionalServicesController), nameof(AdditionalServicesController.EditAdditionalServices), Parameters)
+            : base(factory, typeof(AdditionalServicesController), nameof(AdditionalServicesController.SelectAdditionalServices), Parameters)
         {
         }
 

@@ -196,11 +196,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             if (solution.CatalogueItemId == catalogueItemId)
             {
-                return RedirectToAction(
-                    nameof(TaskListController.TaskList),
-                    typeof(TaskListController).ControllerName(),
-                    new { internalOrgId, callOffId });
-            }
+            return RedirectToAction(
+                nameof(TaskListController.TaskList),
+                typeof(TaskListController).ControllerName(),
+                new { internalOrgId, callOffId });
+        }
 
             return RedirectToAction(
                 nameof(ConfirmSolutionChanges),
@@ -321,36 +321,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View("Services/ConfirmChanges", model);
             }
 
-            if (model.ConfirmChanges is false)
+            if (model.ConfirmChanges.GetValueOrDefault(false))
             {
-                return RedirectToAction(
-                    nameof(TaskListController.TaskList),
-                    typeof(TaskListController).ControllerName(),
-                    new { internalOrgId, callOffId });
-            }
+                var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
 
-            var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
-
-            await contractsService.RemoveContract(orderId);
-            await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
-            await orderService.DeleteSelectedFramework(internalOrgId, callOffId);
-            await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
-
-            var catalogueItemId = model.ToAdd.First().CatalogueItemId;
-            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(catalogueItemId, publishedOnly: true);
-
-            if (additionalServices.Any())
-            {
-                return RedirectToAction(
-                    nameof(AdditionalServicesController.SelectAdditionalServices),
-                    typeof(AdditionalServicesController).ControllerName(),
-                    new { internalOrgId, callOffId });
+                await contractsService.RemoveContract(orderId);
+                await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
+                await orderService.DeleteSelectedFramework(internalOrgId, callOffId);
+                await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
             }
 
             return RedirectToAction(
-                nameof(PricesController.SelectPrice),
-                typeof(PricesController).ControllerName(),
-                new { internalOrgId, callOffId, catalogueItemId });
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId });
         }
 
         [HttpGet("confirm-changes/associated-services-only")]

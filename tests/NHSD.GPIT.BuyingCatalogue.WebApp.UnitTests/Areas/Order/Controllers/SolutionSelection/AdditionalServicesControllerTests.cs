@@ -240,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetAdditionalServicesBySolutionId(solutionId, true))
                 .ReturnsAsync(services);
 
-            var result = await controller.EditAdditionalServices(internalOrgId, order.CallOffId);
+            var result = await controller.SelectAdditionalServices(internalOrgId, order.CallOffId);
 
             mockOrderService.VerifyAll();
             mockAdditionalServicesService.VerifyAll();
@@ -286,7 +286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            var result = await controller.EditAdditionalServices(internalOrgId, callOffId, model);
+            var result = await controller.SelectAdditionalServices(internalOrgId, callOffId, model);
 
             mockOrderService.VerifyAll();
 
@@ -338,7 +338,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.AddOrderItems(internalOrgId, callOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
                 .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => newServiceIds = x);
 
-            var result = await controller.EditAdditionalServices(internalOrgId, callOffId, model);
+            var result = await controller.SelectAdditionalServices(internalOrgId, callOffId, model);
 
             mockOrderService.VerifyAll();
             mockOrderItemService.VerifyAll();
@@ -376,7 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            var result = await controller.EditAdditionalServices(internalOrgId, callOffId, model);
+            var result = await controller.SelectAdditionalServices(internalOrgId, callOffId, model);
 
             mockOrderService.VerifyAll();
 

@@ -63,7 +63,7 @@
                     <span data-test-id="additional-services-action">
                         <vc:nhs-action-link text="@Model.AdditionalServicesActionText"
                                             url="@Url.Action(
-                                                     nameof(AdditionalServicesController.EditAdditionalServices),
+                                                     nameof(AdditionalServicesController.SelectAdditionalServices),
                                                      typeof(AdditionalServicesController).ControllerName(),
                                                      new { Model.InternalOrgId, Model.CallOffId })" />
                     </span>
@@ -103,7 +103,7 @@
                         <span data-test-id="associated-services-action">
                             <vc:nhs-action-link text="@Model.AssociatedServicesActionText"
                                                 url="@Url.Action(
-                                                     nameof(AssociatedServicesController.EditAssociatedServices),
+                                                     nameof(AssociatedServicesController.SelectAssociatedServices),
                                                      typeof(AssociatedServicesController).ControllerName(),
                                                      new { Model.InternalOrgId, Model.CallOffId })" />
                         </span>
@@ -123,6 +123,10 @@
                                 <partial name="TaskListOrderItem"
                                          model="@Model.OrderItemModel(service.CatalogueItemId)" />
                             </div>
+                            <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
+                                                                       typeof(CatalogueSolutionsController).ControllerName(),
+                                                                       new { Model.InternalOrgId, Model.CallOffId, service.CatalogueItemId })"
+                                                  text="Remove @service.CatalogueItem.Name"/>
                         }
                     </nhs-card>
                 }

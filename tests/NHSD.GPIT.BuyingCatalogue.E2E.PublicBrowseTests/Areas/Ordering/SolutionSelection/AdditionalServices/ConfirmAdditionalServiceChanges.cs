@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.EditAdditionalServices)).Should().BeTrue();
+                nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
 
             ExistingService.Should().NotBeNull();
             NewService.Should().BeNull();
