@@ -23,47 +23,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        public Task<List<Supplier>> GetAllSuppliersFromBuyingCatalogue()
+        public Task<List<Supplier>> GetAllSuppliersByOrderType(OrderType orderType)
         {
-            return dbContext.Suppliers
-                .Include(x => x.CatalogueItems)
-                .Where(
-                    x => x.IsActive
-                        && x.CatalogueItems.Any(
-                            ci => ci.CatalogueItemType == CatalogueItemType.Solution
-                                && ci.PublishedStatus == PublicationStatus.Published
-                                && ci.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired)))
-                .OrderBy(x => x.Name)
-                .ToListAsync();
+            ArgumentNullException.ThrowIfNull(orderType);
+
+            return orderType.Value switch
+            {
+                OrderTypeEnum.Solution => GetAllSuppliersFromBuyingCatalogue().ToListAsync(),
+                _ => GetAllSuppliersWithAssociatedServices(orderType.ToPracticeReorganisationType).ToListAsync(),
+            };
         }
 
-        public Task<List<Supplier>> GetAllSuppliersWithAssociatedServices(PracticeReorganisationTypeEnum practiceReorganisationType = PracticeReorganisationTypeEnum.None)
+        public Task<bool> SuppliersAvailableByOrderType(OrderType orderType)
         {
-            var query = dbContext
-                .CatalogueItems
-                .AsNoTracking()
-                .Include(ci => ci.SupplierServiceAssociations)
-                .Include(ci => ci.Supplier)
-                .Where(
-                    ci =>
-                        ci.CatalogueItemType == CatalogueItemType.Solution
-                        && ci.PublishedStatus == PublicationStatus.Published
-                        && ci.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired));
+            ArgumentNullException.ThrowIfNull(orderType);
 
-            if (practiceReorganisationType != PracticeReorganisationTypeEnum.None)
+            return orderType.Value switch
             {
-                query = query.Where(ci => ci.SupplierServiceAssociations.Any(ssa => (ssa.AssociatedService.PracticeReorganisationType & practiceReorganisationType) == practiceReorganisationType));
-            }
-            else
-            {
-                query = query.Where(ci => ci.SupplierServiceAssociations.Any());
-            }
-
-            return query
-                .Select(ci => ci.Supplier)
-                .Where(s => s.IsActive)
-                .Distinct()
-                .ToListAsync();
+                OrderTypeEnum.Solution => GetAllSuppliersFromBuyingCatalogue().AnyAsync(),
+                _ => GetAllSuppliersWithAssociatedServices(orderType.ToPracticeReorganisationType).AnyAsync(),
+            };
         }
 
         public Task<Supplier> GetSupplierFromBuyingCatalogue(int id)
@@ -89,8 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             string internalOrgId,
             SupplierContact contact)
         {
-            if (contact is null)
-                throw new ArgumentNullException(nameof(contact));
+            ArgumentNullException.ThrowIfNull(contact);
 
             var order = (await orderService.GetOrderWithSupplier(callOffId, internalOrgId)).Order;
 
@@ -123,6 +101,47 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             order.SupplierContact = contact;
 
             await dbContext.SaveChangesAsync();
+        }
+
+        private IQueryable<Supplier> GetAllSuppliersFromBuyingCatalogue()
+        {
+            return dbContext.Suppliers
+                .Include(x => x.CatalogueItems)
+                .Where(
+                    x => x.IsActive
+                        && x.CatalogueItems.Any(
+                            ci => ci.CatalogueItemType == CatalogueItemType.Solution
+                                && ci.PublishedStatus == PublicationStatus.Published
+                                && ci.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired)))
+                .OrderBy(x => x.Name);
+        }
+
+        private IQueryable<Supplier> GetAllSuppliersWithAssociatedServices(PracticeReorganisationTypeEnum practiceReorganisationType)
+        {
+            var query = dbContext
+                .CatalogueItems
+                .AsNoTracking()
+                .Include(ci => ci.SupplierServiceAssociations)
+                .Include(ci => ci.Supplier)
+                .Where(
+                    ci =>
+                        ci.CatalogueItemType == CatalogueItemType.Solution
+                        && ci.PublishedStatus == PublicationStatus.Published
+                        && ci.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired));
+
+            if (practiceReorganisationType != PracticeReorganisationTypeEnum.None)
+            {
+                query = query.Where(ci => ci.SupplierServiceAssociations.Any(ssa => (ssa.AssociatedService.PracticeReorganisationType & practiceReorganisationType) == practiceReorganisationType));
+            }
+            else
+            {
+                query = query.Where(ci => ci.SupplierServiceAssociations.Any());
+            }
+
+            return query
+                .Select(ci => ci.Supplier)
+                .Where(s => s.IsActive)
+                .Distinct();
         }
     }
 }

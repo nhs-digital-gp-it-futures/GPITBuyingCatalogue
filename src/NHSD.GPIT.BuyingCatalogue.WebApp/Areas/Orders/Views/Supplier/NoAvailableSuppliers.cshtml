@@ -1,0 +1,18 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier.NoAvailableSuppliersModel;
+
+<div data-test-id="supplier-page">
+    <partial name="Partials/_BackLink" model="Model" />
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-page-title title="Mergers and splits unavailable"
+                            advice="There are currently no suppliers on the Buying Catalogue that offer practice mergers or splits as an Associated Service." />
+
+            <p>You should return to your order tasklist and delete this order.</p>
+            <vc:nhs-secondary-button text="Return to order tasklist"
+                                     type="Primary"
+                                     url="@Model.BackLink" />
+        </div>
+    </div>
+</div>

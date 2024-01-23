@@ -126,19 +126,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                     new { internalOrgId, callOffId });
             }
 
-            var suppliers = order.OrderType.Value switch
-            {
-                OrderTypeEnum.AssociatedServiceOther => await supplierService.GetAllSuppliersWithAssociatedServices(),
-                OrderTypeEnum.Solution => await supplierService.GetAllSuppliersFromBuyingCatalogue(),
-                _ => await supplierService.GetAllSuppliersWithAssociatedServices(order.OrderType.ToPracticeReorganisationType),
-            };
+            var suppliers = await supplierService.GetAllSuppliersByOrderType(order.OrderType);
 
-            if (!order.OrderType.UsesSupplierSearch && suppliers.Count() == 1)
+            if (!order.OrderType.UsesSupplierSearch)
             {
-                return RedirectToAction(
-                    nameof(ConfirmSupplier),
-                    typeof(SupplierController).ControllerName(),
-                    new { internalOrgId, callOffId, supplierId = suppliers.First().Id, onlyOption = true });
+                if (suppliers.Count == 0)
+                {
+                    return RedirectToAction(
+                        nameof(NoAvailableSuppliers),
+                        typeof(SupplierController).ControllerName(),
+                        new { internalOrgId, callOffId });
+                }
+                else if (suppliers.Count == 1)
+                {
+                    return RedirectToAction(
+                        nameof(ConfirmSupplier),
+                        typeof(SupplierController).ControllerName(),
+                        new { internalOrgId, callOffId, supplierId = suppliers.First().Id, onlyOption = true });
+                }
             }
 
             var model = new SelectSupplierModel
@@ -172,6 +177,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 nameof(ConfirmSupplier),
                 typeof(SupplierController).ControllerName(),
                 new { internalOrgId, callOffId, supplierId });
+        }
+
+        [HttpGet("no-available-suppliers")]
+        public IActionResult NoAvailableSuppliers(string internalOrgId, CallOffId callOffId)
+        {
+            return View(new NoAvailableSuppliersModel(internalOrgId, callOffId)
+            {
+                BackLink = Url.Action(
+                        nameof(OrderController.Order),
+                        typeof(OrderController).ControllerName(),
+                        new { internalOrgId, callOffId }),
+            });
         }
 
         [HttpGet("confirm")]
