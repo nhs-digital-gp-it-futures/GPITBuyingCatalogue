@@ -352,8 +352,6 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] Mock<IOdsService> odsService,
         ImportServiceRecipientsController controller)
     {
-        const ServiceRecipientImportMode importMode = ServiceRecipientImportMode.Edit;
-
         var recipientIds = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
