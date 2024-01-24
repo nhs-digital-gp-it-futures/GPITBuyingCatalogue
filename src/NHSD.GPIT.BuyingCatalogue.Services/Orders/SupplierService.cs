@@ -23,25 +23,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        public Task<List<Supplier>> GetAllSuppliersByOrderType(OrderType orderType)
+        public Task<List<Supplier>> GetActiveSuppliers(OrderType orderType)
         {
             ArgumentNullException.ThrowIfNull(orderType);
 
             return orderType.Value switch
             {
-                OrderTypeEnum.Solution => GetAllSuppliersFromBuyingCatalogue().ToListAsync(),
-                _ => GetAllSuppliersWithAssociatedServices(orderType.ToPracticeReorganisationType).ToListAsync(),
+                OrderTypeEnum.Solution => GetActiveSuppliersForSolutions().ToListAsync(),
+                _ => GetActiveSuppliersForSolutionsWithAssociatedServices(orderType.ToPracticeReorganisationType).ToListAsync(),
             };
         }
 
-        public Task<bool> SuppliersAvailableByOrderType(OrderType orderType)
+        public Task<bool> HasActiveSuppliers(OrderType orderType)
         {
             ArgumentNullException.ThrowIfNull(orderType);
 
             return orderType.Value switch
             {
-                OrderTypeEnum.Solution => GetAllSuppliersFromBuyingCatalogue().AnyAsync(),
-                _ => GetAllSuppliersWithAssociatedServices(orderType.ToPracticeReorganisationType).AnyAsync(),
+                OrderTypeEnum.Solution => GetActiveSuppliersForSolutions().AnyAsync(),
+                _ => GetActiveSuppliersForSolutionsWithAssociatedServices(orderType.ToPracticeReorganisationType).AnyAsync(),
             };
         }
 
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        private IQueryable<Supplier> GetAllSuppliersFromBuyingCatalogue()
+        private IQueryable<Supplier> GetActiveSuppliersForSolutions()
         {
             return dbContext.Suppliers
                 .Include(x => x.CatalogueItems)
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .OrderBy(x => x.Name);
         }
 
-        private IQueryable<Supplier> GetAllSuppliersWithAssociatedServices(PracticeReorganisationTypeEnum practiceReorganisationType)
+        private IQueryable<Supplier> GetActiveSuppliersForSolutionsWithAssociatedServices(PracticeReorganisationTypeEnum practiceReorganisationType)
         {
             var query = dbContext
                 .CatalogueItems

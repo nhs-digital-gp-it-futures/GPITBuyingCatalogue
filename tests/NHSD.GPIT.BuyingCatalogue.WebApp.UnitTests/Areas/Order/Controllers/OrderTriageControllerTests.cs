@@ -139,10 +139,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
                 .ReturnsAsync(organisation);
 
-            supplierService.Setup(s => s.SuppliersAvailableByOrderType(OrderTypeEnum.AssociatedServiceMerger))
+            supplierService.Setup(s => s.HasActiveSuppliers(OrderTypeEnum.AssociatedServiceMerger))
                 .ReturnsAsync(mergerEnabled);
 
-            supplierService.Setup(s => s.SuppliersAvailableByOrderType(OrderTypeEnum.AssociatedServiceSplit))
+            supplierService.Setup(s => s.HasActiveSuppliers(OrderTypeEnum.AssociatedServiceSplit))
                 .ReturnsAsync(splitEnabled);
 
             var result = (await controller.DetermineAssociatedServiceType(organisation.InternalIdentifier)).As<ViewResult>();

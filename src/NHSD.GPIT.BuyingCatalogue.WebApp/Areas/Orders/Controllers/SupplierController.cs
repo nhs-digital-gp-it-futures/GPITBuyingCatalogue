@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                     new { internalOrgId, callOffId });
             }
 
-            var suppliers = await supplierService.GetAllSuppliersByOrderType(order.OrderType);
+            var suppliers = await supplierService.GetActiveSuppliers(order.OrderType);
 
             if (!order.OrderType.UsesSupplierSearch)
             {

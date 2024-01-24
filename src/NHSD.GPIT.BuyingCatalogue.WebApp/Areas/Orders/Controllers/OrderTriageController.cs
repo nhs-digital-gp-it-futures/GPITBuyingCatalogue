@@ -93,8 +93,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var model = new DetermineAssociatedServiceTypeModel(
                 organisation.Name,
-                await supplierService.SuppliersAvailableByOrderType(OrderTypeEnum.AssociatedServiceMerger),
-                await supplierService.SuppliersAvailableByOrderType(OrderTypeEnum.AssociatedServiceSplit))
+                await supplierService.HasActiveSuppliers(OrderTypeEnum.AssociatedServiceMerger),
+                await supplierService.HasActiveSuppliers(OrderTypeEnum.AssociatedServiceSplit))
             {
                 InternalOrgId = internalOrgId,
                 BackLink = Url.Action(nameof(OrderItemType), new { internalOrgId, orderType = CatalogueItemType.AssociatedService }),

@@ -7,9 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface ISupplierService
     {
-        public Task<List<Supplier>> GetAllSuppliersByOrderType(OrderType orderType);
+        public Task<List<Supplier>> GetActiveSuppliers(OrderType orderType);
 
-        public Task<bool> SuppliersAvailableByOrderType(OrderType orderType);
+        public Task<bool> HasActiveSuppliers(OrderType orderType);
 
         public Task<Supplier> GetSupplierFromBuyingCatalogue(int id);
 

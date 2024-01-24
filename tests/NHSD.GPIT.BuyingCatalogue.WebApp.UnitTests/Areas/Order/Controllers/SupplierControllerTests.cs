@@ -236,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockSupplierService
-                .Setup(x => x.GetAllSuppliersByOrderType(OrderTypeEnum.Solution))
+                .Setup(x => x.GetActiveSuppliers(OrderTypeEnum.Solution))
                 .ReturnsAsync(suppliers);
 
             var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
@@ -278,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(new OrderWrapper(order));
 
             supplierService
-                .Setup(x => x.GetAllSuppliersByOrderType(order.OrderType))
+                .Setup(x => x.GetActiveSuppliers(order.OrderType))
                 .ReturnsAsync(new List<Supplier>() { supplier });
 
             var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
@@ -311,7 +311,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(new OrderWrapper(order));
 
             supplierService
-                .Setup(x => x.GetAllSuppliersByOrderType(order.OrderType))
+                .Setup(x => x.GetActiveSuppliers(order.OrderType))
                 .ReturnsAsync(new List<Supplier>());
 
             var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
@@ -346,7 +346,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(new OrderWrapper(order));
 
             supplierService
-                .Setup(x => x.GetAllSuppliersByOrderType(orderType))
+                .Setup(x => x.GetActiveSuppliers(orderType))
                 .ReturnsAsync(suppliers);
 
             var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);

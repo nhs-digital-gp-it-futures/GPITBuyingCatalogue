@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.SuppliersAvailableByOrderType(orderType);
+            var result = await service.HasActiveSuppliers(orderType);
 
             result.Should().BeFalse();
         }
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.GetAllSuppliersByOrderType(orderType);
+            var result = await service.GetActiveSuppliers(orderType);
 
             result.Should().BeEmpty();
         }
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            var result = await service.GetAllSuppliersByOrderType(orderType);
+            var result = await service.GetActiveSuppliers(orderType);
 
             result.Should().BeEmpty();
         }
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             await context.SaveChangesAsync();
 
-            var result = await service.GetAllSuppliersByOrderType(OrderTypeEnum.Solution);
+            var result = await service.GetActiveSuppliers(OrderTypeEnum.Solution);
 
             result.Should().BeEquivalentTo(suppliers);
         }
@@ -174,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.GetAllSuppliersByOrderType(OrderTypeEnum.Solution);
+            var result = await service.GetActiveSuppliers(OrderTypeEnum.Solution);
 
             result.Should()
                 .BeEquivalentTo(
@@ -214,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var results = await service.GetAllSuppliersByOrderType(orderType);
+            var results = await service.GetActiveSuppliers(orderType);
 
             results.Should().HaveCount(0);
         }
@@ -253,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await dbContext.SaveChangesAsync();
             dbContext.ChangeTracker.Clear();
 
-            var results = await service.GetAllSuppliersByOrderType(orderType);
+            var results = await service.GetActiveSuppliers(orderType);
 
             results.Should().HaveCount(1);
             results[0].Should().BeEquivalentTo(supplier, opt => opt.Excluding(s => s.SupplierContacts).Excluding(s => s.CatalogueItems));
@@ -294,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await dbContext.SaveChangesAsync();
             dbContext.ChangeTracker.Clear();
 
-            var results = await service.GetAllSuppliersByOrderType(orderType);
+            var results = await service.GetActiveSuppliers(orderType);
 
             results.Should().BeEmpty();
         }
