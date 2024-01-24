@@ -596,73 +596,76 @@
                         }
                     </div>
 
-                    <div style="page-break-after: always"></div>
+                    @if (Model.Order.OrderStatus is OrderStatus.Completed)
+                    {
+                        <div style="page-break-after: always"></div>
 
-                    <div class="nhsuk-grid-row">
-                        <div class="nhsuk-grid-column-full">
-                            <nhs-page-title title="Signatures"
-                                            caption="Order @Model.Order.CallOffId" />
+                        <div class="nhsuk-grid-row">
+                            <div class="nhsuk-grid-column-full">
+                                <nhs-page-title title="Signatures"
+                                                caption="Order @Model.Order.CallOffId"/>
+                            </div>
                         </div>
-                    </div>
-                    <p>Both parties are entering into a Call-off Agreement in accordance with the provisions of the framework being procured from.</p>
-                    <p>The supplier will provide the solution and any services included in this Call-off Order Form for the duration identified. They must do this subject to the Call-off Terms and the information provided in this Call-off Order Form.</p>
-                    <p>No amendments to the Call-off Terms will be valid unless documented in a relevant template. A template will only be valid if it has been attached to this Call-off Order Form prior to it being signed by both parties.</p>
-                    <div class="nhsuk-grid-row">
-                        <div class="nhsuk-grid-column-one-half">
-                            <h4>
-                                On behalf of the buyer
-                                <span class="nhsuk-caption-m nhsuk-caption--bottom">@Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)</span>
-                            </h4>
+                        <p>Both parties are entering into a Call-off Agreement in accordance with the provisions of the framework being procured from.</p>
+                        <p>The supplier will provide the solution and any services included in this Call-off Order Form for the duration identified. They must do this subject to the Call-off Terms and the information provided in this Call-off Order Form.</p>
+                        <p>No amendments to the Call-off Terms will be valid unless documented in a relevant template. A template will only be valid if it has been attached to this Call-off Order Form prior to it being signed by both parties.</p>
+                        <div class="nhsuk-grid-row">
+                            <div class="nhsuk-grid-column-one-half">
+                                <h4>
+                                    On behalf of the buyer
+                                    <span class="nhsuk-caption-m nhsuk-caption--bottom">@Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)</span>
+                                </h4>
+                            </div>
+                            <div class="nhsuk-grid-column-one-half">
+                                <h4>
+                                    On behalf of the supplier
+                                    <span class="nhsuk-caption-m nhsuk-caption--bottom">@(Model.Order.Supplier?.Name ?? "")</span>
+                                </h4>
+                            </div>
                         </div>
-                        <div class="nhsuk-grid-column-one-half">
-                            <h4>
-                                On behalf of the supplier
-                                <span class="nhsuk-caption-m nhsuk-caption--bottom">@(Model.Order.Supplier?.Name ?? "")</span>
-                            </h4>
+                        <div class="nhsuk-grid-row">
+                            <div class="nhsuk-grid-column-one-half">
+                                <table>
+                                    <tr class="signature">
+                                        <td>Name:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="signature">
+                                        <td>Job Role:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="signature">
+                                        <td>Signature:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="signature">
+                                        <td>Date:</td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="nhsuk-grid-column-one-half">
+                                <table>
+                                    <tr class="signature">
+                                        <td>Name:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="signature">
+                                        <td>Job Role:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="signature">
+                                        <td>Signature:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr class="signature">
+                                        <td>Date:</td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="nhsuk-grid-row">
-                        <div class="nhsuk-grid-column-one-half">
-                            <table>
-                                <tr class="signature">
-                                    <td>Name:</td>
-                                    <td></td>
-                                </tr>
-                                <tr class="signature">
-                                    <td>Job Role:</td>
-                                    <td></td>
-                                </tr>
-                                <tr class="signature">
-                                    <td>Signature:</td>
-                                    <td></td>
-                                </tr>
-                                <tr class="signature">
-                                    <td>Date:</td>
-                                    <td></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="nhsuk-grid-column-one-half">
-                            <table>
-                                <tr class="signature">
-                                    <td>Name:</td>
-                                    <td></td>
-                                </tr>
-                                <tr class="signature">
-                                    <td>Job Role:</td>
-                                    <td></td>
-                                </tr>
-                                <tr class="signature">
-                                    <td>Signature:</td>
-                                    <td></td>
-                                </tr>
-                                <tr class="signature">
-                                    <td>Date:</td>
-                                    <td></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
+                    }
                 </div>
             </div>
         </main>

@@ -500,6 +500,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             };
 
             dbContext.Entry(order).State = EntityState.Modified;
+            await dbContext.SaveChangesAsync();
 
             _ = await pdfService.CreateOrderSummaryPdf(order);
 
@@ -507,8 +508,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             await Task.WhenAll(
                 emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),
-                emailService.SendEmailAsync(userEmail, GetUserTemplateId(order), userTokens),
-                dbContext.SaveChangesAsync());
+                emailService.SendEmailAsync(userEmail, GetUserTemplateId(order), userTokens));
         }
 
         private string GetUserTemplateId(Order order)
