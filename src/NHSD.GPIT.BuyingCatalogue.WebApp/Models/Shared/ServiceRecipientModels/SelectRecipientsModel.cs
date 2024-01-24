@@ -47,7 +47,7 @@ public class SelectRecipientsModel : NavBaseModel
 
     public SublocationModel[] SubLocations { get; set; } = Array.Empty<SublocationModel>();
 
-    public ServiceRecipientModel[] SearchRecipients => SubLocations.SelectMany(x => x.ServiceRecipients).ToArray();
+    public ServiceRecipientModel[] SearchRecipients => SubLocations.SelectMany(x => x.ServiceRecipients.Select(y => new ServiceRecipientModel { Name = y.Name, OdsCode = y.OdsCode })).ToArray();
 
     public bool HasImportedRecipients { get; set; }
 
