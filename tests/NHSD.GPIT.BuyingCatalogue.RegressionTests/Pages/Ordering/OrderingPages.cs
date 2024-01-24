@@ -49,6 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             ImportServiceReceipients = new ImportServiceReceipients(driver, commonActions);
             ConfirmServieReceipients = new ConfirmServieReceipients(driver, commonActions);
             AmendOrder = new AmendOrder(driver, commonActions, factory);
+            MergerAndSplit = new MergerAndSplit(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -117,6 +118,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal AmendOrder AmendOrder { get; }
 
+        internal MergerAndSplit MergerAndSplit { get; }
+
         public void StepOnePrepareOrder(
             string supplierName,
             string orderDescription,
@@ -130,8 +133,22 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.CallOffOrderingPartyContactDetailsTask();
             OrderingStepOne.AddCallOffOrderingPartyContactDetails();
 
-            TaskList.SupplierInformationAndContactDetailsTask();
-            SelectSupplier.SelectAndConfirmSupplier(supplierName);
+            switch (itemType)
+            {
+                case CatalogueItemType.AssociatedServiceSplit:
+                    TaskList.SupplierInformationAndContactForSplitOrder();
+                    SelectSupplier.ConfirmSupplierForMergerAndSplit();
+                    break;
+                case CatalogueItemType.AssociatedServiceMerger:
+                    TaskList.SupplierInformationAndContactForMergerOrder();
+                    SelectSupplier.ConfirmSupplierForMergerAndSplit();
+                    break;
+                default:
+                    TaskList.SupplierInformationAndContactDetailsTask();
+                    SelectSupplier.SelectAndConfirmSupplier(supplierName);
+                    break;
+            }
+
             SupplierContacts.ConfirmContact(addNewSupplierContact);
 
             TaskList.TimescalesForCallOffAgreementTask();
@@ -157,6 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             var orderId = OrderID();
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder(orderId);
+            var isAssociatedSplitOrMergerOrder = IsAssociatedSplitOrMergerOder(orderId);
 
             if (!importServiceRecipients)
             {
@@ -168,7 +186,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 ImportServiceReceipients.ImportServiceRecipients(fileName);
             }
 
-            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+            if (!isAssociatedSplitOrMergerOrder)
+            {
+                ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+            }
+            else
+            {
+                ConfirmServieReceipients.ConfirmServiceRecipientsChangesForSplitAndMerges();
+            }
 
             TaskList.SelectSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -206,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     }
                 }
             }
-            else
+            else if (isAssociatedServiceOnlyOrder && !isAssociatedSplitOrMergerOrder)
             {
                 SelectEditAssociatedServiceOnly.SelectAssociatedServices(solutionName, associatedServices);
 
@@ -218,6 +243,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                         Quantity.AddQuantity();
                     }
                 }
+            }
+            else
+            {
+                    MergerAndSplit.MergerAndSplitSolutionSelection();
+                    SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
@@ -685,14 +715,24 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             using var dbContext = Factory.DbContext;
 
-            //var result = dbContext.Orders
-            //   .Any(o => o.Id == orderId && o.OrderType.Value == OrderTypeEnum.AssociatedServiceOther);
-
             var orderType = dbContext.Orders
                .Where(o => o.Id == orderId)
                .Select(z => z.OrderType).ToList();
 
             var result = orderType.Any(a => a.AssociatedServicesOnly );
+
+            return result;
+        }
+
+        private bool IsAssociatedSplitOrMergerOder(int orderId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var orderType = dbContext.Orders
+               .Where(o => o.Id == orderId)
+               .Select(z => z.OrderType).ToList();
+
+            var result = orderType.Any(a => a.MergerOrSplit);
 
             return result;
         }

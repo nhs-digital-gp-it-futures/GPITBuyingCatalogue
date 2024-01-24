@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
             switch (type)
             {
                 case CatalogueItemType.AssociatedService:
-                    if (associatedServiceType == AssociatedServiceType.AssociatedServiceOther)
+                    if (associatedServiceType == AssociatedServiceType.AssociatedServiceOther || associatedServiceType == AssociatedServiceType.AssociatedServiceSplit || associatedServiceType == AssociatedServiceType.AssociatedServiceMerger)
                     {
                         AssociatedServiceCorrectPage(associatedServiceType);
                     }
