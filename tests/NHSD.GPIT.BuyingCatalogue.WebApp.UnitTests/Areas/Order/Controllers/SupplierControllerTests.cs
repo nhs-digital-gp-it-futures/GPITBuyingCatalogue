@@ -417,13 +417,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Get_NoAvailableSuppliers_ReturnsExpectedResult(
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, "Split")]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, "Merger")]
+        public static async Task Get_NoAvailableSuppliers_ReturnsExpectedResult(
+            OrderTypeEnum orderType,
+            string expectedOrderTypeText,
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
             SupplierController controller)
         {
-            var result = controller.NoAvailableSuppliers(internalOrgId, order.CallOffId);
+            order.OrderType = orderType;
+
+            mockOrderService
+                .Setup(_ => _.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            var result = await controller.NoAvailableSuppliers(internalOrgId, order.CallOffId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -431,6 +441,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             model.CallOffId.Should().Be(order.CallOffId);
             model.InternalOrgId.Should().Be(internalOrgId);
+            model.OrderTypeText.Should().Be(expectedOrderTypeText);
         }
 
         [Theory]
