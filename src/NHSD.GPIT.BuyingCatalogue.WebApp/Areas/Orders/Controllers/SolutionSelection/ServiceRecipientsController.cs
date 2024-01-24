@@ -226,7 +226,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             string internalOrgId,
             CallOffId callOffId,
             string recipientIds,
-            string selectedRecipientId)
+            string selectedRecipientId,
+            bool? hasImported = null)
         {
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var orderType = wrapper.Order.OrderType;
@@ -260,9 +261,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 Advice = title.Advice,
                 OrderType = orderType,
                 BackLink = orderType.MergerOrSplit
-                    ? Url.Action(nameof(SelectRecipientForPracticeReorganisation), new { internalOrgId, callOffId, recipientIds, selectedRecipientId })
-                    : Url.Action(nameof(SelectServiceRecipients), new { internalOrgId, callOffId, recipientIds }),
-                AddRemoveRecipientsLink = Url.Action(nameof(SelectServiceRecipients), new { internalOrgId, callOffId, recipientIds }),
+                    ? Url.Action(
+                        nameof(SelectRecipientForPracticeReorganisation),
+                        new { internalOrgId, callOffId, recipientIds, selectedRecipientId })
+                    : hasImported.GetValueOrDefault()
+                        ? Url.Action(
+                            nameof(ImportServiceRecipientsController.Index),
+                            typeof(ImportServiceRecipientsController).ControllerName(),
+                            new { internalOrgId, callOffId })
+                        : Url.Action(nameof(SelectServiceRecipients), new { internalOrgId, callOffId, recipientIds }),
+                AddRemoveRecipientsLink =
+                    Url.Action(nameof(SelectServiceRecipients), new { internalOrgId, callOffId, recipientIds }),
                 Selected = selectedRecipients,
                 PracticeReorganisationRecipient = practiceReorganisation,
                 PreviouslySelected = MapToModel(previousRecipients, false),

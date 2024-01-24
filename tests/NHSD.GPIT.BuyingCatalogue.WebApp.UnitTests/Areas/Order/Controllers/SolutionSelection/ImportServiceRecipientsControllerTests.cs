@@ -309,12 +309,12 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] Mock<IOdsService> odsService,
         ImportServiceRecipientsController controller)
     {
-        var importedRecipients = serviceRecipients.Take(2)
+        var recipientIds = serviceRecipients.Take(2)
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
-            .ReturnsAsync(importedRecipients);
+            .ReturnsAsync(recipientIds);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
             .ReturnsAsync(serviceRecipients);
@@ -326,7 +326,7 @@ public static class ImportServiceRecipientsControllerTests
         odsService.VerifyAll();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectServiceRecipients));
+        result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmChanges));
         result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
         result.RouteValues.Should()
             .BeEquivalentTo(
@@ -334,7 +334,8 @@ public static class ImportServiceRecipientsControllerTests
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(callOffId), callOffId },
-                    { nameof(importedRecipients), string.Join(',', importedRecipients.Select(s => s.OdsCode)) },
+                    { nameof(recipientIds), string.Join(',', recipientIds.Select(s => s.OdsCode)) },
+                    { "hasImported", true },
                 });
     }
 
@@ -353,12 +354,12 @@ public static class ImportServiceRecipientsControllerTests
     {
         const ServiceRecipientImportMode importMode = ServiceRecipientImportMode.Edit;
 
-        var importedRecipients = serviceRecipients
+        var recipientIds = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
 
-        importedRecipients.First().OdsCode = "MISMATCH";
-        importedRecipients.Skip(1).First().Organisation = "MISMATCH";
+        recipientIds.First().OdsCode = "MISMATCH";
+        recipientIds.Skip(1).First().Organisation = "MISMATCH";
 
         var firstServiceRecipient = serviceRecipients.First();
 
@@ -367,12 +368,10 @@ public static class ImportServiceRecipientsControllerTests
             ("MISMATCH", firstServiceRecipient.Name, firstServiceRecipient.OrgId),
         };
 
-        var model = new ValidateNamesModel(
-            mismatchedNames,
-            importMode);
+        var model = new ValidateNamesModel(mismatchedNames);
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
-            .ReturnsAsync(importedRecipients);
+            .ReturnsAsync(recipientIds);
 
         catalogueItemService.Setup(s => s.GetCatalogueItemName(catalogueItemId))
             .ReturnsAsync(catalogueItemName);
@@ -380,14 +379,14 @@ public static class ImportServiceRecipientsControllerTests
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
             .ReturnsAsync(serviceRecipients);
 
-        var result = (await controller.ValidateNames(internalOrgId, callOffId, catalogueItemId, model, importMode))
+        var result = (await controller.ValidateNames(internalOrgId, callOffId, catalogueItemId, model))
             .As<RedirectToActionResult>();
 
         importService.VerifyAll();
         odsService.VerifyAll();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectServiceRecipients));
+        result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmChanges));
         result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
         result.RouteValues.Should()
             .BeEquivalentTo(
@@ -396,28 +395,27 @@ public static class ImportServiceRecipientsControllerTests
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(callOffId), callOffId },
                     { nameof(catalogueItemId), catalogueItemId },
-                    { nameof(importedRecipients), string.Join(',', importedRecipients.Skip(1).Select(x => x.OdsCode)) },
+                    { nameof(recipientIds), string.Join(',', recipientIds.Skip(1).Select(x => x.OdsCode)) },
+                    { "hasImported", true },
                 });
     }
 
     [Theory]
-    [CommonInlineAutoData(ServiceRecipientImportMode.Add, nameof(ServiceRecipientsController.SelectServiceRecipients))]
+    [CommonAutoData]
     public static void CancelImport_Redirects(
-        ServiceRecipientImportMode importMode,
-        string expectedRedirectAction,
         string internalOrgId,
         CallOffId callOffId,
         CatalogueItemId catalogueItemId,
         [Frozen] Mock<IServiceRecipientImportService> importService,
         ImportServiceRecipientsController controller)
     {
-        var result = controller.CancelImport(internalOrgId, callOffId, catalogueItemId, importMode)
+        var result = controller.CancelImport(internalOrgId, callOffId, catalogueItemId)
             .As<RedirectToActionResult>();
 
         importService.VerifyAll();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(expectedRedirectAction);
+        result.ActionName.Should().Be(nameof(ServiceRecipientsController.UploadOrSelectServiceRecipients));
         result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
         result.RouteValues.Should()
             .BeEquivalentTo(
