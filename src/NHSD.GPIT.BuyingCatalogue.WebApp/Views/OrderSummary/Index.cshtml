@@ -615,16 +615,6 @@
                                     On behalf of the buyer
                                     <span class="nhsuk-caption-m nhsuk-caption--bottom">@Model.Order.OrderingParty.Name (@Model.Order.OrderingParty.ExternalIdentifier)</span>
                                 </h4>
-                            </div>
-                            <div class="nhsuk-grid-column-one-half">
-                                <h4>
-                                    On behalf of the supplier
-                                    <span class="nhsuk-caption-m nhsuk-caption--bottom">@(Model.Order.Supplier?.Name ?? "")</span>
-                                </h4>
-                            </div>
-                        </div>
-                        <div class="nhsuk-grid-row">
-                            <div class="nhsuk-grid-column-one-half">
                                 <table>
                                     <tr class="signature">
                                         <td>Name:</td>
@@ -645,6 +635,10 @@
                                 </table>
                             </div>
                             <div class="nhsuk-grid-column-one-half">
+                                <h4>
+                                    On behalf of the supplier
+                                    <span class="nhsuk-caption-m nhsuk-caption--bottom">@(Model.Order.Supplier?.Name ?? "")</span>
+                                </h4>
                                 <table>
                                     <tr class="signature">
                                         <td>Name:</td>
