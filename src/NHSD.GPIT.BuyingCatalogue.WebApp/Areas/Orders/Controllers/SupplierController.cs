@@ -180,9 +180,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("no-available-suppliers")]
-        public IActionResult NoAvailableSuppliers(string internalOrgId, CallOffId callOffId)
+        public async Task<IActionResult> NoAvailableSuppliers(string internalOrgId, CallOffId callOffId)
         {
-            return View(new NoAvailableSuppliersModel(internalOrgId, callOffId)
+            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+
+            return View(new NoAvailableSuppliersModel(internalOrgId, callOffId, order.OrderType)
             {
                 BackLink = Url.Action(
                         nameof(OrderController.Order),
