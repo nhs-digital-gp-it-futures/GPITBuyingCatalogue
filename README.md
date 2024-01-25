@@ -19,7 +19,7 @@ This application provides a Web Application capable of running on Linux or Windo
 ### Requirements
 
 - [Azure Storage Explorer](https://azure.microsoft.com/en-gb/products/storage/storage-explorer)
-- [.NET 7](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - [NodeJS (v17.9.1)](https://nodejs.org/dist/latest-v17.x/node-v17.9.1-x64.msi)
 - [Rancher Desktop](https://rancherdesktop.io/)
 

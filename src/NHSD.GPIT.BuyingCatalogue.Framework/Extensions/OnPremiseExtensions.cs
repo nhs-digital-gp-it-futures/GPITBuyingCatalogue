@@ -8,10 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
     {
         public static TaskProgress Status(this OnPremise onPremise)
         {
-            if (onPremise is null)
-                throw new ArgumentNullException(nameof(onPremise));
-
-            if (string.IsNullOrEmpty(onPremise.Summary) || string.IsNullOrEmpty(onPremise.HostingModel))
+            if (onPremise is null || string.IsNullOrEmpty(onPremise.Summary) || string.IsNullOrEmpty(onPremise.HostingModel))
                 return TaskProgress.NotStarted;
 
             return TaskProgress.Completed;
