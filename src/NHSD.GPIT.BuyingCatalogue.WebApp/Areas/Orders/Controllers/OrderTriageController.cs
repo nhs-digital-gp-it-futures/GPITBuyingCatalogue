@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared;
@@ -32,10 +33,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         };
 
         private readonly IOrganisationsService organisationsService;
+        private readonly ISupplierService supplierService;
 
-        public OrderTriageController(IOrganisationsService organisationsService)
+        public OrderTriageController(
+            IOrganisationsService organisationsService,
+            ISupplierService supplierService)
         {
-            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+            ArgumentNullException.ThrowIfNull(organisationsService);
+            ArgumentNullException.ThrowIfNull(supplierService);
+
+            this.organisationsService = organisationsService;
+            this.supplierService = supplierService;
         }
 
         [HttpGet("order-item-type")]
@@ -83,8 +91,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var model = new DetermineAssociatedServiceTypeModel(organisation.Name)
+            var model = new DetermineAssociatedServiceTypeModel(
+                organisation.Name,
+                await supplierService.HasActiveSuppliers(OrderTypeEnum.AssociatedServiceMerger),
+                await supplierService.HasActiveSuppliers(OrderTypeEnum.AssociatedServiceSplit))
             {
+                InternalOrgId = internalOrgId,
                 BackLink = Url.Action(nameof(OrderItemType), new { internalOrgId, orderType = CatalogueItemType.AssociatedService }),
                 OrderType = orderType,
             };

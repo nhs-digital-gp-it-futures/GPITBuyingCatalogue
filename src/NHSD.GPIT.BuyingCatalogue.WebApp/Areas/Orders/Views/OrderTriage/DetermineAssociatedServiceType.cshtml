@@ -1,30 +1,46 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage.DetermineAssociatedServiceTypeModel
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage.DetermineAssociatedServiceTypeModel
 @{
-    ViewBag.Title = "What type of Associated Service do you want to order?";
+    var submitButton = string.Empty; // uses the default text
 }
-
 <div>
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary RadioId="@nameof(Model.OrderType)" />
-            <nhs-page-title title="@ViewBag.Title"
-                            caption="@Model.OrganisationName"
-                            advice="Select if you want to order a practice merger or split or something else." />
+            <nhs-page-title model="@Model.GetPageTitle()" />
 
             <form method="post">
                 <input type="hidden" asp-for="OrganisationName" />
+                <input type="hidden" asp-for="MergerEnabled" />
+                <input type="hidden" asp-for="SplitEnabled" />
                 <input type="hidden" asp-for="BackLink" />
-                <nhs-fieldset-form-label asp-for="OrderType">
-                    <nhs-radio-buttons asp-for="OrderType"
-                                       values="Model.AvailableOrderTypes"
-                                       display-name="Text"
-                                       value-name="Value"
-                                       hint-name="Advice" />
-                </nhs-fieldset-form-label>
-
-                <nhs-submit-button />
+                @{
+                    var availableTypes = Model.AvailableOrderTypes;
+                    if (availableTypes.Count == 1 && availableTypes[0].Value == OrderTypeEnum.AssociatedServiceOther)
+                    {
+                        submitButton = "Continue";
+                        <input type="hidden" asp-for="OrderType" value="@OrderTypeEnum.AssociatedServiceOther" />
+                    }
+                    else
+                    {
+                        <nhs-fieldset-form-label asp-for="OrderType">
+                            <nhs-radio-buttons asp-for="OrderType"
+                                               values="@availableTypes"
+                                               display-name="Text"
+                                               value-name="Value"
+                                               hint-name="Advice" />
+                        </nhs-fieldset-form-label>
+                    }
+                }
+                <nhs-submit-button text="@submitButton" />
             </form>
+            <a id="cancel-link"
+               href="@Url.Action(
+                     nameof(DashboardController.Organisation),
+                     typeof(DashboardController).ControllerName(),
+                     new { Model.InternalOrgId })">Cancel</a>
         </div>
     </div>
 </div>
