@@ -236,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(new OrderWrapper(order));
 
             mockSupplierService
-                .Setup(x => x.GetAllSuppliersFromBuyingCatalogue())
+                .Setup(x => x.GetActiveSuppliers(OrderTypeEnum.Solution))
                 .ReturnsAsync(suppliers);
 
             var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
@@ -278,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(new OrderWrapper(order));
 
             supplierService
-                .Setup(x => x.GetAllSuppliersWithAssociatedServices(order.OrderType.ToPracticeReorganisationType))
+                .Setup(x => x.GetActiveSuppliers(order.OrderType))
                 .ReturnsAsync(new List<Supplier>() { supplier });
 
             var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
@@ -293,12 +293,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, PracticeReorganisationTypeEnum.None)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, PracticeReorganisationTypeEnum.Split)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, PracticeReorganisationTypeEnum.Merger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        public static async Task Get_SelectSupplier_Split_Or_Merger_NoSupplier_NoSearchResult_ReturnsExpectedResult(
+            OrderTypeEnum orderType,
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<ISupplierService> supplierService,
+            SupplierController controller)
+        {
+            order.Supplier = null;
+            order.OrderType = orderType;
+
+            orderService
+                .Setup(s => s.GetOrderWithSupplier(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            supplierService
+                .Setup(x => x.GetActiveSuppliers(order.OrderType))
+                .ReturnsAsync(new List<Supplier>());
+
+            var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
+
+            orderService.VerifyAll();
+            supplierService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(SupplierController.NoAvailableSuppliers));
+            actualResult.ControllerName.Should().Be(typeof(SupplierController).ControllerName());
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
         public static async Task Get_SelectSupplier_Other_Split_Or_Merger_NoSupplier_ReturnsExpectedResult(
             OrderTypeEnum orderType,
-            PracticeReorganisationTypeEnum practiceReorganisationType,
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             List<Supplier> suppliers,
@@ -314,7 +346,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 .ReturnsAsync(new OrderWrapper(order));
 
             supplierService
-                .Setup(x => x.GetAllSuppliersWithAssociatedServices(practiceReorganisationType))
+                .Setup(x => x.GetActiveSuppliers(orderType))
                 .ReturnsAsync(suppliers);
 
             var result = await controller.SelectSupplier(internalOrgId, order.CallOffId);
@@ -382,6 +414,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 { "callOffId", callOffId },
                 { "supplierId", int.Parse(model.SelectedSupplierId) },
             });
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, "Split")]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, "Merger")]
+        public static async Task Get_NoAvailableSuppliers_ReturnsExpectedResult(
+            OrderTypeEnum orderType,
+            string expectedOrderTypeText,
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> mockOrderService,
+            SupplierController controller)
+        {
+            order.OrderType = orderType;
+
+            mockOrderService
+                .Setup(_ => _.GetOrderThin(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            var result = await controller.NoAvailableSuppliers(internalOrgId, order.CallOffId);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var model = actualResult.ViewData.Model.Should().BeAssignableTo<NoAvailableSuppliersModel>().Subject;
+
+            model.CallOffId.Should().Be(order.CallOffId);
+            model.InternalOrgId.Should().Be(internalOrgId);
+            model.OrderTypeText.Should().Be(expectedOrderTypeText);
         }
 
         [Theory]

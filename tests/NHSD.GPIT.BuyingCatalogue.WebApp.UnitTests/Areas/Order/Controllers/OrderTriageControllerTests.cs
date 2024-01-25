@@ -17,6 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
@@ -124,13 +125,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [CommonAutoData]
         public static async Task Get_DetermineAssociatedServiceType_ReturnsView(
             Organisation organisation,
+            bool mergerEnabled,
+            bool splitEnabled,
             [Frozen] Mock<IOrganisationsService> service,
+            [Frozen] Mock<ISupplierService> supplierService,
             OrderTriageController controller)
         {
-            var expectedModel = new DetermineAssociatedServiceTypeModel(organisation.Name);
+            var expectedModel = new DetermineAssociatedServiceTypeModel(organisation.Name, mergerEnabled, splitEnabled)
+            {
+                InternalOrgId = organisation.InternalIdentifier,
+            };
 
             service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
                 .ReturnsAsync(organisation);
+
+            supplierService.Setup(s => s.HasActiveSuppliers(OrderTypeEnum.AssociatedServiceMerger))
+                .ReturnsAsync(mergerEnabled);
+
+            supplierService.Setup(s => s.HasActiveSuppliers(OrderTypeEnum.AssociatedServiceSplit))
+                .ReturnsAsync(splitEnabled);
 
             var result = (await controller.DetermineAssociatedServiceType(organisation.InternalIdentifier)).As<ViewResult>();
 
