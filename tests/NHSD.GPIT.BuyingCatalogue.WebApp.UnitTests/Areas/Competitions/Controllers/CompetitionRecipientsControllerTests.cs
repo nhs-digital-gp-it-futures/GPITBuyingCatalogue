@@ -7,6 +7,7 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -130,6 +131,77 @@ public static class CompetitionRecipientsControllerTests
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt
             .Excluding(m => m.BackLink)
             .Excluding(m => m.AddRemoveRecipientsLink));
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ConfirmRecipients_HasImportedRecipients_SetsBacklink(
+        Organisation organisation,
+        Competition competition,
+        List<ServiceRecipient> serviceRecipients,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IOdsService> odsService,
+        [Frozen] Mock<IUrlHelper> urlHelper,
+        CompetitionRecipientsController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
+            .ReturnsAsync(competition);
+
+        odsService.Setup(
+                x => x.GetServiceRecipientsById(organisation.InternalIdentifier, It.IsAny<IEnumerable<string>>()))
+            .ReturnsAsync(serviceRecipients);
+
+        _ = (await controller.ConfirmRecipients(
+            organisation.InternalIdentifier,
+            competition.Id,
+            string.Join(',', serviceRecipients.Select(x => x.OrgId)),
+            true)).As<ViewResult>();
+
+        urlHelper.Verify(
+            x => x.Action(
+                It.Is<UrlActionContext>(
+                    y => y.Action == nameof(CompetitionImportServiceRecipientsController.Index) && y.Controller
+                        == typeof(CompetitionImportServiceRecipientsController).ControllerName())),
+            Times.Once());
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task ConfirmRecipients_HasNotImportedRecipients_SetsBacklink(
+        Organisation organisation,
+        Competition competition,
+        List<ServiceRecipient> serviceRecipients,
+        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] Mock<IOdsService> odsService,
+        [Frozen] Mock<IUrlHelper> urlHelper,
+        CompetitionRecipientsController controller)
+    {
+        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
+            .ReturnsAsync(organisation);
+
+        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
+            .ReturnsAsync(competition);
+
+        odsService.Setup(
+                x => x.GetServiceRecipientsById(organisation.InternalIdentifier, It.IsAny<IEnumerable<string>>()))
+            .ReturnsAsync(serviceRecipients);
+
+        _ = (await controller.ConfirmRecipients(
+            organisation.InternalIdentifier,
+            competition.Id,
+            string.Join(',', serviceRecipients.Select(x => x.OrgId)),
+            false)).As<ViewResult>();
+
+        urlHelper.Verify(
+            x => x.Action(
+                It.Is<UrlActionContext>(
+                    y => y.Action == nameof(controller.Index) && string.IsNullOrWhiteSpace(y.Controller))),
+            Times.Once());
     }
 
     [Theory]
