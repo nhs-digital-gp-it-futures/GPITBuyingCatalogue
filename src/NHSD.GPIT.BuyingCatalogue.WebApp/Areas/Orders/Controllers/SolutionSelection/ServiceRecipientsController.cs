@@ -119,10 +119,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     Caption = $"Order {callOffId}",
                     Advice = title.Advice,
                     BackLink =
-                        Url.Action(
-                            nameof(UploadOrSelectServiceRecipients),
-                            typeof(ServiceRecipientsController).ControllerName(),
-                            new { internalOrgId, callOffId }),
+                        wrapper.Order.OrderType.MergerOrSplit
+                            ? Url.Action(
+                                nameof(OrderController.Order),
+                                typeof(OrderController).ControllerName(),
+                                new { internalOrgId, callOffId })
+                            : Url.Action(
+                                nameof(UploadOrSelectServiceRecipients),
+                                typeof(ServiceRecipientsController).ControllerName(),
+                                new { internalOrgId, callOffId }),
                     HasImportedRecipients = !string.IsNullOrWhiteSpace(importedRecipients),
                     SelectAtLeast = wrapper.Order.OrderType.MergerOrSplit
                         ? 2

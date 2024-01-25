@@ -169,15 +169,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
                 .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
                 .ReturnsAsync(new OrderWrapper(order));
 
-            var result = await controller.SummaryComplete(
+            var result = (await controller.SummaryComplete(
                 internalOrgId,
-                order.CallOffId);
+                order.CallOffId)).As<RedirectToActionResult>();
 
-            var modelState = result.Should().BeOfType<ViewResult>().Subject.ViewData.ModelState;
-
-            modelState.ValidationState.Should().Be(ModelValidationState.Invalid);
-            modelState.Keys.First().Should().Be(OrderController.ErrorKey);
-            modelState.Values.First().Errors.First().ErrorMessage.Should().Be(OrderController.ErrorMessage);
+            result.ActionName.Should().Be(nameof(controller.Summary));
         }
 
         [Theory]
