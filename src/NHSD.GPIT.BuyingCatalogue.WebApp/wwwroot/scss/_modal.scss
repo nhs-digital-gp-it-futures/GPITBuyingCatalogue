@@ -212,3 +212,19 @@
     height: 38px;
     width: 38px;
 }
+
+@media (max-width: 768px) {
+    .modal__container {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+    }
+
+    .modal__footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+    }
+}

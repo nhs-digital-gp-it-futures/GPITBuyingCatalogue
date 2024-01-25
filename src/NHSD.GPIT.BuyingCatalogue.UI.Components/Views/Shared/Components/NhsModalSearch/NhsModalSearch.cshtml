@@ -3,16 +3,16 @@
 <dialog class="modal modal-slide" id="@Model.Id" aria-hidden="true">
     <form method="dialog">
         <div class="modal__overlay" tabindex="-1">
-            <div class="modal__container" aria-modal="true" aria-labelledby="modal-1-title">
+            <div class="modal__container" aria-modal="true" aria-labelledby="@(Model.Id + "-title")">
                 <header class="modal__header">
-                    <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="modal-1-title">
+                    <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="@(Model.Id + "-title")">
                         @Model.Title
                     </h2>
                     <button class="nhsuk-button nhsuk-button--secondary" value="cancel">
                         Close
                     </button>
                 </header>
-                <main class="modal__content" id="modal-1-content">
+                <main class="modal__content" id="@(Model.Id + "-content")">
                     <p class="nhsuk-body">
                         @Model.Advice
                     </p>
@@ -24,12 +24,7 @@
                                    maxlength="50">
 
                             <button type="button" class="app-search__submit" value="search">
-                                <svg class="icon icon__search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
-                                     focusable="false">
-                                    <path d="M19.71 18.29l-4.11-4.1a7 7 0 1 0-1.41 1.41l4.1 4.11a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42zM5 10a5 5 0 1 1 5 5 5 5 0 0 1-5-5z">
-                                    </path>
-                                </svg>
-                                <span class="visually-hidden">Search</span>
+                                <vc:nhs-search-icon/>
                             </button>
                         </div>
                     </div>
