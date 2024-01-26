@@ -213,7 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(AssociatedServicesController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(AssociatedServicesController.AddAssociatedServices));
+            actualResult.ActionName.Should().Be(nameof(AssociatedServicesController.SelectAssociatedServices));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -452,7 +452,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(AssociatedServicesController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(AssociatedServicesController.AddAssociatedServices));
+            actualResult.ActionName.Should().Be(nameof(AssociatedServicesController.SelectAssociatedServices));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -580,7 +580,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         private static RoutingResult Route(string internalOrgId, CallOffId callOffId) => new()
         {
-            ActionName = Constants.Actions.AddAssociatedServices,
+            ActionName = Constants.Actions.SelectAssociatedServices,
             ControllerName = Constants.Controllers.AssociatedServices,
             RouteValues = new { internalOrgId, callOffId },
         };

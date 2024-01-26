@@ -54,7 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.AssociatedServices.Select(s => s.CatalogueItemId).Should().BeEquivalentTo(new[] { associatedService.CatalogueItemId });
 
             model.Progress.Should().Be(TaskProgress.Completed);
-            model.Advice.Should().Be(TaskListModel.CompletedAdvice);
             model.Title.Should().Be(TaskListModel.CompletedTitle);
 
             model.OrderItemModel(solution.CatalogueItemId).Should().NotBeNull();
@@ -93,7 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.AssociatedServices.Select(x => x.CatalogueItemId).Should().BeEquivalentTo(new[] { associatedService.CatalogueItemId });
 
             model.Progress.Should().Be(TaskProgress.Completed);
-            model.Advice.Should().Be(TaskListModel.CompletedAdvice);
             model.Title.Should().Be(TaskListModel.CompletedTitle);
 
             model.OrderItemModel(solution.CatalogueItemId).Should().NotBeNull();
@@ -131,7 +129,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             });
 
             model.Progress.Should().Be(TaskProgress.Completed);
-            model.Advice.Should().Be(TaskListModel.CompletedAdvice);
             model.Title.Should().Be(TaskListModel.CompletedTitle);
 
             for (var i = 0; i < 3; i++)
@@ -166,7 +163,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.AssociatedServices.Should().BeEmpty();
 
             model.Progress.Should().Be(TaskProgress.InProgress);
-            model.Advice.Should().Be(TaskListModel.InProgressAdvice);
             model.Title.Should().Be(TaskListModel.InProgressTitle);
 
             model.OrderItemModel(solution.CatalogueItemId).Should().NotBeNull();
@@ -179,7 +175,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             model.CallOffId = new CallOffId(model.CallOffId.OrderNumber, 2);
 
-            model.Advice.Should().Be(TaskListModel.AmendmentAdvice);
             model.Title.Should().Be(TaskListModel.AmendmentTitle);
         }
 
