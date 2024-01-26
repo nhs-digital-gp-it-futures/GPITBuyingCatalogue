@@ -18,7 +18,7 @@
                     </p>
                     <div>
                         <div class="app-search__contents">
-                            <label class="c-search__label visually-hidden" for="query">@Model.Placeholder</label>
+                            <label class="c-search__label visually-hidden" for="@(Model.Id + "-filter-term")">@Model.Placeholder</label>
                             <input class="app-search__input ui-autocomplete-input" id="@(Model.Id + "-filter-term")"
                                    placeholder="@Model.Placeholder" autocomplete="off" name="query" type="search"
                                    maxlength="50">

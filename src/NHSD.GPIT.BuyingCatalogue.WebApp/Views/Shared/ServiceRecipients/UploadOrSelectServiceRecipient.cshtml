@@ -1,5 +1,8 @@
 @using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.UploadOrSelectServiceRecipientModel;
+@{
+    ViewBag.Title = Model.Title;
+}
 <partial name="Partials/_BackLink" model="@Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
