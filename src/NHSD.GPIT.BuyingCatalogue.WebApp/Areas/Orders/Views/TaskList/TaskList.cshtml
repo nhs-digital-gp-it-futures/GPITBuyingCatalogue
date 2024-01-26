@@ -1,4 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList.TaskListModel
 
@@ -58,37 +59,39 @@
         {
             <div id="AdditionalServiceDetails" class="nhsuk-u-margin-bottom-9">
                 <h2>Additional Services</h2>
-                @if (Model.AdditionalServicesAvailable)
-                {
-                    <span data-test-id="additional-services-action">
-                        <vc:nhs-action-link text="@Model.AdditionalServicesActionText"
-                                            url="@Url.Action(
-                                                     nameof(AdditionalServicesController.SelectAdditionalServices),
-                                                     typeof(AdditionalServicesController).ControllerName(),
-                                                     new { Model.InternalOrgId, Model.CallOffId })" />
-                    </span>
-                }
-                else
-                {
-                    <p>There are no Additional Services available for this Catalogue Solution.</p>
-                }
-
-                @if (Model.AdditionalServices.Any())
-                {
-                    <nhs-card>
+                <nhs-card>
+                    @if (Model.AdditionalServices.Any())
+                    {
                         @foreach (var service in Model.AdditionalServices)
                         {
-                            <div>
-                                <partial name="TaskListOrderItem"
-                                         model="@Model.OrderItemModel(service.CatalogueItemId)" />
-                                <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
-                                                                       typeof(CatalogueSolutionsController).ControllerName(),
-                                                                       new { Model.InternalOrgId, Model.CallOffId, service.CatalogueItemId })"
-                                                      text="Remove @service.CatalogueItem.Name" />
-                            </div>
+                            <partial name="TaskListOrderItem"
+                            model="@Model.OrderItemModel(service.CatalogueItemId)" />
+                            <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
+                                                                    typeof(CatalogueSolutionsController).ControllerName(),
+                                                                    new { Model.InternalOrgId, Model.CallOffId, service.CatalogueItemId })"
+                            text="Remove @service.CatalogueItem.Name" />
+                            <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
                         }
-                    </nhs-card>
-                }
+                    }
+                    else
+                    {
+                        <p>No Additional Services have been added to this order yet.</p>
+                    }
+
+                    @if (Model.AdditionalServicesAvailable)
+                    {
+                        <span data-test-id="additional-services-action">
+                            <a href="@Url.Action(
+                                nameof(AdditionalServicesController.SelectAdditionalServices),
+                                typeof(AdditionalServicesController).ControllerName(),
+                                new { Model.InternalOrgId, Model.CallOffId })">@Model.AdditionalServicesActionText</a>
+                        </span>
+                    }
+                    else
+                    {
+                        <p>There are no Additional Services available for this Catalogue Solution.</p>
+                    }
+                </nhs-card>
             </div>
         }
 
@@ -98,38 +101,47 @@
                 @if (!Model.OrderType.MergerOrSplit)
                 {
                     <h2>Associated Services</h2>
-                    @if (Model.AssociatedServicesAvailable)
+                }
+
+                <nhs-card>
+                    @if (Model.AssociatedServices.Any())
                     {
-                        <span data-test-id="associated-services-action">
-                            <vc:nhs-action-link text="@Model.AssociatedServicesActionText"
-                                                url="@Url.Action(
-                                                     nameof(AssociatedServicesController.SelectAssociatedServices),
-                                                     typeof(AssociatedServicesController).ControllerName(),
-                                                     new { Model.InternalOrgId, Model.CallOffId })" />
-                        </span>
+                        @foreach (var service in Model.AssociatedServices)
+                        {
+                            <partial name="TaskListOrderItem"
+                                        model="@Model.OrderItemModel(service.CatalogueItemId)" />
+                            @if (!Model.OrderType.MergerOrSplit)
+                            {
+                                <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
+                                                                        typeof(CatalogueSolutionsController).ControllerName(),
+                                                                        new { Model.InternalOrgId, Model.CallOffId, service.CatalogueItemId })"
+                                text="Remove @service.CatalogueItem.Name" />
+                                <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+                            }
+                        }
                     }
                     else
                     {
-                        <p>There are no Associated Services available for this Catalogue Solution.</p>
+                        <p>No Associated Services have been added to this order yet.</p>
                     }
-                }
 
-                @if (Model.AssociatedServices.Any())
-                {
-                    <nhs-card>
-                        @foreach (var service in Model.AssociatedServices)
+                    @if (!Model.OrderType.MergerOrSplit)
+                    {
+                        @if (Model.AssociatedServicesAvailable)
                         {
-                            <div class="nhsuk-u-margin-bottom-9">
-                                <partial name="TaskListOrderItem"
-                                         model="@Model.OrderItemModel(service.CatalogueItemId)" />
-                            </div>
-                            <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
-                                                                       typeof(CatalogueSolutionsController).ControllerName(),
-                                                                       new { Model.InternalOrgId, Model.CallOffId, service.CatalogueItemId })"
-                                                  text="Remove @service.CatalogueItem.Name"/>
+                            <span data-test-id="associated-services-action">
+                                <a href="@Url.Action(
+                                    nameof(AssociatedServicesController.SelectAssociatedServices),
+                                    typeof(AssociatedServicesController).ControllerName(),
+                                    new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList })">@Model.AssociatedServicesActionText</a>
+                            </span>
                         }
-                    </nhs-card>
-                }
+                        else
+                        {
+                            <p>There are no Associated Services available for this Catalogue Solution.</p>
+                        }
+                    }
+                </nhs-card>
             </div>
         }
 
