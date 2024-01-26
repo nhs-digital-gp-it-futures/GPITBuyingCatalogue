@@ -322,12 +322,12 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] Mock<IOdsService> odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        var importedRecipients = serviceRecipients.Take(2)
+        var recipientIds = serviceRecipients.Take(2)
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
-            .ReturnsAsync(importedRecipients);
+            .ReturnsAsync(recipientIds);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
             .ReturnsAsync(serviceRecipients);
@@ -339,7 +339,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         odsService.VerifyAll();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.Index));
+        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmRecipients));
         result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
         result.RouteValues.Should()
             .BeEquivalentTo(
@@ -347,7 +347,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(competitionId), competitionId },
-                    { nameof(importedRecipients), string.Join(',', importedRecipients.Select(s => s.OdsCode)) },
+                    { nameof(recipientIds), string.Join(',', recipientIds.Select(s => s.OdsCode)) },
+                    { "hasImported", true },
                 });
     }
 
@@ -362,12 +363,12 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] Mock<IOdsService> odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        var importedRecipients = serviceRecipients
+        var recipientIds = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
 
-        importedRecipients.First().OdsCode = "MISMATCH";
-        importedRecipients.Skip(1).First().Organisation = "MISMATCH";
+        recipientIds.First().OdsCode = "MISMATCH";
+        recipientIds.Skip(1).First().Organisation = "MISMATCH";
 
         var firstServiceRecipient = serviceRecipients.First();
 
@@ -380,7 +381,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
             mismatchedNames);
 
         importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
-            .ReturnsAsync(importedRecipients);
+            .ReturnsAsync(recipientIds);
 
         competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<string>(), competition.Id))
             .ReturnsAsync(competition.Name);
@@ -395,7 +396,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         odsService.VerifyAll();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.Index));
+        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmRecipients));
         result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
         result.RouteValues.Should()
             .BeEquivalentTo(
@@ -403,7 +404,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 {
                     { nameof(internalOrgId), internalOrgId },
                     { "competitionId", competition.Id },
-                    { nameof(importedRecipients), string.Join(',', importedRecipients.Skip(1).Select(x => x.OdsCode)) },
+                    { nameof(recipientIds), string.Join(',', recipientIds.Skip(1).Select(x => x.OdsCode)) },
+                    { "hasImported", true },
                 });
     }
 
@@ -421,7 +423,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         importService.VerifyAll();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.Index));
+        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.UploadOrSelectServiceRecipients));
         result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
         result.RouteValues.Should()
             .BeEquivalentTo(

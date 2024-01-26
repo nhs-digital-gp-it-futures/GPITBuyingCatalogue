@@ -158,19 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var orderWrapper = await orderService.GetOrderForSummary(callOffId, internalOrgId);
             if (!orderWrapper.CanComplete())
             {
-                ModelState.AddModelError(ErrorKey, ErrorMessage);
-                var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(callOffId);
-
-                var defaultPlan = await implementationPlanService.GetDefaultImplementationPlan();
-
-                var model = new SummaryModel(orderWrapper, internalOrgId, hasSubsequentRevisions, defaultPlan)
-                {
-                    BackLink = GetBackLink(internalOrgId, callOffId, orderWrapper.Order),
-                    Title = GetTitle(orderWrapper),
-                    AdviceText = GetAdvice(orderWrapper, !hasSubsequentRevisions),
-                };
-
-                return View(model);
+                return RedirectToAction(nameof(Summary), new { internalOrgId, callOffId });
             }
 
             await orderService.CompleteOrder(

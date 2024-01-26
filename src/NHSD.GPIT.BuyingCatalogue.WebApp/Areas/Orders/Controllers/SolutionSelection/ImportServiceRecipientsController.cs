@@ -164,11 +164,11 @@ public class ImportServiceRecipientsController : Controller
         var validOdsCodes = GetValidOdsCodes(cachedRecipients, organisationServiceRecipients);
         await importService.Clear(cacheKey);
         return RedirectToAction(
-            nameof(ServiceRecipientsController.SelectServiceRecipients),
+            nameof(ServiceRecipientsController.ConfirmChanges),
             typeof(ServiceRecipientsController).ControllerName(),
             new
             {
-                internalOrgId, callOffId, importedRecipients = string.Join(',', validOdsCodes),
+                internalOrgId, callOffId, recipientIds = string.Join(',', validOdsCodes), hasImported = true,
             });
     }
 
@@ -177,8 +177,7 @@ public class ImportServiceRecipientsController : Controller
         string internalOrgId,
         CallOffId callOffId,
         CatalogueItemId catalogueItemId,
-        ValidateNamesModel model,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        ValidateNamesModel model)
     {
         var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId);
         var cachedRecipients = await importService.GetCached(cacheKey);
@@ -190,11 +189,11 @@ public class ImportServiceRecipientsController : Controller
         await importService.Clear(cacheKey);
 
         return RedirectToAction(
-            nameof(ServiceRecipientsController.SelectServiceRecipients),
+            nameof(ServiceRecipientsController.ConfirmChanges),
             typeof(ServiceRecipientsController).ControllerName(),
             new
             {
-                internalOrgId, callOffId, catalogueItemId, importedRecipients = string.Join(',', validOdsCodes),
+                internalOrgId, callOffId, catalogueItemId, recipientIds = string.Join(',', validOdsCodes), hasImported = true,
             });
     }
 
@@ -202,13 +201,11 @@ public class ImportServiceRecipientsController : Controller
     public async Task<IActionResult> DownloadTemplate(
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        CatalogueItemId catalogueItemId)
     {
         _ = internalOrgId;
         _ = callOffId;
         _ = catalogueItemId;
-        _ = importMode;
 
         using var stream = new MemoryStream();
         await importService.CreateServiceRecipientTemplate(stream);
@@ -221,13 +218,12 @@ public class ImportServiceRecipientsController : Controller
     public IActionResult CancelImport(
         string internalOrgId,
         CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        ServiceRecipientImportMode? importMode = ServiceRecipientImportMode.Edit)
+        CatalogueItemId catalogueItemId)
     {
         importService.Clear(new(User.UserId(), internalOrgId, callOffId, catalogueItemId));
 
         return RedirectToAction(
-            nameof(ServiceRecipientsController.SelectServiceRecipients),
+            nameof(ServiceRecipientsController.UploadOrSelectServiceRecipients),
             typeof(ServiceRecipientsController).ControllerName(),
             new { internalOrgId, callOffId, catalogueItemId });
     }
