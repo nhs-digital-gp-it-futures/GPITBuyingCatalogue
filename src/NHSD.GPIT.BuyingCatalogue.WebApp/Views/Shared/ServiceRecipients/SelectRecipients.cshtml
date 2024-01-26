@@ -51,7 +51,7 @@
             </div>
         }
 
-        <form method="post" id = "sr-form">
+        <form method="post" id="sr-form">
             <input type="hidden" asp-for="Title" />
             <input type="hidden" asp-for="Caption" />
             <input type="hidden" asp-for="Advice" />
@@ -61,7 +61,7 @@
             {
                 @if (Model.OrganisationType != OrganisationType.GP)
                 {
-                    <h2>Sublocations for @Model.OrganisationName</h2>
+                    <h3 style="white-space:nowrap">Sublocations for @Model.OrganisationName</h3>
                 }
 
                 @foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
@@ -72,19 +72,15 @@
                     <nhs-expander label-text="@location.Name" secondary-text-title="@(location.ServiceRecipients.Count(r => r.Selected)) " secondary-text="recipients selected" bold-title="true" open="@(expandWhenNotValid || Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))">
 
                         <nhs-table id="sr-table">
-                            <nhs-table-row-container style="white-space:nowrap; font-weight: bold !important;">
-                                <nhs-table-cell>
-                                    <div class="nhsuk-checkboxes__item">
-                                        <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll@(lIndex)" id="selectAll@(lIndex)" />
-                                  <label for="selectAll@(lIndex)" class="nhsuk-label nhsuk-checkboxes__label">
-                                            Organisation
-                                        </label>
-                                    </div>
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                ODS code
-                                </nhs-table-cell>
-                             </nhs-table-row-container>
+                            <nhs-table-column>
+                                <div class="nhsuk-checkboxes__item">
+                                    <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll@(lIndex)" id="selectAll@(lIndex)" />
+                                    <label for="selectAll@(lIndex)" class="nhsuk-label nhsuk-checkboxes__label">
+                                        Organisation
+                                    </label>
+                                </div>
+                            </nhs-table-column>
+              <nhs-table-column>ODS code</nhs-table-column>
                             @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
                             {
                                 <nhs-table-row-container id="@item.OdsCode">

@@ -378,3 +378,6 @@ _remote_state.tf
 .terraform.lock.hcl
 *azurite*
 __*
+/src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot/js/ModalSearch.js
+/src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot/js/ModalSearch.js.map
+/src/NHSD.GPIT.BuyingCatalogue.WebApp/wwwroot/js/ModalSearch.min.js

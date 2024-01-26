@@ -5,9 +5,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSea
 {
     public sealed class NhsSearchIcon : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
-            return await Task.FromResult(View("NhsSearchIcon"));
+            return View("NhsSearchIcon");
         }
     }
 }

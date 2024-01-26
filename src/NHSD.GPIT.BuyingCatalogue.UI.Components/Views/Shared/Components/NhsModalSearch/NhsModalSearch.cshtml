@@ -1,25 +1,28 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsModalSearch.NhsModalSearchModel;
-
+@{
+    var title = $"{Model.Id}-title";
+    var filter = $"{Model.Id}-filter-term";
+}
 <dialog class="modal modal-slide" id="@Model.Id" aria-hidden="true">
     <form method="dialog">
         <div class="modal__overlay" tabindex="-1">
-            <div class="modal__container" aria-modal="true" aria-labelledby="@(Model.Id + "-title")">
+            <div class="modal__container" aria-modal="true" aria-labelledby="@title">
                 <header class="modal__header">
-                    <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="@(Model.Id + "-title")">
+                    <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="@title">
                         @Model.Title
                     </h2>
                     <button class="nhsuk-button nhsuk-button--secondary" value="cancel">
                         Close
                     </button>
                 </header>
-                <main class="modal__content" id="@(Model.Id + "-content")">
+                <main class="modal__content" id="@($"{Model.Id}-content")">
                     <p class="nhsuk-body">
                         @Model.Advice
                     </p>
                     <div>
                         <div class="app-search__contents">
-                            <label class="c-search__label visually-hidden" for="@(Model.Id + "-filter-term")">@Model.Placeholder</label>
-                            <input class="app-search__input ui-autocomplete-input" id="@(Model.Id + "-filter-term")"
+                            <label class="c-search__label visually-hidden" for="@filter">@Model.Placeholder</label>
+                            <input class="app-search__input ui-autocomplete-input" id="@filter"
                                    placeholder="@Model.Placeholder" autocomplete="off" name="query" type="search"
                                    maxlength="50">
 
@@ -29,10 +32,10 @@
                         </div>
                     </div>
                     <div class="search-results-container">
-                        <div id="@(Model.Id + "-search-table")">
+                        <div id="@($"{Model.Id}-search-table")">
                             <partial name="@Model.TablePartialView" model="@Model.TableData"/>
                         </div>
-                        <div id="@(Model.Id + "-no-records-found")" style="display: none;">
+                        <div id="@($"{Model.Id}-no-records-found")" style="display: none;">
                             <p class="nhsuk-body nhsuk-u-margin-top-3">@Model.NotFoundText</p></div>
                     </div>
                 </main>
@@ -41,7 +44,7 @@
                         <button class="nhsuk-button" value="apply">
                             @Model.ApplyButtonText
                         </button>
-                        <button href="#" id="cancel-link">Cancel</button>
+                        <button href="#" id="cancel-link" value="cancel">Cancel</button>
                     </div>
                 </footer>
             </div>
