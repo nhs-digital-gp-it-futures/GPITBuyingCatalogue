@@ -18,7 +18,8 @@ This application provides a Web Application capable of running on Linux or Windo
 
 ### Requirements
 
-- [.NET 7](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+- [Azure Storage Explorer](https://azure.microsoft.com/en-gb/products/storage/storage-explorer)
+- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - [NodeJS (v17.9.1)](https://nodejs.org/dist/latest-v17.x/node-v17.9.1-x64.msi)
 - [Rancher Desktop](https://rancherdesktop.io/)
 
@@ -51,6 +52,18 @@ and then:
 ```
 
 Afterwards, open the solution in Visual Studio and run/debug NHSD.GPIT.BuyingCatalogue.WebApp
+
+## Connecting to Azurite via Azure Storage Explorer
+
+Azurite, an Azure Storage emulator, is automatically configured via Docker Compose.
+
+To connect to Azurite via the Azure Storage emulator you should follow the [standard connection instructions](https://learn.microsoft.com/en-us/azure/storage/common/storage-explorer-emulators) but instead using the following ports:
+
+* Blobs port: 10000
+* Queues port: 10003
+* Tables port: 10002
+
+These ports have been selected to avoid a conflict with monitoring software that may bind to port 10001
 
 ## Troubleshooting
 

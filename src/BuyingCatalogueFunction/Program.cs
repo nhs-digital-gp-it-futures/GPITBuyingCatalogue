@@ -17,17 +17,18 @@ public static class Program
     public static async Task Main(string[] args)
     {
         var host = Host.CreateDefaultBuilder(args)
-            .ConfigureFunctionsWorkerDefaults(builder =>
-            {
-                builder
-                    .AddApplicationInsights()
-                    .AddApplicationInsightsLogger();
-            })
+            .ConfigureFunctionsWorkerDefaults()
             .ConfigureServices((context, services) =>
             {
                 var configuration = context.Configuration;
 
                 services.AddSingleton<IIdentityService, FunctionsIdentityService>();
+
+                services.AddApplicationInsightsTelemetryWorkerService();
+                services.ConfigureFunctionsApplicationInsights();
+
+                services.AddApplicationInsightsTelemetryWorkerService();
+                services.ConfigureFunctionsApplicationInsights();
 
                 services.AddTransient<ICapabilityService, CapabilityService>();
                 services.AddTransient<IEpicService, EpicService>();

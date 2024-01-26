@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 
@@ -84,6 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             LastUpdatedByUserName = order.LastUpdatedByUser.FullName;
             LastUpdated = order.LastUpdated;
             ShowSelectFrameworkPage = string.IsNullOrWhiteSpace(order.SelectedFrameworkId);
+            IsMergerOrSplit = order.OrderType.MergerOrSplit;
             Descriptions = BuildDescriptions(order.OrderType, order.IsAmendment, IsCompetitionOrder);
         }
 
@@ -121,17 +121,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public bool ShowSelectFrameworkPage { get; set; }
 
+        public bool IsMergerOrSplit { get; set; }
+
         private ReadOnlyDictionary<OrderSummaryField, string> Descriptions { get; }
 
         public string StatusDescription(OrderSummaryField field)
         {
-            return Descriptions.ContainsKey(field)
-                ? Descriptions[field]
+            return Descriptions.TryGetValue(field, out var description)
+                ? description
                 : string.Empty;
         }
 
         private static void Apply(
-            Dictionary<OrderSummaryField, string> descriptions,
+            IDictionary<OrderSummaryField, string> descriptions,
             IEnumerable<KeyValuePair<OrderSummaryField, string>> overrideDescriptions)
         {
             foreach (var item in overrideDescriptions)
@@ -140,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             }
         }
 
-        private ReadOnlyDictionary<OrderSummaryField, string> BuildDescriptions(OrderType orderType, bool isAmendment, bool isCompetitionOrder)
+        private static ReadOnlyDictionary<OrderSummaryField, string> BuildDescriptions(OrderType orderType, bool isAmendment, bool isCompetitionOrder)
         {
             var descriptions = DefaultDescriptions.ToDictionary();
 
