@@ -4,7 +4,7 @@ resource "azurerm_application_insights" "appinsights" {
   resource_group_name = azurerm_resource_group.app-insights.name
   workspace_id        = azurerm_log_analytics_workspace.log_analytics.id
   application_type    = "web"
-  
+
   tags = {
     environment  = var.environment,
     architecture = "new"
@@ -22,20 +22,26 @@ resource "azurerm_application_insights_standard_web_test" "app_webtest" {
   geo_locations           = [
     "emea-se-sto-edge", // UK West
     "emea-ru-msa-edge", // UK South. Note: Contrary to the naming, this is not based in Russia. https://stackoverflow.com/a/57629988
-    "emea-gb-db3-azr", // North Europe
-    "emea-nl-ams-azr"  // West Europe
+    "emea-gb-db3-azr",  // North Europe
+    "emea-nl-ams-azr"   // West Europe
   ]
 
   request {
     url = "https://${var.app_url}"
   }
+
+  lifecycle {
+    ignore_changes = [
+      tags,
+    ]
+  }
 }
 
 output "instrumentation_key" {
-  value               = azurerm_application_insights.appinsights.instrumentation_key
-  sensitive           = true
+  value     = azurerm_application_insights.appinsights.instrumentation_key
+  sensitive = true
 }
 
 output "app_id" {
-  value               = azurerm_application_insights.appinsights.app_id
+  value = azurerm_application_insights.appinsights.app_id
 }
