@@ -105,6 +105,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                    .Should().BeTrue();
         }
 
+        public void SelectOrderRecipients()
+        {
+            CommonActions.ClickLinkElement(OrderRecipientsObjects.ServiceRecipientsLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(ServiceRecipientsController),
+               nameof(ServiceRecipientsController.SelectServiceRecipients))
+                   .Should().BeTrue();
+        }
+
         public void SelectSolutionsAndServicesTask(bool isAssociatedServiceOnly)
         {
             CommonActions.ClickLinkElement(CatalogueSolutionObjects.SelectSolutionsAndServicesLink);

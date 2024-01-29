@@ -176,7 +176,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder(orderId);
             var isAssociatedSplitOrMergerOrder = IsAssociatedSplitOrMergerOder(orderId);
 
-            if (!importServiceRecipients)
+            if (!importServiceRecipients && isAssociatedSplitOrMergerOrder)
+            {
+                TaskList.SelectOrderRecipients();
+                SelectEditOrderRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients, allServiceRecipients);
+            }
+            else if (!importServiceRecipients)
             {
                 TaskList.SelectOrderRecipientsManually();
                 SelectEditOrderRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients, allServiceRecipients);
