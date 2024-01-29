@@ -131,8 +131,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(1)]
+        [CommonInlineAutoData(2)]
         public static async Task Post_EditAdditionalServices_ServicesAdded_ReturnsExpectedResult(
+            int revision,
             string internalOrgId,
             CallOffId callOffId,
             SelectServicesModel model,
@@ -142,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] Mock<IOrderItemService> mockOrderItemService,
             AdditionalServicesController controller)
         {
-            callOffId = new CallOffId(callOffId.OrderNumber, 1);
+            callOffId = new CallOffId(callOffId.OrderNumber, revision);
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
             for (var i = 0; i < order.OrderItems.Count; i++)

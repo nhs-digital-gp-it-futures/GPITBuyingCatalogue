@@ -132,27 +132,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new { internalOrgId, callOffId, source = RoutingSource.SelectSolution });
         }
 
-        [HttpGet("edit-solution-and-services")]
-        public async Task<IActionResult> EditSolutionServices(string internalOrgId, CallOffId callOffId)
-        {
-            var order = (await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)).Order;
-
-            var solutionId = order.GetSolutionId();
-            var solution = await solutionsService.GetSolutionThin(solutionId.GetValueOrDefault());
-
-            var model = new EditSolutionServices()
-            {
-                CallOffId = callOffId,
-                BackLink = Url.Action(
-                    nameof(SelectSolution),
-                    typeof(CatalogueSolutionsController).ControllerName(),
-                    new { internalOrgId, callOffId }),
-                CatalogueItem = solution,
-            };
-
-            return View("Areas/Orders/Views/SolutionServices/EditSolutionServices.cshtml", model);
-        }
-
         [HttpGet("edit")]
         public async Task<IActionResult> EditSolution(string internalOrgId, CallOffId callOffId)
         {
