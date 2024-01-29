@@ -115,8 +115,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.ConfirmAdditionalServiceChanges)).Should().BeTrue();
+                typeof(TaskListController),
+                nameof(TaskListController.TaskList)).Should().BeTrue();
 
             ExistingService.Should().NotBeNull();
             NewService.Should().NotBeNull();
