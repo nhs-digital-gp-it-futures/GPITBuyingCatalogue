@@ -90,9 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                 }
 
                 CommonActions.ClickSave();
-
-                if (hasTheOrderAdditionalService)
-                    ConfirmAdditionalServiceChanges();
             }
             else
             {
@@ -112,17 +109,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                       nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
 
             CommonActions.ClickCheckboxByLabel(additionalService);
-            CommonActions.ClickSave();
-        }
-
-        private void ConfirmAdditionalServiceChanges()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-                  typeof(AdditionalServicesController),
-                  nameof(AdditionalServicesController.ConfirmAdditionalServiceChanges)).Should().BeTrue();
-
-            CommonActions.ClickFirstRadio();
-
             CommonActions.ClickSave();
         }
 

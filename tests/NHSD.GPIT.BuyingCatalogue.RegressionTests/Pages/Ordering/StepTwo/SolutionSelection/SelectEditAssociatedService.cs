@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             CommonActions.PageLoadedCorrectGetIndex(
                  typeof(AssociatedServicesController),
-                 nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
+                 nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
 
             if (associatedServices != default && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
             {
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
                     CommonActions.PageLoadedCorrectGetIndex(
                      typeof(AssociatedServicesController),
-                     nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
+                     nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
 
                     if (oldAssociatedServices != default && oldAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
                     {
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
                     CommonActions.PageLoadedCorrectGetIndex(
                      typeof(AssociatedServicesController),
-                     nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
+                     nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
                 }
 
                 foreach (var associatedService in newAssociatedServices)
@@ -114,9 +114,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                 }
 
                 CommonActions.ClickSave();
-
-                if (hasTheOrderAssociatedService)
-                    ConfirmAssociatedServiceChanges();
             }
             else
             {
@@ -126,17 +123,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                   typeof(OrderController),
                   nameof(OrderController.Order)).Should().BeTrue();
             }
-        }
-
-        private void ConfirmAssociatedServiceChanges()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-                  typeof(AssociatedServicesController),
-                  nameof(AssociatedServicesController.ConfirmAssociatedServiceChanges)).Should().BeTrue();
-
-            CommonActions.ClickFirstRadio();
-
-            CommonActions.ClickSave();
         }
 
         private bool SolutionHasAssociatedService(string solutionName)
