@@ -76,8 +76,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
             }
 
             CommonActions.ClickSave();
-
-            ConfirmAssociatedServicesChanges();
         }
 
         private void ConfirmSolutionChanges()
