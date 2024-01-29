@@ -27,8 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public const string OrganisationNameToken = "organisation_name";
         public const string FullOrderCsvToken = "full_order_csv";
         public const string OrderIdToken = "order_id";
-        public const string OrderSummaryLinkToken = "order_summary_link";
         public const string OrderSummaryCsv = "order_summary_csv";
+        public const string OrderSummaryPdf = "order_summary_pdf";
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly ICsvService csvService;
@@ -385,6 +385,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = (await GetOrderThin(callOffId, internalOrgId)).Order;
             order.Complete();
 
+            dbContext.Entry(order).State = EntityState.Modified;
+
+            await dbContext.SaveChangesAsync();
+
             await SendEmailsAndSave(order, callOffId, userId);
         }
 
@@ -485,6 +489,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             fullOrderStream.Position = 0;
             var fullOrderBytes = fullOrderStream.ToArray();
 
+            var pdfStream = await pdfService.CreateOrderSummaryPdf(order);
+
             var adminTokens = new Dictionary<string, dynamic>
             {
                 { OrganisationNameToken, order.OrderingParty.Name },
@@ -499,16 +505,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderBytes, true) },
             };
 
-            dbContext.Entry(order).State = EntityState.Modified;
-
-            _ = await pdfService.CreateOrderSummaryPdf(order);
+            if (order.OrderStatus is OrderStatus.Completed)
+            {
+                userTokens.Add(OrderSummaryPdf, NotificationClient.PrepareUpload(pdfStream.ToArray()));
+            }
 
             var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
 
             await Task.WhenAll(
                 emailService.SendEmailAsync(orderMessageSettings.Recipient.Address, templateId, adminTokens),
-                emailService.SendEmailAsync(userEmail, GetUserTemplateId(order), userTokens),
-                dbContext.SaveChangesAsync());
+                emailService.SendEmailAsync(userEmail, GetUserTemplateId(order), userTokens));
         }
 
         private string GetUserTemplateId(Order order)

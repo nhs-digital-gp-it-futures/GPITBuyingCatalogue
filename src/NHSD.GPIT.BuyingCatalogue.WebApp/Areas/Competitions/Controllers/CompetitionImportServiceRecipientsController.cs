@@ -167,13 +167,11 @@ public class CompetitionImportServiceRecipientsController : Controller
         var validOdsCodes = GetValidOdsCodes(cachedRecipients, organisationServiceRecipients);
         await importService.Clear(cacheKey);
         return RedirectToAction(
-            nameof(CompetitionRecipientsController.Index),
+            nameof(CompetitionRecipientsController.ConfirmRecipients),
             typeof(CompetitionRecipientsController).ControllerName(),
             new
             {
-                internalOrgId,
-                competitionId,
-                importedRecipients = string.Join(',', validOdsCodes),
+                internalOrgId, competitionId, recipientIds = string.Join(',', validOdsCodes), hasImported = true,
             });
     }
 
@@ -193,11 +191,11 @@ public class CompetitionImportServiceRecipientsController : Controller
         await importService.Clear(cacheKey);
 
         return RedirectToAction(
-            nameof(CompetitionRecipientsController.Index),
+            nameof(CompetitionRecipientsController.ConfirmRecipients),
             typeof(CompetitionRecipientsController).ControllerName(),
             new
             {
-                internalOrgId, competitionId, importedRecipients = string.Join(',', validOdsCodes),
+                internalOrgId, competitionId, recipientIds = string.Join(',', validOdsCodes), hasImported = true,
             });
     }
 
@@ -224,7 +222,7 @@ public class CompetitionImportServiceRecipientsController : Controller
         importService.Clear(new(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId));
 
         return RedirectToAction(
-            nameof(CompetitionRecipientsController.Index),
+            nameof(CompetitionRecipientsController.UploadOrSelectServiceRecipients),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
     }

@@ -8,8 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Settings
     {
         public string SingleCsvTemplateId { get; set; }
 
-        public string DualCsvTemplateId { get; set; }
-
         public string UserTemplateId { get; set; }
 
         public string UserAssociatedServiceTemplateId { get; set; }

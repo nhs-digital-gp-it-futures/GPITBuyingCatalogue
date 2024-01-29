@@ -137,7 +137,8 @@ public class CompetitionRecipientsController : Controller
     public async Task<IActionResult> ConfirmRecipients(
         string internalOrgId,
         int competitionId,
-        string recipientIds)
+        string recipientIds,
+        bool? hasImported = null)
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
@@ -150,7 +151,12 @@ public class CompetitionRecipientsController : Controller
 
         var model = new ConfirmChangesModel(organisation)
         {
-            BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId, recipientIds }),
+            BackLink = hasImported.GetValueOrDefault()
+                ? Url.Action(
+                    nameof(CompetitionImportServiceRecipientsController.Index),
+                    typeof(CompetitionImportServiceRecipientsController).ControllerName(),
+                    new { internalOrgId, competitionId })
+                : Url.Action(nameof(Index), new { internalOrgId, competitionId, recipientIds }),
             Caption = competition.Name,
             Selected = recipients.Select(
                     x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
