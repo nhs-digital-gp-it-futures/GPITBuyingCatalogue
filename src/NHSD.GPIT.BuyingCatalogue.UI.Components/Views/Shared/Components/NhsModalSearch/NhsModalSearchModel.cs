@@ -21,5 +21,7 @@
         public object TableData { get; set; }
 
         public string CallbackFunction { get; set; }
+
+        public bool Cleardown { get; set; }
     }
 }
