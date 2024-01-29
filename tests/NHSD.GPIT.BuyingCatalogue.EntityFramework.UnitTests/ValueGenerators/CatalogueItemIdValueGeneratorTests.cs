@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
 
             var additionalService = AddAdditionalService(supplier, solution, context);
 
-            additionalService.Id.Should().Be(new CatalogueItemId(additionalService.SupplierId, $"{solution.Id.ItemId}A01"));
+            additionalService.Id.Should().Be(new CatalogueItemId(additionalService.SupplierId, $"{solution.Id.ItemId}A001"));
         }
 
         [Theory]
@@ -87,8 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
             var firstAdditionalService = AddAdditionalService(firstSupplier, firstSolution, context);
             var secondAdditionalService = AddAdditionalService(secondSupplier, secondSolution, context);
 
-            firstAdditionalService.Id.Should().Be(new CatalogueItemId(firstAdditionalService.SupplierId, $"{firstSolution.Id.ItemId}A01"));
-            secondAdditionalService.Id.Should().Be(new CatalogueItemId(secondAdditionalService.SupplierId, $"{secondSolution.Id.ItemId}A01"));
+            firstAdditionalService.Id.Should().Be(new CatalogueItemId(firstAdditionalService.SupplierId, $"{firstSolution.Id.ItemId}A001"));
+            secondAdditionalService.Id.Should().Be(new CatalogueItemId(secondAdditionalService.SupplierId, $"{secondSolution.Id.ItemId}A001"));
         }
 
         [Theory]
@@ -106,8 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
             var firstAdditionalService = AddAdditionalService(supplier, firstSolution, context);
             var secondAdditionalService = AddAdditionalService(supplier, secondSolution, context);
 
-            firstAdditionalService.Id.Should().Be(new CatalogueItemId(firstAdditionalService.SupplierId, $"{firstSolution.Id.ItemId}A01"));
-            secondAdditionalService.Id.Should().Be(new CatalogueItemId(secondAdditionalService.SupplierId, $"{secondSolution.Id.ItemId}A01"));
+            firstAdditionalService.Id.Should().Be(new CatalogueItemId(firstAdditionalService.SupplierId, $"{firstSolution.Id.ItemId}A001"));
+            secondAdditionalService.Id.Should().Be(new CatalogueItemId(secondAdditionalService.SupplierId, $"{secondSolution.Id.ItemId}A001"));
         }
 
         [Theory]
@@ -124,8 +124,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
             var firstAdditionalService = AddAdditionalService(supplier, solution, context);
             var secondAdditionalService = AddAdditionalService(supplier, solution, context);
 
-            firstAdditionalService.Id.Should().Be(new CatalogueItemId(firstAdditionalService.SupplierId, $"{solution.Id.ItemId}A01"));
-            secondAdditionalService.Id.Should().Be(new CatalogueItemId(secondAdditionalService.SupplierId, $"{solution.Id.ItemId}A02"));
+            firstAdditionalService.Id.Should().Be(new CatalogueItemId(firstAdditionalService.SupplierId, $"{solution.Id.ItemId}A001"));
+            secondAdditionalService.Id.Should().Be(new CatalogueItemId(secondAdditionalService.SupplierId, $"{solution.Id.ItemId}A002"));
         }
 
         [Theory]
