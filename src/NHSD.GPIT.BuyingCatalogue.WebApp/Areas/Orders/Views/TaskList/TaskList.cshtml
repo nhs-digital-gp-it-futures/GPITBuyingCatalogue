@@ -31,15 +31,6 @@
             <div id="SolutionDetails" class="nhsuk-u-margin-bottom-9">
                 <h2>Catalogue Solution</h2>
 
-                @if (!Model.IsAmendment)
-                {
-                    <vc:nhs-action-link text="Change Catalogue Solution"
-                                        url="@Url.Action(
-                                             nameof(CatalogueSolutionsController.EditSolution),
-                                             typeof(CatalogueSolutionsController).ControllerName(),
-                                             new { Model.InternalOrgId, Model.CallOffId })" />
-                }
-
                 @if (Model.OrderType.Value == OrderTypeEnum.AssociatedServiceOther)
                 {
                     <h3>@Model.SolutionName</h3>
@@ -50,6 +41,14 @@
                     <nhs-card>
                         <partial name="TaskListOrderItem"
                                  model="@Model.OrderItemModel(Model.CatalogueSolution.CatalogueItemId)" />
+
+                        @if (!Model.IsAmendment)
+                        {
+                            <a href="@Url.Action(
+                                nameof(CatalogueSolutionsController.EditSolution),
+                                typeof(CatalogueSolutionsController).ControllerName(),
+                                new { Model.InternalOrgId, Model.CallOffId })">Change Catalogue Solution</a>
+                        }
                     </nhs-card>
                 }
             </div>
