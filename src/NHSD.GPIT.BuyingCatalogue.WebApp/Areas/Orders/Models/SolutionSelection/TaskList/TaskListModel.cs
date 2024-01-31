@@ -16,9 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public const string MergerSplitTitle = "Edit Associated Service";
         public const string InProgressTitle = "Catalogue Solution and services";
 
-        private const string Add = "Add";
-        private const string Change = "Change";
-
         private readonly Dictionary<CatalogueItemId, TaskListOrderItemModel> taskModels = new();
 
         public TaskListModel()
@@ -115,23 +112,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public IEnumerable<OrderItem> AdditionalServices { get; set; }
 
-        public string AdditionalServicesActionText
-        {
-            get
-            {
-                var verb = IsAmendment
-                    ? Add
-                    : AdditionalServices?.Any() ?? false ? Change : Add;
-
-                return $"{verb} Additional Services";
-            }
-        }
-
         public bool AssociatedServicesAvailable { get; set; }
 
         public IEnumerable<OrderItem> AssociatedServices { get; set; }
-
-        public string AssociatedServicesActionText => $"{(AssociatedServices?.Any() ?? false ? Change : Add)} Associated Services";
 
         public TaskProgress Progress
         {

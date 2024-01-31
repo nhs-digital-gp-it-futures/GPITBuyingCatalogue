@@ -83,7 +83,7 @@
                             <a href="@Url.Action(
                                 nameof(AdditionalServicesController.SelectAdditionalServices),
                                 typeof(AdditionalServicesController).ControllerName(),
-                                new { Model.InternalOrgId, Model.CallOffId })">@Model.AdditionalServicesActionText</a>
+                                new { Model.InternalOrgId, Model.CallOffId })">Add an Additional Service</a>
                         </span>
                     }
                     else
@@ -132,7 +132,7 @@
                                 <a href="@Url.Action(
                                     nameof(AssociatedServicesController.SelectAssociatedServices),
                                     typeof(AssociatedServicesController).ControllerName(),
-                                    new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList })">@Model.AssociatedServicesActionText</a>
+                                    new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList })">Add an Associated Service</a>
                             </span>
                         }
                         else

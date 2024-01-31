@@ -177,56 +177,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
             model.Title.Should().Be(TaskListModel.AmendmentTitle);
         }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithAdditionalServices_SetsActionText(
-            TaskListModel model)
-        {
-            model.CallOffId = new CallOffId(model.CallOffId.OrderNumber, 1);
-
-            model.AdditionalServices.Should().NotBeEmpty();
-            model.AdditionalServicesActionText.Should().Be("Change Additional Services");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithAdditionalServices_Amendment_SetsActionText(
-            TaskListModel model)
-        {
-            model.CallOffId = new CallOffId(model.CallOffId.OrderNumber, 2);
-
-            model.AdditionalServices.Should().NotBeEmpty();
-            model.AdditionalServicesActionText.Should().Be("Add Additional Services");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithNoAdditionalServices_SetsActionText(
-            TaskListModel model)
-        {
-            model.AdditionalServices = null;
-
-            model.AdditionalServicesActionText.Should().Be("Add Additional Services");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithAssociatedServices_SetsActionText(
-            TaskListModel model)
-        {
-            model.AssociatedServices.Should().NotBeEmpty();
-            model.AssociatedServicesActionText.Should().Be("Change Associated Services");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithNoAssociatedServicesSetsActionText(
-            TaskListModel model)
-        {
-            model.AssociatedServices = null;
-
-            model.AssociatedServicesActionText.Should().Be("Add Associated Services");
-        }
     }
 }
