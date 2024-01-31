@@ -391,9 +391,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         [HttpGet("remove-service")]
         public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var service = await solutionsService.GetSolutionThin(catalogueItemId);
-            var model = new RemoveServiceModel(order, service)
+            var model = new RemoveServiceModel(service)
             {
                 BackLink = Url.Action(
                     nameof(TaskListController.TaskList),

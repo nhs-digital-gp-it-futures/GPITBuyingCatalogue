@@ -17,10 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         }
 
         public RemoveServiceModel(
-            Order order,
             CatalogueItem service)
         {
-            CallOffId = order.CallOffId;
             ServiceName = service.Name;
             ServiceType = service.CatalogueItemType.DisplayName();
         }
@@ -32,8 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         };
 
         public string ServiceType { get; set; }
-
-        public CallOffId CallOffId { get; set; }
 
         public string ServiceName { get; set; }
 

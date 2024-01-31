@@ -1070,7 +1070,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new RemoveServiceModel(order, catalogueItem)
+            var expected = new RemoveServiceModel(catalogueItem)
             {
             };
 
