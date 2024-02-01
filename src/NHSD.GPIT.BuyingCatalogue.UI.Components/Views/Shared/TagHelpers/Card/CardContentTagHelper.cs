@@ -1,0 +1,93 @@
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
+
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card;
+
+[HtmlTargetElement(TagHelperName, ParentTag = CardV2TagHelper.TagHelperName)]
+public class CardContentTagHelper : TagHelper
+{
+    internal const string TagHelperName = "nhs-card-content";
+    internal const string TitleName = "title";
+    internal const string UrlName = "url";
+    private const string SizeName = "size";
+
+    [HtmlAttributeName(TitleName)]
+    public string Title { get; set; }
+
+    [HtmlAttributeName(UrlName)]
+    public string Url { get; set; }
+
+    [HtmlAttributeName(SizeName)]
+    public HeadingSize HeadingSize { get; set; } = HeadingSize.Small;
+
+    public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+    {
+        var cardContext = (CardContext)context.Items[typeof(CardV2TagHelper)];
+
+        var content = new TagBuilder(TagHelperConstants.Div);
+
+        content.AddCssClass(CardStyles.CardContentClass);
+
+        var childContent = await output.GetChildContentAsync();
+
+        content.InnerHtml
+            .AppendHtml(BuildHeading(cardContext))
+            .AppendHtml(BuildContent(childContent));
+
+        cardContext.ShouldBeClickable = !string.IsNullOrWhiteSpace(Url);
+        cardContext.BodyContent = content;
+
+        output.SuppressOutput();
+    }
+
+    private static TagBuilder BuildContent(TagHelperContent cardContent)
+    {
+        var content = cardContent.GetContent();
+
+        if (string.IsNullOrWhiteSpace(content))
+            return null;
+
+        var cardParagraph = new TagBuilder(TagHelperConstants.Paragraph);
+        cardParagraph.AddCssClass(CardStyles.CardDescriptionClass);
+
+        cardParagraph.InnerHtml.AppendHtml(content);
+
+        return cardParagraph;
+    }
+
+    private TagBuilder BuildHeading(CardContext cardContext)
+    {
+        var heading = new TagBuilder(TagHelperConstants.HeaderTwo);
+
+        heading.AddCssClass(CardStyles.CardHeadingClass);
+        heading.AddCssClass(HeadingSize.ToHeading());
+
+        if (string.IsNullOrWhiteSpace(Url))
+        {
+            heading.InnerHtml.Append(Title);
+
+            if (cardContext.HorizontalAlign)
+                heading.AddCssClass(CardStyles.CardHeadingMinHeightClass);
+        }
+        else
+        {
+            heading.InnerHtml.AppendHtml(BuildHeadingLink());
+        }
+
+        return heading;
+    }
+
+    private TagBuilder BuildHeadingLink()
+    {
+        var link = new TagBuilder(TagHelperConstants.Anchor);
+
+        link.AddCssClass(CardStyles.CardLinkClass);
+        link.Attributes.Add("href", Url);
+        link.InnerHtml.Append(Title);
+
+        return link;
+    }
+}
