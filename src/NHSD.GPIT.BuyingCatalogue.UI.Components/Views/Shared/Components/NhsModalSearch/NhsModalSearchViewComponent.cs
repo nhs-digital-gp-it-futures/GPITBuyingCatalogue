@@ -1,5 +1,6 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Extensions;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsModalSearch
@@ -14,6 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsMod
 
         public async Task<IViewComponentResult> InvokeAsync(string id, string showDialogButtonId, string tablePartialView, object tableData, string callbackFunction, string title = null, string advice = null, string placeholder = null, string notFoundText = null, string applyButtonText = null, bool cleardown = true)
         {
+            if (string.IsNullOrEmpty(id) || id.Any(char.IsWhiteSpace))
+                throw new ArgumentException("Id cannot be null or empty, or contain whitespace", nameof(id));
+
             var model = new NhsModalSearchModel
             {
                 Id = id,
