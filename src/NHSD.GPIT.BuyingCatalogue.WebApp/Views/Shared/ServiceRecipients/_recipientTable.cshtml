@@ -1,13 +1,7 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ServiceRecipientModel[];
 
 <nhs-table>
-<nhs-table-column>
-    <div class="nhsuk-checkboxes__item">
-        <div class="nhsuk-label nhsuk-checkboxes__label">
-            Organisation
-        </div>
-    </div>
-</nhs-table-column>
+<nhs-table-column>Organisation</nhs-table-column>
 <nhs-table-column>ODS code</nhs-table-column>
 @foreach (var (item, rIndex) in Model.Select((x, i) => (x, i)))
 {

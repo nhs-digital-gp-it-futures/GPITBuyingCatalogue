@@ -11,7 +11,7 @@
                     <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="@title">
                         @Model.Title
                     </h2>
-                    <button class="nhsuk-button nhsuk-button--secondary" value="cancel">
+                    <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-0" value="cancel">
                         Close
                     </button>
                 </header>
@@ -41,10 +41,10 @@
                 </main>
                 <footer class="modal__footer">
                     <div style="display: inline">
-                        <button class="nhsuk-button" value="apply">
+                        <button class="nhsuk-button nhsuk-u-margin-bottom-0" value="apply">
                             @Model.ApplyButtonText
                         </button>
-                        <button href="#" id="cancel-link" value="cancel">Cancel</button>
+                        <button href="#" id="cancel-link" class="modal-link-adjuster" value="cancel">Cancel</button>
                     </div>
                 </footer>
             </div>
