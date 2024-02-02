@@ -126,6 +126,7 @@
         internal const string AllowMultipleName = "allow-multiple";
         internal const string ItemsName = "asp-items";
         internal const string LabelTextName = "label-text";
+        internal const string CheckboxClassName = "checkbox-class";
         internal const string LabelHintName = "label-hint";
         internal const string LabelEmbedHtml = "use-embedded-html";
         internal const string CharacterCountName = "character-count";

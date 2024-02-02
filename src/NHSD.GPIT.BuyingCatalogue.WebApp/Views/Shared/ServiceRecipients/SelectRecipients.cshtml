@@ -1,13 +1,11 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
-@using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectRecipientsModel;
 
+@{
+    ViewBag.Title = Model.Title;
+}
 <partial name="Partials/_BackLink" model="Model" />
 <script type="text/javascript" src="@Url.Content("~/js/Recipients.min.js")" asp-append-version="true"></script>
 
@@ -39,16 +37,21 @@
                     }
                 </nhs-inset-text>
             }
-
-            <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.All })"
-                                 text="Select all"
-                                 type="Secondary" />
-            <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.None })"
-                                 text="Deselect all"
-                                 type="Secondary" />
+            <div class="bc-u-max-width-full">
+                <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.All })"
+                                     text="Select all"
+                                     type="Secondary" />
+                <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.None })"
+                                     text="Deselect all"
+                                     type="Secondary" />
+                <button id="show-dialog" class="nhsuk-button nhsuk-button--secondary bc-u-float-right">
+                    <vc:nhs-search-icon/>
+                    Search for Service Recipients
+                </button>
+            </div>
         }
 
-        <form method="post">
+        <form method="post" id="sr-form">
             <input type="hidden" asp-for="Title" />
             <input type="hidden" asp-for="Caption" />
             <input type="hidden" asp-for="Advice" />
@@ -68,7 +71,7 @@
                     <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
                     <nhs-expander label-text="@location.Name" secondary-text-title="@(location.ServiceRecipients.Count(r => r.Selected)) " secondary-text="recipients selected" bold-title="true" open="@(expandWhenNotValid || Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))">
 
-                        <nhs-table>
+                        <nhs-table id="sr-table">
                             <nhs-table-column>
                                 <div class="nhsuk-checkboxes__item">
                                     <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll@(lIndex)" id="selectAll@(lIndex)" />
@@ -77,15 +80,16 @@
                                     </label>
                                 </div>
                             </nhs-table-column>
-                            <nhs-table-column>ODS code</nhs-table-column>
+              <nhs-table-column>ODS code</nhs-table-column>
                             @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
                             {
-                                <nhs-table-row-container>
+                                <nhs-table-row-container id="@item.OdsCode">
                                     <nhs-table-cell>
                                         <nhs-checkbox-container>
                                             <nhs-checkbox asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Selected"
                                               label-text="@item.Name"
-                                              hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" />
+                                              hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" 
+                                              checkbox-class="main-srs gather-data"/>
                                         </nhs-checkbox-container>
                                     </nhs-table-cell>
                                     <nhs-table-cell>
@@ -107,3 +111,35 @@
         </form>
     </div>
 </div>
+
+<vc:nhs-modal-search id="search-recipients-modal" show-dialog-button-id="show-dialog" table-partial-view="ServiceRecipients/_recipientTable" table-data="@Model.SearchRecipients" callback-function="updateRecipients"/>
+
+
+<script>
+    //Function called on submit modal
+    function updateRecipients() {
+        var checkedboxes = document.querySelectorAll('.modal-checkbox:checked');
+        checkedboxes.forEach(function (item) {
+
+            // Find the checkbox with matching ods code
+            var row = item.closest('tr');
+            var query = "#sr-table #" + row.id + " input[type='checkbox'].main-srs";
+            var checkbox = document.querySelector(query);
+
+            // Check if the checkbox exists
+            if (checkbox) {
+                // Set the checkbox to checked
+                checkbox.checked = true;
+            }
+        });
+        var expanders = document.querySelectorAll('.nhsuk-expander');
+        expanders.forEach(function (container) {
+            var checks = container.querySelectorAll('.main-srs:checked:not(.sub-sr-selector)');
+            var checkboxCount = checks.length;
+
+            var countBox = container.querySelector('.nhsuk-details__summary-text_secondary b');
+            countBox.innerHTML = checkboxCount + " ";
+        });
+    }
+</script>
+

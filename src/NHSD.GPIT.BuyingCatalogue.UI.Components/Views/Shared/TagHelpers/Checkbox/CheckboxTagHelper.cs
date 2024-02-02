@@ -34,6 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.CheckboxClassName)]
+        public string CheckboxClass { get; set; }
+
         [HtmlAttributeName(TagHelperConstants.HintTextName)]
         public string HintText { get; set; }
 
@@ -101,12 +104,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         private TagBuilder GetCheckboxInputBuilder()
         {
+            var inputClass = string.IsNullOrEmpty(CheckboxClass) ? NhsCheckboxInput : $"{NhsCheckboxInput} {CheckboxClass}";
+
             return htmlGenerator.GenerateCheckBox(
                 ViewContext,
                 For.ModelExplorer,
                 For.Name,
                 (bool)For.Model,
-                new { @class = NhsCheckboxInput });
+                new { @class = inputClass });
         }
 
         private TagBuilder GetCheckboxLabelBuilder()

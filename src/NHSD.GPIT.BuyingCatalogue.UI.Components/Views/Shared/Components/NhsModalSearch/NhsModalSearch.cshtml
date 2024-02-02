@@ -1,0 +1,58 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsModalSearch.NhsModalSearchModel;
+@{
+    var title = $"{Model.Id}-title";
+    var filter = $"{Model.Id}-filter-term";
+}
+<dialog class="modal modal-slide" id="@Model.Id" aria-hidden="true">
+    <form method="dialog">
+        <div class="modal__overlay" tabindex="-1">
+            <div class="modal__container" aria-modal="true" aria-labelledby="@title">
+                <header class="modal__header">
+                    <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="@title">
+                        @Model.Title
+                    </h2>
+                    <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-0" value="cancel">
+                        Close
+                    </button>
+                </header>
+                <main class="modal__content" id="@($"{Model.Id}-content")">
+                    <p class="nhsuk-body">
+                        @Model.Advice
+                    </p>
+                    <div>
+                        <div class="app-search__contents">
+                            <label class="c-search__label visually-hidden" for="@filter">@Model.Placeholder</label>
+                            <input class="app-search__input ui-autocomplete-input" id="@filter"
+                                   placeholder="@Model.Placeholder" autocomplete="off" name="query" type="search"
+                                   maxlength="50">
+
+                            <button type="button" class="app-search__submit" value="search">
+                                <vc:nhs-search-icon/>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="search-results-container">
+                        <div id="@($"{Model.Id}-search-table")">
+                            <partial name="@Model.TablePartialView" model="@Model.TableData"/>
+                        </div>
+                        <div id="@($"{Model.Id}-no-records-found")" style="display: none;">
+                            <p class="nhsuk-body nhsuk-u-margin-top-3">@Model.NotFoundText</p></div>
+                    </div>
+                </main>
+                <footer class="modal__footer">
+                    <div style="display: inline">
+                        <button class="nhsuk-button nhsuk-u-margin-bottom-0" value="apply">
+                            @Model.ApplyButtonText
+                        </button>
+                        <button href="#" id="cancel-link" class="modal-link-adjuster" value="cancel">Cancel</button>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </form>
+</dialog>
+
+<script type="text/javascript" src="@Url.Content("~/js/ModalSearch.min.js")" asp-append-version="true"></script>
+<script type="text/javascript">
+    new modalSearchConfig('@Model.Id', '@Model.ShowDialogButton', '@Model.CallbackFunction', '@Model.Cleardown');
+</script>
