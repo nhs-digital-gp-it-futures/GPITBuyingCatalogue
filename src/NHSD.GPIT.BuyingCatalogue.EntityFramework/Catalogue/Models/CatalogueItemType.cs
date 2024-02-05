@@ -12,11 +12,5 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         [Display(Name = "Associated Service")]
         AssociatedService = 3,
-
-        [Display(Name = "Merger")]
-        AssociatedServiceMerger = 4,
-
-        [Display(Name = "Split")]
-        AssociatedServiceSplit = 5,
     }
 }

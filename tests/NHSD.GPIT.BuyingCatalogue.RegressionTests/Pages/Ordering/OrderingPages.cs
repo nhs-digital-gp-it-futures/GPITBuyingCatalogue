@@ -3,6 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree;
@@ -125,7 +126,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             string orderDescription,
             bool addNewSupplierContact = false,
             EntityFramework.Ordering.Models.OrderTriageValue orderTriage = EntityFramework.Ordering.Models.OrderTriageValue.Under40K,
-            EntityFramework.Catalogue.Models.CatalogueItemType itemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution)
+            EntityFramework.Catalogue.Models.CatalogueItemType itemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution,
+            AssociatedServiceType associatedServiceType = AssociatedServiceType.AssociatedServiceOther)
         {
             TaskList.OrderDescriptionTask();
             OrderingStepOne.AddOrderDescription(orderDescription);
@@ -135,13 +137,23 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             switch (itemType)
             {
-                case CatalogueItemType.AssociatedServiceSplit:
-                    TaskList.SupplierInformationAndContactForSplitOrder();
-                    SelectSupplier.ConfirmSupplierForMergerAndSplit();
-                    break;
-                case CatalogueItemType.AssociatedServiceMerger:
-                    TaskList.SupplierInformationAndContactForMergerOrder();
-                    SelectSupplier.ConfirmSupplierForMergerAndSplit();
+                case CatalogueItemType.AssociatedService:
+                    if (associatedServiceType == AssociatedServiceType.AssociatedServiceSplit)
+                    {
+                        TaskList.SupplierInformationAndContactForSplitOrder();
+                        SelectSupplier.ConfirmSupplierForMergerAndSplit();
+                    }
+                    else if (associatedServiceType == AssociatedServiceType.AssociatedServiceMerger)
+                    {
+                        TaskList.SupplierInformationAndContactForMergerOrder();
+                        SelectSupplier.ConfirmSupplierForMergerAndSplit();
+                    }
+                    else
+                    {
+                        TaskList.SupplierInformationAndContactDetailsTask();
+                        SelectSupplier.SelectAndConfirmSupplier(supplierName);
+                    }
+
                     break;
                 default:
                     TaskList.SupplierInformationAndContactDetailsTask();

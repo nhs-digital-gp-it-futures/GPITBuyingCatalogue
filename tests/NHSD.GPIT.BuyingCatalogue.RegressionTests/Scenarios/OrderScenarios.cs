@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
@@ -627,7 +628,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, Pages.Ordering.OrderType.AssociatedServiceType.AssociatedServiceOther);
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceOther);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -647,11 +648,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, Pages.Ordering.OrderType.AssociatedServiceType.AssociatedServiceSplit);
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceSplit);
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedServiceSplit);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceSplit);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceSplit, multipleServiceRecipients: 3);
 
@@ -667,11 +668,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, Pages.Ordering.OrderType.AssociatedServiceType.AssociatedServiceMerger);
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceMerger);
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedServiceMerger);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceMerger);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceMerger, multipleServiceRecipients: 3);
 

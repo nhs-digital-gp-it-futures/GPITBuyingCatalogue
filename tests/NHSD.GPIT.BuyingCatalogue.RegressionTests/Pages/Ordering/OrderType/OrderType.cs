@@ -32,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
                     {
                         AssociatedServiceCorrectPage(associatedServiceType);
                     }
+
                     break;
 
                 default:
