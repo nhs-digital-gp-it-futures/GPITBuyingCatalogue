@@ -60,6 +60,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                     .Should().BeTrue();
         }
 
+        public void SupplierInformationAndContactForSplitOrder()
+        {
+            CommonActions.ClickLinkElement(SupplierObjects.SupplierContactDetailsLink);
+            CommonActions.LedeText().Should().Be("There is only one supplier that provides an Associated Service supporting mergers and splits.".FormatForComparison());
+        }
+
+        public void SupplierInformationAndContactForMergerOrder()
+        {
+            CommonActions.ClickLinkElement(SupplierObjects.SupplierContactDetailsLink);
+            CommonActions.LedeText().Should().Be("You'll only be able to select suppliers that offer either mergers or splits as Additional Services with their solutions.".FormatForComparison());
+            CommonActions.ClickLastRadio();
+            CommonActions.ClickSave();
+        }
+
         public void TimescalesForCallOffAgreementTask()
         {
             CommonActions.ClickLinkElement(CommencementDateObjects.TimescalesForCallOffLink);
@@ -82,6 +96,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
         }
 
         public void SelectOrderRecipientsUploadCSV()
+        {
+            CommonActions.ClickLinkElement(OrderRecipientsObjects.ServiceRecipientsLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(ServiceRecipientsController),
+               nameof(ServiceRecipientsController.SelectServiceRecipients))
+                   .Should().BeTrue();
+        }
+
+        public void SelectOrderRecipients()
         {
             CommonActions.ClickLinkElement(OrderRecipientsObjects.ServiceRecipientsLink);
 

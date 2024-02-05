@@ -78,12 +78,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.UploadFile(ServiceRecipientObjects.ImportRecipientsFileInput, importFile);
 
             CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-            typeof(ServiceRecipientsController),
-            nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
-
-            CommonActions.ClickSave();
         }
 
         private string GetCatalogueSolutionID(string solutionName)

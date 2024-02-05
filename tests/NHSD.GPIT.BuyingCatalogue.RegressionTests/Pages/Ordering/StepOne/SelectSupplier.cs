@@ -36,5 +36,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
                typeof(SupplierController),
                nameof(SupplierController.Supplier)).Should().BeTrue();
         }
+
+        public void ConfirmSupplierForMergerAndSplit()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(SupplierController),
+               nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(SupplierController),
+               nameof(SupplierController.Supplier)).Should().BeTrue();
+        }
     }
 }

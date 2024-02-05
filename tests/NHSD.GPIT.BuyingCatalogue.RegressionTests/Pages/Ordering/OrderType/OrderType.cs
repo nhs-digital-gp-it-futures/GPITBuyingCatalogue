@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using OpenQA.Selenium;
@@ -18,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
         /// Choose the Order Type, Catalogue Solution or Associated Service.
         /// </summary>
         /// <param name="type">Catalogue Order Type, Defaults to Catalogue Solution.</param>
-        public void ChooseOrderType(CatalogueItemType type = CatalogueItemType.Solution)
+        public void ChooseOrderType(CatalogueItemType type = CatalogueItemType.Solution, AssociatedServiceType associatedServiceType = AssociatedServiceType.AssociatedServiceOther)
         {
             CommonActions.ClickRadioButtonWithValue(type.ToString());
 
@@ -27,7 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
             switch (type)
             {
                 case CatalogueItemType.AssociatedService:
-                    AssociatedServiceCorrectPage();
+                    if (associatedServiceType == AssociatedServiceType.AssociatedServiceOther || associatedServiceType == AssociatedServiceType.AssociatedServiceSplit || associatedServiceType == AssociatedServiceType.AssociatedServiceMerger)
+                    {
+                        AssociatedServiceCorrectPage(associatedServiceType);
+                    }
+
                     break;
 
                 default:
@@ -43,11 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
                 nameof(OrderTriageController.Index)).Should().BeTrue();
         }
 
-        private void AssociatedServiceCorrectPage()
+        private void AssociatedServiceCorrectPage(AssociatedServiceType associatedServiceType)
         {
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.ReadyToStart)).Should().BeTrue();
+            CommonActions.ClickRadioButtonWithValue(associatedServiceType.ToString());
+            CommonActions.LedeText().Should().Be("Select the type of Associated Service you want to order.".FormatForComparison());
+            CommonActions.ClickSave();
         }
     }
 }

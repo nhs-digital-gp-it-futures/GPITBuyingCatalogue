@@ -1,7 +1,9 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using EnumsNET;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree;
@@ -48,6 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             ImportServiceReceipients = new ImportServiceReceipients(driver, commonActions);
             ConfirmServieReceipients = new ConfirmServieReceipients(driver, commonActions);
             AmendOrder = new AmendOrder(driver, commonActions, factory);
+            MergerAndSplit = new MergerAndSplit(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -116,12 +119,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         internal AmendOrder AmendOrder { get; }
 
+        internal MergerAndSplit MergerAndSplit { get; }
+
         public void StepOnePrepareOrder(
             string supplierName,
             string orderDescription,
             bool addNewSupplierContact = false,
             EntityFramework.Ordering.Models.OrderTriageValue orderTriage = EntityFramework.Ordering.Models.OrderTriageValue.Under40K,
-            EntityFramework.Catalogue.Models.CatalogueItemType itemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution)
+            EntityFramework.Catalogue.Models.CatalogueItemType itemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution,
+            AssociatedServiceType associatedServiceType = AssociatedServiceType.AssociatedServiceOther)
         {
             TaskList.OrderDescriptionTask();
             OrderingStepOne.AddOrderDescription(orderDescription);
@@ -129,8 +135,32 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.CallOffOrderingPartyContactDetailsTask();
             OrderingStepOne.AddCallOffOrderingPartyContactDetails();
 
-            TaskList.SupplierInformationAndContactDetailsTask();
-            SelectSupplier.SelectAndConfirmSupplier(supplierName);
+            switch (itemType)
+            {
+                case CatalogueItemType.AssociatedService:
+                    if (associatedServiceType == AssociatedServiceType.AssociatedServiceSplit)
+                    {
+                        TaskList.SupplierInformationAndContactForSplitOrder();
+                        SelectSupplier.ConfirmSupplierForMergerAndSplit();
+                    }
+                    else if (associatedServiceType == AssociatedServiceType.AssociatedServiceMerger)
+                    {
+                        TaskList.SupplierInformationAndContactForMergerOrder();
+                        SelectSupplier.ConfirmSupplierForMergerAndSplit();
+                    }
+                    else
+                    {
+                        TaskList.SupplierInformationAndContactDetailsTask();
+                        SelectSupplier.SelectAndConfirmSupplier(supplierName);
+                    }
+
+                    break;
+                default:
+                    TaskList.SupplierInformationAndContactDetailsTask();
+                    SelectSupplier.SelectAndConfirmSupplier(supplierName);
+                    break;
+            }
+
             SupplierContacts.ConfirmContact(addNewSupplierContact);
 
             TaskList.TimescalesForCallOffAgreementTask();
@@ -156,8 +186,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             var orderId = OrderID();
             var isAssociatedServiceOnlyOrder = IsAssociatedServiceOnlyOrder(orderId);
+            var isAssociatedSplitOrMergerOrder = IsAssociatedSplitOrMergerOder(orderId);
 
-            if (!importServiceRecipients)
+            if (!importServiceRecipients && isAssociatedSplitOrMergerOrder)
+            {
+                TaskList.SelectOrderRecipients();
+                SelectEditOrderRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients, allServiceRecipients);
+            }
+            else if (!importServiceRecipients)
             {
                 TaskList.SelectOrderRecipientsManually();
                 SelectEditOrderRecipients.AddCatalogueSolutionServiceRecipient(multipleServiceRecipients, allServiceRecipients);
@@ -167,7 +203,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 ImportServiceReceipients.ImportServiceRecipients(fileName);
             }
 
-            ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+            if (!isAssociatedSplitOrMergerOrder)
+            {
+                ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
+            }
+            else
+            {
+                ConfirmServieReceipients.ConfirmServiceRecipientsChangesForSplitAndMerges();
+            }
 
             TaskList.SelectSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
@@ -205,7 +248,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     }
                 }
             }
-            else
+            else if (isAssociatedServiceOnlyOrder && !isAssociatedSplitOrMergerOrder)
             {
                 SelectEditAssociatedServiceOnly.SelectAssociatedServices(solutionName, associatedServices);
 
@@ -217,6 +260,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                         Quantity.AddQuantity();
                     }
                 }
+            }
+            else
+            {
+                    MergerAndSplit.MergerAndSplitSolutionSelection();
+                    SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
@@ -684,8 +732,24 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             using var dbContext = Factory.DbContext;
 
-            var result = dbContext.Orders
-               .Any(o => o.Id == orderId && o.OrderType.Value == OrderTypeEnum.AssociatedServiceOther);
+            var orderType = dbContext.Orders
+               .Where(o => o.Id == orderId)
+               .Select(z => z.OrderType).ToList();
+
+            var result = orderType.Any(a => a.AssociatedServicesOnly );
+
+            return result;
+        }
+
+        private bool IsAssociatedSplitOrMergerOder(int orderId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var orderType = dbContext.Orders
+               .Where(o => o.Id == orderId)
+               .Select(z => z.OrderType).ToList();
+
+            var result = orderType.Any(a => a.MergerOrSplit);
 
             return result;
         }

@@ -28,7 +28,7 @@
     <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="Selenium.Support" Version="4.2.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.2.0" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="119.0.6045.10500" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="121.0.6167.8500" />
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.XUnit" Version="3.0.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">

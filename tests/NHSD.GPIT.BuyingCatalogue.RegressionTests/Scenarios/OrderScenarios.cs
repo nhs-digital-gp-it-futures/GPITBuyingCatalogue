@@ -2,6 +2,7 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
@@ -18,6 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         private const string SolutionWithMultipleFrameworks = "Video Consult";
         private const string SolutionForLocalfundingonly = "Online and Video Consult";
         private const string AssociatedServiceName = "Anywhere Consult – Integrated Device";
+        private const string AssociatedServiceMerger = "Practice Merge";
+        private const string AssociatedServiceSplit = "Practice Reorganisation";
         private const string AdditionalServiceName = "Automated Arrivals";
         private const string NewSolutionName = "Emis Web GP";
         private const string NewAdditionalServiceName = "EMIS Mobile";
@@ -625,13 +628,53 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceOther);
 
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
+
+            OrderingPages.StepThreeContractAssociatedServices();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderSplitAssociatedServiceOnly()
+        {
+            string orderDescription = "OrderSplitAssociatedServiceOnly";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceSplit);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceSplit);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceSplit, multipleServiceRecipients: 3);
+
+            OrderingPages.StepThreeContractAssociatedServices();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void OrderMergerAssociatedServiceOnly()
+        {
+            string orderDescription = "OrderMergerAssociatedServiceOnly";
+
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceMerger);
+
+            OrderingPages.StartOrder.ReadyToStart();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceMerger);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceMerger, multipleServiceRecipients: 3);
 
             OrderingPages.StepThreeContractAssociatedServices();
 
