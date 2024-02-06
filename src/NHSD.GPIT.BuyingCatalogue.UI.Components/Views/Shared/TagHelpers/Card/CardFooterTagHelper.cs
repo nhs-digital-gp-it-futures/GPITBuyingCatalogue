@@ -15,8 +15,8 @@ public class CardFooterTagHelper : TagHelper
         var cardContext = (CardContext)context.Items[typeof(CardV2TagHelper)];
 
         var content = new TagBuilder(TagHelperConstants.Div);
-        // Assign footer classes here, once created
-        // content.AddCssClass(class names);
+
+        content.AddCssClass("nhs-card-v2__footer");
 
         var childContent = await output.GetChildContentAsync();
 

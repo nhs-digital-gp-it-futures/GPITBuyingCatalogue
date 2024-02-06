@@ -29,7 +29,7 @@
 <nhs-table>
     <nhs-table-column>Section</nhs-table-column>
     <nhs-table-column>Status</nhs-table-column>
-    <nhs-table-column>Action</nhs-table-column>
+    <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
 
     <nhs-table-row-container>
         <nhs-table-cell>Price</nhs-table-cell>
@@ -86,7 +86,16 @@
                 }
                 else
                 {
-                    var action = Model.QuantityStatus == TaskProgress.Completed ? "Change" : "Start";
+                    string action;
+                    if(Model.QuantityStatus == TaskProgress.Completed)
+                    {
+                        action = Model.OrderType.MergerOrSplit ? "View" : "Change";
+                    }
+                    else
+                    {
+                        action = "Start";
+                    }
+
                     <a id="Quantity_@Model.CatalogueItemId" style="float:right;"
                         href="@Url.Action(
                                 nameof(QuantityController.SelectQuantity),

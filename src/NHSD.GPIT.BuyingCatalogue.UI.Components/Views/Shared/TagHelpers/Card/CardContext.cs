@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Html;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card;
 
 public class CardContext
 {
-    public IHtmlContent BodyContent { get; set; }
+    public TagBuilder BodyContent { get; set; }
 
     public IHtmlContent FooterContent { get; set; }
 

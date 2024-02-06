@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 throw new ArgumentNullException(nameof(wrapper));
             }
 
-            var previous = wrapper.Previous;
+            Previous = wrapper.Previous;
 
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             {
                 taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, CatalogueSolution)
                 {
-                    FromPreviousRevision = previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
+                    FromPreviousRevision = Previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
                     HasNewRecipients = wrapper.HasNewOrderRecipients,
                     NumberOfPrices = CatalogueSolution.CatalogueItem.CataloguePrices.Count,
                     PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, x)
             {
-                FromPreviousRevision = previous?.Exists(x.CatalogueItemId) ?? false,
+                FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
                 HasNewRecipients = wrapper.HasNewOrderRecipients,
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, x)
             {
-                FromPreviousRevision = previous?.Exists(x.CatalogueItemId) ?? false,
+                FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
                 HasNewRecipients = wrapper.HasNewOrderRecipients,
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
@@ -81,6 +81,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     : 0,
             }));
         }
+
+        public Order Previous { get; set; }
 
         public string InternalOrgId { get; set; }
 
