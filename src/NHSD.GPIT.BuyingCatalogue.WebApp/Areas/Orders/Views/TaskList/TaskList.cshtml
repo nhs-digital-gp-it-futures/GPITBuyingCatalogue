@@ -46,7 +46,7 @@
                         @if (!Model.IsAmendment)
                         {
                             <nhs-card-footer>
-                                <a href="@Url.Action(
+                                <a class="nhsuk-link--no-visited-state" href="@Url.Action(
                                     nameof(CatalogueSolutionsController.EditSolution),
                                     typeof(CatalogueSolutionsController).ControllerName(),
                                     new { Model.InternalOrgId, Model.CallOffId })">Change Catalogue Solution</a>
@@ -92,7 +92,7 @@
                         @if (Model.AdditionalServicesAvailable)
                         {
                             <span data-test-id="additional-services-action">
-                                <a href="@Url.Action(
+                                <a class="nhsuk-link--no-visited-state" href="@Url.Action(
                                     nameof(AdditionalServicesController.SelectAdditionalServices),
                                     typeof(AdditionalServicesController).ControllerName(),
                                     new { Model.InternalOrgId, Model.CallOffId })">
@@ -149,7 +149,7 @@
                             @if (Model.AssociatedServicesAvailable)
                             {
                                 <span data-test-id="associated-services-action">
-                                    <a href="@Url.Action(
+                                    <a class="nhsuk-link--no-visited-state" href="@Url.Action(
                                         nameof(AssociatedServicesController.SelectAssociatedServices),
                                         typeof(AssociatedServicesController).ControllerName(),
                                         new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList })">

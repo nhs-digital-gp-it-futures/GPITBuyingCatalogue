@@ -43,15 +43,16 @@ public static class CollectionExtensions
             : orderItem.Quantity.HasValue;
     }
 
-    public static bool SomeButNotAllQuantitiesEntered(this ICollection<OrderRecipient> recipients, OrderItem orderItem)
+    public static bool SomeButNotAllNewQuantitiesEntered(this ICollection<OrderRecipient> recipients, OrderItem orderItem, Order previous = null)
     {
         if (orderItem.OrderItemPrice == null || recipients == null)
             return false;
 
         if (((IPrice)orderItem.OrderItemPrice).IsPerServiceRecipient())
         {
-            var count = recipients.Count(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
-            return count > 0 && count < recipients.Count;
+            var previousRecipients = previous?.OrderRecipients.Count() ?? 0;
+            var count = recipients.Count(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue) - previousRecipients;
+            return count > 0 && count < recipients.Count - previousRecipients;
         }
 
         return false;
