@@ -598,95 +598,22 @@
 
                     @if (Model.Order.OrderStatus is OrderStatus.Completed)
                     {
-                        @if(!Model.Order.OrderType.AssociatedServicesOnly)
+                        @if (Model.RolledUp.GetSolutions().Any())
                         {
-                        <div style="page-break-after: always"></div>
+                            <div style="page-break-after: always"></div>
 
-                        <div class="nhsuk-grid-row">
-                            <div class="nhsuk-grid-column-full">
-                                <nhs-page-title title="Service Level Agreement" />
+                            <div class="nhsuk-grid-row">
+                                <div class="nhsuk-grid-column-full">
+                                    <nhs-page-title title="@(Model.RolledUp.GetSolutions().Count() > 1 ? "Service Level Agreements" : "Service Level Agreement")"/>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="pdf-container">
-                            <h3>Service availability</h3>
-                            <p>
-                                This is when you can contact support services for this Catalogue Solution
-                            </p>
-                            <table>
-                                <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Time period</th>
-                                    <th>Applicable days</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach (var time in Model.ServiceLevelAgreement.ServiceHours)
-                                {
-                                    <tr>
-                                        <td>@time.Category</td>
-                                        <td>@time.TimeFrom.ToString("HH:mm") - @time.TimeUntil.ToString("HH:mm")</td>
-                                        <td>@time.ApplicableDays</td>
-                                    </tr>
-                                }
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="pdf-container">
-                            <h3>Contact details</h3>
-                            <p>
-                                This is how you can contact support services for this Catalogue Solution
-                            </p>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Channel</th>
-                                        <th>Contact</th>
-                                        <th>Accessible hours</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var contact in Model.ServiceLevelAgreement.Contacts)
-                                    {
-                                        <tr>
-                                            <td>@contact.Channel</td>
-                                            <td>@contact.ContactInformation</td>
-                                            <td>@contact.TimeFrom.ToString("HH:mm") - @contact.TimeUntil.ToString("HH:mm")</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div style="page-break-after: always"></div>
-
-                            <div class="pdf-container">
-                                <h3>Service levels</h3>
-                                <table>
-                                    <thead>
-                                    <tr>
-                                        <th>Service level type</th>
-                                        <th>Service level</th>
-                                        <th>How the service levels are measured</th>
-                                        <th>Are service credits applied?</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach (var level in Model.ServiceLevelAgreement.ServiceLevels)
-                                    {
-                                        <tr>
-                                            <td>@level.TypeOfService</td>
-                                            <td>@level.ServiceLevel</td>
-                                            <td>@level.HowMeasured</td>
-                                            <td>@level.ServiceCredits</td>
-                                        </tr>
-                                    }
-                                    </tbody>
-                                </table>
-                            </div>
+                            @foreach (var solution in Model.RolledUp.GetSolutions())
+                            {
+                                <partial name="ServiceLevelAgreement" model="@solution.CatalogueItem.Solution?.ServiceLevelAgreement"/>
+                            }
                         }
+
                         <div style="page-break-after: always"></div>
 
                         <div class="nhsuk-grid-row">

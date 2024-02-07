@@ -34,9 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public ContractBilling BespokeBilling => Order.Contract?.ContractBilling;
 
-        public ServiceLevelAgreements ServiceLevelAgreement =>
-            Order.GetSolutionOrderItem().CatalogueItem.Solution.ServiceLevelAgreement;
-
         public bool UseDefaultDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == true;
 
         public bool HasBespokeMilestones => BespokePlan != null && BespokePlan.Milestones.Any();
