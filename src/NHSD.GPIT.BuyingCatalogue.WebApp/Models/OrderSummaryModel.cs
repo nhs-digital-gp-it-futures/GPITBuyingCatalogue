@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
@@ -32,6 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         public ImplementationPlan BespokePlan => Order.Contract?.ImplementationPlan;
 
         public ContractBilling BespokeBilling => Order.Contract?.ContractBilling;
+
+        public ServiceLevelAgreements ServiceLevelAgreement =>
+            Order.GetSolutionOrderItem().CatalogueItem.Solution.ServiceLevelAgreement;
 
         public bool UseDefaultDataProcessing => Order?.ContractFlags?.UseDefaultDataProcessing == true;
 
