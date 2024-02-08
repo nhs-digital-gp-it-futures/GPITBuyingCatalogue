@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MoreLinq;
@@ -188,6 +189,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 if (supplier != null)
                 {
                     order.Supplier = supplier;
+                }
+
+                foreach (var solution in order.GetSolutions())
+                {
+                    var sla = order.Completed.HasValue
+                        ? await dbContext.ServiceLevelAgreements.TemporalAsOf(order.Completed.Value)
+                            .Include(x => x.Contacts)
+                            .Include(x => x.ServiceLevels)
+                            .Include(x => x.ServiceHours)
+                            .FirstOrDefaultAsync(x => x.SolutionId == solution.CatalogueItemId)
+                        : null;
+
+                    if (sla != null)
+                    {
+                        solution.CatalogueItem.Solution.ServiceLevelAgreement = sla;
+                    }
                 }
             }
 

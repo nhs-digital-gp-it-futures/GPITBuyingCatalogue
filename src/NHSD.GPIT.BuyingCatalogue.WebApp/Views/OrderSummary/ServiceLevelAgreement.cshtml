@@ -1,7 +1,7 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.ServiceLevelAgreements
 
 <div class="pdf-container">
-    <h3>Service availability</h3>
+    <h2>Service availability</h2>
     <p>
         This is when you can contact support services for this Catalogue Solution
     </p>
@@ -16,7 +16,7 @@
         <tbody>
             @foreach (var time in Model.ServiceHours)
             {
-                <tr>
+                <tr class="alternating">
                     <td>@time.Category</td>
                     <td>@time.TimeFrom.ToString("HH:mm") - @time.TimeUntil.ToString("HH:mm")</td>
                     <td>@time.ApplicableDays</td>
@@ -27,7 +27,7 @@
 </div>
 
 <div class="pdf-container">
-    <h3>Contact details</h3>
+    <h2>Contact details</h2>
     <p>
         This is how you can contact support services for this Catalogue Solution
     </p>
@@ -42,7 +42,7 @@
         <tbody>
             @foreach (var contact in Model.Contacts)
             {
-                <tr>
+                <tr class="alternating">
                     <td>@contact.Channel</td>
                     <td>@contact.ContactInformation</td>
                     <td>@contact.TimeFrom.ToString("HH:mm") - @contact.TimeUntil.ToString("HH:mm")</td>
@@ -68,7 +68,7 @@
         <tbody>
             @foreach (var level in Model.ServiceLevels)
             {
-                <tr>
+                <tr class="alternating">
                     <td>@level.TypeOfService</td>
                     <td>@level.ServiceLevel</td>
                     <td>@level.HowMeasured</td>

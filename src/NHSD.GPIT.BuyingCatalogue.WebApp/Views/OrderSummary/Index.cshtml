@@ -610,7 +610,14 @@
 
                             @foreach (var solution in Model.RolledUp.GetSolutions())
                             {
-                                <partial name="ServiceLevelAgreement" model="@solution.CatalogueItem.Solution?.ServiceLevelAgreement"/>
+                                @if (solution.CatalogueItem.Solution?.ServiceLevelAgreement != null)
+                                {
+                                    <partial name="ServiceLevelAgreement" model="@solution.CatalogueItem.Solution?.ServiceLevelAgreement" />
+                                }
+                                else
+                                {
+                                    <p>No service level agreement in place for @solution.CatalogueItem.Name</p>
+                                }   
                             }
                         }
 
