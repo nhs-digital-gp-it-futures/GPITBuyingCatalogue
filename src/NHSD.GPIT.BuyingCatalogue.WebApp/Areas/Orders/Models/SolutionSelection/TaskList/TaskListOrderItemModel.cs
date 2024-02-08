@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public List<OrderRecipient> RolledUpOrderRecipients { get; set; }
 
-        public Order Previous { get; set; }
+        public int PreviousRecipients { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 {
                     return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
                 }
-                else if (RolledUpOrderRecipients.SomeButNotAllNewQuantitiesEntered(rolledUpOrderItem, Previous))
+                else if (RolledUpOrderRecipients.SomeButNotAllNewQuantitiesEntered(rolledUpOrderItem, PreviousRecipients))
                 {
                     return TaskProgress.InProgress;
                 }

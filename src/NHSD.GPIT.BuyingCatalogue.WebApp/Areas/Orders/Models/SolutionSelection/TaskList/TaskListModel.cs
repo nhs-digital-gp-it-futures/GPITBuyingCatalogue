@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
                         ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
                         : 0,
-                    Previous = Previous,
+                    PreviousRecipients = Previous?.OrderRecipients.Count() ?? 0,
                 });
             }
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                     : 0,
-                Previous = Previous,
+                PreviousRecipients = Previous?.OrderRecipients.Count() ?? 0,
             }));
 
             AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, x)
@@ -114,9 +114,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool AdditionalServicesAvailable { get; set; }
 
+        public bool UnselectedAdditionalServicesAvailable { get; set; }
+
         public IEnumerable<OrderItem> AdditionalServices { get; set; }
 
         public bool AssociatedServicesAvailable { get; set; }
+
+        public bool UnselectedAssociatedServicesAvailable { get; set; }
 
         public IEnumerable<OrderItem> AssociatedServices { get; set; }
 
