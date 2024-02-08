@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.CompetitionToOrder;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne.SolutionSelection;
@@ -39,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             NonPriceWeightings = new NonPriceWeightings(driver, commonActions);
             ReviewCompetitionCriteria = new ReviewCompetitionCriteria(driver, commonActions);
             CompareAndScore = new CompareAndScore(driver, commonActions);
+            CreateOrderFromWinningSolution = new CreateOrderFromWinningSolution(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -86,6 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal ReviewCompetitionCriteria ReviewCompetitionCriteria { get; }
 
         internal CompareAndScore CompareAndScore { get; }
+
+        internal CreateOrderFromWinningSolution CreateOrderFromWinningSolution { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -222,6 +226,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             MultipleResults(competitionid);
         }
 
+        public void CreateOrder()
+        {
+            int competitionid = CompetitionId();
+            string winningsolutiont = WinningResult(competitionid);
+            CreateOrderFromWinningSolution.CreateOrderFromCompetition(winningsolutiont);
+        }
+
         private int CompetitionId()
         {
             const string lookupString = "competitions/";
@@ -264,6 +275,27 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             var competitionsolutions = solutions.Select(x => x.SolutionId).ToList();
 
             return competitionsolutions;
+        }
+
+        private string WinningResult(int competitionId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var solutions = dbContext.Competitions
+                .SelectMany(x => x.CompetitionSolutions)
+                .Where(y => y.CompetitionId == competitionId && y.IsWinningSolution && y.IsShortlisted);
+
+            var winningSolution = solutions.Select(x => x.SolutionId).ToList();
+
+            if (winningSolution.Any())
+            {
+                var winningSolutionResult = winningSolution.First();
+                return winningSolutionResult.ToString();
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(competitionId));
+            }
         }
 
         private IEnumerable<CatalogueItemId> GetCompetitionSolutionServices(int competitionId, CatalogueItemId solutionId)
