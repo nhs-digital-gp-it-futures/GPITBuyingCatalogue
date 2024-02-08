@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.ValueGenerators
         public override CatalogueItemId Next(EntityEntry entry)
             => NextAsync(entry).AsTask().GetAwaiter().GetResult();
 
+        [ExcludeFromCodeCoverage(Justification = "Not all code paths can be tested due to a reliance on internal Microsoft APIs")]
         public override async ValueTask<CatalogueItemId> NextAsync(EntityEntry entry, CancellationToken cancellationToken = default)
         {
             if (entry.Entity is not CatalogueItem catalogueItem)
