@@ -2,101 +2,147 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldSet
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.AdditionalFiltersModel
-<form method="post">
+<nhs-card title="Filter solutions">
+    <hr class="nhsuk-section-break--s" />
+    <form method="post" id="filters">
+        <input type="hidden" asp-for="@Model.Selected" />
+        <input type="hidden" asp-for="@Model.SortBy" />
 
-    <input type="hidden" asp-for="Selected"/>
-    <input type="hidden" asp-for="SortBy" />
-    
-    <nhs-expander label-text="Framework"
-                  open="true"
-                  data-test-id="filter-framework-expander">
-
-        @if (Model.FrameworkOptions.Count == 1)
-        {
-            var framework = Model.FrameworkOptions.First();
-            Model.SelectedFrameworkId = framework.Value;
-
-            <input type="hidden" asp-for="SelectedFrameworkId" />
-            @(framework.Text)
-        }
-        else
-        {
-            <nhs-fieldset-form-label asp-for="SelectedFrameworkId">
-                <nhs-radio-buttons asp-for="SelectedFrameworkId"
-                                   values="Model.FrameworkOptions.Cast<object>()"
-                                   value-name="Value"
-                                   display-name="Text"/>
-            </nhs-fieldset-form-label>
-        }
-    </nhs-expander>
-     <nhs-expander label-text="Application type" open="true">
-
-         <nhs-fieldset-form-label asp-for="@Model">
-            <nhs-checkbox-container>
-				@for (int clientAppTypeIndex = 0; clientAppTypeIndex < Model.ApplicationTypeOptions.Count; clientAppTypeIndex++)
-				{
-                    <nhs-checkbox asp-for="@Model.ApplicationTypeOptions[clientAppTypeIndex].Selected"
-                              hidden-input="@Model.ApplicationTypeOptions[clientAppTypeIndex].Value"
-                              label-text="@Model.ApplicationTypeOptions[clientAppTypeIndex].Text" />
-				}
-			</nhs-checkbox-container>
-         </nhs-fieldset-form-label>
-
-    </nhs-expander>
-	<nhs-expander label-text="Hosting type"
-				  open="true"
-				data-test-id="filter-hosting-expander">
-
-		<nhs-fieldset-form-label asp-for="@Model">
-			<nhs-checkbox-container>
-					@for (var i = 0; i < Model.HostingTypeOptions.Count; i++)
-					{
-					<nhs-checkbox asp-for="@Model.HostingTypeOptions[i].Selected"
-								label-text="@Model.HostingTypeOptions[i].Text"
-								hidden-input="@Model.HostingTypeOptions[i].Value" />
-					}
-			</nhs-checkbox-container>
-		</nhs-fieldset-form-label>
-    </nhs-expander>
-	<nhs-expander label-text="Interoperability"
-				  open="true">
-        <nhs-fieldset-form-label asp-for="@Model">
-            <nhs-checkbox-container>
-                @for (int j = 0; j < @Model.InteroperabilityOptions.Count();j++)
+        <nhs-fieldset label-text="Quick filters" size="ExtraSmall">
+            <a asp-area="@typeof(SolutionsController).AreaName()"
+               asp-controller="@typeof(SolutionsController).ControllerName()"
+               asp-action="@nameof(SolutionsController.Index)"
+               asp-route-selected="5|11|12|13|14|15">
+                Filter by Foundation Capabilities
+            </a>
+            <br /><br />
+            <nhs-details label-text="What are Foundation Capabilities?" size="Small">
+                <p>
+                    These are the 6 Capabilities that, when met by a solution, provide the minimum requirements to enable a GP practice to operate. They are:
+                </p>
+                <ul>
+                    <li>
+                        Appointments Management – GP
+                    </li>
+                    <li>
+                        Referral Management
+                    </li>
+                    <li>
+                        Resource Management
+                    </li>
+                    <li>
+                        Patient Information Maintenance
+                    </li>
+                    <li>
+                        Prescribing
+                    </li>
+                    <li>
+                        Recording Consultations
+                    </li>
+                </ul>
+            </nhs-details>
+        </nhs-fieldset>
+        <hr class="nhsuk-section-break--s" />
+        <nhs-fieldset-form-label asp-for="SelectedFrameworkId" label-text="Framework" size="ExtraSmall">
+            <nhs-radio-buttons asp-for="SelectedFrameworkId"
+                               values="Model.FrameworkOptions.Cast<object>()"
+                               value-name="Value"
+                               display-name="Text"
+                               size="Small" />
+        </nhs-fieldset-form-label>
+        <hr class="nhsuk-section-break--s" />
+        <nhs-fieldset-form-label asp-for="@Model" label-text="Application type" size="ExtraSmall">
+            <nhs-checkbox-container size="Small">
+                @for (int clientAppTypeIndex = 0; clientAppTypeIndex < Model.ApplicationTypeOptions.Count; clientAppTypeIndex++)
                 {
-            
+                    <nhs-checkbox asp-for="@Model.ApplicationTypeOptions[clientAppTypeIndex].Selected"
+                                  hidden-input="@Model.ApplicationTypeOptions[clientAppTypeIndex].Value"
+                                  label-text="@Model.ApplicationTypeOptions[clientAppTypeIndex].Text" />
+                }
+            </nhs-checkbox-container>
+        </nhs-fieldset-form-label>
+        <hr class="nhsuk-section-break--s" />
+        <nhs-fieldset-form-label asp-for="@Model" label-text="Hosting type" size="ExtraSmall">
+            <nhs-checkbox-container size="Small">
+                @for (var i = 0; i < Model.HostingTypeOptions.Count; i++)
+                {
+                    <nhs-checkbox asp-for="@Model.HostingTypeOptions[i].Selected"
+                                  label-text="@Model.HostingTypeOptions[i].Text"
+                                  hidden-input="@Model.HostingTypeOptions[i].Value" />
+                }
+            </nhs-checkbox-container>
+        </nhs-fieldset-form-label>
+        <hr class="nhsuk-section-break--s" />
+        <nhs-fieldset-form-label asp-for="@Model" label-text="Interoperability" size="ExtraSmall">
+            <nhs-checkbox-container size="Small">
+                @for (int j = 0; j < @Model.InteroperabilityOptions.Count(); j++)
+                {
+
                     <nhs-checkbox asp-for="@Model.InteroperabilityOptions[j].Selected"
-                                          label-text="@Model.InteroperabilityOptions[j].Text integrations"
-                                          hidden-input="@Model.InteroperabilityOptions[j].Value">
-                        <nhs-checkbox-container>
-                        @if (@Model.InteroperabilityOptions[j].Text == @Model.InteroperabilityOptions[0].Text)
-                        {
+                                  label-text="@Model.InteroperabilityOptions[j].Text integrations"
+                                  hidden-input="@Model.InteroperabilityOptions[j].Value">
+                        <nhs-checkbox-container size="Small">
+                            @if (@Model.InteroperabilityOptions[j].Text == @Model.InteroperabilityOptions[0].Text)
+                            {
                                 @for (var i = 0; i < Model.IM1IntegrationsOptions.Count; i++)
                                 {
                                     <nhs-checkbox asp-for="@Model.IM1IntegrationsOptions[i].Selected"
-                                      label-text="@Model.IM1IntegrationsOptions[i].Text"
-                                      hidden-input="@Model.IM1IntegrationsOptions[i].Value"/>
+                                                  label-text="@Model.IM1IntegrationsOptions[i].Text"
+                                                  hidden-input="@Model.IM1IntegrationsOptions[i].Value" />
                                 }
-                            
-                        }
-                        @if (@Model.InteroperabilityOptions[j].Text == @Model.InteroperabilityOptions[1].Text)
-                        {
-					            @for (var i = 0; i < Model.GPConnectIntegrationsOptions.Count; i++)
-					            {
-                                    <nhs-checkbox asp-for ="@Model.GPConnectIntegrationsOptions[i].Selected"
-								    label-text="@Model.GPConnectIntegrationsOptions[i].Text"
-								    hidden-input="@Model.GPConnectIntegrationsOptions[i].Value" />
-					            }
-                        }
+
+                            }
+                            @if (@Model.InteroperabilityOptions[j].Text == @Model.InteroperabilityOptions[1].Text)
+                            {
+                                @for (var i = 0; i < Model.GPConnectIntegrationsOptions.Count; i++)
+                                {
+                                    <nhs-checkbox asp-for="@Model.GPConnectIntegrationsOptions[i].Selected"
+                                                  label-text="@Model.GPConnectIntegrationsOptions[i].Text"
+                                                  hidden-input="@Model.GPConnectIntegrationsOptions[i].Value" />
+                                }
+                            }
                         </nhs-checkbox-container>
                     </nhs-checkbox>
                 }
             </nhs-checkbox-container>
         </nhs-fieldset-form-label>
-    </nhs-expander>
-    <nhs-submit-button style="width:100%" text="View results" class="nhsuk-button--secondary"/>
+        <hr class="nhsuk-section-break--s" />
+    </form>
+    <nhs-fieldset label-text="Capabilties" size="ExtraSmall">
+        <nhs-submit-button style="width:100%"
+                           form="filters"
+                           text="Select Capabilities"
+                           class="nhsuk-button--secondary"
+                           formaction="@Url.Action(nameof(SolutionsController.SelectCapabilities), typeof(SolutionsController).ControllerName())" />
+        <br />
+        <span>
+            <strong>@Model.CapabilitiesCount</strong> selected
+        </span>
+    </nhs-fieldset>
+    <hr class="nhsuk-section-break--s" />
 
-    <nhs-submit-button style="width:100%" text="Save all filters" formaction="@Url.Action(nameof(ManageFiltersController.SaveFilter), typeof(ManageFiltersController).ControllerName())" />
-</form>
+    <nhs-fieldset label-text="Epics" size="ExtraSmall">
+        @if (@Model.CapabilitiesCount == 0)
+        {
+            <span>
+                (Unavailable until Capabilities are selected)
+            </span>
+            <br />
+        }
+        <nhs-submit-button style="width:100%"
+                           form="filters"
+                           disabled="@(Model.CapabilitiesCount==0)"
+                           text="Select Epics"
+                           class="nhsuk-button--secondary"
+                           formaction="@Url.Action(nameof(SolutionsController.SelectEpics), typeof(SolutionsController).ControllerName())" />
+        <br />
+        <span>
+            <strong>@Model.EpicsCount</strong> selected
+        </span>
+    </nhs-fieldset>
+    <hr class="nhsuk-section-break--s" />
+    <nhs-submit-button form="filters" style="width:100%" text="Apply filters" class="nhsuk-button--primary" />
+</nhs-card>
+

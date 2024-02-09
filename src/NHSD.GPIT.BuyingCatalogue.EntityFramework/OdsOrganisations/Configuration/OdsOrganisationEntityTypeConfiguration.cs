@@ -11,6 +11,7 @@ public class OdsOrganisationEntityTypeConfiguration : IEntityTypeConfiguration<O
         builder.ToTable("OdsOrganisations", schema: Schemas.OdsOrganisations);
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasMaxLength(10);
 
         builder.Property(x => x.Name).IsRequired().HasMaxLength(255);
 

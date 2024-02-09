@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared
         {
             RuleFor(x => x)
                 .Must(HaveMadeASelection)
-                .WithMessage(NoSelectionMadeErrorMessage);
+                .WithMessage(NoSelectionMadeErrorMessage)
+                .When(m => !m.IsFilter);
         }
 
         private static bool HaveMadeASelection(FilterCapabilitiesModel model) => model.SelectedItems?.Any(x => x.Selected) ?? false;

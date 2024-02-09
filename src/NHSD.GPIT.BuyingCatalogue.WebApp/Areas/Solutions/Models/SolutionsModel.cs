@@ -7,31 +7,17 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    [ExcludeFromCodeCoverage]
     public class SolutionsModel
     {
-        public static readonly PageTitleModel NoSearchPageTitle = new()
+        public static readonly PageTitleModel SearchResultsPageTitle = new()
         {
-            Title = "Find Buying Catalogue Solutions",
-            Advice = "Search for Catalogue Solutions that match the needs of your organisation.",
-        };
-
-        public static readonly PageTitleModel SearchNoResultsPageTitle = new()
-        {
-            Title = "No Catalogue Solutions found",
-            Advice = "There are no Catalogue Solutions that meet your search criteria.",
+            Title = "Catalogue Solutions",
         };
 
         public static readonly PageTitleModel SearchNoResultsFilterPageTitle = new()
         {
             Title = "Catalogue Solutions found",
             Advice = "These are the Catalogue Solutions that meet your search criteria.",
-        };
-
-        public static readonly PageTitleModel SearchResultsPageTitle = new()
-        {
-            Title = "Catalogue Solutions found",
-            Advice = "These are the Catalogue Solutions that meet your search criteria. You can apply additional filters to refine your results further, or compare these results.",
         };
 
         public static readonly PageTitleModel SearchResultsFilterPageTitle = new()
@@ -46,30 +32,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public AdditionalFiltersModel AdditionalFilters { get; set; }
 
-        public IList<CatalogueItem> CatalogueItems { get; init; }
+        public RequestedFilters Filters { get; set; }
 
-        public CatalogueFilterSearchSummary SearchSummary { get; init; }
+        public IList<CatalogueItem> CatalogueItems { get; init; }
 
         public PageOptions PageOptions { get; set; }
 
-        public bool SearchCriteriaApplied =>
-            !string.IsNullOrWhiteSpace(SearchSummary?.Selected)
-            || !string.IsNullOrWhiteSpace(SearchSummary?.SearchTerm);
-
-        public bool HasCapabilities =>
-            !string.IsNullOrWhiteSpace(SearchSummary?.Selected);
-
         public PageTitleModel GetPageTitle()
         {
-            if (!SearchCriteriaApplied)
-            {
-                return NoSearchPageTitle;
-            }
-
             if (CatalogueItems?.Count == 0)
             {
                 return string.IsNullOrEmpty(FilterName)
-                    ? SearchNoResultsPageTitle
+                    ? SearchResultsPageTitle
                     : SearchNoResultsFilterPageTitle with { Caption = FilterName };
             }
 

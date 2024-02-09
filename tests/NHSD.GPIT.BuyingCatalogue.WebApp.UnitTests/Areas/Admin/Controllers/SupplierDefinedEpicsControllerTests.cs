@@ -335,7 +335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             supplierDefinedEpicsService.Setup(s => s.GetEpic(epic.Id))
                 .ReturnsAsync(epic);
 
-            var expectedModel = new FilterCapabilitiesModel(capabilities, false, capabilities.Select(x => x.Id).ToList());
+            var expectedModel = new FilterCapabilitiesModel(capabilities, capabilities.Select(x => x.Id).ToList());
 
             var result = (await controller.EditCapabilities(epic.Id)).As<ViewResult>();
 

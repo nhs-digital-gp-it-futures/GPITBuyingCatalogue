@@ -168,7 +168,7 @@ public class CompetitionsDashboardController : Controller
         var filter = await filterService.GetFilterIds(organisationId, filterId);
 
         var pageOptions = new PageOptions { PageSize = 100 };
-        var solutionsAndServices =
+        var (solutionsAndServices, _, _) =
             await solutionsFilterService.GetAllSolutionsFiltered(
                 pageOptions,
                 capabilitiesAndEpics: filter.CapabilityAndEpicIds,
@@ -179,7 +179,7 @@ public class CompetitionsDashboardController : Controller
                 selectedGpConnectIntegrations: filter.GPConnectIntegrations.ToFilterString(),
                 selectedInteroperabilityOptions: filter.InteroperabilityOptions.ToFilterString());
 
-        var competitionSolutions = solutionsAndServices.CatalogueItems.Select(
+        var competitionSolutions = solutionsAndServices.Select(
             x => new CompetitionSolution(competition.Id, x.Solution.CatalogueItemId)
             {
                 SolutionServices = x.Solution.AdditionalServices.Select(

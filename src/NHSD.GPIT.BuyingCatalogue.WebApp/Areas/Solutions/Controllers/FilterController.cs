@@ -28,29 +28,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
         [HttpGet("filter-capabilities")]
         public async Task<IActionResult> FilterCapabilities(
-            [FromQuery] string selected = null,
-            [FromQuery] string search = null)
+            RequestedFilters filters = null)
         {
-            return View(FilterCapabilitiesModel.Build(
-                await capabilitiesService.GetReferencedCapabilities(),
-                selected,
-                search));
+            ArgumentNullException.ThrowIfNull(filters);
+
+            var capabilityAndEpicsIds = filters.GetCapabilityAndEpicIds();
+            var model = new FilterCapabilitiesModel(await capabilitiesService.GetReferencedCapabilities(), capabilityAndEpicsIds.Keys)
+            {
+                IsFilter = true,
+                BackLink = Url.Action(
+                    nameof(SolutionsController.Index),
+                    typeof(SolutionsController).ControllerName(),
+                    filters.ToRouteValues()),
+            };
+
+            return View(model);
         }
 
         [HttpPost("filter-capabilities")]
-        public async Task<IActionResult> FilterCapabilities(
-            FilterCapabilitiesModel model,
-            [FromQuery] string selected = null,
-            [FromQuery] string search = null)
+        public IActionResult FilterCapabilities(
+            RequestedFilters filters,
+            FilterCapabilitiesModel model)
         {
+            ArgumentNullException.ThrowIfNull(filters);
+
             if (!ModelState.IsValid)
             {
-                return View(FilterCapabilitiesModel.Build(
-                    await capabilitiesService.GetReferencedCapabilities(),
-                    search: search));
+                return View(model);
             }
 
-            var currentCapabilitiesAndEpics = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
+            var currentCapabilitiesAndEpics = filters.GetCapabilityAndEpicIds();
 
             var newCapabilitiesAndEpicsFilterString = new Dictionary<int, string[]>(
                 model.SelectedItems
@@ -60,84 +67,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                   .ToFilterString();
 
             return RedirectToAction(
-                nameof(IncludeEpics),
-                typeof(FilterController).ControllerName(),
-                new
-                {
-                    selected = newCapabilitiesAndEpicsFilterString,
-                    search,
-                });
+                nameof(SolutionsController.Index),
+                typeof(SolutionsController).ControllerName(),
+                (filters with { Selected = newCapabilitiesAndEpicsFilterString }).ToRouteValues());
         }
 
-        [HttpGet("include-epics")]
-        public async Task<IActionResult> IncludeEpics(
-            [FromQuery] string selected = null,
-            [FromQuery] string search = null)
+        [HttpGet("filter-epics")]
+        public async Task<IActionResult> FilterEpics(
+            RequestedFilters filters = null)
         {
-            var capabilityAndEpicIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
-            var epics = await epicsService.GetReferencedEpicsByCapabilityIds(capabilityAndEpicIds.Keys);
+            ArgumentNullException.ThrowIfNull(filters);
 
-            if (!epics.Any())
+            var capabilityAndEpicsIds = filters.GetCapabilityAndEpicIds();
+            var capabilities = await capabilitiesService.GetCapabilitiesByIds(capabilityAndEpicsIds.Keys);
+            var epics = await epicsService.GetReferencedEpicsByCapabilityIds(capabilityAndEpicsIds.Keys);
+
+            var model = new FilterEpicsModel(capabilities, epics, capabilityAndEpicsIds)
             {
-                return RedirectToAction(
+                BackLink = Url.Action(
                     nameof(SolutionsController.Index),
                     typeof(SolutionsController).ControllerName(),
-                    new
-                    {
-                        selected,
-                        search,
-                    });
-            }
+                    filters.ToRouteValues()),
+            };
 
-            return View(new IncludeEpicsModel
-            {
-                Selected = selected,
-            });
+            return View(model);
         }
 
-        [HttpPost("include-epics")]
-        public IActionResult IncludeEpics(
-            IncludeEpicsModel model,
-            [FromQuery] string search = null)
+        [HttpPost("filter-epics")]
+        public IActionResult FilterEpics(
+            RequestedFilters filters,
+            FilterEpicsModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            if (model.IncludeEpics.GetValueOrDefault())
-            {
-                return RedirectToAction(
-                    nameof(FilterEpics),
-                    typeof(FilterController).ControllerName(),
-                    new { selected = model.Selected, search });
-            }
-
-            return RedirectToAction(
-                nameof(SolutionsController.Index),
-                typeof(SolutionsController).ControllerName(),
-                new { selected = model.Selected, search });
-        }
-
-        [HttpGet("filter-epics")]
-        public async Task<IActionResult> FilterEpics(
-            [FromQuery] string selected,
-            [FromQuery] string search = null)
-        {
-            return View(await GetEpicsModel(selected, search));
-        }
-
-        [HttpPost("filter-epics")]
-        public async Task<IActionResult> FilterEpics(
-            FilterEpicsModel model,
-            [FromQuery] string search = null)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(await GetEpicsModel(model.Selected, search));
-            }
-
-            var currentCapabilitiesAndEpics = SolutionsFilterHelper.ParseCapabilityAndEpicIds(model.Selected);
+            var currentCapabilitiesAndEpics = filters.GetCapabilityAndEpicIds();
 
             var changes = model.SelectedItems
                 .Select(v => new
@@ -158,16 +124,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return RedirectToAction(
                 nameof(SolutionsController.Index),
                 typeof(SolutionsController).ControllerName(),
-                new { selected = newCapabilitiesAndEpics.ToFilterString(), search });
+                (filters with { Selected = newCapabilitiesAndEpics.ToFilterString() }).ToRouteValues());
         }
 
-        private async Task<FilterEpicsModel> GetEpicsModel(string selected, string search = null)
+        private async Task<FilterEpicsModel> GetEpicsModel(string selected)
         {
             var capabilityAndEpicsIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
             var capabilities = await capabilitiesService.GetCapabilitiesByIds(capabilityAndEpicsIds.Keys);
             var epics = await epicsService.GetReferencedEpicsByCapabilityIds(capabilityAndEpicsIds.Keys);
 
-            return new FilterEpicsModel(capabilities, epics, capabilityAndEpicsIds, search);
+            return new FilterEpicsModel(capabilities, epics, capabilityAndEpicsIds);
         }
     }
 }

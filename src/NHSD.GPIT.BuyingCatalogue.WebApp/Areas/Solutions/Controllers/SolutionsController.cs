@@ -84,15 +84,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 filterName = filter.Name;
             }
 
-            var capabilityAndEpicIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
-            var includesEpics = capabilityAndEpicIds.Where(kv => kv.Value != null).SelectMany(x => x.Value).Count() > 0;
+            var filters = new RequestedFilters(
+                selected,
+                search,
+                selectedFrameworkId,
+                selectedApplicationTypeIds,
+                selectedHostingTypeIds,
+                selectedIM1Integrations,
+                selectedGPConnectIntegrations,
+                selectedInteroperabilityOptions,
+                sortBy);
 
             var inputOptions = new PageOptions(page, sortBy);
 
-            (IList<CatalogueItem> catalogueItems, PageOptions options, List<CapabilitiesAndCountModel> capabilitiesAndCount) =
+            (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
                     inputOptions,
-                    capabilityAndEpicIds,
+                    filters.GetCapabilityAndEpicIds(),
                     search,
                     selectedFrameworkId,
                     selectedApplicationTypeIds,
@@ -103,16 +111,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
 
-            var additionalFilters = new AdditionalFiltersModel(
-                frameworks,
-                selectedFrameworkId,
-                selectedApplicationTypeIds,
-                selectedHostingTypeIds,
-                selectedIM1Integrations,
-                selectedGPConnectIntegrations,
-                selectedInteroperabilityOptions,
-                selected)
-            { FilterId = filterId, SortBy = sortBy };
+            var additionalFilters = new AdditionalFiltersModel(frameworks, filters)
+            {
+                FilterId = filterId,
+            };
 
             return View(
                 new SolutionsModel
@@ -120,53 +122,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     FilterName = filterName,
                     CatalogueItems = catalogueItems,
                     PageOptions = options,
-                    SearchSummary = new CatalogueFilterSearchSummary(
-                        capabilitiesAndCount,
-                        search,
-                        selected,
-                        includesEpics),
                     AdditionalFilters = additionalFilters,
+                    Filters = filters,
                 });
         }
 
         [HttpPost]
-        public IActionResult Index(
-            SolutionsModel model,
-            [FromQuery] string page,
-            [FromQuery] string sortBy,
-            [FromQuery] string selected,
-            [FromQuery] string search,
-            string selectedFrameworkId,
-            AdditionalFiltersModel additionalFiltersModel,
-            [FromQuery] int? filterId)
+        public IActionResult Index(AdditionalFiltersModel model)
         {
-            _ = model;
-
-            var selectedInteroperabilityOptions = additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.InteroperabilityOptions);
-
             return RedirectToAction(
                 nameof(Index),
                 typeof(SolutionsController).ControllerName(),
-                new
-                {
-                    page,
-                    selected,
-                    search,
-                    selectedFrameworkId,
-                    selectedApplicationTypeIds =
-                        additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.ApplicationTypeOptions),
-                    selectedHostingTypeIds =
-                        additionalFiltersModel.CombineSelectedOptions(additionalFiltersModel.HostingTypeOptions),
-                    selectedIM1Integrations = selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.IM1IntegrationsOptions) : null,
-                    selectedGPConnectIntegrations = selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? additionalFiltersModel.CombineSelectedOptions(
-                            additionalFiltersModel.GPConnectIntegrationsOptions) : null,
-                    selectedInteroperabilityOptions,
-                    filterId,
-                    sortBy,
-                });
+                model.ToRequestedFilters().ToRouteValues());
+        }
+
+        [HttpPost("select-capabilities")]
+        public IActionResult SelectCapabilities(
+            AdditionalFiltersModel model)
+        {
+            return RedirectToAction(
+                nameof(FilterController.FilterCapabilities),
+                typeof(FilterController).ControllerName(),
+                model.ToRequestedFilters().ToRouteValues());
+        }
+
+        [HttpPost("select-epics")]
+        public IActionResult SelectEpics(
+            AdditionalFiltersModel model)
+        {
+            return RedirectToAction(
+                nameof(FilterController.FilterEpics),
+                typeof(FilterController).ControllerName(),
+                model.ToRequestedFilters().ToRouteValues());
         }
 
         [HttpGet("search-suggestions")]

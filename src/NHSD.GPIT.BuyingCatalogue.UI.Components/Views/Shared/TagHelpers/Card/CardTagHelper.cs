@@ -68,8 +68,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 
             content.AddCssClass(CardContentClass);
 
+            if (!string.IsNullOrWhiteSpace(Title))
+            {
+                content.InnerHtml
+                    .AppendHtml(BuildHeading());
+            }
+
             content.InnerHtml
-                .AppendHtml(BuildHeading())
                 .AppendHtml(await BuildCardTextAsync(output));
 
             return content;
