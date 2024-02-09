@@ -10,7 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<ServiceAvailabilityTimes> builder)
         {
-            builder.ToTable("ServiceAvailabilityTimes", Schemas.Catalogue);
+            builder.ToTable("ServiceAvailabilityTimes", Schemas.Catalogue, b => b.IsTemporal(
+                temp =>
+                {
+                    temp.UseHistoryTable("ServiceAvailabilityTimes_History");
+                    temp.HasPeriodStart("SysStartTime");
+                    temp.HasPeriodEnd("SysEndTime");
+                }));
 
             builder.HasKey(s => s.Id);
 

@@ -189,6 +189,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 {
                     order.Supplier = supplier;
                 }
+
+                foreach (var solution in order.GetSolutions())
+                {
+                    var sla = order.Completed.HasValue
+                        ? await dbContext.ServiceLevelAgreements.TemporalAsOf(order.Completed.Value)
+                            .Include(x => x.Contacts)
+                            .Include(x => x.ServiceLevels)
+                            .Include(x => x.ServiceHours)
+                            .FirstOrDefaultAsync(x => x.SolutionId == solution.CatalogueItemId)
+                        : null;
+
+                    if (sla != null)
+                    {
+                        solution.CatalogueItem.Solution.ServiceLevelAgreement = sla;
+                    }
+                }
             }
 
             return new OrderWrapper(orders);

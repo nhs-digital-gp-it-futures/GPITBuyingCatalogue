@@ -10,7 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<ServiceLevelAgreements> builder)
         {
-            builder.ToTable("ServiceLevelAgreements", Schemas.Catalogue);
+            builder.ToTable("ServiceLevelAgreements", Schemas.Catalogue, b => b.IsTemporal(
+                temp =>
+                {
+                    temp.UseHistoryTable("ServiceLevelAgreements_History");
+                    temp.HasPeriodStart("SysStartTime");
+                    temp.HasPeriodEnd("SysEndTime");
+                }));
 
             builder.HasKey(s => s.SolutionId);
 
