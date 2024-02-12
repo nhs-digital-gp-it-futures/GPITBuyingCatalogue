@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
-using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
@@ -106,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var currentCapabilitiesAndEpics = filters.GetCapabilityAndEpicIds();
 
             var changes = model.SelectedItems
-                .Select(v => new
+                ?.Select(v => new
                 {
                     CapabilityId = v.Id.Split(",")[0],
                     EpicId = v.Id.Split(",")[1],
@@ -119,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     v => v.Where(s => s.SelectionModel.Selected).Select(s => s.EpicId).ToArray());
 
             var newCapabilitiesAndEpics = new Dictionary<int, string[]>(currentCapabilitiesAndEpics
-                .Select(kv => new KeyValuePair<int, string[]>(kv.Key, changes.GetValueOrDefault(kv.Key) ?? kv.Value)));
+                .Select(kv => new KeyValuePair<int, string[]>(kv.Key, changes?.GetValueOrDefault(kv.Key) ?? kv.Value)));
 
             return RedirectToAction(
                 nameof(SolutionsController.Index),

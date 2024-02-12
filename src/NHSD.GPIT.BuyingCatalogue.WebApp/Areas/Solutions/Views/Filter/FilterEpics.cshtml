@@ -19,7 +19,7 @@
 
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
-            @foreach (var (kvp, i) in Model.GroupedItems.Select((kvp, i) => (kvp, i)))
+            @foreach (var (kvp, i) in Model.GroupedItems.Where(kv => kv.Value.Any()).Select((kvp, i) => (kvp, i)))
             {
                 <input type="hidden" name="@(Html.NameFor(m => m.GroupedItems[i])).Key" value="@kvp.Key" />
                 @foreach (var (value, j) in kvp.Value.Select((value, j) => (value, j)))
