@@ -10,7 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<SlaContact> builder)
         {
-            builder.ToTable("SlaContacts", Schemas.Catalogue);
+            builder.ToTable("SlaContacts", Schemas.Catalogue, b => b.IsTemporal(
+                temp =>
+                {
+                    temp.UseHistoryTable("SlaContacts_History");
+                    temp.HasPeriodStart("SysStartTime");
+                    temp.HasPeriodEnd("SysEndTime");
+                }));
 
             builder.HasKey(s => s.Id);
 

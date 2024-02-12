@@ -598,6 +598,29 @@
 
                     @if (Model.Order.OrderStatus is OrderStatus.Completed)
                     {
+                        @if (Model.RolledUp.GetSolutions().Any())
+                        {
+                            <div style="page-break-after: always"></div>
+
+                            <div class="nhsuk-grid-row">
+                                <div class="nhsuk-grid-column-full">
+                                    <nhs-page-title title="@(Model.RolledUp.GetSolutions().Count() > 1 ? "Service Level Agreements" : "Service Level Agreement")"/>
+                                </div>
+                            </div>
+
+                            @foreach (var solution in Model.RolledUp.GetSolutions())
+                            {
+                                @if (solution.CatalogueItem.Solution?.ServiceLevelAgreement != null)
+                                {
+                                    <partial name="ServiceLevelAgreement" model="@solution.CatalogueItem.Solution?.ServiceLevelAgreement" />
+                                }
+                                else
+                                {
+                                    <p>No service level agreement in place for @solution.CatalogueItem.Name</p>
+                                }   
+                            }
+                        }
+
                         <div style="page-break-after: always"></div>
 
                         <div class="nhsuk-grid-row">
