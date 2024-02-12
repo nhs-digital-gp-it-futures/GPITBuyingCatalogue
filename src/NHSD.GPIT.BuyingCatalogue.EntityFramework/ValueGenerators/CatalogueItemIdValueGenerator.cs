@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,10 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.ValueGenerators
         public override CatalogueItemId Next(EntityEntry entry)
             => NextAsync(entry).AsTask().GetAwaiter().GetResult();
 
+        [ExcludeFromCodeCoverage(Justification = "Not all code paths can be tested due to a reliance on internal Microsoft APIs")]
         public override async ValueTask<CatalogueItemId> NextAsync(EntityEntry entry, CancellationToken cancellationToken = default)
         {
             if (entry.Entity is not CatalogueItem catalogueItem)
-                throw new ArgumentException($"Entity must be of type {typeof(CatalogueItem).Name}", nameof(entry));
+                throw new ArgumentException($"Entity must be of type {nameof(CatalogueItem)}", nameof(entry));
 
             if (catalogueItem.Id != default)
                 return catalogueItem.Id;
@@ -35,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.ValueGenerators
 
             var incrementedCatalogueItemId = catalogueItem.CatalogueItemType switch
             {
-                CatalogueItemType.AdditionalService => (latestCatalogueItem?.Id ?? new CatalogueItemId(catalogueItem.SupplierId, $"{catalogueItem.AdditionalService.SolutionId.ItemId}A00")).NextAdditionalServiceId(),
+                CatalogueItemType.AdditionalService => (latestCatalogueItem?.Id ?? new CatalogueItemId(catalogueItem.SupplierId, $"{catalogueItem.AdditionalService.SolutionId.ItemId}A000")).NextAdditionalServiceId(),
                 CatalogueItemType.AssociatedService => (latestCatalogueItem?.Id ?? new CatalogueItemId(catalogueItem.SupplierId, "S-000")).NextAssociatedServiceId(),
                 CatalogueItemType.Solution or _ => (latestCatalogueItem?.Id ?? new CatalogueItemId(catalogueItem.SupplierId, "000")).NextSolutionId(),
             };
