@@ -16,15 +16,17 @@
     }
 }
 
-<h3 style="text-align:left; display: inline-block;">
-    @Model.Name  
-</h3>
-@if(!Model.IsAmendment)
-{
-    <span class="detail" style="float:right;">
-        <strong>@progress</strong> of <strong>2</strong> started
-    </span>
-}
+<div style="display:block; align-items:center;">
+    <h3 style="text-align:left; display: inline-block; vertical-align:middle">
+        @Model.Name  
+    </h3>
+    @if(!Model.IsAmendment)
+    {
+        <span class="detail" style="float:right; vertical-align:middle">
+            <strong>@progress</strong> of <strong>2</strong> started
+        </span>
+    }
+</div>
 
 <nhs-table>
     <nhs-table-column>Section</nhs-table-column>
