@@ -126,14 +126,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 typeof(SolutionsController).ControllerName(),
                 (filters with { Selected = newCapabilitiesAndEpics.ToFilterString() }).ToRouteValues());
         }
-
-        private async Task<FilterEpicsModel> GetEpicsModel(string selected)
-        {
-            var capabilityAndEpicsIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
-            var capabilities = await capabilitiesService.GetCapabilitiesByIds(capabilityAndEpicsIds.Keys);
-            var epics = await epicsService.GetReferencedEpicsByCapabilityIds(capabilityAndEpicsIds.Keys);
-
-            return new FilterEpicsModel(capabilities, epics, capabilityAndEpicsIds);
-        }
     }
 }
