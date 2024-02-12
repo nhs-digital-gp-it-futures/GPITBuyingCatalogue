@@ -1168,7 +1168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
-            OrderingPages.EditAdditionalServiceRecipient(NewSolutionName,NewAdditionalServiceName);
+            OrderingPages.EditAdditionalServiceRecipient(NewSolutionName, NewAdditionalServiceName);
 
             OrderingPages.StepThreeCompleteContract();
 

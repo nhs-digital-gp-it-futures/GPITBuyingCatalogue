@@ -11,6 +11,8 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCreate
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.View_Result;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
@@ -41,6 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             ReviewCompetitionCriteria = new ReviewCompetitionCriteria(driver, commonActions);
             CompareAndScore = new CompareAndScore(driver, commonActions);
             CreateOrderFromWinningSolution = new CreateOrderFromWinningSolution(driver, commonActions);
+            TaskList = new TaskList(driver, commonActions);
+            OrderingStepOne = new OrderingStepOne(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -90,6 +94,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         internal CompareAndScore CompareAndScore { get; }
 
         internal CreateOrderFromWinningSolution CreateOrderFromWinningSolution { get; }
+
+        internal TaskList TaskList { get; }
+
+        internal OrderingStepOne OrderingStepOne { get; }
 
         internal FilterType FilterType { get; set; }
 
@@ -219,18 +227,24 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             ViewCompetitionResults.ViewResults();
         }
 
-        public void ViewMultipleResults()
-        {
-            int competitionid = CompetitionId();
-            CompetitionTaskList.ViewResult();
-            MultipleResults(competitionid);
-        }
-
         public void CreateOrder()
         {
             int competitionid = CompetitionId();
             string winningsolutiont = WinningResult(competitionid);
             CreateOrderFromWinningSolution.CreateOrderFromCompetition(winningsolutiont);
+            TaskList.CallOffOrderingPartyContactDetailsTask();
+            OrderingStepOne.AddCallOffOrderingPartyContactDetails();
+            TaskList.CompetitionSupplierInformationAndContactDetailsTask();
+            CreateOrderFromWinningSolution.ConfirmContact();
+            TaskList.TimescalesForCallOffAgreementTask();
+            CreateOrderFromWinningSolution.AddTimescaleForCallOffAgreement();
+        }
+
+        public void ViewMultipleResults()
+        {
+            int competitionid = CompetitionId();
+            CompetitionTaskList.ViewResult();
+            MultipleResults(competitionid);
         }
 
         private int CompetitionId()

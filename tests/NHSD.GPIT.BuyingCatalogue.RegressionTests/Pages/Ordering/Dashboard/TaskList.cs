@@ -60,6 +60,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
                     .Should().BeTrue();
         }
 
+        public void CompetitionSupplierInformationAndContactDetailsTask()
+        {
+            CommonActions.ClickLinkElement(SupplierObjects.SupplierContactDetailsLink);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.Supplier))
+                    .Should().BeTrue();
+        }
+
         public void SupplierInformationAndContactForSplitOrder()
         {
             CommonActions.ClickLinkElement(SupplierObjects.SupplierContactDetailsLink);
