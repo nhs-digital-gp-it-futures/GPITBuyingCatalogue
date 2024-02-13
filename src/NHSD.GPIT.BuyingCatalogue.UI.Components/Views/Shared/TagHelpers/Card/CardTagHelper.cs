@@ -10,7 +10,6 @@ using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 {
-    [Obsolete("Deprecated in favour of CardV2TagHelper")]
     [HtmlTargetElement(TagHelperName)]
     public class CardTagHelper : TagHelper
     {

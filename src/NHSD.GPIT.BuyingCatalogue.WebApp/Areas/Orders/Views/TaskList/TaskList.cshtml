@@ -138,13 +138,13 @@
                 @if (Model.IsAmendment && !Model.AssociatedServices.Any())
                 {
                     <nhs-card-content>
-                        <p><img src="~/images/information-icon.png" style="vertical-align:middle" /> You cannot add Associated Services when amending an order.</p>
+                        <img src="~/images/information-icon.png" style="vertical-align:middle; display:inline-block; padding-right:5px" /><span style="display:inline-block; vertical-align:middle; width:90%">You cannot add Associated Services when amending an order.</span>
                     </nhs-card-content>
                 }
                 else if (!Model.AssociatedServicesAvailable)
                 {
                     <nhs-card-content>
-                        <p><img src="~/images/information-icon.png" style="vertical-align:middle" /> There are no Associated Services available for this Catalogue Solution.</p>
+                        <img src="~/images/information-icon.png" style="vertical-align:middle; display:inline-block; padding-right:5px" /><span style="display:inline-block; vertical-align:middle; width:90%">There are no Associated Services available for this Catalogue Solution.</span>
                     </nhs-card-content>
                 }
                 else
