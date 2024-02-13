@@ -14,7 +14,7 @@
             <a asp-area="@typeof(SolutionsController).AreaName()"
                asp-controller="@typeof(SolutionsController).ControllerName()"
                asp-action="@nameof(SolutionsController.Index)"
-               asp-route-selected="5|11|12|13|14|15">
+               asp-route-selected="@Model.FoundationCapabilitiesFilterString">
                 Filter by Foundation Capabilities
             </a>
             <br /><br />

@@ -30,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             model.FrameworkOptions.Should().NotBeNull();
             model.FrameworkOptions.Should().HaveCount(frameworks.Count);
             model.FrameworkFilter.Should().BeEmpty();
+            model.FoundationCapabilitiesFilterString.Should().Be("5|11|12|13|14|15|");
 
             foreach (var framework in frameworks)
             {
@@ -90,6 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             model.GPConnectIntegrationsFilters.Should().NotBeNull().And.BeEmpty();
             model.CapabilitiesCount.Should().Be(0);
             model.EpicsCount.Should().Be(0);
+            model.FoundationCapabilitiesFilterString.Should().Be("5|11|12|13|14|15|");
         }
 
         [Theory]

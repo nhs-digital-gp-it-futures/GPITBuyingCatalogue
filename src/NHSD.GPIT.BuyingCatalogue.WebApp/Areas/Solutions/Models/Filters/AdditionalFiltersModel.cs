@@ -87,6 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             .Select(f => f.Text)
             .ToArray();
 
+        public string FoundationCapabilitiesFilterString => new FoundationCapabilitiesModel().ToFilterString();
+
         public string CombineSelectedOptions(List<SelectOption<int>> options)
         {
             return (options?.Where(x => x.Selected)?.Select(x => x.Value) ?? Enumerable.Empty<int>()).ToFilterString();

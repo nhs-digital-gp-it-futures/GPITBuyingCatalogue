@@ -63,7 +63,7 @@
         }
         else
         {
-            foreach (var fs in Model.CatalogueItem.Solution.FrameworkSolutions) //.Select(fs => $"{fs.Framework.ShortName}{(fs.Framework.IsExpired ? " (expired)" : string.Empty)}")))</p>
+            foreach (var fs in Model.CatalogueItem.Solution.FrameworkSolutions)
             {
                 var name = $"{fs.Framework.ShortName}{(fs.Framework.IsExpired ? " (expired)" : string.Empty)}";
                 <nhs-tag text="@name" colour="Grey" />
