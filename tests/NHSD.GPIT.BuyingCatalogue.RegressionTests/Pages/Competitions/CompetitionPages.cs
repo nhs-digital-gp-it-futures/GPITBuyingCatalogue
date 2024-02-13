@@ -1,5 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.CompetitionToOrder;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
@@ -14,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.View_Result;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using OpenQA.Selenium;
+using static Azure.Core.HttpHeader;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 {
@@ -38,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             SolutionServiceQuantity = new SolutionServiceQuantity(driver, commonActions);
             ViewCompetitionResults = new ViewCompetitionResults(driver, commonActions);
             AwardCriteriaWeightings = new AwardCriteriaWeightings(driver, commonActions);
-            NonPriceElements = new NonPriceElements(driver, commonActions);
+            CompetitionNonPriceElements = new CompetitionNonPriceElements(driver, commonActions);
             NonPriceWeightings = new NonPriceWeightings(driver, commonActions);
             ReviewCompetitionCriteria = new ReviewCompetitionCriteria(driver, commonActions);
             CompareAndScore = new CompareAndScore(driver, commonActions);
@@ -85,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal AwardCriteriaWeightings AwardCriteriaWeightings { get; }
 
-        internal NonPriceElements NonPriceElements { get; }
+        internal CompetitionNonPriceElements CompetitionNonPriceElements { get; }
 
         internal NonPriceWeightings NonPriceWeightings { get; }
 
@@ -161,14 +164,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 CompetitionTaskList.AwardCriteriaWeightings();
                 AwardCriteriaWeightings.PriceNonPriceAwardCriteriaWeightings();
                 CompetitionTaskList.NonPriceElements();
-                NonPriceElements.AddNonPriceElements(elementtype);
+                CompetitionNonPriceElements.AddNonPriceElements(elementtype);
                 switch (elementtype)
                 {
                     case NonPriceElementType.All:
-                        NonPriceElements.AllNonPriceElementsReview();
+                        CompetitionNonPriceElements.AllNonPriceElementsReview();
                         break;
                     default:
-                        NonPriceElements.AddNonPriceElement();
+                        CompetitionNonPriceElements.AddNonPriceElement();
                         break;
                 }
 
@@ -230,14 +233,29 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
         public void CreateOrder()
         {
             int competitionid = CompetitionId();
-            string winningsolutiont = WinningResult(competitionid);
-            CreateOrderFromWinningSolution.CreateOrderFromCompetition(winningsolutiont);
+            var winningsolutiont = WinningResult(competitionid);
+            CreateOrderFromWinningSolution.CreateOrderFromCompetition(winningsolutiont.ToString());
             TaskList.CallOffOrderingPartyContactDetailsTask();
             OrderingStepOne.AddCallOffOrderingPartyContactDetails();
             TaskList.CompetitionSupplierInformationAndContactDetailsTask();
             CreateOrderFromWinningSolution.ConfirmContact();
             TaskList.TimescalesForCallOffAgreementTask();
             CreateOrderFromWinningSolution.AddTimescaleForCallOffAgreement();
+            TaskList.SelectPlannedDeliveryDatesTask();
+            CreateOrderFromWinningSolution.CompetitionPlannedDeliveryDate();
+            TaskList.SelectFundingSourcesTask();
+            if (HasAdditionalService(competitionid, winningsolutiont))
+            {
+                var competitionsolutionservices = GetCompetitionSolutionServices(competitionid, winningsolutiont);
+                var fundingservices = new List<CatalogueItemId>();
+                fundingservices.Add(winningsolutiont);
+                foreach (var service in competitionsolutionservices)
+                {
+                    fundingservices.Add(service);
+                }
+
+                CreateOrderFromWinningSolution.FundingSources(fundingservices);
+            }
         }
 
         public void ViewMultipleResults()
@@ -291,7 +309,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             return competitionsolutions;
         }
 
-        private string WinningResult(int competitionId)
+        private CatalogueItemId WinningResult(int competitionId)
         {
             using var dbContext = Factory.DbContext;
 
@@ -304,7 +322,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             if (winningSolution.Any())
             {
                 var winningSolutionResult = winningSolution.First();
-                return winningSolutionResult.ToString();
+                return winningSolutionResult;
             }
             else
             {

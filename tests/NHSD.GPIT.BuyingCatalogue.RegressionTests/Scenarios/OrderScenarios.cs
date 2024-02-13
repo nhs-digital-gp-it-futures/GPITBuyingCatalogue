@@ -2169,6 +2169,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.ViewResults();
 
             CompetitionPages.CreateOrder();
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]
