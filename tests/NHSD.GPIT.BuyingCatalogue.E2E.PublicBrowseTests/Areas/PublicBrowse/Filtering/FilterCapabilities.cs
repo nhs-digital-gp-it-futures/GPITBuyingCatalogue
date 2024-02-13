@@ -90,16 +90,5 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.Filtering
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
         }
-
-        [Fact]
-        public void FilterCapabilities_ClickSave_SelectionMade_ExpectedResult()
-        {
-            CommonActions.ClickAllCheckboxes();
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(FilterController),
-                nameof(FilterController.IncludeEpics)).Should().BeTrue();
-        }
     }
 }

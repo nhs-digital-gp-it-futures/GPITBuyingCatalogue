@@ -35,6 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.LabelHintName)]
         public string LabelHint { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.InlineLabelName)]
+        public bool? InlineLabel { get; set; }
+
         [HtmlAttributeName(TagHelperConstants.AllowMultipleName)]
         public bool? AllowMultiple { get; set; }
 
@@ -54,7 +57,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         protected TagBuilder BuildSelect()
         {
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
-            var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
+            var label = (InlineLabel ?? false)
+                ? TagHelperBuilders.GetInlineLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText)
+                : TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
             var errorMessage = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint);
 

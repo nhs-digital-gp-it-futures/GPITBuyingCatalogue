@@ -267,20 +267,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     })
                 .ToListAsync();
 
-            var capabilityPredicate =
-                CapabilitiesPredicate(capabilitiesAndEpics.Where(kv => (kv.Value?.Length ?? 0) == 0));
-
-            var itemPredicate = PredicateBuilder.New<CatalogueItem>()
-                .Start(p => p.CatalogueItemCapabilities.Any(cic => capabilityPredicate.Invoke(cic)));
-
-            capabilitiesAndEpics
-                .Where(kv => (kv.Value?.Length ?? 0) > 0)
-                .ForEach(
-                    kv =>
-                    {
-                        var epicsPredicate = EpicsPredicate(kv.Key, kv.Value);
-                        itemPredicate = itemPredicate.Or(epicsPredicate);
-                    });
+            var itemPredicate = CapabilitiesAndEpicsPredicate(
+                capabilitiesAndEpics.Where(kv => (kv.Value?.Length ?? 0) == 0).Select(kv => kv.Key),
+                capabilitiesAndEpics.Where(kv => (kv.Value?.Length ?? 0) > 0));
 
             return (dbContext.CatalogueItems
                     .AsNoTracking()
@@ -310,6 +299,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 capabilitiesAndCount);
         }
 
+        private static Expression<Func<CatalogueItem, bool>> CapabilitiesAndEpicsPredicate(
+            IEnumerable<int> capabilitiesOnly,
+            IEnumerable<KeyValuePair<int, string[]>> capabilitiesAndEpics)
+        {
+            var itemPredicate = PredicateBuilder.New<CatalogueItem>(true);
+            if (capabilitiesOnly.Any())
+            {
+                var capabilityPredicate = PredicateBuilder.New<CatalogueItem>();
+                capabilitiesOnly
+                    .ForEach(k => capabilityPredicate = capabilityPredicate.And(c => c.CatalogueItemCapabilities.Any(cic => cic.CapabilityId == k)));
+
+                itemPredicate = itemPredicate.And(capabilityPredicate);
+            }
+
+            capabilitiesAndEpics
+                .ForEach(
+                    kv =>
+                    {
+                        var epicsPredicate = EpicsPredicate(kv.Key, kv.Value);
+                        itemPredicate = itemPredicate.And(epicsPredicate);
+                    });
+
+            return itemPredicate;
+        }
+
         private static Expression<Func<CatalogueItem, bool>> EpicsPredicate(int capabilityId, string[] epics)
         {
             var epicsPredicate = PredicateBuilder.New<CatalogueItem>();
@@ -322,15 +336,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 });
 
             return epicsPredicate;
-        }
-
-        private static Expression<Func<CatalogueItemCapability, bool>> CapabilitiesPredicate(
-            IEnumerable<KeyValuePair<int, string[]>> capabilitiesAndEpics)
-        {
-            var capabilityPredicate = PredicateBuilder.New<CatalogueItemCapability>();
-            capabilitiesAndEpics
-                .ForEach(kv => capabilityPredicate = capabilityPredicate.Or(c => c.CapabilityId == kv.Key));
-            return capabilityPredicate;
         }
 
         private static IEnumerable<ApplicationType> GetSelectedFilterApplication(

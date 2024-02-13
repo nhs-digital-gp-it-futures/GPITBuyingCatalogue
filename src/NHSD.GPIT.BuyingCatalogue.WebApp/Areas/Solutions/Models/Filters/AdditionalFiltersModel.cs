@@ -19,22 +19,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public AdditionalFiltersModel(
             List<FrameworkFilterInfo> frameworks,
-            string selectedFrameworkId,
-            string selectedApplicationTypeIds,
-            string selectedHostingTypeIds,
-            string selectedIM1Integrations,
-            string selectedGPConnectIntegrations,
-            string selectedInteroperabilityOptions,
-            string selected)
+            RequestedFilters filters)
         {
-            SetFrameworkOptions(frameworks, selectedFrameworkId);
-            SetApplicationTypeOptions(selectedApplicationTypeIds);
-            SetHostingTypeOptions(selectedHostingTypeIds);
-            SetIM1IntegrationsOptions(selectedIM1Integrations);
-            SetGPConnectIntegrationsOptions(selectedGPConnectIntegrations);
-            SetInteroperabilityOptions(selectedInteroperabilityOptions);
-            Selected = selected;
-            SelectedFrameworkId = selectedFrameworkId;
+            SetFrameworkOptions(frameworks, filters.SelectedFrameworkId);
+            SetApplicationTypeOptions(filters.SelectedApplicationTypeIds);
+            SetHostingTypeOptions(filters.SelectedHostingTypeIds);
+            SetIM1IntegrationsOptions(filters.SelectedIM1Integrations);
+            SetGPConnectIntegrationsOptions(filters.SelectedGPConnectIntegrations);
+            SetInteroperabilityOptions(filters.SelectedInteroperabilityOptions);
+            Selected = filters.Selected;
+            SelectedFrameworkId = filters.SelectedFrameworkId;
+            SortBy = filters.SortBy;
+
+            var capabilities = filters.GetCapabilityAndEpicIds();
+            CapabilitiesCount = capabilities.Keys.Count;
+            EpicsCount = capabilities.Values.Sum(v => v.Count());
         }
 
         public int? FilterId { get; set; }
@@ -50,6 +49,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         public string FrameworkFilter { get; set; }
 
         public List<SelectOption<int>> ApplicationTypeOptions { get; set; }
+
+        public int CapabilitiesCount { get; set; }
+
+        public int EpicsCount { get; set; }
 
         public string[] ApplicationTypeFilters => (ApplicationTypeOptions ?? Array.Empty<SelectOption<int>>().ToList())
             .Where(f => f.Selected)
@@ -84,9 +87,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             .Select(f => f.Text)
             .ToArray();
 
+        public string FoundationCapabilitiesFilterString => new FoundationCapabilitiesModel().ToFilterString();
+
         public string CombineSelectedOptions(List<SelectOption<int>> options)
         {
             return (options?.Where(x => x.Selected)?.Select(x => x.Value) ?? Enumerable.Empty<int>()).ToFilterString();
+        }
+
+        public RequestedFilters ToRequestedFilters()
+        {
+            var selectedInteroperabilityOptions = CombineSelectedOptions(InteroperabilityOptions);
+
+            return new RequestedFilters(
+                    Selected,
+                    null,
+                    SelectedFrameworkId,
+                    CombineSelectedOptions(ApplicationTypeOptions),
+                    CombineSelectedOptions(HostingTypeOptions),
+                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? CombineSelectedOptions(IM1IntegrationsOptions) : null,
+                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? CombineSelectedOptions(GPConnectIntegrationsOptions) : null,
+                    selectedInteroperabilityOptions,
+                    SortBy);
         }
 
         private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks, string selectedFrameworkId)
@@ -96,7 +117,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 .Select(
                     f => new SelectOption<string>
                     {
-                        Value = f.Id, Text = $"{f.ShortName}", Selected = false,
+                        Value = f.Id,
+                        Text = $"{f.ShortName}",
+                        Selected = false,
                     })
                 .ToList();
 

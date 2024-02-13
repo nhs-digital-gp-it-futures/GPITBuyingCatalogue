@@ -10,36 +10,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
     public static class SolutionsModelTests
     {
         [Fact]
-        public static void SolutionsModel_NoSearch_ReturnsTitleAndAdvice()
-        {
-            var model = new SolutionsModel()
-            {
-                SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary(),
-            };
-
-            var pageTitle = model.GetPageTitle();
-            pageTitle.Title.Should().Be(SolutionsModel.NoSearchPageTitle.Title);
-            pageTitle.Caption.Should().BeNullOrEmpty();
-            pageTitle.Advice.Should().Be(SolutionsModel.NoSearchPageTitle.Advice);
-            pageTitle.AdditionalAdvice.Should().BeNullOrEmpty();
-        }
-
-        [Fact]
         public static void SolutionsModel_SearchNoResults_ReturnsTitleAndAdvice()
         {
             var model = new SolutionsModel()
             {
-                SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary()
-                {
-                    SearchTerm = "test",
-                },
                 CatalogueItems = new List<CatalogueItem>(),
             };
 
             var pageTitle = model.GetPageTitle();
-            pageTitle.Title.Should().Be(SolutionsModel.SearchNoResultsPageTitle.Title);
+            pageTitle.Title.Should().Be(SolutionsModel.SearchResultsPageTitle.Title);
             pageTitle.Caption.Should().BeNullOrEmpty();
-            pageTitle.Advice.Should().Be(SolutionsModel.SearchNoResultsPageTitle.Advice);
+            pageTitle.Advice.Should().Be(SolutionsModel.SearchResultsPageTitle.Advice);
             pageTitle.AdditionalAdvice.Should().BeNullOrEmpty();
         }
 
@@ -51,10 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var model = new SolutionsModel()
             {
                 FilterName = filterName,
-                SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary()
-                {
-                    SearchTerm = "test",
-                },
                 CatalogueItems = new List<CatalogueItem>(),
             };
 
@@ -72,10 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var model = new SolutionsModel()
             {
-                SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary()
-                {
-                    SearchTerm = "test",
-                },
                 CatalogueItems = solutions,
             };
 
@@ -96,10 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var model = new SolutionsModel()
             {
                 FilterName = filterName,
-                SearchSummary = new ServiceContracts.Models.CatalogueFilterSearchSummary()
-                {
-                    SearchTerm = "test",
-                },
                 CatalogueItems = solutions,
             };
 

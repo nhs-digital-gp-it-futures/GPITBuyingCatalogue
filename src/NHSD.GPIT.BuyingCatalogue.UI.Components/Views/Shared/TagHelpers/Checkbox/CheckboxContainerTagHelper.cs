@@ -12,6 +12,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         private ConditionalContext conditionalContext;
 
+        public enum CheckboxSize
+        {
+            Normal,
+            Small,
+        }
+
+        [HtmlAttributeName(TagHelperConstants.Size)]
+        public CheckboxSize Size { get; set; } = CheckboxSize.Normal;
+
         public override void Init(TagHelperContext context)
         {
             if (context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out _))
@@ -35,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                     TagHelperFunctions.BuildCssClassForConditionalContentOutput(
                         context,
                         conditionalContext,
-                        TagHelperConstants.NhsCheckboxes,
+                        Size == CheckboxSize.Small ? $"{TagHelperConstants.NhsCheckboxes} {TagHelperConstants.NhsCheckboxesSizeSmall}" : $"{TagHelperConstants.NhsCheckboxes}",
                         TagHelperConstants.NhsCheckBoxParentConditionalClass)));
 
             output.Content.AppendHtml(content);
