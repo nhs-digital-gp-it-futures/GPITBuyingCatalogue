@@ -1,0 +1,22 @@
+﻿using System;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.YourAccount
+{
+    public abstract class YourAccountModel : YourAccountBaseModel
+    {
+        public YourAccountModel()
+        {
+        }
+
+        public YourAccountModel(Organisation organisation)
+        {
+            Organisation = organisation ?? throw new ArgumentNullException(nameof(organisation));
+        }
+
+        public Organisation Organisation { get; set; }
+
+        public Address OrganisationAddress => Organisation.Address;
+    }
+}

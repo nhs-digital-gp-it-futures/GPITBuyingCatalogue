@@ -53,6 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Identity\Views\YourAccount\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
