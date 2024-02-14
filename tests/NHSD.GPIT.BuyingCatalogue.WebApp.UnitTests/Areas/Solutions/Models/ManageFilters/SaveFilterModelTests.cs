@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Mana
         [Theory]
         [CommonAutoData]
         public static void Constructor_PropertiesAreSetCorrectly(
-            Dictionary<string, IOrderedEnumerable<Epic>> capabiltiesAndEpics,
+            Dictionary<string, IOrderedEnumerable<Epic>> capabilitiesAndEpics,
             EntityFramework.Catalogue.Models.Framework framework,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Mana
             List<InteropIntegrationType> interoperabilityIntegrationTypes,
             int organisationId)
         {
-            var model = new SaveFilterModel(capabiltiesAndEpics, framework, applicationTypes, hostingTypes, iM1IntegrationsTypes, gPConnectIntegrationsTypes, interoperabilityIntegrationTypes, organisationId);
+            var model = new SaveFilterModel(capabilitiesAndEpics, framework, applicationTypes, hostingTypes, iM1IntegrationsTypes, gPConnectIntegrationsTypes, interoperabilityIntegrationTypes, organisationId);
 
             model.FrameworkId.Should().Be(framework.Id);
             model.FrameworkName.Should().Be(framework.ShortName);
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Mana
             model.GPConnectIntegrationsTypes.Should().BeEquivalentTo(gPConnectIntegrationsTypes);
             model.InteroperabilityIntegrationTypes.Should().BeEquivalentTo(interoperabilityIntegrationTypes);
             model.OrganisationId.Should().Be(organisationId);
-            model.GroupedCapabilities.Should().BeEquivalentTo(capabiltiesAndEpics);
+            model.GroupedCapabilities.Should().BeEquivalentTo(capabilitiesAndEpics);
         }
     }
 }
