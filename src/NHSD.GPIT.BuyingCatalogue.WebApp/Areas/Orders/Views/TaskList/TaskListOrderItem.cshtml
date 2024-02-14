@@ -89,17 +89,17 @@
                 else
                 {
                     string action;
-                    if(Model.QuantityStatus == TaskProgress.Completed)
+                    switch (Model.QuantityStatus)
                     {
-                        action = Model.OrderType.MergerOrSplit ? "View" : "Change";
-                    }
-                    else if (Model.QuantityStatus == TaskProgress.Amended)
-                    {
-                        action = "Change";
-                    }
-                    else
-                    {
-                        action = "Start";
+                        case TaskProgress.Completed:
+                            action = Model.OrderType.MergerOrSplit ? "View" : "Change";
+                            break;
+                        case TaskProgress.Amended:
+                            action = "Change";
+                            break;
+                        default:
+                            action = "Start";
+                            break;
                     }
 
                     <a id="Quantity_@Model.CatalogueItemId" style="float:right;"
