@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
@@ -14,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             this.rolledUpOrderItem = rolledUpOrderItem;
 
+            IsPerServiceRecipient = ((IPrice)rolledUpOrderItem.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             OrderType = orderType;
@@ -47,6 +49,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public int PriceId { get; set; }
 
+        public bool IsPerServiceRecipient { get; set; }
+
         public TaskProgress PriceStatus
         {
             get
@@ -68,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
                 if (RolledUpOrderRecipients.AllQuantitiesEntered(rolledUpOrderItem))
                 {
-                    return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
+                    return FromPreviousRevision && HasNewRecipients && IsPerServiceRecipient ? TaskProgress.Amended : TaskProgress.Completed;
                 }
                 else if (RolledUpOrderRecipients.SomeButNotAllNewQuantitiesEntered(rolledUpOrderItem, PreviousRecipients))
                 {
