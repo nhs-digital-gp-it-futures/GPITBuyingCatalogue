@@ -579,7 +579,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockPdfService.Object,
                 settings);
 
-            var expectedOrderSummaryPdf = NotificationClient.PrepareUpload(pdfData.ToArray());
             var expectedOrderSummaryCsv = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
@@ -588,15 +587,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             mockEmailService.VerifyAll();
 
             userTokens.Should().NotBeNull();
-            userTokens.Should().HaveCount(3);
+            userTokens.Should().HaveCount(2);
 
             var orderId = userTokens.Should().ContainKey(OrderService.OrderIdToken).WhoseValue as string;
             var orderSummaryCsv = userTokens.Should().ContainKey(OrderService.OrderSummaryCsv).WhoseValue as JObject;
-            var orderSummaryPdf = userTokens.Should().ContainKey(OrderService.OrderSummaryPdf).WhoseValue as JObject;
 
             orderId.Should().Be($"{order.CallOffId}");
             orderSummaryCsv.Should().BeEquivalentTo(expectedOrderSummaryCsv);
-            orderSummaryPdf.Should().BeEquivalentTo(expectedOrderSummaryPdf);
         }
 
         [Theory]
