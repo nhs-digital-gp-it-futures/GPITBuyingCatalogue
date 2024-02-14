@@ -28,7 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public const string FullOrderCsvToken = "full_order_csv";
         public const string OrderIdToken = "order_id";
         public const string OrderSummaryCsv = "order_summary_csv";
-        public const string OrderSummaryPdf = "order_summary_pdf";
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly ICsvService csvService;
@@ -505,7 +504,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             fullOrderStream.Position = 0;
             var fullOrderBytes = fullOrderStream.ToArray();
 
-            var pdfStream = await pdfService.CreateOrderSummaryPdf(order);
+            _ = await pdfService.CreateOrderSummaryPdf(order);
 
             var adminTokens = new Dictionary<string, dynamic>
             {
@@ -520,11 +519,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 { OrderIdToken, $"{callOffId}" },
                 { OrderSummaryCsv, NotificationClient.PrepareUpload(fullOrderBytes, true) },
             };
-
-            if (order.OrderStatus is OrderStatus.Completed)
-            {
-                userTokens.Add(OrderSummaryPdf, NotificationClient.PrepareUpload(pdfStream.ToArray()));
-            }
 
             var userEmail = dbContext.Users.First(x => x.Id == userId).Email;
 
