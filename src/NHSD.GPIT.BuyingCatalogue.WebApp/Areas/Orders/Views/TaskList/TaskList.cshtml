@@ -117,7 +117,6 @@
                             {
                                 <img src="~/images/information-icon.png" style="vertical-align:middle" /> <p>All the Additional Services available for this Catalogue Solution have already been added.</p>
                             }
-
                         </nhs-card-footer>
                     }
                     else
@@ -185,13 +184,15 @@
                             }
                             else
                             {
-                                <a class="nhsuk-link--no-visited-state" href="@Url.Action(
-                                    nameof(AssociatedServicesController.SelectAssociatedServices),
-                                    typeof(AssociatedServicesController).ControllerName(),
-                                    new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList })">
-                                    <img src="~/images/plus-icon.svg" style="vertical-align:middle" width="25px" />
-                                    <p>Add an Associated Service</p>
-                                </a>
+                                <p class="nhsuk-body-m">
+                                    <a class="nhsuk-link--no-visited-state" href="@Url.Action(
+                                        nameof(AssociatedServicesController.SelectAssociatedServices),
+                                        typeof(AssociatedServicesController).ControllerName(),
+                                        new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList })">
+                                        <img src="~/images/plus-icon.svg" style="vertical-align:middle" width="25px" />
+                                        Add an Associated Service
+                                    </a>
+                                </p>
                             }
                         </nhs-card-footer>
                     }
