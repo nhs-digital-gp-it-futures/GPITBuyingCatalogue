@@ -3,132 +3,76 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.FilterEpicsModel
 
-<script type="text/javascript" src="@Url.Content("~/js/GroupCounters.min.js")" asp-append-version="true"></script>
-
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
-    ViewBag.Title = "Filter by Epics";
-    var index = 0;
+    ViewBag.Title = "Select Epics";
 }
 
-@section Breadcrumbs {
-    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
-        <div class="nhsuk-width-container">
-            <ol class="nhsuk-breadcrumb__list">
-                <li class="nhsuk-breadcrumb__item">
-                    <a class="nhsuk-breadcrumb__link"
-                       data-test-id="home-crumb"
-                       asp-action="@nameof(HomeController.Index)"
-                       asp-controller="@typeof(HomeController).ControllerName()"
-                       asp-area="@typeof(HomeController).AreaName()">Home</a>
-                </li>
-                <li class="nhsuk-breadcrumb__item">
-                    <a class="nhsuk-breadcrumb__link"
-                       data-test-id="catalogue-solutions-crumb"
-                       asp-action="@nameof(SolutionsController.Index)"
-                       asp-controller="@typeof(SolutionsController).ControllerName()"
-                       asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>
-                </li>
-                <li class="nhsuk-breadcrumb__item">
-                    <a class="nhsuk-breadcrumb__link"
-                       data-test-id="capabilities-crumb"
-                       asp-action="@nameof(FilterController.FilterCapabilities)"
-                       asp-controller="@typeof(FilterController).ControllerName()"
-                       asp-area="@typeof(FilterController).AreaName()"
-                       asp-route-selected="@Model.Selected">Capabilities</a>
-                </li>
-            </ol>
-        </div>
-    </nav>
-}
+<partial name="Partials/_BackLink" model="Model.NavModel" />
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-validation-summary/>
+        <nhs-validation-summary />
 
         <nhs-page-title title="@ViewBag.Title"
-                        advice="Select the Epics you want to filter by."/>
-
-        <h3>@Model.Total Epics found with this search criteria</h3>
-        <h4>Capabilities selected:</h4>
-
-        <ul>
-            @foreach (var capability in Model.Groups)
-            {
-                <li>
-                    <strong>@capability.Category.Name</strong> - @capability.Name
-                </li>
-            }
-        </ul>
-
-        <a href="@Url.Action(
-                     nameof(FilterController.FilterCapabilities),
-                     typeof(FilterController).ControllerName(),
-                     new { selected = Model.Selected, search = Model.SearchTerm })">Edit Capabilities</a>
-
-        <hr/>
-
-        <div class="nhsuk-u-margin-bottom-9">
-            <h3>Select Epics</h3>
-            <p class="selection-counter" style="display: none">
-                0 out of @Model.Total selected
-            </p>
-            <vc:nhs-secondary-button type="Secondary"
-                                     text="Clear selected Epics"
-                                     url="@Url.Action(
-                nameof(FilterController.FilterEpics),
-                typeof(FilterController).ControllerName(),
-                new { Selected = Model.ClearEpics, search = Model.SearchTerm })" />
-        </div>
+                        advice="Select Epics and apply them as a filter." />
 
         <form method="post">
-            <input type="hidden" asp-for="Selected"/>
-
-            @foreach (var capability in Model.Groups)
+            <input type="hidden" asp-for="@Model.BackLink" />
+            @foreach (var (kvp, i) in Model.GroupedItems.Where(kv => kv.Value.Any()).Select((kvp, i) => (kvp, i)))
             {
-                var epics = Model.Items(capability.Id);
-
-                if (!epics.Any())
+                <input type="hidden" name="@(Html.NameFor(m => m.GroupedItems[i])).Key" value="@kvp.Key" />
+                @foreach (var (value, j) in kvp.Value.Select((value, j) => (value, j)))
                 {
-                    continue;
+                    <input type="hidden" name="@(Html.NameFor(m => m.GroupedItems[i])).Value[@j].Id" value="@value.Id" />
+                    <input type="hidden" name="@(Html.NameFor(m => m.GroupedItems[i])).Value[@j].Name" value="@value.Name" />
                 }
-
-                <nhs-expander heading-text="@capability.Name"
-                              label-text="@epics.Count @(epics.Count == 1 ? "result" : "results")"
-                              open="true">
-                    <p>
-                        @capability.Description
-                    </p>
-                    <nhs-table>
-                        <nhs-table-column>Epic name</nhs-table-column>
-                        <nhs-table-column>Epic type</nhs-table-column>
-                        @foreach (var epic in epics)
-                        {
-                            index = Model.EpicSelectedItemsMap[$"{capability.Id},{epic.Id}"];
-                            <nhs-table-row-container>
-                                <nhs-table-cell>
-                                    <nhs-checkbox-container>
-                                        <nhs-checkbox asp-for="SelectedItems[index].Selected"
-                                                      hidden-input="SelectedItems[index].Id"
-                                                      label-text="@epic.Name"
-                                                      sub-group="@capability.Name"/>
-                                    </nhs-checkbox-container>
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    @(epic.SupplierDefined ? "Supplier defined" : "NHS defined")
-                                </nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
-                </nhs-expander>
-                <br/>
             }
 
-            <p class="selection-counter" style="display: none">
-                0 out of @Model.Total selected
-            </p>
+            <nhs-card>
+                <nhs-table>
+                    <nhs-table-column>Epic</nhs-table-column>
 
-            <nhs-submit-button/>
+                    @{
+                        var index = 0;
+                        @foreach (var (capability, i) in Model.Groups.Select((value, i) => (value, i)))
+                        {
+                            <input type="hidden" asp-for="@Model.Groups[i].Id" />
+                            <input type="hidden" asp-for="@Model.Groups[i].Name" />
+                            var epics = Model.Items(capability.Id);
+
+                            if (!epics.Any())
+                            {
+                                continue;
+                            }
+
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    <strong>
+                                        @capability.Name
+                                    </strong>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+
+                            @foreach (var epic in epics)
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>
+                                        <nhs-checkbox-container>
+                                            <nhs-checkbox asp-for="SelectedItems[index].Selected"
+                                                          hidden-input="SelectedItems[index].Id"
+                                                          label-text="@epic.Name"
+                                                          sub-group="@capability.Name" />
+                                        </nhs-checkbox-container>
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                                index++;
+                            }
+                        }
+                    }
+                </nhs-table>
+                <nhs-submit-button text="Apply Epics" />
+            </nhs-card>
         </form>
     </div>
 </div>

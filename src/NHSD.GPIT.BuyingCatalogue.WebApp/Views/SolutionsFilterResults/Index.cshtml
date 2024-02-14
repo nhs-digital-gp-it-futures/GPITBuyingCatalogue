@@ -323,7 +323,7 @@
                     @foreach (var item in Model.CatalogueItems)
                     {
                         <div class="pdf-container">
-                            <partial name="/Areas/Solutions/Views/Shared/_SolutionSearchDisplay.cshtml" model="@(new SolutionSearchResultModel(item, Model.CapabilitiesAndEpics, true))"/>
+                            <partial name="/Areas/Solutions/Views/Shared/_SolutionSearchDisplay.cshtml" model="@(new SolutionSearchResultModel(item, true))"/>
                         </div>
                     }
                 }

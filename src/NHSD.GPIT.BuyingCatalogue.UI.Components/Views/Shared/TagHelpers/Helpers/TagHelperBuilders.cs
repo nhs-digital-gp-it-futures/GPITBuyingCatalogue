@@ -117,6 +117,25 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 new { @class = TagHelperConstants.NhsLabel });
         }
 
+        public static TagBuilder GetInlineLabelBuilder(
+            ViewContext viewContext,
+            ModelExpression aspFor,
+            IHtmlGenerator htmlGenerator,
+            string formName = null,
+            string htmlAttributeLabelText = null)
+        {
+            if ((string.IsNullOrEmpty(aspFor.Name) && string.IsNullOrEmpty(formName))
+                || string.IsNullOrEmpty(htmlAttributeLabelText))
+                return null;
+
+            return htmlGenerator.GenerateLabel(
+                viewContext,
+                aspFor.ModelExplorer,
+                string.IsNullOrWhiteSpace(aspFor.Name) ? formName : aspFor.Name,
+                htmlAttributeLabelText,
+                new { @class = $"{TagHelperConstants.NhsLabel} {TagHelperConstants.NhsInLineLabel}" });
+        }
+
         public static TagBuilder GetCounterBuilder(ModelExpression aspFor, int defaultMaxLength, bool enableCharacterCounter)
         {
             if (TagHelperFunctions.IsCounterDisabled(aspFor, enableCharacterCounter))

@@ -6,16 +6,19 @@
         "searchTermType",
         "page"
     };
+
+    var labelClass = !string.IsNullOrWhiteSpace(Model.PlaceholderText) ? "nhsuk-u-visually-hidden" : string.Empty;
+
 }
 
 <div id="@(Model.Id + "-form-input-wrap-search")" class="suggestion-search-wrap-search">
-    <label id="@(Model.Id + "-form-input-label")" for="@(Model.Id + "-form-input")">@Model.TitleText</label>
+    <label id="@(Model.Id + "-form-input-label")" for="@(Model.Id + "-form-input")" class="@labelClass">@Model.TitleText</label>
     <form class="suggestion-search-wrap-form" id="@(Model.Id + "-search-form")" action="@(Model.CurrentPageUrl)" method="get" role="search">
         <div class="suggestion-search-container" style="display:none;">
             <label class="nhsuk-u-visually-hidden" for="@Model.Id">@Model.TitleText</label>
             <div id="@(Model.Id + "-container")"></div>
         </div>
-        <input class="nhsuk-search__input" id="@(Model.Id + "-form-input")" name="@Model.QueryParameterName" type="search" autocomplete="off" value="@Model.SearchText">
+        <input class="nhsuk-search__input" id="@(Model.Id + "-form-input")" name="@Model.QueryParameterName" type="search" autocomplete="off" value="@Model.SearchText" placeholder="@Model.PlaceholderText">
         @foreach(var queryParam in Context.Request.Query.Where(q => !ignoredQueryStrings.Contains(q.Key)))
         {
             <input type="hidden" name="@queryParam.Key" value="@queryParam.Value">
@@ -27,7 +30,7 @@
 </div>
 
 <script type="text/javascript" src="@Url.Content("~/js/accessible-autocomplete/accessible-autocomplete.min.js")" asp-append-version="true"></script>
-<script type="text/javascript" src="@Url.Content("~/js/accessible-autocomplete/suggestionSearchConfig.min.js")" asp-append-version="true"></script>		
+<script type="text/javascript" src="@Url.Content("~/js/accessible-autocomplete/suggestionSearchConfig.min.js")" asp-append-version="true"></script>
 <script type="text/javascript">
-    new suggestionSearchConfig('@Model.Id','@Model.AjaxUrl','@Model.QueryParameterName','@Model.TitleText','@Model.CurrentPageUrl').Implement();
+    new suggestionSearchConfig('@Model.Id','@Model.AjaxUrl','@Model.QueryParameterName','@Model.TitleText','@Model.CurrentPageUrl','@Model.PlaceholderText').Implement();
 </script>

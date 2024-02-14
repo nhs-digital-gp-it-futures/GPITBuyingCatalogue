@@ -9,7 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 {
     public static class RadioButtonBuilders
     {
-        public static void UpdateRadioContainerOutput(TagHelperOutput output, TagHelperContext context, ConditionalContext conditionalContext = null)
+        public enum RadioButtonSize
+        {
+            Normal,
+            Small,
+        }
+
+        public static void UpdateRadioContainerOutput(TagHelperOutput output, TagHelperContext context, bool small = false, ConditionalContext conditionalContext = null)
         {
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
@@ -19,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
                 TagHelperFunctions.BuildCssClassForConditionalContentOutput(
                     context,
                     conditionalContext,
-                    TagHelperConstants.NhsRadios,
+                    small ? $"{TagHelperConstants.NhsRadios} {TagHelperConstants.NhsRadiosSizeSmall}" : $"{TagHelperConstants.NhsRadios}",
                     TagHelperConstants.NhsRadiosParentContainerConditional)));
         }
 

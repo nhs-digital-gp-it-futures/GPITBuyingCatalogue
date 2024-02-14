@@ -3,7 +3,7 @@
 
 @{
     ViewBag.Title = "Select a saved filter";
-    var createFilterUrl = Url.Action(nameof(FilterController.FilterCapabilities), typeof(FilterController).ControllerName(), new { Area = typeof(FilterController).AreaName() });
+    var createFilterUrl = Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() });
 }
 
 <partial name="Partials/_BackLink" model="Model"/>

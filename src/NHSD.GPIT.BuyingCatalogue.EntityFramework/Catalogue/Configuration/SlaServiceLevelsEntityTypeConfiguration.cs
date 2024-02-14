@@ -10,7 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
     {
         public void Configure(EntityTypeBuilder<SlaServiceLevel> builder)
         {
-            builder.ToTable("SlaServiceLevels", Schemas.Catalogue);
+            builder.ToTable("SlaServiceLevels", Schemas.Catalogue, b => b.IsTemporal(
+                temp =>
+                {
+                    temp.UseHistoryTable("SlaServiceLevels_History");
+                    temp.HasPeriodStart("SysStartTime");
+                    temp.HasPeriodEnd("SysEndTime");
+                }));
 
             builder.HasKey(s => s.Id);
 

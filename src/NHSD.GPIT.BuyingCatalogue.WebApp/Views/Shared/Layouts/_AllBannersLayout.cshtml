@@ -19,7 +19,10 @@
 
     @await RenderSectionAsync("Breadcrumbs", false)
 
-    <div class="nhsuk-width-container nhsuk-main-wrapper">
+    @{
+        var additionalClass = ViewData["nhsuk-width-container"] as string;
+    }
+    <div class="nhsuk-width-container nhsuk-main-wrapper @additionalClass">
         <main role="main" id="maincontent">
             @RenderBody()
         </main>

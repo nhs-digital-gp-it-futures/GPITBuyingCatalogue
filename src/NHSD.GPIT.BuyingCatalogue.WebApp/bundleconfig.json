@@ -32,7 +32,7 @@
   {
     "outputFileName": "wwwroot/js/accessible-autocomplete/suggestionSearchConfig.min.js",
     "inputFiles": [
-      "wwwroot/js/accessible-autocomplete/suggestionSearchConfig.js"
+      "wwwroot/js/suggestionSearchConfig.js"
     ]
   },
   {

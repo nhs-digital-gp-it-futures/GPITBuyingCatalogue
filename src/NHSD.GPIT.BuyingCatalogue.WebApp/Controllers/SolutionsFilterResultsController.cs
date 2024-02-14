@@ -50,8 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             var selectedIM1Integrations = filterIds.IM1Integrations.ToFilterString();
             var selectedGPConnectIntegrations = filterIds.GPConnectIntegrations.ToFilterString();
             var selectedInteroperabilityOptions = filterIds.InteroperabilityOptions.ToFilterString();
-
-            var (catalogueItems, _, capabilitiesAndCount) =
+            var (catalogueItems, _, _) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
                     null,
                     filterIds.CapabilityAndEpicIds,
@@ -72,7 +71,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 },
                 CatalogueItems = catalogueItems,
                 ReviewFilter = new ReviewFilterModel(filter, filterIds),
-                CapabilitiesAndEpics = capabilitiesAndCount,
             };
 
             return View(model);

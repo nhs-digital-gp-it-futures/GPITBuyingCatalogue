@@ -2,32 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 {
-    public class FilterEpicsModel : FilterModel<Epic, Capability>
+    public class FilterEpicsModel : FilterModel<IdAndNameModel<string>, IdAndNameModel<int>>
     {
         public FilterEpicsModel()
         {
         }
 
         public FilterEpicsModel(
-            List<Capability> capabilities,
+            List<Capability> orderedCapabilities,
             List<Epic> epics,
             Dictionary<int, string[]> selected = null,
             string search = null)
         {
             selected ??= new Dictionary<int, string[]>();
 
-            Groups = capabilities;
-            Selected = selected.ToFilterString();
-            ClearEpics = new Dictionary<int, string[]>(selected.Keys.Select(c => new KeyValuePair<int, string[]>(c, null)))
-                .ToFilterString();
+            Groups = orderedCapabilities
+                .Select(c => new IdAndNameModel<int> { Id = c.Id, Name = c.Name })
+                .ToList();
 
             GroupedItems = Groups.ToDictionary(
                 x => x.Id,
-                x => epics.Where(c => c.Capabilities.Any(y => y.Id == x.Id)).OrderBy(c => c.Name));
+                x => epics
+                .Where(e => e.Capabilities.Any(y => y.Id == x.Id))
+                .OrderBy(e => e.Name)
+                .Select(e => new IdAndNameModel<string>() { Id = e.Id, Name = e.Name })
+                .ToList());
 
             SelectedItems = GroupedItems.SelectMany(
                 kv => kv.Value.Select(
@@ -36,20 +40,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                         Id = $"{kv.Key},{e.Id}",
                         Selected = selected.GetValueOrDefault(kv.Key)?.Contains(e.Id) ?? false,
                     })).ToArray();
-
-            EpicSelectedItemsMap = SelectedItems
-                .Select((item, index) => new { item.Id, index })
-                .ToDictionary(pair => pair.Id, pair => pair.index);
-
-            Total = SelectedItems.Count();
-
-            SearchTerm = search;
         }
 
-        public string Selected { get; set; }
+        public string BackLink { get; set; }
 
-        public string ClearEpics { get; set; }
-
-        public Dictionary<string, int> EpicSelectedItemsMap { get; set; }
+        public NavBaseModel NavModel => new NavBaseModel() { BackLink = BackLink };
     }
 }

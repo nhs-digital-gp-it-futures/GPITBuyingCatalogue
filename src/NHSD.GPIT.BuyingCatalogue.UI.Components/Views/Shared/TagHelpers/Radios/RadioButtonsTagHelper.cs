@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios;
+using static NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios.RadioButtonBuilders;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -35,6 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.HintName)]
         public string HintName { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.Size)]
+        public RadioButtonSize Size { get; set; } = RadioButtonSize.Normal;
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (!Values.Any() || string.IsNullOrWhiteSpace(ValueName) || string.IsNullOrWhiteSpace(DisplayName))
@@ -43,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 return;
             }
 
-            RadioButtonBuilders.UpdateRadioContainerOutput(output, context);
+            RadioButtonBuilders.UpdateRadioContainerOutput(output, context, Size == RadioButtonSize.Small);
 
             IEnumerable<TagBuilder> radioItems = BuildRadiosFromValueList();
 

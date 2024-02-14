@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
-            builder.Property(r => r.OdsCode).HasMaxLength(8);
+            builder.Property(r => r.OdsCode).HasMaxLength(10);
             builder.Property(r => r.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.HasOne(r => r.Recipient)

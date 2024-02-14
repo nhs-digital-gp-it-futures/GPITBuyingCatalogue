@@ -26,9 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var model = new FilterEpicsModel(capabilities, new List<Epic> { epic });
 
-            model.Selected.Should().Be(new Dictionary<int, string[]>().ToFilterString());
-            model.Groups.Should().BeEquivalentTo(capabilities);
-            model.Total.Should().Be(capabilities.Count);
+            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Id, x.Name }));
             model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
             {
                 Id = $"{x.Id},{epic.Id}",
@@ -54,9 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var model = new FilterEpicsModel(capabilities, new List<Epic> { epic }, selected);
 
-            model.Selected.Should().Be(selected.ToFilterString());
-            model.Groups.Should().BeEquivalentTo(capabilities);
-            model.Total.Should().Be(capabilities.Count);
+            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Id, x.Name }));
             model.SelectedItems.Count().Should().Be(capabilities.Count);
             model.SelectedItems.Where(s => s.Selected).Should().BeEquivalentTo(new[]
             {
@@ -83,7 +79,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             foreach (var capability in capabilities)
             {
-                var expected = epics.Where(x => x.Capabilities.Any(y => y.Id == capability.Id));
+                var expected = epics
+                    .Where(x => x.Capabilities.Any(y => y.Id == capability.Id))
+                    .Select(x => new { x.Id, x.Name });
 
                 model.Items(capability.Id).Should().BeEquivalentTo(expected);
             }

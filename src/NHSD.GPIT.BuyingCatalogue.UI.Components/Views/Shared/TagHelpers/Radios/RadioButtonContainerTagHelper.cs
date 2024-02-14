@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
         {
             var childContent = await output.GetChildContentAsync();
 
-            RadioButtonBuilders.UpdateRadioContainerOutput(output, context, conditionalContext);
+            RadioButtonBuilders.UpdateRadioContainerOutput(output, context, false, conditionalContext);
 
             output.Content.AppendHtml(childContent);
         }

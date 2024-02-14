@@ -14,7 +14,7 @@ public sealed class OrderRecipientEntityTypeConfiguration : IEntityTypeConfigura
 
         builder.Property(x => x.OrderId).IsRequired();
 
-        builder.Property(x => x.OdsCode).IsRequired();
+        builder.Property(x => x.OdsCode).HasMaxLength(10).IsRequired();
 
         builder.HasOne(x => x.OdsOrganisation)
             .WithMany()
