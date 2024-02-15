@@ -1168,7 +1168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
-            OrderingPages.EditAdditionalServiceRecipient(NewSolutionName,NewAdditionalServiceName);
+            OrderingPages.EditAdditionalServiceRecipient(NewSolutionName, NewAdditionalServiceName);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -2151,6 +2151,28 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
             CompetitionPages.ViewResults();
+        }
+
+        [Fact]
+        public void CompetitionOrderFromPriceOnlyCompetition()
+        {
+            string competitionName = "CompetitionOrderFromPriceOnlyCompetition";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+
+            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+
+            CompetitionPages.ViewResults();
+
+            CompetitionPages.CreateOrder();
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
         [Fact]

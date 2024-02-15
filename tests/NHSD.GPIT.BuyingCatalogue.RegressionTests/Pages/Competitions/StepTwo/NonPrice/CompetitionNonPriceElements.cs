@@ -8,9 +8,9 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice
 {
-    public class NonPriceElements : PageBase
+    public class CompetitionNonPriceElements : PageBase
     {
-        public NonPriceElements(IWebDriver driver, CommonActions commonActions)
+        public CompetitionNonPriceElements(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
             Features = new Features(driver, commonActions);
