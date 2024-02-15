@@ -6,11 +6,11 @@
 @{
     const RoutingSource source = RoutingSource.TaskList;
     var progress = 0;
-    if (!(Model.PriceStatus == TaskProgress.NotStarted | Model.PriceStatus == TaskProgress.CannotStart))
+    if (Model.PriceStatus is not (TaskProgress.NotStarted or TaskProgress.CannotStart))
     {
         progress++;
     }
-    if (!(Model.QuantityStatus == TaskProgress.NotStarted | Model.QuantityStatus == TaskProgress.CannotStart))
+    if (Model.QuantityStatus is not (TaskProgress.NotStarted or TaskProgress.CannotStart))
     {
         progress++;
     }

@@ -300,7 +300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return View("Services/ConfirmChanges", model);
             }
 
-            if (model.ConfirmChanges.GetValueOrDefault(false))
+            if (model.ConfirmChanges.GetValueOrDefault())
             {
                 var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
 
