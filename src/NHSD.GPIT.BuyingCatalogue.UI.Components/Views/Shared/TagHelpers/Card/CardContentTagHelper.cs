@@ -60,6 +60,9 @@ public class CardContentTagHelper : TagHelper
 
     private TagBuilder BuildHeading(CardContext cardContext)
     {
+        if (string.IsNullOrWhiteSpace(Title))
+            return null;
+
         var heading = new TagBuilder(TagHelperConstants.HeaderTwo);
 
         heading.AddCssClass(CardStyles.CardHeadingClass);

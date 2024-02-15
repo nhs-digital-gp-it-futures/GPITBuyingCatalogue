@@ -53,12 +53,12 @@
                                 }
                                 else
                                 {
-                                    <img src="~/images/information-icon.png"/><p>There is only 1 solution offered by this supplier.</p>
+                                    <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px"/><p>There is only 1 solution offered by this supplier.</p>
                                 }
                             }
                             else
                             {
-                                <img src="~/images/information-icon.png"/><p>You cannot change your Catalogue Solution when amending an order.</p>
+                                <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px"/><p>You cannot change your Catalogue Solution when amending an order.</p>
                             }
                         </nhs-card-footer>
                         
@@ -108,20 +108,20 @@
                                             nameof(AdditionalServicesController.SelectAdditionalServices),
                                             typeof(AdditionalServicesController).ControllerName(),
                                             new { Model.InternalOrgId, Model.CallOffId })">
-                                            <img src="~/images/plus-icon.svg" width="25px" />Add an Additional Service
+                                            <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add an Additional Service
                                     </a>
                                 </p>
                             }
                             else
                             {
-                                <img src="~/images/information-icon.png"/> <p>All the Additional Services available for this Catalogue Solution have already been added.</p>
+                                <img src="~/images/circle-info-solid.svg" width="20px" aria-hidden="true"> <p>All the Additional Services available for this Catalogue Solution have already been added.</p>
                             }
                         </nhs-card-footer>
                     }
                     else
                     {
                         <nhs-card-content>
-                            <img src="~/images/information-icon.png"/> <p>There are no Additional Services available for this Catalogue Solution.</p>
+                            <img src="~/images/circle-info-solid.svg" width="20px" aria-hidden="true" /> <p>There are no Additional Services available for this Catalogue Solution.</p>
                         </nhs-card-content>
                     }
                 </nhs-card-v2>
@@ -136,13 +136,13 @@
                 @if (Model.IsAmendment && !Model.AssociatedServices.Any())
                 {
                     <nhs-card-content>
-                        <img src="~/images/information-icon.png" style="vertical-align:middle; display:inline-block; margin-right:8px"/><span style="display:inline-block; vertical-align:middle; width:90%">You cannot add Associated Services when amending an order.</span>
+                        <img src="~/images/circle-info-solid.svg" style="vertical-align:middle; display:inline-block; margin-right:8px" aria-hidden="true" width="20px" /><span style="display:inline-block; vertical-align:middle; width:90%">You cannot add Associated Services when amending an order.</span>
                     </nhs-card-content>
                 }
                 else if (!Model.AssociatedServicesAvailable)
                 {
                     <nhs-card-content>
-                        <img src="~/images/information-icon.png" style="vertical-align:middle; display:inline-block; margin-right:8px" /><span style="display:inline-block; vertical-align:middle; width:90%">There are no Associated Services available for this Catalogue Solution.</span>
+                        <img src="~/images/circle-info-solid.svg" style="vertical-align:middle; display:inline-block; margin-right:8px" aria-hidden="true" width="20px" /><span style="display:inline-block; vertical-align:middle; width:90%">There are no Associated Services available for this Catalogue Solution.</span>
                     </nhs-card-content>
                 }
                 else
@@ -175,11 +175,11 @@
                         <nhs-card-footer>
                             @if (Model.IsAmendment)
                             {
-                                <img src="~/images/information-icon.png"/><p>You cannot add Associated Services or edit ones included in the original order when amending an order.</p>
+                                <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>You cannot add Associated Services or edit ones included in the original order when amending an order.</p>
                             }
                             else if (!Model.UnselectedAssociatedServicesAvailable)
                             {
-                                <img src="~/images/information-icon.png"/><p>All the Associated Services available for this Catalogue Solution have already been added.</p>
+                                <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>All the Associated Services available for this Catalogue Solution have already been added.</p>
                             }
                             else
                             {
@@ -188,7 +188,7 @@
                                         nameof(AssociatedServicesController.SelectAssociatedServices),
                                         typeof(AssociatedServicesController).ControllerName(),
                                         new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList })">
-                                        <img src="~/images/plus-icon.svg" width="25px" />Add an Associated Service
+                                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add an Associated Service
                                     </a>
                                 </p>
                             }

@@ -88,19 +88,12 @@
                 }
                 else
                 {
-                    string action;
-                    switch (Model.QuantityStatus)
+                    var action = Model.QuantityStatus switch
                     {
-                        case TaskProgress.Completed:
-                            action = Model.OrderType.MergerOrSplit ? "View" : "Change";
-                            break;
-                        case TaskProgress.Amended:
-                            action = "Change";
-                            break;
-                        default:
-                            action = "Start";
-                            break;
-                    }
+                        TaskProgress.Completed => Model.OrderType.MergerOrSplit ? "View" : "Change",
+                        TaskProgress.Amended => "Change",
+                        _ => "Start",
+                    };
 
                     <a id="Quantity_@Model.CatalogueItemId" style="float:right;"
                         href="@Url.Action(
