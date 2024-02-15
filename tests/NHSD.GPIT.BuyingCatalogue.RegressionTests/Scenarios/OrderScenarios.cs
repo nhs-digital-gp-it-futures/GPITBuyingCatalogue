@@ -2224,6 +2224,50 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        public void CompetitionOrderFromPricAndNonPriceCompetition()
+        {
+            string competitionName = "CompetitionOrderFromPricAndNonPriceCompetition";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+
+            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Feature);
+
+            CompetitionPages.ViewResults();
+
+            CompetitionPages.CreateOrder();
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        public void CompetitionOrderForPriceOnlyMultipleResults()
+        {
+            string competitionName = "CompetitionOrderForPriceOnlyMultipleResults";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+
+            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+
+            CompetitionPages.ViewMultipleResults();
+
+            CompetitionPages.CreateOrder();
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
         public void CompetitionPricAndNonPriceElementFeature()
         {
             string competitionName = "CompetitionPricAndNonPriceElementFeature";
