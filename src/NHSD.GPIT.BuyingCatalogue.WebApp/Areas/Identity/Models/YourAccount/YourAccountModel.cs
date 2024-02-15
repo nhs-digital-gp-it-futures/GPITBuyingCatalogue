@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.YourAccount
 {
-    public abstract class YourAccountModel : YourAccountBaseModel
+    public class YourAccountModel : YourAccountBaseModel
     {
         public YourAccountModel()
         {
@@ -18,5 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.YourAccount
         public Organisation Organisation { get; set; }
 
         public Address OrganisationAddress => Organisation.Address;
+
+        public override int Index => 0;
     }
 }

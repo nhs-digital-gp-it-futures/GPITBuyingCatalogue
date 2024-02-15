@@ -7,10 +7,16 @@
             <div class="nhsuk-header__menu">
                 <button class="nhsuk-header__menu-toggle" id="toggle-menu" aria-controls="header-navigation" aria-expanded="false">Menu</button>
             </div>
-            <vc:nhs-login-link is-logged-in="@User.Identity?.IsAuthenticated" text="@User.Identity?.Name" url="@Url.Action(
+            <vc:nhs-login-link is-logged-in="@User.Identity?.IsAuthenticated" 
+                               logged-in-text="@User.Identity?.Name" 
+                               url="@Url.Action(
                                         nameof(AccountController.Login),
                                         typeof(AccountController).ControllerName(),
-                                        new { area = typeof(AccountController).AreaName() } )" />
+                                        new { area = typeof(AccountController).AreaName() } )" 
+                               logged-in-url="@Url.Action(
+                                      nameof(YourAccountController.Index),
+                                      typeof(YourAccountController).ControllerName(),
+                                      new { area = typeof(YourAccountController).AreaName() } )" />
         </div>
     </div>
     <partial name="@($"Navigation/{Model}")" />    

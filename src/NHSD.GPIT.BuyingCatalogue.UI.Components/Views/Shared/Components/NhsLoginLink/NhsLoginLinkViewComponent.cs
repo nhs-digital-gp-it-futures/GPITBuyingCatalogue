@@ -5,14 +5,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsLog
 {
     public sealed class NhsLoginLinkViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(bool? isLoggedIn, string url, string text, string linkText = null)
+        public IViewComponentResult Invoke(bool? isLoggedIn, string url, string loggedInUrl, string loggedInText, string text = null)
         {
             var model = new LoginLinkModel
             {
                 IsLoggedIn = isLoggedIn ?? false,
                 Url = url,
-                Text = text,
-                LinkText = linkText ?? "Log in",
+                LoggedInUrl = loggedInUrl,
+                Text = text ?? "Log in",
+                LoggedInText = loggedInText,
             };
 
             return View("LoginLink", model);

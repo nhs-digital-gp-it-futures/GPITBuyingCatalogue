@@ -1,18 +1,13 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsLoginLink.LoginLinkModel
 
+@{
+    var link = Model.IsLoggedIn ? Model.LoggedInUrl : Model.Url;
+    var text = Model.IsLoggedIn ? Model.LoggedInText : Model.Text;
+}
+
 <div class="nhsuk-account__login">
-    @if (Model.IsLoggedIn)
-    {
-        <p class="nhsuk-account__login--link">
-            @Model.Text
-            <vc:nhs-login-icon />
-        </p>
-    }
-    else
-    {
-        <a class="nhsuk-account__login--link" href="@Model.Url">
-            @Model.LinkText
-            <vc:nhs-login-icon/>
-        </a>
-    }
+    <a class="nhsuk-account__login--link" href="@link">
+        @text
+        <vc:nhs-login-icon/>
+    </a>
 </div>

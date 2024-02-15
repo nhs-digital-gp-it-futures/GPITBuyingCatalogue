@@ -6,8 +6,10 @@
 
         public string Url { get; set; }
 
-        public string LinkText { get; set; }
+        public string LoggedInUrl { get; set; }
 
         public string Text { get; set; }
+
+        public string LoggedInText { get; set; }
     }
 }
