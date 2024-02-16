@@ -1,9 +1,8 @@
 @using NHSD.GPIT.BuyingCatalogue.Framework.Constants
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @model SideNavigationBaseModel
 @{
-    ViewBag.Title = Model.Title; //(Model.IsSubPage) ? Model.Title : $"{Model.Section}";
-    ViewBag.Caption = Model.Caption; //(Model.IsSubPage) ? Model.Caption : $"{Model.SolutionName}";
+    ViewBag.Title = Model.Title;
+    ViewBag.Caption = Model.Caption;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -20,40 +19,8 @@
     
     @if (Model.ShowBreadcrumb)
     {
-        //To be replaced by generic breadcrumb model
-        <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
-            <div class="nhsuk-width-container">
-                <ol class="nhsuk-breadcrumb__list">
-                    <li class="nhsuk-breadcrumb__item">
-                        <a class="nhsuk-breadcrumb__link"
-                           data-test-id="home-crumb"
-                           asp-action="@nameof(HomeController.Index)"
-                           asp-controller="@typeof(HomeController).ControllerName()"
-                           asp-area="@typeof(HomeController).AreaName()">Home</a>
-                    </li>
-                    <li class="nhsuk-breadcrumb__item">
-                        <a class="nhsuk-breadcrumb__link"
-                           data-test-id="catalogue-solutions-crumb"
-                           asp-action="@nameof(SolutionsController.Index)"
-                           asp-controller="@typeof(SolutionsController).ControllerName()"
-                           asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>
-                    </li>
-                    @* @if (Model.NotFirstSection)
-                    {
-                        <li class="nhsuk-breadcrumb__item">
-                            <a asp-action="@nameof(SolutionsController.Description)"
-                               asp-controller="@typeof(SolutionsController).ControllerName()"
-                               asp-area="@typeof(SolutionsController).AreaName()"
-                               asp-route-solutionId="@Model.SolutionId" class="nhsuk-breadcrumb__link">
-                                @Model.SolutionName
-                            </a>
-                        </li>
-                    } *@
-                </ol>
-            </div>
-        </nav>
+        <vc:nhs-breadcrumbs items="@Model.BreadcrumbItems.ToDictionary(x => x.Name, x => @Url.Action(x.Action, x.Controller, x.RouteData))"></vc:nhs-breadcrumbs>
     }
-
 
     <div class="nhsuk-width-container nhsuk-main-wrapper">
         <main role="main" id="maincontent">

@@ -10,11 +10,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
     [ExcludeFromCodeCoverage]
     public abstract class SideNavigationBaseModel : NavBaseModel
     {
-        private IList<NhsSideNavigationSectionModel> sections;
+        private IList<NhsSideNavigationSectionModel> sections = new List<NhsSideNavigationSectionModel>();
+        private IList<NhsSideNavigationSectionModel> breadcrumbItems = new List<NhsSideNavigationSectionModel>();
 
         public abstract int Index { get; }
 
-        public bool ShowBreadcrumb { get; set; }
+        public bool ShowBreadcrumb => BreadcrumbItems?.Any() ?? false;
 
         public bool ShowSideNavigation { get; set; }
 
@@ -25,6 +26,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         public string FirstSection => sections[0].Name;
 
         public string SelectedSection => sections[Index].Name;
+
+        public IList<NhsSideNavigationSectionModel> BreadcrumbItems
+        {
+            get
+            {
+                return new List<NhsSideNavigationSectionModel>(breadcrumbItems.Where(s => s.Show));
+            }
+
+            set
+            {
+                breadcrumbItems = value;
+            }
+        }
 
         public IList<NhsSideNavigationSectionModel> Sections
         {

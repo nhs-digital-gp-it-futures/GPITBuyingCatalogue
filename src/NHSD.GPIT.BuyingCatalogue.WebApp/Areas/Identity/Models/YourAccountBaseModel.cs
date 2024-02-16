@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSideNavigationSection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
@@ -14,7 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
             SetSections();
             SetPaginationFooter();
 
-            ShowBreadcrumb = false;
             ShowBackToTop = false;
             ShowSideNavigation = true;
             ShowPagination = false;

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Newtonsoft.Json.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSideNavigationSection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
@@ -18,6 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         private const string KeyDescription = "Summary";
 
         private static readonly string ControllerName = typeof(SolutionsController).ControllerName();
+
+        private string title;
+        private string caption;
 
         protected SolutionDisplayBaseModel()
         {
@@ -43,9 +45,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             IsFoundation = catalogueItem.Solution.FrameworkSolutions.Any(fs => fs.IsFoundation).ToYesNo();
 
             SetSections(contentStatus);
+            SetBreadcrumb();
             SetPaginationFooter();
 
-            ShowBreadcrumb = true;
             ShowBackToTop = true;
             ShowSideNavigation = !IsSuspended();
             ShowPagination = !IsSuspended() && !IsSubPage;
@@ -69,9 +71,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string IsFoundation { get; }
 
-        public override string Title => IsSubPage ? Title : SelectedSection;
+        public override string Title
+        {
+            get
+            {
+                return IsSubPage ? title : SelectedSection;
+            }
 
-        public override string Caption => IsSubPage ? Caption : SolutionName;
+            set
+            {
+                title = value;
+            }
+        }
+
+        public override string Caption
+        {
+            get
+            {
+                return IsSubPage ? caption : SolutionName;
+            }
+
+            set
+            {
+                caption = value;
+            }
+        }
 
         public bool HasExpiredFrameworks => Frameworks.Any(x => x.IsExpired);
 
@@ -82,6 +106,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public bool IsInRemediation() => PublicationStatus == PublicationStatus.InRemediation;
 
         public bool IsSuspended() => PublicationStatus == PublicationStatus.Suspended;
+
+        private void SetBreadcrumb()
+        {
+            BreadcrumbItems = new List<NhsSideNavigationSectionModel>()
+            {
+                new()
+                {
+                    Action = nameof(HomeController.Index),
+                    Controller = typeof(HomeController).ControllerName(),
+                    Name = "Home",
+                    Show = true,
+                    RouteData = new Dictionary<string, string> { { "area", typeof(HomeController).AreaName() }, },
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Index),
+                    Controller = typeof(SolutionsController).ControllerName(),
+                    Name = "Catalogue Solutions",
+                    Show = true,
+                    RouteData = new Dictionary<string, string> { { "area", typeof(SolutionsController).AreaName() }, },
+                },
+                new()
+                {
+                    Action = nameof(SolutionsController.Description),
+                    Controller = typeof(SolutionsController).ControllerName(),
+                    Name = SolutionName,
+                    Show = NotFirstSection,
+                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                },
+            };
+        }
 
         private void SetSections(CatalogueItemContentStatus contentStatus)
         {
