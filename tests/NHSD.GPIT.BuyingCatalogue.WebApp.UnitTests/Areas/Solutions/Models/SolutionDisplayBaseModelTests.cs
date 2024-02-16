@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSideNavigationSection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
@@ -11,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
     public static class SolutionDisplayBaseModelTests
     {
-        private static readonly IList<SectionModel> SectionModels = new List<SectionModel>
+        private static readonly IList<NhsSideNavigationSectionModel> SectionModels = new List<NhsSideNavigationSectionModel>
         {
             new()
             {
@@ -114,12 +115,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         public static void NotFirstSection_Returns_ExpectedResponse(string section, bool expected)
         {
             var model = new Mock<SolutionDisplayBaseModel> { CallBase = true };
-            model.SetupGet(m => m.Section)
+            model.SetupGet(m => m.SelectedSection)
                 .Returns(section);
 
-            var actual = model.Object.NotFirstSection();
+            var actual = model.Object.NotFirstSection;
 
-            model.VerifyGet(m => m.Section);
+            model.VerifyGet(m => m.SelectedSection);
             actual.Should().Be(expected);
         }
     }
