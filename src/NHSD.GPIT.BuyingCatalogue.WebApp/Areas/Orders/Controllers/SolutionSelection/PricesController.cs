@@ -222,23 +222,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Previous;
 
-            var route = routingService.GetRoute(
-                RoutingPoint.ViewPrice,
-                wrapper,
-                new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
-
             var orderItem = order.OrderItem(catalogueItemId);
             var price = orderItem.OrderItemPrice;
 
-            var model = new ViewPriceModel(price, orderItem.CatalogueItem)
-            {
-                BackLink = Url.Action(
+            var backLink = Url.Action(
                    nameof(TaskListController.TaskList),
                    typeof(TaskListController).ControllerName(),
-                   new { internalOrgId, callOffId }),
+                   new { internalOrgId, callOffId });
+
+            var model = new ViewPriceModel(price, orderItem.CatalogueItem)
+            {
+                BackLink = backLink,
                 InternalOrgId = internalOrgId,
                 CallOffId = callOffId,
-                OnwardLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
+                OnwardLink = backLink,
             };
 
             return View("PriceSelection/ViewPrice", model);

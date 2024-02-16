@@ -9,6 +9,8 @@
     var advice = Model.IsAmendment && !Model.Services.Any()
         ? "All the Additional Services available with this Catalogue Solution have already been added to this order."
         : "Select the Additional Services that you want to add to your order.";
+
+    Model.Services.RemoveAll(x => x.IsSelected);
 }
 
 <partial name="Partials/_BackLink" model="Model" />

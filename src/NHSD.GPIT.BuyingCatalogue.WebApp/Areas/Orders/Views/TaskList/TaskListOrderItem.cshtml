@@ -78,7 +78,8 @@
         <nhs-table-cell>
             @if (Model.QuantityStatus != TaskProgress.CannotStart)
             {
-                @if (Model.IsAmendment && Model.FromPreviousRevision && !(Model.HasNewRecipients && Model.IsPerServiceRecipient) && Model.QuantityStatus != TaskProgress.InProgress)
+                @if ((Model.IsAmendment && Model.FromPreviousRevision && !Model.HasNewRecipients && Model.QuantityStatus != TaskProgress.InProgress)
+                    || (Model.IsAmendment && Model.IsAssociatedService))
                 {
                     <a id="Quantity_@Model.CatalogueItemId" style="float:right;"
                         href="@Url.Action(

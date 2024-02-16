@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -16,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             this.rolledUpOrderItem = rolledUpOrderItem;
 
             IsPerServiceRecipient = ((IPrice)rolledUpOrderItem.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
+            IsAssociatedService = rolledUpOrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService;
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             OrderType = orderType;
@@ -51,6 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool IsPerServiceRecipient { get; set; }
 
+        public bool IsAssociatedService { get; set; }
+
         public TaskProgress PriceStatus
         {
             get
@@ -70,9 +74,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     return TaskProgress.CannotStart;
                 }
 
+                if (IsAmendment && IsAssociatedService)
+                {
+                    return TaskProgress.Completed;
+                }
+
                 if (RolledUpOrderRecipients.AllQuantitiesEntered(rolledUpOrderItem))
                 {
-                    return FromPreviousRevision && HasNewRecipients && IsPerServiceRecipient ? TaskProgress.Amended : TaskProgress.Completed;
+                    return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
                 }
                 else if (RolledUpOrderRecipients.SomeButNotAllNewQuantitiesEntered(rolledUpOrderItem, PreviousRecipients))
                 {

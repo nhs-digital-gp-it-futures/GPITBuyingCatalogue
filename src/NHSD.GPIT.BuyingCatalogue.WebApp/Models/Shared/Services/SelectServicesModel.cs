@@ -18,7 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
             var currentServiceIds = currentServices.Select(x => x.Id).ToList();
 
             Services = allServices
-                .Where(x => !currentServiceIds.Contains(x.Id))
                 .Select(
                     x => new ServiceModel
                     {
