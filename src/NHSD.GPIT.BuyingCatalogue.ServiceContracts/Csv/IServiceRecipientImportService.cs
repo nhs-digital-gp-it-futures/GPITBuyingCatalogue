@@ -11,9 +11,9 @@ public interface IServiceRecipientImportService
 
     Task<IList<ServiceRecipientImportModel>> ReadFromStream(Stream stream);
 
-    Task Store(ServiceRecipientCacheKey cacheKey, IList<ServiceRecipientImportModel> importedServiceRecipients);
+    Task Store(DistributedCacheKey cacheKey, IList<ServiceRecipientImportModel> importedServiceRecipients);
 
-    Task Clear(ServiceRecipientCacheKey cacheKey);
+    Task Clear(DistributedCacheKey cacheKey);
 
-    Task<IList<ServiceRecipientImportModel>> GetCached(ServiceRecipientCacheKey cacheKey);
+    Task<IList<ServiceRecipientImportModel>> GetCached(DistributedCacheKey cacheKey);
 }

@@ -1,0 +1,45 @@
+@model FailedCapabilitiesUploadModel
+
+@{
+    ViewBag.Title = "There is a problem with your CSV file";
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary/>
+
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="The following errors have been identified with @Model.FileName. Get the errors corrected and try again or use a different file."/>
+
+        <nhs-card-v2>
+            <nhs-card-content title="Review the problems with your CSV file">
+                <nhs-table label-text="Capabilities upload errors">
+                    <nhs-table-column>Supplier ID</nhs-table-column>
+                    <nhs-table-column>Solution ID</nhs-table-column>
+                    <nhs-table-column>Additional Service ID</nhs-table-column>
+                    <nhs-table-column>Capability ID</nhs-table-column>
+                    <nhs-table-column>Capability assessment result</nhs-table-column>
+
+                    @foreach (var item in Model.FailedRecords)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@item.SupplierId</nhs-table-cell>
+                            <nhs-table-cell>@item.SolutionId</nhs-table-cell>
+                            <nhs-table-cell>@item.AdditionalServiceId</nhs-table-cell>
+                            <nhs-table-cell>@item.CapabilityId</nhs-table-cell>
+                            <nhs-table-cell>@item.CapabilityAssessmentResult</nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+
+                <form method="post">
+                    <button id="Submit" class="nhsuk-button nhsuk-button--secondary" type="submit">Download errors (CSV)</button>
+                </form>
+            </nhs-card-content>
+        </nhs-card-v2>
+
+        <br/>
+
+        <vc:nhs-secondary-button text="Return to admin homepage" url="@Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName(), new { area = typeof(HomeController).AreaName() })" type="Primary"/>
+    </div>
+</div>
