@@ -98,6 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order))
             {
                 AdditionalServicesAvailable = true,
+                UnselectedAdditionalServicesAvailable = true,
             };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink).Excluding(m => m.OnwardLink));

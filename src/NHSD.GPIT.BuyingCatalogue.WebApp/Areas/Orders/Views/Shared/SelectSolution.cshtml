@@ -8,27 +8,21 @@
         <nhs-validation-summary RadioId="SelectedCatalogueSolutionId" />
 
         @{
-            var title = Model.OrderType.AssociatedServicesOnly
-            ? "Which Catalogue Solution does the service help implement?"
-            : "Catalogue Solutions";
-
-            const string prefix = "These are the Catalogue Solutions provided by the supplier you’ve chosen. Select the one you want ";
-
-            var suffix = Model.AdditionalServices?.Any() ?? false
-            ? "and any of its Additional Services you want to order."
-            : "to order.";
-
-            var associatedServiceAdvice = Model.CatalogueSolutions.Count > 1
-            ? "Select the Catalogue Solution the Associated Service you want to order supports."
-            : "There is only one solution with this type of Associated Service.";
-
-            var advice = Model.OrderType.AssociatedServicesOnly
-            ? associatedServiceAdvice
-            : $"{prefix}{suffix}";
-
-            var caption = Model.OrderType.AssociatedServicesOnly
-            ? $"Order {Model.CallOffId}"
-            : Model.SupplierName;
+            string title, advice, caption;
+            if (Model.OrderType.AssociatedServicesOnly)
+            {
+                title = "Which Catalogue Solution does the service help implement?";
+                advice = Model.CatalogueSolutions.Count > 1
+                            ? "Select the Catalogue Solution the Associated Service you want to order supports."
+                            : "There is only one solution with this type of Associated Service.";
+                caption = $"Order {Model.CallOffId}";
+            }
+            else
+            {
+                title = "Catalogue Solutions";
+                advice = "Select the Catalogue Solution you want to order.";
+                caption = Model.SupplierName;
+            }
 
             var submitButton = string.Empty; // uses the default text
         }
@@ -83,31 +77,6 @@
                                               index="i"
                                               value="selectListItem"
                                               value-name="Value">
-                                @if (Model.AdditionalServices.Any(x => $"{x.CatalogueItemId}".StartsWith(selectListItem.Value)))
-                                {
-                                    <p><strong>Do you want to add any Additional Services?</strong></p>
-                                    <p>These are optional add-ons to the main solution that provide extra functionality.</p>
-                                    <p>
-                                        <a href="@Url.Action(
-                                            nameof(SolutionsController.AdditionalServices),
-                                            typeof(SolutionsController).ControllerName(),
-                                            new { solutionId = Model.SelectedCatalogueSolutionId, area = typeof(SolutionsController).AreaName() })" target="_blank">
-                                            Find out more (opens in new tab) 
-                                        </a>
-                                    </p>
-                                    <nhs-checkbox-container>
-                                        @foreach (var (service, j) in Model.AdditionalServices.Select((x, j) => (x, j)))
-                                        {
-                                            if (!$"{service.CatalogueItemId}".StartsWith(selectListItem.Value))
-                                                continue;
-
-                                            <input type="hidden" asp-for="@Model.AdditionalServices[j].CatalogueItemId" />
-                                            <input type="hidden" asp-for="@Model.AdditionalServices[j].Description" />
-                                            <nhs-checkbox asp-for="@Model.AdditionalServices[j].IsSelected"
-                                                          label-text="@service.Description" />
-                                        }
-                                    </nhs-checkbox-container>
-                                }
                             </nhs-radio-button>
                         }
                     </nhs-radio-button-container>

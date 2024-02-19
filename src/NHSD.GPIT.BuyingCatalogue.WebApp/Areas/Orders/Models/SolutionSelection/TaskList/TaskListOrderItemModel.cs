@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
@@ -14,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             this.rolledUpOrderItem = rolledUpOrderItem;
 
+            IsPerServiceRecipient = ((IPrice)rolledUpOrderItem.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
+            IsAssociatedService = rolledUpOrderItem.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService;
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             OrderType = orderType;
@@ -37,6 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public List<OrderRecipient> RolledUpOrderRecipients { get; set; }
 
+        public int PreviousRecipients { get; set; }
+
         public CatalogueItemId CatalogueItemId { get; set; }
 
         public string Name { get; set; }
@@ -44,6 +50,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public int NumberOfPrices { get; set; }
 
         public int PriceId { get; set; }
+
+        public bool IsPerServiceRecipient { get; set; }
+
+        public bool IsAssociatedService { get; set; }
 
         public TaskProgress PriceStatus
         {
@@ -64,11 +74,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     return TaskProgress.CannotStart;
                 }
 
+                if (IsAmendment && IsAssociatedService)
+                {
+                    return TaskProgress.Completed;
+                }
+
                 if (RolledUpOrderRecipients.AllQuantitiesEntered(rolledUpOrderItem))
                 {
                     return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
                 }
-                else if (RolledUpOrderRecipients.SomeButNotAllQuantitiesEntered(rolledUpOrderItem))
+                else if (RolledUpOrderRecipients.SomeButNotAllNewQuantitiesEntered(rolledUpOrderItem, PreviousRecipients))
                 {
                     return TaskProgress.InProgress;
                 }

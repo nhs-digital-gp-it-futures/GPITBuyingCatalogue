@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         };
 
         public EditAdditionalServices(LocalWebApplicationFactory factory)
-            : base(factory, typeof(AdditionalServicesController), nameof(AdditionalServicesController.EditAdditionalServices), Parameters)
+            : base(factory, typeof(AdditionalServicesController), nameof(AdditionalServicesController.SelectAdditionalServices), Parameters)
         {
         }
 
@@ -100,23 +100,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.ConfirmAdditionalServiceChanges)).Should().BeTrue();
-
-            ExistingService.Should().NotBeNull();
-            NewService.Should().BeNull();
-        }
-
-        [Fact]
-        public void EditAdditionalServices_AddAndRemoveAdditionalService_ExpectedResult()
-        {
-            CommonActions.ClickFirstCheckbox();
-            CommonActions.ClickCheckboxByLabel("E2E Single Price Additional Service");
-            CommonActions.ClickSave();
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.ConfirmAdditionalServiceChanges)).Should().BeTrue();
+                typeof(TaskListController),
+                nameof(TaskListController.TaskList)).Should().BeTrue();
 
             ExistingService.Should().NotBeNull();
             NewService.Should().BeNull();
