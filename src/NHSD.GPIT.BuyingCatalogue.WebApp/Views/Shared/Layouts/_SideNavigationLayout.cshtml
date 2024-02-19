@@ -28,7 +28,34 @@
                 <div class="nhsuk-grid-column-one-third sidebar" id="sidebar">
                     @if (Model.ShowSideNavigation)
                     {
-                        <vc:nhs-side-navigation-panel sections="@Model.Sections"/>
+                        <div>
+                            <nav class="side-nav ">
+                                <h2 class="nhsuk-u-visually-hidden">Contents</h2>
+                                <ul class="side-nav__component">
+                                    @foreach (var item in Model.Sections)
+                                    {
+                                        @if (item.Selected)
+                                        {
+                                            <li class="side-nav__list--selected" aria-current="page">
+                                                <span class="side-nav__link nhsuk-link--no-visited-state">@item.Name</span>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="side-nav__list">
+                                                <a href ="@Url.Action(
+                                                              item.Action,
+                                                              item.Controller,
+                                                              item.RouteData)"
+                                                   class="side-nav__link nhsuk-link--no-visited-state">
+                                                    @item.Name
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </nav>
+                        </div>
                     }
                 </div>
 

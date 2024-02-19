@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSideNavigationSection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
@@ -12,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
     public static class SolutionDisplayBaseModelTests
     {
-        private static readonly IList<NhsSideNavigationSectionModel> SectionModels = new List<NhsSideNavigationSectionModel>
+        private static readonly IList<SectionModel> SectionModels = new List<SectionModel>
         {
             new()
             {

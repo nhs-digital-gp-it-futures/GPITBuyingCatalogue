@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSideNavigationSection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
 
         private void SetSections()
         {
-            Sections = new List<NhsSideNavigationSectionModel>
+            Sections = new List<SectionModel>
             {
                 new()
                 {

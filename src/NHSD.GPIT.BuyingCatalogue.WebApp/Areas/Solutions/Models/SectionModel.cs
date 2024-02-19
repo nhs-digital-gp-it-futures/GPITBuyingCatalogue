@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSideNavigationSection
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
-    public class NhsSideNavigationSectionModel
+    public class SectionModel
     {
-        public string Name { get; set; }
-
         public string Action { get; set; }
 
         public string Controller { get; set; }
 
         public Dictionary<string, string> RouteData { get; set; }
+
+        public string Name { get; set; }
 
         public bool Selected { get; set; } = false;
 

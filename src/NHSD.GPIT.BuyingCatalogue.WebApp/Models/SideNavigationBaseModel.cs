@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSideNavigationSection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
@@ -10,8 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
     [ExcludeFromCodeCoverage]
     public abstract class SideNavigationBaseModel : NavBaseModel
     {
-        private IList<NhsSideNavigationSectionModel> sections = new List<NhsSideNavigationSectionModel>();
-        private IList<NhsSideNavigationSectionModel> breadcrumbItems = new List<NhsSideNavigationSectionModel>();
+        private IList<SectionModel> sections = new List<SectionModel>();
+        private IList<SectionModel> breadcrumbItems = new List<SectionModel>();
 
         public abstract int Index { get; }
 
@@ -27,11 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public string SelectedSection => sections[Index].Name;
 
-        public IList<NhsSideNavigationSectionModel> BreadcrumbItems
+        public IList<SectionModel> BreadcrumbItems
         {
             get
             {
-                return new List<NhsSideNavigationSectionModel>(breadcrumbItems.Where(s => s.Show));
+                return new List<SectionModel>(breadcrumbItems.Where(s => s.Show));
             }
 
             set
@@ -40,11 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
             }
         }
 
-        public IList<NhsSideNavigationSectionModel> Sections
+        public IList<SectionModel> Sections
         {
             get
             {
-                var sectionsToShow = new List<NhsSideNavigationSectionModel>(sections.Where(s => s.Show));
+                var sectionsToShow = new List<SectionModel>(sections.Where(s => s.Show));
 
                 if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(SelectedSection)) is { } sectionModel)
                     sectionModel.Selected = true;
@@ -64,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public void SetPaginationFooter()
         {
-            var sectionsToShow = new List<NhsSideNavigationSectionModel>(sections.Where(s => s.Show));
+            var sectionsToShow = new List<SectionModel>(sections.Where(s => s.Show));
             if (sectionsToShow.FirstOrDefault(s => s.Name.EqualsIgnoreCase(SelectedSection)) is not { } sectionModel)
                 return;
 

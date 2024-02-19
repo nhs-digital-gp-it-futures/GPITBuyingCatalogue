@@ -5,7 +5,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSideNavigationSection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -109,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private void SetBreadcrumb()
         {
-            BreadcrumbItems = new List<NhsSideNavigationSectionModel>()
+            BreadcrumbItems = new List<SectionModel>()
             {
                 new()
                 {
@@ -140,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         private void SetSections(CatalogueItemContentStatus contentStatus)
         {
-            Sections = new List<NhsSideNavigationSectionModel>
+            Sections = new List<SectionModel>
             {
                 new()
                 {
