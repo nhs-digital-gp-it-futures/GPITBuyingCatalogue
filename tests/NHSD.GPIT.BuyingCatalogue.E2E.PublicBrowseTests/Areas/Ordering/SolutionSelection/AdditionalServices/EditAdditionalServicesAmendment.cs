@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
         };
 
         public EditAdditionalServicesAmendment(LocalWebApplicationFactory factory)
-            : base(factory, typeof(AdditionalServicesController), nameof(AdditionalServicesController.EditAdditionalServices), Parameters)
+            : base(factory, typeof(AdditionalServicesController), nameof(AdditionalServicesController.SelectAdditionalServices), Parameters)
         {
         }
 
@@ -108,15 +108,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ad
 
             NavigateToUrl(
                 typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.EditAdditionalServices),
+                nameof(AdditionalServicesController.SelectAdditionalServices),
                 Parameters);
 
             CommonActions.ClickFirstCheckbox();
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.ConfirmAdditionalServiceChanges)).Should().BeTrue();
+                typeof(TaskListController),
+                nameof(TaskListController.TaskList)).Should().BeTrue();
 
             ExistingService.Should().NotBeNull();
             NewService.Should().NotBeNull();

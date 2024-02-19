@@ -1,0 +1,24 @@
+.nhs-card-v2__content-with-footer {
+    padding-bottom: 0;
+}
+
+.nhs-card-v2__footer p {
+    margin-bottom: 16px !important;
+    margin-top: 16px !important;
+}
+
+.nhs-card-v2__footer img {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.nhs-card-v2__footer {
+    margin-top: 16px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    padding-right: 32px;
+    padding-left: 32px;
+    background-color: #fafafa;
+    padding-top: 0px;
+}

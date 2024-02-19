@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 CallOffId = callOffId,
             };
 
-            result.ActionName.Should().Be(Constants.Actions.AddAssociatedServices);
+            result.ActionName.Should().Be(Constants.Actions.SelectAssociatedServices);
             result.ControllerName.Should().Be(Constants.Controllers.AssociatedServices);
             result.RouteValues.Should().BeEquivalentTo(expected);
         }

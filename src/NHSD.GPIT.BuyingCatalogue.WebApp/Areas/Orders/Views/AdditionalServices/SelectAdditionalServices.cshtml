@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.SelectServicesModel
 @{
-    ViewBag.Title = "Additional Services";
+    ViewBag.Title = "Add Additional Services";
 
     var serviceText = "These are optional add-ons to the main solution that provide extra functionality."
         + (Model.IsAmendment ? " We're only showing Additional Services that weren't added to the original order." : "");
@@ -9,6 +9,8 @@
     var advice = Model.IsAmendment && !Model.Services.Any()
         ? "All the Additional Services available with this Catalogue Solution have already been added to this order."
         : "Select the Additional Services that you want to add to your order.";
+
+    Model.Services.RemoveAll(x => x.IsSelected);
 }
 
 <partial name="Partials/_BackLink" model="Model" />

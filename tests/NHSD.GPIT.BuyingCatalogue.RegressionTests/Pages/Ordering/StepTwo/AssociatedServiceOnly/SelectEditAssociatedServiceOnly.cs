@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
 
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(AssociatedServicesController),
-             nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
+             nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
 
             if (oldAssociatedServices != default && oldAssociatedServices.All(a => a != string.Empty))
             {
@@ -74,19 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
             {
                 CommonActions.ClickCheckboxByLabel(newAssociatedService);
             }
-
-            CommonActions.ClickSave();
-
-            ConfirmAssociatedServicesChanges();
-        }
-
-        private void ConfirmAssociatedServicesChanges()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-             typeof(AssociatedServicesController),
-             nameof(AssociatedServicesController.ConfirmAssociatedServiceChanges)).Should().BeTrue();
-
-            CommonActions.ClickFirstRadio();
 
             CommonActions.ClickSave();
         }

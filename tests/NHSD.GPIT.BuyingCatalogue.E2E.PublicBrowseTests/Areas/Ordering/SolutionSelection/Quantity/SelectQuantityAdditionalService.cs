@@ -31,6 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Qu
 
         protected override Type OnwardController => typeof(AssociatedServicesController);
 
-        protected override string OnwardActionName => nameof(AssociatedServicesController.AddAssociatedServices);
+        protected override string OnwardActionName => nameof(AssociatedServicesController.SelectAssociatedServices);
     }
 }

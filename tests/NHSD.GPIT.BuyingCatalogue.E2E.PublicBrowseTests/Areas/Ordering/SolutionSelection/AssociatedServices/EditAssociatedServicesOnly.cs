@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
         };
 
         public EditAssociatedServicesOnly(LocalWebApplicationFactory factory)
-            : base(factory, typeof(AssociatedServicesController), nameof(AssociatedServicesController.EditAssociatedServices), Parameters)
+            : base(factory, typeof(AssociatedServicesController), nameof(AssociatedServicesController.SelectAssociatedServices), Parameters)
         {
         }
 
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(AssociatedServicesController),
-                nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
+                nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
 
             CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
             CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.As
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(AssociatedServicesController),
-                nameof(AssociatedServicesController.ConfirmAssociatedServiceChanges)).Should().BeTrue();
+                nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
 
             ExistingService.Should().NotBeNull();
             NewService.Should().BeNull();

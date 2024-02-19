@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 
         public static class Actions
         {
-            public const string AddAssociatedServices = "AddAssociatedServices";
+            public const string SelectAssociatedServices = "SelectAssociatedServices";
             public const string AmendDeliveryDate = "AmendDate";
             public const string ConfirmPrice = "ConfirmPrice";
             public const string EditDeliveryDates = "EditDates";

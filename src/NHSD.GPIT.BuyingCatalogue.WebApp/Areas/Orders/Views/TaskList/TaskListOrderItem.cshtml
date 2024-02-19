@@ -5,12 +5,33 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList.TaskListOrderItemModel;
 @{
     const RoutingSource source = RoutingSource.TaskList;
+    var progress = 0;
+    if (Model.PriceStatus is not (TaskProgress.NotStarted or TaskProgress.CannotStart))
+    {
+        progress++;
+    }
+    if (Model.QuantityStatus is not (TaskProgress.NotStarted or TaskProgress.CannotStart))
+    {
+        progress++;
+    }
 }
 
-<nhs-table label-text="@Model.Name">
+<div style="display:block; align-items:center;">
+    <h3 style="text-align:left; display: inline-block; vertical-align:middle">
+        @Model.Name  
+    </h3>
+    @if(!Model.IsAmendment)
+    {
+        <span class="detail" style="float:right; vertical-align:middle">
+            <strong>@progress</strong> of <strong>2</strong> started
+        </span>
+    }
+</div>
+
+<nhs-table>
     <nhs-table-column>Section</nhs-table-column>
     <nhs-table-column>Status</nhs-table-column>
-    <nhs-table-column>Action</nhs-table-column>
+    <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
 
     <nhs-table-row-container>
         <nhs-table-cell>Price</nhs-table-cell>
@@ -18,45 +39,33 @@
             <nhs-tag status-enum="@Model.PriceStatus" />
         </nhs-table-cell>
         <nhs-table-cell>
-            @if (Model.IsAmendment
-            && Model.FromPreviousRevision)
+            @if (Model.NumberOfPrices == 1 && Model.PriceStatus == TaskProgress.NotStarted
+            && !(Model.IsAmendment && Model.FromPreviousRevision))
             {
-                <a id="Price_@Model.CatalogueItemId"
-                   href="@Url.Action(
-                             nameof(PricesController.ViewPrice),
-                             typeof(PricesController).ControllerName(),
-                             new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">View</a>
+                <a id="Price_@Model.CatalogueItemId" style="float:right;"
+                    href="@Url.Action(
+                                nameof(PricesController.ConfirmPrice),
+                                typeof(PricesController).ControllerName(),
+                                new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.PriceId, source })">Start</a>
             }
             else
             {
-                @if (Model.PriceStatus == TaskProgress.NotStarted)
+                string actionName, actionText;
+                if (Model.IsAmendment && Model.FromPreviousRevision)
                 {
-                    if (Model.NumberOfPrices == 1)
-                    {
-                        <a id="Price_@Model.CatalogueItemId"
-                           href="@Url.Action(
-                                     nameof(PricesController.ConfirmPrice),
-                                     typeof(PricesController).ControllerName(),
-                                     new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, Model.PriceId, source })">Edit</a>
-                    }
-                    else
-                    {
-                        <a id="Price_@Model.CatalogueItemId"
-                           href="@Url.Action(
-                                     nameof(PricesController.SelectPrice),
-                                     typeof(PricesController).ControllerName(),
-                                     new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
-                    }
+                    (actionName, actionText) = (nameof(PricesController.ViewPrice), "View");
                 }
-
-                @if (Model.PriceStatus == TaskProgress.Completed)
+                else
                 {
-                    <a id="Price_@Model.CatalogueItemId"
-                       href="@Url.Action(
-                                 nameof(PricesController.EditPrice),
-                                 typeof(PricesController).ControllerName(),
-                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
+                    (actionName, actionText) = Model.PriceStatus == TaskProgress.Completed ?
+                        (nameof(PricesController.EditPrice), "Change") :
+                        (nameof(PricesController.SelectPrice), "Start");
                 }
+                <a id="Price_@Model.CatalogueItemId" style="float:right;"
+                    href="@Url.Action(
+                                actionName,
+                                typeof(PricesController).ControllerName(),
+                                new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">@actionText</a>
             }
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -69,34 +78,29 @@
         <nhs-table-cell>
             @if (Model.QuantityStatus != TaskProgress.CannotStart)
             {
-                if (Model.QuantityStatus != TaskProgress.InProgress
-                && Model.IsAmendment && Model.FromPreviousRevision && !Model.HasNewRecipients)
+                @if ((Model.IsAmendment && Model.FromPreviousRevision && !Model.HasNewRecipients && Model.QuantityStatus != TaskProgress.InProgress)
+                    || (Model.IsAmendment && Model.IsAssociatedService))
                 {
-                    <a id="Quantity_@Model.CatalogueItemId"
-                       href="@Url.Action(
-                                 nameof(QuantityController.ViewOrderItemQuantity),
-                                 typeof(QuantityController).ControllerName(),
-                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId })">View</a>
+                    <a id="Quantity_@Model.CatalogueItemId" style="float:right;"
+                        href="@Url.Action(
+                                    nameof(QuantityController.ViewOrderItemQuantity),
+                                    typeof(QuantityController).ControllerName(),
+                                    new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId })">View</a>
                 }
                 else
                 {
-                    if (Model.OrderType.MergerOrSplit && Model.QuantityStatus == TaskProgress.Completed)
+                    var action = Model.QuantityStatus switch
                     {
-                        <a id="Quantity_@Model.CatalogueItemId"
-                           href="@Url.Action(
-                                 nameof(QuantityController.SelectQuantity),
-                                 typeof(QuantityController).ControllerName(),
-                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">View</a>
-                    }
-                    else
-                    {
-                        <a id="Quantity_@Model.CatalogueItemId"
-                           href="@Url.Action(
-                                 nameof(QuantityController.SelectQuantity),
-                                 typeof(QuantityController).ControllerName(),
-                                 new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">Edit</a>
-                        
-                    }
+                        TaskProgress.Completed => Model.OrderType.MergerOrSplit ? "View" : "Change",
+                        TaskProgress.Amended => "Change",
+                        _ => "Start",
+                    };
+
+                    <a id="Quantity_@Model.CatalogueItemId" style="float:right;"
+                        href="@Url.Action(
+                                nameof(QuantityController.SelectQuantity),
+                                typeof(QuantityController).ControllerName(),
+                                new { Model.InternalOrgId, Model.CallOffId, Model.CatalogueItemId, source })">@action</a>
                 }
             }
         </nhs-table-cell>

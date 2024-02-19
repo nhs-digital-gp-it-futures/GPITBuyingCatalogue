@@ -72,7 +72,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 ? new List<CatalogueItem>()
                 : await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId, publishedOnly: true);
 
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId, PracticeReorganisationTypeEnum.None);
+            var selectedAdditionalServices = order.GetAdditionalServices();
+
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId, order.OrderType.ToPracticeReorganisationType);
+
+            var selectedAssociatedServices = order.GetAssociatedServices();
 
             return View(new TaskListModel(internalOrgId, callOffId, wrapper)
             {
@@ -80,7 +84,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 OnwardLink = Url.Action(onwardRoute.ActionName, onwardRoute.ControllerName, onwardRoute.RouteValues),
                 AlternativeSolutionsAvailable = solutions.Count > 1,
                 AdditionalServicesAvailable = additionalServices.Any(),
+                UnselectedAdditionalServicesAvailable = additionalServices.Where(x => !selectedAdditionalServices.Any(y => x.Id == y.CatalogueItemId)).Any(),
                 AssociatedServicesAvailable = associatedServices.Any(),
+                UnselectedAssociatedServicesAvailable = associatedServices.Where(x => !selectedAssociatedServices.Any(y => x.Id == y.CatalogueItemId)).Any(),
             });
         }
     }

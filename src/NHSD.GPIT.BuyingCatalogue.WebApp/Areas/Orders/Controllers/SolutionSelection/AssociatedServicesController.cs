@@ -49,50 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("add")]
-        public IActionResult AddAssociatedServices(string internalOrgId, CallOffId callOffId, bool selected = false)
-        {
-            var model = new AddAssociatedServicesModel
-            {
-                BackLink = Url.Action(
-                    nameof(OrderController.Order),
-                    typeof(OrderController).ControllerName(),
-                    new { internalOrgId, callOffId }),
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
-            };
-
-            if (selected)
-            {
-                model.AdditionalServicesRequired = YesNoRadioButtonTagHelper.Yes;
-            }
-
-            return View(model);
-        }
-
-        [HttpPost("add")]
-        public IActionResult AddAssociatedServices(string internalOrgId, CallOffId callOffId, AddAssociatedServicesModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var addAssociatedServices = model.AdditionalServicesRequired.EqualsIgnoreCase(YesNoRadioButtonTagHelper.Yes);
-
-            if (addAssociatedServices)
-            {
-                return RedirectToAction(
-                    nameof(SelectAssociatedServices),
-                    new { internalOrgId, callOffId, source = RoutingSource.AddAssociatedServices });
-            }
-
-            return RedirectToAction(
-                nameof(TaskListController.TaskList),
-                typeof(TaskListController).ControllerName(),
-                new { internalOrgId, callOffId });
-        }
-
-        [HttpGet("select")]
         public async Task<IActionResult> SelectAssociatedServices(string internalOrgId, CallOffId callOffId, RoutingSource? source = null)
         {
             var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
@@ -106,14 +62,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 var catalogueItemId = associatedServices.Select(s => s.Id).First();
                 await AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId }.ToList());
                 await orderQuantityService.SetServiceRecipientQuantitiesToSameValue(order.Id, catalogueItemId, 1);
-                return RedirectToPriceOrTaskList(internalOrgId, callOffId, catalogueItemId);
+                return RedirectToAction(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId });
             }
 
             var model = GetSelectServicesModel(internalOrgId, callOffId, wrapper, associatedServices, source);
             return View(SelectViewName, model);
         }
 
-        [HttpPost("select")]
+        [HttpPost("add")]
         public async Task<IActionResult> SelectAssociatedServices(string internalOrgId, CallOffId callOffId, SelectServicesModel model)
         {
             if (!ModelState.IsValid)
@@ -131,153 +90,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 ? serviceIds.First()
                 : null;
 
-            return RedirectToPriceOrTaskList(internalOrgId, callOffId, catalogueItemId);
-        }
-
-        [HttpGet("edit")]
-        public async Task<IActionResult> EditAssociatedServices(string internalOrgId, CallOffId callOffId)
-        {
-            var wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
-            var order = wrapper.Order;
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(
-                order.GetSolutionId(),
-                order.OrderType.ToPracticeReorganisationType);
-
-            var model = GetSelectServicesModel(internalOrgId, callOffId, wrapper, associatedServices, RoutingSource.TaskList);
-            return View(SelectViewName, model);
-        }
-
-        [HttpPost("edit")]
-        public async Task<IActionResult> EditAssociatedServices(string internalOrgId, CallOffId callOffId, SelectServicesModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(SelectViewName, model);
-            }
-
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
-
-            var existingServiceIds = order.GetAssociatedServices()
-                .Select(x => x.CatalogueItemId)
-                .ToList();
-
-            var selectedServiceIds = model.Services?
-                .Where(x => x.IsSelected)
-                .Select(x => x.CatalogueItemId)
-                .ToList() ?? new List<CatalogueItemId>();
-
-            if (existingServiceIds.All(x => selectedServiceIds.Contains(x)))
-            {
-                var newServiceIds = selectedServiceIds.Except(existingServiceIds).ToList();
-
-                if (!newServiceIds.Any())
-                {
-                    return RedirectToAction(
-                        nameof(TaskListController.TaskList),
-                        typeof(TaskListController).ControllerName(),
-                        new { internalOrgId, callOffId });
-                }
-
-                await orderItemService.AddOrderItems(internalOrgId, callOffId, newServiceIds);
-
-                return RedirectToAction(
-                    nameof(PricesController.SelectPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId = newServiceIds.First() });
-            }
-
-            var serviceIds = string.Join(Separator, selectedServiceIds);
-
             return RedirectToAction(
-                nameof(ConfirmAssociatedServiceChanges),
-                typeof(AssociatedServicesController).ControllerName(),
-                new { internalOrgId, callOffId, serviceIds });
-        }
-
-        [HttpGet("confirm-changes")]
-        public async Task<IActionResult> ConfirmAssociatedServiceChanges(string internalOrgId, CallOffId callOffId, string serviceIds)
-        {
-            var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
-            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(order.SupplierId);
-
-            var existingServiceIds = order.GetAssociatedServices()
-                .Select(x => x.CatalogueItemId)
-                .ToList();
-
-            var selectedServiceIds = serviceIds?.Split(Separator)
-                .Select(CatalogueItemId.ParseExact)
-                .ToList() ?? new List<CatalogueItemId>();
-
-            var toAdd = selectedServiceIds
-                .Where(x => !existingServiceIds.Contains(x))
-                .Select(x => new ServiceModel
-                {
-                    CatalogueItemId = x,
-                    Description = associatedServices.FirstOrDefault(s => s.Id == x)?.Name,
-                });
-
-            var toRemove = existingServiceIds
-                .Where(x => !selectedServiceIds.Contains(x))
-                .Select(x => new ServiceModel
-                {
-                    CatalogueItemId = x,
-                    Description = associatedServices.FirstOrDefault(s => s.Id == x)?.Name,
-                });
-
-            var model = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.AssociatedService)
-            {
-                BackLink = Url.Action(
-                    nameof(EditAssociatedServices),
-                    typeof(AssociatedServicesController).ControllerName(),
-                    new { internalOrgId, callOffId }),
-                ToAdd = toAdd.ToList(),
-                ToRemove = toRemove.ToList(),
-            };
-
-            return View("Services/ConfirmChanges", model);
-        }
-
-        [HttpPost("confirm-changes")]
-        public async Task<IActionResult> ConfirmAssociatedServiceChanges(string internalOrgId, CallOffId callOffId, ConfirmServiceChangesModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View("Services/ConfirmChanges", model);
-            }
-
-            if (model.ConfirmChanges is false)
-            {
-                return RedirectToAction(
                     nameof(TaskListController.TaskList),
                     typeof(TaskListController).ControllerName(),
                     new { internalOrgId, callOffId });
-            }
-
-            var removingServices = model.ToRemove?.Any() ?? false;
-            var addingServices = model.ToAdd?.Any() ?? false;
-
-            if (removingServices)
-            {
-                var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
-                await contractBillingService.DeleteContractBillingItems(orderId, model.ToRemove.Select(x => x.CatalogueItemId));
-                await requirementsService.DeleteRequirements(orderId, model.ToRemove.Select(x => x.CatalogueItemId));
-                await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
-            }
-
-            if (!addingServices)
-            {
-                return RedirectToAction(
-                    nameof(TaskListController.TaskList),
-                    typeof(TaskListController).ControllerName(),
-                    new { internalOrgId, callOffId });
-            }
-
-            await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
-
-            return RedirectToAction(
-                nameof(PricesController.SelectPrice),
-                typeof(PricesController).ControllerName(),
-                new { internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId });
         }
 
         private async Task AddOrderItems(string internalOrgId, CallOffId callOffId, List<CatalogueItemId> serviceIds)
@@ -285,24 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (serviceIds.Any())
             {
                 await orderItemService.AddOrderItems(internalOrgId, callOffId, serviceIds);
-            }
-        }
-
-        private IActionResult RedirectToPriceOrTaskList(string internalOrgId, CallOffId callOffId, CatalogueItemId? catalogueItemId)
-        {
-            if (catalogueItemId.HasValue)
-            {
-                return RedirectToAction(
-                    nameof(PricesController.SelectPrice),
-                    typeof(PricesController).ControllerName(),
-                    new { internalOrgId, callOffId, catalogueItemId });
-            }
-            else
-            {
-                return RedirectToAction(
-                    nameof(TaskListController.TaskList),
-                    typeof(TaskListController).ControllerName(),
-                    new { internalOrgId, callOffId });
             }
         }
 
@@ -337,16 +135,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             return source switch
             {
-                RoutingSource.AddAssociatedServices => Url.Action(
-                    nameof(AddAssociatedServices),
-                    typeof(AssociatedServicesController).ControllerName(),
-                    new
-                    {
-                        internalOrgId,
-                        callOffId,
-                        selected = true,
-                    }),
-
                 RoutingSource.EditSolution => Url.Action(
                     nameof(CatalogueSolutionsController.EditSolutionAssociatedServicesOnly),
                     typeof(CatalogueSolutionsController).ControllerName(),
