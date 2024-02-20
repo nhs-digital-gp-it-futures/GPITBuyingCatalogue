@@ -2,6 +2,8 @@
 
 public abstract class Gen2CsvBase
 {
+    public string Key { get; set; }
+
     public string SupplierId { get; set; }
 
     public string SolutionId { get; set; }

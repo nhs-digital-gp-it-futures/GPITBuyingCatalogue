@@ -16,13 +16,13 @@ public class CapabilitiesMappingController : Controller
 {
     private const string InvalidCsvFormat = "File not formatted correctly";
 
-    private readonly IGen2MappingService gen2MappingService;
+    private readonly IGen2UploadService gen2UploadService;
 
     public CapabilitiesMappingController(
-        IGen2MappingService gen2MappingService)
+        IGen2UploadService gen2UploadService)
     {
-        this.gen2MappingService = gen2MappingService
-            ?? throw new ArgumentNullException(nameof(gen2MappingService));
+        this.gen2UploadService = gen2UploadService
+            ?? throw new ArgumentNullException(nameof(gen2UploadService));
     }
 
     [HttpGet("capabilities")]
@@ -35,15 +35,15 @@ public class CapabilitiesMappingController : Controller
     public async Task<IActionResult> Capabilities(Gen2UploadModel model) =>
         await HandleFileUpload(
             model,
-            gen2MappingService.GetCapabilitiesFromCsv,
-            gen2MappingService.AddToCache,
+            gen2UploadService.GetCapabilitiesFromCsv,
+            gen2UploadService.AddToCache,
             nameof(Epics),
             nameof(FailedCapabilities));
 
     [HttpGet("{id}/failed-capabilities")]
     public async Task<IActionResult> FailedCapabilities(Guid id)
     {
-        var cachedImport = await gen2MappingService.GetCachedCapabilities(id);
+        var cachedImport = await gen2UploadService.GetCachedCapabilities(id);
 
         return View(new FailedGen2UploadModel<Gen2CapabilitiesCsvModel>(cachedImport.FileName, cachedImport.Failed));
     }
@@ -53,9 +53,9 @@ public class CapabilitiesMappingController : Controller
     {
         _ = model;
 
-        var cachedImport = await gen2MappingService.GetCachedCapabilities(id);
+        var cachedImport = await gen2UploadService.GetCachedCapabilities(id);
 
-        var failedImportCsv = await gen2MappingService.WriteCapabilitiesToCsv(cachedImport.Failed);
+        var failedImportCsv = await gen2UploadService.WriteCapabilitiesToCsv(cachedImport.Failed);
 
         return File(failedImportCsv, "text/csv");
     }
@@ -75,8 +75,8 @@ public class CapabilitiesMappingController : Controller
 
         return await HandleFileUpload(
             model,
-            gen2MappingService.GetEpicsFromCsv,
-            gen2MappingService.AddToCache,
+            gen2UploadService.GetEpicsFromCsv,
+            gen2UploadService.AddToCache,
             nameof(Epics),
             nameof(FailedEpics));
     }
@@ -84,7 +84,7 @@ public class CapabilitiesMappingController : Controller
     [HttpGet("{id}/failed-epics")]
     public async Task<IActionResult> FailedEpics(Guid id)
     {
-        var cachedImport = await gen2MappingService.GetCachedEpics(id);
+        var cachedImport = await gen2UploadService.GetCachedEpics(id);
 
         return View(new FailedGen2UploadModel<Gen2EpicsCsvModel>(cachedImport.FileName, cachedImport.Failed));
     }
@@ -94,9 +94,9 @@ public class CapabilitiesMappingController : Controller
     {
         _ = model;
 
-        var cachedImport = await gen2MappingService.GetCachedEpics(id);
+        var cachedImport = await gen2UploadService.GetCachedEpics(id);
 
-        var failedImportCsv = await gen2MappingService.WriteEpicsToCsv(cachedImport.Failed);
+        var failedImportCsv = await gen2UploadService.WriteEpicsToCsv(cachedImport.Failed);
 
         return File(failedImportCsv, "text/csv");
     }

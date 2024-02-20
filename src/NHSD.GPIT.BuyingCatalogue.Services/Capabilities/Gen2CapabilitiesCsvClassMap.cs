@@ -7,6 +7,7 @@ public class Gen2CapabilitiesCsvClassMap : ClassMap<Gen2CapabilitiesCsvModel>
 {
     public Gen2CapabilitiesCsvClassMap()
     {
+        Map(x => x.Key).Name("Key");
         Map(x => x.SupplierId).Name("Supplier ID");
         Map(x => x.SolutionId).Name("Solution ID");
         Map(x => x.AdditionalServiceId).Name("Additional Service ID");

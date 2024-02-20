@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.Csv;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
 
-public class Gen2MappingService(IDistributedCache cache) : CsvServiceBase, IGen2MappingService
+public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2UploadService
 {
     private const string CapabilitiesCacheSuffix = "capabilities";
     private const string EpicsCacheSuffix = "Epics";

@@ -7,6 +7,7 @@ public class Gen2EpicsCsvClassMap : ClassMap<Gen2EpicsCsvModel>
 {
     public Gen2EpicsCsvClassMap()
     {
+        Map(x => x.Key).Name("Key");
         Map(x => x.SupplierId).Name("Supplier ID");
         Map(x => x.SolutionId).Name("Solution ID");
         Map(x => x.AdditionalServiceId).Name("Additional Service ID");

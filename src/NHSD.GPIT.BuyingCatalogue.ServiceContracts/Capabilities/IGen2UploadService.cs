@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModel
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 
-public interface IGen2MappingService
+public interface IGen2UploadService
 {
     Task<Gen2CsvImportModel<Gen2CapabilitiesCsvModel>> GetCapabilitiesFromCsv(string fileName, Stream capabilitiesStream);
 
