@@ -11,7 +11,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Controller;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -71,11 +70,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [CommonAutoData]
         public static void Post_Index_Redirects(
-            SolutionsModel solutionModel,
             AdditionalFiltersModel additionalFilters,
             SolutionsController controller)
         {
-            var result = controller.Index(solutionModel, null, null, null, null, null, additionalFilters, null);
+            var result = controller.Index(additionalFilters);
 
             var selectedInteroperabilityOptions = additionalFilters.CombineSelectedOptions(
                 additionalFilters.InteroperabilityOptions);
@@ -88,11 +86,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .BeEquivalentTo(
                     new RouteValueDictionary
                     {
-                        { "page", null },
-                        { "sortBy", null },
+                        { "sortBy", additionalFilters.SortBy },
                         { "search", null },
-                        { "selected", null },
-                        { "selectedFrameworkId", null },
+                        { "selected", additionalFilters.Selected },
+                        { "selectedFrameworkId", additionalFilters.SelectedFrameworkId },
                         {
                             "selectedApplicationTypeIds",
                             additionalFilters.CombineSelectedOptions(additionalFilters.ApplicationTypeOptions)
@@ -119,7 +116,110 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                             "selectedInteroperabilityOptions",
                             selectedInteroperabilityOptions
                         },
-                        { "filterId", null },
+                    });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_SelectCapabilities_Redirects(
+            AdditionalFiltersModel additionalFilters,
+            SolutionsController controller)
+        {
+            var result = controller.SelectCapabilities(additionalFilters);
+
+            var selectedInteroperabilityOptions = additionalFilters.CombineSelectedOptions(
+                additionalFilters.InteroperabilityOptions);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(FilterController.FilterCapabilities));
+            actualResult.ControllerName.Should().Be(typeof(FilterController).ControllerName());
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary
+                    {
+                        { "sortBy", additionalFilters.SortBy },
+                        { "search", null },
+                        { "selected", additionalFilters.Selected },
+                        { "selectedFrameworkId", additionalFilters.SelectedFrameworkId },
+                        {
+                            "selectedApplicationTypeIds",
+                            additionalFilters.CombineSelectedOptions(additionalFilters.ApplicationTypeOptions)
+                        },
+                        {
+                            "selectedHostingTypeIds",
+                            additionalFilters.CombineSelectedOptions(additionalFilters.HostingTypeOptions)
+                        },
+                        {
+                            "selectedIM1Integrations",
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString())
+                                ? additionalFilters.CombineSelectedOptions(
+                                    additionalFilters.IM1IntegrationsOptions)
+                                : null
+                        },
+                        {
+                            "selectedGPConnectIntegrations",
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString())
+                                ? additionalFilters.CombineSelectedOptions(
+                                    additionalFilters.GPConnectIntegrationsOptions)
+                                : null
+                        },
+                        {
+                            "selectedInteroperabilityOptions",
+                            selectedInteroperabilityOptions
+                        },
+                    });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void Post_SelectEpics_Redirects(
+            AdditionalFiltersModel additionalFilters,
+            SolutionsController controller)
+        {
+            var result = controller.SelectEpics(additionalFilters);
+
+            var selectedInteroperabilityOptions = additionalFilters.CombineSelectedOptions(
+                additionalFilters.InteroperabilityOptions);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(FilterController.FilterEpics));
+            actualResult.ControllerName.Should().Be(typeof(FilterController).ControllerName());
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary
+                    {
+                        { "sortBy", additionalFilters.SortBy },
+                        { "search", null },
+                        { "selected", additionalFilters.Selected },
+                        { "selectedFrameworkId", additionalFilters.SelectedFrameworkId },
+                        {
+                            "selectedApplicationTypeIds",
+                            additionalFilters.CombineSelectedOptions(additionalFilters.ApplicationTypeOptions)
+                        },
+                        {
+                            "selectedHostingTypeIds",
+                            additionalFilters.CombineSelectedOptions(additionalFilters.HostingTypeOptions)
+                        },
+                        {
+                            "selectedIM1Integrations",
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString())
+                                ? additionalFilters.CombineSelectedOptions(
+                                    additionalFilters.IM1IntegrationsOptions)
+                                : null
+                        },
+                        {
+                            "selectedGPConnectIntegrations",
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString())
+                                ? additionalFilters.CombineSelectedOptions(
+                                    additionalFilters.GPConnectIntegrationsOptions)
+                                : null
+                        },
+                        {
+                            "selectedInteroperabilityOptions",
+                            selectedInteroperabilityOptions
+                        },
                     });
         }
 

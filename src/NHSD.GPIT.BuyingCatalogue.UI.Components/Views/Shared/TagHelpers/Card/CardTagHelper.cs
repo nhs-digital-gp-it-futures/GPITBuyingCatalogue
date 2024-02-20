@@ -1,4 +1,5 @@
-﻿using System.Text.Encodings.Web;
+﻿using System;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -17,16 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         public const string TitleName = "title";
         public const string UrlName = "url";
         public const string HorizontalAlignName = "horizontal-align";
-
         private const string SizeName = "size";
-        private const string CardClass = "nhsuk-card";
-        private const string CardMinHeightClass = "nhs-card__min-height";
-        private const string CardClickableClass = "nhsuk-card--clickable";
-        private const string CardContentClass = "nhsuk-card__content";
-        private const string CardDescriptionClass = "nhsuk-card__description";
-        private const string CardHeadingClass = "nhsuk-card__heading";
-        private const string CardHeadingMinHeightClass = "card-title-min-height";
-        private const string CardLinkClass = "nhsuk-card__link";
 
         [HtmlAttributeName(TextName)]
         public string Text { get; set; }
@@ -48,14 +40,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            output.AddClass(CardClass, HtmlEncoder.Default);
+            output.AddClass(CardStyles.CardClass, HtmlEncoder.Default);
 
             if (!string.IsNullOrWhiteSpace(Url))
             {
-                output.AddClass(CardClickableClass, HtmlEncoder.Default);
+                output.AddClass(CardStyles.CardClickableClass, HtmlEncoder.Default);
 
                 if (HorizontalAlign)
-                    output.AddClass(CardMinHeightClass, HtmlEncoder.Default);
+                    output.AddClass(CardStyles.CardMinHeightClass, HtmlEncoder.Default);
             }
 
             var content = await BuildContentAsync(output);
@@ -66,10 +58,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         {
             var content = new TagBuilder(TagHelperConstants.Div);
 
-            content.AddCssClass(CardContentClass);
+            content.AddCssClass(CardStyles.CardContentClass);
+
+            if (!string.IsNullOrWhiteSpace(Title))
+            {
+                content.InnerHtml
+                    .AppendHtml(BuildHeading());
+            }
 
             content.InnerHtml
-                .AppendHtml(BuildHeading())
                 .AppendHtml(await BuildCardTextAsync(output));
 
             return content;
@@ -79,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         {
             var heading = new TagBuilder(TagHelperConstants.HeaderTwo);
 
-            heading.AddCssClass(CardHeadingClass);
+            heading.AddCssClass(CardStyles.CardHeadingClass);
             heading.AddCssClass(HeadingSize.ToHeading());
 
             if (string.IsNullOrWhiteSpace(Url))
@@ -87,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
                 heading.InnerHtml.Append(Title);
 
                 if (HorizontalAlign)
-                    heading.AddCssClass(CardHeadingMinHeightClass);
+                    heading.AddCssClass(CardStyles.CardHeadingMinHeightClass);
             }
             else
             {
@@ -101,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
         {
             var link = new TagBuilder(TagHelperConstants.Anchor);
 
-            link.AddCssClass(CardLinkClass);
+            link.AddCssClass(CardStyles.CardLinkClass);
             link.Attributes.Add("href", Url);
             link.InnerHtml.Append(Title);
 
@@ -116,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
                 return await output.GetChildContentAsync();
 
             var cardText = new TagBuilder(TagHelperConstants.Paragraph);
-            cardText.AddCssClass(CardDescriptionClass);
+            cardText.AddCssClass(CardStyles.CardDescriptionClass);
             cardText.InnerHtml.Append(Text);
             return cardText;
         }

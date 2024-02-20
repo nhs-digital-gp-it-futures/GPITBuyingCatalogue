@@ -1,0 +1,157 @@
+.details-size-reducer, .details-size-reducer a, .details-size-reducer p, .details-size-reducer ul {
+    font-size: 0.9rem;
+    color: #000;
+}
+
+details.details-size-reducer {
+    margin-bottom: 8px;
+}
+
+.bc-wider-container {
+    max-width: 1060px;
+}
+
+.filtering-card {
+    background-color: #005eb8;
+    color: #fff;
+    margin: 8px 0px 16px 0px;
+    padding-top: 12px;
+    padding-bottom: 20px;
+    padding-left: 16px;
+    padding-right: 16px;
+    font-weight: bold;
+    clear: both;
+
+    .info-text {
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+
+    .nhsuk-button {
+        margin-bottom: 0px;
+    }
+}
+
+.nhsuk-card__inverted {
+    background-color: #f0f4f5;
+    margin-top: 20px;
+}
+
+.bc-inline-label {
+    display: inline-block;
+    margin-right: 12px;
+}
+
+.nhsuk-fieldset__legend--xs {
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 0px;
+}
+
+@media (min-width: 40.0625em) {
+    .nhsuk-fieldset__legend--xs {
+        font-size: 19px;
+        font-size: 1.1875rem;
+        line-height: 1.47368;
+    }
+}
+
+@media print {
+    .nhsuk-fieldset__legend--xs {
+        font-size: 14pt;
+        line-height: 1.15;
+    }
+}
+
+
+//
+// small checkboxes
+//
+.nhsuk-checkboxes--small .nhsuk-checkboxes__label {
+    margin-top: -2px;
+    padding: 11px 16px 9px 1px;
+    margin-bottom: 0;
+    float: left;
+    font-size: 1rem;
+}
+
+@media (min-width: 40.0625em) {
+    .nhsuk-checkboxes--small .nhsuk-checkboxes__label {
+        padding: 9px 16px 7px 1px;
+    }
+}
+
+.nhsuk-checkboxes--small .nhsuk-checkboxes__label::before {
+    height: 24px;
+    top: 8px;
+    width: 24px;
+}
+
+.nhsuk-checkboxes--small .nhsuk-checkboxes__label::after {
+    left: 6px;
+    top: 16px;
+    width: 12px;
+    height: 6px;
+    border-width: 0 0 3px 3px;
+}
+
+.nhsuk-checkboxes--small .nhsuk-checkboxes__item {
+    margin-bottom: 0;
+    padding-left: 34px;
+}
+
+//
+// small radio buttons
+//
+.nhsuk-radios--small .nhsuk-radios__label {
+    margin-top: -2px;
+    padding: 11px 16px 9px 1px;
+    float: left;
+    font-size: 1rem;
+}
+
+@media (min-width: 40.0625em) {
+    .nhsuk-radios--small .nhsuk-radios__label {
+        padding: 9px 16px 7px 1px;
+    }
+}
+
+.nhsuk-radios--small .nhsuk-radios__label::before {
+    height: 24px;
+    top: 8px;
+    width: 24px;
+}
+
+.nhsuk-radios--small .nhsuk-radios__label::after {
+    left: 7px;
+    top: 15px;
+    border-width: 5px;
+}
+
+.nhsuk-radios--small .nhsuk-radios__item {
+    min-height: 0;
+    margin-bottom: 0;
+    padding-left: 34px;
+    float: left;
+}
+
+//
+// smaller hr
+//
+.nhsuk-section-break--s {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+@media (min-width: 40.0625em) {
+    .nhsuk-section-break--s {
+        margin-top: 16px;
+    }
+}
+
+@media (min-width: 40.0625em) {
+    .nhsuk-section-break--s {
+        margin-bottom: 16px;
+    }
+}

@@ -16,10 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_IsFilter_PropertiesAreSetCorrectly(
             List<Capability> capabilities)
         {
-            var model = new FilterCapabilitiesModel(capabilities, true, null);
+            var model = new FilterCapabilitiesModel(capabilities, null)
+            {
+                IsFilter = true,
+            };
 
-            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
-            model.Total.Should().Be(capabilities.Count);
+            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Category.Id, x.Category.Name }));
             model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
             {
                 Id = $"{x.Id}",
@@ -34,10 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Constructor_NotFilter_PropertiesAreSetCorrectly(
             List<Capability> capabilities)
         {
-            var model = new FilterCapabilitiesModel(capabilities, false, null);
+            var model = new FilterCapabilitiesModel(capabilities, null);
 
-            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
-            model.Total.Should().Be(capabilities.Count);
+            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Category.Id, x.Category.Name }));
             model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
             {
                 Id = $"{x.Id}",
@@ -58,10 +59,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
                 new KeyValuePair<int, string[]>(capabilities.Last().Id, System.Array.Empty<string>()),
             });
 
-            var model = new FilterCapabilitiesModel(capabilities, true, selected.Keys);
+            var model = new FilterCapabilitiesModel(capabilities, selected.Keys)
+            {
+                IsFilter = true,
+            };
 
-            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => x.Category));
-            model.Total.Should().Be(capabilities.Count);
+            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Category.Id, x.Category.Name }));
             model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
             {
                 Id = $"{x.Id}",
@@ -74,11 +77,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void Capabilities_ReturnsExpectedResult(
             List<Capability> capabilities)
         {
-            var model = new FilterCapabilitiesModel(capabilities, true, null);
+            var model = new FilterCapabilitiesModel(capabilities, null)
+            {
+                IsFilter = true,
+            };
 
             foreach (var category in capabilities.Select(x => x.Category))
             {
-                var expected = capabilities.Where(x => x.Category.Id == category.Id);
+                var expected = capabilities
+                    .Where(x => x.Category.Id == category.Id)
+                    .OrderBy(x => x.Name)
+                    .Select(x => x.Name);
 
                 model.Items(category.Id).Should().BeEquivalentTo(expected);
             }

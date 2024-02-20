@@ -3,8 +3,6 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.FilterCapabilitiesModel
 
-<script type="text/javascript" src="@Url.Content("~/js/GroupCounters.min.js")" asp-append-version="true"></script>
-
 @{
     if (Model.IsFilter)
     {
@@ -14,39 +12,9 @@
     {
         Layout = "~/Views/Shared/Layouts/_AdminLayout.cshtml";
     }
-    var index = 0;
 }
 
-@if (Model.NavModel != null)
-{
-    <partial name="Partials/_BackLink" model="Model.NavModel" />
-}
-
-@if (Model.IsFilter)
-{
-    @section Breadcrumbs {
-    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
-        <div class="nhsuk-width-container">
-            <ol class="nhsuk-breadcrumb__list">
-                <li class="nhsuk-breadcrumb__item">
-                    <a class="nhsuk-breadcrumb__link"
-                       data-test-id="home-crumb"
-                   asp-action="@nameof(HomeController.Index)"
-                   asp-controller="@typeof(HomeController).ControllerName()"
-                   asp-area="@typeof(HomeController).AreaName()">Home</a>
-                </li>
-                <li class="nhsuk-breadcrumb__item">
-                    <a class="nhsuk-breadcrumb__link"
-                       data-test-id="catalogue-solutions-crumb"
-                   asp-action="@nameof(SolutionsController.Index)"
-                   asp-controller="@typeof(SolutionsController).ControllerName()"
-                   asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>
-                </li>
-            </ol>
-        </div>
-    </nav>
-    }
-}
+<partial name="Partials/_BackLink" model="Model.NavModel" />
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
@@ -56,56 +24,55 @@
         }
         <nhs-page-title model="@PageTitle" />
 
-        @if (Model.IsFilter)
-        {
-            <h2>@Model.Total Capabilities available</h2>
-            <hr />
-            <div class="nhsuk-u-margin-bottom-9">
-                <h3>Select Capabilities</h3>
-                <p class="selection-counter" style="display: none">
-                    0 out of @Model.Total selected
-                </p>
-                <vc:nhs-secondary-button type="Secondary"
-                                     text="Clear selection"
-                                     url="@Url.Action(
-                nameof(FilterController.FilterCapabilities),
-                typeof(FilterController).ControllerName(),
-                new { search = Model.SearchTerm })" />
-            </div>
-        }
-
         <form method="post">
-            @foreach (var category in Model.Groups)
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.IsFilter" />
+            @foreach (var (kvp, i) in Model.GroupedItems.Select((kvp, i) => (kvp, i)))
             {
-                var capabilities = Model.Items(category.Id);
-                <nhs-expander heading-text="@category.Name"
-                          label-text="@capabilities.Count @(capabilities.Count == 1 ? "result" : "results")"
-                          open="true">
-                    <nhs-table label-text="Capability name">
-                        @foreach (var capability in capabilities)
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell>
-                                    <nhs-checkbox-container>
-                                        <nhs-checkbox asp-for="SelectedItems[index].Selected"
-                                              hidden-input="SelectedItems[index].Id"
-                                              label-text="@capability.Name"
-                                              sub-group="@category.Name" />
-                                    </nhs-checkbox-container>
-                                </nhs-table-cell>
-                            </nhs-table-row-container>
-                            index++;
-                        }
-                    </nhs-table>
-                </nhs-expander>
-                <br />
+                <input type="hidden" name="@(Html.NameFor(m => m.GroupedItems[i])).Key" value="@kvp.Key" />
+                @foreach (var (value, j) in kvp.Value.Select((value, j) => (value, j)))
+                {
+                    <input type="hidden" name="@(Html.NameFor(m => m.GroupedItems[i])).Value[@j]" value="@value" />
+                }
             }
 
-            <p class="selection-counter" style="display: none">
-                0 out of @Model.Total selected
-            </p>
+            <nhs-card>
+                <nhs-table>
+                    <nhs-table-column>Capability</nhs-table-column>
+                    @{
+                        var index = 0;
+                        foreach (var (category, i) in Model.Groups.Select((value, i) => (value, i)))
+                        {
+                            var capabilities = Model.Items(category.Id);
+                            <input type="hidden" asp-for="@Model.Groups[i].Id" />
+                            <input type="hidden" asp-for="@Model.Groups[i].Name" />
 
-            <nhs-submit-button />
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    <strong>
+                                        @category.Name
+                                    </strong>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                            @foreach (var capability in capabilities)
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>
+                                        <nhs-checkbox-container>
+                                            <nhs-checkbox asp-for="SelectedItems[index].Selected"
+                                                          hidden-input="SelectedItems[index].Id"
+                                                          label-text="@capability"
+                                                          sub-group="@category.Name" />
+                                        </nhs-checkbox-container>
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                                index++;
+                            }
+                        }
+                    }
+                </nhs-table>
+                <nhs-submit-button text="Apply Capabilities" />
+            </nhs-card>
         </form>
     </div>
 </div>

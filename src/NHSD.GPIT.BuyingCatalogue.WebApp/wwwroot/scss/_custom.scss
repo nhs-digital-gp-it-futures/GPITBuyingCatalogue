@@ -29,12 +29,17 @@
   padding-top: 8px;
 }
 
-.suggestion-search-search__submit .nhsuk-icon,
 .nhsuk-button .nhsuk-icon {
     fill: #ffffff;
     height: 28px;
     width: 28px;
     float: left;
+}
+
+.suggestion-search-search__submit .nhsuk-icon {
+    fill: #ffffff;
+    height: 38px;
+    width: 38px;
 }
 
 .app-search__submit .nhsuk-icon {

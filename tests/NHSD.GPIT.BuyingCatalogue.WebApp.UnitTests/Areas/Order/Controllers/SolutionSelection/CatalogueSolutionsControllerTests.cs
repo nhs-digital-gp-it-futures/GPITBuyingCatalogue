@@ -211,13 +211,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(PricesController.SelectPrice));
+            actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
-                { "catalogueItemId", catalogueItemId },
             });
         }
 
@@ -826,13 +825,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(PricesController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(PricesController.SelectPrice));
+            actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
                 { "callOffId", callOffId },
-                { "catalogueItemId", newSolutionId },
             });
         }
 
@@ -877,8 +875,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ControllerName.Should().Be(typeof(AdditionalServicesController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(AdditionalServicesController.SelectAdditionalServices));
+            actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
             actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -1048,6 +1046,59 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             orderService.VerifyAll();
             mockContractsService.Verify(s => s.RemoveContract(orderId), Times.Once());
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_RemoveService_ReturnsExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<ISolutionsService> solutionsService,
+            CatalogueSolutionsController controller,
+            CatalogueItem catalogueItem)
+        {
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper { Order = order });
+
+            solutionsService
+                .Setup(x => x.GetSolutionThin(catalogueItem.Id))
+                .ReturnsAsync(catalogueItem);
+
+            var result = await controller.RemoveService(internalOrgId, order.CallOffId, catalogueItem.Id);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var expected = new RemoveServiceModel(catalogueItem)
+            {
+            };
+
+            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_RemoveService_RemovesService(
+            string internalOrgId,
+            CallOffId callOffId,
+            RemoveServiceModel model,
+            [Frozen] Mock<IOrderItemService> mockOrderItemService,
+            CatalogueSolutionsController controller,
+            CatalogueItem catalogueItem)
+        {
+            var result = await controller.RemoveService(internalOrgId, callOffId, catalogueItem.Id, model);
+
+            mockOrderItemService.Verify(s => s.DeleteOrderItems(internalOrgId, callOffId, new List<CatalogueItemId> { catalogueItem.Id }), Times.Once());
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
+            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+            });
         }
     }
 }

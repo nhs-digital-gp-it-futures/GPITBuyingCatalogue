@@ -522,7 +522,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task AddFilterCapabilityEpics_ValidParameters_SameEpics_DifferentCapabilties_Added(
+        public static async Task AddFilterCapabilityEpics_ValidParameters_SameEpics_DifferentCapabilities_Added(
             List<Epic> epics,
             Organisation organisation,
             Filter filter,

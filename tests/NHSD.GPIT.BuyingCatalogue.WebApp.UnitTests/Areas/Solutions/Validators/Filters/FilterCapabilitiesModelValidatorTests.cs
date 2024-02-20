@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
             FilterCapabilitiesModelValidator validator)
         {
             model.SelectedItems.ForEach(x => x.Selected = false);
+            model.IsFilter = false;
 
             var result = validator.TestValidate(model);
 
@@ -25,11 +26,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
 
         [Theory]
         [CommonAutoData]
+        public static void Validate_NoSelectionMade_NoErrors(
+            FilterCapabilitiesModel model,
+            FilterCapabilitiesModelValidator validator)
+        {
+            model.SelectedItems.ForEach(x => x.Selected = false);
+            model.IsFilter = true;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldNotHaveAnyValidationErrors();
+        }
+
+        [Theory]
+        [CommonInlineAutoData(true)]
+        [CommonInlineAutoData(false)]
         public static void Validate_SelectionMade_NoErrors(
+            bool isFiltering,
             FilterCapabilitiesModel model,
             FilterCapabilitiesModelValidator validator)
         {
             model.SelectedItems.ForEach(x => x.Selected = true);
+            model.IsFilter = isFiltering;
 
             var result = validator.TestValidate(model);
 

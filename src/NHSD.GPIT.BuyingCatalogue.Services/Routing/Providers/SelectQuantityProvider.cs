@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 return new RoutingResult
                 {
                     ControllerName = Constants.Controllers.AssociatedServices,
-                    ActionName = Constants.Actions.AddAssociatedServices,
+                    ActionName = Constants.Actions.SelectAssociatedServices,
                     RouteValues = new { routeValues.InternalOrgId, routeValues.CallOffId },
                 };
             }

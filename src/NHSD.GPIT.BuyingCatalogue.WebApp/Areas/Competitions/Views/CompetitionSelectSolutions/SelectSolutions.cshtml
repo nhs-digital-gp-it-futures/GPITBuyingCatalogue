@@ -22,7 +22,7 @@
 
             <vc:nhs-secondary-button text="Start a new search"
                                      type="Primary"
-                                     url="@Url.Action(nameof(FilterController.FilterCapabilities), typeof(FilterController).ControllerName(), new { Area = typeof(FilterController).AreaName() })"/>
+                                     url="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })" />
         }
         else if (Model.HasSingleSolution())
         {

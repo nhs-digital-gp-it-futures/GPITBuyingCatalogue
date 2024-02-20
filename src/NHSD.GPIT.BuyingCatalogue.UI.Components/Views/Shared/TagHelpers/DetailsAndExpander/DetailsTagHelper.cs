@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
@@ -17,12 +19,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         [HtmlAttributeName(DetailsAndExpanderTagHelperBuilders.BoldTitle)]
         public bool BoldTitle { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.Size)]
+        public DetailsAndExpanderTagHelperBuilders.DetailsLabelSize Size { get; set; } = DetailsAndExpanderTagHelperBuilders.DetailsLabelSize.Standard;
+
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "details";
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            var summary = DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(string.Empty, LabelText, BoldTitle);
+            var summary = DetailsAndExpanderTagHelperBuilders.GetDetailsSummaryLabelBuilder(LabelText, BoldTitle, Size);
 
             var textItem = DetailsAndExpanderTagHelperBuilders.GetTextItem();
 
@@ -33,6 +38,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             output.Attributes.Add(new TagHelperAttribute(
                 TagHelperConstants.Class,
                 $"{DetailsAndExpanderTagHelperBuilders.DetailsClass} {addArrowClass}"));
+
+            if (Size == DetailsAndExpanderTagHelperBuilders.DetailsLabelSize.Small)
+            {
+               output.AddClass(DetailsAndExpanderTagHelperBuilders.DetailsSummaryTextSmallClass, HtmlEncoder.Default);
+            }
 
             textItem.InnerHtml.AppendHtml(children);
 

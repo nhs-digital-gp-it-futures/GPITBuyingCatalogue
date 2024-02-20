@@ -1,7 +1,9 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.SelectServicesModel
 @{
-    ViewBag.Title = "Associated Services";
+    ViewBag.Title = "Add Associated Services";
+
+    Model.Services.RemoveAll(x => x.IsSelected);
 }
 
 <partial name="Partials/_BackLink" model="Model" />

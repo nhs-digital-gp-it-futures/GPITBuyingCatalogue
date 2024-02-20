@@ -537,7 +537,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectPlannedDeliveryDatesTask();
-            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices,null);
+            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, null);
 
             TaskList.SelectFundingSourcesTask();
             SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, null);
@@ -736,7 +736,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                .Where(o => o.Id == orderId)
                .Select(z => z.OrderType).ToList();
 
-            var result = orderType.Any(a => a.AssociatedServicesOnly );
+            var result = orderType.Any(a => a.AssociatedServicesOnly);
 
             return result;
         }

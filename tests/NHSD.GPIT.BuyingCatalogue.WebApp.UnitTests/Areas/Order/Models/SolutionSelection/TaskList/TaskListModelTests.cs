@@ -54,7 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.AssociatedServices.Select(s => s.CatalogueItemId).Should().BeEquivalentTo(new[] { associatedService.CatalogueItemId });
 
             model.Progress.Should().Be(TaskProgress.Completed);
-            model.Advice.Should().Be(TaskListModel.CompletedAdvice);
             model.Title.Should().Be(TaskListModel.CompletedTitle);
 
             model.OrderItemModel(solution.CatalogueItemId).Should().NotBeNull();
@@ -93,7 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.AssociatedServices.Select(x => x.CatalogueItemId).Should().BeEquivalentTo(new[] { associatedService.CatalogueItemId });
 
             model.Progress.Should().Be(TaskProgress.Completed);
-            model.Advice.Should().Be(TaskListModel.CompletedAdvice);
             model.Title.Should().Be(TaskListModel.CompletedTitle);
 
             model.OrderItemModel(solution.CatalogueItemId).Should().NotBeNull();
@@ -131,7 +129,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             });
 
             model.Progress.Should().Be(TaskProgress.Completed);
-            model.Advice.Should().Be(TaskListModel.CompletedAdvice);
             model.Title.Should().Be(TaskListModel.CompletedTitle);
 
             for (var i = 0; i < 3; i++)
@@ -166,7 +163,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             model.AssociatedServices.Should().BeEmpty();
 
             model.Progress.Should().Be(TaskProgress.InProgress);
-            model.Advice.Should().Be(TaskListModel.InProgressAdvice);
             model.Title.Should().Be(TaskListModel.InProgressTitle);
 
             model.OrderItemModel(solution.CatalogueItemId).Should().NotBeNull();
@@ -179,59 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             model.CallOffId = new CallOffId(model.CallOffId.OrderNumber, 2);
 
-            model.Advice.Should().Be(TaskListModel.AmendmentAdvice);
             model.Title.Should().Be(TaskListModel.AmendmentTitle);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithAdditionalServices_SetsActionText(
-            TaskListModel model)
-        {
-            model.CallOffId = new CallOffId(model.CallOffId.OrderNumber, 1);
-
-            model.AdditionalServices.Should().NotBeEmpty();
-            model.AdditionalServicesActionText.Should().Be("Change Additional Services");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithAdditionalServices_Amendment_SetsActionText(
-            TaskListModel model)
-        {
-            model.CallOffId = new CallOffId(model.CallOffId.OrderNumber, 2);
-
-            model.AdditionalServices.Should().NotBeEmpty();
-            model.AdditionalServicesActionText.Should().Be("Add Additional Services");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithNoAdditionalServices_SetsActionText(
-            TaskListModel model)
-        {
-            model.AdditionalServices = null;
-
-            model.AdditionalServicesActionText.Should().Be("Add Additional Services");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithAssociatedServices_SetsActionText(
-            TaskListModel model)
-        {
-            model.AssociatedServices.Should().NotBeEmpty();
-            model.AssociatedServicesActionText.Should().Be("Change Associated Services");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithNoAssociatedServicesSetsActionText(
-            TaskListModel model)
-        {
-            model.AssociatedServices = null;
-
-            model.AssociatedServicesActionText.Should().Be("Add Associated Services");
         }
     }
 }

@@ -21,7 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
                 .Select(
                     x => new ServiceModel
                     {
-                        CatalogueItemId = x.Id, Description = x.Name, IsSelected = currentServiceIds.Contains(x.Id),
+                        CatalogueItemId = x.Id,
+                        Description = x.Name,
+                        IsSelected = currentServiceIds.Contains(x.Id),
                     })
                 .ToList();
         }

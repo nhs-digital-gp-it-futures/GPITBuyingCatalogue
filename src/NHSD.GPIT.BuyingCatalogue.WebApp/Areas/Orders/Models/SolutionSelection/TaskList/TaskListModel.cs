@@ -11,17 +11,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 {
     public class TaskListModel : NavBaseModel
     {
-        public const string AmendmentAdvice = "Add Service Recipients to existing items or add Additional Services.";
         public const string AmendmentTitle = "Amend items from the previous order";
-        public const string CompletedAdvice = "Select the sections that you want to edit.";
         public const string CompletedTitle = "Edit solutions and services";
         public const string MergerSplitTitle = "Edit Associated Service";
-        public const string InProgressAdvice = "Review the progress of your order. Make sure you’ve included everything you want to order and that all sections are completed.";
-        public const string InProgressTitle = "Review your progress";
+        public const string InProgressTitle = "Catalogue Solution and services";
 
-        private const string Add = "Add";
-        private const string Change = "Change";
-        private const string MergerSplitAdvice = "Confirm the price and review the quantity of the Associated Service you’re ordering.";
         private readonly Dictionary<CatalogueItemId, TaskListOrderItemModel> taskModels = new();
 
         public TaskListModel()
@@ -40,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 throw new ArgumentNullException(nameof(wrapper));
             }
 
-            var previous = wrapper.Previous;
+            Previous = wrapper.Previous;
 
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
@@ -58,28 +52,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             {
                 taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, CatalogueSolution)
                 {
-                    FromPreviousRevision = previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
+                    FromPreviousRevision = Previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
                     HasNewRecipients = wrapper.HasNewOrderRecipients,
                     NumberOfPrices = CatalogueSolution.CatalogueItem.CataloguePrices.Count,
                     PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
                         ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
                         : 0,
+                    PreviousRecipients = Previous?.OrderRecipients.Count() ?? 0,
                 });
             }
 
             AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, x)
             {
-                FromPreviousRevision = previous?.Exists(x.CatalogueItemId) ?? false,
+                FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
                 HasNewRecipients = wrapper.HasNewOrderRecipients,
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                     : 0,
+                PreviousRecipients = Previous?.OrderRecipients.Count() ?? 0,
             }));
 
             AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, x)
             {
-                FromPreviousRevision = previous?.Exists(x.CatalogueItemId) ?? false,
+                FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
                 HasNewRecipients = wrapper.HasNewOrderRecipients,
                 NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
@@ -87,6 +83,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     : 0,
             }));
         }
+
+        public Order Previous { get; set; }
 
         public string InternalOrgId { get; set; }
 
@@ -108,14 +106,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ? SolutionName
             : $"Order {CallOffId}";
 
-        public override string Advice => IsAmendment
-            ? AmendmentAdvice
-            : OrderType.MergerOrSplit
-                ? MergerSplitAdvice
-                : Progress == TaskProgress.Completed
-                    ? CompletedAdvice
-                    : InProgressAdvice;
-
         public string SolutionName { get; set; }
 
         public OrderItem CatalogueSolution { get; set; }
@@ -124,25 +114,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool AdditionalServicesAvailable { get; set; }
 
+        public bool UnselectedAdditionalServicesAvailable { get; set; }
+
         public IEnumerable<OrderItem> AdditionalServices { get; set; }
-
-        public string AdditionalServicesActionText
-        {
-            get
-            {
-                var verb = IsAmendment
-                    ? Add
-                    : AdditionalServices?.Any() ?? false ? Change : Add;
-
-                return $"{verb} Additional Services";
-            }
-        }
 
         public bool AssociatedServicesAvailable { get; set; }
 
-        public IEnumerable<OrderItem> AssociatedServices { get; set; }
+        public bool UnselectedAssociatedServicesAvailable { get; set; }
 
-        public string AssociatedServicesActionText => $"{(AssociatedServices?.Any() ?? false ? Change : Add)} Associated Services";
+        public IEnumerable<OrderItem> AssociatedServices { get; set; }
 
         public TaskProgress Progress
         {

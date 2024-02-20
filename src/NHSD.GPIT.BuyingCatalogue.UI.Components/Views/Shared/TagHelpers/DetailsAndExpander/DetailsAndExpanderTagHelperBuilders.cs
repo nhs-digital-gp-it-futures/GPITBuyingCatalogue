@@ -8,6 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         public const string DetailsClass = "nhsuk-details";
         public const string CounterClass = "counter-class";
         public const string BoldTitle = "bold-title";
+        public const string DetailsSummaryTextSmallClass = "details-size-reducer";
 
         private const string DetailsSummaryClass = "nhsuk-details__summary";
         private const string DetailsSummaryTextClass = "nhsuk-details__summary-text";
@@ -20,12 +21,47 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         private const string TagColourClass = "nhsuk-tag--blue";
         private const string VisuallyHidden = "nhsuk-u-visually-hidden";
 
+        public enum DetailsLabelSize
+        {
+            Standard,
+            Small,
+        }
+
         public static TagBuilder GetTextItem()
         {
             var builder = new TagBuilder(TagHelperConstants.Div);
             builder.AddCssClass(DetailsTextClass);
 
             return builder;
+        }
+
+        public static TagBuilder GetDetailsSummaryLabelBuilder(string labelText, bool bold, DetailsLabelSize size)
+        {
+            var summaryBuilder = new TagBuilder("summary");
+            summaryBuilder.AddCssClass(DetailsSummaryClass);
+
+            var spanBuilder = new TagBuilder(TagHelperConstants.Span);
+            spanBuilder.AddCssClass(DetailsSummaryTextClass);
+
+            if (size == DetailsLabelSize.Small)
+            {
+                spanBuilder.AddCssClass(DetailsSummaryTextSmallClass);
+            }
+
+            if (bold)
+            {
+                var boldBuilder = new TagBuilder("b");
+                boldBuilder.InnerHtml.Append(labelText);
+                spanBuilder.InnerHtml.AppendHtml(boldBuilder);
+            }
+            else
+            {
+                spanBuilder.InnerHtml.Append(labelText);
+            }
+
+            summaryBuilder.InnerHtml.AppendHtml(spanBuilder);
+
+            return summaryBuilder;
         }
 
         public static TagBuilder GetSummaryLabelBuilder(string headingText, string labelText, bool bold, bool addedSticker = false)

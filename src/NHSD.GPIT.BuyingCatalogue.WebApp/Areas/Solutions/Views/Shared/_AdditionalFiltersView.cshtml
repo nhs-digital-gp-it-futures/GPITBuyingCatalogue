@@ -4,92 +4,98 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.AdditionalFiltersModel
-
-<nhs-expander label-text="Framework" open="true">
-    @if (!string.IsNullOrWhiteSpace(Model.FrameworkFilter))
-    {
-        <ul>
-            <li>
-                @(Model.FrameworkFilter)
-            </li>
-        </ul>
-    }
-    else
-    {
-        @("None selected")
-    }
-</nhs-expander>
-<nhs-expander label-text="Application type" open="true">
-    @if (Model.ApplicationTypeFilters.Any())
-    {
-        <ul>
-            @foreach (var filter in Model.ApplicationTypeFilters)
-            {
-                <li>
-                    @(filter)
-                </li>
-            }
-        </ul>
-    }
-    else
-    {
-        @("None selected")
-    }
-</nhs-expander>
-<nhs-expander label-text="Hosting type" open="true">
-    @if (Model.HostingTypeFilters.Any())
-    {
-        <ul>
-            @foreach (var thing in Model.HostingTypeFilters)
-            {
-                <li>
-                    @(thing)
-                </li>
-            }
-        </ul>
-    }
-    else
-    {
-        @("None selected")
-    }
-</nhs-expander>
-<nhs-expander label-text="Interoperability" open="true">
-    @if (Model.InteroperabilityFilters.Any())
-    {
-        @for(int j=0; j < Model.InteroperabilityFilters.Length; j++)
+<nhs-card title="Filters">
+    <hr class="nhsuk-section-break--s" />
+    <nhs-fieldset label-text="Framework" size="ExtraSmall">
+        @if (!string.IsNullOrWhiteSpace(Model.FrameworkFilter))
         {
-            @if (Model.InteroperabilityFilters[j] == "IM1")
+            <ul style="margin-bottom: 0">
+                <li>
+                    @(Model.FrameworkFilter)
+                </li>
+            </ul>
+        }
+        else
+        {
+            @("None selected")
+        }
+    </nhs-fieldset>
+    <hr class="nhsuk-section-break--s" />
+    <nhs-fieldset label-text="Application type" size="ExtraSmall">
+        @if (Model.ApplicationTypeFilters.Any())
+        {
+            <ul style="margin-bottom: 0">
+                @foreach (var filter in Model.ApplicationTypeFilters)
+                {
+                    <li>
+                        @(filter)
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            @("None selected")
+        }
+    </nhs-fieldset>
+    <hr class="nhsuk-section-break--s" />
+    <nhs-fieldset label-text="Hosting type" size="ExtraSmall">
+        @if (Model.HostingTypeFilters.Any())
+        {
+            <ul style="margin-bottom: 0">
+                @foreach (var thing in Model.HostingTypeFilters)
+                {
+                    <li>
+                        @(thing)
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            @("None selected")
+        }
+    </nhs-fieldset>
+    <hr class="nhsuk-section-break--s" />
+    <nhs-fieldset label-text="Interoperability" size="ExtraSmall">
+        @if (Model.InteroperabilityFilters.Any())
+        {
+            @for (int j = 0; j < Model.InteroperabilityFilters.Length; j++)
             {
-                <p> @(Model.InteroperabilityFilters[j]) integrations</p>
-                <ul>
-                    @for(int i=0; i < Model.IM1IntegrationsFilters.Count(); i++)
-                    {
-                        <li> @(Model.IM1IntegrationsFilters[i])</li>
-                    }
-                </ul>
-            }
-            @if (Model.InteroperabilityFilters[j] == "GP Connect")
-            {
-                <p> @(Model.InteroperabilityFilters[j]) integrations</p>
-                <ul>
-                    @for(int i=0; i < Model.GPConnectIntegrationsFilters.Count(); i++)
-                    {
-                        <li> @(Model.GPConnectIntegrationsFilters[i])</li>
-                    }
-                </ul>
+                @if (Model.InteroperabilityFilters[j] == "IM1")
+                {
+                    <p> @(Model.InteroperabilityFilters[j]) integrations</p>
+                    <ul style="margin-bottom: 0">
+                        @for (int i = 0; i < Model.IM1IntegrationsFilters.Count(); i++)
+                        {
+                            <li> @(Model.IM1IntegrationsFilters[i])</li>
+                        }
+                    </ul>
+                }
+                @if (Model.InteroperabilityFilters[j] == "GP Connect")
+                {
+                    <p> @(Model.InteroperabilityFilters[j]) integrations</p>
+                    <ul style="margin-bottom: 0">
+                        @for (int i = 0; i < Model.GPConnectIntegrationsFilters.Count(); i++)
+                        {
+                            <li> @(Model.GPConnectIntegrationsFilters[i])</li>
+                        }
+                    </ul>
+                }
             }
         }
-    }
-    else
+        else
+        {
+            @("None selected")
+        }
+    </nhs-fieldset>
+    <hr class="nhsuk-section-break--s" />
+    @if (Model.FilterId.HasValue)
     {
-        @("None selected")
+        <div>
+            <vc:nhs-secondary-button text="Download results (PDF)"
+                                     url="@Url.Action(nameof(ManageFiltersController.DownloadResults), typeof(ManageFiltersController).ControllerName(), new { filterId = Model.FilterId.Value })"
+                                     type="Secondary" />
+        </div>
     }
-</nhs-expander>
-@if (Model.FilterId.HasValue)
-{
-    <div>
-        <vc:nhs-secondary-button text="Download results (PDF)"
-                             url="@Url.Action(nameof(ManageFiltersController.DownloadResults), typeof(ManageFiltersController).ControllerName(), new { filterId = Model.FilterId.Value })"
-                             type="Secondary" />
-    </div>
-}
+</nhs-card>

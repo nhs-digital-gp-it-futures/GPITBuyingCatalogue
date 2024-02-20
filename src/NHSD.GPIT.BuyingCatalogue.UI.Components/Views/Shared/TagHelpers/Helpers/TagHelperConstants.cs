@@ -58,6 +58,7 @@
         internal const string ValueName = "value-name";
         internal const string DisplayName = "display-name";
         internal const string HintName = "hint-name";
+        internal const string Size = "size";
         internal const string HintTextName = "hint-text";
         internal const string SubHintText = "sub-hint";
         internal const string Values = "values";
@@ -74,6 +75,7 @@
         internal const string NhsFormGroupError = "nhsuk-form-group--error";
         internal const string NhsInput = "nhsuk-input";
         internal const string NhsLabel = "nhsuk-label";
+        internal const string NhsInLineLabel = "bc-inline-label";
         internal const string NhsHint = "nhsuk-hint";
         internal const string GovUkHint = "govuk-hint";
         internal const string GovUkCharacterCountMessage = "govuk-character-count__message";
@@ -96,6 +98,7 @@
         internal const string RadioItemInputClass = "nhsuk-radios__input";
         internal const string RadioLabelClass = "nhsuk-radios__label";
         internal const string NhsRadios = "nhsuk-radios";
+        internal const string NhsRadiosSizeSmall = "nhsuk-radios--small";
         internal const string NhsRadiosHint = "nhsuk-radios__hint";
         internal const string NhsRadiosParentContainerConditional = "nhsuk-radios--conditional";
         internal const string NhsRadiosChildConditional = "nhsuk-radios__conditional";
@@ -104,6 +107,7 @@
         internal const string NhsVisuallyHidden = "nhsuk-u-visually-hidden";
         internal const string NhsVisuallyHiddenSpanContent = "Information: ";
         internal const string NhsCheckboxes = "nhsuk-checkboxes";
+        internal const string NhsCheckboxesSizeSmall = "nhsuk-checkboxes--small";
         internal const string NhsCheckboxHint = "nhsuk-checkboxes__hint";
         internal const string NhsCheckboxSubHint = "nhsuk-checkboxes__subhint";
         internal const string NhsCheckBoxParentConditionalClass = "nhsuk-checkboxes--conditional";
@@ -128,6 +132,7 @@
         internal const string LabelTextName = "label-text";
         internal const string CheckboxClassName = "checkbox-class";
         internal const string LabelHintName = "label-hint";
+        internal const string InlineLabelName = "inline-label";
         internal const string LabelEmbedHtml = "use-embedded-html";
         internal const string CharacterCountName = "character-count";
         internal const string MaxCharacterLength = "max-character-length";

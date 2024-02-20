@@ -97,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(AdditionalServicesController),
-                nameof(AdditionalServicesController.EditAdditionalServices)).Should().BeTrue();
+                nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.SolutionSelection.Ta
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(AssociatedServicesController),
-                nameof(AssociatedServicesController.EditAssociatedServices)).Should().BeTrue();
+                nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
         }
 
         [Fact]

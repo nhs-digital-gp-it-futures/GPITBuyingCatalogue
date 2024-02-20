@@ -6,267 +6,103 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
+    ViewData["nhsuk-width-container"] = "bc-wider-container";
 }
 
-@if (!Model.FilterResultView)
-{
-@section Breadcrumbs {
-    <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
-        <div class="nhsuk-width-container">
-            <ol class="nhsuk-breadcrumb__list">
-                <li class="nhsuk-breadcrumb__item">
-                    <a class="nhsuk-breadcrumb__link"
-                       data-test-id="home-crumb"
-                       asp-action="@nameof(HomeController.Index)"
-                       asp-controller="@typeof(HomeController).ControllerName()"
-                       asp-area="@typeof(HomeController).AreaName()">
-                        Home
-                    </a>
-                </li>
-                @if (Model.SearchCriteriaApplied)
-                {
-                    <li class="nhsuk-breadcrumb__item">
-                        <a class="nhsuk-breadcrumb__link"
-                           data-test-id="home-crumb"
-                           asp-action="@nameof(SolutionsController.Index)"
-                           asp-controller="@typeof(SolutionsController).ControllerName()"
-                           asp-area="@typeof(SolutionsController).AreaName()">
-                            Catalogue Solutions
-                        </a>
-                    </li>
-                    @if (!string.IsNullOrWhiteSpace(Model.SearchSummary.Selected))
-                    {
-                        <li class="nhsuk-breadcrumb__item">
-                            <a class="nhsuk-breadcrumb__link"
-                               data-test-id="home-crumb"
-                               asp-action="@nameof(FilterController.FilterCapabilities)"
-                               asp-controller="@typeof(FilterController).ControllerName()"
-                               asp-area="@typeof(FilterController).AreaName()"
-                               asp-route-selected="@Model.SearchSummary.Selected"
-                               asp-route-search="@Model.SearchSummary.SearchTerm">
-                                Filter Capabilities
-                            </a>
-                        </li>
-                    }
-
-                    @if (Model.SearchSummary.IncludesEpics)
-                    {
-                        <li class="nhsuk-breadcrumb__item">
-                            <a class="nhsuk-breadcrumb__link"
-                               data-test-id="home-crumb"
-                               asp-action="@nameof(FilterController.FilterEpics)"
-                               asp-controller="@typeof(FilterController).ControllerName()"
-                               asp-area="@typeof(FilterController).AreaName()"
-                               asp-route-selected="@Model.SearchSummary.Selected"
-                               asp-route-search="@Model.SearchSummary.SearchTerm">
-                                Filter Epics
-                            </a>
-                        </li>
-                    }
-                }
-            </ol>
-        </div>
-    </nav>
-}
-}
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         @{
             var PageTitle = Model.GetPageTitle();
         }
-        <nhs-page-title model="@PageTitle"/>
-        @if (!Model.FilterResultView)
+        <nhs-page-title model="@PageTitle" />
+        @if (!Model.Filters.SearchCriteriaApplied)
         {
-            if (!Model.SearchCriteriaApplied)
-            {
-                <vc:nhs-suggestion-search id="marketing-suggestion-search"
-                                          ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName())"
-                                          title-text="Search for solution by solution name or supplier name"
-                                          query-parameter-name="search"/>
-            }
-            else
-            {
-                <nhs-inset-text>
-                    <p>Once you’re happy with your results, you can save your filters to create a shortlist.</p>
-                </nhs-inset-text>
-            }
+            <partial name="Partials/_FrameworkExpiredAlert" />
         }
-
-        <partial name="Partials/_FrameworkExpiredAlert"/>
-        @if (!Model.FilterResultView && !Model.SearchCriteriaApplied)
-        {
-            <vc:nhs-action-link text="Filter Catalogue Solutions"
-                                url="@Url.Action(nameof(FilterController.FilterCapabilities), typeof(FilterController).ControllerName(), new { Selected = Model.SearchSummary.Selected, search = Model.SearchSummary.SearchTerm })"/>
-        }
-
-        @if (Model.SearchCriteriaApplied)
-        {
-            <hr/>
-            <partial name="_SearchResultsHeader" model="@(Model.PageOptions.TotalNumberOfItems)"/>
-            <br/>
-
-            @if (Model.SearchSummary.CapabilitiesAndEpics.Count > 0)
-            {
-                <h3 data-test-id="filter-summary-title">@(FilterSummaryTitle(Model.SearchSummary.IncludesEpics))</h3>
-                var filterContext = GetSearchSummary();
-                <ul data-test-id="filter-summary-content">
-                    @foreach (var item in filterContext)
-                    {
-                        <li>@item</li>
-                    }
-                </ul>
-            }
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-one-third nshuk-card">
+                @if (Model.FilterResultView)
+                {
+                    <partial name="_AdditionalFiltersView" model="@(Model.AdditionalFilters)" />
+                }
+                else
+                {
+                    <partial name="_AdditionalFilters" model="@(Model.AdditionalFilters)" />
+                }
+            </div>
 
             @if (!Model.FilterResultView)
             {
-                <p>
-                    @if (Model.HasCapabilities)
-                    {
-                        <a style="margin-right:20px;"
-                            asp-area="@typeof(FilterController).AreaName()"
-                            asp-controller="@typeof(FilterController).ControllerName()"
-                            asp-action="@nameof(FilterController.FilterCapabilities)"
-                            asp-route-selected="@Model.SearchSummary.Selected"
-                            asp-route-search="@Model.SearchSummary.SearchTerm">
-                                Edit Capabilities
-                        </a>
-                
-                        <a style="margin-right:20px;"
-                            asp-area="@typeof(FilterController).AreaName()"
-                            asp-controller="@typeof(FilterController).ControllerName()"
-                            asp-action="@nameof(FilterController.FilterEpics)"
-                            asp-route-selected="@Model.SearchSummary.Selected"
-                            asp-route-search="@Model.SearchSummary.SearchTerm">
-                                Edit Epics
-                        </a>
-                    }
-                    <a asp-area="@typeof(SolutionsController).AreaName()"
-                       asp-controller="@typeof(SolutionsController).ControllerName()"
-                       asp-action="@nameof(SolutionsController.Index)">
-                        Start a new search
-                    </a>
-                </p>
-            }
-
-            @if (Model.CatalogueItems.Count == 0 && !Model.HasCapabilities)
-            {
-                <p id="no-results">
-                    Try a different search term or change any filters you've selected.
-                </p>
-            }
-        }
-
-        @if (Model.CatalogueItems is not null && Model.CatalogueItems.Count > 0)
-        {
-            <div id="solution-sort-container"></div>
-
-            <script type="text/javascript" src="@Url.Content("~/js/SolutionSort.min.js")" asp-append-version="true"></script>
-
-            <hr/>
-        }
-
-        @if (Model.HasCapabilities)
-        {
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-one-third">
-                    <h2 class="nhsuk-heading-s">Additional filters</h2>
-                    @if (Model.FilterResultView)
-                    {
-                        <partial name="_AdditionalFiltersView" model="@(Model.AdditionalFilters)"/>
-                    }
-                    else
-                    {
-                        <partial name="_AdditionalFilters" model="@(Model.AdditionalFilters)"/>
-
-                        <a asp-area="@typeof(SolutionsController).AreaName()"
-                           asp-controller="@typeof(SolutionsController).ControllerName()"
-                           asp-action="@nameof(SolutionsController.Index)"
-                           asp-route-selected="@Model.SearchSummary.Selected"
-                           asp-route-search="@Model.SearchSummary.SearchTerm">
-                            Clear additional filters
-                        </a>
-                        <br/>
-                        <br/>
-                        <a asp-area="@typeof(SolutionsController).AreaName()"
-                           asp-controller="@typeof(SolutionsController).ControllerName()"
-                           asp-action="@nameof(SolutionsController.Index)">
-                            Start a new search
-                        </a>
-                    }
+                <div class="nhsuk-grid-column-two-thirds" id="search">
+                    <nhs-card title="Search Catalogue Solutions">
+                        <div id="search-by">
+                            <vc:nhs-suggestion-search id="marketing-suggestion-search"
+                                                      ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName())"
+                                                      title-text="Filter Catalogue Solutions"
+                                                      placeholder-text="Search by supplier or solution name"
+                                                      query-parameter-name="search" />
+                        </div>
+                    </nhs-card>
                 </div>
-
-                <div class="nhsuk-grid-column-two-thirds" id="solutions-list">
-                    <h2 class="nhsuk-heading-s">Results</h2>
-                    @foreach (var item in Model.CatalogueItems)
+            }
+            <div class="nhsuk-grid-column-two-thirds" id="solutions-list">
+                @{
+                    var filterCount = Model.Filters.FilterCount;
+                    var suffix = string.Empty;
+                    if (filterCount > 0)
                     {
-                        <partial name="_SolutionSearchDisplay" model="@(new SolutionSearchResultModel(item, Model.SearchSummary.CapabilitiesAndEpics))"/>
+                        suffix = filterCount == 1
+                        ? $" found using {filterCount} filter"
+                        : $" found using {filterCount} filters";
                     }
+                }
+                <nhs-card>
+                    <div class="nhsuk-u-clear">
+                        <h2 class="nhsuk-card__heading nhsuk-heading-s bc-u-block-float-left">@(Model.PageOptions.TotalNumberOfItems) Solutions@(suffix)</h2>
+                        <div style="float: right" id="solution-sort-container"></div>
+                        <script type="text/javascript" src="@Url.Content("~/js/SolutionSort.min.js")" asp-append-version="true"></script>
+                    </div>
 
+                    @if (!Model.FilterResultView)
+                    {
+                        if (Model.Filters.SearchCriteriaApplied)
+                        {
+                            <a asp-area="@typeof(SolutionsController).AreaName()"
+                               asp-controller="@typeof(SolutionsController).ControllerName()"
+                               asp-action="@nameof(SolutionsController.Index)">
+                                Clear all filters
+                            </a>
+                            <div class="filtering-card">
+                                <p class="info-text">
+                                    Once you’re happy with your results, you can save your filters to create a shortlist. The shortlist can then be used to carry out a competition.
+                                </p>
+                                <nhs-submit-button form="filters" class="nhsuk-button--reverse" text="Save filters" formaction="@Url.Action(nameof(ManageFiltersController.SaveFilter), typeof(ManageFiltersController).ControllerName())" />
+                            </div>
+                        }
+                    }
                     @if (Model.CatalogueItems.Count == 0)
                     {
-                        <p>
-                            There were no Catalogue Solutions found with this search criteria.
-                        </p>
-                        @if (Model.FilterResultView)
+                        if (Model.FilterResultView)
                         {
                             <p>
                                 You'll need to use a different filter.
                             </p>
                         }
-                        else
+                    }
+                    else
+                    {
+                        <hr class="nhsuk-section-break--s" />
+                        @foreach (var item in Model.CatalogueItems)
                         {
-                            <p>
-                                Try changing any filters you have selected.
-                            </p>
+                            <partial name="_SolutionSearchDisplay" model="@(new SolutionSearchResultModel(item))" />
                         }
                     }
-                </div>
+                </nhs-card>
             </div>
-        }
-        else if (Model.CatalogueItems is not null && Model.CatalogueItems.Count > 0)
-        {
-            <div id="solutions-list">
-                <h2>Results</h2>
-                @foreach (var item in Model.CatalogueItems)
-                {
-                    <partial name="_SolutionSearchDisplay" model="@(new SolutionSearchResultModel(item, Model.SearchSummary.CapabilitiesAndEpics))"/>
-                }
-            </div>
-        }
+        </div>
         <div id="pagination">
             <nhs-page-number-pagination current-page-number="@Model.PageOptions.PageNumber"
-                                        total-number-of-pages="@Model.PageOptions.NumberOfPages"/>
-
+                                        total-number-of-pages="@Model.PageOptions.NumberOfPages" />
         </div>
     </div>
 </div>
-
-@{
-    List<string> GetSearchSummary()
-    {
-        var searchSummary = new List<string>();
-
-        var capabilities = Model.SearchSummary.CapabilitiesAndEpics;
-        foreach (var capabilityContext in capabilities)
-        {
-            var capabilityText = capabilityContext.CapabilityName;
-            var numberOfEpics = capabilityContext.CountOfEpics;
-            if (numberOfEpics > 0)
-            {
-                capabilityText += $" and {numberOfEpics} {GetEpicDescriptor(numberOfEpics)}";
-            }
-
-            searchSummary.Add(capabilityText);
-        }
-
-        return searchSummary;
-    }
-
-    static string GetEpicDescriptor(int numberOfEpics) => numberOfEpics == 1 ? "Epic" : "Epics";
-
-    static string FilterSummaryTitle(bool includesEpics) =>
-        !includesEpics
-            ? "Selected Capabilities:"
-            : "Selected Capabilities and Epics:";
-
-}

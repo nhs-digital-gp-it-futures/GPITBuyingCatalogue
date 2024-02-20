@@ -192,6 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             {
                 FromPreviousRevision = true,
                 HasNewRecipients = true,
+                IsPerServiceRecipient = true,
             };
 
             model.QuantityStatus.Should().Be(TaskProgress.Amended);

@@ -64,8 +64,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var capabilities = await capabilitiesService.GetCapabilities();
             var selected = SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds);
-            var model = new FilterCapabilitiesModel(capabilities, false, selected)
+            var model = new FilterCapabilitiesModel(capabilities, selected)
             {
+                IsFilter = false,
                 BackLink = Url.Action(nameof(Dashboard)),
             };
 
@@ -161,8 +162,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var capabilities = await capabilitiesService.GetCapabilities();
             var selectedCapabilityIds = epic.Capabilities.Select(x => x.Id).ToList();
 
-            var model = new FilterCapabilitiesModel(capabilities, false, selectedCapabilityIds)
+            var model = new FilterCapabilitiesModel(capabilities, selectedCapabilityIds)
             {
+                IsFilter = false,
                 BackLink = Url.Action(nameof(EditSupplierDefinedEpic), new { epicId }),
             };
 

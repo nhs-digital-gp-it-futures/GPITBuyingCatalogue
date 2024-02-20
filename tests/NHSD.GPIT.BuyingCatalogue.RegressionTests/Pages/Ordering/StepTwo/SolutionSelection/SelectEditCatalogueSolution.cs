@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
                     CommonActions.PageLoadedCorrectGetIndex(
                       typeof(AdditionalServicesController),
-                      nameof(AdditionalServicesController.EditAdditionalServices)).Should().BeTrue();
+                      nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
 
                     if (oldAdditionalServices != default && oldAdditionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
                     {
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
                     CommonActions.PageLoadedCorrectGetIndex(
                       typeof(AdditionalServicesController),
-                      nameof(AdditionalServicesController.EditAdditionalServices)).Should().BeTrue();
+                      nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
                 }
 
                 if (newAdditionalServices != default && newAdditionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
@@ -90,9 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                 }
 
                 CommonActions.ClickSave();
-
-                if (hasTheOrderAdditionalService)
-                    ConfirmAdditionalServiceChanges();
             }
             else
             {
@@ -109,20 +106,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.AddAdditionalServiceLink);
             CommonActions.PageLoadedCorrectGetIndex(
                       typeof(AdditionalServicesController),
-                      nameof(AdditionalServicesController.EditAdditionalServices)).Should().BeTrue();
+                      nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
 
             CommonActions.ClickCheckboxByLabel(additionalService);
-            CommonActions.ClickSave();
-        }
-
-        private void ConfirmAdditionalServiceChanges()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-                  typeof(AdditionalServicesController),
-                  nameof(AdditionalServicesController.ConfirmAdditionalServiceChanges)).Should().BeTrue();
-
-            CommonActions.ClickFirstRadio();
-
             CommonActions.ClickSave();
         }
 
