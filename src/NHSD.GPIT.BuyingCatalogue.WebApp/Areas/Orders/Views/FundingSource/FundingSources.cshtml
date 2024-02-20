@@ -64,7 +64,7 @@
                         <nhs-table-column>Total cost</nhs-table-column>
                         <nhs-table-column>Funding type</nhs-table-column>
                         <nhs-table-column>Status</nhs-table-column>
-                        <nhs-table-column>Action</nhs-table-column>
+                        <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
                         @foreach (var item in Model.OrderItemsSelectable)
                         {
                             <nhs-table-row-container>
@@ -90,6 +90,7 @@
                                 <b>Total</b>
                             </nhs-table-cell>
                             <nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(CalculateTotalCost):N2}")</nhs-table-cell>
+                            <nhs-table-cell></nhs-table-cell>
                             <nhs-table-cell></nhs-table-cell>
                             <nhs-table-cell></nhs-table-cell>
                         </nhs-table-row-container>
@@ -126,6 +127,8 @@
                                 <b>Total</b>
                             </nhs-table-cell>
                             <nhs-table-cell>@($"£{Model.OrderItemsSingleFundingType.Sum(CalculateTotalCost):N2}")</nhs-table-cell>
+                            <nhs-table-cell></nhs-table-cell>
+                            <nhs-table-cell></nhs-table-cell>
                         </nhs-table-row-container>
                     </nhs-table>
                 }
@@ -163,7 +166,7 @@
 
 @{
     TaskProgress GetStatus(OrderItem item) => item.FundingType == OrderItemFundingType.None ? TaskProgress.NotStarted : TaskProgress.Completed;
-    string GetLinkText(OrderItem item) => item.FundingType == OrderItemFundingType.None ? "Start" : "Edit";
+    string GetLinkText(OrderItem item) => item.FundingType == OrderItemFundingType.None ? "Start" : "Change";
 
     decimal CalculateTotalCost(OrderItem item) => Model.OrderWrapper.TotalCostForOrderItem(item.CatalogueItem.Id);
 }
