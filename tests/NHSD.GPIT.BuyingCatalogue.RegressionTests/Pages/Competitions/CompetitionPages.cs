@@ -256,6 +256,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
                 CreateOrderFromWinningSolution.FundingSources(fundingservices);
             }
+            else
+            {
+                CreateOrderFromWinningSolution.FundingSource(winningsolutiont);
+            }
         }
 
         public void ViewMultipleResults()
