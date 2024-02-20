@@ -3,15 +3,16 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModel
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilitiesMappingModels;
 
-public class FailedCapabilitiesUploadModel
+public class FailedGen2UploadModel<T>
+    where T : Gen2CsvBase
 {
-    public FailedCapabilitiesUploadModel()
+    public FailedGen2UploadModel()
     {
     }
 
-    public FailedCapabilitiesUploadModel(
+    public FailedGen2UploadModel(
         string fileName,
-        IEnumerable<Gen2CapabilitiesCsvModel> failedRecords)
+        IEnumerable<T> failedRecords)
     {
         FileName = fileName;
         FailedRecords = failedRecords;
@@ -19,5 +20,5 @@ public class FailedCapabilitiesUploadModel
 
     public string FileName { get; set; }
 
-    public IEnumerable<Gen2CapabilitiesCsvModel> FailedRecords { get; set; }
+    public IEnumerable<T> FailedRecords { get; set; }
 }

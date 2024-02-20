@@ -1,4 +1,4 @@
-@model CapabilitiesUploadModel
+@model Gen2UploadModel
 
 @{
     ViewBag.Title = "Map Capabilities to solutions and services";
@@ -13,7 +13,7 @@
 
         <form method="post" enctype="multipart/form-data">
             <nhs-fieldset-form-container asp-for="@Model" label-text="Upload Capabilities CSV file" size="Medium">
-                <nhs-file-upload file-type="Csv" asp-for="CapabilitiesCsv"></nhs-file-upload>
+                <nhs-file-upload file-type="Csv" asp-for="File"></nhs-file-upload>
             </nhs-fieldset-form-container>
 
             <div>

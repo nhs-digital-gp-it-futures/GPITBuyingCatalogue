@@ -1,4 +1,4 @@
-@model FailedGen2UploadModel<NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels.Gen2CapabilitiesCsvModel>
+@model FailedGen2UploadModel<NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels.Gen2EpicsCsvModel>
 
 @{
     ViewBag.Title = "There is a problem with your CSV file";
@@ -11,11 +11,12 @@
 
         <nhs-card-v2>
             <nhs-card-content title="Review the problems with your CSV file">
-                <nhs-table label-text="Capabilities upload errors">
+                <nhs-table label-text="Epics upload errors">
                     <nhs-table-column>Supplier ID</nhs-table-column>
                     <nhs-table-column>Solution ID</nhs-table-column>
                     <nhs-table-column>Additional Service ID</nhs-table-column>
                     <nhs-table-column>Capability ID</nhs-table-column>
+                    <nhs-table-column>Epic ID</nhs-table-column>
                     <nhs-table-column>Assessment result</nhs-table-column>
 
                     @foreach (var item in Model.FailedRecords)
@@ -25,7 +26,8 @@
                             <nhs-table-cell>@item.SolutionId</nhs-table-cell>
                             <nhs-table-cell>@item.AdditionalServiceId</nhs-table-cell>
                             <nhs-table-cell>@item.CapabilityId</nhs-table-cell>
-                            <nhs-table-cell>@item.CapabilityAssessmentResult</nhs-table-cell>
+                            <nhs-table-cell>@item.EpicId</nhs-table-cell>
+                            <nhs-table-cell>@item.EpicAssessmentResult</nhs-table-cell>
                         </nhs-table-row-container>
                     }
                 </nhs-table>

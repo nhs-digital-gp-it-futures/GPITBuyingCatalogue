@@ -4,6 +4,7 @@ using System.Linq;
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels;
 
 public class Gen2CsvImportModel<T>
+    where T : Gen2CsvBase
 {
     public Gen2CsvImportModel()
     {

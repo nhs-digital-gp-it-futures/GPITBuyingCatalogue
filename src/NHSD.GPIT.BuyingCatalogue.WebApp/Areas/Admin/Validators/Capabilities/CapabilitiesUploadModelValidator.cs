@@ -4,11 +4,11 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Capabilities;
 
-public class CapabilitiesUploadModelValidator : AbstractValidator<CapabilitiesUploadModel>
+public class CapabilitiesUploadModelValidator : AbstractValidator<Gen2UploadModel>
 {
     public CapabilitiesUploadModelValidator()
     {
-        RuleFor(x => x.CapabilitiesCsv)
+        RuleFor(x => x.File)
             .IsValidCsv();
     }
 }
