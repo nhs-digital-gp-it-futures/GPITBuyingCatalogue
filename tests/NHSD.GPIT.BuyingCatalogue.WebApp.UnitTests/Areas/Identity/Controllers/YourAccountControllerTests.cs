@@ -28,7 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             typeof(YourAccountController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Identity");
             typeof(YourAccountController).Should().BeDecoratedWith<RouteAttribute>(r => r.Template == "Identity/YourAccount");
             typeof(YourAccountController).Should().BeDecoratedWith<AuthorizeAttribute>();
-
         }
 
         [Fact]
