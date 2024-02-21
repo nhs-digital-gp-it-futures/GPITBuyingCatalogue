@@ -22,9 +22,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
         public bool ShowBackToTop { get; set; }
 
-        public string FirstSection => sections[0].Name;
+        public string FirstSection => sections.Any() ? sections[0].Name : null;
 
-        public string SelectedSection => sections[Index].Name;
+        public string SelectedSection => Index >= 0 && Index < sections.Count ? sections[Index].Name : null;
 
         public IList<SectionModel> BreadcrumbItems
         {
