@@ -39,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionUnder40K()
         {
             string orderDescription = "OrderWithSolutionUnder40K";
@@ -61,6 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Framework", "Order")]
         public void LocalFundingOnlyFrameworksOrderWithSolutionUnder40K()
         {
             string orderDescription = "LocalFundingOnlyFrameworksOrderWithSolutionUnder40K";
@@ -83,6 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Framework", "Order")]
         public void MultipleFrameworksOrderWithSolutionUnder40K()
         {
             string orderDescription = "MultipleFrameworksOrderWithSolutionUnder40K";
@@ -105,6 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K";
@@ -127,6 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K";
@@ -149,6 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K()
         {
             string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K";
@@ -171,6 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void EditPlannedDeliveryDateOrderWithSolutionAdditionalAndAssociatedServiceUnder40K()
         {
             string orderDescription = "EditPlannedDeliveryDateOrderWithSolutionAdditionalAndAssociatedServiceUnder40K";
@@ -195,6 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void CatalogueSolutionOnlyBetween40KTo250K()
         {
             string orderDescription = "CatalogueSolutionOnlyBetween40KTo250K";
@@ -219,6 +227,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Amend Order Journey", "Order")]
         public void Amend_CatalogueSolution()
         {
             string orderDescription = "Amend_CatalogueSolution";
@@ -245,6 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Amend Order Journey", "Order")]
         public void Amend_CatalogueSolution_multiple_servicereceipients()
         {
             string orderDescription = "Amend_CatalogueSolution_multiple_servicereceipients";
@@ -271,6 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Amend Order Journey", "Order")]
         public void Amend_CatalogueSolution_import_servicereceipients()
         {
             string orderDescription = "Amend_CatalogueSolution_import_servicereceipients";
@@ -300,6 +311,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Amend Order Journey", "Order")]
         public void AmendCatalogueSolutionsAndAdditionalService()
         {
             string orderDescription = "AmendCatalogueSolutionsAndAdditionalService";
@@ -326,6 +338,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Amend Order Journey", "Order")]
         public void AmendMultipleAdditionalService()
         {
             string orderDescription = "AmendMultipleAdditionalService";
@@ -358,6 +371,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void CatalogueSolutionOnlyWithNewSupplierContactBetween40KTo250K()
         {
             string orderDescription = "CatalogueSolutionOnlyWithNewSupplierContactBetween40KTo250K";
@@ -380,6 +394,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceBetween40Kand250K()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceBetween40Kand250K";
@@ -402,6 +417,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceBetween40Kand250KStepThreeCustomRoute()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceBetween40Kand250K StepThreeCustomRoute";
@@ -424,6 +440,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceBetween40Kand250K()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceBetween40Kand250K";
@@ -446,6 +463,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250K()
         {
             string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250K";
@@ -468,6 +486,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250KStepThreeCustomRoute()
         {
             string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250K StepThreeCustomRoute";
@@ -490,6 +509,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void CatalogueSolutionOnlyOver250K_AllserviceRecipients()
         {
             string orderDescription = "CatalogueSolutionOnlyOver250K_AllserviceRecipients";
@@ -512,6 +532,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void CatalogueSolutionOnlyOver250K()
         {
             string orderDescription = "CatalogueSolutionOnlyOver250K";
@@ -534,6 +555,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void CatalogueSolutionOnlyOver250KStepThreeCustomRoute()
         {
             string orderDescription = "CatalogueSolutionOnlyOver250K Step Three Custom Route";
@@ -556,6 +578,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceOver250K()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceOver250K";
@@ -578,6 +601,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceOver250K()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceOver250K";
@@ -600,6 +624,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceOver250K()
         {
             string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceOver250K";
@@ -622,6 +647,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly()
         {
             string orderDescription = "OrderAssociatedServiceOnly";
@@ -642,6 +668,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Associated Service Only Journey", "Split Order")]
         public void OrderSplitAssociatedServiceOnly()
         {
             string orderDescription = "OrderSplitAssociatedServiceOnly";
@@ -662,6 +689,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Associated Service Only Journey", "Merger Order")]
         public void OrderMergerAssociatedServiceOnly()
         {
             string orderDescription = "OrderMergerAssociatedServiceOnly";
@@ -682,6 +710,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Associated Service Only Journey", "Order")]
         public void EditPlannedDeliveryDateOrderAssociatedServiceOnly()
         {
             string orderDescription = "EditPlannedDeliveryDateOrderAssociatedServiceOnly";
@@ -704,6 +733,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnlyWithStepThreeCustomRoute()
         {
             string orderDescription = "OrderAssociatedServiceOnlyWithStepThreeCustomRoute";
@@ -724,6 +754,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution";
@@ -748,6 +779,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditCatalogueSolution()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditCatalogueSolution";
@@ -772,6 +804,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditCatalogueSolution()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditCatalogueSolution";
@@ -796,6 +829,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditCatalogueSolution()
         {
             string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditCatalogueSolution";
@@ -820,6 +854,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderAssociatedServiceOnly_EditCatalogueSolution()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditCatalogueSolution";
@@ -842,6 +877,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionUnder40K_SolutionDoesNotHaveAdditionalService_EditAdditionalService()
         {
             string orderDescription = "OrderWithSolutionUnder40K_SolutionDoesNotHaveAdditionalService_EditAdditionalService";
@@ -866,6 +902,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionUnder40K_EditAdditionalService()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditAdditionalService";
@@ -890,6 +927,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService";
@@ -914,6 +952,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAdditionalService()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAdditionalService";
@@ -938,6 +977,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAdditionalService()
         {
             string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAdditionalService";
@@ -962,6 +1002,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionUnder40K_EditAssociatedService()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditAssociatedService";
@@ -986,6 +1027,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAssociatedService()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAssociatedService";
@@ -1010,6 +1052,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService";
@@ -1034,6 +1077,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAssociatedService()
         {
             string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAssociatedService";
@@ -1058,6 +1102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Associated Service", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedService()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService";
@@ -1080,6 +1125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolutionServiceRecipient()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionServiceRecipient";
@@ -1104,6 +1150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolutionPrice()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionPrice";
@@ -1128,6 +1175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolutionQuantity()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionQuantity";
@@ -1152,6 +1200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceRecipient()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceRecipient";
@@ -1176,6 +1225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServicePrice()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServicePrice";
@@ -1200,6 +1250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceQuantity()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceQuantity";
@@ -1224,6 +1275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceRecipient()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceRecipient";
@@ -1248,6 +1300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServicePrice()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServicePrice";
@@ -1272,6 +1325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceQuantity()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceQuantity";
@@ -1296,6 +1350,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedServiceRecipients()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServiceRecipients";
@@ -1318,6 +1373,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedServicePrice()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServicePrice";
@@ -1340,6 +1396,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Order Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedServiceQuantity()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServiceQuantity";
@@ -1362,6 +1419,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServicesUnder40K_MultipleAdditionalServices()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServicesUnder40K_MultipleAdditionalServices";
@@ -1390,6 +1448,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServicesUnder40K_MultipleAdditionalServices_OneAssociatedService()
         {
             string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServicesUnder40K_MultipleAdditionalServices_OneAssociatedService";
@@ -1419,6 +1478,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAssociatedServices_OneAdditionalService()
         {
             string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAssociatedServices_OneAdditionalService";
@@ -1444,6 +1504,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices";
@@ -1469,6 +1530,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditionalServices_MultipleAssociatedServices()
         {
             string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditionalServices_MultipleAssociatedServices";
@@ -1498,6 +1560,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Associated Service Only Journey", "Order")]
         public void OrderWithAssociatedServiceOnly_MultipleAssociatedServices()
         {
             string orderDescription = "OrderWithAssociatedServiceOnly_MultipleAssociatedServices";
@@ -1521,6 +1584,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Associated Service Only Journey", "Split Order")]
         public void OrderWithSolutionUnder40K_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionUnder40K_MultipleServiceRecipients";
@@ -1545,6 +1609,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionUnder40K_ImportServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionUnder40K_ImportServiceRecipients";
@@ -1570,6 +1635,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients";
@@ -1595,6 +1661,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_ImportServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_ImportServiceRecipients";
@@ -1621,6 +1688,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Associated Service Only Journey", "Split Order")]
         public void OrderAssociatedServiceOnly_ImportServiceRecipients()
         {
             string orderDescription = "OrderAssociatedServiceOnly_ImportServiceRecipients";
@@ -1645,6 +1713,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients";
@@ -1670,6 +1739,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_ImportServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_ImportServiceRecipients";
@@ -1696,6 +1766,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleServiceRecipients";
@@ -1722,6 +1793,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Associated Service Only Journey", "Split Order")]
         public void OrderWithAssociatedServiceOnly_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithAssociatedServiceOnly_MultipleServiceRecipients";
@@ -1745,6 +1817,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Associated Service Only Journey", "Split Order")]
         public void OrderAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices";
@@ -1767,6 +1840,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices";
@@ -1791,6 +1865,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices";
@@ -1815,6 +1890,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditional_AddultipleAssociatedServices()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditional_AddultipleAssociatedServices";
@@ -1839,6 +1915,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleServiceRecipients";
@@ -1863,6 +1940,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_MultipleServiceRecipients";
@@ -1887,6 +1965,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices_MultipleServiceRecipients";
@@ -1911,6 +1990,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddMultipleAssociatedServices_AddMultipleServiceRecipients";
@@ -1935,6 +2015,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
         {
             string orderDescription = "OrderWithAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices_AddMultipleServiceRecipients";
@@ -1960,6 +2041,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddOneAssociatedService()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddOneAssociatedService";
@@ -1984,6 +2066,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionUnder40K_EditAdditionalService_AddMultipleAdditionalServices()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditAdditionalService_AddMultipleAdditionalServices";
@@ -2008,6 +2091,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService_MultipleAdditionalServices()
         {
             string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService_MultipleAdditionalServices";
@@ -2032,6 +2116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
         {
             string orderDescription = "OrderWithSolutionUnder40K_EditAssociatedService_AddMultipleAssociatedServices";
@@ -2056,6 +2141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
         {
             string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService_AddMultipleAssociatedServices";
@@ -2080,6 +2166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Edit Associated Service", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices";
@@ -2102,6 +2189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Multiple Results")]
         public void CompetitionForMultipleResultFilter()
         {
             string competitionName = "CompetitionForMultipleResultFilter";
@@ -2114,6 +2202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "No Results")]
         public void CompetitionForNoResultFilter()
         {
             string competitionName = "CompetitionForNoResultFilter";
@@ -2126,6 +2215,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Single Results")]
         public void CompetitionForSingleResultFilter()
         {
             string competitionName = "CompetitionForSingleResultFilter";
@@ -2138,9 +2228,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Price Only")]
         public void CompetitionPriceOnly()
         {
-            string competitionName = "CompetitionForMultipleResultFilter";
+            string competitionName = "CompetitionPriceOnly";
 
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
@@ -2154,6 +2245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Competition to Order")]
         public void CompetitionOrderFromPriceOnlyCompetition()
         {
             string competitionName = "CompetitionOrderFromPriceOnlyCompetition";
@@ -2176,6 +2268,53 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Competition to Order")]
+        public void CompetitionOrderFromPricAndNonPriceCompetition()
+        {
+            string competitionName = "CompetitionOrderFromPricAndNonPriceCompetition";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+
+            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Feature);
+
+            CompetitionPages.ViewResults();
+
+            CompetitionPages.CreateOrder();
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        [Trait("Further Competition", "Competition to Order")]
+        public void CompetitionOrderForPriceOnlyMultipleResults()
+        {
+            string competitionName = "CompetitionOrderForPriceOnlyMultipleResults";
+
+            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+
+            CompetitionPages.BeforeYouStart.ReadyToStart();
+
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+
+            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+
+            CompetitionPages.ViewMultipleResults();
+
+            CompetitionPages.CreateOrder();
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+        }
+
+        [Fact]
+        [Trait("Further Competition", "Price Only")]
         public void CompetitionPriceOnlyMultipleRecipients()
         {
             string competitionName = "CompetitionPriceOnlyMultipleRecipients";
@@ -2192,6 +2331,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Price Only")]
         public void CompetitionPriceOnlyMultipleResults()
         {
             string competitionName = "CompetitionPriceOnlyMultipleResults";
@@ -2208,6 +2348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Price Only")]
         public void CompetitionPriceOnlyAllICBRecipients()
         {
             string competitionName = "CompetitionPriceOnlyAllICBRecipients";
@@ -2224,6 +2365,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Price And Non Price")]
         public void CompetitionPricAndNonPriceElementFeature()
         {
             string competitionName = "CompetitionPricAndNonPriceElementFeature";
@@ -2240,6 +2382,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Price And Non Price")]
         public void CompetitionPricAndNonPriceElementImplementation()
         {
             string competitionName = "CompetitionPricAndNonPriceElementImplementation";
@@ -2256,6 +2399,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Price And Non Price")]
         public void CompetitionPricAndNonPriceElementInteroperability()
         {
             string competitionName = "CompetitionPricAndNonPriceElementInteroperability";
@@ -2272,6 +2416,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Price And Non Price")]
         public void CompetitionPricAndNonPriceElementServiceLevelAgreement()
         {
             string competitionName = "CompetitionPricAndNonPriceElementServiceLevelAgreement";
@@ -2288,6 +2433,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Further Competition", "Price And Non Price")]
         public void CompetitionAllNonPriceElements()
         {
             string competitionName = "CompetitionAllNonPriceElements";
@@ -2304,6 +2450,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Amend Order Journey", "Order")]
         public void OrderAmendCatalogueSolutionGreaterThan250K()
         {
             string orderDescription = "CatalogueSolutionOver250K";
@@ -2330,6 +2477,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Amend Order Journey", "Order")]
         public void OrderAmendCatalogueSolutionAmendDescription()
         {
             string orderDescription = "Amend_CatalogueSolution";

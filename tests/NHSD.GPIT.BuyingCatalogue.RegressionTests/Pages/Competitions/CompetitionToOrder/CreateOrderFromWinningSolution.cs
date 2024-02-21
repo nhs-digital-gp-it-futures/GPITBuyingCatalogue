@@ -102,5 +102,30 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Competiti
               typeof(OrderController),
               nameof(OrderController.Order)).Should().BeTrue();
         }
+
+        public void FundingSource(CatalogueItemId solutionId)
+        {
+            CommonActions.ClickLinkElement(CompetitionToOrderObjects.FundingSources(solutionId.ToString()));
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(FundingSourceController),
+                nameof(FundingSourceController.FundingSource))
+                .Should().BeTrue();
+
+            CommonActions.ClickFirstRadio();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(FundingSourceController),
+                nameof(FundingSourceController.FundingSources))
+                .Should().BeTrue();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+              typeof(OrderController),
+              nameof(OrderController.Order)).Should().BeTrue();
+        }
     }
 }
