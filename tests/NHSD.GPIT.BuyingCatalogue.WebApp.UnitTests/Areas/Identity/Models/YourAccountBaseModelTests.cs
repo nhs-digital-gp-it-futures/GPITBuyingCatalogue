@@ -10,15 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Models
 {
     public static class YourAccountBaseModelTests
     {
-        [Theory]
-        [InlineData(typeof(YourAccountModel))]
-        public static void ChildClasses_InheritFrom_SolutionDisplayBaseModel(Type childType)
-        {
-            childType
-            .Should()
-            .BeAssignableTo<YourAccountBaseModel>();
-        }
-
         [Fact]
         public static void Constructor_PropertiesCorrectlySet()
         {

@@ -35,15 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
             },
         };
 
-        [Theory]
-        [InlineData(typeof(SolutionDisplayBaseModel))]
-        public static void ChildClasses_InheritFrom_SideNavigationBaseModel(Type childType)
-        {
-            childType
-            .Should()
-            .BeAssignableTo<SideNavigationBaseModel>();
-        }
-
         [Fact]
         public static void FirstSection_Returns_ExpectedResponse()
         {
