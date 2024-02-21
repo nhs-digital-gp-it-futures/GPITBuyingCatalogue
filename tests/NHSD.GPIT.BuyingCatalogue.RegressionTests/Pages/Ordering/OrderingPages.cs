@@ -218,8 +218,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 SelectEditCatalogueSolution.SelectSolution(solutionName, additionalServices);
 
-                SelectEditAndConfirmPrices.SelectAndConfirmPrice();
-                Quantity.AddQuantity();
+                SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(solutionName);
+                Quantity.AddSolutionQuantity(solutionName);
 
                 if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
@@ -230,23 +230,34 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     }
                 }
 
-                if (HasAssociatedServices(solutionName))
+                if (HasAssociatedServices(solutionName) && associatedServices != default && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
-                    if ((associatedServices != default) && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
-                    {
-                        SelectEditAssociatedService.AddAssociatedService(associatedServices, "Yes");
+                    SelectEditAssociatedService.AddAssociatedService(associatedServices, "Yes");
 
-                        foreach (var associatedService in associatedServices)
-                        {
-                            SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
-                            Quantity.AddQuantity();
-                        }
-                    }
-                    else
+                    foreach (var associatedService in associatedServices)
                     {
-                        SelectEditAssociatedService.AddAssociatedService();
+                        SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                        Quantity.AddQuantity();
                     }
                 }
+
+                //if (HasAssociatedServices(solutionName))
+                //{
+                //    if ((associatedServices != default) && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
+                //    {
+                //        SelectEditAssociatedService.AddAssociatedService(associatedServices, "Yes");
+
+                //        foreach (var associatedService in associatedServices)
+                //        {
+                //            SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
+                //            Quantity.AddQuantity();
+                //        }
+                //    }
+                //    else
+                //    {
+                //        SelectEditAssociatedService.AddAssociatedService();
+                //    }
+                //}
             }
             else if (isAssociatedServiceOnlyOrder && !isAssociatedSplitOrMergerOrder)
             {
