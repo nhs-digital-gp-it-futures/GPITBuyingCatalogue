@@ -42,6 +42,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             model.Object.Sections.Any().Should().BeTrue();
             model.Object.BreadcrumbItems.Any().Should().BeTrue();
         }
-
     }
 }
