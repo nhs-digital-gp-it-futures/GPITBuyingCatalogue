@@ -2,6 +2,17 @@
     padding-bottom: 0;
 }
 
+.header-with-detail {
+    text-align: left;
+    display: inline-block;
+    vertical-align: middle
+}
+
+.detail {
+    float: right;
+    vertical-align: middle
+}
+
 .nhs-card-v2__footer p {
     margin-bottom: 16px !important;
     margin-top: 16px !important;

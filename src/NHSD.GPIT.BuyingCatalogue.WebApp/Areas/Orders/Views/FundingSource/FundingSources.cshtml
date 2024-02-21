@@ -50,11 +50,11 @@
                 @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
                 {
                     <div style="display:block; align-items:center;">
-                        <h3 style="text-align:left; display: inline-block; vertical-align:middle">
+                        <h3 class="header-with-detail">
                             Funding information (costs exclude VAT)
                         </h3>
 
-                        <span class="detail" style="float:right; vertical-align:middle">
+                        <span class="detail">
                             <strong>@Model.OrderItemsSelectable.Where(x => x.FundingType != OrderItemFundingType.None).Count()</strong> of <strong>@Model.OrderItemsSelectable.Count()</strong> started
                         </span> 
                     </div>
@@ -99,7 +99,7 @@
                 @if (Model.OrderItemsSingleFundingType != null && Model.OrderItemsSingleFundingType.Any())
                 {
                     <div style="display:block; align-items:center;">
-                        <h3 style="text-align:left; display: inline-block; vertical-align:middle">
+                        <h3>
                             Funding information (costs exclude VAT)
                         </h3>
                     </div>
