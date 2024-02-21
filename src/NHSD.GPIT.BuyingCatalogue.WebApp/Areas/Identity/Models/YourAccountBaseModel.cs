@@ -11,7 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
         protected YourAccountBaseModel()
         {
             SetSections();
-            SetPaginationFooter();
 
             ShowBackToTop = false;
             ShowSideNavigation = true;
