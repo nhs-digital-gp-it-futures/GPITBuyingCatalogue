@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             var model = new YourAccountModel(organisation)
             {
-                Title = "Your Account",
+                Title = "Your account",
                 Caption = User.GetUserDisplayName(),
             };
 
