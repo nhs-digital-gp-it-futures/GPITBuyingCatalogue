@@ -102,10 +102,6 @@
                         <h3 style="text-align:left; display: inline-block; vertical-align:middle">
                             Funding information (costs exclude VAT)
                         </h3>
-
-                        <span class="detail" style="float:right; vertical-align:middle">
-                            <strong>@Model.OrderItemsSelectable.Where(x => x.FundingType != OrderItemFundingType.None).Count()</strong> of <strong>@Model.OrderItemsSelectable.Count()</strong> started
-                        </span>
                     </div>
                     <nhs-table data-test-id="funding-sources-items-local-only"
                                label-text="Item and cost">
