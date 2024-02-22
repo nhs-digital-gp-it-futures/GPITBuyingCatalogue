@@ -1,4 +1,5 @@
 ﻿using EnumsNET;
+using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -218,15 +219,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 SelectEditCatalogueSolution.SelectSolution(solutionName, additionalServices);
 
-                SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(solutionName);
-                Quantity.AddSolutionQuantity(solutionName);
+                string solutionid = GetCatalogueSolutionID(solutionName);
+
+                SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(solutionid);
+                Quantity.AddSolutionQuantity(solutionid);
 
                 if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
                     foreach (var additionalService in additionalServices)
                     {
-                        SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
-                        Quantity.AddQuantity();
+                        SelectEditCatalogueSolution.AddAdditionalServices(additionalService);
+                        var serviceid = GetAdditionalServiceID(additionalService);
+                        SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
+                        Quantity.AddSolutionQuantity(serviceid);
                     }
                 }
 
@@ -839,6 +844,33 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     && o.OrderItems.Any(i => i.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService));
 
             return result;
+        }
+
+        private string GetCatalogueSolutionID(string solutionName)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var solution = dbContext.Solutions.FirstOrDefault(i => i.CatalogueItem.Name == solutionName);
+
+            return (solution != null) ? solution.CatalogueItemId.ToString() : string.Empty;
+        }
+
+        private string GetAdditionalServiceID(string additionalService)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var service = dbContext.AdditionalServices.FirstOrDefault(i => i.CatalogueItem.Name ==  additionalService);
+
+            return (service != null) ? service.CatalogueItemId.ToString() : string.Empty;
+        }
+
+        private string GetAssociatedServiceID(string associatedService)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var service = dbContext.AssociatedServices.FirstOrDefault(i => i.CatalogueItem.Name == associatedService);
+
+            return (service != null) ? service.CatalogueItemId.ToString() : string.Empty;
         }
     }
 }

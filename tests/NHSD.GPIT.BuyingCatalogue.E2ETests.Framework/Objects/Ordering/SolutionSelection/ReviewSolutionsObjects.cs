@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Solution
 
         public static By ChangeAdditionalServiceLink => By.LinkText("Change Additional Services");
 
-        public static By AddAdditionalServiceLink => By.LinkText("Add Additional Services");
+        public static By AddAdditionalServiceLink => By.XPath("//a[contains(@href, '/additional-services/add')]");
 
         public static By AddAssociatedServiceLink => By.LinkText("Add Associated Services");
 

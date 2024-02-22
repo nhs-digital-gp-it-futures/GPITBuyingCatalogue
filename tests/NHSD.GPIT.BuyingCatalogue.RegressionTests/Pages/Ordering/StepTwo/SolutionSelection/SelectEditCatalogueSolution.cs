@@ -21,16 +21,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         public void SelectSolution(string solutionName, IEnumerable<string>? additionalServices)
         {
             CommonActions.ClickRadioButtonWithText(solutionName);
-            if (SolutionHasAdditionalService(solutionName) && additionalServices != default)
-            {
-                foreach (var additionalService in additionalServices)
-                {
-                    if (!string.IsNullOrWhiteSpace(additionalService))
-                    {
-                        CommonActions.ClickCheckboxByLabel(additionalService);
-                    }
-                }
-            }
+            //if (SolutionHasAdditionalService(solutionName) && additionalServices != default)
+            //{
+            //    foreach (var additionalService in additionalServices)
+            //    {
+            //        if (!string.IsNullOrWhiteSpace(additionalService))
+            //        {
+            //            CommonActions.ClickCheckboxByLabel(additionalService);
+            //        }
+            //    }
+            //}
 
             CommonActions.ClickSave();
         }

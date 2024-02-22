@@ -64,9 +64,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
-        public void SelectCatalogueSolutionPrice(string solutionName)
+        public void SelectCatalogueSolutionPrice(string solutionid)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetCatalogueSolutionID(solutionName)));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(solutionid));
 
             CommonActions.PageLoadedCorrectGetIndex(
                typeof(PricesController),
@@ -119,5 +119,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             return (solution != null) ? solution.CatalogueItemId.ToString() : string.Empty;
         }
+
+        //private string GetAdditionalServiceID(string solutionid)
+        //{
+        //    using var dbContext = Factory.DbContext;
+
+        //    var services = dbContext.AdditionalServices.FirstOrDefault(i => i.CatalogueItem.AdditionalService);
+        //    return (solution != null) ? solution.CatalogueItemId.ToString() : string.Empty;
+        //}
     }
 }

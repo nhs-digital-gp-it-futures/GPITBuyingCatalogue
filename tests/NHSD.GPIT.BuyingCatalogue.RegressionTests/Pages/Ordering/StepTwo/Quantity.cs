@@ -58,9 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
             CommonActions.ClickContinue();
         }
 
-        public void AddSolutionQuantity(string catalogueItemName)
+        public void AddSolutionQuantity(string solutionid)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(GetCatalogueItemID(catalogueItemName)));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(solutionid));
             AddQuantity();
         }
 
