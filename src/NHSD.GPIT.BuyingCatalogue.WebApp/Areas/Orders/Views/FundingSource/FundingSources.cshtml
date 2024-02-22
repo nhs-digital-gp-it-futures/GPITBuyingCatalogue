@@ -29,7 +29,7 @@
 
 <partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-column-full">
         <nhs-validation-summary/>
         <nhs-page-title title="@ViewBag.Title"
                         advice="@advice"
@@ -45,97 +45,115 @@
             </nhs-inset-text>
         }
 
-        @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
-        {
-            <nhs-table data-test-id="funding-sources-items-editable">
-                <nhs-table-column>Solution or service</nhs-table-column>
-                <nhs-table-column>Total cost</nhs-table-column>
-                <nhs-table-column>Funding type</nhs-table-column>
-                <nhs-table-column>Status</nhs-table-column>
-                <nhs-table-column>Action</nhs-table-column>
-                @foreach (var item in Model.OrderItemsSelectable)
+        <nhs-card-v2>
+            <nhs-card-content>
+                @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
                 {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
-                        <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
-                        <nhs-table-cell>@item.FundingType.Description()</nhs-table-cell>
-                        <nhs-table-cell>
-                            <nhs-tag status-enum="@GetStatus(item)"></nhs-tag>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a data-test-id="@item.CatalogueItem.Name.Trim().Replace(' ', '-')" asp-controller="@typeof(FundingSourceController).ControllerName()"
-                               asp-action="@nameof(FundingSourceController.FundingSource)"
-                               asp-route-internalOrgId="@Model.InternalOrgId"
-                               asp-route-callOffId="@Model.CallOffId"
-                               asp-route-catalogueItemId="@item.CatalogueItem.Id">
-                                @GetLinkText(item)
-                            </a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
+                    <div style="display:block; align-items:center;">
+                        <h3 class="header-with-detail">
+                            Funding information (costs exclude VAT)
+                        </h3>
+
+                        <span class="detail">
+                            <strong>@Model.OrderItemsSelectable.Where(x => x.FundingType != OrderItemFundingType.None).Count()</strong> of <strong>@Model.OrderItemsSelectable.Count()</strong> started
+                        </span> 
+                    </div>
+                
+                    <nhs-table data-test-id="funding-sources-items-editable">
+                        <nhs-table-column>Solution or service</nhs-table-column>
+                        <nhs-table-column>Total cost</nhs-table-column>
+                        <nhs-table-column>Funding type</nhs-table-column>
+                        <nhs-table-column>Status</nhs-table-column>
+                        <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
+                        @foreach (var item in Model.OrderItemsSelectable)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
+                                <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
+                                <nhs-table-cell>@item.FundingType.Description()</nhs-table-cell>
+                                <nhs-table-cell>
+                                    <nhs-tag status-enum="@GetStatus(item)"></nhs-tag>
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a data-test-id="@item.CatalogueItem.Name.Trim().Replace(' ', '-')" asp-controller="@typeof(FundingSourceController).ControllerName()"
+                                       asp-action="@nameof(FundingSourceController.FundingSource)"
+                                       asp-route-internalOrgId="@Model.InternalOrgId"
+                                       asp-route-callOffId="@Model.CallOffId"
+                                       asp-route-catalogueItemId="@item.CatalogueItem.Id">
+                                        @GetLinkText(item)
+                                    </a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <b>Total</b>
+                            </nhs-table-cell>
+                            <nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(CalculateTotalCost):N2}")</nhs-table-cell>
+                            <nhs-table-cell></nhs-table-cell>
+                            <nhs-table-cell></nhs-table-cell>
+                            <nhs-table-cell></nhs-table-cell>
+                        </nhs-table-row-container>
+                    </nhs-table>
                 }
-                <nhs-table-row-container>
-                    <nhs-table-cell>
-                        <b>Total</b>
-                    </nhs-table-cell>
-                    <nhs-table-cell>@($"£{Model.OrderItemsSelectable.Sum(CalculateTotalCost):N2}")</nhs-table-cell>
-                    <nhs-table-cell></nhs-table-cell>
-                    <nhs-table-cell></nhs-table-cell>
-                </nhs-table-row-container>
-            </nhs-table>
-            <p>
-                <b>All prices exclude VAT.</b>
-            </p>
-            <br/>
-        }
-        @if (Model.OrderItemsSingleFundingType != null && Model.OrderItemsSingleFundingType.Any())
-        {
-            <nhs-table data-test-id="funding-sources-items-local-only"
-                       label-text="Item and cost">
-                <nhs-table-column>Solution or service</nhs-table-column>
-                <nhs-table-column>Total cost</nhs-table-column>
-                <nhs-table-column></nhs-table-column>
-                <nhs-table-column></nhs-table-column>
-                @foreach (var item in Model.OrderItemsSingleFundingType)
+                @if (Model.OrderItemsSingleFundingType != null && Model.OrderItemsSingleFundingType.Any())
                 {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
-                        <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
-                        <nhs-table-cell></nhs-table-cell>
-                        <nhs-table-cell></nhs-table-cell>
-                    </nhs-table-row-container>
+                    <div style="display:block; align-items:center;">
+                        <h3>
+                            Funding information (costs exclude VAT)
+                        </h3>
+                    </div>
+                    <nhs-table data-test-id="funding-sources-items-local-only"
+                               label-text="Item and cost">
+                        <nhs-table-column>Solution or service</nhs-table-column>
+                        <nhs-table-column>Total cost</nhs-table-column>
+                        <nhs-table-column></nhs-table-column>
+                        <nhs-table-column></nhs-table-column>
+                        @foreach (var item in Model.OrderItemsSingleFundingType)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
+                                <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
+                                <nhs-table-cell></nhs-table-cell>
+                                <nhs-table-cell></nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                <b>Total</b>
+                            </nhs-table-cell>
+                            <nhs-table-cell>@($"£{Model.OrderItemsSingleFundingType.Sum(CalculateTotalCost):N2}")</nhs-table-cell>
+                            <nhs-table-cell></nhs-table-cell>
+                            <nhs-table-cell></nhs-table-cell>
+                        </nhs-table-row-container>
+                    </nhs-table>
                 }
-                <nhs-table-row-container>
-                    <nhs-table-cell>
-                        <b>Total</b>
-                    </nhs-table-cell>
-                    <nhs-table-cell>@($"£{Model.OrderItemsSingleFundingType.Sum(CalculateTotalCost):N2}")</nhs-table-cell>
-                </nhs-table-row-container>
-            </nhs-table>
-            <p>
-                <b>All prices exclude VAT.</b>
-            </p>
-            <br/>
-        }
-        @if (Model.OrderItemsNoFundingRequired != null && Model.OrderItemsNoFundingRequired.Any())
-        {
-            <nhs-table data-test-id="funding-sources-items-no-funding-required"
-                       label-text="No funding required">
-                <nhs-table-column>Solution or service</nhs-table-column>
-                <nhs-table-column>Total cost</nhs-table-column>
-                <nhs-table-column></nhs-table-column>
-                <nhs-table-column></nhs-table-column>
-                @foreach (var item in Model.OrderItemsNoFundingRequired)
+                @if (Model.OrderItemsNoFundingRequired != null && Model.OrderItemsNoFundingRequired.Any())
                 {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
-                        <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
-                        <nhs-table-cell></nhs-table-cell>
-                        <nhs-table-cell></nhs-table-cell>
-                    </nhs-table-row-container>
+                    @if ((Model.OrderItemsSingleFundingType != null && Model.OrderItemsSingleFundingType.Any())
+                   || (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any()))
+                    {
+                        <br/>
+                    }
+                    <nhs-table data-test-id="funding-sources-items-no-funding-required"
+                               label-text="No funding required">
+                        <nhs-table-column>Solution or service</nhs-table-column>
+                        <nhs-table-column>Total cost</nhs-table-column>
+                        <nhs-table-column></nhs-table-column>
+                        <nhs-table-column></nhs-table-column>
+                        @foreach (var item in Model.OrderItemsNoFundingRequired)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@item.CatalogueItem.Name</nhs-table-cell>
+                                <nhs-table-cell>@($"£{CalculateTotalCost(item):N2}")</nhs-table-cell>
+                                <nhs-table-cell></nhs-table-cell>
+                                <nhs-table-cell></nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
                 }
-            </nhs-table>
-            <br/>
-        }
+            </nhs-card-content>
+        </nhs-card-v2>
         <form method="post">
             <nhs-submit-button text="Continue"/>
         </form>
@@ -144,7 +162,7 @@
 
 @{
     TaskProgress GetStatus(OrderItem item) => item.FundingType == OrderItemFundingType.None ? TaskProgress.NotStarted : TaskProgress.Completed;
-    string GetLinkText(OrderItem item) => item.FundingType == OrderItemFundingType.None ? "Edit" : "View";
+    string GetLinkText(OrderItem item) => item.FundingType == OrderItemFundingType.None ? "Start" : "Change";
 
     decimal CalculateTotalCost(OrderItem item) => Model.OrderWrapper.TotalCostForOrderItem(item.CatalogueItem.Id);
 }
