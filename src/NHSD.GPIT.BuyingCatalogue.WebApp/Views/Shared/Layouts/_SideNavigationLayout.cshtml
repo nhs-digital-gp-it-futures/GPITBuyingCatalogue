@@ -1,0 +1,114 @@
+@using NHSD.GPIT.BuyingCatalogue.Framework.Constants
+@model SideNavigationBaseModel
+@{
+    ViewBag.Title = Model.Title;
+    ViewBag.Caption = Model.Caption;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="Partials/_HeadIncludes" />
+</head>
+<body>
+    @if ((bool?)Context.Items[CatalogueCookies.ShowCookieBanner] == true)
+    {
+        <partial name="Partials/_CookieConsentPartial" />
+    }
+    <partial name="Partials/_BetaBanner" />
+    <partial name="Headers/_Header" model="@("_Navigation")" />
+    
+    @if (Model.ShowBreadcrumb)
+    {
+        <vc:nhs-breadcrumbs items="@Model.BreadcrumbItems.ToDictionary(x => x.Name, x => @Url.Action(x.Action, x.Controller, x.RouteData))"></vc:nhs-breadcrumbs>
+    }
+
+    <div class="nhsuk-width-container nhsuk-main-wrapper">
+        <main role="main" id="maincontent">
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-one-third sidebar" id="sidebar">
+                    @if (Model.ShowSideNavigation)
+                    {
+                        <div>
+                            <nav class="side-nav ">
+                                <h2 class="nhsuk-u-visually-hidden">Contents</h2>
+                                <ul class="side-nav__component">
+                                    @foreach (var item in Model.Sections)
+                                    {
+                                        @if (item.Selected)
+                                        {
+                                            <li class="side-nav__list--selected" aria-current="page">
+                                                <span class="side-nav__link nhsuk-link--no-visited-state">@item.Name</span>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="side-nav__list">
+                                                <a href ="@Url.Action(
+                                                              item.Action,
+                                                              item.Controller,
+                                                              item.RouteData)"
+                                                   class="side-nav__link nhsuk-link--no-visited-state">
+                                                    @item.Name
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </nav>
+                        </div>
+                    }
+                </div>
+
+                <div class="nhsuk-grid-column-two-thirds" id="content">
+                    <nhs-page-title title="@ViewBag.Title"
+                                    caption="@ViewBag.Caption" />
+                    
+                    @RenderBody()
+
+                    @if (Model.ShowPagination)
+                    {
+                        <nhs-page-link-pagination next-url="@Url.Action(
+                                                                Model.PaginationFooter?.Next?.Action,
+                                                                Model.PaginationFooter?.Next?.Controller,
+                                                                Model.PaginationFooter?.Next?.RouteData)"
+                                                  next-subtext="@Model.PaginationFooter?.Next?.Name"
+                                                  previous-url="@Url.Action(
+                                                                    Model.PaginationFooter?.Previous?.Action,
+                                                                    Model.PaginationFooter?.Previous?.Controller,
+                                                                    Model.PaginationFooter?.Previous?.RouteData)"
+                                                  previous-subtext="@Model.PaginationFooter?.Previous?.Name" />
+                    }
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <partial name="Footers/_Footer" />
+
+    <partial name="Partials/_JsAssetIncludes" />
+    
+@if (Model.ShowBackToTop)
+{
+        <a href="#">
+            <div class="scroll-to-top-container">
+                <div class="goup-arrow"></div>
+
+                <div class="scroll-to-top-text">Back to top</div>
+            </div>
+        </a>
+        <script>
+            window.onscroll = function () {
+                var scrollToTopContainer = document.querySelector('.scroll-to-top-container');
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                    scrollToTopContainer.classList.add('show');
+                } else {
+                    scrollToTopContainer.classList.remove('show');
+                }
+            };
+
+        </script>
+}
+
+</body>
+</html>
