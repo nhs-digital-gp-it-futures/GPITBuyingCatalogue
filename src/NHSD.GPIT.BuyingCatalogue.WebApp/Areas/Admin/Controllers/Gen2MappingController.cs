@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -12,13 +13,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 [Authorize(Policy = "AdminOnly")]
 [Area("Admin")]
 [Route("admin/capabilities-mapping")]
-public class CapabilitiesMappingController : Controller
+public class Gen2MappingController : Controller
 {
     private const string InvalidCsvFormat = "File not formatted correctly";
 
     private readonly IGen2UploadService gen2UploadService;
 
-    public CapabilitiesMappingController(
+    public Gen2MappingController(
         IGen2UploadService gen2UploadService)
     {
         this.gen2UploadService = gen2UploadService
@@ -53,11 +54,10 @@ public class CapabilitiesMappingController : Controller
     {
         _ = model;
 
-        var cachedImport = await gen2UploadService.GetCachedCapabilities(id);
-
-        var failedImportCsv = await gen2UploadService.WriteCapabilitiesToCsv(cachedImport.Failed);
-
-        return File(failedImportCsv, "text/csv");
+        return await HandleFailedUpload(
+            id,
+            gen2UploadService.GetCachedCapabilities,
+            gen2UploadService.WriteToCsv);
     }
 
     [HttpGet("{id}/epics")]
@@ -94,11 +94,10 @@ public class CapabilitiesMappingController : Controller
     {
         _ = model;
 
-        var cachedImport = await gen2UploadService.GetCachedEpics(id);
-
-        var failedImportCsv = await gen2UploadService.WriteEpicsToCsv(cachedImport.Failed);
-
-        return File(failedImportCsv, "text/csv");
+        return await HandleFailedUpload(
+            id,
+            gen2UploadService.GetCachedEpics,
+            gen2UploadService.WriteToCsv);
     }
 
     private async Task<IActionResult> HandleFileUpload<T>(
@@ -128,5 +127,18 @@ public class CapabilitiesMappingController : Controller
         return RedirectToAction(
             gen2Import.Failed.Count > 0 ? failedAction : successAction,
             new { id = cacheId });
+    }
+
+    private async Task<IActionResult> HandleFailedUpload<T>(
+        Guid id,
+        Func<Guid, Task<Gen2CsvImportModel<T>>> cacheFunc,
+        Func<IEnumerable<T>, Task<Stream>> csvFunc)
+        where T : Gen2CsvBase
+    {
+        var cachedImport = await cacheFunc(id);
+
+        var failedImportCsv = await csvFunc(cachedImport.Failed);
+
+        return File(failedImportCsv, "text/csv");
     }
 }

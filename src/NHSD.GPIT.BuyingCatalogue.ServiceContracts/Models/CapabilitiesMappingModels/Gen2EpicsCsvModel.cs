@@ -2,7 +2,7 @@
 
 public class Gen2EpicsCsvModel : Gen2CsvBase
 {
-    public static readonly string[] ValidAssessmentResults = ["Passed"];
+    public static readonly string[] ValidAssessmentResults = new[] { "Passed" };
 
     public string EpicId { get; set; }
 

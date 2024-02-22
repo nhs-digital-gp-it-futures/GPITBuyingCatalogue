@@ -33,6 +33,10 @@ public abstract class CsvServiceBase
         {
             return null;
         }
+        catch (CsvHelper.MissingFieldException)
+        {
+            return null;
+        }
     }
 
     protected static async Task WriteRecordsAsync<TEntity, TClassMap>(MemoryStream stream, IEnumerable<TEntity> items)

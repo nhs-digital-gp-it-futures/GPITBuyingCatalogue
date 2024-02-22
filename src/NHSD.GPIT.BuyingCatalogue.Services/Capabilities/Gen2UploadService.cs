@@ -32,10 +32,10 @@ public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2U
         GetEpicsFromCsv(string fileName, Stream epicsStream) =>
         await ReadCsv<Gen2EpicsCsvModel, Gen2EpicsCsvClassMap>(fileName, epicsStream, GetInvalidEpics);
 
-    public async Task<Stream> WriteCapabilitiesToCsv(IEnumerable<Gen2CapabilitiesCsvModel> records) =>
+    public async Task<Stream> WriteToCsv(IEnumerable<Gen2CapabilitiesCsvModel> records) =>
         await WriteToCsv<Gen2CapabilitiesCsvModel, Gen2CapabilitiesCsvClassMap>(records);
 
-    public async Task<Stream> WriteEpicsToCsv(IEnumerable<Gen2EpicsCsvModel> records)
+    public async Task<Stream> WriteToCsv(IEnumerable<Gen2EpicsCsvModel> records)
         => await WriteToCsv<Gen2EpicsCsvModel, Gen2EpicsCsvClassMap>(records);
 
     public async Task<Guid> AddToCache(Gen2CsvImportModel<Gen2CapabilitiesCsvModel> records) =>

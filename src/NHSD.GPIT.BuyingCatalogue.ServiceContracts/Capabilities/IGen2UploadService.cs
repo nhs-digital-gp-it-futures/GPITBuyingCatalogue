@@ -12,9 +12,9 @@ public interface IGen2UploadService
 
     Task<Gen2CsvImportModel<Gen2EpicsCsvModel>> GetEpicsFromCsv(string fileName, Stream epicsStream);
 
-    Task<Stream> WriteCapabilitiesToCsv(IEnumerable<Gen2CapabilitiesCsvModel> records);
+    Task<Stream> WriteToCsv(IEnumerable<Gen2CapabilitiesCsvModel> records);
 
-    Task<Stream> WriteEpicsToCsv(IEnumerable<Gen2EpicsCsvModel> records);
+    Task<Stream> WriteToCsv(IEnumerable<Gen2EpicsCsvModel> records);
 
     Task<Guid> AddToCache(Gen2CsvImportModel<Gen2CapabilitiesCsvModel> records);
 
