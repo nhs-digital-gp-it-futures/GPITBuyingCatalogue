@@ -185,11 +185,15 @@
             {
                 <h2 id="milestones-title">Milestones and payment triggers for Catalogue Solution and Additional Services</h2>
 
-                <partial name="MilestoneTable" model="new MilestoneTableModel(Model.DefaultMilestoneLabelText, Model.DefaultPlan?.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
+                <div class="nhsuk-u-margin-bottom-9">
+                    <partial name="MilestoneTable" model="new MilestoneTableModel(Model.DefaultMilestoneLabelText, Model.DefaultPlan?.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
+                </div>
 
                 @if (Model.HasBespokeMilestones)
                 {
-                    <partial name="MilestoneTable" model="new MilestoneTableModel(Model.BespokeMilestoneLabelText, Model.BespokePlan.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
+                    <div class="nhsuk-u-margin-bottom-9">
+                        <partial name="MilestoneTable" model="new MilestoneTableModel(Model.BespokeMilestoneLabelText, Model.BespokePlan.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
+                    </div>
                 }
             }
 
