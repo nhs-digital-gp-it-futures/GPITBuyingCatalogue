@@ -62,24 +62,37 @@ public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2U
         return memoryStream;
     }
 
-    private static bool IsBaseRecordInvalid(Gen2CsvBase baseRecord) =>
-        (string.IsNullOrWhiteSpace(baseRecord.SupplierId) || !int.TryParse(baseRecord.SupplierId, out _))
-        || (string.IsNullOrWhiteSpace(baseRecord.SolutionId) || !CatalogueItemId.Parse(baseRecord.SolutionId).Success)
-        || (string.IsNullOrWhiteSpace(baseRecord.CapabilityId) || !baseRecord.CapabilityId.StartsWith('C')
-            || !int.TryParse(baseRecord.CapabilityId.AsSpan()[1..], out _))
-        || (!string.IsNullOrWhiteSpace(baseRecord.AdditionalServiceId) && baseRecord.AdditionalServiceId.StartsWith('A') && baseRecord.AdditionalServiceId.Length != 4);
+    private static bool IsBaseRecordValid(Gen2CsvBase baseRecord)
+    {
+        var supplierIdValid = !string.IsNullOrWhiteSpace(baseRecord.SupplierId)
+            && int.TryParse(baseRecord.SupplierId, out _);
+
+        var catalogueItemIdValid = !string.IsNullOrWhiteSpace(baseRecord.SolutionId)
+            && CatalogueItemId.Parse(baseRecord.SolutionId).Success;
+
+        var capabilityIdValid = !string.IsNullOrWhiteSpace(baseRecord.CapabilityId)
+            && baseRecord.CapabilityId.StartsWith('C')
+            && int.TryParse(baseRecord.CapabilityId.AsSpan()[1..], out _);
+
+        var additionalServiceIdValid = string.IsNullOrWhiteSpace(baseRecord.AdditionalServiceId)
+            || baseRecord.AdditionalServiceId.StartsWith('A');
+
+        var isRecordValid = supplierIdValid && catalogueItemIdValid && capabilityIdValid && additionalServiceIdValid;
+
+        return isRecordValid;
+    }
 
     private static IEnumerable<Gen2CapabilitiesCsvModel> GetInvalidCapabilities(
         IEnumerable<Gen2CapabilitiesCsvModel> records) => records.Where(
-        x => (string.IsNullOrWhiteSpace(x.CapabilityAssessmentResult)
-                || !Gen2CapabilitiesCsvModel.ValidAssessmentResults.Contains(x.CapabilityAssessmentResult))
-            || IsBaseRecordInvalid(x));
+        x => (!string.IsNullOrWhiteSpace(x.CapabilityAssessmentResult)
+                && Gen2CapabilitiesCsvModel.ValidAssessmentResults.Contains(x.CapabilityAssessmentResult))
+            && !IsBaseRecordValid(x));
 
     private static IEnumerable<Gen2EpicsCsvModel> GetInvalidEpics(
         IEnumerable<Gen2EpicsCsvModel> records) => records.Where(
-        x => (string.IsNullOrWhiteSpace(x.EpicAssessmentResult)
-                || !Gen2EpicsCsvModel.ValidAssessmentResults.Contains(x.EpicAssessmentResult))
-            || string.IsNullOrWhiteSpace(x.EpicId) || IsBaseRecordInvalid(x));
+        x => !IsBaseRecordValid(x) || string.IsNullOrWhiteSpace(x.EpicId)
+            || (string.IsNullOrWhiteSpace(x.EpicAssessmentResult)
+                || !Gen2EpicsCsvModel.ValidAssessmentResults.Contains(x.EpicAssessmentResult)));
 
     private static async Task<Gen2CsvImportModel<T>> ReadCsv<T, TMap>(string fileName, Stream stream, Func<IEnumerable<T>, IEnumerable<T>> filter)
         where T : Gen2CsvBase

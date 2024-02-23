@@ -52,6 +52,25 @@ public static class Gen2UploadServiceTests
 
     [Theory]
     [CommonAutoData]
+    public static async Task GetCapabilitiesFromCsv_WithNewlines_RemovesNewlinesAndReturnsCapabilities(
+        string fileName,
+        Gen2UploadService service)
+    {
+        var stream = CreateCapabilitiesCsvStream(
+            "SYN-8169,10055,10055-001,C41,\"\n\nA001\",Passed - Full",
+            "SYN-1182,10055,\"\n\n10055-001\",C41,,Passed - Full",
+            "SYN-15189,\"\n\n10032\",10032-001,C37,,Passed - Full");
+
+        var result = await service.GetCapabilitiesFromCsv(fileName, stream);
+
+        result.Should().NotBeNull();
+        result.FileName.Should().Be(fileName);
+        result.Imported.Should().HaveCount(3);
+        result.Failed.Should().BeEmpty();
+    }
+
+    [Theory]
+    [CommonAutoData]
     public static async Task GetCapabilitiesFromCsv_WithMissingData_ReturnsCapabilities(
         string fileName,
         Gen2UploadService service)
@@ -120,14 +139,14 @@ public static class Gen2UploadServiceTests
 
     [Theory]
     [CommonAutoData]
-    public static async Task GetEpicsFromCsv_WithRows_ReturnsCapabilities(
+    public static async Task GetEpicsFromCsv_WithRows_ReturnsEpics(
         string fileName,
         Gen2UploadService service)
     {
         var stream = CreateEpicsCsvStream(
-        "SYN-15203,10032,10032-001,,C37,E00666,Passed",
-        "SYN-15201,10032,10032-001,,C37,E00664,Passed",
-        "SYN-15200,10032,10032-001,,C37,E00663,Passed");
+            "SYN-15203,10032,10032-001,,C37,E00666,Passed",
+            "SYN-15201,10032,10032-001,,C37,E00664,Passed",
+            "SYN-15200,10032,10032-001,,C37,E00663,Passed");
 
         var result = await service.GetEpicsFromCsv(fileName, stream);
 
@@ -139,7 +158,26 @@ public static class Gen2UploadServiceTests
 
     [Theory]
     [CommonAutoData]
-    public static async Task GetEpicsFromCsv_WithMissingData_ReturnsCapabilities(
+    public static async Task GetEpicsFromCsv_WithNewlines_RemovesNewlinesAndReturnsEpics(
+        string fileName,
+        Gen2UploadService service)
+    {
+        var stream = CreateEpicsCsvStream(
+            "SYN-15203,10032,\"\n\n10032-001\",,C37,E00666,Passed",
+            "SYN-15201,10032,10032-001,,C37,\"\n\nE00664\",Passed",
+            "SYN-15200,\"\n\n10032\",10032-001,,C37,E00663,Passed");
+
+        var result = await service.GetEpicsFromCsv(fileName, stream);
+
+        result.Should().NotBeNull();
+        result.FileName.Should().Be(fileName);
+        result.Imported.Should().HaveCount(3);
+        result.Failed.Should().BeEmpty();
+    }
+
+    [Theory]
+    [CommonAutoData]
+    public static async Task GetEpicsFromCsv_WithMissingData_ReturnsEpics(
         string fileName,
         Gen2UploadService service)
     {
