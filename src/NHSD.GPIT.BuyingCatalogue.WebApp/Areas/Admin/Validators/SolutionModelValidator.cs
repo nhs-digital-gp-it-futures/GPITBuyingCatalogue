@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         public const string SolutionIdSupplierMismatchErrorMessage = "The supplier ID does not match the supplier you’ve selected";
         public const string DuplicateSolutionIdErrorMessage = "A solution with that ID already exists. Try a different ID";
         public const string SolutionIdFormatErrorMessage = "Solution ID must be in the correct format, for example 10000-001";
-
+        public const int MaxItemIdLength = 3;
         private readonly ISolutionsService solutionsService;
 
         public SolutionModelValidator(
@@ -39,6 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(s => s.SolutionId)
                 .NotNull()
+                .WithMessage(SolutionIdFormatErrorMessage)
+                .Must(x => x.GetValueOrDefault().ItemId.Length <= MaxItemIdLength)
                 .WithMessage(SolutionIdFormatErrorMessage)
                 .Must((model, id) => model.SupplierId == id.GetValueOrDefault().SupplierId)
                 .WithMessage(SolutionIdSupplierMismatchErrorMessage)
