@@ -454,7 +454,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var expected = new SolutionModel
             {
                 Frameworks = new List<FrameworkModel> { frameworkModel },
-                SolutionId = solutionId,
+                SolutionIdDisplay = solution.ToString(),
             };
 
             catalogueItem.Id = solutionId;

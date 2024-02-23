@@ -18,14 +18,36 @@
             <input type="hidden" asp-for="BackLinkText" />
             <input type="hidden" asp-for="Heading" />
             <input type="hidden" asp-for="Description" />
-            <input type="hidden" asp-for="SolutionId" />
+            
+            @if(Model.IsEdit)
+            {
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Supplier name and ID">
+                        <p>
+                            @Model.SupplierId
+                        </p>
+                    </nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Solution ID">
+                        <p>
+                            @Model.SolutionIdDisplay
+                        </p>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+            else
+            {
+                <nhs-select asp-for="SupplierId"
+                            asp-items="@Model.SuppliersSelectList"
+                            label-text="Supplier name and ID" />
+                
+                <nhs-input asp-for="SolutionIdDisplay"
+                           label-hint="Solution IDs are made up of the supplier ID and a 3-digit number unique to this solution, for example, 10000-001."
+                           label-text="Solution ID" />
+            }
+            
             <input type="hidden" asp-for="SolutionDisplayName" />
             <nhs-input asp-for="SolutionName"
                        label-text="Solution name" />
-
-            <nhs-select asp-for="SupplierId"
-                        asp-items="@Model.SuppliersSelectList"
-                        label-text="Supplier name" />
 
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="Frameworks"

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 
@@ -7,6 +8,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public sealed class SolutionModelValidator : AbstractValidator<SolutionModel>
     {
+        public const string SolutionIdRequiredErrorMessage = "Enter a solution ID";
+        public const string SolutionIdSupplierMismatchErrorMessage = "The supplier ID does not match the supplier you’ve selected";
+        public const string DuplicateSolutionIdErrorMessage = "A solution with that ID already exists. Try a different ID";
+        public const string SolutionIdFormatErrorMessage = "Solution ID must be in the correct format, for example 10000-001";
+
         private readonly ISolutionsService solutionsService;
 
         public SolutionModelValidator(
@@ -24,8 +30,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .OverridePropertyName(m => m.SolutionName);
 
             RuleFor(s => s.SupplierId)
+                .NotEmpty()
+                .WithMessage("Select a supplier");
+
+            RuleFor(s => s.SolutionIdDisplay)
                 .NotNull()
-                .WithMessage("Select a supplier name");
+                .WithMessage(SolutionIdRequiredErrorMessage);
+
+            RuleFor(s => s.SolutionId)
+                .NotNull()
+                .WithMessage(SolutionIdFormatErrorMessage)
+                .Must((model, id) => model.SupplierId == id.GetValueOrDefault().SupplierId)
+                .WithMessage(SolutionIdSupplierMismatchErrorMessage)
+                .Must(NotBeADuplicateSolutionId)
+                .WithMessage(DuplicateSolutionIdErrorMessage)
+                .When(m => !m.IsEdit && !string.IsNullOrWhiteSpace(m.SolutionIdDisplay))
+                .OverridePropertyName(m => m.SolutionIdDisplay);
 
             RuleFor(s => s.Frameworks)
                 .Must(frameworks => frameworks.Any(f => f.Selected))
@@ -43,11 +63,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage("A solution can only be marked as a Foundation Solution under one Framework at any given time");
         }
 
+        private bool NotBeADuplicateSolutionId(CatalogueItemId? id)
+        {
+            return solutionsService.GetSolution(id.GetValueOrDefault()).GetAwaiter().GetResult() is null;
+        }
+
         private bool NotBeADuplicateName(SolutionModel model)
         {
-            return !(model.SolutionId is null
-                ? solutionsService.CatalogueSolutionExistsWithName(model.SolutionName).GetAwaiter().GetResult()
-                : solutionsService.CatalogueSolutionExistsWithName(model.SolutionName, model.SolutionId!.Value).GetAwaiter().GetResult());
+            return !(model.IsEdit
+                ? solutionsService.CatalogueSolutionExistsWithName(model.SolutionName, model.SolutionId.GetValueOrDefault()).GetAwaiter().GetResult()
+                : solutionsService.CatalogueSolutionExistsWithName(model.SolutionName).GetAwaiter().GetResult());
         }
     }
 }

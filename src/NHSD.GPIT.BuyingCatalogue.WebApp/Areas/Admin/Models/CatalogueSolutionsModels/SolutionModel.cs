@@ -16,14 +16,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
 
         public SolutionModel(CatalogueItem catalogueItem)
         {
-            SolutionId = catalogueItem.Id;
+            SolutionIdDisplay = catalogueItem.Id.ToString();
             SupplierId = catalogueItem.SupplierId;
             SolutionName = catalogueItem.Name;
             SolutionDisplayName = catalogueItem.Name;
             IsPilotSolution = catalogueItem.Solution.IsPilotSolution;
+            IsEdit = true;
         }
 
-        public CatalogueItemId? SolutionId { get; set; }
+        public bool IsEdit { get; set; }
+
+        public string SolutionIdDisplay { get; set; }
+
+        public CatalogueItemId? SolutionId
+        {
+            get
+            {
+                try
+                {
+                    return CatalogueItemId.ParseExact(SolutionIdDisplay);
+                }
+                catch
+                {
+                    return default;
+                }
+            }
+        }
 
         public string SolutionName { get; set; }
 

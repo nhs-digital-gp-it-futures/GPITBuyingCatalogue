@@ -26,6 +26,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public Task<CatalogueItem> GetSolution(CatalogueItemId solutionId) =>
+            dbContext.CatalogueItems.AsNoTracking()
+                .FirstOrDefaultAsync(ci => ci.Id == solutionId);
+
         public Task<CatalogueItem> GetSolutionThin(CatalogueItemId solutionId) =>
             dbContext.CatalogueItems.AsNoTracking()
             .Include(ci => ci.Supplier)
@@ -507,6 +511,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             var catalogueItem = new CatalogueItem
             {
+                Id = model.Id,
                 CatalogueItemType = CatalogueItemType.Solution,
                 Solution =
                         new Solution

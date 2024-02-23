@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
@@ -13,5 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
         public bool IsPilotSolution { get; set; }
 
         public int UserId { get; set; }
+
+        public CatalogueItemId Id { get; set; }
     }
 }

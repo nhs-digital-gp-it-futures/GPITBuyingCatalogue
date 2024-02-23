@@ -2,6 +2,7 @@
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -103,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             SolutionModel model,
             SolutionModelValidator validator)
         {
-            model.SolutionId = null;
+            model.SolutionIdDisplay = null;
 
             mockSolutionsService.Setup(s => s.CatalogueSolutionExistsWithName(model.SolutionName, default))
                 .ReturnsAsync(true);

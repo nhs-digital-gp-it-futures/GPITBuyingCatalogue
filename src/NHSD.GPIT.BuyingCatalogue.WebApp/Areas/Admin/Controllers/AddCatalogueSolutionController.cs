@@ -55,6 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var catalogueItemId = await solutionsService.AddCatalogueSolution(new CreateSolutionModel
             {
+                Id = model.SolutionId.GetValueOrDefault(),
                 Frameworks = model.Frameworks,
                 Name = model.SolutionName,
                 SupplierId = model.SupplierId!.Value,
