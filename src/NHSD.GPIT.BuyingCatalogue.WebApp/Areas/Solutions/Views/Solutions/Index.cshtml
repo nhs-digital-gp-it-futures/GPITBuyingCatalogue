@@ -5,17 +5,18 @@
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
 @{
+    var PageTitle = Model.GetPageTitle();
+    ViewBag.Title = PageTitle.Title;
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
     ViewData["nhsuk-width-container"] = "bc-wider-container";
 }
 
+<script type="text/javascript" src="@Url.Content("~/js/Filters.min.js")" asp-append-version="true"></script>
+
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        @{
-            var PageTitle = Model.GetPageTitle();
-        }
         <nhs-page-title model="@PageTitle" />
-        @if (!Model.Filters.SearchCriteriaApplied)
+        @if (!Model.SearchCriteriaApplied)
         {
             <partial name="Partials/_FrameworkExpiredAlert" />
         }
@@ -46,63 +47,37 @@
                 </div>
             }
             <div class="nhsuk-grid-column-two-thirds" id="solutions-list">
-                @{
-                    var filterCount = Model.Filters.FilterCount;
-                    var suffix = string.Empty;
-                    if (filterCount > 0)
-                    {
-                        suffix = filterCount == 1
-                        ? $" found using {filterCount} filter"
-                        : $" found using {filterCount} filters";
-                    }
-                }
-                <nhs-card>
-                    <div class="nhsuk-u-clear">
-                        <h2 class="nhsuk-card__heading nhsuk-heading-s bc-u-block-float-left">@(Model.PageOptions.TotalNumberOfItems) Solutions@(suffix)</h2>
-                        <div style="float: right" id="solution-sort-container"></div>
-                        <script type="text/javascript" src="@Url.Content("~/js/SolutionSort.min.js")" asp-append-version="true"></script>
-                    </div>
-
-                    @if (!Model.FilterResultView)
-                    {
-                        if (Model.Filters.SearchCriteriaApplied)
-                        {
-                            <a asp-area="@typeof(SolutionsController).AreaName()"
-                               asp-controller="@typeof(SolutionsController).ControllerName()"
-                               asp-action="@nameof(SolutionsController.Index)">
-                                Clear all filters
-                            </a>
-                            <div class="filtering-card">
-                                <p class="info-text">
-                                    Once you’re happy with your results, you can save your filters to create a shortlist. The shortlist can then be used to carry out a competition.
-                                </p>
-                                <nhs-submit-button form="filters" class="nhsuk-button--reverse" text="Save filters" formaction="@Url.Action(nameof(ManageFiltersController.SaveFilter), typeof(ManageFiltersController).ControllerName())" />
-                            </div>
-                        }
-                    }
-                    @if (Model.CatalogueItems.Count == 0)
-                    {
-                        if (Model.FilterResultView)
-                        {
-                            <p>
-                                You'll need to use a different filter.
-                            </p>
-                        }
-                    }
-                    else
-                    {
-                        <hr class="nhsuk-section-break--s" />
-                        @foreach (var item in Model.CatalogueItems)
-                        {
-                            <partial name="_SolutionSearchDisplay" model="@(new SolutionSearchResultModel(item))" />
-                        }
-                    }
-                </nhs-card>
+                <partial name="SearchResults" model="@Model.ResultsModel" />
             </div>
         </div>
         <div id="pagination">
-            <nhs-page-number-pagination current-page-number="@Model.PageOptions.PageNumber"
-                                        total-number-of-pages="@Model.PageOptions.NumberOfPages" />
         </div>
     </div>
 </div>
+
+<vc:nhs-modal-search
+    id="search-capabilities-modal"
+    show-dialog-button-id="select-capabilities-button"
+    callback-function="filters.updateCapabilities.bind(filters)"
+    title="Select Capabilities"
+    advice="Search for Capabilities and apply them as a filter."
+    placeholder="Search by Capability name"
+    not-found-text="There are no Capabilities that match. Try entering different search criteria."
+    apply-button-text=" Apply Capabilities"
+    table-content-function="filters.getCapabilitiesModelContent.bind(filters)"
+    clear-search="true"
+    clear-selection="false"/>
+
+<vc:nhs-modal-search
+    id="search-epics-modal"
+    show-dialog-button-id="select-epics-button"
+    callback-function="filters.updateEpics.bind(filters)"
+    title="Select Epics"
+    advice="Search for Epics and apply them as a filter."
+    placeholder="Search by Epic name"
+    not-found-text="There are no Epics that match. Try entering different search criteria."
+    apply-button-text=" Apply Epics"
+    table-content-function="filters.getEpicsModelContent.bind(filters)"
+    clear-search="true"
+    clear-selection="false"/>
+

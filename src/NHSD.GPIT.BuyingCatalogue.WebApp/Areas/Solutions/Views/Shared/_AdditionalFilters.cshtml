@@ -53,7 +53,7 @@
                                size="Small" />
         </nhs-fieldset-form-label>
         <hr class="nhsuk-section-break--s" />
-        <nhs-fieldset-form-label asp-for="@Model" label-text="Application type" size="ExtraSmall">
+        <nhs-fieldset-form-label asp-for="@Model.ApplicationTypeFilters" label-text="Application type" size="ExtraSmall">
             <nhs-checkbox-container size="Small">
                 @for (int clientAppTypeIndex = 0; clientAppTypeIndex < Model.ApplicationTypeOptions.Count; clientAppTypeIndex++)
                 {
@@ -64,7 +64,7 @@
             </nhs-checkbox-container>
         </nhs-fieldset-form-label>
         <hr class="nhsuk-section-break--s" />
-        <nhs-fieldset-form-label asp-for="@Model" label-text="Hosting type" size="ExtraSmall">
+        <nhs-fieldset-form-label asp-for="@Model.HostingTypeFilters" label-text="Hosting type" size="ExtraSmall">
             <nhs-checkbox-container size="Small">
                 @for (var i = 0; i < Model.HostingTypeOptions.Count; i++)
                 {
@@ -75,7 +75,7 @@
             </nhs-checkbox-container>
         </nhs-fieldset-form-label>
         <hr class="nhsuk-section-break--s" />
-        <nhs-fieldset-form-label asp-for="@Model" label-text="Interoperability" size="ExtraSmall">
+        <nhs-fieldset-form-label asp-for="@Model.InteroperabilityFilters" label-text="Interoperability" size="ExtraSmall">
             <nhs-checkbox-container size="Small">
                 @for (int j = 0; j < @Model.InteroperabilityOptions.Count(); j++)
                 {
@@ -114,11 +114,14 @@
         <nhs-submit-button style="width:100%"
                            form="filters"
                            text="Select Capabilities"
-                           class="nhsuk-button--secondary"
+                           class="nhsuk-button--secondary non-js-only"
                            formaction="@Url.Action(nameof(SolutionsController.SelectCapabilities), typeof(SolutionsController).ControllerName())" />
+        <button id="select-capabilities-button" class="nhsuk-button nhsuk-button--secondary nhsuk-button--js-only" style="width:100%">
+            Select Capabilities
+        </button>
         <br />
         <span>
-            <strong>@Model.CapabilitiesCount</strong> selected
+            <strong id="selected-capabilities-count">@Model.CapabilitiesCount</strong> selected
         </span>
     </nhs-fieldset>
     <hr class="nhsuk-section-break--s" />
@@ -135,14 +138,17 @@
                            form="filters"
                            disabled="@(Model.CapabilitiesCount==0)"
                            text="Select Epics"
-                           class="nhsuk-button--secondary"
+                           class="nhsuk-button--secondary non-js-only"
                            formaction="@Url.Action(nameof(SolutionsController.SelectEpics), typeof(SolutionsController).ControllerName())" />
+        <button id="select-epics-button" disabled="@(Model.CapabilitiesCount==0)" class="nhsuk-button nhsuk-button--secondary nhsuk-button--js-only" style="width:100%">
+            Select Epics
+        </button>
         <br />
         <span>
-            <strong>@Model.EpicsCount</strong> selected
+            <strong id="selected-epics-count">@Model.EpicsCount</strong> selected
         </span>
     </nhs-fieldset>
-    <hr class="nhsuk-section-break--s" />
-    <nhs-submit-button form="filters" style="width:100%" text="Apply filters" class="nhsuk-button--primary" />
+    <hr class="nhsuk-section-break--s non-js-only" />
+    <nhs-submit-button form="filters" style="width:100%" text="Apply filters" class="nhsuk-button--primary non-js-only" />
 </nhs-card>
 

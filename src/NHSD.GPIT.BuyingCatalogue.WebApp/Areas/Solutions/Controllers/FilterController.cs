@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var currentCapabilitiesAndEpics = filters.GetCapabilityAndEpicIds();
 
             var newCapabilitiesAndEpicsFilterString = new Dictionary<int, string[]>(
-                model.SelectedItems
+                model.CapabilitySelectionItems
                   .Where(x => x.Selected && int.TryParse(x.Id, out _))
                   .Select(x => int.Parse(x.Id))
                   .Select(x => new KeyValuePair<int, string[]>(x, currentCapabilitiesAndEpics.GetValueOrDefault(x))))
@@ -69,6 +69,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 nameof(SolutionsController.Index),
                 typeof(SolutionsController).ControllerName(),
                 (filters with { Selected = newCapabilitiesAndEpicsFilterString }).ToRouteValues());
+        }
+
+        [HttpGet("filter-capabilities-modal")]
+        public async Task<IActionResult> FilterCapabilitiesModal(
+            RequestedFilters filters = null)
+        {
+            ArgumentNullException.ThrowIfNull(filters);
+
+            var capabilityAndEpicsIds = filters.GetCapabilityAndEpicIds();
+            var model = new FilterCapabilitiesModel(await capabilitiesService.GetReferencedCapabilities(), capabilityAndEpicsIds.Keys);
+
+            return PartialView(model);
         }
 
         [HttpGet("filter-epics")]
@@ -104,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var currentCapabilitiesAndEpics = filters.GetCapabilityAndEpicIds();
 
-            var changes = model.SelectedItems
+            var changes = model.EpicSelectionItems
                 ?.Select(v => new
                 {
                     CapabilityId = v.Id.Split(",")[0],
@@ -124,6 +136,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 nameof(SolutionsController.Index),
                 typeof(SolutionsController).ControllerName(),
                 (filters with { Selected = newCapabilitiesAndEpics.ToFilterString() }).ToRouteValues());
+        }
+
+        [HttpGet("filter-epics-modal")]
+        public async Task<IActionResult> FilterEpicsModal(
+            RequestedFilters filters = null)
+        {
+            ArgumentNullException.ThrowIfNull(filters);
+
+            var capabilityAndEpicsIds = filters.GetCapabilityAndEpicIds();
+            var capabilities = await capabilitiesService.GetCapabilitiesByIds(capabilityAndEpicsIds.Keys);
+            var epics = await epicsService.GetReferencedEpicsByCapabilityIds(capabilityAndEpicsIds.Keys);
+
+            var model = new FilterEpicsModel(capabilities, epics, capabilityAndEpicsIds);
+
+            return PartialView(model);
         }
     }
 }

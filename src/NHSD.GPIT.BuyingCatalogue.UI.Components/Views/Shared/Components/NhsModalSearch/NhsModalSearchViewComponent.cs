@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,16 +6,22 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsMod
 {
     public sealed class NhsModalSearchViewComponent : ViewComponent
     {
-        private const string DefaultTitle = "Search for Service Recipients";
-        private const string DefaultAdvice = "Find and select the Service Recipients you want to include in this order.";
-        private const string DefaultPlaceholder = "Search by ODS code or organisation name";
-        private const string DefaultNotFoundText = "There are no Service Recipients that match. Try entering different search criteria.";
-        private const string DefaultApplyButtonText = "Apply recipients";
-
-        public async Task<IViewComponentResult> InvokeAsync(string id, string showDialogButtonId, string tablePartialView, object tableData, string callbackFunction, string title = null, string advice = null, string placeholder = null, string notFoundText = null, string applyButtonText = null, bool cleardown = true)
+        public async Task<IViewComponentResult> InvokeAsync(
+            string id,
+            string showDialogButtonId,
+            string callbackFunction,
+            string title,
+            string advice,
+            string placeholder,
+            string notFoundText,
+            string applyButtonText,
+            string tableContentFunction = null,
+            string tablePartialView = null,
+            object tableData = null,
+            bool clearSearch = true,
+            bool clearSelection = true)
         {
-            if (string.IsNullOrEmpty(id) || id.Any(char.IsWhiteSpace))
-                throw new ArgumentException("Id cannot be null or empty, or contain whitespace", nameof(id));
+            ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
             var model = new NhsModalSearchModel
             {
@@ -25,12 +30,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsMod
                 TablePartialView = tablePartialView,
                 TableData = tableData,
                 CallbackFunction = callbackFunction,
-                Title = !string.IsNullOrEmpty(title) ? title : DefaultTitle,
-                Placeholder = !string.IsNullOrEmpty(placeholder) ? placeholder : DefaultPlaceholder,
-                Advice = !string.IsNullOrEmpty(advice) ? advice : DefaultAdvice,
-                NotFoundText = !string.IsNullOrEmpty(notFoundText) ? notFoundText : DefaultNotFoundText,
-                ApplyButtonText = !string.IsNullOrEmpty(applyButtonText) ? applyButtonText : DefaultApplyButtonText,
-                Cleardown = cleardown,
+                Title = title,
+                Placeholder = placeholder,
+                Advice = advice,
+                NotFoundText = notFoundText,
+                ApplyButtonText = applyButtonText,
+                TableContentFunction = tableContentFunction,
+                ClearSearch = clearSearch,
+                ClearSelection = clearSelection,
             };
 
             return await Task.FromResult(View("NhsModalSearch", model));

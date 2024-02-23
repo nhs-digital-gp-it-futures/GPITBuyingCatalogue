@@ -2,6 +2,8 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage.DetermineAssociatedServiceTypeModel
 @{
+    var PageTitle = Model.GetPageTitle();
+    ViewBag.Title = PageTitle.Title;
     var submitButton = string.Empty; // uses the default text
 }
 <div>
@@ -9,7 +11,7 @@
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary RadioId="@nameof(Model.OrderType)" />
-            <nhs-page-title model="@Model.GetPageTitle()" />
+            <nhs-page-title model="@PageTitle" />
 
             <form method="post">
                 <input type="hidden" asp-for="OrganisationName" />

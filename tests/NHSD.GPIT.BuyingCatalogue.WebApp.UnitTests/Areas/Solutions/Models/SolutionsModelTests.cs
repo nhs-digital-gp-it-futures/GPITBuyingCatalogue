@@ -14,7 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var model = new SolutionsModel()
             {
-                CatalogueItems = new List<CatalogueItem>(),
+                ResultsModel = new SolutionsResultsModel()
+                {
+                    CatalogueItems = new List<CatalogueItem>(),
+                },
             };
 
             var pageTitle = model.GetPageTitle();
@@ -32,7 +35,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var model = new SolutionsModel()
             {
                 FilterName = filterName,
-                CatalogueItems = new List<CatalogueItem>(),
+                ResultsModel = new SolutionsResultsModel()
+                {
+                    FilterResultView = true,
+                    CatalogueItems = new List<CatalogueItem>(),
+                },
             };
 
             var pageTitle = model.GetPageTitle();
@@ -49,7 +56,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         {
             var model = new SolutionsModel()
             {
-                CatalogueItems = solutions,
+                ResultsModel = new SolutionsResultsModel()
+                {
+                    CatalogueItems = solutions,
+                },
             };
 
             var pageTitle = model.GetPageTitle();
@@ -69,7 +79,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             var model = new SolutionsModel()
             {
                 FilterName = filterName,
-                CatalogueItems = solutions,
+                ResultsModel = new SolutionsResultsModel()
+                {
+                    FilterResultView = true,
+                    CatalogueItems = solutions,
+                },
             };
 
             var pageTitle = model.GetPageTitle();

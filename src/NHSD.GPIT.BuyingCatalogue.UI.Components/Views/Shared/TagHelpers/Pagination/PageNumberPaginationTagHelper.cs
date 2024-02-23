@@ -59,10 +59,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Pagina
 
         private TagBuilder GetPreviousLinkBuilder()
         {
-            if (string.IsNullOrWhiteSpace(PreviousUrl)
-                && (CurrentPageNumber < 2
+            if (CurrentPageNumber < 2
                 || CurrentPageNumber == 0
-                || TotalNumberOfPages == 0))
+                || TotalNumberOfPages == 0)
                 return null;
 
             return PaginationBuilders.GetLinkBuilder(
@@ -77,10 +76,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Pagina
 
         private TagBuilder GetNextLinkBuilder()
         {
-            if (string.IsNullOrWhiteSpace(NextUrl)
-                && (CurrentPageNumber == 0
+            if (CurrentPageNumber == 0
                 || TotalNumberOfPages == 0
-                || CurrentPageNumber == TotalNumberOfPages))
+                || CurrentPageNumber == TotalNumberOfPages)
                 return null;
 
             return PaginationBuilders.GetLinkBuilder(

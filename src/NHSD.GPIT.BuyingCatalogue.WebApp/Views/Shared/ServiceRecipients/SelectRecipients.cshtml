@@ -112,34 +112,16 @@
     </div>
 </div>
 
-<vc:nhs-modal-search id="search-recipients-modal" show-dialog-button-id="show-dialog" table-partial-view="ServiceRecipients/_recipientTable" table-data="@Model.SearchRecipients" callback-function="updateRecipients"/>
-
-
-<script>
-    //Function called on submit modal
-    function updateRecipients() {
-        var checkedboxes = document.querySelectorAll('.modal-checkbox:checked');
-        checkedboxes.forEach(function (item) {
-
-            // Find the checkbox with matching ods code
-            var row = item.closest('tr');
-            var query = "#sr-table #" + row.id + " input[type='checkbox'].main-srs";
-            var checkbox = document.querySelector(query);
-
-            // Check if the checkbox exists
-            if (checkbox) {
-                // Set the checkbox to checked
-                checkbox.checked = true;
-            }
-        });
-        var expanders = document.querySelectorAll('.nhsuk-expander');
-        expanders.forEach(function (container) {
-            var checks = container.querySelectorAll('.main-srs:checked:not(.sub-sr-selector)');
-            var checkboxCount = checks.length;
-
-            var countBox = container.querySelector('.nhsuk-details__summary-text_secondary b');
-            countBox.innerHTML = checkboxCount + " ";
-        });
-    }
-</script>
-
+<vc:nhs-modal-search
+    id="search-recipients-modal"
+    show-dialog-button-id="show-dialog"
+    table-partial-view="ServiceRecipients/_recipientTable"
+    table-data="@Model.SearchRecipients"
+    callback-function="updateRecipients"
+    title="Search for Service Recipients"
+    advice="Find and select the Service Recipients you want to include in this order."
+    placeholder="Search by ODS code or organisation name"
+    not-found-text="There are no Service Recipients that match. Try entering different search criteria."
+    apply-button-text="Apply recipients"
+    clear-search="true"
+    clear-selection="true"/>

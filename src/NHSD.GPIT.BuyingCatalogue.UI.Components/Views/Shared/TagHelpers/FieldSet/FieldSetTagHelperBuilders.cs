@@ -64,26 +64,33 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
                 return null;
 
             var fieldsetLegend = GetFieldsetLegendBuilder(selectedSize);
-            var fieldsetLegendHeader = GetFieldsetLegendHeadingTagBuilder(labelText, selectedSize);
 
-            fieldsetLegend.InnerHtml.AppendHtml(fieldsetLegendHeader);
+            switch (selectedSize)
+            {
+                case FieldSetSize.ExtraLarge:
+                case FieldSetSize.Large:
+                case FieldSetSize.Medium:
+                    var selectedLegendTag = selectedSize switch
+                    {
+                        FieldSetSize.ExtraLarge => TagHelperConstants.HeaderOne,
+                        FieldSetSize.Medium => TagHelperConstants.HeaderThree,
+                        _ or FieldSetSize.Large => TagHelperConstants.HeaderTwo,
+                    };
+                    var fieldsetLegendHeader = GetFieldsetLegendHeadingTagBuilder(labelText, selectedLegendTag);
+                    fieldsetLegend.InnerHtml.AppendHtml(fieldsetLegendHeader);
+                    break;
+                default:
+                    fieldsetLegend.InnerHtml.Append(labelText);
+                    break;
+            }
 
             return fieldsetLegend;
         }
 
-        public static TagBuilder GetFieldsetLegendHeadingTagBuilder(string labelText, FieldSetSize selectedSize)
+        public static TagBuilder GetFieldsetLegendHeadingTagBuilder(string labelText, string selectedLegendTag) // FieldSetSize selectedSize)
         {
             if (labelText == null)
                 return null;
-
-            var selectedLegendTag = selectedSize switch
-            {
-                FieldSetSize.ExtraLarge => TagHelperConstants.HeaderOne,
-                FieldSetSize.Medium => TagHelperConstants.HeaderThree,
-                FieldSetSize.Small => "label",
-                FieldSetSize.ExtraSmall => "label",
-                _ or FieldSetSize.Large => TagHelperConstants.HeaderTwo,
-            };
 
             var builder = new TagBuilder(selectedLegendTag);
 

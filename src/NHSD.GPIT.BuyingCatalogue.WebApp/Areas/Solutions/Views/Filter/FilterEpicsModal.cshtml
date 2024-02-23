@@ -1,0 +1,53 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters.FilterEpicsModel
+@if (Model.EpicGroupsAndItems.Values.SelectMany(x => x).Any())
+{
+    <nhs-table>
+        <nhs-table-column>Epic</nhs-table-column>
+
+        @{
+            var index = 0;
+            @foreach (var (capability, i) in Model.EpicGroups.Select((value, i) => (value, i)))
+            {
+                <input type="hidden" asp-for="@Model.EpicGroups[i].Id" />
+                <input type="hidden" asp-for="@Model.EpicGroups[i].Name" />
+                var epics = Model.Items(capability.Id);
+
+                if (!epics.Any())
+                {
+                    continue;
+                }
+
+                <nhs-table-row-container>
+                    <nhs-table-cell>
+                        <strong>
+                            @capability.Name
+                        </strong>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+
+                @foreach (var epic in epics)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <nhs-checkbox-container>
+                                <nhs-checkbox asp-for="EpicSelectionItems[index].Selected"
+                                              hidden-input="EpicSelectionItems[index].Id"
+                                              label-text="@epic.Name"
+                                              sub-group="@capability.Name"
+                                              checkbox-class="modal-checkbox" />
+                            </nhs-checkbox-container>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                    index++;
+                }
+            }
+        }
+    </nhs-table>
+}
+else
+{
+    <div>
+        <p class="nhsuk-body nhsuk-u-margin-top-3">There are no Epics available for your chosen Capabilities.</p>
+    </div>
+}
+
