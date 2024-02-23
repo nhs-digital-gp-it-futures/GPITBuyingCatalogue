@@ -8,9 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 
 public interface IGen2UploadService
 {
-    Task<Gen2CsvImportModel<Gen2CapabilitiesCsvModel>> GetCapabilitiesFromCsv(string fileName, Stream capabilitiesStream);
+    Task<Gen2CsvImportModel<Gen2CapabilitiesCsvModel>> GetCapabilitiesFromCsv(Stream capabilitiesStream);
 
-    Task<Gen2CsvImportModel<Gen2EpicsCsvModel>> GetEpicsFromCsv(string fileName, Stream epicsStream);
+    Task<Gen2CsvImportModel<Gen2EpicsCsvModel>> GetEpicsFromCsv(Stream epicsStream);
 
     Task<Stream> WriteToCsv(IEnumerable<Gen2CapabilitiesCsvModel> records);
 

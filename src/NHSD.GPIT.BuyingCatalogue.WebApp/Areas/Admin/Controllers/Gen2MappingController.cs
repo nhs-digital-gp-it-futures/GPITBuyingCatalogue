@@ -46,7 +46,7 @@ public class Gen2MappingController : Controller
     {
         var cachedImport = await gen2UploadService.GetCachedCapabilities(id);
 
-        return View(new FailedGen2UploadModel<Gen2CapabilitiesCsvModel>(cachedImport.FileName, cachedImport.Failed));
+        return View(new FailedGen2UploadModel<Gen2CapabilitiesCsvModel>(cachedImport.Failed));
     }
 
     [HttpPost("{id}/failed-capabilities")]
@@ -86,7 +86,7 @@ public class Gen2MappingController : Controller
     {
         var cachedImport = await gen2UploadService.GetCachedEpics(id);
 
-        return View(new FailedGen2UploadModel<Gen2EpicsCsvModel>(cachedImport.FileName, cachedImport.Failed));
+        return View(new FailedGen2UploadModel<Gen2EpicsCsvModel>(cachedImport.Failed));
     }
 
     [HttpPost("{id}/failed-epics")]
@@ -102,7 +102,7 @@ public class Gen2MappingController : Controller
 
     private async Task<IActionResult> HandleFileUpload<T>(
         Gen2UploadModel model,
-        Func<string, Stream, Task<Gen2CsvImportModel<T>>> readFunc,
+        Func<Stream, Task<Gen2CsvImportModel<T>>> readFunc,
         Func<Gen2CsvImportModel<T>, Task<Guid>> cacheFunc,
         string successAction,
         string failedAction)
@@ -112,7 +112,6 @@ public class Gen2MappingController : Controller
             return View(model);
 
         var gen2Import = await readFunc(
-            model.File.FileName,
             model.File.OpenReadStream());
 
         if (gen2Import == null || gen2Import.Imported?.Count == 0)

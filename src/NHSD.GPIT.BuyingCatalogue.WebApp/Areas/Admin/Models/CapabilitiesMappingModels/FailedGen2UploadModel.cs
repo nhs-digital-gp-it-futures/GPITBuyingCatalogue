@@ -11,14 +11,10 @@ public class FailedGen2UploadModel<T>
     }
 
     public FailedGen2UploadModel(
-        string fileName,
         IEnumerable<T> failedRecords)
     {
-        FileName = fileName;
         FailedRecords = failedRecords;
     }
-
-    public string FileName { get; set; }
 
     public IEnumerable<T> FailedRecords { get; set; }
 }

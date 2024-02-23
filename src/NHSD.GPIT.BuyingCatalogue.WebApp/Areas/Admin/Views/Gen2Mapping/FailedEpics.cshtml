@@ -7,11 +7,12 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-page-title title="@ViewBag.Title"
-                        advice="The following errors have been identified with @Model.FileName. Get the errors corrected and try again or use a different file."/>
+                        advice="The following errors have been identified with this file. Get the errors corrected and try again or use a different file."/>
 
         <nhs-card-v2>
             <nhs-card-content title="Review the problems with your CSV file">
                 <nhs-table label-text="Epics upload errors">
+                    <nhs-table-column>Supplier ID</nhs-table-column>
                     <nhs-table-column>Supplier ID</nhs-table-column>
                     <nhs-table-column>Solution ID</nhs-table-column>
                     <nhs-table-column>Additional Service ID</nhs-table-column>
@@ -22,6 +23,7 @@
                     @foreach (var item in Model.FailedRecords)
                     {
                         <nhs-table-row-container>
+                            <nhs-table-cell>@item.Key</nhs-table-cell>
                             <nhs-table-cell>@item.SupplierId</nhs-table-cell>
                             <nhs-table-cell>@item.SolutionId</nhs-table-cell>
                             <nhs-table-cell>@item.AdditionalServiceId</nhs-table-cell>

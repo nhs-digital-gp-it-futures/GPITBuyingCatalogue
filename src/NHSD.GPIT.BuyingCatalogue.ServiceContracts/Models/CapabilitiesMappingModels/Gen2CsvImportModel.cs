@@ -11,16 +11,12 @@ public class Gen2CsvImportModel<T>
     }
 
     public Gen2CsvImportModel(
-        string fileName,
         IEnumerable<T> imported,
         IEnumerable<T> failed)
     {
-        FileName = fileName;
         Imported = imported.ToList();
         Failed = failed.ToList();
     }
-
-    public string FileName { get; set; }
 
     public ICollection<T> Imported { get; set; }
 

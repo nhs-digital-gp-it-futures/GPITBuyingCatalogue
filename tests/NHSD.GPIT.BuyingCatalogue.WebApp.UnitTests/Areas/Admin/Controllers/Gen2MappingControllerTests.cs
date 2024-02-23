@@ -64,7 +64,7 @@ public static class Gen2MappingControllerTests
         [Frozen] Mock<IGen2UploadService> service,
         Gen2MappingController controller)
     {
-        service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<string>(), It.IsAny<Stream>()))
+        service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync((Gen2CsvImportModel<Gen2CapabilitiesCsvModel>)null);
 
         var result = (await controller.Capabilities(model)).As<ViewResult>();
@@ -84,7 +84,7 @@ public static class Gen2MappingControllerTests
     {
         capabilities.Failed = capabilities.Imported = Enumerable.Empty<Gen2CapabilitiesCsvModel>().ToList();
 
-        service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<string>(), It.IsAny<Stream>()))
+        service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync(capabilities);
 
         var result = (await controller.Capabilities(model)).As<ViewResult>();
@@ -107,7 +107,7 @@ public static class Gen2MappingControllerTests
 
         capabilities.Failed = failed;
 
-        service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<string>(), It.IsAny<Stream>()))
+        service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync(capabilities);
 
         service.Setup(x => x.AddToCache(capabilities))
@@ -134,7 +134,7 @@ public static class Gen2MappingControllerTests
         capabilities.Imported = imported;
         capabilities.Failed = Enumerable.Empty<Gen2CapabilitiesCsvModel>().ToList();
 
-        service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<string>(), It.IsAny<Stream>()))
+        service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync(capabilities);
 
         service.Setup(x => x.AddToCache(capabilities))
@@ -155,7 +155,7 @@ public static class Gen2MappingControllerTests
         [Frozen] Mock<IGen2UploadService> service,
         Gen2MappingController controller)
     {
-        var expected = new FailedGen2UploadModel<Gen2CapabilitiesCsvModel>(import.FileName, import.Failed);
+        var expected = new FailedGen2UploadModel<Gen2CapabilitiesCsvModel>(import.Failed);
 
         service.Setup(x => x.GetCachedCapabilities(id))
             .ReturnsAsync(import);
@@ -224,7 +224,7 @@ public static class Gen2MappingControllerTests
         [Frozen] Mock<IGen2UploadService> service,
         Gen2MappingController controller)
     {
-        service.Setup(x => x.GetEpicsFromCsv(It.IsAny<string>(), It.IsAny<Stream>()))
+        service.Setup(x => x.GetEpicsFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync((Gen2CsvImportModel<Gen2EpicsCsvModel>)null);
 
         var result = (await controller.Epics(id, model)).As<ViewResult>();
@@ -245,7 +245,7 @@ public static class Gen2MappingControllerTests
     {
         capabilities.Failed = capabilities.Imported = Enumerable.Empty<Gen2EpicsCsvModel>().ToList();
 
-        service.Setup(x => x.GetEpicsFromCsv(It.IsAny<string>(), It.IsAny<Stream>()))
+        service.Setup(x => x.GetEpicsFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync(capabilities);
 
         var result = (await controller.Epics(id, model)).As<ViewResult>();
@@ -267,7 +267,7 @@ public static class Gen2MappingControllerTests
     {
         capabilities.Failed = failed;
 
-        service.Setup(x => x.GetEpicsFromCsv(It.IsAny<string>(), It.IsAny<Stream>()))
+        service.Setup(x => x.GetEpicsFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync(capabilities);
 
         service.Setup(x => x.AddToCache(capabilities))
@@ -293,7 +293,7 @@ public static class Gen2MappingControllerTests
         capabilities.Imported = imported;
         capabilities.Failed = Enumerable.Empty<Gen2EpicsCsvModel>().ToList();
 
-        service.Setup(x => x.GetEpicsFromCsv(It.IsAny<string>(), It.IsAny<Stream>()))
+        service.Setup(x => x.GetEpicsFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync(capabilities);
 
         service.Setup(x => x.AddToCache(capabilities))
@@ -314,7 +314,7 @@ public static class Gen2MappingControllerTests
         [Frozen] Mock<IGen2UploadService> service,
         Gen2MappingController controller)
     {
-        var expected = new FailedGen2UploadModel<Gen2EpicsCsvModel>(import.FileName, import.Failed);
+        var expected = new FailedGen2UploadModel<Gen2EpicsCsvModel>(import.Failed);
 
         service.Setup(x => x.GetCachedEpics(id))
             .ReturnsAsync(import);

@@ -22,15 +22,14 @@ public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2U
     private readonly IDistributedCache cache = cache ?? throw new ArgumentNullException(nameof(cache));
 
     public async Task<Gen2CsvImportModel<Gen2CapabilitiesCsvModel>>
-        GetCapabilitiesFromCsv(string fileName, Stream capabilitiesStream) =>
+        GetCapabilitiesFromCsv(Stream capabilitiesStream) =>
         await ReadCsv<Gen2CapabilitiesCsvModel, Gen2CapabilitiesCsvClassMap>(
-            fileName,
             capabilitiesStream,
             GetInvalidCapabilities);
 
     public async Task<Gen2CsvImportModel<Gen2EpicsCsvModel>>
-        GetEpicsFromCsv(string fileName, Stream epicsStream) =>
-        await ReadCsv<Gen2EpicsCsvModel, Gen2EpicsCsvClassMap>(fileName, epicsStream, GetInvalidEpics);
+        GetEpicsFromCsv(Stream epicsStream) =>
+        await ReadCsv<Gen2EpicsCsvModel, Gen2EpicsCsvClassMap>(epicsStream, GetInvalidEpics);
 
     public async Task<Stream> WriteToCsv(IEnumerable<Gen2CapabilitiesCsvModel> records) =>
         await WriteToCsv<Gen2CapabilitiesCsvModel, Gen2CapabilitiesCsvClassMap>(records);
@@ -94,7 +93,7 @@ public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2U
             || (string.IsNullOrWhiteSpace(x.EpicAssessmentResult)
                 || !Gen2EpicsCsvModel.ValidAssessmentResults.Contains(x.EpicAssessmentResult)));
 
-    private static async Task<Gen2CsvImportModel<T>> ReadCsv<T, TMap>(string fileName, Stream stream, Func<IEnumerable<T>, IEnumerable<T>> filter)
+    private static async Task<Gen2CsvImportModel<T>> ReadCsv<T, TMap>(Stream stream, Func<IEnumerable<T>, IEnumerable<T>> filter)
         where T : Gen2CsvBase
         where TMap : ClassMap<T>
     {
@@ -102,7 +101,7 @@ public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2U
 
         return records == null
             ? null
-            : new Gen2CsvImportModel<T>(fileName, records, filter(records));
+            : new Gen2CsvImportModel<T>(records, filter(records));
     }
 
     private async Task<Guid> AddToCache<T>(string cacheSuffix, Gen2CsvImportModel<T> records)
