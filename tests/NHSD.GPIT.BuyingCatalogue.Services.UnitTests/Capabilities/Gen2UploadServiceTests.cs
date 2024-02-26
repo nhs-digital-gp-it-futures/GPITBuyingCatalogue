@@ -226,13 +226,14 @@ public static class Gen2UploadServiceTests
     [Theory]
     [CommonAutoData]
     public static async Task AddToCache_Capabilities_AddsToCache(
+        Guid id,
         Gen2CsvImportModel<Gen2CapabilitiesCsvModel> records,
         [Frozen] Mock<IDistributedCache> distributedCache,
         Gen2UploadService service)
     {
         var expected = JsonSerializer.Serialize(records);
 
-        _ = await service.AddToCache(records);
+       await service.AddToCache(id, records);
 
         distributedCache.Verify(
             x => x.SetAsync(
@@ -245,13 +246,14 @@ public static class Gen2UploadServiceTests
     [Theory]
     [CommonAutoData]
     public static async Task AddToCache_Epics_AddsToCache(
+        Guid id,
         Gen2CsvImportModel<Gen2EpicsCsvModel> records,
         [Frozen] Mock<IDistributedCache> distributedCache,
         Gen2UploadService service)
     {
         var expected = JsonSerializer.Serialize(records);
 
-        _ = await service.AddToCache(records);
+        await service.AddToCache(id, records);
 
         distributedCache.Verify(
             x => x.SetAsync(

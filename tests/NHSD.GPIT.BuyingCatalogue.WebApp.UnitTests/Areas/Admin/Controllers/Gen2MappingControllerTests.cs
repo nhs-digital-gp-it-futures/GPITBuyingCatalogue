@@ -35,9 +35,10 @@ public static class Gen2MappingControllerTests
     [Theory]
     [CommonAutoData]
     public static void Capabilities_ReturnsView(
+        Guid id,
         Gen2MappingController controller)
     {
-        var result = controller.Capabilities().As<ViewResult>();
+        var result = controller.Capabilities(id).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(new Gen2UploadModel());
@@ -46,12 +47,13 @@ public static class Gen2MappingControllerTests
     [Theory]
     [CommonAutoData]
     public static async Task Post_Capabilities_InvalidModel_ReturnsView(
+        Guid id,
         Gen2UploadModel model,
         Gen2MappingController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var result = (await controller.Capabilities(model)).As<ViewResult>();
+        var result = (await controller.Capabilities(id, model)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().Be(model);
@@ -60,6 +62,7 @@ public static class Gen2MappingControllerTests
     [Theory]
     [CommonAutoData]
     public static async Task Post_Capabilities_NullImport_SetsModelError(
+        Guid id,
         Gen2UploadModel model,
         [Frozen] Mock<IGen2UploadService> service,
         Gen2MappingController controller)
@@ -67,7 +70,7 @@ public static class Gen2MappingControllerTests
         service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync((Gen2CsvImportModel<Gen2CapabilitiesCsvModel>)null);
 
-        var result = (await controller.Capabilities(model)).As<ViewResult>();
+        var result = (await controller.Capabilities(id, model)).As<ViewResult>();
 
         controller.ModelState.Keys.Should().Contain(nameof(model.File));
         result.Should().NotBeNull();
@@ -77,6 +80,7 @@ public static class Gen2MappingControllerTests
     [Theory]
     [CommonAutoData]
     public static async Task Post_Capabilities_EmptyImport_SetsModelError(
+        Guid id,
         Gen2UploadModel model,
         Gen2CsvImportModel<Gen2CapabilitiesCsvModel> capabilities,
         [Frozen] Mock<IGen2UploadService> service,
@@ -87,7 +91,7 @@ public static class Gen2MappingControllerTests
         service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync(capabilities);
 
-        var result = (await controller.Capabilities(model)).As<ViewResult>();
+        var result = (await controller.Capabilities(id, model)).As<ViewResult>();
 
         controller.ModelState.Keys.Should().Contain(nameof(model.File));
         result.Should().NotBeNull();
@@ -97,23 +101,19 @@ public static class Gen2MappingControllerTests
     [Theory]
     [CommonAutoData]
     public static async Task Post_Capabilities_FailedEntries_ReturnsExpectedView(
+        Guid id,
         Gen2UploadModel model,
         List<Gen2CapabilitiesCsvModel> failed,
         Gen2CsvImportModel<Gen2CapabilitiesCsvModel> capabilities,
         [Frozen] Mock<IGen2UploadService> service,
         Gen2MappingController controller)
     {
-        var id = Guid.NewGuid();
-
         capabilities.Failed = failed;
 
         service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync(capabilities);
 
-        service.Setup(x => x.AddToCache(capabilities))
-            .ReturnsAsync(id);
-
-        var result = (await controller.Capabilities(model)).As<RedirectToActionResult>();
+        var result = (await controller.Capabilities(id, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.FailedCapabilities));
@@ -123,24 +123,20 @@ public static class Gen2MappingControllerTests
     [Theory]
     [CommonAutoData]
     public static async Task Post_Capabilities_NoFailedEntries_ReturnsExpectedView(
+        Guid id,
         Gen2UploadModel model,
         List<Gen2CapabilitiesCsvModel> imported,
         Gen2CsvImportModel<Gen2CapabilitiesCsvModel> capabilities,
         [Frozen] Mock<IGen2UploadService> service,
         Gen2MappingController controller)
     {
-        var id = Guid.NewGuid();
-
         capabilities.Imported = imported;
         capabilities.Failed = Enumerable.Empty<Gen2CapabilitiesCsvModel>().ToList();
 
         service.Setup(x => x.GetCapabilitiesFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync(capabilities);
 
-        service.Setup(x => x.AddToCache(capabilities))
-            .ReturnsAsync(id);
-
-        var result = (await controller.Capabilities(model)).As<RedirectToActionResult>();
+        var result = (await controller.Capabilities(id, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Epics));
@@ -270,9 +266,6 @@ public static class Gen2MappingControllerTests
         service.Setup(x => x.GetEpicsFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync(capabilities);
 
-        service.Setup(x => x.AddToCache(capabilities))
-            .ReturnsAsync(id);
-
         var result = (await controller.Epics(id, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
@@ -295,9 +288,6 @@ public static class Gen2MappingControllerTests
 
         service.Setup(x => x.GetEpicsFromCsv(It.IsAny<Stream>()))
             .ReturnsAsync(capabilities);
-
-        service.Setup(x => x.AddToCache(capabilities))
-            .ReturnsAsync(id);
 
         var result = (await controller.Epics(id, model)).As<RedirectToActionResult>();
 

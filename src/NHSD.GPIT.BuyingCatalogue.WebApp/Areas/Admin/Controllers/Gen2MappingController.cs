@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
 [Authorize(Policy = "AdminOnly")]
 [Area("Admin")]
-[Route("admin/capabilities-mapping")]
+[Route("admin/capabilities-mapping/{id}")]
 public class Gen2MappingController : Controller
 {
     private const string InvalidCsvFormat = "File not formatted correctly";
@@ -27,21 +27,24 @@ public class Gen2MappingController : Controller
     }
 
     [HttpGet("capabilities")]
-    public IActionResult Capabilities()
+    public IActionResult Capabilities(Guid id)
     {
+        _ = id;
+
         return View(new Gen2UploadModel());
     }
 
     [HttpPost("capabilities")]
-    public async Task<IActionResult> Capabilities(Gen2UploadModel model) =>
+    public async Task<IActionResult> Capabilities(Guid id, Gen2UploadModel model) =>
         await HandleFileUpload(
+            id,
             model,
             gen2UploadService.GetCapabilitiesFromCsv,
             gen2UploadService.AddToCache,
             nameof(Epics),
             nameof(FailedCapabilities));
 
-    [HttpGet("{id}/failed-capabilities")]
+    [HttpGet("failed-capabilities")]
     public async Task<IActionResult> FailedCapabilities(Guid id)
     {
         var cachedImport = await gen2UploadService.GetCachedCapabilities(id);
@@ -49,7 +52,7 @@ public class Gen2MappingController : Controller
         return View(new FailedGen2UploadModel<Gen2CapabilitiesCsvModel>(cachedImport.Failed));
     }
 
-    [HttpPost("{id}/failed-capabilities")]
+    [HttpPost("failed-capabilities")]
     public async Task<IActionResult> FailedCapabilities(Guid id, FailedGen2UploadModel<Gen2CapabilitiesCsvModel> model)
     {
         _ = model;
@@ -60,7 +63,7 @@ public class Gen2MappingController : Controller
             gen2UploadService.WriteToCsv);
     }
 
-    [HttpGet("{id}/epics")]
+    [HttpGet("epics")]
     public IActionResult Epics(Guid id)
     {
         _ = id;
@@ -68,20 +71,17 @@ public class Gen2MappingController : Controller
         return View(new Gen2UploadModel());
     }
 
-    [HttpPost("{id}/epics")]
-    public async Task<IActionResult> Epics(Guid id, Gen2UploadModel model)
-    {
-        _ = id;
-
-        return await HandleFileUpload(
+    [HttpPost("epics")]
+    public async Task<IActionResult> Epics(Guid id, Gen2UploadModel model) =>
+        await HandleFileUpload(
+            id,
             model,
             gen2UploadService.GetEpicsFromCsv,
             gen2UploadService.AddToCache,
             nameof(Epics),
             nameof(FailedEpics));
-    }
 
-    [HttpGet("{id}/failed-epics")]
+    [HttpGet("failed-epics")]
     public async Task<IActionResult> FailedEpics(Guid id)
     {
         var cachedImport = await gen2UploadService.GetCachedEpics(id);
@@ -89,7 +89,7 @@ public class Gen2MappingController : Controller
         return View(new FailedGen2UploadModel<Gen2EpicsCsvModel>(cachedImport.Failed));
     }
 
-    [HttpPost("{id}/failed-epics")]
+    [HttpPost("failed-epics")]
     public async Task<IActionResult> FailedEpics(Guid id, FailedGen2UploadModel<Gen2EpicsCsvModel> model)
     {
         _ = model;
@@ -101,9 +101,10 @@ public class Gen2MappingController : Controller
     }
 
     private async Task<IActionResult> HandleFileUpload<T>(
+        Guid id,
         Gen2UploadModel model,
         Func<Stream, Task<Gen2CsvImportModel<T>>> readFunc,
-        Func<Gen2CsvImportModel<T>, Task<Guid>> cacheFunc,
+        Func<Guid, Gen2CsvImportModel<T>, Task> cacheFunc,
         string successAction,
         string failedAction)
         where T : Gen2CsvBase
@@ -121,11 +122,11 @@ public class Gen2MappingController : Controller
             return View(model);
         }
 
-        var cacheId = await cacheFunc(gen2Import);
+        await cacheFunc(id, gen2Import);
 
         return RedirectToAction(
             gen2Import.Failed.Count > 0 ? failedAction : successAction,
-            new { id = cacheId });
+            new { id });
     }
 
     private async Task<IActionResult> HandleFailedUpload<T>(

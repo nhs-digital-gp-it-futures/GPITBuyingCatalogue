@@ -25,7 +25,7 @@
                 <p>Add new supplier defined Epics and edit ones that are already published.</p>
             </li>
             <li>
-                <a href="@Url.Action(nameof(Gen2MappingController.Capabilities), typeof(Gen2MappingController).ControllerName())">Manage Capabilities and Epics</a>
+                <a href="@Url.Action(nameof(Gen2MappingController.Capabilities), typeof(Gen2MappingController).ControllerName(), new { id = Guid.NewGuid() })">Manage Capabilities and Epics</a>
                 <p>Upload new Capabilities and Epics using a CSV file.</p>
             </li>
         </ul>

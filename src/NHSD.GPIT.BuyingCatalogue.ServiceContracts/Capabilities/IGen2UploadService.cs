@@ -16,9 +16,9 @@ public interface IGen2UploadService
 
     Task<Stream> WriteToCsv(IEnumerable<Gen2EpicsCsvModel> records);
 
-    Task<Guid> AddToCache(Gen2CsvImportModel<Gen2CapabilitiesCsvModel> records);
+    Task AddToCache(Guid id, Gen2CsvImportModel<Gen2CapabilitiesCsvModel> records);
 
-    Task<Guid> AddToCache(Gen2CsvImportModel<Gen2EpicsCsvModel> records);
+    Task AddToCache(Guid id, Gen2CsvImportModel<Gen2EpicsCsvModel> records);
 
     Task<Gen2CsvImportModel<Gen2CapabilitiesCsvModel>> GetCachedCapabilities(Guid id);
 

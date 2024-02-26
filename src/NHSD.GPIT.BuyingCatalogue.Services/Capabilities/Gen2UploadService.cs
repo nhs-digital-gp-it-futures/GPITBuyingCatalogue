@@ -37,11 +37,11 @@ public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2U
     public async Task<Stream> WriteToCsv(IEnumerable<Gen2EpicsCsvModel> records)
         => await WriteToCsv<Gen2EpicsCsvModel, Gen2EpicsCsvClassMap>(records);
 
-    public async Task<Guid> AddToCache(Gen2CsvImportModel<Gen2CapabilitiesCsvModel> records) =>
-        await AddToCache(CapabilitiesCacheSuffix, records);
+    public async Task AddToCache(Guid id, Gen2CsvImportModel<Gen2CapabilitiesCsvModel> records) =>
+        await AddToCache(id, CapabilitiesCacheSuffix, records);
 
-    public async Task<Guid> AddToCache(Gen2CsvImportModel<Gen2EpicsCsvModel> records) =>
-        await AddToCache(EpicsCacheSuffix, records);
+    public async Task AddToCache(Guid id, Gen2CsvImportModel<Gen2EpicsCsvModel> records) =>
+        await AddToCache(id, EpicsCacheSuffix, records);
 
     public async Task<Gen2CsvImportModel<Gen2CapabilitiesCsvModel>> GetCachedCapabilities(Guid id) =>
         await GetFromCache<Gen2CapabilitiesCsvModel>(new DistributedCacheKey(id, CapabilitiesCacheSuffix));
@@ -104,10 +104,9 @@ public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2U
             : new Gen2CsvImportModel<T>(records, filter(records));
     }
 
-    private async Task<Guid> AddToCache<T>(string cacheSuffix, Gen2CsvImportModel<T> records)
+    private async Task AddToCache<T>(Guid id, string cacheSuffix, Gen2CsvImportModel<T> records)
         where T : Gen2CsvBase
     {
-        var id = Guid.NewGuid();
         var cacheKey = new DistributedCacheKey(id, cacheSuffix);
         var serializedRecords = JsonSerializer.Serialize(records);
 
@@ -115,8 +114,6 @@ public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2U
             cacheKey.ToString(),
             serializedRecords,
             new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
-
-        return id;
     }
 
     private async Task<Gen2CsvImportModel<T>> GetFromCache<T>(DistributedCacheKey cacheKey)
