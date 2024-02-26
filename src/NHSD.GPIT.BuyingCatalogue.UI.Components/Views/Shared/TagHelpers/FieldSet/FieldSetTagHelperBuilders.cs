@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
             return fieldsetLegend;
         }
 
-        public static TagBuilder GetFieldsetLegendHeadingTagBuilder(string labelText, string selectedLegendTag) // FieldSetSize selectedSize)
+        public static TagBuilder GetFieldsetLegendHeadingTagBuilder(string labelText, string selectedLegendTag)
         {
             if (labelText == null)
                 return null;
