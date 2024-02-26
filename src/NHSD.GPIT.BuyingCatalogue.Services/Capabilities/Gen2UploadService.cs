@@ -63,6 +63,8 @@ public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2U
 
     private static bool IsBaseRecordValid(Gen2CsvBase baseRecord)
     {
+        var keyIsValid = !string.IsNullOrWhiteSpace(baseRecord.Key);
+
         var supplierIdValid = !string.IsNullOrWhiteSpace(baseRecord.SupplierId)
             && int.TryParse(baseRecord.SupplierId, out _);
 
@@ -76,16 +78,15 @@ public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2U
         var additionalServiceIdValid = string.IsNullOrWhiteSpace(baseRecord.AdditionalServiceId)
             || baseRecord.AdditionalServiceId.StartsWith('A');
 
-        var isRecordValid = supplierIdValid && catalogueItemIdValid && capabilityIdValid && additionalServiceIdValid;
+        var isRecordValid = keyIsValid && supplierIdValid && catalogueItemIdValid && capabilityIdValid && additionalServiceIdValid;
 
         return isRecordValid;
     }
 
     private static IEnumerable<Gen2CapabilitiesCsvModel> GetInvalidCapabilities(
         IEnumerable<Gen2CapabilitiesCsvModel> records) => records.Where(
-        x => (!string.IsNullOrWhiteSpace(x.CapabilityAssessmentResult)
-                && Gen2CapabilitiesCsvModel.ValidAssessmentResults.Contains(x.CapabilityAssessmentResult))
-            && !IsBaseRecordValid(x));
+        x => !IsBaseRecordValid(x) || (string.IsNullOrWhiteSpace(x.CapabilityAssessmentResult)
+                || !Gen2CapabilitiesCsvModel.ValidAssessmentResults.Contains(x.CapabilityAssessmentResult)));
 
     private static IEnumerable<Gen2EpicsCsvModel> GetInvalidEpics(
         IEnumerable<Gen2EpicsCsvModel> records) => records.Where(

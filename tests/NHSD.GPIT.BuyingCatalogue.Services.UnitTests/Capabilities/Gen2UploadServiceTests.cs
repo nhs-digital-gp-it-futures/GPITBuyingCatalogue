@@ -233,7 +233,7 @@ public static class Gen2UploadServiceTests
     {
         var expected = JsonSerializer.Serialize(records);
 
-       await service.AddToCache(id, records);
+        await service.AddToCache(id, records);
 
         distributedCache.Verify(
             x => x.SetAsync(
