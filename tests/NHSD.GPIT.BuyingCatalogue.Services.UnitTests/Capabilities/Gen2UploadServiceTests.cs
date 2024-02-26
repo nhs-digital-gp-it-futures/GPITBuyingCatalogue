@@ -67,6 +67,23 @@ public static class Gen2UploadServiceTests
 
     [Theory]
     [CommonAutoData]
+    public static async Task GetCapabilitiesFromCsv_WithInvalidAssociatedServiceId_ReturnsCapabilities(
+        Gen2UploadService service)
+    {
+        var stream = CreateCapabilitiesCsvStream(
+            "SYN-8169,10055,10055-001,C41,A001,Passed - Full",
+            "SYN-1182,10055,10055-001,C41,A0002,Passed - Full",
+            "SYN-15189,10032,10032-001,C37,A00L,Passed - Full");
+
+        var result = await service.GetCapabilitiesFromCsv(stream);
+
+        result.Should().NotBeNull();
+        result.Imported.Should().HaveCount(3);
+        result.Failed.Should().HaveCount(2);
+    }
+
+    [Theory]
+    [CommonAutoData]
     public static async Task GetCapabilitiesFromCsv_WithMissingData_ReturnsCapabilities(
         Gen2UploadService service)
     {
