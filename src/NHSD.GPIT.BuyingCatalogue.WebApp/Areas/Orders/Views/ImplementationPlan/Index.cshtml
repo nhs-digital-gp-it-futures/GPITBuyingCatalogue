@@ -27,21 +27,36 @@
             </nhs-details>
         </div>
 
-        <partial name="MilestoneTable" model="new MilestoneTableModel(Model.DefaultMilestoneLabelText, Model.DefaultPlan.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
-        
-        <vc:nhs-action-link text="Add a bespoke milestone"
-                            url="@Url.Action(nameof(ImplementationPlanController.AddMilestone),
-                                     typeof(ImplementationPlanController).ControllerName(),
-                                     new { Model.InternalOrgId, Model.CallOffId })" />
+        <nhs-card-v2>
+            <nhs-card-content>
+                <h3>Default milestones and payment triggers</h3>
+                <partial name="MilestoneTable" model="new MilestoneTableModel(null, Model.DefaultPlan.Milestones, false, Model.CallOffId, Model.InternalOrgId)" class="nhsuk-form-group:last-of-type" />
+            </nhs-card-content>
+        </nhs-card-v2>
 
-        @if (Model.HasBespokeMilestones)
-        {
-            <partial name="MilestoneTable" model="new MilestoneTableModel(Model.BespokeMilestoneLabelText, Model.BespokePlan.Milestones, true, Model.CallOffId, Model.InternalOrgId)" />
-        }
-        else
-        {
-            <p>No bespoke milestones have been added to this order.</p>
-        }
+        <nhs-card-v2>
+            <nhs-card-content>
+                <h3>Bespoke milestones and payment triggers</h3>
+                @if (Model.HasBespokeMilestones)
+                {
+                    <partial name="MilestoneTable" model="new MilestoneTableModel(null, Model.BespokePlan.Milestones, true, Model.CallOffId, Model.InternalOrgId)" />
+                }
+                else
+                {
+                    <p>No bespoke milestones have been added to this order.</p>
+                }
+            </nhs-card-content>
+            <nhs-card-footer>
+                <p class="nhsuk-body-m">
+                    <a class="nhsuk-link--no-visited-state" href="@Url.Action(
+                                    nameof(ImplementationPlanController.AddMilestone),
+                                    typeof(ImplementationPlanController).ControllerName(),
+                                    new { Model.InternalOrgId, Model.CallOffId })">
+                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add a bespoke milestone
+                    </a>
+                </p>
+            </nhs-card-footer>
+        </nhs-card-v2>
 
         <form method="post">
             <div class="nhsuk-u-margin-top-9">
