@@ -42,14 +42,23 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
         public void AmendPlannedDeliveryDate(string name)
         {
             SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
-            CommonActions.ClickRadioButtonWithText("No");
+            //CommonActions.ClickRadioButtonWithText("No");
+            //CommonActions.ClickSave();
+
+            //CommonActions.PageLoadedCorrectGetIndex(
+            //        typeof(DeliveryDatesController),
+            //        nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
+
+            CommonActions.ClickRadioButtonWithText("Yes");
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(DeliveryDatesController),
-                    nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
+            typeof(DeliveryDatesController),
+            nameof(DeliveryDatesController.Review)).Should().BeTrue();
+            CommonActions.ClickContinue();
 
-            CommonActions.ClickSave();
+            //CommonActions.ClickSave();
         }
 
         public void AmendEditPlannedDeliveryDate(string name)

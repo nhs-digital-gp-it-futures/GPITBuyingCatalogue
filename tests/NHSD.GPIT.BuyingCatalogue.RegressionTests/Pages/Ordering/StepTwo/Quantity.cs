@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions;
@@ -49,9 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
              nameof(OrderController.Order)).Should().BeTrue();
         }
 
-        public void AmendEditQuantity(string catalogueItemName)
+        public void AmendEditQuantity(string solutionid)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(GetCatalogueItemID(catalogueItemName)));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(solutionid));
 
             AddQuantity();
 
