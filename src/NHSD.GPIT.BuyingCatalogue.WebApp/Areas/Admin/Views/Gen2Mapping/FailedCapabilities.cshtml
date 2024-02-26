@@ -17,12 +17,13 @@
                     <nhs-table-column>Solution ID</nhs-table-column>
                     <nhs-table-column>Additional Service ID</nhs-table-column>
                     <nhs-table-column>Capability ID</nhs-table-column>
-                    <nhs-table-column>Assessment result</nhs-table-column>
+                    <nhs-table-column>Assessment</nhs-table-column>
 
                     @foreach (var item in Model.FailedRecords)
                     {
                         <nhs-table-row-container>
                             <nhs-table-cell>@item.Key</nhs-table-cell>
+                            <nhs-table-cell>@item.SupplierId</nhs-table-cell>
                             <nhs-table-cell>@item.SolutionId</nhs-table-cell>
                             <nhs-table-cell>@item.AdditionalServiceId</nhs-table-cell>
                             <nhs-table-cell>@item.CapabilityId</nhs-table-cell>
