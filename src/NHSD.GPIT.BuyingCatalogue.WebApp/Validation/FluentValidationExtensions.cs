@@ -2,10 +2,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Numerics;
 using System.Text.RegularExpressions;
 using FluentValidation;
 using FluentValidation.Internal;
+using Microsoft.AspNetCore.Http;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 
@@ -21,12 +21,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
         internal const string PriceNotANumberError = "Price must be a number";
         internal const string PriceNegativeError = "Price cannot be negative";
         internal const string PriceGreaterThanDecimalPlacesError = "Price must be to a maximum of 4 decimal places";
+        internal const string NoFileSpecified = "Select a CSV file to upload";
+        internal const string InvalidFileType = "The selected file must be a CSV";
+
+        private const string AllowedFileExtension = ".csv";
 
         public static IRuleBuilderOptions<T, TProperty> OverridePropertyName<T, TProperty>(
             this IRuleBuilderOptions<T, TProperty> rule,
             params Expression<Func<T, object>>[] expressions)
         {
-            if (expressions == null) throw new ArgumentNullException(nameof(expressions));
+            ArgumentNullException.ThrowIfNull(expressions);
+
             var propertyName = string.Join('|', expressions.Select(expr => expr.GetMember()?.Name));
             return rule.OverridePropertyName(propertyName);
         }
@@ -63,8 +68,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
             => ruleBuilder
                 .Must(BePrefixedCorrectly)
                 .WithMessage(InvalidUrlPrefixErrorMessage)
-                .Must(link => urlValidator.IsValidUrl(link))
+                .Must(urlValidator.IsValidUrl)
                 .WithMessage(InvalidUrlErrorMessage);
+
+        public static IRuleBuilderOptions<T, IFormFile> IsValidCsv<T>(
+            this IRuleBuilderInitial<T, IFormFile> ruleBuilder)
+            => ruleBuilder
+                .NotNull()
+                .WithMessage(NoFileSpecified)
+                .Must(m => m.FileName.EndsWith(AllowedFileExtension))
+                .WithMessage(InvalidFileType);
 
         public static IRuleBuilderOptions<T, string> IsValidPrice<T>(this IRuleBuilderInitial<T, string> ruleBuilder)
             => ruleBuilder

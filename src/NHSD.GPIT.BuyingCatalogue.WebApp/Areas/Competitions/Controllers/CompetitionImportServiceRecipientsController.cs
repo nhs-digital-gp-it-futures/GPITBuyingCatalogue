@@ -102,7 +102,7 @@ public class CompetitionImportServiceRecipientsController : Controller
         string internalOrgId,
         int competitionId)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
+        var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         if (cachedRecipients is null)
             return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
@@ -141,7 +141,7 @@ public class CompetitionImportServiceRecipientsController : Controller
         string internalOrgId,
         int competitionId)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
+        var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         if (cachedRecipients is null)
             return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
@@ -181,7 +181,7 @@ public class CompetitionImportServiceRecipientsController : Controller
         int competitionId,
         ValidateNamesModel model)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
+        var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         var organisationServiceRecipients =
             await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);

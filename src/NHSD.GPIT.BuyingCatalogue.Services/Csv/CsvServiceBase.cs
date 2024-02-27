@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
@@ -12,6 +13,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv;
 
 public abstract class CsvServiceBase
 {
+    protected static async Task<IList<T>> ReadCsv<T, TMap>(Stream stream)
+        where TMap : ClassMap<T>
+    {
+        using var streamReader = new StreamReader(stream);
+        using var csvReader = new CsvReader(
+            streamReader,
+            new(CultureInfo.InvariantCulture) { TrimOptions = TrimOptions.Trim, });
+
+        csvReader.Context.RegisterClassMap<TMap>();
+
+        try
+        {
+            return await csvReader
+                .GetRecordsAsync<T>()
+                .ToListAsync();
+        }
+        catch (HeaderValidationException)
+        {
+            return null;
+        }
+        catch (CsvHelper.MissingFieldException)
+        {
+            return null;
+        }
+    }
+
     protected static async Task WriteRecordsAsync<TEntity, TClassMap>(MemoryStream stream, IEnumerable<TEntity> items)
         where TClassMap : ClassMap<TEntity>
     {
