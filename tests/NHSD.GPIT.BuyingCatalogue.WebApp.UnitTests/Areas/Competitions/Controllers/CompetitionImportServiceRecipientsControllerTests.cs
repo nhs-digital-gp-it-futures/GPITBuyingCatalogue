@@ -132,7 +132,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] Mock<IServiceRecipientImportService> importService,
         CompetitionImportServiceRecipientsController controller)
     {
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync((IList<ServiceRecipientImportModel>)null);
 
         var result = (await controller.ValidateOds(internalOrgId, competitionId))
@@ -170,7 +170,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         var expectedModel = new ValidateOdsModel(
             importedServiceRecipients.Take(1).ToList()) { Caption = competition.Name };
 
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
 
         competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<string>(), competition.Id))
@@ -210,7 +210,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
 
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
@@ -241,7 +241,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] Mock<IServiceRecipientImportService> importService,
         CompetitionImportServiceRecipientsController controller)
     {
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync((IList<ServiceRecipientImportModel>)null);
 
         var result = (await controller.ValidateNames(internalOrgId, competitionId))
@@ -287,7 +287,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         var expectedModel = new ValidateNamesModel(
             mismatchedNames) { Caption = competition.Name };
 
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
 
         competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<string>(), competition.Id))
@@ -326,7 +326,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
 
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync(recipientIds);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
@@ -380,7 +380,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         var model = new ValidateNamesModel(
             mismatchedNames);
 
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync(recipientIds);
 
         competitionsService.Setup(s => s.GetCompetitionName(It.IsAny<string>(), competition.Id))

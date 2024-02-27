@@ -35,27 +35,12 @@ public class CardContentTagHelper : TagHelper
 
         content.InnerHtml
             .AppendHtml(BuildHeading(cardContext))
-            .AppendHtml(BuildContent(childContent));
+            .AppendHtml(childContent.GetContent());
 
         cardContext.ShouldBeClickable = !string.IsNullOrWhiteSpace(Url);
         cardContext.BodyContent = content;
 
         output.SuppressOutput();
-    }
-
-    private static TagBuilder BuildContent(TagHelperContent cardContent)
-    {
-        var content = cardContent.GetContent();
-
-        if (string.IsNullOrWhiteSpace(content))
-            return null;
-
-        var cardParagraph = new TagBuilder(TagHelperConstants.Paragraph);
-        cardParagraph.AddCssClass(CardStyles.CardDescriptionClass);
-
-        cardParagraph.InnerHtml.AppendHtml(content);
-
-        return cardParagraph;
     }
 
     private TagBuilder BuildHeading(CardContext cardContext)
