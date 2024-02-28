@@ -54,11 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             SetPaginationFooter();
         }
 
-        public int IndexValue { get; set; }
+        public int IndexValue { get; set; } = 2;
 
         public string PriceFor { get; set; }
-
-        public string BackLink { get; set; }
 
         public CatalogueItemType ItemType { get; set; }
 

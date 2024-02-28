@@ -1,0 +1,35 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.YourAccount.YourAccountModel;
+@{
+    Layout = "~/Views/Shared/Layouts/_SideNavigationLayout.cshtml";
+}
+
+<div class="nhsuk-width-container">
+    <main id="maincontent" role="main">
+        <article>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-full">
+                    <nhs-card title="Organisation details">
+                        <nhs-summary-list>
+                            <nhs-summary-list-row label-text="Name">
+                                <p>
+                                    @Model!.Organisation.Name
+                                </p>
+                            </nhs-summary-list-row>
+                            <nhs-summary-list-row label-text="ODS code">
+                                <p>
+                                    @Model.Organisation.ExternalIdentifier
+                                </p>
+                            </nhs-summary-list-row>
+                            <nhs-summary-list-row label-text="Business address">
+                                <p>
+                                    <vc:nhs-address address="@Model.OrganisationAddress" />
+                                </p>
+                            </nhs-summary-list-row>
+                        </nhs-summary-list>
+                    </nhs-card>
+
+                </div>
+            </div>
+        </article>
+    </main>
+</div>

@@ -1,4 +1,6 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+﻿using System.Collections.Generic;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
     public class SectionModel
     {
@@ -6,12 +8,12 @@
 
         public string Controller { get; set; }
 
-        public string SolutionId { get; set; }
+        public Dictionary<string, string> RouteData { get; set; }
 
         public string Name { get; set; }
 
-        public bool Selected { get; set; }
+        public bool Selected { get; set; } = false;
 
-        public bool Show { get; set; }
+        public bool Show { get; set; } = true;
     }
 }
