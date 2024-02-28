@@ -4,8 +4,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
     public sealed class CommonAutoDataAttribute : AutoDataAttribute
     {
-        public CommonAutoDataAttribute()
-            : base(FixtureFactory.Create)
+        public CommonAutoDataAttribute(MockingFramework mockingFramework = MockingFramework.Moq)
+            : base(() => FixtureFactory.Create(mockingFramework))
         {
         }
     }
