@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsMod
             bool clearSearch = true,
             bool clearSelection = true)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            if (string.IsNullOrEmpty(id) || id.Any(char.IsWhiteSpace))
+                throw new ArgumentException("Id cannot be null or empty, or contain whitespace", nameof(id));
 
             var model = new NhsModalSearchModel
             {
