@@ -344,6 +344,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
         [Theory]
         [CommonAutoData]
+        public static void ToRequestedFilters_With_SelectedIM1Integrations(
+            RequestedFilters filters)
+        {
+            filters = filters with { SelectedInteroperabilityOptions = "0" };
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), filters);
+
+            var requestedFilters = model.ToRequestedFilters();
+
+            requestedFilters.SelectedIM1Integrations.Should().NotBeNull();
+            requestedFilters.SelectedGPConnectIntegrations.Should().BeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void ToRequestedFilters_With_SelectedGPConnectIntegrations(
+            RequestedFilters filters)
+        {
+            filters = filters with { SelectedInteroperabilityOptions = "1" };
+            var model = new AdditionalFiltersModel(new List<FrameworkFilterInfo>(), filters);
+
+            var requestedFilters = model.ToRequestedFilters();
+
+            requestedFilters.SelectedIM1Integrations.Should().BeNull();
+            requestedFilters.SelectedGPConnectIntegrations.Should().NotBeNull();
+        }
+
+        [Theory]
+        [CommonAutoData]
         public static void Constructor_WithSelectedCapabilityAndEpics_Property_SetCorrectly(
             string selected,
             RequestedFilters filters)

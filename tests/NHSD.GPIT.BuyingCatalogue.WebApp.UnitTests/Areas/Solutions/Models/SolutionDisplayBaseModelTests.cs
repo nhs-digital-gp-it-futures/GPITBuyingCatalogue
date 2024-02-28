@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Moq;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 
@@ -11,88 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
 {
     public static class SolutionDisplayBaseModelTests
     {
-        private static readonly IList<SectionModel> SectionModels = new List<SectionModel>
-        {
-            new()
-            {
-                Action = nameof(SolutionsController.Description),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Description",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Features),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Features",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Capabilities),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Capabilities",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.ListPrice),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "List price",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.AdditionalServices),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Additional Services",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Description),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Associated Services",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Interoperability),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Interoperability",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Implementation),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Implementation",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.ApplicationTypes),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Application type",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.HostingType),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Hosting type",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Description),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Service Level Agreement",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Description),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Development plans",
-            },
-            new()
-            {
-                Action = nameof(SolutionsController.Description),
-                Controller = typeof(SolutionsController).ControllerName(),
-                Name = "Supplier details",
-            },
-        };
-
         [Theory]
         [InlineData(typeof(ApplicationTypesModel))]
         [InlineData(typeof(ImplementationTimescalesModel))]
@@ -106,21 +26,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [InlineData("Summary", false)]
-        [InlineData("summary", false)]
-        [InlineData("SUMMARY", false)]
-        [InlineData("Implementation", true)]
-        [InlineData("Hosting", true)]
-        public static void NotFirstSection_Returns_ExpectedResponse(string section, bool expected)
+        [CommonAutoData]
+        public static void Constructor_PropertiesCorrectlySet(
+        CatalogueItem catalogueItem,
+        Solution solution,
+        CatalogueItemContentStatus contentStatus,
+        bool isSubPage)
         {
-            var model = new Mock<SolutionDisplayBaseModel> { CallBase = true };
-            model.SetupGet(m => m.Section)
-                .Returns(section);
-
-            var actual = model.Object.NotFirstSection();
-
-            model.VerifyGet(m => m.Section);
-            actual.Should().Be(expected);
+            catalogueItem.Solution = solution;
+            var model = new Mock<SolutionDisplayBaseModel>(catalogueItem, contentStatus, isSubPage);
+            model.Object.IsSubPage.Should().Be(isSubPage);
+            model.Object.SolutionId.Should().Be(catalogueItem.Id);
+            model.Object.PublicationStatus.Should().Be(catalogueItem.PublishedStatus);
+            model.Object.IsPilotSolution.Should().Be(solution.IsPilotSolution);
+            model.Object.Sections.Any().Should().BeTrue();
+            model.Object.BreadcrumbItems.Any().Should().BeTrue();
         }
     }
 }
