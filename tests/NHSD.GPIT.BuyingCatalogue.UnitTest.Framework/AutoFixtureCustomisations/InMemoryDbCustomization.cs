@@ -11,10 +11,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
     public sealed class InMemoryDbCustomization : ICustomization
     {
+        private readonly MockingFramework mockingFramework;
         private readonly DbContextOptions<BuyingCatalogueDbContext> dbContextOptions;
 
-        public InMemoryDbCustomization(string dbName)
+        public InMemoryDbCustomization(string dbName, MockingFramework mockingFramework)
         {
+            this.mockingFramework = mockingFramework;
             dbContextOptions = new DbContextOptionsBuilder<BuyingCatalogueDbContext>()
                 .EnableSensitiveDataLogging()
                 .UseInMemoryDatabase(dbName)
@@ -24,7 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
         public void Customize(IFixture fixture)
         {
-            fixture.Customize<BuyingCatalogueDbContext>(_ => new MockIdentityServiceSpecimenBuilder());
+            ISpecimenBuilder identityServiceBuilder = mockingFramework == MockingFramework.Moq
+                ? new MoqIdentityServiceSpecimenBuilder()
+                : new IdentityServiceSpecimenBuilder();
+
+            fixture.Customize<BuyingCatalogueDbContext>(_ => identityServiceBuilder);
             fixture.Customize<BuyingCatalogueDbContext>(_ => new ApplicationDbContextSpecimenBuilder(dbContextOptions));
         }
 

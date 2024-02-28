@@ -6,13 +6,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
-    internal class ControllerBaseSpecimenCommand : ISpecimenCommand
+    internal class MoqControllerSpecimenCommand : ISpecimenCommand
     {
         public virtual void Execute(object specimen, ISpecimenContext context)
         {
@@ -22,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             if (context is null)
                 throw new ArgumentNullException(nameof(context));
 
-            if (specimen is ControllerBase controller)
+            if (specimen is Controller controller)
             {
                 var httpRequestCookiesMock = context.Create<Mock<IRequestCookieCollection>>();
                 var headerDictionary = context.Create<HeaderDictionary>();
@@ -49,6 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 var urlHelperMock = context.Create<Mock<IUrlHelper>>();
                 urlHelperMock.Setup(u => u.Action(It.IsAny<UrlActionContext>()))
                     .Returns("testUrl");
+
+                var tempDataMock = context.Create<Mock<ITempDataDictionary>>();
+                controller.TempData = tempDataMock.Object;
 
                 controller.Url = urlHelperMock.Object;
             }

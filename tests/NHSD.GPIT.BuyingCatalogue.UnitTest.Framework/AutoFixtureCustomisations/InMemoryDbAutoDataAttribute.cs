@@ -5,10 +5,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
     public sealed class InMemoryDbAutoDataAttribute : AutoDataAttribute
     {
-        public InMemoryDbAutoDataAttribute()
+        public InMemoryDbAutoDataAttribute(MockingFramework mockingFramework = MockingFramework.Moq)
             : base(() => FixtureFactory.Create(
+                mockingFramework,
                 new BuyingCatalogueDbContextCustomization(),
-                new InMemoryDbCustomization(Guid.NewGuid().ToString()),
+                new InMemoryDbCustomization(Guid.NewGuid().ToString(), mockingFramework),
                 new UserManagerCustomization()))
         {
         }
