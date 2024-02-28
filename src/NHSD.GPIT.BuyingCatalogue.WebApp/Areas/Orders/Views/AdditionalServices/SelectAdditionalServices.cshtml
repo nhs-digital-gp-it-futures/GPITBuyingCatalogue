@@ -23,7 +23,7 @@
                         caption="@Model.SolutionName"
                         advice="@advice"/>
         
-        <form method="post">
+        <form method="post" autocomplete="off">
             @if (Model.Services.Any())
             {
                 <div id="services-to-select">

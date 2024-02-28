@@ -43,6 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public int PreviousRecipients { get; set; }
 
+        public bool QuantityChanged { get; set; }
+
         public CatalogueItemId CatalogueItemId { get; set; }
 
         public string Name { get; set; }
@@ -79,13 +81,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     return TaskProgress.Completed;
                 }
 
-                if (RolledUpOrderRecipients.AllQuantitiesEntered(rolledUpOrderItem))
+                if (!IsPerServiceRecipient && IsAmendment && FromPreviousRevision)
                 {
-                    return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
+                    return QuantityChanged ? TaskProgress.Amended : TaskProgress.Completed;
                 }
-                else if (RolledUpOrderRecipients.SomeButNotAllNewQuantitiesEntered(rolledUpOrderItem, PreviousRecipients))
+                else
                 {
-                    return TaskProgress.InProgress;
+                    if (RolledUpOrderRecipients.AllQuantitiesEntered(rolledUpOrderItem))
+                    {
+                        return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
+                    }
+                    else if (RolledUpOrderRecipients.SomeButNotAllNewQuantitiesEntered(rolledUpOrderItem, PreviousRecipients))
+                    {
+                        return TaskProgress.InProgress;
+                    }
                 }
 
                 return TaskProgress.NotStarted;

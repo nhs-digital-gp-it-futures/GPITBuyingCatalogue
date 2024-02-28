@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -43,6 +44,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             AdditionalServices = rolledUpOrder.GetAdditionalServices();
             AssociatedServices = rolledUpOrder.GetAssociatedServices();
 
+            var tempPrev = wrapper.Previous;
+            var currentAdditionalServices = wrapper.Order.GetAdditionalServices();
+
             if (rolledUpOrder.OrderType.AssociatedServicesOnly)
             {
                 SolutionName = rolledUpOrder.AssociatedServicesOnlyDetails.Solution?.Name;
@@ -58,7 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
                         ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
                         : 0,
-                    PreviousRecipients = Previous?.OrderRecipients.Count() ?? 0,
+                    PreviousRecipients = Previous?.OrderRecipients.Count ?? 0,
+                    QuantityChanged = Previous?.OrderItems.Where(x => x.CatalogueItemId == CatalogueSolution.CatalogueItemId).FirstOrDefault().Quantity != wrapper.Order.GetSolutionOrderItem().Quantity,
                 });
             }
 
@@ -70,7 +75,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                     : 0,
-                PreviousRecipients = Previous?.OrderRecipients.Count() ?? 0,
+                PreviousRecipients = Previous?.OrderRecipients.Count ?? 0,
+                QuantityChanged = (tempPrev.OrderItems.Where(y => y.CatalogueItemId == x.CatalogueItemId)?.FirstOrDefault().Quantity ?? 0) !=
+                    (currentAdditionalServices.Where(y => y.CatalogueItemId == x.CatalogueItemId)?.FirstOrDefault().Quantity ?? 0),
             }));
 
             AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, x)
