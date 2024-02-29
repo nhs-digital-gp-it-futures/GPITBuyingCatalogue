@@ -33,13 +33,10 @@
                 }
             }
             
-            <nhs-summary-list>
-                <nhs-summary-list-row label-text="Associated Service ID">
-                    <p>
-                        @Model.Id
-                    </p>
-                </nhs-summary-list-row>
-            </nhs-summary-list>
+            <label class="nhsuk-label" for="@Model.Id">Associated Service ID</label>
+            <p>
+                @Model.Id
+            </p>
             <nhs-input asp-for="Name"
                        label-text="Associated Service name" />
             <nhs-textarea asp-for="Description"

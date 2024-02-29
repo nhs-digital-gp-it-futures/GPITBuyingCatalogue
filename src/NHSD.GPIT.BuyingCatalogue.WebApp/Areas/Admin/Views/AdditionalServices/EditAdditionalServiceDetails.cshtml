@@ -22,13 +22,11 @@
             @if (Model.IsEdit)
             {
                 <input type="hidden" asp-for="IdDisplay" />
-                <nhs-summary-list>
-                    <nhs-summary-list-row label-text="Additional Service ID">
-                        <p>
-                            @Model.IdDisplay
-                        </p>
-                    </nhs-summary-list-row>
-                </nhs-summary-list>
+                <label class="nhsuk-label" for="@Model.IdDisplay">Additional Service ID</label>
+                <p>
+                    @Model.IdDisplay
+                </p>
+                    
             }
             else
             {

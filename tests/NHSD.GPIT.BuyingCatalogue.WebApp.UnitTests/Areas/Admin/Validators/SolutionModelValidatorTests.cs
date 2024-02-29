@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             result
                 .ShouldHaveValidationErrorFor(m => m.SupplierId)
-                .WithErrorMessage("Select a supplier name");
+                .WithErrorMessage("Select a supplier");
         }
 
         [Theory]
