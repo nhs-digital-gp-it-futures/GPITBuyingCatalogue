@@ -42,13 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
         public void AmendPlannedDeliveryDate(string name)
         {
             SetDefaultPlannedDeliveryDate(DateTime.Today.AddDays(7));
-            //CommonActions.ClickRadioButtonWithText("No");
-            //CommonActions.ClickSave();
-
-            //CommonActions.PageLoadedCorrectGetIndex(
-            //        typeof(DeliveryDatesController),
-            //        nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
-
             CommonActions.ClickRadioButtonWithText("Yes");
 
             CommonActions.ClickSave();
@@ -57,8 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
             typeof(DeliveryDatesController),
             nameof(DeliveryDatesController.Review)).Should().BeTrue();
             CommonActions.ClickContinue();
-
-            //CommonActions.ClickSave();
         }
 
         public void AmendEditPlannedDeliveryDate(string name)
@@ -217,14 +208,5 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
 
             CommonActions.ClickSave();
         }
-
-        //private string GetCatalogueItemID(string catalogueItemName)
-        //{
-        //    using var dbContext = Factory.DbContext;
-
-        //    var catalogueItem = dbContext.CatalogueItems.FirstOrDefault(i => i.Name == catalogueItemName);
-
-        //    return (catalogueItem != null) ? catalogueItem.Id.ToString() : string.Empty;
-        //}
     }
 }

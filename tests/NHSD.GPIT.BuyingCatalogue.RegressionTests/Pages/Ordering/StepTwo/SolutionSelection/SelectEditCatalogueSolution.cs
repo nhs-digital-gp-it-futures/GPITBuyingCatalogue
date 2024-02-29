@@ -21,17 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         public void SelectSolution(string solutionName, IEnumerable<string>? additionalServices)
         {
             CommonActions.ClickRadioButtonWithText(solutionName);
-            //if (SolutionHasAdditionalService(solutionName) && additionalServices != default)
-            //{
-            //    foreach (var additionalService in additionalServices)
-            //    {
-            //        if (!string.IsNullOrWhiteSpace(additionalService))
-            //        {
-            //            CommonActions.ClickCheckboxByLabel(additionalService);
-            //        }
-            //    }
-            //}
-
             CommonActions.ClickSave();
         }
 
@@ -46,10 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickRadioButtonWithText(newSolutionName);
 
             CommonActions.ClickSave();
-
-            //var hasAdditionalService = SolutionHasAdditionalService(newSolutionName);
-
-            //ConfirmSolutionChanges(hasAdditionalService, newAdditionalServiceNames);
             ConfirmSolutionChanges();
         }
 
@@ -123,34 +108,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickCheckboxByLabel(associatedServices);
             CommonActions.ClickSave();
         }
-
-        //private void ConfirmSolutionChanges(bool hasAdditionalService, IEnumerable<string>? newAdditionalServiceNames)
-        //{
-        //    CommonActions.PageLoadedCorrectGetIndex(
-        //     typeof(CatalogueSolutionsController),
-        //     nameof(CatalogueSolutionsController.ConfirmSolutionChanges)).Should().BeTrue();
-
-        //    CommonActions.ClickFirstRadio();
-
-        //    CommonActions.ClickSave();
-
-        //    if (hasAdditionalService)
-        //    {
-        //        CommonActions.PageLoadedCorrectGetIndex(
-        //            typeof(AdditionalServicesController),
-        //            nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
-
-        //        if (newAdditionalServiceNames != default && newAdditionalServiceNames.All(a => !string.IsNullOrWhiteSpace(a)))
-        //        {
-        //            foreach (var additionalService in newAdditionalServiceNames)
-        //            {
-        //                CommonActions.ClickCheckboxByLabel(additionalService);
-        //            }
-        //        }
-
-        //        CommonActions.ClickSave();
-        //    }
-        //}
 
         private void ConfirmSolutionChanges()
         {

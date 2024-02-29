@@ -179,10 +179,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
         public void EditSolutionAndServicesTask()
         {
             CommonActions.ClickLinkElement(CatalogueSolutionObjects.SelectSolutionsAndServicesLink);
-
-            //CommonActions.LedeText()
-            //.Should()
-            //.Be("Review the progress of your order. Make sure you’ve included everything you want to order and that all sections are completed.".FormatForComparison());
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(TaskListController),
              nameof(TaskListController.TaskList)).Should().BeTrue();

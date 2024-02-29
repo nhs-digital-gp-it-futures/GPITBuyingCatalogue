@@ -26,8 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void AmendReviewSolutionAndServices()
         {
-            //CommonActions.ClickSave();
-
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(DeliveryDatesController),
                 nameof(DeliveryDatesController.Review)).Should().BeTrue();

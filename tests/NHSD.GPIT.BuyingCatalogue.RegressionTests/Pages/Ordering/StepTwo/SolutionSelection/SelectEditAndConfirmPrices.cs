@@ -129,13 +129,5 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
             return (solution != null) ? solution.CatalogueItemId.ToString() : string.Empty;
         }
-
-        //private string GetAdditionalServiceID(string solutionid)
-        //{
-        //    using var dbContext = Factory.DbContext;
-
-        //    var services = dbContext.AdditionalServices.FirstOrDefault(i => i.CatalogueItem.AdditionalService);
-        //    return (solution != null) ? solution.CatalogueItemId.ToString() : string.Empty;
-        //}
     }
 }
