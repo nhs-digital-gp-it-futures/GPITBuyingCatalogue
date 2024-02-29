@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
         {
             SolutionIdDisplay = catalogueItem.Id.ToString();
             SupplierId = catalogueItem.SupplierId;
+            SupplierDisplayName = $"{catalogueItem.Supplier.Name} ({catalogueItem.SupplierId})";
             SolutionName = catalogueItem.Name;
             SolutionDisplayName = catalogueItem.Name;
             IsPilotSolution = catalogueItem.Solution.IsPilotSolution;
@@ -50,6 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
         public bool IsPilotSolution { get; set; }
 
         public int? SupplierId { get; set; }
+
+        public string SupplierDisplayName { get; set; }
 
         public IList<FrameworkModel> Frameworks { get; set; }
 

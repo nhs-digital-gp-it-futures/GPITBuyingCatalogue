@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 
@@ -8,9 +7,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
     public sealed class EditAdditionalServiceDetailsModelValidator : AbstractValidator<EditAdditionalServiceDetailsModel>
     {
         public const string IdRequiredErrorMessage = "Enter an Additional Service ID";
-        public const string SolutionIdSupplierMismatchErrorMessage = "Additional Service ID does not contain the solution ID";
+        public const string SolutionIdMismatchErrorMessage = "Additional Service ID does not contain the solution ID";
         public const string DuplicateIdErrorMessage = "An Additional Service with that ID already exists. Try a different ID";
-        public const string SolutionIdFormatErrorMessage = "Additional Service ID must be in the correct format, for example 10000-001A001";
+        public const string IdFormatErrorMessage = "Additional Service ID must be in the correct format, for example 10000-001A001";
 
         private readonly IAdditionalServicesService additionalServicesService;
 
@@ -29,12 +28,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(s => s.Id)
                 .NotNull()
-                .WithMessage(SolutionIdFormatErrorMessage)
+                .WithMessage(IdFormatErrorMessage)
                 .Must((model, id) => id.GetValueOrDefault().ToString()!.Contains(model.CatalogueItemId.ToString()))
-                .WithMessage(SolutionIdSupplierMismatchErrorMessage)
+                .WithMessage(SolutionIdMismatchErrorMessage)
                 .Must((model, _) => NotBeADuplicateId(model))
                 .WithMessage(DuplicateIdErrorMessage)
-                .When(m => !m.IsEdit && !string.IsNullOrWhiteSpace(m.IdDisplay))
+                .When(m => !m.IsEdit)
                 .OverridePropertyName(m => m.IdDisplay);
 
             RuleFor(m => m.Name)

@@ -171,6 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
 
             var associatedService = new CatalogueItem
             {
+                Id = model.Id,
                 Name = model.Name,
                 AssociatedService = new AssociatedService
                 {

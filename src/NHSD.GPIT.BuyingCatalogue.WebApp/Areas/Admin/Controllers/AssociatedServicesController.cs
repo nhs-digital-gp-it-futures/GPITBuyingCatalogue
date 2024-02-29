@@ -95,6 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var newModel = new AssociatedServicesDetailsModel
             {
+                Id = model.Id.GetValueOrDefault(),
                 Name = model.Name,
                 Description = model.Description,
                 OrderGuidance = model.OrderGuidance,

@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
 
         public Task<CatalogueItem> GetAdditionalService(CatalogueItemId catalogueItemId, CatalogueItemId additionalServiceId)
             => BaseQuery(catalogueItemId)
-                .FirstAsync(i => i.Id == additionalServiceId);
+                .FirstOrDefaultAsync(i => i.Id == additionalServiceId);
 
         public async Task<CatalogueItem> GetAdditionalServiceWithCapabilities(CatalogueItemId additionalServiceId)
             => await dbContext.CatalogueItems.AsNoTracking()

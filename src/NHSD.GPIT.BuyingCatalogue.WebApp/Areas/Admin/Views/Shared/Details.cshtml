@@ -23,11 +23,12 @@
             @if(Model.IsEdit)
             {
                 <input type="hidden" asp-for="SupplierId" />
+                <input type="hidden" asp-for="SupplierDisplayName" />
                 <input type="hidden" asp-for="SolutionIdDisplay" />
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Supplier name and ID">
                         <p>
-                            @Model.SupplierId
+                            @Model.SupplierDisplayName
                         </p>
                     </nhs-summary-list-row>
                     <nhs-summary-list-row label-text="Solution ID">

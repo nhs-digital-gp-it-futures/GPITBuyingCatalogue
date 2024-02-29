@@ -32,7 +32,14 @@
                     <input type="hidden" asp-for="@Model.SolutionMergerAndSplits[i].SelectedMergerAndSplitsServices[j]" />
                 }
             }
-
+            
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="Associated Service ID">
+                    <p>
+                        @Model.Id
+                    </p>
+                </nhs-summary-list-row>
+            </nhs-summary-list>
             <nhs-input asp-for="Name"
                        label-text="Associated Service name" />
             <nhs-textarea asp-for="Description"

@@ -21,6 +21,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         public string SupplierName { get; set; }
 
+        public string IdDisplay { get; set; }
+
+        public CatalogueItemId? Id
+        {
+            get
+            {
+                try
+                {
+                    return CatalogueItemId.ParseExact(IdDisplay);
+                }
+                catch
+                {
+                    return default;
+                }
+            }
+        }
+
         [StringLength(255)]
         public string Name { get; set; }
 

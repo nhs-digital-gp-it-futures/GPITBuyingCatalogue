@@ -20,6 +20,9 @@
             <input type="hidden" asp-for="@Model.SolutionId" />
             <input type="hidden" asp-for="@Model.SupplierName" />
 
+            <nhs-input asp-for="IdDisplay"
+                       label-hint="Associated Service IDs are made up of the supplier ID and a 3-digit code unique to this service, for example, 10000-S-001."
+                       label-text="Associated Service ID" />
             <nhs-input asp-for="Name"
                        label-text="Associated Service name" />
             <nhs-textarea asp-for="Description"
