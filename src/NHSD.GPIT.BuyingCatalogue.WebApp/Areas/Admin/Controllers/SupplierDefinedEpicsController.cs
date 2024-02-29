@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> SelectCapabilities(
             FilterCapabilitiesModel model)
         {
-            var selectedCapabilityIds = EncodeIdString(model.SelectedItems);
+            var selectedCapabilityIds = EncodeIdString(model.CapabilitySelectionItems);
             if (!ModelState.IsValid)
             {
                 model.PopulateCapabilities(await capabilitiesService.GetCapabilities(), SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds));
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var selectedCapabilityIds = EncodeIdString(model.SelectedItems);
+                var selectedCapabilityIds = EncodeIdString(model.CapabilitySelectionItems);
                 model.PopulateCapabilities(await capabilitiesService.GetCapabilities(), SolutionsFilterHelper.ParseCapabilityIds(selectedCapabilityIds));
                 return View("FilterCapabilities", model);
             }
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (epic is null)
                 return BadRequest($"No Supplier defined Epic found for Id: {epicId}");
 
-            List<int> selectedIdsList = model.SelectedItems.Where(x => x.Selected).Select(x => int.Parse(x.Id)).ToList();
+            List<int> selectedIdsList = model.CapabilitySelectionItems.Where(x => x.Selected).Select(x => int.Parse(x.Id)).ToList();
 
             var editEpicModel = new AddEditSupplierDefinedEpic(
                 epicId,

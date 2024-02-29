@@ -1,8 +1,15 @@
+@using Microsoft.AspNetCore.Mvc.Razor
+@using Microsoft.Extensions.Logging
 @using NHSD.GPIT.BuyingCatalogue.Framework.Settings
 @using NHSD.GPIT.BuyingCatalogue.Framework.Constants
-@using Humanizer
 @inject AnalyticsSettings settings;
-
+@inject ILogger<RazorPage> logger;
+@{
+    if (ViewBag.Title == null)
+    {
+        logger.LogWarning($"Page is missing title {Context.Request.Path}");
+    }
+}
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

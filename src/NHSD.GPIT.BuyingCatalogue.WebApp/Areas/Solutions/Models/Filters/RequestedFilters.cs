@@ -23,7 +23,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         private string[] GetFiltersArray() =>
             [
                 Selected,
-                Search,
                 SelectedFrameworkId,
                 SelectedApplicationTypeIds,
                 SelectedHostingTypeIds,
@@ -33,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public Dictionary<int, string[]> GetCapabilityAndEpicIds() => SolutionsFilterHelper.ParseCapabilityAndEpicIds(Selected);
 
-        public object ToRouteValues() => new
+        public object ToRouteValues(int? page = null) => new
         {
             selected = Selected,
             search = Search,
@@ -44,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             selectedGPConnectIntegrations = SelectedGPConnectIntegrations,
             selectedInteroperabilityOptions = SelectedInteroperabilityOptions,
             sortBy = SortBy,
+            page = page ?? 1,
         };
     }
 }

@@ -19,58 +19,17 @@
 
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
-            @foreach (var (kvp, i) in Model.GroupedItems.Where(kv => kv.Value.Any()).Select((kvp, i) => (kvp, i)))
+            @foreach (var (kvp, i) in Model.EpicGroupsAndItems.Where(kv => kv.Value.Any()).Select((kvp, i) => (kvp, i)))
             {
-                <input type="hidden" name="@(Html.NameFor(m => m.GroupedItems[i])).Key" value="@kvp.Key" />
+                <input type="hidden" name="@(Html.NameFor(m => m.EpicGroupsAndItems[i])).Key" value="@kvp.Key" />
                 @foreach (var (value, j) in kvp.Value.Select((value, j) => (value, j)))
                 {
-                    <input type="hidden" name="@(Html.NameFor(m => m.GroupedItems[i])).Value[@j].Id" value="@value.Id" />
-                    <input type="hidden" name="@(Html.NameFor(m => m.GroupedItems[i])).Value[@j].Name" value="@value.Name" />
+                    <input type="hidden" name="@(Html.NameFor(m => m.EpicGroupsAndItems[i])).Value[@j].Id" value="@value.Id" />
+                    <input type="hidden" name="@(Html.NameFor(m => m.EpicGroupsAndItems[i])).Value[@j].Name" value="@value.Name" />
                 }
             }
-
             <nhs-card>
-                <nhs-table>
-                    <nhs-table-column>Epic</nhs-table-column>
-
-                    @{
-                        var index = 0;
-                        @foreach (var (capability, i) in Model.Groups.Select((value, i) => (value, i)))
-                        {
-                            <input type="hidden" asp-for="@Model.Groups[i].Id" />
-                            <input type="hidden" asp-for="@Model.Groups[i].Name" />
-                            var epics = Model.Items(capability.Id);
-
-                            if (!epics.Any())
-                            {
-                                continue;
-                            }
-
-                            <nhs-table-row-container>
-                                <nhs-table-cell>
-                                    <strong>
-                                        @capability.Name
-                                    </strong>
-                                </nhs-table-cell>
-                            </nhs-table-row-container>
-
-                            @foreach (var epic in epics)
-                            {
-                                <nhs-table-row-container>
-                                    <nhs-table-cell>
-                                        <nhs-checkbox-container>
-                                            <nhs-checkbox asp-for="SelectedItems[index].Selected"
-                                                          hidden-input="SelectedItems[index].Id"
-                                                          label-text="@epic.Name"
-                                                          sub-group="@capability.Name" />
-                                        </nhs-checkbox-container>
-                                    </nhs-table-cell>
-                                </nhs-table-row-container>
-                                index++;
-                            }
-                        }
-                    }
-                </nhs-table>
+                <partial name="FilterEpicsModal" model="@Model" />
                 <nhs-submit-button text="Apply Epics" />
             </nhs-card>
         </form>

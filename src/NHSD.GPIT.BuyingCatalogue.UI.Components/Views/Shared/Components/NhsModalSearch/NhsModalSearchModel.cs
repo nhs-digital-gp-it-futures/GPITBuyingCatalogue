@@ -22,6 +22,10 @@
 
         public string CallbackFunction { get; set; }
 
-        public bool Cleardown { get; set; }
+        public string TableContentFunction { get; set; }
+
+        public bool ClearSearch { get; set; }
+
+        public bool ClearSelection { get; set; }
     }
 }

@@ -21,8 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
                 IsFilter = true,
             };
 
-            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Category.Id, x.Category.Name }));
-            model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
+            model.CapabilityGroups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Category.Id, x.Category.Name }));
+            model.CapabilitySelectionItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
             {
                 Id = $"{x.Id}",
                 Selected = false,
@@ -38,8 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             var model = new FilterCapabilitiesModel(capabilities, null);
 
-            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Category.Id, x.Category.Name }));
-            model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
+            model.CapabilityGroups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Category.Id, x.Category.Name }));
+            model.CapabilitySelectionItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
             {
                 Id = $"{x.Id}",
                 Selected = false,
@@ -64,8 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
                 IsFilter = true,
             };
 
-            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Category.Id, x.Category.Name }));
-            model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
+            model.CapabilityGroups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Category.Id, x.Category.Name }));
+            model.CapabilitySelectionItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
             {
                 Id = $"{x.Id}",
                 Selected = x.Id == capabilities.First().Id || x.Id == capabilities.Last().Id,

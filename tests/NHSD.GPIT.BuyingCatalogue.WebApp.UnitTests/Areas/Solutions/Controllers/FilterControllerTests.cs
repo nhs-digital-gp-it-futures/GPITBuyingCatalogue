@@ -132,13 +132,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             RequestedFilters filters,
             FilterController controller)
         {
-            model.SelectedItems.ForEach((x, i) =>
+            model.CapabilitySelectionItems.ForEach((x, i) =>
             {
                 x.Selected = true;
                 x.Id = i.ToString();
             });
 
-            var expected = new Dictionary<int, string[]>(model.SelectedItems
+            var expected = new Dictionary<int, string[]>(model.CapabilitySelectionItems
                   .Where(x => x.Selected)
                   .Select(x => int.Parse(x.Id))
                   .Select(x => new KeyValuePair<int, string[]>(x, null))).ToFilterString();
@@ -160,7 +160,68 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedGPConnectIntegrations", filters.SelectedGPConnectIntegrations },
                 { "selectedInteroperabilityOptions", filters.SelectedInteroperabilityOptions },
                 { "sortBy", filters.SortBy },
+                { "page", 1 },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterCapabilitiesModal_NoSelectedItems_ReturnsExpectedResult(
+            List<Capability> capabilities,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            RequestedFilters filters,
+            FilterController controller)
+        {
+            capabilitiesService
+                .Setup(x => x.GetReferencedCapabilities())
+                .ReturnsAsync(capabilities);
+
+            var result = await controller.FilterCapabilitiesModal(filters);
+
+            capabilitiesService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<PartialViewResult>().Subject;
+            var expected = new FilterCapabilitiesModel(capabilities, null);
+
+            actualResult.Model.Should().BeEquivalentTo(
+                expected,
+                opt => opt
+                    .Excluding(e => e.BackLink)
+                    .Excluding(e => e.NavModel));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterCapabilitiesModal_WithSelectedItems_ReturnsExpectedResult(
+            List<Capability> capabilities,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            RequestedFilters filters,
+            FilterController controller)
+        {
+            capabilitiesService
+                .Setup(x => x.GetReferencedCapabilities())
+                .ReturnsAsync(capabilities);
+
+            var selected = new Dictionary<int, string[]>(new[]
+            {
+                new KeyValuePair<int, string[]>(capabilities.First().Id, System.Array.Empty<string>()),
+                new KeyValuePair<int, string[]>(capabilities.Last().Id, System.Array.Empty<string>()),
+            });
+
+            filters = filters with { Selected = selected.ToFilterString() };
+
+            var result = await controller.FilterCapabilitiesModal(filters);
+
+            capabilitiesService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<PartialViewResult>().Subject;
+            var expected = new FilterCapabilitiesModel(capabilities, selected.Keys);
+
+            actualResult.Model.Should().BeEquivalentTo(
+                expected,
+                opt => opt
+                    .Excluding(e => e.BackLink)
+                    .Excluding(e => e.NavModel));
         }
 
         [Theory]
@@ -272,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             RequestedFilters filters,
             FilterController controller)
         {
-            model.SelectedItems.ForEach((x, i) =>
+            model.EpicSelectionItems.ForEach((x, i) =>
             {
                 x.Id = $"{i},{i}";
                 x.Selected = true;
@@ -280,12 +341,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             filters = filters with
             {
-                Selected = new Dictionary<int, string[]>(model.SelectedItems
+                Selected = new Dictionary<int, string[]>(model.EpicSelectionItems
                 .Select(x => new KeyValuePair<int, string[]>(int.Parse(x.Id.Split(",")[0]), null)))
                 .ToFilterString(),
             };
 
-            var expected = new Dictionary<int, string[]>(model.SelectedItems
+            var expected = new Dictionary<int, string[]>(model.EpicSelectionItems
                 .Select(x => new KeyValuePair<int, string[]>(int.Parse(x.Id.Split(",")[0]), new string[] { x.Id.Split(",")[1] })))
                 .ToFilterString();
 
@@ -305,7 +366,86 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedGPConnectIntegrations", filters.SelectedGPConnectIntegrations },
                 { "selectedInteroperabilityOptions", filters.SelectedInteroperabilityOptions },
                 { "sortBy", filters.SortBy },
+                { "page", 1 },
             });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterEpicsModal_NoSelectedItems_ReturnsExpectedResult(
+            List<Capability> capabilities,
+            List<Epic> epics,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            RequestedFilters filters,
+            FilterController controller)
+        {
+            var selected = new Dictionary<int, string[]>(capabilities.Select(x => new KeyValuePair<int, string[]>(x.Id, null)));
+            filters = filters with { Selected = selected.ToFilterString() };
+
+            capabilitiesService
+                .Setup(x => x.GetCapabilitiesByIds(selected.Keys))
+                .ReturnsAsync(capabilities);
+
+            epicsService
+                .Setup(x => x.GetReferencedEpicsByCapabilityIds(selected.Keys))
+                .ReturnsAsync(epics);
+
+            var result = await controller.FilterEpicsModal(filters);
+
+            capabilitiesService.VerifyAll();
+            epicsService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<PartialViewResult>().Subject;
+            var expected = new FilterEpicsModel(capabilities, epics, selected);
+
+            actualResult.Model.Should().BeEquivalentTo(
+                expected,
+                opt => opt
+                    .Excluding(e => e.BackLink)
+                    .Excluding(e => e.NavModel));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterEpicsModal_WithSelectedItems_ReturnsExpectedResult(
+            List<Capability> capabilities,
+            Epic epic,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            RequestedFilters filters,
+            FilterController controller)
+        {
+            capabilities.ForEach(c =>
+            {
+                c.Epics.Clear();
+                c.Epics.Add(epic);
+            });
+
+            var selected = new Dictionary<int, string[]>(capabilities.Select(x => new KeyValuePair<int, string[]>(x.Id, new string[] { epic.Id })));
+            filters = filters with { Selected = selected.ToFilterString() };
+
+            capabilitiesService
+                .Setup(x => x.GetCapabilitiesByIds(selected.Keys))
+                .ReturnsAsync(capabilities);
+
+            epicsService
+                .Setup(x => x.GetReferencedEpicsByCapabilityIds(selected.Keys))
+                .ReturnsAsync(new List<Epic> { epic });
+
+            var result = await controller.FilterEpicsModal(filters);
+
+            capabilitiesService.VerifyAll();
+            epicsService.VerifyAll();
+
+            var actualResult = result.Should().BeOfType<PartialViewResult>().Subject;
+            var expected = new FilterEpicsModel(capabilities, new List<Epic> { epic }, selected);
+
+            actualResult.Model.Should().BeEquivalentTo(
+                expected,
+                opt => opt
+                    .Excluding(e => e.BackLink)
+                    .Excluding(e => e.NavModel));
         }
     }
 }

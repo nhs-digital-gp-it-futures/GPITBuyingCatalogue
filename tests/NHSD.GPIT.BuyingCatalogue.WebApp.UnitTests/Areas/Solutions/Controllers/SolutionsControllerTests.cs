@@ -62,7 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), capabilitiesAndEpics, null, null, null, null, null, null, null))
                 .ReturnsAsync((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
 
-            await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, null, null, null);
+            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, null, null, null);
+            result.Should().BeOfType<ViewResult>();
 
             mockService.VerifyAll();
         }
@@ -116,6 +117,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                             "selectedInteroperabilityOptions",
                             selectedInteroperabilityOptions
                         },
+                        {
+                            "page",
+                            1
+                        },
                     });
         }
 
@@ -167,6 +172,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                         {
                             "selectedInteroperabilityOptions",
                             selectedInteroperabilityOptions
+                        },
+                        {
+                            "page",
+                            1
                         },
                     });
         }
@@ -220,7 +229,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                             "selectedInteroperabilityOptions",
                             selectedInteroperabilityOptions
                         },
+                        {
+                            "page",
+                            1
+                        },
                     });
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_SearchResult_NoSearch_GetsSolutionFromService(
+            Solution solution,
+            RequestedFilters filters,
+            PageOptions options,
+            [Frozen] Mock<ISolutionsFilterService> mockService,
+            SolutionsController controller)
+        {
+            var itemsToReturn = new List<CatalogueItem>() { solution.CatalogueItem };
+            filters = filters with { Selected = string.Empty };
+
+            mockService.Setup(s => s.GetAllSolutionsFiltered(
+                It.IsAny<PageOptions>(),
+                filters.GetCapabilityAndEpicIds(),
+                filters.Search,
+                filters.SelectedFrameworkId,
+                filters.SelectedApplicationTypeIds,
+                filters.SelectedHostingTypeIds,
+                filters.SelectedIM1Integrations,
+                filters.SelectedGPConnectIntegrations,
+                filters.SelectedInteroperabilityOptions))
+                .ReturnsAsync((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
+            var result = await controller.SearchResults(filters);
+            result.Should().BeOfType<PartialViewResult>();
+
+            mockService.VerifyAll();
         }
 
         [Theory]
@@ -1570,7 +1612,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static void SolutionSort_ReturnsViewWithModel(
             SolutionsController controller)
         {
-            var result = controller.SolutionSort().As<ViewResult>();
+            var result = controller.SolutionSort().As<PartialViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeOfType<SolutionSortModel>();

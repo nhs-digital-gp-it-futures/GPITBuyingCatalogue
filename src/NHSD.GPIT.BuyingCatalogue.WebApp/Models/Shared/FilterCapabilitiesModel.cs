@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 {
-    public class FilterCapabilitiesModel : FilterModel<string, IdAndNameModel<int>>
+    public class FilterCapabilitiesModel
     {
         public static readonly PageTitleModel SupplierDefinedEpicPageTitle = new()
         {
@@ -37,21 +37,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 
         public bool IsFilter { get; set; }
 
+        public List<IdAndNameModel<int>> CapabilityGroups { get; set; }
+
+        public SelectionModel[] CapabilitySelectionItems { get; set; }
+
+        public Dictionary<int, List<string>> CapabilityGroupsAndItems { get; set; } = new();
+
+        public List<string> Items(int groupId) => CapabilityGroupsAndItems.ContainsKey(groupId)
+            ? CapabilityGroupsAndItems[groupId]
+            : new List<string>();
+
         public void PopulateCapabilities(List<Capability> capabilities, ICollection<int> selected = null)
         {
             if (selected == null)
                 selected = new List<int>();
-            Groups = capabilities
+            CapabilityGroups = capabilities
                 .Select(x => new IdAndNameModel<int> { Id = x.Category.Id, Name = x.Category.Name })
                 .DistinctBy(x => x.Id)
                 .OrderBy(x => x.Name)
                 .ToList();
 
-            GroupedItems = Groups.ToDictionary(
+            CapabilityGroupsAndItems = CapabilityGroups.ToDictionary(
                 x => x.Id,
                 x => capabilities.Where(c => c.Category.Id == x.Id).OrderBy(c => c.Name).Select(c => c.Name).ToList());
 
-            SelectedItems = capabilities.Select(x => new SelectionModel
+            CapabilitySelectionItems = capabilities.Select(x => new SelectionModel
             {
                 Id = $"{x.Id}",
                 Selected = selected.Contains(x.Id),

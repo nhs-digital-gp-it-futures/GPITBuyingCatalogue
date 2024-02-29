@@ -1,0 +1,66 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsResultsModel;
+@{
+    var filterCount = Model.Filters.FilterCount;
+    var suffix = string.Empty;
+    if (filterCount > 0)
+    {
+        suffix = filterCount == 1
+        ? $" found using {filterCount} filter"
+        : $" found using {filterCount} filters";
+    }
+}
+<nhs-card>
+    <div class="nhsuk-u-clear">
+        <h2 class="nhsuk-card__heading nhsuk-heading-s bc-u-block-float-left">@(Model.PageOptions.TotalNumberOfItems) solutions@(suffix)</h2>
+        <div style="float: right" id="solution-sort-container"></div>
+    </div>
+
+    @if (!Model.FilterResultView)
+    {
+        if (Model.Filters.SearchCriteriaApplied)
+        {
+            <a asp-area="@typeof(SolutionsController).AreaName()"
+               asp-controller="@typeof(SolutionsController).ControllerName()"
+               asp-action="@nameof(SolutionsController.Index)">
+                Clear all filters
+            </a>
+            <div class="filtering-card">
+                <p class="info-text">
+                    Once you’re happy with your results, you can save your filters to create a shortlist. The shortlist can then be used to carry out a competition.
+                </p>
+                <nhs-submit-button form="filters" class="nhsuk-button--reverse" text="Save filters" formaction="@Url.Action(nameof(ManageFiltersController.SaveFilter), typeof(ManageFiltersController).ControllerName())" />
+            </div>
+        }
+    }
+    @if (Model.CatalogueItems.Count == 0)
+    {
+        if (Model.FilterResultView)
+        {
+            <p>
+                You'll need to use a different filter.
+            </p>
+        }
+    }
+    else
+    {
+        <hr class="nhsuk-section-break--s" />
+        @foreach (var item in Model.CatalogueItems)
+        {
+            <partial name="_SolutionSearchDisplay" model="@(new SolutionSearchResultModel(item, false))" />
+        }
+    }
+    <nhs-page-number-pagination
+        next-url="@(Url.Action(
+                    nameof(SolutionsController.Index),
+                    typeof(SolutionsController).ControllerName(),
+                    Model.Filters.ToRouteValues(Model.PageOptions.PageNumber+1)))"
+        previous-url="@(Url.Action(
+                    nameof(SolutionsController.Index),
+                    typeof(SolutionsController).ControllerName(),
+                    Model.Filters.ToRouteValues(Model.PageOptions.PageNumber-1)))"
+        current-page-number="@Model.PageOptions.PageNumber"
+        total-number-of-pages="@Model.PageOptions.NumberOfPages" />
+</nhs-card>
