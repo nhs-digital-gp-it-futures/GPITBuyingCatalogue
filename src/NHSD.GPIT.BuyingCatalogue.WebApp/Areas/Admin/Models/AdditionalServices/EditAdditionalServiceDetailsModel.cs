@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
         public EditAdditionalServiceDetailsModel(CatalogueItem catalogueItem)
             : this()
         {
-            Title = "Additional service details";
+            Title = "Additional Service details";
             SolutionName = catalogueItem.Name;
             CatalogueItemId = catalogueItem.Id;
             CatalogueItemName = catalogueItem.Name;

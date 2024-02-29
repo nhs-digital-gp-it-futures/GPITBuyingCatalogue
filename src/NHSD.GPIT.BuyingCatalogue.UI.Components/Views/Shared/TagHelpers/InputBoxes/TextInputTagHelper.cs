@@ -24,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         {
             Thirty = 30,
             Twenty = 20,
+            Thirteen = 13,
             Ten = 10,
             Five = 5,
             Four = 4,

@@ -1,10 +1,14 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
+using Microsoft.CodeAnalysis;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
+using NSubstitute.ReturnsExtensions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
@@ -82,6 +86,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             AddAssociatedServiceModel model,
             AddAssociatedServiceModelValidator validator)
         {
+            model.IdDisplay = model.SolutionId.SupplierId + "-S-123";
+
+            associatedServicesService.Setup(s => s.GetAssociatedService(model.Id.GetValueOrDefault()))
+                .ReturnsAsync((CatalogueItem)null);
+
             associatedServicesService.Setup(s => s.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default))
                 .ReturnsAsync(false);
 

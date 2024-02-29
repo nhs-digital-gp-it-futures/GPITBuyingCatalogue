@@ -31,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage(SupplierMismatchErrorMessage)
                 .Must(NotBeADuplicateId)
                 .WithMessage(DuplicateIdErrorMessage)
+                .When(m => !string.IsNullOrWhiteSpace(m.IdDisplay))
                 .OverridePropertyName(m => m.IdDisplay);
 
             RuleFor(m => m.Name)

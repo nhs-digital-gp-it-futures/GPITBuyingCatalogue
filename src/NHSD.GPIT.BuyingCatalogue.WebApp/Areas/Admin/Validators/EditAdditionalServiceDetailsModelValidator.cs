@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage(SolutionIdMismatchErrorMessage)
                 .Must((model, _) => NotBeADuplicateId(model))
                 .WithMessage(DuplicateIdErrorMessage)
-                .When(m => !m.IsEdit)
+                .When(m => !m.IsEdit && !string.IsNullOrWhiteSpace(m.IdDisplay))
                 .OverridePropertyName(m => m.IdDisplay);
 
             RuleFor(m => m.Name)

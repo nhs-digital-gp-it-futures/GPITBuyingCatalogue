@@ -8,7 +8,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.SolutionName"
+                        caption="@Model.SolutionName (@Model.CatalogueItemId.ToString())"
                         advice="Provide details about your Additional Service." />
 
         <form method="post">
@@ -31,8 +31,9 @@
             else
             {
                 <nhs-input asp-for="IdDisplay"
-                           label-hint="Additional Service IDs are made up of the solution ID and a 3-digit code unique to this service, for example, 10000-001A001."
-                           label-text="Additional Service ID" />
+                           label-hint="Additional Service IDs are made up of the solution ID and a 3-digit code unique to this service, for example, @Model.CatalogueItemId.ToString()A001."
+                           label-text="Additional Service ID"
+                           input-width="Thirteen" />
             }
 
 

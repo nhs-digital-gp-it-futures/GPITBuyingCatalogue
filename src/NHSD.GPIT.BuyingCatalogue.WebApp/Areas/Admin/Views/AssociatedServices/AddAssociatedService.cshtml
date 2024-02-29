@@ -8,7 +8,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.SupplierName"
+                        caption="@Model.SupplierName (@Model.SolutionId.SupplierId)"
                         advice="Provide the following details for your Associated Service." />
 
         <nhs-inset-text>
@@ -21,8 +21,8 @@
             <input type="hidden" asp-for="@Model.SupplierName" />
 
             <nhs-input asp-for="IdDisplay"
-                       label-hint="Associated Service IDs are made up of the supplier ID and a 3-digit code unique to this service, for example, 10000-S-001."
-                       label-text="Associated Service ID" />
+                       label-hint="Associated Service IDs are made up of the supplier ID and a 3-digit code unique to this service, for example, @Model.SolutionId.SupplierId-S-001."
+                       label-text="Associated Service ID" input-width="Thirteen" />
             <nhs-input asp-for="Name"
                        label-text="Associated Service name" />
             <nhs-textarea asp-for="Description"

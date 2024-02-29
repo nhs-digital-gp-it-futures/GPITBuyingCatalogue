@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 {
     public static class SolutionModelValidatorTests
     {
+        private const string SolutionId = "10000-001";
+        
         [Theory]
         [CommonAutoData]
         public static void Validate_FrameworkNotValid_SetsModelErrorForListFrameworkModel(
@@ -121,6 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             SolutionModel model,
             SolutionModelValidator validator)
         {
+            model.SolutionIdDisplay = SolutionId;
             mockSolutionsService.Setup(s => s.CatalogueSolutionExistsWithName(model.SolutionName, model.SolutionId.Value))
                 .ReturnsAsync(true);
 
