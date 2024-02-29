@@ -111,6 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var additionalServiceDetailsModel = new AdditionalServicesDetailsModel
             {
+                Id = model.Id.GetValueOrDefault(),
                 Name = model.Name,
                 Description = model.Description,
                 UserId = User.UserId(),

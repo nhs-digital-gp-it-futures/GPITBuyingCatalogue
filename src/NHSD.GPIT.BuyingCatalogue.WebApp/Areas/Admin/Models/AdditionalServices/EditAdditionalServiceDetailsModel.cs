@@ -24,12 +24,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
             : this()
         {
             Title = $"{additionalServiceCatalogueItem.Name} details";
-            Id = additionalServiceCatalogueItem.Id;
+            IdDisplay = additionalServiceCatalogueItem.Id.ToString();
             Name = additionalServiceCatalogueItem.Name;
             Description = additionalServiceCatalogueItem.AdditionalService.FullDescription;
             SolutionName = catalogueItem.Name;
             CatalogueItemId = catalogueItem.Id;
             CatalogueItemName = catalogueItem.Name;
+            IsEdit = true;
         }
 
         public string SolutionName { get; init; }
@@ -38,7 +39,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices
 
         public string CatalogueItemName { get; init; }
 
-        public CatalogueItemId? Id { get; init; }
+        public bool IsEdit { get; set; }
+
+        public string IdDisplay { get; set; }
+
+        public CatalogueItemId? Id
+        {
+            get
+            {
+                try
+                {
+                    return CatalogueItemId.ParseExact(IdDisplay);
+                }
+                catch
+                {
+                    return default;
+                }
+            }
+        }
 
         [StringLength(255)]
         public string Name { get; init; }

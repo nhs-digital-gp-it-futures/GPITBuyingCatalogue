@@ -18,9 +18,12 @@
             <input type="hidden" asp-for="BackLinkText" />
             <input type="hidden" asp-for="Heading" />
             <input type="hidden" asp-for="Description" />
+            <input type="hidden" asp-for="IsEdit" />
             
             @if(Model.IsEdit)
             {
+                <input type="hidden" asp-for="SupplierId" />
+                <input type="hidden" asp-for="SolutionIdDisplay" />
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Supplier name and ID">
                         <p>

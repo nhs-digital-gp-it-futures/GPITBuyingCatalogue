@@ -30,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices
 
             var additionalService = new CatalogueItem
             {
+                Id = model.Id,
                 Name = model.Name,
                 AdditionalService = new()
                 {

@@ -12,12 +12,31 @@
                         advice="Provide details about your Additional Service." />
 
         <form method="post">
-            <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="Title" />
             <input type="hidden" asp-for="BackLink" />
             <input type="hidden" asp-for="SolutionName" />
-            <input type="hidden" asp-for="CatalogueItemId" />
             <input type="hidden" asp-for="CatalogueItemName" />
+            <input type="hidden" asp-for="CatalogueItemId" />
+            <input type="hidden" asp-for="IsEdit" />
+
+            @if (Model.IsEdit)
+            {
+                <input type="hidden" asp-for="IdDisplay" />
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Additional Service ID">
+                        <p>
+                            @Model.IdDisplay
+                        </p>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
+            else
+            {
+                <nhs-input asp-for="IdDisplay"
+                           label-hint="Additional Service IDs are made up of the solution ID and a 3-digit code unique to this service, for example, 10000-001A001."
+                           label-text="Additional Service ID" />
+            }
+
 
             <nhs-input asp-for="Name"
                        label-text="Additional Service name" />

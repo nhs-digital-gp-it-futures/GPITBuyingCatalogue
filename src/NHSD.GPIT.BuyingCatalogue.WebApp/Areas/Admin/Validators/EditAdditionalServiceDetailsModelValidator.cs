@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 
@@ -6,6 +7,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public sealed class EditAdditionalServiceDetailsModelValidator : AbstractValidator<EditAdditionalServiceDetailsModel>
     {
+        public const string IdRequiredErrorMessage = "Enter an Additional Service ID";
+        public const string SolutionIdSupplierMismatchErrorMessage = "Additional Service ID does not contain the solution ID";
+        public const string DuplicateIdErrorMessage = "An Additional Service with that ID already exists. Try a different ID";
+        public const string SolutionIdFormatErrorMessage = "Additional Service ID must be in the correct format, for example 10000-001A001";
+
         private readonly IAdditionalServicesService additionalServicesService;
 
         public EditAdditionalServiceDetailsModelValidator(IAdditionalServicesService additionalServicesService)
@@ -16,6 +22,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .Must(NotBeADuplicateService)
                 .WithMessage("Additional Service name already exists. Enter a different name")
                 .OverridePropertyName(m => m.Name);
+
+            RuleFor(s => s.IdDisplay)
+                .NotNull()
+                .WithMessage(IdRequiredErrorMessage);
+
+            RuleFor(s => s.Id)
+                .NotNull()
+                .WithMessage(SolutionIdFormatErrorMessage)
+                .Must((model, id) => id.GetValueOrDefault().ToString()!.Contains(model.CatalogueItemId.ToString()))
+                .WithMessage(SolutionIdSupplierMismatchErrorMessage)
+                .Must((model, _) => NotBeADuplicateId(model))
+                .WithMessage(DuplicateIdErrorMessage)
+                .When(m => !m.IsEdit && !string.IsNullOrWhiteSpace(m.IdDisplay))
+                .OverridePropertyName(m => m.IdDisplay);
 
             RuleFor(m => m.Name)
                 .NotEmpty()
@@ -28,12 +48,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .WithMessage("Enter an Additional Service description");
         }
 
+        private bool NotBeADuplicateId(EditAdditionalServiceDetailsModel model)
+        {
+            return additionalServicesService.GetAdditionalService(model.CatalogueItemId, model.Id.GetValueOrDefault()).GetAwaiter().GetResult() is null;
+        }
+
         private bool NotBeADuplicateService(EditAdditionalServiceDetailsModel model)
         {
             return !additionalServicesService.AdditionalServiceExistsWithNameForSolution(
                 model.Name,
                 model.CatalogueItemId,
-                model.Id.HasValue ? model.Id.Value : default).GetAwaiter().GetResult();
+                model.IsEdit ? model.Id.GetValueOrDefault() : default).GetAwaiter().GetResult();
         }
     }
 }
