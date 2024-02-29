@@ -3,22 +3,37 @@ class modalSearchConfig {
     dialog: HTMLDialogElement;
     showDialogButton: HTMLElement;
     searchInput: HTMLInputElement;
-    applyCallback: string;
+    applyCallback: () => void;
     dialogId: string;
-    constructor(dialogId, showDialogButtonId, applyCallback, clearDown) {
+    constructor(dialogId: string,
+        showDialogButtonId: string,
+        applyCallback: () => void,
+        shouldClearSearch: boolean,
+        shouldClearSelection: boolean,
+        tableContent: () => Promise<string>) {
         this.dialogId = dialogId;
         this.dialog = document.getElementById(dialogId) as HTMLDialogElement;
         this.showDialogButton = document.getElementById(showDialogButtonId);
         this.applyCallback = applyCallback;
-        this.showDialogButton.addEventListener("click", () => { this.dialog.showModal(); });
-
-        this.dialog.addEventListener('close', () => {
-            if (this.dialog.returnValue === 'apply') { window[this.applyCallback]() }
-            if (clearDown) { this.clearDown() }
-        });
-
         this.searchInput = document.getElementById(dialogId + "-filter-term") as HTMLInputElement;
         this.noRecordsFound = document.getElementById(dialogId + "-no-records-found");
+
+        this.showDialogButton.addEventListener("click", async (event: Event) => {
+            if (tableContent != null) {
+                var content = await tableContent();
+                var tableContainer = document.getElementById(this.dialogId + "-search-table");
+                tableContainer.innerHTML = content;
+                this.noRecordsFound.style.display = "none";
+            }
+
+            this.dialog.showModal();
+        });
+
+        this.dialog.addEventListener('close', () => {
+            if (this.dialog.returnValue === 'apply') { applyCallback() }
+            if (shouldClearSearch) { this.clearSearch() }
+            if (shouldClearSelection) { this.clearSelection() }
+        });
 
         this.searchInput.addEventListener("input", () => this.tableSearch());
     }
@@ -59,13 +74,15 @@ class modalSearchConfig {
         }
     }
 
-    clearDown() {
+    clearSearch() {
         this.searchInput.value = "";
+        this.tableSearch();
+    }
+
+    clearSelection() {
         var checkedboxes = document.querySelectorAll('.modal-checkbox:checked');
         checkedboxes.forEach(function (item) {
             (item as HTMLInputElement).checked = false;
         });
-
-        this.tableSearch();
     }
 }

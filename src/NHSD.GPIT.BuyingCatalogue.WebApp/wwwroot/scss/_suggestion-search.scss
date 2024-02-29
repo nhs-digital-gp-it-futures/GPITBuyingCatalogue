@@ -239,7 +239,7 @@
 }
 
 .suggestion-search-search__submit {
-    background-color: $color_nhsuk-green;
+    background-color: $color_nhsuk-blue;
     display: inline-block;
     height: 50px;
     border: 0;
@@ -260,7 +260,7 @@
 
     &:hover,
     &:active {
-        background-color: $color_nhsuk-green-hover;
+        background-color: $color_shade_nhsuk-blue-20;
         cursor: pointer;
         border: 1px solid #fff;
     }

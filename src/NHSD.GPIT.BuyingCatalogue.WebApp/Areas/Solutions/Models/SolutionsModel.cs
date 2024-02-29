@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
@@ -27,28 +24,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string FilterName { get; set; }
 
-        public bool FilterResultView => !string.IsNullOrEmpty(FilterName);
+        public bool FilterResultView => ResultsModel.FilterResultView;
 
         public AdditionalFiltersModel AdditionalFilters { get; set; }
 
-        public RequestedFilters Filters { get; set; }
+        public bool SearchCriteriaApplied => ResultsModel.Filters.SearchCriteriaApplied;
 
-        public IList<CatalogueItem> CatalogueItems { get; init; }
-
-        public PageOptions PageOptions { get; set; }
+        public SolutionsResultsModel ResultsModel { get; set; }
 
         public PageTitleModel GetPageTitle()
         {
-            if (CatalogueItems?.Count == 0)
+            if (ResultsModel.CatalogueItems?.Count == 0)
             {
-                return string.IsNullOrEmpty(FilterName)
-                    ? SearchResultsPageTitle
-                    : SearchNoResultsFilterPageTitle with { Caption = FilterName };
+                return FilterResultView
+                    ? SearchNoResultsFilterPageTitle with { Caption = FilterName }
+                    : SearchResultsPageTitle;
             }
 
-            return string.IsNullOrEmpty(FilterName)
-                     ? SearchResultsPageTitle
-                     : SearchResultsFilterPageTitle with { Caption = FilterName };
+            return FilterResultView
+                     ? SearchResultsFilterPageTitle with { Caption = FilterName }
+                     : SearchResultsPageTitle;
         }
     }
 }

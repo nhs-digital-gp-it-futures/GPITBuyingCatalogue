@@ -2,21 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -120,10 +118,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 new SolutionsModel
                 {
                     FilterName = filterName,
-                    CatalogueItems = catalogueItems,
-                    PageOptions = options,
                     AdditionalFilters = additionalFilters,
-                    Filters = filters,
+                    ResultsModel = new SolutionsResultsModel()
+                    {
+                        PageOptions = options,
+                        FilterResultView = !string.IsNullOrEmpty(filterName),
+                        CatalogueItems = catalogueItems,
+                        Filters = filters,
+                    },
                 });
         }
 
@@ -174,12 +176,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                         }));
         }
 
+        [HttpGet("search-results")]
+        public async Task<IActionResult> SearchResults(
+            RequestedFilters filters = null)
+        {
+            var inputOptions = new PageOptions(null, filters.SortBy);
+
+            (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
+                await solutionsFilterService.GetAllSolutionsFiltered(
+                    inputOptions,
+                    filters.GetCapabilityAndEpicIds(),
+                    filters.Search,
+                    filters.SelectedFrameworkId,
+                    filters.SelectedApplicationTypeIds,
+                    filters.SelectedHostingTypeIds,
+                    filters.SelectedIM1Integrations,
+                    filters.SelectedGPConnectIntegrations,
+                    filters.SelectedInteroperabilityOptions);
+
+            var model = new SolutionsResultsModel()
+            {
+                PageOptions = options,
+                FilterResultView = false,
+                CatalogueItems = catalogueItems,
+                Filters = filters,
+            };
+
+            return PartialView(model);
+        }
+
         [HttpGet("solution-sort")]
         public IActionResult SolutionSort()
         {
             var model = new SolutionSortModel();
 
-            return View(model);
+            return PartialView(model);
         }
 
         [HttpGet("{solutionId}/associated-services")]

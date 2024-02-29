@@ -1,0 +1,45 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.FilterCapabilitiesModel
+@if (Model.CapabilityGroupsAndItems.Values.SelectMany(x => x).Any())
+{
+    <nhs-table>
+        <nhs-table-column>Capability</nhs-table-column>
+        @{
+            var index = 0;
+            foreach (var (category, i) in Model.CapabilityGroups.Select((value, i) => (value, i)))
+            {
+                var capabilities = Model.Items(category.Id);
+                <input type="hidden" asp-for="@Model.CapabilityGroups[i].Id" />
+                <input type="hidden" asp-for="@Model.CapabilityGroups[i].Name" />
+
+                <nhs-table-row-container>
+                    <nhs-table-cell>
+                        <strong>
+                            @category.Name
+                        </strong>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                @foreach (var capability in capabilities)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <nhs-checkbox-container>
+                                <nhs-checkbox asp-for="CapabilitySelectionItems[index].Selected"
+                                              hidden-input="CapabilitySelectionItems[index].Id"
+                                              label-text="@capability"
+                                              sub-group="@category.Name" `
+                                              checkbox-class="modal-checkbox" />
+                            </nhs-checkbox-container>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                    index++;
+                }
+            }
+        }
+    </nhs-table>
+}
+else
+{
+    <div>
+        <p class="nhsuk-body nhsuk-u-margin-top-3">There are no Capabilities available</p>
+    </div>
+}

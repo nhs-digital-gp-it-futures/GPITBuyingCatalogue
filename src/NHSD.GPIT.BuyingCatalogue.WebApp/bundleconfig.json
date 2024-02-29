@@ -42,12 +42,6 @@
     ]
   },
   {
-    "outputFileName": "wwwroot/js/SolutionSort.min.js",
-    "inputFiles": [
-      "wwwroot/js/SolutionSort.js"
-    ]
-  },
-  {
     "outputFileName": "wwwroot/js/Recipients.min.js",
     "inputFiles": [
       "wwwroot/js/Recipients.js"
@@ -57,6 +51,12 @@
     "outputFileName": "wwwroot/js/ModalSearch.min.js",
     "inputFiles": [
       "wwwroot/js/ModalSearch.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Filters.min.js",
+    "inputFiles": [
+      "wwwroot/js/Filters.js"
     ]
   },
   {
