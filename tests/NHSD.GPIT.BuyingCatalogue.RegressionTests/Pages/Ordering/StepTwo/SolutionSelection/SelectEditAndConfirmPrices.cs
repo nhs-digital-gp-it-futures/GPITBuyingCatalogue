@@ -68,6 +68,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(solutionid));
 
+            if (CommonActions.GetNumberOfRadioButtonsDisplayed() > 0)
+            {
+                CommonActions.PageLoadedCorrectGetIndex(
+                   typeof(PricesController),
+                   nameof(PricesController.SelectPrice)).Should().BeTrue();
+
+                CommonActions.ClickFirstRadio();
+                CommonActions.ClickSave();
+            }
+
             CommonActions.PageLoadedCorrectGetIndex(
                typeof(PricesController),
                nameof(PricesController.ConfirmPrice)).Should().BeTrue();

@@ -218,13 +218,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
             CommonActions.ClickSave();
         }
 
-        private string GetCatalogueItemID(string catalogueItemName)
-        {
-            using var dbContext = Factory.DbContext;
+        //private string GetCatalogueItemID(string catalogueItemName)
+        //{
+        //    using var dbContext = Factory.DbContext;
 
-            var catalogueItem = dbContext.CatalogueItems.FirstOrDefault(i => i.Name == catalogueItemName);
+        //    var catalogueItem = dbContext.CatalogueItems.FirstOrDefault(i => i.Name == catalogueItemName);
 
-            return (catalogueItem != null) ? catalogueItem.Id.ToString() : string.Empty;
-        }
+        //    return (catalogueItem != null) ? catalogueItem.Id.ToString() : string.Empty;
+        //}
     }
 }

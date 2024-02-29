@@ -286,7 +286,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             else
             {
                     MergerAndSplit.MergerAndSplitSolutionSelection();
-                    SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
+                    var serviceid = GetSplitOrMergeAssociatedServiceID(orderId);
+                    SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
@@ -913,6 +914,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             var service = dbContext.AssociatedServices.FirstOrDefault(i => i.CatalogueItem.Name == associatedService);
 
             return (service != null) ? service.CatalogueItemId.ToString() : string.Empty;
+        }
+
+        private string? GetSplitOrMergeAssociatedServiceID(int orderId)
+        {
+            using var dbContext = Factory.DbContext;
+
+            var orderitems = dbContext.OrderItems
+                .Where(oi => oi.OrderId == orderId);
+            var itemid = orderitems.Select(x => x.CatalogueItemId.ItemId.ToString()).FirstOrDefault();
+            var service = orderitems.Select(y => y.CatalogueItemId.SupplierId.ToString()).FirstOrDefault();
+
+            string serviceid = service + "-" + itemid;
+
+            return serviceid;
         }
     }
 }
