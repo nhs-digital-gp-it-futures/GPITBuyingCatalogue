@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CatalogueItems;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -25,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private const string SelectViewName = "SelectSolution";
 
         private readonly IAdditionalServicesService additionalServicesService;
+        private readonly ICatalogueItemService catalogueItemService;
         private readonly IOrderItemService orderItemService;
         private readonly IOrderService orderService;
         private readonly ISolutionsService solutionsService;
@@ -32,12 +34,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         public CatalogueSolutionsController(
             IAdditionalServicesService additionalServicesService,
+            ICatalogueItemService catalogueItemService,
             IOrderItemService orderItemService,
             IOrderService orderService,
             ISolutionsService solutionsService,
             IContractsService contractsService)
         {
             this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
+            this.catalogueItemService =
+                catalogueItemService ?? throw new ArgumentNullException(nameof(catalogueItemService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
@@ -175,11 +180,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             if (solution.CatalogueItemId == catalogueItemId)
             {
-            return RedirectToAction(
-                nameof(TaskListController.TaskList),
-                typeof(TaskListController).ControllerName(),
-                new { internalOrgId, callOffId });
-        }
+                return RedirectToAction(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
 
             return RedirectToAction(
                 nameof(ConfirmSolutionChanges),
@@ -388,10 +393,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new { internalOrgId, callOffId, source = RoutingSource.EditSolution });
         }
 
-        [HttpGet("remove-service")]
+        [HttpGet("remove-service/{catalogueItemId}")]
         public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var service = await solutionsService.GetSolutionThin(catalogueItemId);
+            var service = await catalogueItemService.GetCatalogueItem(catalogueItemId);
             var model = new RemoveServiceModel(service)
             {
                 BackLink = Url.Action(
@@ -403,7 +408,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             return View(model);
         }
 
-        [HttpPost("remove-service")]
+        [HttpPost("remove-service/{catalogueItemId}")]
         public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RemoveServiceModel model)
         {
             if (!ModelState.IsValid)

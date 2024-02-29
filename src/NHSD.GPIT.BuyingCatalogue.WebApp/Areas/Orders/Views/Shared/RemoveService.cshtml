@@ -10,7 +10,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-validation-summary RadioId="RemoveServiceConfirmation" />
+        <nhs-validation-summary RadioId="ConfirmRemoveService" />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.ServiceName"
                         advice="Confirm you want to remove this @Model.ServiceType from your order." />
@@ -23,7 +23,7 @@
             <input type="hidden" asp-for="@Model.ServiceName" />
             <input type="hidden" asp-for="@Model.ServiceType" />
             <input type="hidden" asp-for="BackLink" />
-            <nhs-fieldset-form-label asp-for="ConfirmRemoveService" label-text="Remove @Model.ServiceName">
+            <nhs-fieldset-form-label asp-for="@Model" label-text="Remove @Model.ServiceName">
                 <nhs-radio-buttons asp-for="ConfirmRemoveService"
                                    values="@Model.RemoveServiceOptions.Cast<object>()"
                                    value-name="Value"
