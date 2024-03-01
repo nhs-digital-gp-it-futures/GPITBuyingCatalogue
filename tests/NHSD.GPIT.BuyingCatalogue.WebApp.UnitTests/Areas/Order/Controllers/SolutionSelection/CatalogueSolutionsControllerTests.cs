@@ -9,20 +9,22 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CatalogueItems;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.SolutionSelection
@@ -47,69 +49,55 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Get_SelectSolution_AssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             CatalogueSolutionsController controller)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.SelectSolution(internalOrgId, callOffId);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(CatalogueSolutionsController.SelectSolutionAssociatedServicesOnly));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.ActionName.Should()
+                .Be(nameof(CatalogueSolutionsController.SelectSolutionAssociatedServicesOnly));
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Get_SelectSolution_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> supplierSolutions,
             List<CatalogueItem> additionalServices,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISolutionsService mockSolutionsService,
+            [Frozen] IAdditionalServicesService mockAdditionalServicesService,
             CatalogueSolutionsController controller)
         {
             order.OrderType = OrderTypeEnum.Solution;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
 
-            mockSolutionsService
-                .Setup(x => x.GetSupplierSolutions(order.SupplierId))
-                .ReturnsAsync(supplierSolutions);
+            mockSolutionsService.GetSupplierSolutions(order.SupplierId)
+                .Returns(supplierSolutions);
 
-            var solutionIds = supplierSolutions.Select(x => x.Id);
-
-            mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionIds(solutionIds))
-                .ReturnsAsync(additionalServices);
+            mockAdditionalServicesService.GetAdditionalServicesBySolutionIds(Arg.Any<IEnumerable<CatalogueItemId>>())
+                .Returns(additionalServices);
 
             var result = await controller.SelectSolution(internalOrgId, callOffId);
-
-            mockOrderService.VerifyAll();
-            mockSolutionsService.VerifyAll();
-            mockAdditionalServicesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -122,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_SelectSolution_WithModelErrors_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -130,34 +118,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> supplierSolutions,
             List<CatalogueItem> additionalServices,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISolutionsService mockSolutionsService,
+            [Frozen] IAdditionalServicesService mockAdditionalServicesService,
             CatalogueSolutionsController controller)
         {
             order.OrderType = OrderTypeEnum.Solution;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
 
-            mockSolutionsService
-                .Setup(x => x.GetSupplierSolutions(order.SupplierId))
-                .ReturnsAsync(supplierSolutions);
+            mockSolutionsService.GetSupplierSolutions(order.SupplierId)
+                .Returns(supplierSolutions);
 
-            var solutionIds = supplierSolutions.Select(x => x.Id);
-
-            mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionIds(solutionIds))
-                .ReturnsAsync(additionalServices);
+            mockAdditionalServicesService.GetAdditionalServicesBySolutionIds(Arg.Any<IEnumerable<CatalogueItemId>>())
+                .Returns(additionalServices);
 
             controller.ModelState.AddModelError("key", "errorMessage");
 
             var result = await controller.SelectSolution(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockSolutionsService.VerifyAll();
-            mockAdditionalServicesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -170,14 +149,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_SelectSolution_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             SelectSolutionModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOrderItemService> mockOrderItemService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOrderItemService mockOrderItemService,
             CatalogueSolutionsController controller)
         {
             var orderItem = order.OrderItems.First();
@@ -192,93 +171,82 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 model.AdditionalServices[i].CatalogueItemId = CatalogueItemId.ParseExact($"{catalogueItemId}{i:000}");
             }
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
 
             var ids = model.AdditionalServices
                 .Where(x => x.IsSelected)
                 .Select(x => x.CatalogueItemId)
                 .Union(new[] { catalogueItemId });
 
-            mockOrderItemService
-                .Setup(x => x.AddOrderItems(internalOrgId, callOffId, ids))
-                .Returns(Task.CompletedTask);
+            mockOrderItemService.AddOrderItems(internalOrgId, callOffId, ids).Returns(Task.CompletedTask);
 
             var result = await controller.SelectSolution(internalOrgId, callOffId, model);
-
-            mockOrderItemService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Get_SelectSolutionAssociatedServicesOnly_NonNullSolutionId_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             CatalogueItemId solutionId,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             CatalogueSolutionsController controller)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.AssociatedServicesOnlyDetails.SolutionId = solutionId;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.SelectSolutionAssociatedServicesOnly(internalOrgId, callOffId);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(CatalogueSolutionsController.EditSolutionAssociatedServicesOnly));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.ActionName.Should()
+                .Be(nameof(CatalogueSolutionsController.EditSolutionAssociatedServicesOnly));
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task Get_SelectSolutionAssociatedServicesOnly_NonNullSolutionId_FromSelectAssociatedServices_ReturnsExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            CatalogueItemId solutionId,
-            List<CatalogueItem> supplierSolutions,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
-            CatalogueSolutionsController controller)
+        [CommonAutoData(MockingFramework.NSubstitute)]
+        public static async Task
+            Get_SelectSolutionAssociatedServicesOnly_NonNullSolutionId_FromSelectAssociatedServices_ReturnsExpectedResult(
+                string internalOrgId,
+                CallOffId callOffId,
+                EntityFramework.Ordering.Models.Order order,
+                CatalogueItemId solutionId,
+                List<CatalogueItem> supplierSolutions,
+                [Frozen] IOrderService mockOrderService,
+                [Frozen] ISolutionsService mockSolutionsService,
+                CatalogueSolutionsController controller)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.AssociatedServicesOnlyDetails.SolutionId = solutionId;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             mockSolutionsService
-                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType))
-                .ReturnsAsync(supplierSolutions);
+                .GetSupplierSolutionsWithAssociatedServices(
+                    order.SupplierId,
+                    order.OrderType.ToPracticeReorganisationType)
+                .Returns(supplierSolutions);
 
-            var result = await controller.SelectSolutionAssociatedServicesOnly(internalOrgId, callOffId, RoutingSource.SelectAssociatedServices);
-
-            mockOrderService.VerifyAll();
-            mockSolutionsService.VerifyAll();
+            var result = await controller.SelectSolutionAssociatedServicesOnly(
+                internalOrgId,
+                callOffId,
+                RoutingSource.SelectAssociatedServices);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -291,31 +259,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Get_SelectSolutionAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> supplierSolutions,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISolutionsService mockSolutionsService,
             CatalogueSolutionsController controller)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.AssociatedServicesOnlyDetails.SolutionId = null;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             mockSolutionsService
-                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType))
-                .ReturnsAsync(supplierSolutions);
+                .GetSupplierSolutionsWithAssociatedServices(
+                    order.SupplierId,
+                    order.OrderType.ToPracticeReorganisationType)
+                .Returns(supplierSolutions);
 
             var result = await controller.SelectSolutionAssociatedServicesOnly(internalOrgId, callOffId);
-
-            mockOrderService.VerifyAll();
-            mockSolutionsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -328,34 +293,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_SelectSolutionAssociatedServicesOnly_WithModelError_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> supplierSolutions,
             SelectSolutionModel model,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISolutionsService mockSolutionsService,
             CatalogueSolutionsController controller)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.AssociatedServicesOnlyDetails.SolutionId = null;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             mockSolutionsService
-                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType))
-                .ReturnsAsync(supplierSolutions);
+                .GetSupplierSolutionsWithAssociatedServices(
+                    order.SupplierId,
+                    order.OrderType.ToPracticeReorganisationType)
+                .Returns(supplierSolutions);
 
             controller.ModelState.AddModelError("key", "errorMessage");
 
             var result = await controller.SelectSolutionAssociatedServicesOnly(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockSolutionsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -368,94 +330,77 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_SelectSolutionAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             SelectSolutionModel model,
             CatalogueItemId catalogueItemId,
-            [Frozen] Mock<IOrderService> mockOrderService,
             CatalogueSolutionsController controller)
         {
             model.SelectedCatalogueSolutionId = $"{catalogueItemId}";
 
-            mockOrderService
-                .Setup(x => x.SetSolutionId(internalOrgId, callOffId, catalogueItemId))
-                .Verifiable();
-
             var result = await controller.SelectSolutionAssociatedServicesOnly(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(AssociatedServicesController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(AssociatedServicesController.SelectAssociatedServices));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-                { "source", RoutingSource.SelectSolution },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary
+                    {
+                        { "internalOrgId", internalOrgId },
+                        { "callOffId", callOffId },
+                        { "source", RoutingSource.SelectSolution },
+                    });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Get_EditSolution_AssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             CatalogueSolutionsController controller)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.EditSolution(internalOrgId, callOffId);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(CatalogueSolutionsController.EditSolutionAssociatedServicesOnly));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.ActionName.Should()
+                .Be(nameof(CatalogueSolutionsController.EditSolutionAssociatedServicesOnly));
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Get_EditSolution_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> solutions,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISolutionsService mockSolutionsService,
             CatalogueSolutionsController controller)
         {
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockSolutionsService
-                .Setup(x => x.GetSupplierSolutions(order.SupplierId))
-                .ReturnsAsync(solutions);
+            mockSolutionsService.GetSupplierSolutions(order.SupplierId).Returns(solutions);
 
             var result = await controller.EditSolution(internalOrgId, order.CallOffId);
-
-            mockOrderService.VerifyAll();
-            mockSolutionsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -468,13 +413,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_EditSolution_NoChangesMade_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             SelectSolutionModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             CatalogueSolutionsController controller)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
@@ -485,34 +430,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             model.SelectedCatalogueSolutionId = $"{solution.CatalogueItemId}";
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.EditSolution(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_EditSolution_SolutionChanged_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             SelectSolutionModel model,
             EntityFramework.Ordering.Models.Order order,
             CatalogueItemId newSolutionId,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             CatalogueSolutionsController controller)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
@@ -520,86 +459,73 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             model.SelectedCatalogueSolutionId = $"{newSolutionId}";
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.EditSolution(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(CatalogueSolutionsController.ConfirmSolutionChanges));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-                { "catalogueItemId", newSolutionId },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary
+                    {
+                        { "internalOrgId", internalOrgId },
+                        { "callOffId", callOffId },
+                        { "catalogueItemId", newSolutionId },
+                    });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Get_EditSolutionAssociatedServicesOnly_NoSolutionSelected_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             CatalogueSolutionsController controller)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.AssociatedServicesOnlyDetails.Solution = null;
 
-            mockOrderService
-                .Setup(s => s.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.EditSolutionAssociatedServicesOnly(internalOrgId, callOffId);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(CatalogueSolutionsController.SelectSolutionAssociatedServicesOnly));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.ActionName.Should()
+                .Be(nameof(CatalogueSolutionsController.SelectSolutionAssociatedServicesOnly));
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Get_EditSolutionAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> solutions,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISolutionsService mockSolutionsService,
             CatalogueSolutionsController controller)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
 
-            mockOrderService
-                .Setup(s => s.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockSolutionsService
-                .Setup(x => x.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType))
-                .ReturnsAsync(solutions);
+            mockSolutionsService.GetSupplierSolutionsWithAssociatedServices(
+                    order.SupplierId,
+                    order.OrderType.ToPracticeReorganisationType)
+                .Returns(solutions);
 
             var result = await controller.EditSolutionAssociatedServicesOnly(internalOrgId, order.CallOffId);
-
-            mockOrderService.VerifyAll();
-            mockSolutionsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -612,30 +538,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_EditSolutionAssociatedServicesOnly_WithModelError_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> solutions,
             SelectSolutionModel model,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISolutionsService mockSolutionsService,
             CatalogueSolutionsController controller)
         {
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockSolutionsService
-                .Setup(x => x.GetSupplierSolutions(order.SupplierId))
-                .ReturnsAsync(solutions);
+            mockSolutionsService.GetSupplierSolutions(order.SupplierId).Returns(solutions);
 
             controller.ModelState.AddModelError("key", "errorMessage");
 
             var result = await controller.EditSolutionAssociatedServicesOnly(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockSolutionsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -648,97 +567,83 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_EditSolutionAssociatedServicesOnly_NoChangesMade_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             SelectSolutionModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             CatalogueSolutionsController controller)
         {
             model.SelectedCatalogueSolutionId = $"{order.AssociatedServicesOnlyDetails.Solution.Id}";
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.EditSolutionAssociatedServicesOnly(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_EditSolutionAssociatedServicesOnly_SolutionChanged_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             SelectSolutionModel model,
             EntityFramework.Ordering.Models.Order order,
             CatalogueItemId newSolutionId,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             CatalogueSolutionsController controller)
         {
             model.SelectedCatalogueSolutionId = $"{newSolutionId}";
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.EditSolutionAssociatedServicesOnly(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
-            actualResult.ActionName.Should().Be(nameof(CatalogueSolutionsController.ConfirmSolutionChangesAssociatedServicesOnly));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-                { "catalogueItemId", newSolutionId },
-            });
+            actualResult.ActionName.Should()
+                .Be(nameof(CatalogueSolutionsController.ConfirmSolutionChangesAssociatedServicesOnly));
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary
+                    {
+                        { "internalOrgId", internalOrgId },
+                        { "callOffId", callOffId },
+                        { "catalogueItemId", newSolutionId },
+                    });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Get_ConfirmSolutionChanges_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             CatalogueItemId catalogueItemId,
             CatalogueItem newSolution,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISolutionsService mockSolutionsService,
             CatalogueSolutionsController controller)
         {
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderItems.ElementAt(1).CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             order.OrderItems.ElementAt(2).CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
 
-            mockOrderService
-                .Setup(s => s.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockSolutionsService
-                .Setup(x => x.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(newSolution);
+            mockSolutionsService.GetSolutionThin(catalogueItemId).Returns(newSolution);
 
             var result = await controller.ConfirmSolutionChanges(internalOrgId, callOffId, catalogueItemId);
-
-            mockOrderService.VerifyAll();
-            mockSolutionsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -749,11 +654,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 {
                     new() { CatalogueItemId = newSolution.Id, Description = newSolution.Name },
                 },
-                ToRemove = order.OrderItems.Select(x => new ServiceModel
-                {
-                    CatalogueItemId = x.CatalogueItemId,
-                    Description = x.CatalogueItem.Name,
-                }).ToList(),
+                ToRemove = order.OrderItems.Select(
+                        x => new ServiceModel
+                            {
+                                CatalogueItemId = x.CatalogueItemId, Description = x.CatalogueItem.Name,
+                            })
+                    .ToList(),
                 Caption = $"Order {callOffId}",
             };
 
@@ -761,7 +667,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_ConfirmSolutionChanges_ChangesNotConfirmed_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -776,23 +682,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_ConfirmSolutionChanges_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             ConfirmServiceChangesModel model,
             List<CatalogueItemId> toRemove,
             List<CatalogueItemId> toAdd,
-            [Frozen] Mock<IOrderItemService> mockOrderItemService,
-            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
+            [Frozen] IOrderItemService mockOrderItemService,
+            [Frozen] IAdditionalServicesService mockAdditionalServicesService,
             CatalogueSolutionsController controller)
         {
             model.ConfirmChanges = true;
@@ -804,21 +708,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             IEnumerable<CatalogueItemId> removedItemIds = null;
             IEnumerable<CatalogueItemId> addedItemIds = null;
 
-            mockOrderItemService
-                .Setup(x => x.DeleteOrderItems(internalOrgId, callOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
-                .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => removedItemIds = x);
+            mockOrderItemService.DeleteOrderItems(
+                    internalOrgId,
+                    callOffId,
+                    Arg.Do<IEnumerable<CatalogueItemId>>(x => removedItemIds = x))
+                .Returns(Task.CompletedTask);
 
-            mockOrderItemService
-                .Setup(x => x.AddOrderItems(internalOrgId, callOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
-                .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => addedItemIds = x);
+            mockOrderItemService.AddOrderItems(
+                    internalOrgId,
+                    callOffId,
+                    Arg.Do<IEnumerable<CatalogueItemId>>(x => addedItemIds = x))
+                .Returns(Task.CompletedTask);
 
-            mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionId(newSolutionId, true))
-                .ReturnsAsync(new List<CatalogueItem>());
+            mockAdditionalServicesService.GetAdditionalServicesBySolutionId(newSolutionId, true)
+                .Returns(new List<CatalogueItem>());
 
             var result = await controller.ConfirmSolutionChanges(internalOrgId, callOffId, model);
-
-            mockOrderItemService.VerifyAll();
 
             removedItemIds.Should().BeEquivalentTo(toRemove);
             addedItemIds.Should().BeEquivalentTo(toAdd);
@@ -827,15 +732,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_ConfirmSolutionChanges_WithAdditionalServices_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -843,8 +746,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             List<CatalogueItemId> toRemove,
             List<CatalogueItemId> toAdd,
             List<CatalogueItem> additionalServices,
-            [Frozen] Mock<IOrderItemService> mockOrderItemService,
-            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
+            [Frozen] IOrderItemService mockOrderItemService,
+            [Frozen] IAdditionalServicesService mockAdditionalServicesService,
             CatalogueSolutionsController controller)
         {
             model.ConfirmChanges = true;
@@ -854,21 +757,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             IEnumerable<CatalogueItemId> removedItemIds = null;
             IEnumerable<CatalogueItemId> addedItemIds = null;
 
-            mockOrderItemService
-                .Setup(x => x.DeleteOrderItems(internalOrgId, callOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
-                .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => removedItemIds = x);
+            mockOrderItemService.DeleteOrderItems(
+                    internalOrgId,
+                    callOffId,
+                    Arg.Do<IEnumerable<CatalogueItemId>>(x => removedItemIds = x))
+                .Returns(Task.CompletedTask);
 
-            mockOrderItemService
-                .Setup(x => x.AddOrderItems(internalOrgId, callOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
-                .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => addedItemIds = x);
+            mockOrderItemService.AddOrderItems(
+                    internalOrgId,
+                    callOffId,
+                    Arg.Do<IEnumerable<CatalogueItemId>>(x => addedItemIds = x))
+                .Returns(Task.CompletedTask);
 
-            mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionId(model.ToAdd.First().CatalogueItemId, true))
-                .ReturnsAsync(additionalServices);
+            mockAdditionalServicesService.GetAdditionalServicesBySolutionId(model.ToAdd.First().CatalogueItemId, true)
+                .Returns(additionalServices);
 
             var result = await controller.ConfirmSolutionChanges(internalOrgId, callOffId, model);
-
-            mockOrderItemService.VerifyAll();
 
             removedItemIds.Should().BeEquivalentTo(toRemove);
             addedItemIds.Should().BeEquivalentTo(toAdd);
@@ -877,62 +781,53 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_ConfirmSolutionChanges_ClearsContract(
             string internalOrgId,
             CallOffId callOffId,
             int orderId,
             ConfirmServiceChangesModel model,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<IContractsService> mockContractsService,
+            [Frozen] IOrderService orderService,
+            [Frozen] IContractsService mockContractsService,
             CatalogueSolutionsController controller)
         {
             model.ConfirmChanges = true;
 
-            orderService
-                .Setup(x => x.GetOrderId(internalOrgId, callOffId))
-                .ReturnsAsync(orderId);
+            orderService.GetOrderId(internalOrgId, callOffId).Returns(orderId);
 
             await controller.ConfirmSolutionChanges(internalOrgId, callOffId, model);
 
-            orderService.VerifyAll();
-            mockContractsService.Verify(s => s.RemoveContract(orderId), Times.Once());
+            await mockContractsService.Received().RemoveContract(orderId);
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Get_ConfirmSolutionChangesAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             CatalogueItemId catalogueItemId,
             CatalogueItem newSolution,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISolutionsService mockSolutionsService,
             CatalogueSolutionsController controller)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
 
-            mockOrderService
-                .Setup(s => s.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockSolutionsService
-                .Setup(x => x.GetSolutionThin(catalogueItemId))
-                .ReturnsAsync(newSolution);
+            mockSolutionsService.GetSolutionThin(catalogueItemId).Returns(newSolution);
 
-            var result = await controller.ConfirmSolutionChangesAssociatedServicesOnly(internalOrgId, callOffId, catalogueItemId);
-
-            mockOrderService.VerifyAll();
-            mockSolutionsService.VerifyAll();
+            var result = await controller.ConfirmSolutionChangesAssociatedServicesOnly(
+                internalOrgId,
+                callOffId,
+                catalogueItemId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -943,25 +838,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 {
                     new() { CatalogueItemId = newSolution.Id, Description = newSolution.Name },
                 },
-                ToRemove = order.OrderItems.Select(x => new ServiceModel
-                {
-                    CatalogueItemId = x.CatalogueItemId,
-                    Description = x.CatalogueItem.Name,
-                }).ToList(),
+                ToRemove = order.OrderItems.Select(
+                        x => new ServiceModel
+                        {
+                            CatalogueItemId = x.CatalogueItemId, Description = x.CatalogueItem.Name,
+                        })
+                    .ToList(),
             };
 
-            expected.ToRemove.Add(new ServiceModel { CatalogueItemId = order.AssociatedServicesOnlyDetails.Solution.Id, Description = order.AssociatedServicesOnlyDetails.Solution.Name });
+            expected.ToRemove.Add(
+                new ServiceModel
+                {
+                    CatalogueItemId = order.AssociatedServicesOnlyDetails.Solution.Id,
+                    Description = order.AssociatedServicesOnlyDetails.Solution.Name,
+                });
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task Post_ConfirmSolutionChangesAssociatedServicesOnly_ChangesNotConfirmed_ReturnsExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            ConfirmServiceChangesModel model,
-            CatalogueSolutionsController controller)
+        [CommonAutoData(MockingFramework.NSubstitute)]
+        public static async Task
+            Post_ConfirmSolutionChangesAssociatedServicesOnly_ChangesNotConfirmed_ReturnsExpectedResult(
+                string internalOrgId,
+                CallOffId callOffId,
+                ConfirmServiceChangesModel model,
+                CatalogueSolutionsController controller)
         {
             model.ConfirmChanges = false;
 
@@ -971,45 +873,35 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_ConfirmSolutionChangesAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             ConfirmServiceChangesModel model,
             List<CatalogueItemId> toRemove,
             List<CatalogueItemId> toAdd,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOrderItemService> mockOrderItemService,
+            [Frozen] IOrderItemService mockOrderItemService,
             CatalogueSolutionsController controller)
         {
             model.ConfirmChanges = true;
             model.ToRemove = toRemove.Select(x => new ServiceModel { CatalogueItemId = x, IsSelected = true }).ToList();
             model.ToAdd = toAdd.Select(x => new ServiceModel { CatalogueItemId = x, IsSelected = true }).ToList();
 
-            var newSolutionId = model.ToAdd.First().CatalogueItemId;
-
             IEnumerable<CatalogueItemId> removedItemIds = null;
 
-            mockOrderItemService
-                .Setup(x => x.DeleteOrderItems(internalOrgId, callOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
-                .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => removedItemIds = x);
-
-            mockOrderService
-                .Setup(x => x.SetSolutionId(internalOrgId, callOffId, newSolutionId))
-                .Verifiable();
+            mockOrderItemService.DeleteOrderItems(
+                    internalOrgId,
+                    callOffId,
+                    Arg.Do<IEnumerable<CatalogueItemId>>(x => removedItemIds = x))
+                .Returns(Task.CompletedTask);
 
             var result = await controller.ConfirmSolutionChangesAssociatedServicesOnly(internalOrgId, callOffId, model);
-
-            mockOrderItemService.VerifyAll();
-            mockOrderService.VerifyAll();
 
             removedItemIds.Should().BeEquivalentTo(toRemove);
 
@@ -1017,88 +909,82 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             actualResult.ControllerName.Should().Be(typeof(AssociatedServicesController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(AssociatedServicesController.SelectAssociatedServices));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-                { "source", RoutingSource.EditSolution },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary
+                    {
+                        { "internalOrgId", internalOrgId },
+                        { "callOffId", callOffId },
+                        { "source", RoutingSource.EditSolution },
+                    });
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_ConfirmSolutionChangesAssociatedServicesOnly_ClearsContract(
             string internalOrgId,
             CallOffId callOffId,
             int orderId,
             ConfirmServiceChangesModel model,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<IContractsService> mockContractsService,
+            [Frozen] IOrderService orderService,
+            [Frozen] IContractsService mockContractsService,
             CatalogueSolutionsController controller)
         {
             model.ConfirmChanges = true;
 
-            orderService
-                .Setup(x => x.GetOrderId(internalOrgId, callOffId))
-                .ReturnsAsync(orderId);
+            orderService.GetOrderId(internalOrgId, callOffId).Returns(orderId);
 
             await controller.ConfirmSolutionChangesAssociatedServicesOnly(internalOrgId, callOffId, model);
 
-            orderService.VerifyAll();
-            mockContractsService.Verify(s => s.RemoveContract(orderId), Times.Once());
+            await mockContractsService.Received().RemoveContract(orderId);
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Get_RemoveService_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] IOrderService orderService,
+            [Frozen] ICatalogueItemService catalogueItemService,
             CatalogueSolutionsController controller,
             CatalogueItem catalogueItem)
         {
-            orderService
-                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper { Order = order });
+            orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId)
+                .Returns(new OrderWrapper { Order = order });
 
-            solutionsService
-                .Setup(x => x.GetSolutionThin(catalogueItem.Id))
-                .ReturnsAsync(catalogueItem);
+            catalogueItemService.GetCatalogueItem(catalogueItem.Id).Returns(catalogueItem);
 
             var result = await controller.RemoveService(internalOrgId, order.CallOffId, catalogueItem.Id);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new RemoveServiceModel(catalogueItem)
-            {
-            };
+            var expected = new RemoveServiceModel(catalogueItem);
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static async Task Post_RemoveService_RemovesService(
             string internalOrgId,
             CallOffId callOffId,
             RemoveServiceModel model,
-            [Frozen] Mock<IOrderItemService> mockOrderItemService,
-            CatalogueSolutionsController controller,
-            CatalogueItem catalogueItem)
+            CatalogueItem catalogueItem,
+            [Frozen] IOrderItemService mockOrderItemService,
+            CatalogueSolutionsController controller)
         {
             var result = await controller.RemoveService(internalOrgId, callOffId, catalogueItem.Id, model);
 
-            mockOrderItemService.Verify(s => s.DeleteOrderItems(internalOrgId, callOffId, new List<CatalogueItemId> { catalogueItem.Id }), Times.Once());
+            await mockOrderItemService.Received()
+                .DeleteOrderItems(internalOrgId, callOffId, Arg.Any<List<CatalogueItemId>>());
+
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
             actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
             actualResult.ActionName.Should().Be(nameof(TaskListController.TaskList));
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", callOffId }, });
         }
     }
 }
