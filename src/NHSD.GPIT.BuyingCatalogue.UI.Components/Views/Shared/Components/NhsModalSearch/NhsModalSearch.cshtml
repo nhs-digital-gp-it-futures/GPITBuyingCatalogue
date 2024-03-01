@@ -1,4 +1,5 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsModalSearch.NhsModalSearchModel;
+﻿@using System.Text.Json
+@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsModalSearch.NhsModalSearchModel;
 @{
     var title = $"{Model.Id}-title";
     var filter = $"{Model.Id}-filter-term";
@@ -27,16 +28,20 @@
                                    maxlength="50">
 
                             <button type="button" class="app-search__submit" value="search">
-                                <vc:nhs-search-icon/>
+                                <vc:nhs-search-icon />
                             </button>
                         </div>
                     </div>
                     <div class="search-results-container">
                         <div id="@($"{Model.Id}-search-table")">
-                            <partial name="@Model.TablePartialView" model="@Model.TableData"/>
+                            @if (!string.IsNullOrEmpty(Model.TablePartialView) && Model.TableData != null)
+                            {
+                                <partial name="@Model.TablePartialView" model="@Model.TableData" />
+                            }
                         </div>
                         <div id="@($"{Model.Id}-no-records-found")" style="display: none;">
-                            <p class="nhsuk-body nhsuk-u-margin-top-3">@Model.NotFoundText</p></div>
+                            <p class="nhsuk-body nhsuk-u-margin-top-3">@Model.NotFoundText</p>
+                        </div>
                     </div>
                 </main>
                 <footer class="modal__footer">
@@ -54,5 +59,11 @@
 
 <script type="text/javascript" src="@Url.Content("~/js/ModalSearch.min.js")" asp-append-version="true"></script>
 <script type="text/javascript">
-    new modalSearchConfig('@Model.Id', '@Model.ShowDialogButton', '@Model.CallbackFunction', '@Model.Cleardown');
+    new modalSearchConfig(
+        '@Model.Id',
+        '@Model.ShowDialogButton',
+    @Model.CallbackFunction,
+    @(JsonSerializer.Serialize(Model.ClearSearch)),
+    @(JsonSerializer.Serialize(Model.ClearSelection)),
+    @(!string.IsNullOrWhiteSpace(Model.TableContentFunction) ? Model.TableContentFunction : "null"));
 </script>

@@ -26,8 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var model = new FilterEpicsModel(capabilities, new List<Epic> { epic });
 
-            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Id, x.Name }));
-            model.SelectedItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
+            model.EpicGroups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Id, x.Name }));
+            model.EpicSelectionItems.Should().BeEquivalentTo(capabilities.Select(x => new SelectionModel
             {
                 Id = $"{x.Id},{epic.Id}",
                 Selected = false,
@@ -52,9 +52,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             var model = new FilterEpicsModel(capabilities, new List<Epic> { epic }, selected);
 
-            model.Groups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Id, x.Name }));
-            model.SelectedItems.Count().Should().Be(capabilities.Count);
-            model.SelectedItems.Where(s => s.Selected).Should().BeEquivalentTo(new[]
+            model.EpicGroups.Should().BeEquivalentTo(capabilities.Select(x => new { x.Id, x.Name }));
+            model.EpicSelectionItems.Count().Should().Be(capabilities.Count);
+            model.EpicSelectionItems.Where(s => s.Selected).Should().BeEquivalentTo(new[]
             {
                 new SelectionModel
                 {

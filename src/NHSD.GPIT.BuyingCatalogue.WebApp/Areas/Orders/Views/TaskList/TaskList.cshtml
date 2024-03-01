@@ -61,7 +61,7 @@
                                 <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px"/><p>You cannot change your Catalogue Solution when amending an order.</p>
                             }
                         </nhs-card-footer>
-                        
+
                     </nhs-card-v2>
                 }
             </div>
@@ -85,7 +85,7 @@
                                     {
                                         <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
                                                                             typeof(CatalogueSolutionsController).ControllerName(),
-                                                                            new { Model.InternalOrgId, Model.CallOffId, service.CatalogueItemId })"
+                                                                            new { Model.InternalOrgId, Model.CallOffId, catalogueItemId = service.CatalogueItemId })"
                                         text="Remove @service.CatalogueItem.Name" />
                                         <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
                                     }
@@ -128,7 +128,7 @@
             </div>
         }
 
-        
+
         <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
             <h2>Associated Services</h2>
 
@@ -169,7 +169,7 @@
                             <p>No Associated Services have been added to this order yet.</p>
                         }
                     </nhs-card-content>
-                    
+
                     @if (!Model.OrderType.MergerOrSplit)
                     {
                         <nhs-card-footer>
@@ -194,7 +194,7 @@
                             }
                         </nhs-card-footer>
                     }
-                }                
+                }
             </nhs-card-v2>
         </div>
 

@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AutoFixture;
 using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations.OdsOrganisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
@@ -9,7 +12,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
     {
         private static readonly ICustomization[] Customizations =
         {
-            new AutoMoqCustomization(),
             new AspNetUserCustomization(),
             new CapabilityCategoryCustomization(),
             new CapabilityCustomization(),
@@ -41,8 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new OrganisationCustomization(),
             new OrderRecipientCustomization(),
             new OrderCustomization(),
-            new ControllerCustomization(),
-            new ControllerBaseCustomization(),
             new HostingTypeSectionModelCustomization(),
             new ApplicationTypeSectionModelCustomization(),
             new ServiceLevelAgreementCustomization(),
@@ -76,9 +76,26 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new ImplementationPlanMilestoneCustomization(),
         };
 
-        internal static IFixture Create() => Create(Customizations);
+        internal static IFixture Create(MockingFramework mockingFramework)
+            => Create(mockingFramework, Array.Empty<ICustomization>());
 
-        internal static IFixture Create(params ICustomization[] customizations) =>
-            new Fixture().Customize(new CompositeCustomization(Customizations.Union(customizations)));
+        internal static IFixture Create(MockingFramework mockingFramework, params ICustomization[] customizations) =>
+            new Fixture().Customize(new CompositeCustomization(CreateCustomizations(mockingFramework).Union(customizations)));
+
+        private static IEnumerable<ICustomization> CreateCustomizations(MockingFramework mockingFramework)
+        {
+            ICustomization mockingFrameworkCustomization = mockingFramework switch
+            {
+                MockingFramework.Moq => new AutoMoqCustomization(),
+                MockingFramework.NSubstitute => new AutoNSubstituteCustomization(),
+                _ => throw new ArgumentOutOfRangeException(),
+            };
+
+            var customizations = Customizations.ToList();
+            customizations.Insert(0, mockingFrameworkCustomization);
+            customizations.Add(new ControllerCustomization(mockingFramework));
+
+            return customizations;
+        }
     }
 }

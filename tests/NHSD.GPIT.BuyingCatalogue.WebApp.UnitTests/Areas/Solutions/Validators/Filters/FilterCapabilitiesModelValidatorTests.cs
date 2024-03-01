@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
             FilterCapabilitiesModel model,
             FilterCapabilitiesModelValidator validator)
         {
-            model.SelectedItems.ForEach(x => x.Selected = false);
+            model.CapabilitySelectionItems.ForEach(x => x.Selected = false);
             model.IsFilter = false;
 
             var result = validator.TestValidate(model);
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
             FilterCapabilitiesModel model,
             FilterCapabilitiesModelValidator validator)
         {
-            model.SelectedItems.ForEach(x => x.Selected = false);
+            model.CapabilitySelectionItems.ForEach(x => x.Selected = false);
             model.IsFilter = true;
 
             var result = validator.TestValidate(model);
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
             FilterCapabilitiesModel model,
             FilterCapabilitiesModelValidator validator)
         {
-            model.SelectedItems.ForEach(x => x.Selected = true);
+            model.CapabilitySelectionItems.ForEach(x => x.Selected = true);
             model.IsFilter = isFiltering;
 
             var result = validator.TestValidate(model);

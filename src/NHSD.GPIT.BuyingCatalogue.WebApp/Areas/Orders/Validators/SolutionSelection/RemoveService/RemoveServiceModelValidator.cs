@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.CatalogueSolutions
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.RemoveService
 {
     public class RemoveServiceModelValidator : AbstractValidator<RemoveServiceModel>
     {
@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
         public RemoveServiceModelValidator()
         {
             RuleFor(x => x.ConfirmRemoveService)
-                .NotEmpty()
+                .Must(x => x.HasValue)
                 .WithMessage(x => string.Format(NoSelectionMadeErrorMessage, x.ServiceName));
         }
     }

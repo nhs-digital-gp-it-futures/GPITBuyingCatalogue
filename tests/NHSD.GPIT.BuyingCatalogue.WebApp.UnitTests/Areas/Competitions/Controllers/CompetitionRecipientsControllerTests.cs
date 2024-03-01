@@ -2,22 +2,23 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
+using NSubstitute;
 using Xunit;
 using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
 using SelectRecipientsModel = NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectRecipientsModel;
@@ -29,7 +30,7 @@ public static class CompetitionRecipientsControllerTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(CompetitionRecipientsController).GetConstructors();
 
@@ -37,24 +38,24 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [CommonAutoData(MockingFramework.NSubstitute)]
     public static async Task Index_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
         List<OdsOrganisation> odsOrganisations,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IOdsService> odsService,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IOdsService odsService,
         CompetitionRecipientsController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
+            .Returns(organisation);
 
-        competitionsService.Setup(x => x.GetCompetitionWithRecipients(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithRecipients(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
 
-        odsService.Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(odsOrganisations.Select(x => new ServiceRecipient { Name = x.Name, OrgId = x.Id, }));
+        odsService.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier)
+            .Returns(odsOrganisations.Select(x => new ServiceRecipient { Name = x.Name, OrgId = x.Id, }));
 
         var result = (await controller.Index(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
 
@@ -63,7 +64,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [CommonAutoData(MockingFramework.NSubstitute)]
     public static void Index_InvalidModelState_ReturnsViewWithModel(
         string internalOrgId,
         int competitionId,
@@ -79,7 +80,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [CommonAutoData(MockingFramework.NSubstitute)]
     public static void Index_Valid_Redirects(
         string internalOrgId,
         int competitionId,
@@ -93,25 +94,24 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [CommonAutoData(MockingFramework.NSubstitute)]
     public static async Task ConfirmRecipients_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
         List<ServiceRecipient> serviceRecipients,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IOdsService> odsService,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IOdsService odsService,
         CompetitionRecipientsController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
+            .Returns(organisation);
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
 
-        odsService.Setup(
-                x => x.GetServiceRecipientsById(organisation.InternalIdentifier, It.IsAny<IEnumerable<string>>()))
-            .ReturnsAsync(serviceRecipients);
+        odsService.GetServiceRecipientsById(organisation.InternalIdentifier, Arg.Any<IEnumerable<string>>())
+            .Returns(serviceRecipients);
 
         var expectedModel = new ConfirmChangesModel(organisation)
         {
@@ -134,26 +134,25 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [CommonAutoData(MockingFramework.NSubstitute)]
     public static async Task ConfirmRecipients_HasImportedRecipients_SetsBacklink(
         Organisation organisation,
         Competition competition,
         List<ServiceRecipient> serviceRecipients,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IOdsService> odsService,
-        [Frozen] Mock<IUrlHelper> urlHelper,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IOdsService odsService,
+        [Frozen] IUrlHelper urlHelper,
         CompetitionRecipientsController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
+            .Returns(organisation);
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
 
-        odsService.Setup(
-                x => x.GetServiceRecipientsById(organisation.InternalIdentifier, It.IsAny<IEnumerable<string>>()))
-            .ReturnsAsync(serviceRecipients);
+        odsService.GetServiceRecipientsById(organisation.InternalIdentifier, Arg.Any<IEnumerable<string>>())
+            .Returns(serviceRecipients);
 
         _ = (await controller.ConfirmRecipients(
             organisation.InternalIdentifier,
@@ -161,35 +160,33 @@ public static class CompetitionRecipientsControllerTests
             string.Join(',', serviceRecipients.Select(x => x.OrgId)),
             true)).As<ViewResult>();
 
-        urlHelper.Verify(
-            x => x.Action(
-                It.Is<UrlActionContext>(
+        urlHelper.Received()
+            .Action(
+                Arg.Is<UrlActionContext>(
                     y => y.Action == nameof(CompetitionImportServiceRecipientsController.Index) && y.Controller
-                        == typeof(CompetitionImportServiceRecipientsController).ControllerName())),
-            Times.Once());
+                        == typeof(CompetitionImportServiceRecipientsController).ControllerName()));
     }
 
     [Theory]
-    [CommonAutoData]
+    [CommonAutoData(MockingFramework.NSubstitute)]
     public static async Task ConfirmRecipients_HasNotImportedRecipients_SetsBacklink(
         Organisation organisation,
         Competition competition,
         List<ServiceRecipient> serviceRecipients,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IOdsService> odsService,
-        [Frozen] Mock<IUrlHelper> urlHelper,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IOdsService odsService,
+        [Frozen] IUrlHelper urlHelper,
         CompetitionRecipientsController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
+            .Returns(organisation);
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
 
-        odsService.Setup(
-                x => x.GetServiceRecipientsById(organisation.InternalIdentifier, It.IsAny<IEnumerable<string>>()))
-            .ReturnsAsync(serviceRecipients);
+        odsService.GetServiceRecipientsById(organisation.InternalIdentifier, Arg.Any<IEnumerable<string>>())
+            .Returns(serviceRecipients);
 
         _ = (await controller.ConfirmRecipients(
             organisation.InternalIdentifier,
@@ -197,26 +194,25 @@ public static class CompetitionRecipientsControllerTests
             string.Join(',', serviceRecipients.Select(x => x.OrgId)),
             false)).As<ViewResult>();
 
-        urlHelper.Verify(
-            x => x.Action(
-                It.Is<UrlActionContext>(
-                    y => y.Action == nameof(controller.Index) && string.IsNullOrWhiteSpace(y.Controller))),
-            Times.Once());
+        urlHelper.Received()
+            .Action(
+                Arg.Is<UrlActionContext>(
+                    y => y.Action == nameof(controller.Index) && string.IsNullOrWhiteSpace(y.Controller)));
     }
 
     [Theory]
-    [CommonAutoData]
+    [CommonAutoData(MockingFramework.NSubstitute)]
     public static async Task ConfirmRecipients_Valid_Redirects(
         string internalOrgId,
         int competitionId,
         ConfirmChangesModel model,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionRecipientsController controller)
     {
         var result = (await controller.ConfirmRecipients(internalOrgId, competitionId, model))
             .As<RedirectToActionResult>();
 
-        competitionsService.Verify(x => x.SetCompetitionRecipients(competitionId, It.IsAny<IEnumerable<string>>()), Times.Once());
+        await competitionsService.Received().SetCompetitionRecipients(competitionId, Arg.Any<IEnumerable<string>>());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
@@ -224,16 +220,16 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [CommonAutoData(MockingFramework.NSubstitute)]
     public static async Task UploadOrSelectServiceRecipients_ReturnsViewWithModel(
         string internalOrgId,
         int competitionId,
         Competition competition,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionRecipientsController controller)
     {
-        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetition(internalOrgId, competitionId)
+            .Returns(competition);
 
         var result = await controller.UploadOrSelectServiceRecipients(internalOrgId, competitionId);
 
@@ -246,18 +242,18 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [CommonAutoData(MockingFramework.NSubstitute)]
     public static void UploadOrSelectServiceRecipients_InvalidModel_ReturnsViewWithModel(
         UploadOrSelectServiceRecipientModel model,
         string internalOrgId,
         int competitionId,
         Competition competition,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionRecipientsController controller)
     {
         controller.ModelState.AddModelError("SomeError", "Error message");
-        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetition(internalOrgId, competitionId)
+            .Returns(competition);
 
         var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
 
@@ -268,17 +264,17 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [CommonAutoData(MockingFramework.NSubstitute)]
     public static void UploadOrSelectServiceRecipients_UploadRecipients_RedirectsToImportController(
         UploadOrSelectServiceRecipientModel model,
         string internalOrgId,
         int competitionId,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionRecipientsController controller)
     {
         model.ShouldUploadRecipients = true;
-        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
-            .ReturnsAsync(new Competition());
+        competitionsService.GetCompetition(internalOrgId, competitionId)
+            .Returns(new Competition());
 
         var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
 
@@ -288,17 +284,17 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [CommonAutoData(MockingFramework.NSubstitute)]
     public static void UploadOrSelectServiceRecipients_DoNotUploadRecipients_RedirectsToIndexAction(
         UploadOrSelectServiceRecipientModel model,
         string internalOrgId,
         int competitionId,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionRecipientsController controller)
     {
         model.ShouldUploadRecipients = false;
-        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
-            .ReturnsAsync(new Competition());
+        competitionsService.GetCompetition(internalOrgId, competitionId)
+            .Returns(new Competition());
 
         var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
 

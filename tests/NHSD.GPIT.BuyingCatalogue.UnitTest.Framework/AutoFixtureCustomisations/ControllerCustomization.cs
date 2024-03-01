@@ -2,39 +2,23 @@
 using AutoFixture;
 using AutoFixture.Kernel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
-    public sealed class ControllerCustomization : ICustomization
+    public sealed class ControllerCustomization(MockingFramework mockingFramework) : ICustomization
     {
         public void Customize(IFixture fixture)
         {
+            ISpecimenCommand controllerSpecimen = mockingFramework == MockingFramework.Moq
+                ? new MoqControllerSpecimenCommand()
+                : new ControllerSpecimenCommand();
+
             fixture.Customizations.Add(
                 new FilteringSpecimenBuilder(
                     new Postprocessor(
                         new MethodInvoker(new ModestConstructorQuery()),
-                        new ControllerSpecimenCommand()),
+                        controllerSpecimen),
                     new ControllerRequestSpecification()));
-        }
-
-        private sealed class ControllerSpecimenCommand : ControllerBaseSpecimenCommand
-        {
-            public override void Execute(object specimen, ISpecimenContext context)
-            {
-                base.Execute(specimen, context);
-
-                if (specimen is Controller controller)
-                {
-                    var tempDataMock = context.Create<Mock<ITempDataDictionary>>();
-                    controller.TempData = tempDataMock.Object;
-                }
-                else
-                {
-                    throw new ArgumentException("The specimen must be an instance of Controller", nameof(specimen));
-                }
-            }
         }
 
         private sealed class ControllerRequestSpecification : IRequestSpecification

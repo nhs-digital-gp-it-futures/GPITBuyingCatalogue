@@ -188,10 +188,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             FilterCapabilitiesModel model,
             SupplierDefinedEpicsController controller)
         {
-            model.SelectedItems = new SelectionModel[] { new SelectionModel { Id = "1", Selected = true } };
+            model.CapabilitySelectionItems = new SelectionModel[] { new SelectionModel { Id = "1", Selected = true } };
             var result = (await controller.SelectCapabilities(model)).As<RedirectToActionResult>();
             result.Should().NotBeNull();
-            var expectedIds = model.SelectedItems.Where(x => x.Selected).Select(x => x.Id).ToFilterString();
+            var expectedIds = model.CapabilitySelectionItems.Where(x => x.Selected).Select(x => x.Id).ToFilterString();
             result.RouteValues.Values.First().ToString().Should().BeEquivalentTo(expectedIds);
         }
 
@@ -371,9 +371,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
-            for (int i = 0; i < model.SelectedItems.Length; i++)
+            for (int i = 0; i < model.CapabilitySelectionItems.Length; i++)
             {
-                model.SelectedItems[i].Id = (i + 1).ToString();
+                model.CapabilitySelectionItems[i].Id = (i + 1).ToString();
             }
 
             supplierDefinedEpicsService.Setup(s => s.GetEpic(epic.Id))
@@ -394,9 +394,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
-            for (int i = 0; i < model.SelectedItems.Length; i++)
+            for (int i = 0; i < model.CapabilitySelectionItems.Length; i++)
             {
-                model.SelectedItems[i].Id = (i + 1).ToString();
+                model.CapabilitySelectionItems[i].Id = (i + 1).ToString();
             }
 
             supplierDefinedEpicsService.Setup(s => s.GetEpic(epic.Id))

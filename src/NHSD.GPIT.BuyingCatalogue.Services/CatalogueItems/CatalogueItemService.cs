@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CatalogueItems;
 
@@ -18,4 +19,7 @@ public class CatalogueItemService : ICatalogueItemService
 
     public async Task<string> GetCatalogueItemName(CatalogueItemId catalogueItemId)
         => (await dbContext.CatalogueItems.FirstOrDefaultAsync(x => x.Id == catalogueItemId))?.Name;
+
+    public async Task<CatalogueItem> GetCatalogueItem(CatalogueItemId catalogueItemId)
+        => await dbContext.CatalogueItems.AsNoTracking().FirstOrDefaultAsync(x => x.Id == catalogueItemId);
 }

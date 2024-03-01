@@ -16,6 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared
                 .When(m => !m.IsFilter);
         }
 
-        private static bool HaveMadeASelection(FilterCapabilitiesModel model) => model.SelectedItems?.Any(x => x.Selected) ?? false;
+        private static bool HaveMadeASelection(FilterCapabilitiesModel model) => model.CapabilitySelectionItems?.Any(x => x.Selected) ?? false;
     }
 }
