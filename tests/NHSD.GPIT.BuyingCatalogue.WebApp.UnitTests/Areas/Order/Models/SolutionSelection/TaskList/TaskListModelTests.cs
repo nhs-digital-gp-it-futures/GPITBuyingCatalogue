@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture.AutoNSubstitute
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -10,6 +11,8 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList;
 using Xunit;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
+using NSubstitute;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.SolutionSelection.TaskList
 {
@@ -62,17 +65,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void WithValidArguments_Amendment_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order)
+            EntityFramework.Ordering.Models.Order order,
+            CatalogueItemId catalogueItemId)
         {
+            /*order.OrderItems = new List<OrderItem>
+            {
+                new OrderItem(catalogueItemId) { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution } },
+                new OrderItem(catalogueItemId) { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService } },
+                new OrderItem(catalogueItemId) { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AssociatedService } },
+            };*/
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
             var amendment = order.BuildAmendment(2);
 
             order.OrderType = OrderTypeEnum.Solution;
+
+            order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             var solution = order.OrderItems.ElementAt(0);
             var additionalService = order.OrderItems.ElementAt(1);

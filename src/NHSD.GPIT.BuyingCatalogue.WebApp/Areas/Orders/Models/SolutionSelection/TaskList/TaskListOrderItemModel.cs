@@ -100,27 +100,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 return TaskProgress.NotStarted;
             }
         }
-
-        public TaskProgress DeliveryDatesStatus
-        {
-            get
-            {
-                if (QuantityStatus is TaskProgress.CannotStart or TaskProgress.NotStarted)
-                {
-                    return TaskProgress.CannotStart;
-                }
-
-                if (RolledUpOrderRecipients.AllDeliveryDatesEntered(rolledUpOrderItem.CatalogueItemId))
-                {
-                    return FromPreviousRevision && HasNewRecipients ? TaskProgress.Amended : TaskProgress.Completed;
-                }
-                else if (!RolledUpOrderRecipients.NoDeliveryDatesEntered(rolledUpOrderItem.CatalogueItemId))
-                {
-                    return TaskProgress.InProgress;
-                }
-
-                return TaskProgress.NotStarted;
-            }
-        }
     }
 }

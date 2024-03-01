@@ -44,7 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             AdditionalServices = rolledUpOrder.GetAdditionalServices();
             AssociatedServices = rolledUpOrder.GetAssociatedServices();
 
-            var tempPrev = wrapper.Previous;
             var currentAdditionalServices = wrapper.Order.GetAdditionalServices();
 
             if (rolledUpOrder.OrderType.AssociatedServicesOnly)
@@ -76,8 +75,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                     : 0,
                 PreviousRecipients = Previous?.OrderRecipients.Count ?? 0,
-                QuantityChanged = (tempPrev.OrderItems.Where(y => y.CatalogueItemId == x.CatalogueItemId)?.FirstOrDefault().Quantity ?? 0) !=
-                    (currentAdditionalServices.Where(y => y.CatalogueItemId == x.CatalogueItemId)?.FirstOrDefault().Quantity ?? 0),
+                QuantityChanged = (Previous?.OrderItems.Where(y => y.CatalogueItemId == x.CatalogueItemId).FirstOrDefault()?.Quantity ?? 0) !=
+                    (currentAdditionalServices?.Where(y => y.CatalogueItemId == x.CatalogueItemId).FirstOrDefault()?.Quantity ?? 0),
             }));
 
             AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, x)
