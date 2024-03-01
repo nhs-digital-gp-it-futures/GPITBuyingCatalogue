@@ -44,31 +44,46 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             {
                 if (hasTheOrderAdditionalService)
                 {
-                    CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeAdditionalServiceLink);
+                    //CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeAdditionalServiceLink);
 
-                    CommonActions.PageLoadedCorrectGetIndex(
-                      typeof(AdditionalServicesController),
-                      nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
+                    //CommonActions.PageLoadedCorrectGetIndex(
+                    //  typeof(AdditionalServicesController),
+                    //  nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
 
                     if (oldAdditionalServices != default && oldAdditionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
                     {
                         foreach (var oldAdditionalService in oldAdditionalServices)
                         {
-                            CommonActions.ClickCheckboxByLabel(oldAdditionalService);
+                            CommonActions.ClickLinkElement(ReviewSolutionsObjects.RemoveSolutionService(oldAdditionalService));
+                            //CommonActions.PageLoadedCorrectGetIndex(
+                            //  typeof(AdditionalServicesController),
+                            //  nameof(AdditionalServicesController)).Should().BeTrue();
+                            CommonActions.PageLoadedCorrectGetIndex(
+                            typeof(CatalogueSolutionsController),
+                            nameof(CatalogueSolutionsController.RemoveService)).Should().BeTrue();
+                            var removeservice = $"Yes, I confirm I want to remove {oldAdditionalService}";
+
+                            CommonActions.ClickRadioButtonWithText(removeservice);
+                            CommonActions.ClickSave();
                         }
                     }
                 }
-                else
+                //else
+                //{
+                //    CommonActions.ClickLinkElement(ReviewSolutionsObjects.AddAdditionalServiceLink);
+
+                //    CommonActions.PageLoadedCorrectGetIndex(
+                //      typeof(AdditionalServicesController),
+                //      nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
+                //}
+
+                if (newAdditionalServices != default && newAdditionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
                     CommonActions.ClickLinkElement(ReviewSolutionsObjects.AddAdditionalServiceLink);
 
                     CommonActions.PageLoadedCorrectGetIndex(
                       typeof(AdditionalServicesController),
                       nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
-                }
-
-                if (newAdditionalServices != default && newAdditionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
-                {
                     foreach (var newAdditionalService in newAdditionalServices)
                     {
                         CommonActions.ClickCheckboxByLabel(newAdditionalService);
