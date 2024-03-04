@@ -1102,7 +1102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Associated Service", "Order")]
+        [Trait("Edit Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedService()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService";
@@ -2166,7 +2166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Associated Service", "Order")]
+        [Trait("Edit Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices";

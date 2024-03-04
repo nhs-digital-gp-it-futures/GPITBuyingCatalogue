@@ -450,9 +450,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 foreach (var additionalService in newAdditionalServices)
                 {
-                    //SelectEditAndConfirmAdditionalServicePrice.SelectAndConfirmPrice();
-                    //Quantity.AddQuantity();
-                    //SelectEditCatalogueSolution.AddAdditionalServices(additionalService);
                     var serviceid = GetAdditionalServiceID(additionalService);
                     SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
                     Quantity.AddSolutionQuantity(serviceid);
@@ -467,11 +464,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     Quantity.AddQuantity();
                 }
             }
-
-            //if (!HasTheOriginalOrderAssociatedService(orderId))
-            //{
-            //    SelectEditAssociatedService.AddAssociatedService();
-            //}
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
@@ -505,8 +497,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             {
                 foreach (var associatedService in newAssociatedServices)
                 {
-                    SelectEditAndConfirmAssociatedServicePrices.SelectAndConfirmPrice();
-                    Quantity.AddQuantity();
+                    var serviceid = GetAssociatedServiceID(associatedService);
+                    SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
+                    Quantity.AddSolutionQuantity(serviceid);
                 }
             }
 
@@ -540,8 +533,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
             foreach (var associatedService in newAssociatedServices)
             {
-                SelectEditAndConfirmAssociatedServiceOnlyPrices.SelectAndConfirmPrice();
-                Quantity.AddQuantity();
+                var serviceid = GetAssociatedServiceID(associatedService);
+                SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
+                Quantity.AddSolutionQuantity(serviceid);
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();

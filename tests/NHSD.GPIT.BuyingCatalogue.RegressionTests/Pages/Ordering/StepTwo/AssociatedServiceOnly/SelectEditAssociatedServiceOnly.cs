@@ -56,23 +56,32 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Assoc
 
         public void EditAssociatedServiceOnly(IEnumerable<string> newAssociatedServices, IEnumerable<string> oldAssociatedServices)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeAssociatedServiceLink);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-             typeof(AssociatedServicesController),
-             nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
-
             if (oldAssociatedServices != default && oldAssociatedServices.All(a => a != string.Empty))
             {
                 foreach (var oldAssociatedService in oldAssociatedServices)
                 {
-                    CommonActions.ClickCheckboxByLabel(oldAssociatedService);
+                    CommonActions.ClickLinkElement(ReviewSolutionsObjects.RemoveSolutionService(oldAssociatedService));
+                    CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(CatalogueSolutionsController),
+                    nameof(CatalogueSolutionsController.RemoveService)).Should().BeTrue();
+                    var removeservice = $"Yes, I confirm I want to remove {oldAssociatedService}";
+
+                    CommonActions.ClickRadioButtonWithText(removeservice);
+                    CommonActions.ClickSave();
                 }
             }
 
-            foreach (var newAssociatedService in newAssociatedServices)
+            if (newAssociatedServices != default && newAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
             {
-                CommonActions.ClickCheckboxByLabel(newAssociatedService);
+                CommonActions.ClickLinkElement(ReviewSolutionsObjects.AddAssociatedServiceLink);
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                  typeof(AssociatedServicesController),
+                  nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
+                foreach (var newAssociatedService in newAssociatedServices)
+                {
+                    CommonActions.ClickCheckboxByLabel(newAssociatedService);
+                }
             }
 
             CommonActions.ClickSave();
