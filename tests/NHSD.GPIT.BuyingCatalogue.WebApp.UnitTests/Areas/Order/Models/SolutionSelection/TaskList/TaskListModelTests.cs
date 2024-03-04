@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.AutoNSubstitute
+using AutoFixture.AutoNSubstitute;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -13,6 +13,9 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Tas
 using Xunit;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
 using NSubstitute;
+using AutoFixture.Xunit2;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.SolutionSelection.TaskList
 {
@@ -70,6 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
+            [Frozen] EntityFramework.Ordering.Models.Order custom,
             CatalogueItemId catalogueItemId)
         {
             /*order.OrderItems = new List<OrderItem>
@@ -78,6 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 new OrderItem(catalogueItemId) { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService } },
                 new OrderItem(catalogueItemId) { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AssociatedService } },
             };*/
+
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
             var amendment = order.BuildAmendment(2);
@@ -94,7 +99,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
 
-            var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(new[] { order, amendment }));
+            var wrapper = new OrderWrapper(new[] { order, amendment });
+            wrapper.Order.OrderItems.Add(solution);
+            wrapper.Order.OrderItems.Add(additionalService);
+            wrapper.Order.OrderItems.Add(associatedService);
+
+            var model = new TaskListModel(internalOrgId, callOffId, wrapper);
 
             model.InternalOrgId.Should().BeEquivalentTo(internalOrgId);
             model.CallOffId.Should().BeEquivalentTo(callOffId);
