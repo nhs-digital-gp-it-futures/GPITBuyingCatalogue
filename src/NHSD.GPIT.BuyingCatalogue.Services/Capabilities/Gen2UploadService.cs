@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.Caching.Distributed;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -14,12 +15,19 @@ using NHSD.GPIT.BuyingCatalogue.Services.Csv;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
 
-public class Gen2UploadService(IDistributedCache cache) : CsvServiceBase, IGen2UploadService
+public class Gen2UploadService : CsvServiceBase, IGen2UploadService
 {
     private const string CapabilitiesCacheSuffix = "capabilities";
     private const string EpicsCacheSuffix = "Epics";
 
-    private readonly IDistributedCache cache = cache ?? throw new ArgumentNullException(nameof(cache));
+    private readonly IDistributedCache cache;
+    private readonly BuyingCatalogueDbContext dbContext;
+
+    public Gen2UploadService(
+        IDistributedCache cache)
+    {
+        this.cache = cache ?? throw new ArgumentNullException(nameof(cache));
+    }
 
     public async Task<Gen2CsvImportModel<Gen2CapabilitiesCsvModel>>
         GetCapabilitiesFromCsv(Stream capabilitiesStream) =>
