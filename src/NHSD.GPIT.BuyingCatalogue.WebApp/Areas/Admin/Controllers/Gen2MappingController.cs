@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
 [Authorize(Policy = "AdminOnly")]
 [Area("Admin")]
-[Route("admin/capabilities-mapping/{id}")]
+[Route("admin/capabilities-mapping/{id:guid}")]
 public class Gen2MappingController : Controller
 {
     private const string InvalidCsvFormat = "File not formatted correctly";
@@ -120,10 +120,9 @@ public class Gen2MappingController : Controller
             return RedirectToAction(nameof(HomeController.Index), typeof(HomeController).ControllerName());
 
         var mappingModel = new Gen2MappingModel(cachedCapabilities.Imported, cachedEpics.Imported);
+        var isMappingSuccessful = await gen2MappingService.MapToSolutions(mappingModel);
 
-        var isSuccessful = await gen2MappingService.MapToSolutions(mappingModel);
-
-        return View("Confirmation", new ConfirmationModel(isSuccessful));
+        return View("Confirmation", new ConfirmationModel(isMappingSuccessful));
     }
 
     private async Task<IActionResult> HandleFileUpload<T>(

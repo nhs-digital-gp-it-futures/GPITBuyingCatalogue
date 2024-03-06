@@ -15,7 +15,7 @@ internal sealed class IdentityServiceSpecimenBuilder : ISpecimenBuilder
 
         var userId = context.Create<int>();
 
-        var identityServiceMock = context.Create<IIdentityService>();
+        var identityServiceMock = Substitute.For<IIdentityService>();
         identityServiceMock.GetUserId().Returns(userId);
 
         return identityServiceMock;

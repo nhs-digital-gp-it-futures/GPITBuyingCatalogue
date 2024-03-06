@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels;
@@ -9,22 +10,25 @@ public class Gen2MappingModel
         IEnumerable<Gen2CapabilitiesCsvModel> capabilitiesImport,
         ICollection<Gen2EpicsCsvModel> epicsImport)
     {
+        ArgumentNullException.ThrowIfNull(capabilitiesImport);
+        ArgumentNullException.ThrowIfNull(epicsImport);
+
         var groupedSolutions = capabilitiesImport.GroupBy(x => x.SolutionId);
 
         foreach (var groupedSolutionCapabilities in groupedSolutions)
         {
-            var solutionCapabilities = groupedSolutionCapabilities
+            var solutionSpecificCapabilities = groupedSolutionCapabilities
                 .Where(x => string.IsNullOrWhiteSpace(x.AdditionalServiceId))
                 .ToList();
 
             var additionalServices = MapAdditionalServices(
-                    solutionCapabilities,
-                    groupedSolutionCapabilities,
-                    epicsImport);
+                solutionSpecificCapabilities,
+                groupedSolutionCapabilities,
+                epicsImport);
 
             var solution = new Gen2SolutionMappingModel(
                 groupedSolutionCapabilities.Key,
-                MapSolutionCapabilities(solutionCapabilities, epicsImport).ToList(),
+                MapSolutionCapabilities(solutionSpecificCapabilities, epicsImport).ToList(),
                 additionalServices.ToList());
 
             Solutions.Add(solution);

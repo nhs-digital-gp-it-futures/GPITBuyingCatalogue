@@ -74,13 +74,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new ContractBillingItemCustomization(),
             new ImplementationPlanCustomization(),
             new ImplementationPlanMilestoneCustomization(),
+            new Gen2CapabilityMappingModelCustomization(),
+            new Gen2CapabilitiesCsvModelCustomization(),
+            new Gen2EpicsCsvModelCustomization(),
         };
 
         internal static IFixture Create(MockingFramework mockingFramework)
             => Create(mockingFramework, Array.Empty<ICustomization>());
 
         internal static IFixture Create(MockingFramework mockingFramework, params ICustomization[] customizations) =>
-            new Fixture().Customize(new CompositeCustomization(CreateCustomizations(mockingFramework).Union(customizations)));
+            new Fixture().Customize(new CompositeCustomization(CreateCustomizations(mockingFramework).Concat(customizations)));
 
         private static IEnumerable<ICustomization> CreateCustomizations(MockingFramework mockingFramework)
         {
@@ -88,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             {
                 MockingFramework.Moq => new AutoMoqCustomization(),
                 MockingFramework.NSubstitute => new AutoNSubstituteCustomization(),
-                _ => throw new ArgumentOutOfRangeException(),
+                _ => throw new ArgumentOutOfRangeException(nameof(mockingFramework)),
             };
 
             var customizations = Customizations.ToList();

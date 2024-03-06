@@ -27,7 +27,6 @@ public class Gen2MappingService : IGen2MappingService
     public async Task<bool> MapToSolutions(Gen2MappingModel gen2Mapping)
     {
         ArgumentNullException.ThrowIfNull(gen2Mapping);
-        ArgumentNullException.ThrowIfNull(gen2Mapping.Solutions);
 
         if (gen2Mapping.Solutions.Count == 0)
             throw new ArgumentNullException(nameof(gen2Mapping), string.Empty);
