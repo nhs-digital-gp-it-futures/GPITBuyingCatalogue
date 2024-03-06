@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoFixture.AutoNSubstitute;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList;
 using Xunit;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
-using NSubstitute;
-using AutoFixture.Xunit2;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.SolutionSelection.TaskList
 {
@@ -72,24 +67,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void WithValidArguments_Amendment_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            [Frozen] EntityFramework.Ordering.Models.Order custom,
-            CatalogueItemId catalogueItemId)
+            EntityFramework.Ordering.Models.Order order)
         {
-            /*order.OrderItems = new List<OrderItem>
-            {
-                new OrderItem(catalogueItemId) { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution } },
-                new OrderItem(catalogueItemId) { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService } },
-                new OrderItem(catalogueItemId) { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AssociatedService } },
-            };*/
-
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
             var amendment = order.BuildAmendment(2);
 
             order.OrderType = OrderTypeEnum.Solution;
-
-            order.OrderItems.ElementAt(0).CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             var solution = order.OrderItems.ElementAt(0);
             var additionalService = order.OrderItems.ElementAt(1);
@@ -99,12 +83,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
 
-            var wrapper = new OrderWrapper(new[] { order, amendment });
-            wrapper.Order.OrderItems.Add(solution);
-            wrapper.Order.OrderItems.Add(additionalService);
-            wrapper.Order.OrderItems.Add(associatedService);
+            amendment.OrderItems = new List<OrderItem>()
+            {
+                new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution, Id = solution.CatalogueItemId }, CatalogueItemId = solution.CatalogueItemId },
+                new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId },
+                new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AssociatedService, Id = associatedService.CatalogueItemId }, CatalogueItemId = associatedService.CatalogueItemId },
+            };
 
-            var model = new TaskListModel(internalOrgId, callOffId, wrapper);
+            var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(new[] { order, amendment }));
 
             model.InternalOrgId.Should().BeEquivalentTo(internalOrgId);
             model.CallOffId.Should().BeEquivalentTo(callOffId);

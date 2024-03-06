@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -35,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 throw new ArgumentNullException(nameof(wrapper));
             }
 
-            Previous = wrapper.Previous;
+            Previous = wrapper.PreviousOrders.LastOrDefault();
 
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
