@@ -112,6 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureAuthorization();
 
             services.ConfigureBlobStorage(Configuration);
+            services.ConfigureQueueStorage(Configuration);
 
             services.AddSingleton<IRoutingService, RoutingService>();
             services.AddSingleton<IOrderTaskProgressProviderService, OrderTaskProgressProviderService>();

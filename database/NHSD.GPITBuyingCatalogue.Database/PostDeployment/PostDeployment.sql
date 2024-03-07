@@ -43,6 +43,9 @@
 :r ./InsertAssociatedServices.sql
 :r ./InsertRelatedOrganisations.sql
 
+:r ./InsertManagedEmailPreferences.sql
+:r ./InsertEvents.sql
+
 :r ./DropImport.sql
 :r ./DropPublish.sql
 

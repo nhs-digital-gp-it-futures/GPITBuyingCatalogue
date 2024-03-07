@@ -9,5 +9,6 @@
         internal const string OdsOrganisations = "ods_organisations";
         internal const string Users = "users";
         internal const string Filtering = "filtering";
+        internal const string Notifications = "notifications";
     }
 }

@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
+using Azure.Storage.Queues;
+using Flurl.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
@@ -30,19 +36,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public const string OrderSummaryCsv = "order_summary_csv";
 
         private readonly BuyingCatalogueDbContext dbContext;
+        private readonly QueueServiceClient queueServiceClient;
         private readonly ICsvService csvService;
         private readonly IGovNotifyEmailService emailService;
         private readonly IOrderPdfService pdfService;
         private readonly OrderMessageSettings orderMessageSettings;
+        private readonly ILogger<OrderService> logger;
 
         public OrderService(
+            ILogger<OrderService> logger,
             BuyingCatalogueDbContext dbContext,
+            QueueServiceClient queueServiceClient,
             ICsvService csvService,
             IGovNotifyEmailService emailService,
             IOrderPdfService pdfService,
             OrderMessageSettings orderMessageSettings)
         {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.queueServiceClient = queueServiceClient ?? throw new ArgumentNullException(nameof(queueServiceClient));
             this.csvService = csvService ?? throw new ArgumentNullException(nameof(csvService));
             this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
@@ -77,7 +89,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.SelectedFramework)
                 .AsSplitQuery()
-                .AsNoTracking()
+
+                // TODO: Restore this and fix object tracking
+                // .AsNoTracking()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
@@ -398,13 +412,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId)
         {
             var order = (await GetOrderThin(callOffId, internalOrgId)).Order;
-            order.Complete();
+            var fullOrderBytes = await CreateCsv(order);
 
-            dbContext.Entry(order).State = EntityState.Modified;
+            Notification buyerNotification = BuildBuyerNotification(userId, order, fullOrderBytes);
+            Notification financeNotification = BuildFinanceNotification(order, fullOrderBytes);
 
-            await dbContext.SaveChangesAsync();
+            try
+            {
+                var txOptions = new TransactionOptions()
+                {
+                    IsolationLevel = IsolationLevel.ReadCommitted,
+                };
 
-            await SendEmailsAndSave(order, callOffId, userId);
+                using var scope = new TransactionScope(TransactionScopeOption.Required, txOptions, TransactionScopeAsyncFlowOption.Enabled);
+
+                // dbContext.Attach(order);
+                // save the order completion and the notifications within a transaction
+                // so that they all commit or rollback together
+                order.Complete();
+
+                // TODO: we could raise an order completed local event to create these notifcations MediatR style
+                // but the intent is that this should still be done within this transaction
+                order.OrderEvents.Add(new OrderEvent() { EventId = (int)EventTypeEnum.OrderCompleted });
+
+                // dbContext.Entry(order).State = EntityState.Modified;
+                dbContext.Add(buyerNotification);
+                dbContext.Add(financeNotification);
+                await dbContext.SaveChangesAsync();
+                scope.Complete();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Problem completing order");
+                throw;
+            }
+
+            await DispatchNotification(buyerNotification);
         }
 
         public async Task<List<Order>> GetUserOrders(int userId)
@@ -491,8 +534,75 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             order.IsTerminated = true;
             order.OrderTermination = new OrderTermination()
             {
-                OrderId = order.Id, DateOfTermination = dateOfTermination, Reason = reason,
+                OrderId = order.Id,
+                DateOfTermination = dateOfTermination,
+                Reason = reason,
             };
+        }
+
+        private async Task DispatchNotification(Notification buyerNotification)
+        {
+            try
+            {
+                // now hand the messages off to the messaging system.
+                // if something goes wrong here
+                // we can subsequently identifiy unprocessed notification rows and try sending them again.
+                // processing of notifications should be idempotent so that it is safe to retry messages
+                // In the case of gov.nofify we can be somewhat idempotent within the retention period
+                // by using and checking for our reference.
+                var client = queueServiceClient.GetQueueClient("notifications");
+
+                // TODO: await client.SendMessageAsync(
+                //    Convert.ToBase64String(Encoding.UTF8.GetBytes(financeNotification.Id.ToString())));
+                await client.SendMessageAsync(
+                    Convert.ToBase64String(Encoding.UTF8.GetBytes(buyerNotification.Id.ToString())));
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Problem dispatching order complete messages");
+            }
+        }
+
+        private Notification BuildFinanceNotification(Order order, byte[] fullOrderBytes)
+        {
+            var financeNotification = new Notification()
+            {
+                To = orderMessageSettings.Recipient.Address,
+            };
+
+            financeNotification.JsonFrom(
+                new FinanceOrderCompletedEmailContent()
+                {
+                    OrderingParty = order.OrderingParty.Name,
+                    CsvAttachmentBase64 = Convert.ToBase64String(fullOrderBytes),
+                });
+            return financeNotification;
+        }
+
+        private Notification BuildBuyerNotification(int userId, Order order, byte[] fullOrderBytes)
+        {
+            var buyerNotification = new Notification()
+            {
+                To = dbContext.Users.First(x => x.Id == userId).Email,
+            };
+
+            buyerNotification.JsonFrom(
+                new BuyerOrderCompletedEmailContent()
+                {
+                    CallOffId = order.CallOffId.ToString(),
+                    IsAmendment = order.IsAmendment,
+                    OrderType = order.OrderType.Value,
+                    CsvAttachmentBase64 = Convert.ToBase64String(fullOrderBytes),
+                });
+            return buyerNotification;
+        }
+
+        private async Task<byte[]> CreateCsv(Order order)
+        {
+            await using var fullOrderStream = new MemoryStream();
+            await csvService.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream, false);
+            fullOrderStream.Position = 0;
+            return fullOrderStream.ToArray();
         }
 
         private async Task SendEmailsAndSave(Order order, CallOffId callOffId, int userId, bool showRevisions = false)
@@ -527,6 +637,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 emailService.SendEmailAsync(userEmail, GetUserTemplateId(order), userTokens));
         }
 
+        [Obsolete("Moved to the funcation app")]
         private string GetUserTemplateId(Order order)
         {
             return order.IsTerminated
