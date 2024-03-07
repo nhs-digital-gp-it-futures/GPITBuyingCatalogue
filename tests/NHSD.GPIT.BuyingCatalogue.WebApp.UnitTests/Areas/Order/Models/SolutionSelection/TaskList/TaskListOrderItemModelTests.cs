@@ -5,6 +5,7 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList;
 using Xunit;
@@ -235,6 +236,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
             model.QuantityStatus.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [CommonAutoData(MockingFramework.NSubstitute)]
+        public static void QuantityStatus_AssociatedServiceAmendment_ExpectedResult(
+            string internalOrgId,
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
+        {
+            var callOffId = new CallOffId(1, 2);
+
+            orderItem.Quantity = null;
+
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem) { IsAssociatedService = true };
+
+            model.QuantityStatus.Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [CommonInlineAutoData(false, TaskProgress.Completed)]
+        [CommonInlineAutoData(true, TaskProgress.Amended)]
+        public static void QuantityStatus_NonPerServiceRecipientAmendment_ExpectedResult(
+            bool quantityChanged,
+            TaskProgress taskProgress,
+            string internalOrgId,
+            OrderItem orderItem,
+            OrderRecipient[] recipients)
+        {
+            var callOffId = new CallOffId(1, 2);
+
+            orderItem.Quantity = null;
+
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem) { IsPerServiceRecipient = false, FromPreviousRevision = true, QuantityChanged = quantityChanged };
+
+            model.QuantityStatus.Should().Be(taskProgress);
         }
     }
 }
