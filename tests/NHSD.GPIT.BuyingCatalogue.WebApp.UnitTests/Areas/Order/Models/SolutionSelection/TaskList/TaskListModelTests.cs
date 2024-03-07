@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
     public static class TaskListModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void WithNullOrder_ThrowsException(
             string internalOrgId,
             CallOffId callOffId)
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void WithValidArguments_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void WithValidArguments_AssociatedServicesOnly_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void WithValidArguments_IncompleteOrder_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void Amendment_SetsTitleAndAdviceCorrectly(
             TaskListModel model)
         {
