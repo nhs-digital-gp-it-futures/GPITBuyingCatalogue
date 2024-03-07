@@ -22,8 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers
 
         private static IWebDriver GetLocalChromeDriver()
         {
-            return new ChromeDriver(
-                /*Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory)*/
+            return new ChromeDriver(                
                 GetChromeDriverService(),
                 GetChromeOptions(!Debugger.IsAttached));
         }

@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 
         public void EditQuantity(string catalogueItemName)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(GetCatalogueItemID(catalogueItemName)));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantityLink(GetCatalogueItemID(catalogueItemName)));
 
             AddQuantity();
 
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 
         public void AmendEditQuantity(string solutionid)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(solutionid));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantityLink(solutionid));
 
             AddQuantity();
 
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 
         public void AddSolutionQuantity(string solutionid)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(solutionid));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantityLink(solutionid));
             AddQuantity();
         }
 
