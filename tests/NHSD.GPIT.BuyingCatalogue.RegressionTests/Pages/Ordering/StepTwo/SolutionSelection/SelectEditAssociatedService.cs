@@ -93,9 +93,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
                             CommonActions.PageLoadedCorrectGetIndex(
                             typeof(CatalogueSolutionsController),
                             nameof(CatalogueSolutionsController.RemoveService)).Should().BeTrue();
-                            var removeservice = $"Yes, I confirm I want to remove {oldAssociatedService}";
+                            var removeService = $"Yes, I confirm I want to remove {oldAssociatedService}";
 
-                            CommonActions.ClickRadioButtonWithText(removeservice);
+                            CommonActions.ClickRadioButtonWithText(removeService);
                             CommonActions.ClickSave();
                         }
                     }
