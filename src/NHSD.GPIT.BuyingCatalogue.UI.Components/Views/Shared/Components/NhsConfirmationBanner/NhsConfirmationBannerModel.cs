@@ -4,6 +4,18 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsCon
 
 public class NhsConfirmationBannerModel
 {
+    public enum BannerColour
+    {
+        Blue,
+        Grey,
+    }
+
+    public string Title { get; set; }
+
+    public string Body { get; set; }
+
+    public BannerColourType Colour { get; set; } = BannerColour.Blue;
+
     public struct BannerColourType
     {
         private readonly BannerColour colour;
@@ -22,16 +34,4 @@ public class NhsConfirmationBannerModel
             _ => throw new ArgumentOutOfRangeException(nameof(colour)),
         };
     }
-
-    public enum BannerColour
-    {
-        Blue,
-        Grey,
-    }
-
-    public string Title { get; set; }
-
-    public string Body { get; set; }
-
-    public BannerColourType Colour { get; set; } = BannerColour.Blue;
 }

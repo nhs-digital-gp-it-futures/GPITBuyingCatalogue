@@ -21,7 +21,6 @@ public class Gen2UploadService : CsvServiceBase, IGen2UploadService
     private const string EpicsCacheSuffix = "Epics";
 
     private readonly IDistributedCache cache;
-    private readonly BuyingCatalogueDbContext dbContext;
 
     public Gen2UploadService(
         IDistributedCache cache)
