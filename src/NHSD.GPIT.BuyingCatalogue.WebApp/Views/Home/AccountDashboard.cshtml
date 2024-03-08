@@ -1,0 +1,41 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@model AccountDashboardModel
+@{
+    Layout = "~/Views/Shared/Layouts/_BetaBannerLayout.cshtml";
+    ViewBag.Title = "Buying Catalogue";
+
+    // Required for Adobe Analytics (see _HeadIncludes partial for more info)
+    ViewBag.PageName = "home";
+}
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+            <nhs-page-title title="Your organisation's dashboard" caption="@Model.OrganisationName"/>
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+        <h2 class="nhsuk-heading-m">Account overview</h2>
+        <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
+            <partial name="_AccountOverview" model="@(new AccountOverviewModel(Model.OrdersCount, "orders", Url.Action(nameof(DashboardController.Index),typeof(DashboardController).ControllerName(), new { Area = typeof(DashboardController).AreaName() })))" />
+            <partial name="_AccountOverview" model="@(new AccountOverviewModel(Model.ShortlistsCount, "shortlists", Url.Action(nameof(ManageFiltersController.Index),typeof(ManageFiltersController).ControllerName(), new { Area = typeof(ManageFiltersController).AreaName() })))" />
+            <partial name="_AccountOverview" model="@(new AccountOverviewModel(Model.CompetitionsCount, "competitions", Url.Action(nameof(CompetitionsDashboardController.Index),typeof(CompetitionsDashboardController).ControllerName(), new { Area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId })))" />
+            </ul>
+        </div>
+    </div>
+
+@if (!Model.HasOrders)
+{
+    <partial name="_EmptyStateCard" model="@(new EmptyStateModel("order","Browse the {0} available to order.", Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { area= typeof(OrderTriageController).AreaName(), internalOrgId = Model.InternalOrgId })))" />
+}
+@if (!Model.HasShortlists)
+{
+    <partial name="_EmptyStateCard" model="@(new EmptyStateModel("shortlist","Browse the {0} and create a shortlist.", Url.Action(nameof(SolutionsController.Index),typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })))" />
+}
+@if (!Model.HasCompetitions)
+{
+    <partial name="_EmptyStateCard" model="@(new EmptyStateModel("competition","Competitions allow you to compare available {0}.", Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart),typeof(CompetitionsDashboardController).ControllerName(), new { area= typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId })))" />
+}
