@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList;
 using Xunit;
@@ -16,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
     public static class TaskListModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void WithNullOrder_ThrowsException(
             string internalOrgId,
             CallOffId callOffId)
@@ -27,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void WithValidArguments_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -62,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void WithValidArguments_Amendment_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -82,6 +83,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             additionalService.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             associatedService.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService;
 
+            amendment.OrderItems = new List<OrderItem>()
+            {
+                new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.Solution, Id = solution.CatalogueItemId }, CatalogueItemId = solution.CatalogueItemId },
+                new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId },
+                new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AssociatedService, Id = associatedService.CatalogueItemId }, CatalogueItemId = associatedService.CatalogueItemId },
+            };
+
             var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(new[] { order, amendment }));
 
             model.InternalOrgId.Should().BeEquivalentTo(internalOrgId);
@@ -100,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void WithValidArguments_AssociatedServicesOnly_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -138,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void WithValidArguments_IncompleteOrder_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -169,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void Amendment_SetsTitleAndAdviceCorrectly(
             TaskListModel model)
         {
