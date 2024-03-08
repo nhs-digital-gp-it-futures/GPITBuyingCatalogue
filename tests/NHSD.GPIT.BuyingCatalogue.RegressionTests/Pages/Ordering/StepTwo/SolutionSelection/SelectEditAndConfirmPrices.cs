@@ -64,6 +64,31 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
+        public void SelectCatalogueSolutionPrice(string solutionid)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(solutionid));
+
+            if (CommonActions.GetNumberOfRadioButtonsDisplayed() > 0)
+            {
+                CommonActions.PageLoadedCorrectGetIndex(
+                   typeof(PricesController),
+                   nameof(PricesController.SelectPrice)).Should().BeTrue();
+
+                CommonActions.ClickFirstRadio();
+                CommonActions.ClickSave();
+            }
+
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(PricesController),
+               nameof(PricesController.ConfirmPrice)).Should().BeTrue();
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+             typeof(TaskListController),
+             nameof(TaskListController.TaskList)).Should().BeTrue();
+        }
+
         private void SelectPrice()
         {
             if (CommonActions.GetNumberOfRadioButtonsDisplayed() > 0)

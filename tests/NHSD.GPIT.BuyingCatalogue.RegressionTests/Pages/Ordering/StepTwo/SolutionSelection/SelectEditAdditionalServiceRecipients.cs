@@ -39,8 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public void EditAdditionalServiceRecipient(string additionalServiceName)
         {
-            //CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemServiceRecipientLink(GetAdditionalServiceID(additionalServiceName)));
-
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
               nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
