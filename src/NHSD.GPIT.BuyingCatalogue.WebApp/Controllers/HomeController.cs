@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
@@ -19,7 +21,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         }
 
         public IActionResult Index()
-            => View();
+        {
+            return User.Identity?.IsAuthenticated ?? false ? RedirectToAction(nameof(AccountDashboard)) : View();
+        }
+
+        [Authorize]
+        public IActionResult AccountDashboard()
+        {
+            var model = new AccountDashboardModel()
+            {
+                OrganisationName = User.GetPrimaryOrganisationName(),
+                InternalOrgId = User.GetPrimaryOrganisationInternalIdentifier(),
+            };
+            return View(model);
+        }
 
         [HttpGet("privacy-policy")]
         public IActionResult PrivacyPolicy()

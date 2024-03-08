@@ -35,6 +35,10 @@
     }
 }
 
+.nhs-grid-row__no-padding {
+    padding-left: 0px;
+}
+
 .nhs-card__min-height {
     min-height: 320px;
 
@@ -67,4 +71,8 @@
 .app-homepage {
     padding-top: 0px;
     padding-bottom: 0px;
+}
+
+.nhsuk-card__center {
+    text-align: center !important;
 }
