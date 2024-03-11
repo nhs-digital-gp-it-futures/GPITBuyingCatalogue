@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Claims;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
@@ -17,8 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard
         {
             organisation.ValidateNotNull(nameof(organisation));
 
-            BackLinkText = "Go back to homepage";
-            BackLink = "/";
             Title = organisation.Name;
             OrganisationName = organisation.Name;
             InternalOrgId = organisation.InternalIdentifier;
@@ -36,16 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard
 
         public PageOptions Options { get; set; }
 
-        public string LinkName(Order order)
-        {
-            return order.OrderStatus switch
-            {
-                OrderStatus.Terminated => "View",
-                OrderStatus.Completed => "View",
-                OrderStatus.InProgress => "Edit",
-                _ => string.Empty,
-            };
-        }
+        public int OrdersCount { get; set; }
 
         public NhsTagsTagHelper.TagColour TagColour(OrderStatus orderStatus) => orderStatus switch
         {
