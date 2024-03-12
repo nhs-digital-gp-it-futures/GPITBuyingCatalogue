@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilitiesMappingModels;
@@ -12,18 +13,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
 [Authorize(Policy = "AdminOnly")]
 [Area("Admin")]
-[Route("admin/capabilities-mapping/{id}")]
+[Route("admin/capabilities-mapping/{id:guid}")]
 public class Gen2MappingController : Controller
 {
     private const string InvalidCsvFormat = "File not formatted correctly";
 
     private readonly IGen2UploadService gen2UploadService;
+    private readonly IGen2MappingService gen2MappingService;
 
     public Gen2MappingController(
-        IGen2UploadService gen2UploadService)
+        IGen2UploadService gen2UploadService,
+        IGen2MappingService gen2MappingService)
     {
         this.gen2UploadService = gen2UploadService
             ?? throw new ArgumentNullException(nameof(gen2UploadService));
+        this.gen2MappingService = gen2MappingService
+            ?? throw new ArgumentNullException(nameof(gen2MappingService));
     }
 
     [HttpGet("capabilities")]
@@ -78,7 +83,7 @@ public class Gen2MappingController : Controller
             model,
             gen2UploadService.GetEpicsFromCsv,
             gen2UploadService.AddToCache,
-            nameof(Epics),
+            nameof(Mapping),
             nameof(FailedEpics));
 
     [HttpGet("failed-epics")]
@@ -98,6 +103,26 @@ public class Gen2MappingController : Controller
             id,
             gen2UploadService.GetCachedEpics,
             gen2UploadService.WriteToCsv);
+    }
+
+    [HttpGet("mapping")]
+    public async Task<IActionResult> Mapping(Guid id)
+    {
+        var cachedCapabilitiesTask = gen2UploadService.GetCachedCapabilities(id);
+        var cachedEpicsTask = gen2UploadService.GetCachedEpics(id);
+
+        await Task.WhenAll(cachedCapabilitiesTask, cachedEpicsTask);
+
+        var cachedCapabilities = await cachedCapabilitiesTask;
+        var cachedEpics = await cachedEpicsTask;
+
+        if (cachedCapabilities is null || cachedEpics is null)
+            return RedirectToAction(nameof(HomeController.Index), typeof(HomeController).ControllerName());
+
+        var mappingModel = new Gen2MappingModel(cachedCapabilities.Imported, cachedEpics.Imported);
+        var isMappingSuccessful = await gen2MappingService.MapToSolutions(mappingModel);
+
+        return View("Confirmation", new ConfirmationModel(isMappingSuccessful));
     }
 
     private async Task<IActionResult> HandleFileUpload<T>(
