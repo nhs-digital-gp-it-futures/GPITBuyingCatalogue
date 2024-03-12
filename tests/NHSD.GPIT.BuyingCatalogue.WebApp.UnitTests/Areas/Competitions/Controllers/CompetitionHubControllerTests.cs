@@ -565,7 +565,7 @@ public static class CompetitionHubControllerTests
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionHubController controller)
     {
-        competitionPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
+        competitionPrice.CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient;
 
         competitionSolution.Solution = solution;
         competitionSolution.SolutionId = solution.CatalogueItemId;
@@ -605,7 +605,7 @@ public static class CompetitionHubControllerTests
         [Frozen] Mock<ICompetitionsService> competitionsService,
         CompetitionHubController controller)
     {
-        competitionPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
+        competitionPrice.CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient;
 
         solutionService.Service = service.CatalogueItem;
         solutionService.ServiceId = service.CatalogueItemId;

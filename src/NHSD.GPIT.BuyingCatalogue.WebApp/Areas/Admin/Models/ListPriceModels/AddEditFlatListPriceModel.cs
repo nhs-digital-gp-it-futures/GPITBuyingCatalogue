@@ -79,8 +79,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
         public ProvisioningType? SelectedProvisioningType { get; set; }
 
-        public TimeUnit? PerServiceRecipientBillingPeriod { get; set; }
-
         public TimeUnit? DeclarativeBillingPeriod { get; set; }
 
         public TimeUnit? OnDemandBillingPeriod { get; set; }
@@ -140,7 +138,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             => SelectedProvisioningType!.Value switch
             {
                 ProvisioningType.Patient => TimeUnit.PerYear,
-                ProvisioningType.PerServiceRecipient when PerServiceRecipientBillingPeriod.HasValue => PerServiceRecipientBillingPeriod.Value,
                 ProvisioningType.Declarative when CatalogueItemType == CatalogueItemType.AssociatedService => null,
                 ProvisioningType.Declarative when DeclarativeBillingPeriod.HasValue => DeclarativeBillingPeriod.Value,
                 ProvisioningType.OnDemand when OnDemandBillingPeriod.HasValue => OnDemandBillingPeriod.Value,
@@ -165,10 +162,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 
                 case ProvisioningType.Declarative:
                     DeclarativeBillingPeriod = cataloguePrice.TimeUnit;
-                    break;
-
-                case ProvisioningType.PerServiceRecipient:
-                    PerServiceRecipientBillingPeriod = cataloguePrice.TimeUnit;
                     break;
             }
         }
