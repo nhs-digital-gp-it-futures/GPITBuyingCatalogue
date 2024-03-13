@@ -1,6 +1,6 @@
 ﻿@using EnumsNET
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard.OrganisationModel;
 @{
     ViewBag.Title = "Orders dashboard";
@@ -102,7 +102,7 @@
                         </p>
                 } else
                 {
-                    <p id="no-orders">There are currently no orders for this organisation.</p>
+                    <partial name="~/Views/Home/_EmptyStateCard.cshtml" model="@(new EmptyStateModel("order","Browse the {0} available to order.", Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { area= typeof(OrderTriageController).AreaName(), internalOrgId = Model.InternalOrgId })))" />
                 }
             }
         </div>
