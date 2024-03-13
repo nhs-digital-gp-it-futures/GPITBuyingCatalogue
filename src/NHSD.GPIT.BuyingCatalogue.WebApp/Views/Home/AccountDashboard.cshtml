@@ -27,15 +27,32 @@
         </div>
     </div>
 
-@if (!Model.HasOrders)
-{
-    <partial name="_EmptyStateCard" model="@(new EmptyStateModel("order","Browse the {0} available to order.", Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { area= typeof(OrderTriageController).AreaName(), internalOrgId = Model.InternalOrgId })))" />
-}
-@if (!Model.HasShortlists)
-{
-    <partial name="_EmptyStateCard" model="@(new EmptyStateModel("shortlist","Browse the {0} and create a shortlist.", Url.Action(nameof(SolutionsController.Index),typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })))" />
-}
-@if (!Model.HasCompetitions)
-{
-    <partial name="_EmptyStateCard" model="@(new EmptyStateModel("competition","Competitions allow you to compare available {0}.", Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart),typeof(CompetitionsDashboardController).ControllerName(), new { area= typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId })))" />
-}
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <h3 class="nhsuk-heading-m">Most recent orders</h3>
+        @if (!Model.HasOrders)
+        {
+            <partial name="_EmptyStateCard" model="@(new EmptyStateModel("order","Browse the {0} available to order.", Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { area= typeof(OrderTriageController).AreaName(), internalOrgId = Model.InternalOrgId })))" />
+        }
+    </div>
+</div>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <h3 class="nhsuk-heading-m">Most recent shortlists</h3>
+        @if (!Model.HasShortlists)
+        {
+            <partial name="_EmptyStateCard" model="@(new EmptyStateModel("shortlist","Browse the {0} and create a shortlist.", Url.Action(nameof(SolutionsController.Index),typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })))" />
+        }
+    </div>
+</div>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <h3 class="nhsuk-heading-m">Most recent competitions</h3>
+        @if (!Model.HasCompetitions)
+        {
+            <partial name="_EmptyStateCard" model="@(new EmptyStateModel("competition","Competitions allow you to compare available {0}.", Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart),typeof(CompetitionsDashboardController).ControllerName(), new { area= typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId })))" />
+        }
+    </div>
+</div>
