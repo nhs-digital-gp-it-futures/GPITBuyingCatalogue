@@ -29,7 +29,7 @@ public class Gen2MappingService : IGen2MappingService
         ArgumentNullException.ThrowIfNull(gen2Mapping);
 
         if (gen2Mapping.Solutions.Count == 0)
-            throw new ArgumentNullException(nameof(gen2Mapping), string.Empty);
+            throw new ArgumentException(@"Mapping input must not be null or empty", nameof(gen2Mapping));
 
         var success = false;
 
