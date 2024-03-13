@@ -56,7 +56,7 @@ public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientIm
         return records;
     }
 
-    public async Task Store(ServiceRecipientCacheKey cacheKey, IList<ServiceRecipientImportModel> importedServiceRecipients)
+    public async Task Store(DistributedCacheKey cacheKey, IList<ServiceRecipientImportModel> importedServiceRecipients)
     {
         var serializedRecipients = JsonSerializer.Serialize(importedServiceRecipients);
 
@@ -66,7 +66,7 @@ public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientIm
             new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) });
     }
 
-    public async Task Clear(ServiceRecipientCacheKey cacheKey)
+    public async Task Clear(DistributedCacheKey cacheKey)
     {
         var key = cacheKey.ToString();
         var cachedValue = await distributedCache.GetStringAsync(key);
@@ -77,12 +77,10 @@ public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientIm
         await distributedCache.RemoveAsync(key);
     }
 
-    public async Task<IList<ServiceRecipientImportModel>> GetCached(ServiceRecipientCacheKey cacheKey)
+    public async Task<IList<ServiceRecipientImportModel>> GetCached(DistributedCacheKey cacheKey)
     {
         var value = await distributedCache.GetStringAsync(cacheKey.ToString());
-        if (string.IsNullOrWhiteSpace(value))
-            return null;
 
-        return JsonSerializer.Deserialize<List<ServiceRecipientImportModel>>(value);
+        return string.IsNullOrWhiteSpace(value) ? null : JsonSerializer.Deserialize<List<ServiceRecipientImportModel>>(value);
     }
 }

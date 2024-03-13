@@ -20,9 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                     return new NoSpecimen();
 
                 var supplierId = (context.Create<int>() % CatalogueItemId.MaxSupplierId) + 1;
-                var itemId = (string)context.Resolve(new ConstrainedStringRequest(1, CatalogueItemId.MaxItemIdLength));
+                var itemId = context.Create<int>();
 
-                return new CatalogueItemId(supplierId, itemId);
+                return new CatalogueItemId(supplierId, $"{itemId % 1000:D3}");
             }
         }
     }

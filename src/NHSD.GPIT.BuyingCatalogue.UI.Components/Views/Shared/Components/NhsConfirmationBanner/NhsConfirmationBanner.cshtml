@@ -1,0 +1,13 @@
+@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsConfirmationBanner.NhsConfirmationBannerModel
+
+<div class="govuk-panel govuk-panel--confirmation @Model.Colour.ToColourStyle()">
+    <h1 class="govuk-panel__title">
+        @Model.Title
+    </h1>
+    @if (!string.IsNullOrWhiteSpace(Model.Body))
+    {
+        <div class="govuk-panel__body">
+            @Model.Body
+        </div>
+    }
+</div>

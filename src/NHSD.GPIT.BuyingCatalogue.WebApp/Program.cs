@@ -20,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .Enrich.FromLogContext()
 #if DEBUG
                 .WriteTo.Debug()
+                .WriteTo.Seq("http://localhost:5341")
 #endif
                 .WriteTo.ApplicationInsights(TelemetryConfiguration.CreateDefault(), TelemetryConverter.Traces)
                 .WriteTo.Console()

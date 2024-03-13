@@ -24,15 +24,15 @@ public class StubbedServiceRecipientImportService : IServiceRecipientImportServi
     public Task<IList<ServiceRecipientImportModel>> ReadFromStream(Stream stream)
         => Task.FromResult(importedServiceRecipients);
 
-    public Task<IList<ServiceRecipientImportModel>> GetCached(ServiceRecipientCacheKey cacheKey)
+    public Task<IList<ServiceRecipientImportModel>> GetCached(DistributedCacheKey cacheKey)
         => Task.FromResult(importedServiceRecipients);
 
-    public Task Store(ServiceRecipientCacheKey cacheKey, IList<ServiceRecipientImportModel> importedServiceRecipients)
+    public Task Store(DistributedCacheKey cacheKey, IList<ServiceRecipientImportModel> importedServiceRecipients)
     {
         return Task.CompletedTask;
     }
 
-    public Task Clear(ServiceRecipientCacheKey cacheKey)
+    public Task Clear(DistributedCacheKey cacheKey)
     {
         return Task.CompletedTask;
     }

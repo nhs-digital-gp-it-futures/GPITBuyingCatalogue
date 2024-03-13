@@ -49,3 +49,18 @@
 .nhsuk-button--secondary:focus .nhsuk-icon {
     fill: #212b32;
 }
+
+.govuk-panel--confirmation--blue {
+  background-color: #005eb8;
+  color: #fff;
+}
+
+.govuk-panel--confirmation--grey {
+  background-color: #4c6272;
+  color: #fff;
+}
+
+.govuk-panel--confirmation {
+  padding-bottom: 45px;
+  padding-top: 45px;
+}
