@@ -104,7 +104,7 @@ public class ImportServiceRecipientsController : Controller
         string internalOrgId,
         CallOffId callOffId)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId);
+        var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, callOffId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         if (cachedRecipients is null)
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
@@ -138,7 +138,7 @@ public class ImportServiceRecipientsController : Controller
         string internalOrgId,
         CallOffId callOffId)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId);
+        var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, callOffId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         if (cachedRecipients is null)
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
@@ -179,7 +179,7 @@ public class ImportServiceRecipientsController : Controller
         CatalogueItemId catalogueItemId,
         ValidateNamesModel model)
     {
-        var cacheKey = new ServiceRecipientCacheKey(User.UserId(), internalOrgId, callOffId);
+        var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, callOffId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         var organisationServiceRecipients =
             await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);

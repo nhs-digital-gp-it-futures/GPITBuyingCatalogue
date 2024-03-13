@@ -54,7 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
             AdditionalServicesDetailsModel model,
             AdditionalServicesService service)
         {
-            solution.Id = solution.Id = new CatalogueItemId(solution.Id.SupplierId, solution.Id.ItemId[4..]);
             context.CatalogueItems.Add(solution);
             await context.SaveChangesAsync();
 

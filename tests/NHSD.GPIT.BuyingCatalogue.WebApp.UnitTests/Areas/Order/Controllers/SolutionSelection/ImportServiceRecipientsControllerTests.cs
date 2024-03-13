@@ -127,7 +127,7 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] Mock<IServiceRecipientImportService> importService,
         ImportServiceRecipientsController controller)
     {
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync((IList<ServiceRecipientImportModel>)null);
 
         var result = (await controller.ValidateOds(internalOrgId, callOffId))
@@ -165,7 +165,7 @@ public static class ImportServiceRecipientsControllerTests
             importedServiceRecipients.Take(1).ToList())
         { Caption = callOffId.ToString() };
 
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
@@ -201,7 +201,7 @@ public static class ImportServiceRecipientsControllerTests
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
 
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
@@ -232,7 +232,7 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] Mock<IServiceRecipientImportService> importService,
         ImportServiceRecipientsController controller)
     {
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync((IList<ServiceRecipientImportModel>)null);
 
         var result = (await controller.ValidateNames(internalOrgId, callOffId))
@@ -278,7 +278,7 @@ public static class ImportServiceRecipientsControllerTests
             Caption = callOffId.ToString(),
         };
 
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync(importedServiceRecipients);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
@@ -313,7 +313,7 @@ public static class ImportServiceRecipientsControllerTests
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
 
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync(recipientIds);
 
         odsService.Setup(s => s.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
@@ -368,7 +368,7 @@ public static class ImportServiceRecipientsControllerTests
 
         var model = new ValidateNamesModel(mismatchedNames);
 
-        importService.Setup(s => s.GetCached(It.IsAny<ServiceRecipientCacheKey>()))
+        importService.Setup(s => s.GetCached(It.IsAny<DistributedCacheKey>()))
             .ReturnsAsync(recipientIds);
 
         catalogueItemService.Setup(s => s.GetCatalogueItemName(catalogueItemId))
