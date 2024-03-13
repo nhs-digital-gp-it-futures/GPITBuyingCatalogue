@@ -36,49 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             }
         }
 
-        public void AddAssociatedService(IEnumerable<string>? associatedServices, string preference = "No")
-        {
-            CommonActions.ClickRadioButtonWithText(preference);
-
-            CommonActions.ClickSave();
-
-            if (preference == "Yes")
-            {
-                CommonActions.PageLoadedCorrectGetIndex(
-                 typeof(AssociatedServicesController),
-                 nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
-
-                if (associatedServices != default && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
-                {
-                    foreach (var associatedService in associatedServices)
-                    {
-                        CommonActions.ClickCheckboxByLabel(associatedService);
-                    }
-                }
-
-                CommonActions.ClickSave();
-            }
-        }
-
-        public void AddAssociatedService(IEnumerable<string>? associatedServices)
-        {
-            CommonActions.ClickLinkElement(E2ETests.Framework.Objects.Ordering.AssociatedServicesObjects.AddAssociateServiceLink);
-
-            CommonActions.PageLoadedCorrectGetIndex(
-                 typeof(AssociatedServicesController),
-                 nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
-
-            if (associatedServices != default && associatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
-            {
-                    foreach (var associatedService in associatedServices)
-                    {
-                        CommonActions.ClickCheckboxByLabel(associatedService);
-                    }
-            }
-
-            CommonActions.ClickSave();
-        }
-
         public void EditAssociatedService(string solutionName, IEnumerable<string> newAssociatedServices, bool hasTheOrderAssociatedService, IEnumerable<string>? oldAssociatedServices)
         {
             if (SolutionHasAssociatedService(solutionName))
