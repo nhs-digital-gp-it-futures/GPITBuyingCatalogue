@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
 {
@@ -21,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
 
         public string OrdersCount => HasOrders ? Orders.Count.ToString() : Zero;
 
-        public IList<CompetitionDashboardItem> Competitions { get; set; }
+        public IList<Competition> Competitions { get; set; }
 
         public bool HasCompetitions => Competitions is { Count: > 0 };
 
