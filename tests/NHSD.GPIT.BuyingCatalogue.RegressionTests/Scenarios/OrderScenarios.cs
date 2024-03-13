@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         private const string NewSolutionName = "Emis Web GP";
         private const string NewAdditionalServiceName = "EMIS Mobile";
         private const string NewAssociatedServiceName = "Automated Arrivals – Specialist Cabling";
-        private const string AssociatedServiceNameForWebGP = "Engineering";
+        private const string AssociatedServiceNameForWebGP = "Installation";
 
         private static readonly Dictionary<string, string> Parameters =
             new()
@@ -1102,7 +1102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Associated Service", "Order")]
+        [Trait("Edit Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedService()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService";
@@ -1584,7 +1584,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Associated Service Only Journey", "Split Order")]
+        [Trait("Order Journey", "Order")]
         public void OrderWithSolutionUnder40K_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithSolutionUnder40K_MultipleServiceRecipients";
@@ -1688,7 +1688,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Associated Service Only Journey", "Split Order")]
+        [Trait("Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly_ImportServiceRecipients()
         {
             string orderDescription = "OrderAssociatedServiceOnly_ImportServiceRecipients";
@@ -1793,7 +1793,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Associated Service Only Journey", "Split Order")]
+        [Trait("Associated Service Only Journey", "Order")]
         public void OrderWithAssociatedServiceOnly_MultipleServiceRecipients()
         {
             string orderDescription = "OrderWithAssociatedServiceOnly_MultipleServiceRecipients";
@@ -1817,7 +1817,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Associated Service Only Journey", "Split Order")]
+        [Trait("Edit Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices";
@@ -2166,7 +2166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Associated Service", "Order")]
+        [Trait("Edit Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices()
         {
             string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices";

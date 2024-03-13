@@ -85,32 +85,33 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             {
                 if (hasTheOrderAssociatedService)
                 {
-                    CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeAssociatedServiceLink);
-
-                    CommonActions.PageLoadedCorrectGetIndex(
-                     typeof(AssociatedServicesController),
-                     nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
-
                     if (oldAssociatedServices != default && oldAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
                     {
                         foreach (var oldAssociatedService in oldAssociatedServices)
                         {
-                            CommonActions.ClickCheckboxByLabel(oldAssociatedService);
+                            CommonActions.ClickLinkElement(ReviewSolutionsObjects.RemoveSolutionService(oldAssociatedService));
+                            CommonActions.PageLoadedCorrectGetIndex(
+                            typeof(CatalogueSolutionsController),
+                            nameof(CatalogueSolutionsController.RemoveService)).Should().BeTrue();
+                            var removeService = $"Yes, I confirm I want to remove {oldAssociatedService}";
+
+                            CommonActions.ClickRadioButtonWithText(removeService);
+                            CommonActions.ClickSave();
                         }
                     }
                 }
-                else
+
+                if (newAssociatedServices != default && newAssociatedServices.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
                     CommonActions.ClickLinkElement(ReviewSolutionsObjects.AddAssociatedServiceLink);
 
                     CommonActions.PageLoadedCorrectGetIndex(
-                     typeof(AssociatedServicesController),
-                     nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
-                }
-
-                foreach (var associatedService in newAssociatedServices)
-                {
-                    CommonActions.ClickCheckboxByLabel(associatedService);
+                      typeof(AssociatedServicesController),
+                      nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
+                    foreach (var newAssociatedService in newAssociatedServices)
+                    {
+                        CommonActions.ClickCheckboxByLabel(newAssociatedService);
+                    }
                 }
 
                 CommonActions.ClickSave();

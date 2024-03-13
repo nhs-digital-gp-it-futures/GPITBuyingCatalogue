@@ -1,8 +1,11 @@
 ﻿using FluentAssertions;
+using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Quantity;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.SolutionSelection;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
@@ -32,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 
         public void EditQuantity(string catalogueItemName)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(GetCatalogueItemID(catalogueItemName)));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantityLink(GetCatalogueItemID(catalogueItemName)));
 
             AddQuantity();
 
@@ -47,13 +50,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
              nameof(OrderController.Order)).Should().BeTrue();
         }
 
-        public void AmendEditQuantity(string catalogueItemName)
+        public void AmendEditQuantity(string solutionid)
         {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantiyLink(GetCatalogueItemID(catalogueItemName)));
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantityLink(solutionid));
 
             AddQuantity();
 
             CommonActions.ClickContinue();
+        }
+
+        public void AddSolutionQuantity(string solutionid)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemQuantityLink(solutionid));
+            AddQuantity();
         }
 
         private void AddPracticeListSize()

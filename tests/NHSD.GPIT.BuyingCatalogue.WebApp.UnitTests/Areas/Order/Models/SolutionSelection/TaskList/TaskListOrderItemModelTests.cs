@@ -5,6 +5,7 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList;
 using Xunit;
@@ -14,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
     public class TaskListOrderItemModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void WithValidArguments_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -40,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void PriceStatus_NoPriceEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -54,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void PriceStatus_PriceEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -66,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void QuantityStatus_NoPriceEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -80,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void QuantityStatus_NoQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -96,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void QuantityStatus_PerServiceRecipientProvisioningType_OrderItemQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -114,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void QuantityStatus_PerServiceRecipientProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -132,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void QuantityStatus_Amendment_PerServiceRecipientProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -154,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void QuantityStatus_PerOrderItemProvisioningType_OrderItemQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -174,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void QuantityStatus_Amendment_PerOrderItemProvisioningType_OrderItemQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -199,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void QuantityStatus_PerOrderItemProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -219,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonAutoData(MockingFramework.NSubstitute)]
         public static void QuantityStatus_OrderItemRecipientQuantitiesPartiallyEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -238,85 +239,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void DeliveryDatesStatus_NoOrderItemRecipients_ExpectedResult(
+        [CommonAutoData(MockingFramework.NSubstitute)]
+        public static void QuantityStatus_AssociatedServiceAmendment_ExpectedResult(
             string internalOrgId,
-            CallOffId callOffId,
             OrderItem orderItem,
             OrderRecipient[] recipients)
         {
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
+            var callOffId = new CallOffId(1, 2);
 
-            model.DeliveryDatesStatus.Should().Be(TaskProgress.CannotStart);
+            orderItem.Quantity = null;
+
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem) { IsAssociatedService = true };
+
+            model.QuantityStatus.Should().Be(TaskProgress.Completed);
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void DeliveryDatesStatus_NoDeliveryDatesEntered_ExpectedResult(
+        [CommonInlineAutoData(false, TaskProgress.Completed)]
+        [CommonInlineAutoData(true, TaskProgress.Amended)]
+        public static void QuantityStatus_NonPerServiceRecipientAmendment_ExpectedResult(
+            bool quantityChanged,
+            TaskProgress taskProgress,
             string internalOrgId,
-            CallOffId callOffId,
             OrderItem orderItem,
             OrderRecipient[] recipients)
         {
-            recipients.ForEach(r => r.OrderItemRecipients.Clear());
-            recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
+            var callOffId = new CallOffId(1, 2);
 
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
+            orderItem.Quantity = null;
 
-            model.DeliveryDatesStatus.Should().Be(TaskProgress.NotStarted);
-        }
+            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem) { IsPerServiceRecipient = false, FromPreviousRevision = true, QuantityChanged = quantityChanged };
 
-        [Theory]
-        [CommonAutoData]
-        public static void DeliveryDatesStatus_SomeDeliveryDatesEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem,
-            OrderRecipient[] recipients)
-        {
-            recipients.ForEach(r => r.OrderItemRecipients.Clear());
-            recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
-            recipients.First().SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today);
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
-
-            model.DeliveryDatesStatus.Should().Be(TaskProgress.InProgress);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void DeliveryDatesStatus_AllDeliveryDatesEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem,
-            OrderRecipient[] recipients)
-        {
-            recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
-            recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today));
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
-
-            model.DeliveryDatesStatus.Should().Be(TaskProgress.Completed);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void DeliveryDatesStatus_Amendment_AllDeliveryDatesEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem,
-            OrderRecipient[] recipients)
-        {
-            recipients.ForEach(r => r.SetQuantityForItem(orderItem.CatalogueItemId, 1));
-            recipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today));
-
-            var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem)
-            {
-                FromPreviousRevision = true,
-                HasNewRecipients = true,
-            };
-
-            model.DeliveryDatesStatus.Should().Be(TaskProgress.Amended);
+            model.QuantityStatus.Should().Be(taskProgress);
         }
     }
 }

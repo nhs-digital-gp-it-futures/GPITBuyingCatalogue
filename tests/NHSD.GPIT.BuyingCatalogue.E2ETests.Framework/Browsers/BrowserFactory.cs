@@ -22,8 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers
 
         private static IWebDriver GetLocalChromeDriver()
         {
-            return new ChromeDriver(
-                Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory),
+            return new ChromeDriver(                
+                GetChromeDriverService(),
                 GetChromeOptions(!Debugger.IsAttached));
         }
 
@@ -57,8 +57,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers
             }
         }
 
-        private static ChromeOptions GetChromeOptions(bool headless)
+        private static ChromeDriverService GetChromeDriverService()
         {
+            return ChromeDriverService.CreateDefaultService();
+        }
+
+        private static ChromeOptions GetChromeOptions(bool headless)
+        {            
             var options = new ChromeOptions();
 
             if (headless)

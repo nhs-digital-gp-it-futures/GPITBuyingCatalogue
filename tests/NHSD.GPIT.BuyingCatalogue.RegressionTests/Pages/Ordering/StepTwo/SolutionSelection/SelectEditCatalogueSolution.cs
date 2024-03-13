@@ -21,17 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         public void SelectSolution(string solutionName, IEnumerable<string>? additionalServices)
         {
             CommonActions.ClickRadioButtonWithText(solutionName);
-            if (SolutionHasAdditionalService(solutionName) && additionalServices != default)
-            {
-                foreach (var additionalService in additionalServices)
-                {
-                    if (!string.IsNullOrWhiteSpace(additionalService))
-                    {
-                        CommonActions.ClickCheckboxByLabel(additionalService);
-                    }
-                }
-            }
-
             CommonActions.ClickSave();
         }
 
@@ -46,10 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickRadioButtonWithText(newSolutionName);
 
             CommonActions.ClickSave();
-
-            var hasAdditionalService = SolutionHasAdditionalService(newSolutionName);
-
-            ConfirmSolutionChanges(hasAdditionalService, newAdditionalServiceNames);
+            ConfirmSolutionChanges();
         }
 
         public void EditAdditionalService(string solutionName, IEnumerable<string>? oldAdditionalServices, IEnumerable<string>? newAdditionalServices, bool hasTheOrderAdditionalService)
@@ -58,31 +44,29 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             {
                 if (hasTheOrderAdditionalService)
                 {
-                    CommonActions.ClickLinkElement(ReviewSolutionsObjects.ChangeAdditionalServiceLink);
-
-                    CommonActions.PageLoadedCorrectGetIndex(
-                      typeof(AdditionalServicesController),
-                      nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
-
                     if (oldAdditionalServices != default && oldAdditionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
                     {
                         foreach (var oldAdditionalService in oldAdditionalServices)
                         {
-                            CommonActions.ClickCheckboxByLabel(oldAdditionalService);
+                            CommonActions.ClickLinkElement(ReviewSolutionsObjects.RemoveSolutionService(oldAdditionalService));
+                            CommonActions.PageLoadedCorrectGetIndex(
+                            typeof(CatalogueSolutionsController),
+                            nameof(CatalogueSolutionsController.RemoveService)).Should().BeTrue();
+                            var removeService = $"Yes, I confirm I want to remove {oldAdditionalService}";
+
+                            CommonActions.ClickRadioButtonWithText(removeService);
+                            CommonActions.ClickSave();
                         }
                     }
                 }
-                else
+
+                if (newAdditionalServices != default && newAdditionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
                     CommonActions.ClickLinkElement(ReviewSolutionsObjects.AddAdditionalServiceLink);
 
                     CommonActions.PageLoadedCorrectGetIndex(
                       typeof(AdditionalServicesController),
                       nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
-                }
-
-                if (newAdditionalServices != default && newAdditionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
-                {
                     foreach (var newAdditionalService in newAdditionalServices)
                     {
                         CommonActions.ClickCheckboxByLabel(newAdditionalService);
@@ -112,7 +96,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickSave();
         }
 
-        private void ConfirmSolutionChanges(bool hasAdditionalService, IEnumerable<string>? newAdditionalServiceNames)
+        public void AddAssociatedServices(string associatedServices)
+        {
+            CommonActions.ClickLinkElement(ReviewSolutionsObjects.AddAssociatedServiceLink);
+            CommonActions.PageLoadedCorrectGetIndex(
+                 typeof(AssociatedServicesController),
+                 nameof(AssociatedServicesController.SelectAssociatedServices)).Should().BeTrue();
+
+            CommonActions.ClickCheckboxByLabel(associatedServices);
+            CommonActions.ClickSave();
+        }
+
+        private void ConfirmSolutionChanges()
         {
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(CatalogueSolutionsController),
@@ -121,23 +116,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickFirstRadio();
 
             CommonActions.ClickSave();
-
-            if (hasAdditionalService)
-            {
-                CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AdditionalServicesController),
-                    nameof(AdditionalServicesController.SelectAdditionalServices)).Should().BeTrue();
-
-                if (newAdditionalServiceNames != default && newAdditionalServiceNames.All(a => !string.IsNullOrWhiteSpace(a)))
-                {
-                    foreach (var additionalService in newAdditionalServiceNames)
-                    {
-                        CommonActions.ClickCheckboxByLabel(additionalService);
-                    }
-                }
-
-                CommonActions.ClickSave();
-            }
         }
 
         private bool SolutionHasAdditionalService(string solutionName)
