@@ -17,12 +17,12 @@
     <div class="nhsuk-grid-column-two-thirds">
         @if (Model.CatalogueSolution != null || Model.OrderType.AssociatedServicesOnly)
         {
-            <h2>Catalogue Solution</h2>
+            <h2 class="nhsuk-u-margin-bottom-6">Catalogue Solution</h2>
             <nhs-card-v2>
                 <nhs-card-content>
                 @if (Model.OrderType.AssociatedServicesOnly)
                 {
-                    <h3>@Model.SolutionName</h3>
+                    <h3 class="nhsuk-card__heading heading nhsuk-u-margin-bottom-5">@Model.SolutionName</h3>
                 }
                 else
                 {
@@ -69,18 +69,6 @@
                             {
                                 <partial name="TaskListOrderItem"
                                 model="@Model.OrderItemModel(service.CatalogueItemId)" />
-                                @if (!(Model.IsAmendment && (Model.Previous?.Exists(service.CatalogueItemId) ?? false)))
-                                {
-                                    <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
-                                                                        typeof(CatalogueSolutionsController).ControllerName(),
-                                                                        new { Model.InternalOrgId, Model.CallOffId, catalogueItemId = service.CatalogueItemId })"
-                                    text="Remove @service.CatalogueItem.Name" />
-                                    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
-                                }
-                                else
-                                {
-                                    <br />
-                                }
                             }
                         }
                         else
@@ -139,14 +127,6 @@
                         {
                             <partial name="TaskListOrderItem"
                             model="@Model.OrderItemModel(service.CatalogueItemId)" />
-                            @if (!Model.OrderType.MergerOrSplit && !Model.IsAmendment)
-                            {
-                                <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
-                                                                        typeof(CatalogueSolutionsController).ControllerName(),
-                                                                        new { Model.InternalOrgId, Model.CallOffId, service.CatalogueItemId })"
-                                text="Remove @service.CatalogueItem.Name" />
-                                <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
-                            }
                         }
                     }
                     else
@@ -154,31 +134,31 @@
                         <p>No Associated Services have been added to this order yet.</p>
                     }
                 </nhs-card-content>
-
-                @if (!Model.OrderType.MergerOrSplit)
-                {
-                    <nhs-card-footer>
-                        @if (Model.IsAmendment)
-                        {
-                            <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>You cannot add Associated Services or edit ones included in the original order when amending an order.</p>
-                        }
-                        else if (!Model.UnselectedAssociatedServicesAvailable)
-                        {
-                            <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>All the Associated Services available for this Catalogue Solution have already been added.</p>
-                        }
-                        else
-                        {
-                            <p class="nhsuk-body-m">
-                                <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(
-                                    nameof(AssociatedServicesController.SelectAssociatedServices),
-                                    typeof(AssociatedServicesController).ControllerName(),
-                                    new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList })">
-                                    <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add an Associated Service
-                                </a>
-                            </p>
-                        }
-                    </nhs-card-footer>
-                }
+                <nhs-card-footer>
+                    @if (Model.OrderType.MergerOrSplit)
+                    {
+                            <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>Associated services cannot be changed</p>
+                    } 
+                    else if (Model.IsAmendment)
+                    {
+                        <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>You cannot add Associated Services or edit ones included in the original order when amending an order.</p>
+                    }
+                    else if (!Model.UnselectedAssociatedServicesAvailable)
+                    {
+                        <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>All the Associated Services available for this Catalogue Solution have already been added.</p>
+                    }
+                    else
+                    {
+                        <p class="nhsuk-body-m">
+                            <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(
+                                nameof(AssociatedServicesController.SelectAssociatedServices),
+                                typeof(AssociatedServicesController).ControllerName(),
+                                new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList })">
+                                <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add an Associated Service
+                            </a>
+                        </p>
+                    }
+                </nhs-card-footer>
             }
         </nhs-card-v2>
 
