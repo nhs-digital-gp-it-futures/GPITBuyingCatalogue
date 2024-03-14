@@ -40,7 +40,7 @@
             <nhs-card-v2>
                 <nhs-card-content>
                     <div class="header-with-detail">
-                        <h3 class="nhsuk-heading-m">Total number of orders (@Model.OrdersCount)</h3>
+                        <h3 class="nhsuk-heading-m">Total number of orders (@Model.OrderIds.Count())</h3>
                     </div>
                     <div class="detail">
                         <a class="nhsuk-button nhsuk-u-margin-bottom-2" href=
@@ -49,7 +49,7 @@
                                 typeof(OrderTriageController).ControllerName(),
                                 new { Model.InternalOrgId })">Create new order</a>
                     </div>
-                    <hr style="margin-top:24px" class="nhsuk-u-margin-bottom-4" />
+                    <hr class="nhsuk-u-margin-bottom-4 nhsuk-u-margin-top-4" />
                     @if (Model.Orders.Count > 0)
                     {
                         <nhs-table data-test-id="orders-table">
@@ -98,13 +98,15 @@
                         {
                             <h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
                             <p style="white-space:nowrap;">
-                                Try entering a different search term, or <a
-                                data-test-id="clear-results-link"
-                                asp-action="@nameof(DashboardController.Organisation)"
-                                asp-controller="@typeof(DashboardController).ControllerName()"
-                                asp-route-internalOrgId="@Model.InternalOrgId"
-                                >select an order from the complete list</a>.
-                                </p>
+                                Try entering a different search term, or 
+                                <a data-test-id="clear-results-link"
+                                    asp-action="@nameof(DashboardController.Organisation)"
+                                    asp-controller="@typeof(DashboardController).ControllerName()"
+                                    asp-route-internalOrgId="@Model.InternalOrgId"
+                                    >
+                                    select an order from the complete list
+                                </a>.
+                            </p>
                         } else
                         {
                             <p id="no-orders">There are currently no orders for this organisation.</p>

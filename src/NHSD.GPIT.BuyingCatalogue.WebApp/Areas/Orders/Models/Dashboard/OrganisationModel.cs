@@ -33,8 +33,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard
 
         public PageOptions Options { get; set; }
 
-        public int OrdersCount { get; set; }
-
         public NhsTagsTagHelper.TagColour TagColour(OrderStatus orderStatus) => orderStatus switch
         {
             OrderStatus.Terminated => NhsTagsTagHelper.TagColour.Red,

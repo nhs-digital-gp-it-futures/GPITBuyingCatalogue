@@ -49,14 +49,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             var options = new PageOptions(page, pageSize: 10);
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-            var ordersCount = (await orderService.GetOrdersBySearchTerm(organisation.Id, search)).Count;
             (PagedList<Order> orders, IEnumerable<CallOffId> orderIds) = await orderService.GetPagedOrders(organisation.Id, options, search);
 
             var model = new OrganisationModel(organisation, User, orders.Items)
             {
                 Options = orders.Options,
                 OrderIds = orderIds,
-                OrdersCount = ordersCount,
             };
 
             return View(model);
