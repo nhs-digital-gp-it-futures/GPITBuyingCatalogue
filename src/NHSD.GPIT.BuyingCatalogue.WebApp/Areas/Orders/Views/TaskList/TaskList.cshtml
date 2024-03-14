@@ -97,7 +97,7 @@
                 else
                 {
                     <nhs-card-content>
-                        <img src="~/images/circle-info-solid.svg" width="20px" aria-hidden="true" style="vertical-align:middle; display:inline-block; margin-right:8px" /><span style="display:inline-block; vertical-align:middle; width:90%">There are no Additional Services available for this Catalogue Solution.</span>
+                        <img src="~/images/circle-info-solid.svg" width="20px" aria-hidden="true" class="card-content-icon" /><span class="card-content-text-with-icon nhsuk-body-m">There are no Additional Services available for this Catalogue Solution.</span>
                     </nhs-card-content>
                 }
             </nhs-card-v2>
@@ -109,13 +109,13 @@
             @if (Model.IsAmendment && !Model.AssociatedServices.Any())
             {
                 <nhs-card-content>
-                    <img src="~/images/circle-info-solid.svg" style="vertical-align:middle; display:inline-block; margin-right:8px" aria-hidden="true" width="20px" /><span style="display:inline-block; vertical-align:middle; width:90%">You cannot add Associated Services when amending an order.</span>
+                    <img src="~/images/circle-info-solid.svg" class="card-content-icon" aria-hidden="true" width="20px" /><span class="card-content-text-with-icon nhsuk-body-m">You cannot add Associated Services when amending an order.</span>
                 </nhs-card-content>
             }
             else if (!Model.AssociatedServicesAvailable)
             {
                 <nhs-card-content>
-                    <img src="~/images/circle-info-solid.svg" style="vertical-align:middle; display:inline-block; margin-right:8px" aria-hidden="true" width="20px" /><span style="display:inline-block; vertical-align:middle; width:90%">There are no Associated Services available for this Catalogue Solution.</span>
+                    <img src="~/images/circle-info-solid.svg" class="card-content-icon" aria-hidden="true" width="20px" /><span class="card-content-text-with-icon nhsuk-body-m">There are no Associated Services available for this Catalogue Solution.</span>
                 </nhs-card-content>
             }
             else
