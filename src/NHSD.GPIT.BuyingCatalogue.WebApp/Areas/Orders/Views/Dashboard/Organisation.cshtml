@@ -102,7 +102,7 @@
                         </p>
                 } else
                 {
-                    <partial name="~/Views/Home/_EmptyStateCard.cshtml" model="@(new EmptyStateModel("order","Browse the {0} available to order.", Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { area= typeof(OrderTriageController).AreaName(), internalOrgId = Model.InternalOrgId }), "/images/orders-splash-with-shadow.svg"))" />
+                    <partial name="~/Views/Home/_EmptyStateCard.cshtml" model="@(new EmptyStateModel("order", Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { area= typeof(OrderTriageController).AreaName(), internalOrgId = Model.InternalOrgId }), "/images/orders-splash-with-shadow.svg"))" />
                 }
             }
         </div>

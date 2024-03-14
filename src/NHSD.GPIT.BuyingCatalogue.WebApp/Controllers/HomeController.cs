@@ -39,10 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        public IActionResult Index()
-        {
-            return User.Identity?.IsAuthenticated ?? false ? RedirectToAction(nameof(AccountDashboard)) : View();
-        }
+        public IActionResult Index() => View();
 
         [Authorize]
         public async Task<IActionResult> AccountDashboard()
