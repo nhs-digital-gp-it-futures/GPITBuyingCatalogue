@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -113,6 +114,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
                 serviceRecipient.InputQuantity.Should().Be($"{recipient.Quantity}");
                 serviceRecipient.Quantity.Should().Be(recipient.Quantity);
             }
+        }
+
+        [Theory]
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static void WithValidOrderItem_PreviousServiceRecipientsEmpty_EmptyPreviouslySelected(
+           OrderType orderType,
+           OrderItem item)
+        {
+            item.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
+
+            var model = new SelectServiceRecipientQuantityModel(orderType, null, item.CatalogueItem, item.OrderItemPrice, null, Array.Empty<ServiceRecipientDto>());
+
+            model.PreviouslySelected.Length.Should().Be(0);
         }
     }
 }
