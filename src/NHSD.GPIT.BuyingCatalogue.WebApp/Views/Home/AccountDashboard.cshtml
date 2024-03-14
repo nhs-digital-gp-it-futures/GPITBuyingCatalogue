@@ -5,14 +5,11 @@
 @model AccountDashboardModel
 @{
     Layout = "~/Views/Shared/Layouts/_BetaBannerLayout.cshtml";
-    ViewBag.Title = "Buying Catalogue";
-
-    // Required for Adobe Analytics (see _HeadIncludes partial for more info)
-    ViewBag.PageName = "home";
+    ViewBag.Title = "Your organisation's dashboard";
 }
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-full">
-            <nhs-page-title title="Your organisation's dashboard" caption="@Model.OrganisationName"/>
+            <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName" />
         </div>
     </div>
 
@@ -32,7 +29,7 @@
         <h3 class="nhsuk-heading-m">Most recent orders</h3>
         @if (!Model.HasOrders)
         {
-            <partial name="_EmptyStateCard" model="@(new EmptyStateModel("order","Browse the {0} available to order.", Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { area= typeof(OrderTriageController).AreaName(), internalOrgId = Model.InternalOrgId }), "/images/orders-splash-with-shadow.svg"))" />
+            <partial name="_EmptyStateCard" model="@(new EmptyStateModel("order", Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { area= typeof(OrderTriageController).AreaName(), internalOrgId = Model.InternalOrgId }), "/images/orders-splash-with-shadow.svg"))" />
         }
     </div>
 </div>
@@ -42,7 +39,7 @@
         <h3 class="nhsuk-heading-m">Most recent shortlists</h3>
         @if (!Model.HasShortlists)
         {
-            <partial name="_EmptyStateCard" model="@(new EmptyStateModel("shortlist","Browse the {0} and create a shortlist.", Url.Action(nameof(SolutionsController.Index),typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() }), "/images/filters-splash-with-shadow-v2.svg"))" />
+            <partial name="_EmptyStateCard" model="@(new EmptyStateModel("shortlist", Url.Action(nameof(SolutionsController.Index),typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() }), "/images/filters-splash-with-shadow-v2.svg"))" />
         }
     </div>
 </div>
@@ -52,7 +49,7 @@
         <h3 class="nhsuk-heading-m">Most recent competitions</h3>
         @if (!Model.HasCompetitions)
         {
-            <partial name="_EmptyStateCard" model="@(new EmptyStateModel("competition","Competitions allow you to compare available {0}.", Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart),typeof(CompetitionsDashboardController).ControllerName(), new { area= typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId }), "/images/competitions-splash-with-shadow-v2.svg"))" />
+            <partial name="_EmptyStateCard" model="@(new EmptyStateModel("competition", Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart),typeof(CompetitionsDashboardController).ControllerName(), new { area= typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId }), "/images/competitions-splash-with-shadow-v2.svg"))" />
         }
     </div>
 </div>

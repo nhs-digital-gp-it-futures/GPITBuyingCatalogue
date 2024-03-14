@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registration;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
@@ -259,9 +260,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             var isAdmin = await userManager.IsInRoleAsync(user, OrganisationFunction.Authority.Name);
             return isAdmin ?
                     Url.Action(
-                        nameof(HomeController.Index),
-                        typeof(HomeController).ControllerName(),
-                        new { area = "Admin" }) : "~/";
+                        nameof(Admin.Controllers.HomeController.Index),
+                        typeof(Admin.Controllers.HomeController).ControllerName(),
+                        new { area = "Admin" }) :
+                    Url.Action(
+                        nameof(WebApp.Controllers.HomeController.AccountDashboard),
+                        typeof(WebApp.Controllers.HomeController).ControllerName());
         }
     }
 }

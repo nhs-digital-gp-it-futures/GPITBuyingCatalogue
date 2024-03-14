@@ -53,7 +53,7 @@
 
         @if (Model.Filters is null || !Model.Filters.Any())
         {
-            <partial name="~/Views/Home/_EmptyStateCard.cshtml" model="@(new EmptyStateModel("shortlist","Browse the {0} and create a shortlist.", Url.Action(nameof(SolutionsController.Index),typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() }), "/images/filters-splash-with-shadow-v2.svg"))" />
+            <partial name="~/Views/Home/_EmptyStateCard.cshtml" model="@(new EmptyStateModel("shortlist", Url.Action(nameof(SolutionsController.Index),typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() }), "/images/filters-splash-with-shadow-v2.svg"))" />
         }
         else
         {
