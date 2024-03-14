@@ -13,8 +13,10 @@
     vertical-align: middle
 }
 
-.nhsuk-pagination{
-    margin-bottom:0;
+.nhs-card-v2__content{
+    & .nhsuk-pagination {
+        margin-bottom: 0;
+    }
 }
 
 .nhs-card-v2__footer p {

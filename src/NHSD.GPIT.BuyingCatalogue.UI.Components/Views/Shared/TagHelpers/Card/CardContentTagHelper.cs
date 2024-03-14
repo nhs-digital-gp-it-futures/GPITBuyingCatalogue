@@ -37,6 +37,8 @@ public class CardContentTagHelper : TagHelper
             .AppendHtml(BuildHeading(cardContext))
             .AppendHtml(childContent.GetContent());
 
+        content.AddCssClass("nhs-card-v2__content");
+
         cardContext.ShouldBeClickable = !string.IsNullOrWhiteSpace(Url);
         cardContext.BodyContent = content;
 
