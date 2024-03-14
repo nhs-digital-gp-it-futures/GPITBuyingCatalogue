@@ -47,7 +47,7 @@
     <div class="nhsuk-grid-column-full">
         @if (!Model.Competitions.Any())
         {
-            <partial name="~/Views/Home/_EmptyStateCard.cshtml" model="@(new EmptyStateModel("competition","Competitions allow you to compare available {0}.", Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart),typeof(CompetitionsDashboardController).ControllerName(), new { area= typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId })))" />
+            <partial name="~/Views/Home/_EmptyStateCard.cshtml" model="@(new EmptyStateModel("competition","Competitions allow you to compare available {0}.", Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart),typeof(CompetitionsDashboardController).ControllerName(), new { area= typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId }), "/images/competitions-splash-with-shadow-v2.svg"))" />
         }
         else
         {

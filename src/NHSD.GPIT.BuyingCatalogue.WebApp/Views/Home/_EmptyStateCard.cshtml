@@ -12,7 +12,7 @@
 
 <nhs-card-v2>
     <nhs-card-content centre-alignment="true">
-        <img src="/images/orders-splash-with-shadow.svg" alt="alt text here" class="splash-intro-img nhsuk-u-margin-top-2" />
+        <img src="@Model.Image" alt="@Model.Entity.CapitaliseFirstLetter() image" class="splash-intro-img nhsuk-u-margin-top-2" />
         <h3 class="nhsuk-heading-m">No @Model.EntityPlural created yet</h3>
         <p class="nhsuk-body">
             @Model.EntityPlural.CapitaliseFirstLetter() you create for your organisation will appear here. <br>
