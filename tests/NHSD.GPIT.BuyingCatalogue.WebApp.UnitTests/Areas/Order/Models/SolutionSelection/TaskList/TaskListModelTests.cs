@@ -7,8 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList;
 using Xunit;
 
@@ -17,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
     public static class TaskListModelTests
     {
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void WithNullOrder_ThrowsException(
             string internalOrgId,
             CallOffId callOffId)
@@ -28,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -63,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void WithValidArguments_Amendment_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -108,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void WithValidArguments_AssociatedServicesOnly_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -146,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void WithValidArguments_IncompleteOrder_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -177,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void Amendment_SetsTitleAndAdviceCorrectly(
             TaskListModel model)
         {

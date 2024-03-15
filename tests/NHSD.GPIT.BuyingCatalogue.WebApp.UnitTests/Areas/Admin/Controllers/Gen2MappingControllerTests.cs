@@ -12,8 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilitiesMappingModels;
 using NSubstitute;
@@ -34,7 +33,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static void Capabilities_ReturnsView(
         Guid id,
         Gen2MappingController controller)
@@ -46,7 +45,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_Capabilities_InvalidModel_ReturnsView(
         Guid id,
         Gen2UploadModel model,
@@ -61,7 +60,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_Capabilities_NullImport_SetsModelError(
         Guid id,
         Gen2UploadModel model,
@@ -78,7 +77,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_Capabilities_EmptyImport_SetsModelError(
         Guid id,
         Gen2UploadModel model,
@@ -98,7 +97,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_Capabilities_FailedEntries_ReturnsExpectedView(
         Guid id,
         Gen2UploadModel model,
@@ -119,7 +118,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_Capabilities_NoFailedEntries_ReturnsExpectedView(
         Guid id,
         Gen2UploadModel model,
@@ -141,7 +140,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task FailedCapabilities_ReturnsViewWithModel(
         Guid id,
         Gen2CsvImportModel<Gen2CapabilitiesCsvModel> import,
@@ -159,7 +158,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_FailedCapabilities_ReturnsFile(
         Guid id,
         FailedGen2UploadModel<Gen2CapabilitiesCsvModel> model,
@@ -180,7 +179,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static void Epics_ReturnsView(
         Guid id,
         Gen2MappingController controller)
@@ -192,7 +191,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_Epics_InvalidModel_ReturnsView(
         Guid id,
         Gen2UploadModel model,
@@ -207,7 +206,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_Epics_NullImport_SetsModelError(
         Guid id,
         Gen2UploadModel model,
@@ -224,7 +223,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_Epics_EmptyImport_SetsModelError(
         Guid id,
         Gen2UploadModel model,
@@ -244,7 +243,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_Epics_FailedEntries_ReturnsExpectedView(
         Guid id,
         Gen2UploadModel model,
@@ -265,7 +264,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_Epics_NoFailedEntries_ReturnsExpectedView(
         Guid id,
         Gen2UploadModel model,
@@ -287,7 +286,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task FailedEpics_ReturnsViewWithModel(
         Guid id,
         Gen2CsvImportModel<Gen2EpicsCsvModel> import,
@@ -305,7 +304,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Post_FailedEpics_ReturnsFile(
         Guid id,
         FailedGen2UploadModel<Gen2EpicsCsvModel> model,
@@ -326,7 +325,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Mapping_NullCapabilities_Redirects(
         Guid id,
         [Frozen] IGen2UploadService uploadService,
@@ -341,7 +340,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Mapping_NullEpics_Redirects(
         Guid id,
         Gen2CsvImportModel<Gen2CapabilitiesCsvModel> capabilities,
@@ -358,7 +357,7 @@ public static class Gen2MappingControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Mapping_WithCached_ReturnsView(
         Guid id,
         Gen2CsvImportModel<Gen2CapabilitiesCsvModel> capabilities,

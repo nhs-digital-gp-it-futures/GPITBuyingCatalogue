@@ -5,7 +5,7 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList;
 using Xunit;
@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
     public class TaskListOrderItemModelTests
     {
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void PriceStatus_NoPriceEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void PriceStatus_PriceEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void QuantityStatus_NoPriceEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void QuantityStatus_NoQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -97,9 +97,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.Patient, null)]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Patient, null)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
         public static void QuantityStatus_PerServiceRecipient_Price_OrderItemQuantityEntered_ExpectedResult(
             ProvisioningType provisioningType,
             CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
@@ -123,9 +123,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.Patient, null)]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Patient, null)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
         public static void QuantityStatus_PerServiceRecipient_Price_OrderItemRecipientQuantitiesEntered_ExpectedResult(
             ProvisioningType provisioningType,
             CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
@@ -149,9 +149,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.Patient, null)]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Patient, null)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
         public static void QuantityStatus_Amendment_PerServiceRecipient_Price_OrderItemRecipientQuantitiesEntered_ExpectedResult(
             ProvisioningType provisioningType,
             CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void QuantityStatus_PerOrderItemProvisioningType_OrderItemQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -199,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void QuantityStatus_Amendment_PerOrderItemProvisioningType_OrderItemQuantityEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -224,7 +224,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void QuantityStatus_PerOrderItemProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -244,9 +244,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.Patient, null)]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Patient, null)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
         public static void QuantityStatus_OrderItemRecipientQuantitiesPartiallyEntered_ExpectedResult(
             ProvisioningType provisioningType,
             CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
@@ -271,7 +271,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static void QuantityStatus_AssociatedServiceAmendment_ExpectedResult(
             string internalOrgId,
             OrderItem orderItem,
@@ -287,8 +287,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, false, TaskProgress.Completed)]
-        [CommonInlineAutoDataWithFramework(MockingFramework.NSubstitute, true, TaskProgress.Amended)]
+        [MockInlineAutoData(false, TaskProgress.Completed)]
+        [MockInlineAutoData(true, TaskProgress.Amended)]
         public static void QuantityStatus_NonPerServiceRecipientAmendment_ExpectedResult(
             bool quantityChanged,
             TaskProgress taskProgress,
