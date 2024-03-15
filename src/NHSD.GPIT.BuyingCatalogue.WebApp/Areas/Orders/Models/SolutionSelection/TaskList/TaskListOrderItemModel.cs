@@ -57,6 +57,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool IsAssociatedService { get; set; }
 
+        public bool CanBeRemoved { get; set; }
+
         public TaskProgress PriceStatus
         {
             get
