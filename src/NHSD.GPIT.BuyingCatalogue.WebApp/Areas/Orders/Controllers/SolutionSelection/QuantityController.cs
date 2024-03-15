@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var orderItem = order.OrderItem(catalogueItemId);
             if (orderItem is null) return BadRequest();
 
-            if (((IPrice)orderItem?.OrderItemPrice)?.IsPerServiceRecipient() ?? false)
+            if (((IPrice)orderItem.OrderItemPrice)?.IsPerServiceRecipient() ?? false)
             {
                 return RedirectToAction(
                     nameof(SelectServiceRecipientQuantity),
