@@ -207,15 +207,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
             }
 
-            //if (!isAssociatedSplitOrMergerOrder)
-            //{
-            //    ConfirmServieReceipients.ConfirmServiceReceipientsChanges();
-            //}
-            //else
-            //{
-            //    ConfirmServieReceipients.ConfirmServiceRecipientsChangesForSplitAndMerges();
-            //}
-
             TaskList.SelectSolutionsAndServicesTask(isAssociatedServiceOnlyOrder);
 
             if (!isAssociatedServiceOnlyOrder)
@@ -225,17 +216,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 string solutionid = GetCatalogueSolutionID(solutionName);
                 PriceAndQuantity(solutionid);
 
-                //SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(solutionid);
-                //Quantity.AddSolutionQuantity(solutionid);
-
                 if (HasAdditionalService(solutionName) && additionalServices != default && additionalServices.All(a => !string.IsNullOrWhiteSpace(a)))
                 {
                     foreach (var additionalService in additionalServices)
                     {
                         SelectEditCatalogueSolution.AddAdditionalServices(additionalService);
                         var serviceid = GetAdditionalServiceID(additionalService);
-                        //SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
-                        //Quantity.AddSolutionQuantity(serviceid);
                         PriceAndQuantity(serviceid);
                     }
                 }
@@ -246,8 +232,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     {
                         SelectEditCatalogueSolution.AddAssociatedServices(associatedService);
                         var serviceid = GetAssociatedServiceID(associatedService);
-                        //SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
-                        //Quantity.AddSolutionQuantity(serviceid);
                         PriceAndQuantity(serviceid);
                     }
                 }
@@ -261,8 +245,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     foreach (var associatedService in associatedServices)
                     {
                         var serviceid = GetAssociatedServiceID(associatedService);
-                        //SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
-                        //Quantity.AddSolutionQuantity(serviceid);
                         PriceAndQuantity(serviceid);
                     }
                 }
@@ -380,8 +362,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     foreach (var associatedService in newAssociatedServices)
                     {
                         var serviceid = GetAssociatedServiceID(associatedService);
-                        //SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
-                        //Quantity.AddSolutionQuantity(serviceid);
                         PriceAndQuantity(serviceid);
                     }
                 }
@@ -401,8 +381,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                     {
                         SelectEditCatalogueSolution.AddAdditionalServices(additionalService);
                         var serviceid = GetAdditionalServiceID(additionalService);
-                        //SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
-                        //Quantity.AddSolutionQuantity(serviceid);
                         PriceAndQuantity(serviceid);
                     }
                 }
@@ -415,8 +393,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                         {
                             SelectEditCatalogueSolution.AddAssociatedServices(associatedService);
                             var serviceid = GetAssociatedServiceID(associatedService);
-                            //SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
-                            //Quantity.AddSolutionQuantity(serviceid);
                             PriceAndQuantity(serviceid);
                         }
                     }
@@ -461,8 +437,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 foreach (var additionalService in newAdditionalServices)
                 {
                     var serviceid = GetAdditionalServiceID(additionalService);
-                    //SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
-                    //Quantity.AddSolutionQuantity(serviceid);
                     PriceAndQuantity(serviceid);
                 }
             }
@@ -509,8 +483,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 foreach (var associatedService in newAssociatedServices)
                 {
                     var serviceid = GetAssociatedServiceID(associatedService);
-                    //SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
-                    //Quantity.AddSolutionQuantity(serviceid);
                     PriceAndQuantity(serviceid);
                 }
             }
@@ -546,8 +518,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             foreach (var associatedService in newAssociatedServices)
             {
                 var serviceid = GetAssociatedServiceID(associatedService);
-                //SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
-                //Quantity.AddSolutionQuantity(serviceid);
                 PriceAndQuantity(serviceid);
             }
 
@@ -718,8 +688,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
                 {
                     SelectEditCatalogueSolution.AddAdditionalServices(additionalService);
                     var serviceid = GetAdditionalServiceID(additionalService);
-                    //SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
-                    //Quantity.AddSolutionQuantity(serviceid);
                     PriceAndQuantity(serviceid);
                 }
 
