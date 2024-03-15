@@ -118,6 +118,17 @@ public readonly struct NavigationMenuModel
             LinksFactories.First(x => x.Key(user));
 
         Links = linkFactory(user, urlHelper);
+
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            Links.Add(
+                new(
+                    "Log out",
+                    urlHelper.Action(
+                        nameof(AccountController.Logout),
+                        typeof(AccountController).ControllerName(),
+                        new { area = typeof(AccountController).AreaName() })));
+        }
     }
 
     public IList<KeyValuePair<string, string>> Links { get; }

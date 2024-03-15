@@ -286,6 +286,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                     },
                     "mock"));
             var controller = CreateController(mockUserManager, mockSignInManager, odsService: mockOdsService);
+            controller.Url = mockUrlHelper.Object;
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = userPrincipal, },
+            };
 
             controller.Url = mockUrlHelper;
             controller.ControllerContext = new ControllerContext

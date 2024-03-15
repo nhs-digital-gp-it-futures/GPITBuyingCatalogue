@@ -67,7 +67,7 @@
                             </span>
                         </nhs-table-cell>
                     </nhs-table-row-container>
-                }
+}
             </nhs-table>
 
             @if (Model.IsDashboardView)
@@ -80,17 +80,17 @@
         else
         {
             <img src="~/images/filters-splash-with-shadow.svg" alt="Shortlist image" class="splash-intro-img nhsuk-u-margin-top-2" />
-            <h3 class="nhsuk-heading-m">No shortlists created yet</h3>
-            <p class="nhsuk-body">
-                Shortlists you create for your organisation will appear here.<br/>
+        <h3 class="nhsuk-heading-m">No shortlists created yet</h3>
+        <p class="nhsuk-body">
+            Shortlists you create for your organisation will appear here.<br/>
 
-                Browse the
-                <a asp-action="@nameof(SolutionsController.Index)"
-                   asp-controller="@typeof(SolutionsController).ControllerName()"
-                   asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a> available and create a shortlist.
-            </p>
-            <vc:nhs-secondary-button text="Create new shortlist"
-                                     url="@(Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() }))"
+            Browse the
+            <a asp-action="@nameof(SolutionsController.Index)"
+               asp-controller="@typeof(SolutionsController).ControllerName()"
+               asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a> available and create a shortlist.
+        </p>
+        <vc:nhs-secondary-button text="Create new shortlist"
+                                 url="@(Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() }))"
                                      type="Primary" />
         }
     </nhs-card-content>

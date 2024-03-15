@@ -582,6 +582,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             ((MaximumShortlistsModel)actualResult.Model).OrganisationName.Should().Be(organisation.Name);
         }
 
+        [Theory]
+        [CommonAutoData]
+        public static async void Get_MaximumShortlists_ReturnsExpectedResult(
+            int filterId,
+            FilterDetailsModel filterDetailsModel,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            [Frozen] Mock<IPdfService> mockPdfService,
+            string primaryOrganisationInternalId,
+            Organisation organisation)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+            manageFiltersService
+                .Setup(x => x.GetFilterDetails(organisation.Id, filterId))
+                .ReturnsAsync(filterDetailsModel);
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                mockPdfService,
+                primaryOrganisationInternalId);
+            controller.Url = mockUrlHelper.Object;
+
+            var result = await controller.MaximumShortlists();
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            actualResult.Model.Should().BeOfType<MaximumShortlistsModel>();
+            ((MaximumShortlistsModel)actualResult.Model).OrganisationName.Should().Be(organisation.Name);
+        }
+
         private static ManageFiltersController CreateController(
             IOrganisationsService organisationsService,
             ICapabilitiesService capabilitiesService,
