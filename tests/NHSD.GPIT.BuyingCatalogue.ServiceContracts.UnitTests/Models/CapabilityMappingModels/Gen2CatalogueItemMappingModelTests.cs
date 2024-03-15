@@ -3,9 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
-using NSubstitute.Exceptions;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models.CapabilityMappingModels;
@@ -22,7 +20,7 @@ public static class Gen2CatalogueItemMappingModelTests
         .Throw<FormatException>();
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static void Constructing_Valid_SetsPropertiesAsExpected(
         CatalogueItemId catalogueItemId)
     {
@@ -35,7 +33,7 @@ public static class Gen2CatalogueItemMappingModelTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static void Constructing_DuplicateCapabilities_SetsPropertiesAsExpected(
         CatalogueItemId catalogueItemId,
         Gen2CapabilityMappingModel capabilityModel)
