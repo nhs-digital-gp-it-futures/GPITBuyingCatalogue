@@ -1,0 +1,15 @@
+@model ConfirmationModel
+
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <vc:nhs-confirmation-banner title="@Model.Title" colour="@Model.Colour" />
+
+        <p class="nhsuk-u-margin-top-4 nhsuk-u-margin-bottom-9">@Model.Content</p>
+
+        <vc:nhs-secondary-button type="Primary" text="Return to admin homepage" url="@(Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName()))" />
+    </div>
+</div>

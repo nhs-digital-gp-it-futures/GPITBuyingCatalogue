@@ -14,6 +14,8 @@
     {
         progress++;
     }
+
+    var marginBottom = (Model.CanBeRemoved ? "16px" : "48px");
 }
 
 <div style="display:block; align-items:center;">
@@ -28,7 +30,7 @@
     }
 </div>
 
-<nhs-table>
+<nhs-table style="margin-bottom:@marginBottom">
     <nhs-table-column>Section</nhs-table-column>
     <nhs-table-column>Status</nhs-table-column>
     <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
@@ -106,3 +108,12 @@
         </nhs-table-cell>
     </nhs-table-row-container>
 </nhs-table>
+
+@if (Model.CanBeRemoved)
+{
+    <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
+        typeof(CatalogueSolutionsController).ControllerName(),
+        new { Model.InternalOrgId, Model.CallOffId, catalogueItemId = Model.CatalogueItemId })"
+        text="Remove @Model.Name" />
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+}

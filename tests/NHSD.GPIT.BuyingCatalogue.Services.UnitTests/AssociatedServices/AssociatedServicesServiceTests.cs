@@ -146,7 +146,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
            AssociatedServicesDetailsModel model,
            AssociatedServicesService service)
         {
-            solution.Id = new CatalogueItemId(solution.Id.SupplierId, solution.Id.ItemId[4..]);
             context.CatalogueItems.Add(solution);
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
