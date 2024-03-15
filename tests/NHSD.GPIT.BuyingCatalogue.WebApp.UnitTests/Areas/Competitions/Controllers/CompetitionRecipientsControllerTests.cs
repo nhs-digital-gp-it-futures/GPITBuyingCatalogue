@@ -14,8 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NSubstitute;
@@ -38,7 +37,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task Index_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
@@ -64,7 +63,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static void Index_InvalidModelState_ReturnsViewWithModel(
         string internalOrgId,
         int competitionId,
@@ -80,7 +79,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static void Index_Valid_Redirects(
         string internalOrgId,
         int competitionId,
@@ -94,7 +93,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task ConfirmRecipients_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
@@ -134,7 +133,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task ConfirmRecipients_HasImportedRecipients_SetsBacklink(
         Organisation organisation,
         Competition competition,
@@ -168,7 +167,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task ConfirmRecipients_HasNotImportedRecipients_SetsBacklink(
         Organisation organisation,
         Competition competition,
@@ -201,7 +200,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task ConfirmRecipients_Valid_Redirects(
         string internalOrgId,
         int competitionId,
@@ -220,7 +219,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task UploadOrSelectServiceRecipients_ReturnsViewWithModel(
         string internalOrgId,
         int competitionId,
@@ -242,7 +241,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static void UploadOrSelectServiceRecipients_InvalidModel_ReturnsViewWithModel(
         UploadOrSelectServiceRecipientModel model,
         string internalOrgId,
@@ -264,7 +263,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static void UploadOrSelectServiceRecipients_UploadRecipients_RedirectsToImportController(
         UploadOrSelectServiceRecipientModel model,
         string internalOrgId,
@@ -284,7 +283,7 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static void UploadOrSelectServiceRecipients_DoNotUploadRecipients_RedirectsToIndexAction(
         UploadOrSelectServiceRecipientModel model,
         string internalOrgId,

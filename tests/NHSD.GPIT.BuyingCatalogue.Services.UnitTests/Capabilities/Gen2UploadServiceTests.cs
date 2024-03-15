@@ -15,6 +15,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels;
 using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NSubstitute;
 using Xunit;
@@ -34,7 +35,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetCapabilitiesFromCsv_WithRows_ReturnsCapabilities(
         Gen2UploadService service)
     {
@@ -51,7 +52,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetCapabilitiesFromCsv_WithNewlines_RemovesNewlinesAndReturnsCapabilities(
         Gen2UploadService service)
     {
@@ -68,7 +69,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetCapabilitiesFromCsv_WithInvalidAssociatedServiceId_ReturnsCapabilities(
         Gen2UploadService service)
     {
@@ -85,7 +86,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetCapabilitiesFromCsv_WithMissingData_ReturnsCapabilities(
         Gen2UploadService service)
     {
@@ -102,7 +103,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetCapabilitiesFromCsv_WithNoRows_ReturnsEmpty(
         Gen2UploadService service)
     {
@@ -116,7 +117,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetCapabilitiesFromCsv_WithMissingColumnHeaders_ReturnsNull(
         Gen2UploadService service)
     {
@@ -132,7 +133,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetCapabilitiesFromCsv_WithMissingRowColumns_ReturnsNull(
         Gen2UploadService service)
     {
@@ -147,7 +148,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetEpicsFromCsv_WithRows_ReturnsEpics(
         Gen2UploadService service)
     {
@@ -164,7 +165,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetEpicsFromCsv_WithNewlines_RemovesNewlinesAndReturnsEpics(
         Gen2UploadService service)
     {
@@ -181,7 +182,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetEpicsFromCsv_WithMissingData_ReturnsEpics(
         Gen2UploadService service)
     {
@@ -198,7 +199,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetEpicsFromCsv_WithNoRows_ReturnsEmpty(
         Gen2UploadService service)
     {
@@ -212,7 +213,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetEpicsFromCsv_WithMissingColumnHeaders_ReturnsNull(
         Gen2UploadService service)
     {
@@ -228,7 +229,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetEpicsFromCsv_WithMissingRowColumns_ReturnsNull(
         Gen2UploadService service)
     {
@@ -243,7 +244,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task AddToCache_Capabilities_AddsToCache(
         Guid id,
         Gen2CsvImportModel<Gen2CapabilitiesCsvModel> records,
@@ -263,7 +264,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task AddToCache_Epics_AddsToCache(
         Guid id,
         Gen2CsvImportModel<Gen2EpicsCsvModel> records,
@@ -283,7 +284,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetCachedCapabilities_ReturnsExpected(
         Gen2CsvImportModel<Gen2CapabilitiesCsvModel> expected,
         [Frozen] IDistributedCache distributedCache,
@@ -300,7 +301,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task GetCachedEpics_ReturnsExpected(
         Gen2CsvImportModel<Gen2EpicsCsvModel> expected,
         [Frozen] IDistributedCache distributedCache,
@@ -317,7 +318,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task WriteToCsv_Capabilities_ReturnsStream(
         List<Gen2CapabilitiesCsvModel> capabilities,
         Gen2UploadService service)
@@ -329,7 +330,7 @@ public static class Gen2UploadServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static async Task WriteToCsv_Epics_ReturnsStream(
         List<Gen2EpicsCsvModel> epics,
         Gen2UploadService service)

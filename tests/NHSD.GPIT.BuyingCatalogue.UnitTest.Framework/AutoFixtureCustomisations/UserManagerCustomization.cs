@@ -8,9 +8,11 @@ using Microsoft.Extensions.Options;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 
+[ExcludesAutoCustomization]
 public class UserManagerCustomization : ICustomization
 {
     public void Customize(IFixture fixture)

@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels;
 using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
@@ -32,14 +33,14 @@ public static class Gen2MappingServiceTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static Task MapToSolutions_NullModel_ThrowsArgumentNullException(
         Gen2MappingService service) => FluentActions.Invoking(() => service.MapToSolutions(null))
         .Should()
         .ThrowAsync<ArgumentNullException>();
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static Task MapToSolutions_EmptySolutions_ThrowsArgumentNullException(
         Gen2MappingService service) => FluentActions
         .Invoking(
@@ -51,7 +52,7 @@ public static class Gen2MappingServiceTests
         .ThrowAsync<ArgumentException>();
 
     [Theory]
-    [InMemoryDbAutoData(MockingFramework.NSubstitute)]
+    [MockInMemoryDbAutoData]
     public static async Task MapToSolutions_WithUnknownCapability_MapsExpected(
         int unknownCapabilityId,
         List<Solution> solutions,
@@ -119,7 +120,7 @@ public static class Gen2MappingServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData(MockingFramework.NSubstitute)]
+    [MockInMemoryDbAutoData]
     public static async Task MapToSolutions_WithUnknownEpic_MapsExpected(
         string unknownEpicId,
         List<Solution> solutions,
@@ -188,7 +189,7 @@ public static class Gen2MappingServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData(MockingFramework.NSubstitute)]
+    [MockInMemoryDbAutoData]
     public static async Task MapToSolutions_MapsExpectedCapabilitiesAndEpics(
         List<Solution> solutions,
         List<Capability> capabilities,
@@ -251,7 +252,7 @@ public static class Gen2MappingServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData(MockingFramework.NSubstitute)]
+    [MockInMemoryDbAutoData]
     public static async Task MapToSolutions_WithAdditionalServices_MapsExpectedCapabilitiesAndEpics(
         List<Solution> solutions,
         List<Capability> capabilities,
