@@ -1,29 +1,34 @@
-﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
-public class BuyerDashboardModel
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
-    internal const string AccountManagerAdvice =
-        "Create and manage orders, competitions, filters and user accounts for your organisation.";
-
-    internal const string BuyerAdvice = "Create and manage orders, competitions and filters for your organisation.";
-
-    public BuyerDashboardModel(
-        string internalOrgId,
-        string organisationName,
-        bool isAccountManager)
+    public class BuyerDashboardModel : NavBaseModel
     {
-        InternalOrgId = internalOrgId;
+        public BuyerDashboardModel(
+            Organisation organisation,
+            ICollection<Order> orders,
+            ICollection<Competition> competitions,
+            ICollection<Filter> shortlists)
+        {
+            OrganisationName = organisation.Name;
+            InternalOrgId = organisation.InternalIdentifier;
+            Orders = orders;
+            Competitions = competitions;
+            Shortlists = shortlists;
+        }
 
-        OrganisationName = organisationName;
+        public string OrganisationName { get; set; }
 
-        Advice = isAccountManager
-            ? AccountManagerAdvice
-            : BuyerAdvice;
+        public string InternalOrgId { get; set; }
+
+        public ICollection<Order> Orders { get; set; }
+
+        public ICollection<Competition> Competitions { get; set; }
+
+        public ICollection<Filter> Shortlists { get; init; }
     }
-
-    public string InternalOrgId { get; set; }
-
-    public string OrganisationName { get; set; }
-
-    public string Advice { get; set; }
 }

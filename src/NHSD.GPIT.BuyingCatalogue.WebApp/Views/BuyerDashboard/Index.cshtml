@@ -1,73 +1,50 @@
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.BuyerDashboardModel
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.Framework.Environments
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Dashboard
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models
+@model BuyerDashboardModel
 @{
-    ViewBag.Title = "Buyer dashboard";
+    Layout = "~/Views/Shared/Layouts/_BetaBannerLayout.cshtml";
+    ViewBag.Title = "Your organisation's dashboard";
 }
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName"/>
+    </div>
+</div>
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
-
-        <nhs-page-title title="@ViewBag.Title"
-                        advice="@Model.Advice"
-                        caption="@Model.OrganisationName"/>
-
-        <h2>Orders</h2>
-        <ul>
-            <li>
-                <a asp-action="@nameof(DashboardController.Index)"
-                   asp-controller="@typeof(DashboardController).ControllerName()"
-                   asp-area="@typeof(DashboardController).AreaName()">
-                    Create or manage orders
-                </a>
-                <p>Manage orders currently in progress or view and amend orders that have been submitted for your organisation. </p>
-            </li>
+    <div class="nhsuk-grid-column-full">
+        <h2 class="nhsuk-heading-m">Account overview</h2>
+        <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
+            <partial name="_AccountOverview" model="@(new ActionCardModel(Model.Orders.Count.ToString(), "orders", Url.Action(nameof(DashboardController.Index), typeof(DashboardController).ControllerName(), new { Area = typeof(DashboardController).AreaName() })))"/>
+            <partial name="_AccountOverview" model="@(new ActionCardModel(Model.Shortlists.Count.ToString(), "shortlists", Url.Action(nameof(ManageFiltersController.Index), typeof(ManageFiltersController).ControllerName(), new { Area = typeof(ManageFiltersController).AreaName() })))"/>
+            <partial name="_AccountOverview" model="@(new ActionCardModel(Model.Competitions.Count.ToString(), "competitions", Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { Area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId })))"/>
         </ul>
+    </div>
+</div>
 
-        <h2>Competitions</h2>
-        <ul>
-            <li>
-                <a asp-action="@nameof(CompetitionsDashboardController.Index)"
-                   asp-controller="@typeof(CompetitionsDashboardController).ControllerName()"
-                   asp-area="@typeof(CompetitionsDashboardController).AreaName()"
-                   asp-route-internalOrgId="@Model.InternalOrgId">
-                    Create or manage competitions
-                </a>
-                <p>Create new procurement competitions or view and edit existing ones.</p>
-            </li>
-        </ul>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <h3 class="nhsuk-heading-m">Most recent orders</h3>
+        <partial name="Dashboard/_OrderCardPartial" model="@(new DashboardCardBaseModel<Order>(Model.InternalOrgId, Model.Orders, Model.Orders.Count, isDashboardView: true))"/>
+    </div>
+</div>
 
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <h3 class="nhsuk-heading-m">Most recent shortlists</h3>
+        <partial name="Dashboard/_ShortlistCardPartial" model="@(new DashboardCardBaseModel<Filter>(Model.InternalOrgId, Model.Shortlists, Model.Shortlists.Count, isDashboardView: true))"/>
+    </div>
+</div>
 
-        <h2>Filters</h2>
-        <ul>
-            <li>
-                <a asp-action="@nameof(ManageFiltersController.Index)"
-                   asp-controller="@typeof(ManageFiltersController).ControllerName()"
-                   asp-area="@typeof(ManageFiltersController).AreaName()">
-                    Create or manage filters
-                </a>
-                <p>Create new filters or view existing ones that you can use to produce a competition shortlist.</p>
-            </li>
-        </ul>
-
-        @if (User.IsAccountManager())
-        {
-            <h2>Your organisation</h2>
-            <ul>
-                <li>
-                    <a asp-action="@nameof(ManageAccountController.Index)"
-                       asp-controller="@typeof(ManageAccountController).ControllerName()"
-                       asp-area="@typeof(ManageAccountController).AreaName()">
-                        Manage organisation
-                    </a>
-                    <p>Add new users or edit the details for existing ones and nominate other organisations to act on your behalf.</p>
-                </li>
-            </ul>
-        }
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <h3 class="nhsuk-heading-m">Most recent competitions</h3>
+        <partial name="Dashboard/_CompetitionsCardPartial" model="@(new DashboardCardBaseModel<Competition>(Model.InternalOrgId, Model.Competitions, Model.Competitions.Count, isDashboardView: true))"/>
     </div>
 </div>

@@ -258,14 +258,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
                 return returnUrl;
 
             var isAdmin = await userManager.IsInRoleAsync(user, OrganisationFunction.Authority.Name);
-            return isAdmin ?
-                    Url.Action(
-                        nameof(Admin.Controllers.HomeController.Index),
-                        typeof(Admin.Controllers.HomeController).ControllerName(),
-                        new { area = "Admin" }) :
-                    Url.Action(
-                        nameof(WebApp.Controllers.HomeController.AccountDashboard),
-                        typeof(WebApp.Controllers.HomeController).ControllerName());
+
+            return isAdmin
+                ? Url.Action(
+                    nameof(Admin.Controllers.HomeController.Index),
+                    typeof(Admin.Controllers.HomeController).ControllerName(),
+                    new { area = typeof(Admin.Controllers.HomeController).ControllerName() })
+                : Url.Action(
+                    nameof(BuyerDashboardController.Index),
+                    typeof(BuyerDashboardController).ControllerName(),
+                    new { internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() });
         }
     }
 }

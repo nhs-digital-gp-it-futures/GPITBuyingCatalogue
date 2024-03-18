@@ -61,7 +61,9 @@
                                asp-action="@nameof(OrderController.Order)"
                                asp-controller="@typeof(OrderController).ControllerName()"
                                asp-route-internalOrgId="@Model.InternalOrgId"
-                               asp-route-callOffId="@order.CallOffId" style="white-space: nowrap;">
+                               asp-route-callOffId="@order.CallOffId"
+                               asp-route-area="@typeof(OrderController).AreaName()"
+                               style="white-space: nowrap;">
                                 View
                             </a>
                         </nhs-table-cell>

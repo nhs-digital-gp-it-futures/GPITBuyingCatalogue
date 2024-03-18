@@ -5,8 +5,8 @@
     var navigationItems = new List<KeyValuePair<string, string>>()
     {
         new ("Home", Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())),
+        new ("Dashboard", Url.Action(nameof(BuyerDashboardController.Index), typeof(BuyerDashboardController).ControllerName(), new { internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() })),
         new ("Catalogue Solutions", Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { area = typeof(SolutionsController).AreaName() })),
-        new ("Buyer Dashboard", Url.Action(nameof(BuyerDashboardController.Index), typeof(BuyerDashboardController).ControllerName())),
     };
 
     if (User.Identity?.IsAuthenticated ?? false)

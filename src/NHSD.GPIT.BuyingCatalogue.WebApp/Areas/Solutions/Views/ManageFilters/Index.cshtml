@@ -11,21 +11,22 @@
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
     ViewBag.Title = "Manage saved filters";
 }
+
 @section Breadcrumbs {
     <nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
         <div class="nhsuk-width-container">
             <ol class="nhsuk-breadcrumb__list">
                 <li class="nhsuk-breadcrumb__item">
-                    <a href="@Url.Action(
-                                 nameof(HomeController.Index),
-                                 typeof(HomeController).ControllerName())"
-                       class="nhsuk-breadcrumb__link">Home</a>
+                    <a href="@Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())"
+                       class="nhsuk-breadcrumb__link">
+                        Home
+                    </a>
                 </li>
                 <li class="nhsuk-breadcrumb__item">
-                    <a href="@Url.Action(
-                                nameof(BuyerDashboardController.Index),
-                                typeof(BuyerDashboardController).ControllerName())"
-                       class="nhsuk-breadcrumb__link">Buyer Dashboard</a>
+                    <a href="@Url.Action(nameof(BuyerDashboardController.Index), typeof(BuyerDashboardController).ControllerName(), new { internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() })"
+                       class="nhsuk-breadcrumb__link">
+                        Dashboard
+                    </a>
                 </li>
             </ol>
         </div>
@@ -36,7 +37,7 @@
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary/>
 
-        <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName" advice="Create new filters or view existing ones." />
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName" advice="Create new filters or view existing ones."/>
 
         <nhs-inset-text>
             <p>You can save a maximum of 10 filters for use by your organisation. To delete a filter, use the relevant view link in the table.</p>
@@ -45,9 +46,7 @@
         @if (Model.Filters is null || Model.Filters.Count < 10)
         {
             <vc:nhs-action-link text="Create a new filter"
-                                url="@Url.Action(
-                                         nameof(SolutionsController.Index),
-                                         typeof(SolutionsController).ControllerName())" />
+                                url="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName())"/>
         }
 
         @if (Model.Filters is null || !Model.Filters.Any())
@@ -85,8 +84,10 @@
                         <nhs-table-cell>
                             <span data-test-id="filter-view-link">
                                 <a asp-action="@nameof(ManageFiltersController.FilterDetails)"
-                                    asp-controller="@typeof(ManageFiltersController).ControllerName()"
-                                   asp-route-filterId="@item.Id">View</a>
+                                   asp-controller="@typeof(ManageFiltersController).ControllerName()"
+                                   asp-route-filterId="@item.Id">
+                                    View
+                                </a>
                             </span>
                         </nhs-table-cell>
                     </nhs-table-row-container>
