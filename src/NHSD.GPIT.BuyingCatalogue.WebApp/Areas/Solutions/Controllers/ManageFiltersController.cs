@@ -235,6 +235,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return File(result, "application/pdf", fileName);
         }
 
+        [HttpGet("maximum-shortlists")]
+        public async Task<IActionResult> MaximumShortlists()
+        {
+            var organisation = await GetUserOrganisation();
+            var model = new MaximumShortlistsModel(organisation.Name)
+            {
+                BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
+            };
+            return View(model);
+        }
+
         private async Task<Organisation> GetUserOrganisation()
         {
             var organisationInternalIdentifier = User.GetPrimaryOrganisationInternalIdentifier();
