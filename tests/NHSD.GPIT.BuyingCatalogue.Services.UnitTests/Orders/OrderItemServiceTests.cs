@@ -448,32 +448,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_PerServiceRecipient(
-            Order order,
-            [Frozen] BuyingCatalogueDbContext context,
-            OrderItemService orderItemService)
-        {
-            var item = order.OrderItems.First();
-
-            var price = item.CatalogueItem.CataloguePrices.First();
-
-            price.ProvisioningType = ProvisioningType.PerServiceRecipient;
-
-            item.EstimationPeriod = null;
-
-            context.Orders.Add(order);
-
-            await context.SaveChangesAsync();
-
-            await orderItemService.SetOrderItemEstimationPeriod(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId, price);
-
-            var actual = context.OrderItems.FirstOrDefault(o => o.OrderId == item.OrderId && o.CatalogueItemId == item.CatalogueItemId);
-
-            actual!.EstimationPeriod.Should().Be(TimeUnit.PerYear);
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
         public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_OnDemand(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,

@@ -97,14 +97,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [MockAutoData]
-        public static void QuantityStatus_PerServiceRecipientProvisioningType_OrderItemQuantityEntered_ExpectedResult(
+        [MockInlineAutoData(ProvisioningType.Patient, null)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        public static void QuantityStatus_PerServiceRecipient_Price_OrderItemQuantityEntered_ExpectedResult(
+            ProvisioningType provisioningType,
+            CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem,
             OrderRecipient[] recipients)
         {
-            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
+            orderItem.OrderItemPrice.ProvisioningType = provisioningType;
+            if (cataloguePriceQuantityCalculationType.HasValue)
+            {
+                orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType.Value;
+            }
 
             orderItem.Quantity = 1;
             recipients.ForEach(x => x.OrderItemRecipients.Clear());
@@ -115,14 +123,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [MockAutoData]
-        public static void QuantityStatus_PerServiceRecipientProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
+        [MockInlineAutoData(ProvisioningType.Patient, null)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        public static void QuantityStatus_PerServiceRecipient_Price_OrderItemRecipientQuantitiesEntered_ExpectedResult(
+            ProvisioningType provisioningType,
+            CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem,
             OrderRecipient[] recipients)
         {
-            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
+            orderItem.OrderItemPrice.ProvisioningType = provisioningType;
+            if (cataloguePriceQuantityCalculationType.HasValue)
+            {
+                orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType.Value;
+            }
 
             orderItem.Quantity = null;
             recipients.ForEach(x => x.SetQuantityForItem(orderItem.CatalogueItemId, 1));
@@ -133,14 +149,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [MockAutoData]
-        public static void QuantityStatus_Amendment_PerServiceRecipientProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
+        [MockInlineAutoData(ProvisioningType.Patient, null)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        public static void QuantityStatus_Amendment_PerServiceRecipient_Price_OrderItemRecipientQuantitiesEntered_ExpectedResult(
+            ProvisioningType provisioningType,
+            CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem,
             OrderRecipient[] recipients)
         {
-            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
+            orderItem.OrderItemPrice.ProvisioningType = provisioningType;
+            if (cataloguePriceQuantityCalculationType.HasValue)
+            {
+                orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType.Value;
+            }
 
             orderItem.Quantity = null;
             recipients.ForEach(x => x.SetQuantityForItem(orderItem.CatalogueItemId, 1));
@@ -220,14 +244,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [MockAutoData]
+        [MockInlineAutoData(ProvisioningType.Patient, null)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
         public static void QuantityStatus_OrderItemRecipientQuantitiesPartiallyEntered_ExpectedResult(
+            ProvisioningType provisioningType,
+            CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem,
             OrderRecipient[] recipients)
         {
-            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
+            orderItem.OrderItemPrice.ProvisioningType = provisioningType;
+            if (cataloguePriceQuantityCalculationType.HasValue)
+            {
+                orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType.Value;
+            }
 
             orderItem.Quantity = null;
             recipients.ForEach(x => x.OrderItemRecipients.Clear());
@@ -255,8 +287,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonInlineAutoData(false, TaskProgress.Completed)]
-        [CommonInlineAutoData(true, TaskProgress.Amended)]
+        [MockInlineAutoData(false, TaskProgress.Completed)]
+        [MockInlineAutoData(true, TaskProgress.Amended)]
         public static void QuantityStatus_NonPerServiceRecipientAmendment_ExpectedResult(
             bool quantityChanged,
             TaskProgress taskProgress,
