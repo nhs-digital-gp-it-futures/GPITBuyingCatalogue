@@ -2,7 +2,6 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home
 @model CompetitionDashboardModel
 
 @{
@@ -47,7 +46,7 @@
     <div class="nhsuk-grid-column-full">
         @if (!Model.Competitions.Any())
         {
-            <partial name="~/Views/Home/_EmptyStateCard.cshtml" model="@(new EmptyStateModel("competition", Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart),typeof(CompetitionsDashboardController).ControllerName(), new { area= typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId }), "/images/competitions-splash-with-shadow-v2.svg"))" />
+            <p>No competitions have been created for your organisation yet.</p>
         }
         else
         {

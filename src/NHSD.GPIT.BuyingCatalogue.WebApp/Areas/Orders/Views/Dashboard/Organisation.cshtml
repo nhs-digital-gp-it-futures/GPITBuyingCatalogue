@@ -1,6 +1,9 @@
-﻿@using EnumsNET
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSuggestionSearch
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Dashboard
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard.OrganisationModel;
 @{
     ViewBag.Title = "Your organisation’s orders";
@@ -10,110 +13,34 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-full">
             <nhs-page-title title="@ViewBag.Title"
-                            caption="@Model.OrganisationName" />
+                            caption="@Model.OrganisationName"/>
             @if (Model.CanActOnBehalf)
             {
                 <h2>Current organisation</h2>
                 <p class="nhsuk-u-margin-bottom-2">You are currently acting on behalf of:</p>
                 <p data-test-id="dashboard-page-proxy-on-behalf" class="nhsuk-u-margin-bottom-6">
-                    @Model.OrganisationName <a asp-action="@nameof(DashboardController.SelectOrganisation)"
-                                               asp-controller="@typeof(DashboardController).ControllerName()"
-                                               asp-route-internalOrgId="@Model.InternalOrgId"
-                                               class="nhsuk-u-margin-left-4">Change organisation</a>
+                    @Model.OrganisationName
+                    <a asp-action="@nameof(DashboardController.SelectOrganisation)"
+                       asp-controller="@typeof(DashboardController).ControllerName()"
+                       asp-route-internalOrgId="@Model.InternalOrgId"
+                       class="nhsuk-u-margin-left-4">
+                        Change organisation
+                    </a>
                 </p>
             }
 
             @if (Context.Request.Query["search"].Count > 0
-                || Model.Orders.Count > 0)
+                 || Model.Orders.Count > 0)
             {
                 <vc:nhs-suggestion-search id="orders-suggestion-search"
-                                          ajax-url="@Url.Action(
-                                                        nameof(DashboardController.FilterSearchSuggestions),
-                                                        typeof(DashboardController).ControllerName(),
-                                                        new { Model.InternalOrgId })"
+                                          ajax-url="@Url.Action(nameof(DashboardController.FilterSearchSuggestions), typeof(DashboardController).ControllerName(), new { Model.InternalOrgId })"
                                           title-text="Search for order by order description or Call-off ID"
                                           placeholder-text="Search by Call-off Agreement ID or order description"
-                                          query-parameter-name="search" />
+                                          query-parameter-name="search"/>
             }
-            <br />
+            <br/>
 
-            <nhs-card-v2>
-                <nhs-card-content>
-                    <div class="header-with-detail">
-                        <h3 class="nhsuk-heading-m">Total number of orders (@Model.OrderIds.Count())</h3>
-                    </div>
-                    <div class="detail">
-                        <a class="nhsuk-button nhsuk-u-margin-bottom-2" href=
-                            "@Url.Action(
-                                nameof(OrderTriageController.OrderItemType),
-                                typeof(OrderTriageController).ControllerName(),
-                                new { Model.InternalOrgId })">Create new order</a>
-                    </div>
-                    <hr class="nhsuk-u-margin-bottom-4 nhsuk-u-margin-top-4" />
-                    @if (Model.Orders.Count > 0)
-                    {
-                        <nhs-table data-test-id="orders-table">
-                            <nhs-table-column>Call-off ID</nhs-table-column>
-                            <nhs-table-column>Description</nhs-table-column>
-                            <nhs-table-column>Date created</nhs-table-column>
-                            <nhs-table-column>Status</nhs-table-column>
-                            <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
-                            @foreach(var order in Model.Orders)
-                            {
-                                <nhs-table-row-container>
-                                    <nhs-table-cell>
-                                        <span style="white-space: nowrap">
-                                            @order.CallOffId
-                                        </span>
-                                    </nhs-table-cell>
-                                    <nhs-table-cell>@order.Description</nhs-table-cell>
-                                    <nhs-table-cell>@order.Created.ToString("d MMM yyyy")</nhs-table-cell>
-                                    <nhs-table-cell>
-                                        <span style="white-space: nowrap">
-                                            <nhs-tag colour="@Model.TagColour(order.OrderStatus)"
-                                                     text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)"/>
-                                        </span>
-                                    </nhs-table-cell>
-                                    <nhs-table-cell>
-                                        <a data-test-id="link-@order.CallOffId"
-                                           asp-action="@nameof(OrderController.Order)"
-                                           asp-controller="@typeof(OrderController).ControllerName()"
-                                           asp-route-internalOrgId="@Model.InternalOrgId"
-                                           asp-route-callOffId="@order.CallOffId" style="white-space: nowrap;">
-                                            View
-                                        </a>
-                                    </nhs-table-cell>
-                                </nhs-table-row-container>
-                            }
-                        </nhs-table>
-                        <div id="pagination">
-                            <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
-                                                        total-number-of-pages="@Model.Options.NumberOfPages" />
-
-                        </div>
-                    }
-                    else
-                    {
-                        @if(Context.Request.Query["search"].Count > 0)
-                        {
-                            <h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
-                            <p style="white-space:nowrap;">
-                                Try entering a different search term, or 
-                                <a data-test-id="clear-results-link"
-                                    asp-action="@nameof(DashboardController.Organisation)"
-                                    asp-controller="@typeof(DashboardController).ControllerName()"
-                                    asp-route-internalOrgId="@Model.InternalOrgId"
-                                    >
-                                    select an order from the complete list
-                                </a>.
-                            </p>
-                        } else
-                        {
-                            <p id="no-orders">There are currently no orders for this organisation.</p>
-                        }
-                    }
-                </nhs-card-content>
-            </nhs-card-v2>
+            <partial name="Dashboard/_OrderCardPartial" model="@(new DashboardCardBaseModel<Order>(Model.InternalOrgId, Model.Orders, Model.OrderIds.Count(), pageOptions: Model.Options))"/>
         </div>
     </div>
 </div>

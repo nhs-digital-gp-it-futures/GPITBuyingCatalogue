@@ -34,6 +34,7 @@ public class CardContentTagHelper : TagHelper
         var content = new TagBuilder(TagHelperConstants.Div);
 
         content.AddCssClass(CardStyles.CardContentClass);
+        content.AddCssClass(CardStyles.CardV2ContentClass);
 
         if (CentralAlignment)
             content.AddCssClass(CardStyles.CardCenterAlignmentClass);
@@ -43,8 +44,6 @@ public class CardContentTagHelper : TagHelper
         content.InnerHtml
             .AppendHtml(BuildHeading(cardContext))
             .AppendHtml(childContent.GetContent());
-
-        content.AddCssClass("nhs-card-v2__content");
 
         cardContext.ShouldBeClickable = !string.IsNullOrWhiteSpace(Url);
         cardContext.BodyContent = content;
@@ -64,7 +63,7 @@ public class CardContentTagHelper : TagHelper
 
         if (string.IsNullOrWhiteSpace(Url))
         {
-            heading.InnerHtml.AppendHtml(Title);
+            heading.InnerHtml.Append(Title);
 
             if (cardContext.HorizontalAlign)
                 heading.AddCssClass(CardStyles.CardHeadingMinHeightClass);

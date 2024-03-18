@@ -1,0 +1,133 @@
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using EnumsNET
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Dashboard.DashboardCardBaseModel<NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.Order>
+
+@{
+    var hasOrders = Model.Items.Count > 0;
+    var ordersToIterate = Model.IsDashboardView ? 5 : Model.Items.Count;
+}
+
+<nhs-card-v2>
+    <nhs-card-content centre-alignment="@(!hasOrders)">
+        @if (hasOrders && !Model.IsDashboardView)
+        {
+            <div class="header-with-detail">
+                <h3 class="nhsuk-heading-m">Total number of orders (@Model.NumberOfItems)</h3>
+            </div>
+            <div class="detail">
+                <a class="nhsuk-button nhsuk-u-margin-bottom-2"
+                   asp-action="@(nameof(OrderTriageController.OrderItemType))"
+                   asp-controller="@(typeof(OrderTriageController).ControllerName())"
+                   asp-route-internalOrgId="@(Model.InternalOrgId)"
+                   asp-route-area="@(typeof(OrderTriageController).ControllerName())">
+                    Create new order
+                </a>
+            </div>
+            <hr class="nhsuk-u-margin-bottom-4 nhsuk-u-margin-top-4"/>
+        }
+
+        @if (hasOrders)
+        {
+            <nhs-table data-test-id="orders-table">
+                <nhs-table-column>Call-off ID</nhs-table-column>
+                <nhs-table-column>Description</nhs-table-column>
+                <nhs-table-column>Date created</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+                <nhs-table-column>
+                    <span class="nhsuk-u-visually-hidden">Action</span>
+                </nhs-table-column>
+                @foreach (var order in Model.Items.OrderByDescending(x => x.Created).Take(ordersToIterate))
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <span style="white-space: nowrap">
+                                @order.CallOffId
+                            </span>
+                        </nhs-table-cell>
+                        <nhs-table-cell>@order.Description</nhs-table-cell>
+                        <nhs-table-cell>@order.Created.ToString("d MMM yyyy")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <span style="white-space: nowrap">
+                                <nhs-tag colour="@TagColour(order.OrderStatus)"
+                                         text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)"/>
+                            </span>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a data-test-id="link-@order.CallOffId"
+                               asp-action="@nameof(OrderController.Order)"
+                               asp-controller="@typeof(OrderController).ControllerName()"
+                               asp-route-internalOrgId="@Model.InternalOrgId"
+                               asp-route-callOffId="@order.CallOffId" style="white-space: nowrap;">
+                                View
+                            </a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+
+            @if (Model.IsDashboardView)
+            {
+                <a asp-action="@(nameof(DashboardController.Organisation))" asp-controller="@(typeof(DashboardController).ControllerName())" asp-route-internalOrgId="@Model.InternalOrgId" asp-route-area="@(typeof(DashboardController).AreaName())">
+                    View orders
+                </a>
+            }
+
+            @if (Model.ShouldUsePagination)
+            {
+                <div id="pagination">
+                    <nhs-page-number-pagination current-page-number="@Model.PageOptions.PageNumber"
+                                                total-number-of-pages="@Model.PageOptions.NumberOfPages"/>
+
+                </div>
+            }
+        }
+        else
+        {
+            @if (Context.Request.Query["search"].Count > 0)
+            {
+                <h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
+                <p style="white-space:nowrap;">
+                    Try entering a different search term, or
+                    <a data-test-id="clear-results-link"
+                       asp-action="@nameof(DashboardController.Organisation)"
+                       asp-controller="@typeof(DashboardController).ControllerName()"
+                       asp-route-internalOrgId="@Model.InternalOrgId">
+                        select an order from the complete list
+                    </a>.
+                </p>
+            }
+            else
+            {
+                <img src="~/images/orders-splash-with-shadow.svg" alt="Order image" class="splash-intro-img nhsuk-u-margin-top-2"/>
+                <h3 class="nhsuk-heading-m">No orders created yet</h3>
+                <p class="nhsuk-body">
+                    Orders you create for your organisation will appear here.<br/>
+
+                    Browse the
+                    <a asp-action="@nameof(SolutionsController.Index)"
+                       asp-controller="@typeof(SolutionsController).ControllerName()"
+                       asp-area="@typeof(SolutionsController).AreaName()">
+                        Catalogue Solutions
+                    </a> available to order.
+                </p>
+                <vc:nhs-secondary-button text="Create new order"
+                                         url="@Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { internalOrgId = Model.InternalOrgId, area = typeof(OrderTriageController).AreaName() })"
+                                         type="Primary"/>
+            }
+        }
+    </nhs-card-content>
+</nhs-card-v2>
+
+@{
+    NhsTagsTagHelper.TagColour TagColour(OrderStatus orderStatus) => orderStatus switch
+    {
+        OrderStatus.Terminated => NhsTagsTagHelper.TagColour.Red,
+        OrderStatus.Completed => NhsTagsTagHelper.TagColour.Green,
+        OrderStatus.InProgress => NhsTagsTagHelper.TagColour.Blue,
+        _ => throw new ArgumentOutOfRangeException(nameof(orderStatus)),
+    };
+}

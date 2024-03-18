@@ -1,0 +1,31 @@
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Dashboard.DashboardCardBaseModel<NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models.Competition>
+
+@{
+    var hasCompetitions = Model.Items.Count > 0;
+}
+
+<nhs-card-v2>
+    <nhs-card-content centre-alignment="@(!hasCompetitions)">
+        @if (!hasCompetitions)
+        {
+            <img src="~/images/competitions-splash-with-shadow.svg" alt="Competition image" class="splash-intro-img nhsuk-u-margin-top-2"/>
+            <h3 class="nhsuk-heading-m">No competitions created yet</h3>
+            <p class="nhsuk-body">
+                Competitions you create for your organisation will appear here.<br/>
+
+                Competitions allow you to compare available
+                <a asp-action="@nameof(SolutionsController.Index)"
+                   asp-controller="@typeof(SolutionsController).ControllerName()"
+                   asp-area="@typeof(SolutionsController).AreaName()">
+                    Catalogue Solutions
+                </a>.
+            </p>
+            <vc:nhs-secondary-button text="Create new competition"
+                                     url="@(Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart), typeof(CompetitionsDashboardController).ControllerName(), new { area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId }))"
+                                     type="Primary"/>
+        }
+    </nhs-card-content>
+</nhs-card-v2>

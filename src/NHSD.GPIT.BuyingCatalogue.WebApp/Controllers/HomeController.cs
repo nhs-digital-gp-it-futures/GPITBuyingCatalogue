@@ -42,22 +42,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public IActionResult Index() => View();
 
         [Authorize]
-        public async Task<IActionResult> AccountDashboard()
+        [HttpGet("{internalOrgId}/dashboard")]
+        public async Task<IActionResult> AccountDashboard(string internalOrgId)
         {
-            var internalOrgId = User.GetPrimaryOrganisationInternalIdentifier();
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
             var existingFilters = await manageFiltersService.GetFilters(organisation.Id);
             var competitions = await competitionsService.GetCompetitionsDashboard(internalOrgId);
             var orders = await orderService.GetOrders(organisation.Id);
 
-            var model = new AccountDashboardModel()
+            var model = new AccountDashboardModel
             {
                 OrganisationName = organisation.Name,
                 InternalOrgId = internalOrgId,
                 Orders = orders,
                 Shortlists = existingFilters,
-                Competitions = competitions?.ToList(),
+                Competitions = competitions.ToList(),
             };
+
             return View(model);
         }
 
