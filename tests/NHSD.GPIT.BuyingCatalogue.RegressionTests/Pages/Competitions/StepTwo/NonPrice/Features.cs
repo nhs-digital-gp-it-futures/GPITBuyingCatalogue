@@ -61,11 +61,5 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             CommonActions.LedeText().Should().Be("Review the information you’ve provided and add any more features requirements if needed.".FormatForComparison());
             CommonActions.ClickSave();
         }
-
-        public void AddNonPriceElement()
-        {
-            CommonActions.LedeText().Should().Be("Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.".FormatForComparison());
-            CommonActions.ClickContinue();
-        }
     }
 }

@@ -16,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo
 
         public void PriceNonPriceAwardCriteriaWeightings()
         {
-
             int priceOnlyweightings;
             int priceAndNonPriceweightings;
 

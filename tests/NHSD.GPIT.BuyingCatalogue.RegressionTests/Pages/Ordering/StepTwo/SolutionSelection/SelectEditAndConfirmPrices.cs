@@ -21,17 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public LocalWebApplicationFactory Factory { get; }
 
-        public void SelectAndConfirmPrice()
-        {
-            SelectPrice();
-            ConfirmPrice();
-        }
-
-        public void AmendViewAndConfirmPrice()
-        {
-            AmendViewCatalogueSOlutionPrice();
-        }
-
         public void EditCatalogueSolutionPrice(string solutionName)
         {
             CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetCatalogueSolutionID(solutionName)));
@@ -51,17 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(OrderController),
              nameof(OrderController.Order)).Should().BeTrue();
-        }
-
-        public void SelectEditPrice(string solutionName)
-        {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetCatalogueSolutionID(solutionName)));
-
-            CommonActions.PageLoadedCorrectGetIndex(
-               typeof(PricesController),
-               nameof(PricesController.ConfirmPrice)).Should().BeTrue();
-
-            CommonActions.ClickSave();
         }
 
         public void SelectCatalogueSolutionPrice(string solutionid)
@@ -87,38 +65,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(TaskListController),
              nameof(TaskListController.TaskList)).Should().BeTrue();
-        }
-
-        private void SelectPrice()
-        {
-            if (CommonActions.GetNumberOfRadioButtonsDisplayed() > 0)
-            {
-                CommonActions.PageLoadedCorrectGetIndex(
-                   typeof(PricesController),
-                   nameof(PricesController.SelectPrice)).Should().BeTrue();
-
-                CommonActions.ClickFirstRadio();
-                CommonActions.ClickSave();
-            }
-        }
-
-        private void ConfirmPrice()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-               typeof(PricesController),
-               nameof(PricesController.ConfirmPrice)).Should().BeTrue();
-
-            TextGenerators.PriceInputAddPrice(PriceObjects.AgreedPriceInput(0), MaxPrice);
-            CommonActions.ClickSave();
-        }
-
-        private void AmendViewCatalogueSOlutionPrice()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-               typeof(PricesController),
-               nameof(PricesController.ViewPrice)).Should().BeTrue();
-
-            CommonActions.ClickContinue();
         }
 
         private string GetCatalogueSolutionID(string solutionName)
