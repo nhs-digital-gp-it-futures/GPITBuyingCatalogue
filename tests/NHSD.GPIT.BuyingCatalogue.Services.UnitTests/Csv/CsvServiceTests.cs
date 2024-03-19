@@ -259,8 +259,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task OrderTypeSolution_One_OrderItem_One_Recipient_Results_In_One_Row(
+            ProvisioningType provisioningType,
             Order order,
             CsvService service,
             CatalogueItem originalCatalogueItem,
@@ -269,20 +272,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         {
             order.OrderType = OrderTypeEnum.Solution;
 
-            OrderItem orderItem = BuildOrderItem(
-                fixture,
-                originalCatalogueItem,
-                OrderItemFundingType.LocalFunding,
-                CataloguePriceQuantityCalculationType.PerServiceRecipient);
-
             var recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-
-            order.OrderItems = new HashSet<OrderItem>() { orderItem };
-            order.OrderRecipients = new HashSet<OrderRecipient>() { recipient };
-
-            dbContext.Orders.Add(order);
-            await dbContext.SaveChangesAsync();
-            dbContext.ChangeTracker.Clear();
+            await SaveOrderWithRecipients(
+                order,
+                originalCatalogueItem,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient,
+                provisioningType,
+                new HashSet<OrderRecipient>() { recipient },
+                dbContext,
+                fixture);
 
             await using var fullOrderStream = new MemoryStream();
             await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
@@ -299,8 +297,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task OrderTypeMerger_One_OrderItem_One_Recipient_Results_In_One_Row(
+            ProvisioningType provisioningType,
             Order order,
             CsvService service,
             CatalogueItem originalCatalogueItem,
@@ -310,20 +311,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             order.OrderType = OrderTypeEnum.AssociatedServiceMerger;
             order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Id = order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode;
 
-            OrderItem orderItem = BuildOrderItem(
-                fixture,
-                originalCatalogueItem,
-                OrderItemFundingType.LocalFunding,
-                CataloguePriceQuantityCalculationType.PerServiceRecipient);
-
             var recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-
-            order.OrderItems = new HashSet<OrderItem>() { orderItem };
-            order.OrderRecipients = new HashSet<OrderRecipient>() { recipient };
-
-            dbContext.Orders.Add(order);
-            await dbContext.SaveChangesAsync();
-            dbContext.ChangeTracker.Clear();
+            await SaveOrderWithRecipients(
+                order,
+                originalCatalogueItem,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient,
+                provisioningType,
+                new HashSet<OrderRecipient>() { recipient },
+                dbContext,
+                fixture);
 
             await using var fullOrderStream = new MemoryStream();
             await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
@@ -343,8 +339,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task OrderTypeSplit_One_OrderItem_One_Recipient_Results_In_One_Row(
+            ProvisioningType provisioningType,
             Order order,
             CsvService service,
             CatalogueItem originalCatalogueItem,
@@ -353,20 +352,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceSplit;
 
-            OrderItem orderItem = BuildOrderItem(
-                fixture,
-                originalCatalogueItem,
-                OrderItemFundingType.LocalFunding,
-                CataloguePriceQuantityCalculationType.PerServiceRecipient);
-
             var recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-
-            order.OrderItems = new HashSet<OrderItem>() { orderItem };
-            order.OrderRecipients = new HashSet<OrderRecipient>() { recipient };
-
-            dbContext.Orders.Add(order);
-            await dbContext.SaveChangesAsync();
-            dbContext.ChangeTracker.Clear();
+            await SaveOrderWithRecipients(
+                order,
+                originalCatalogueItem,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient,
+                provisioningType,
+                new HashSet<OrderRecipient>() { recipient },
+                dbContext,
+                fixture);
 
             await using var fullOrderStream = new MemoryStream();
             await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
@@ -386,8 +380,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task OrderTypeSolution_One_OrderItem_Two_Recipients_Results_In_Two_Rows_One_For_Each_Recipient(
+            ProvisioningType provisioningType,
             Order order,
             CsvService service,
             CatalogueItem originalCatalogueItem,
@@ -395,25 +392,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             IFixture fixture)
         {
             order.OrderType = OrderTypeEnum.Solution;
-            OrderItem orderItem = BuildOrderItem(
-                fixture,
-                originalCatalogueItem,
-                OrderItemFundingType.LocalFunding,
-                CataloguePriceQuantityCalculationType.PerServiceRecipient);
 
             var recipient1 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
             var recipient2 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-
-            order.OrderItems = new HashSet<OrderItem>() { orderItem };
-            order.OrderRecipients = new HashSet<OrderRecipient>()
-            {
-                recipient1,
-                recipient2,
-            };
-
-            dbContext.Orders.Add(order);
-            await dbContext.SaveChangesAsync();
-            dbContext.ChangeTracker.Clear();
+            await SaveOrderWithRecipients(
+                order,
+                originalCatalogueItem,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient,
+                provisioningType,
+                new HashSet<OrderRecipient>() { recipient1, recipient2 },
+                dbContext,
+                fixture);
 
             await using var fullOrderStream = new MemoryStream();
             await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
@@ -442,8 +431,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task Amendendment_One_Recipient_Added_To_One_OrderItem_One_Recipient_Results_In_One_Row(
+            ProvisioningType provisioningType,
             Order order,
             CsvService service,
             CatalogueItem originalCatalogueItem,
@@ -455,6 +447,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                 fixture,
                 originalCatalogueItem,
                 OrderItemFundingType.LocalFunding,
+                provisioningType,
                 CataloguePriceQuantityCalculationType.PerServiceRecipient);
 
             var recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
@@ -489,8 +482,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task Amendendment_One_Recipient_And_One_Service_Added_To_One_OrderItem_One_Recipient(
+            ProvisioningType provisioningType,
             Order order,
             CsvService service,
             CatalogueItem originalCatalogueItem,
@@ -503,6 +499,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                 fixture,
                 originalCatalogueItem,
                 OrderItemFundingType.LocalFunding,
+                provisioningType,
                 CataloguePriceQuantityCalculationType.PerServiceRecipient);
 
             var recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
@@ -518,6 +515,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                 fixture,
                 addedCatalogueItem,
                 OrderItemFundingType.LocalFunding,
+                provisioningType,
                 CataloguePriceQuantityCalculationType.PerServiceRecipient);
             var originalRecipient = amend.OrderRecipients.First();
             originalRecipient.SetQuantityForItem(addedCatalogueItem.Id, 1);
@@ -555,8 +553,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
         public static async Task One_OrderItem_Two_Recipients_With_PerOrderItemQuantity_Results_In_One_Row(
+            ProvisioningType provisioningType,
             Order order,
             CsvService service,
             CatalogueItem originalCatalogueItem,
@@ -564,25 +564,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             IFixture fixture)
         {
             order.OrderType = OrderTypeEnum.Solution;
-            OrderItem orderItem = BuildOrderItem(
-                fixture,
-                originalCatalogueItem,
-                OrderItemFundingType.LocalFunding,
-                CataloguePriceQuantityCalculationType.PerSolutionOrService);
 
             var recipient1 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
             var recipient2 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-
-            order.OrderItems = new HashSet<OrderItem>() { orderItem };
-            order.OrderRecipients = new HashSet<OrderRecipient>()
-        {
-            recipient1,
-            recipient2,
-        };
-
-            dbContext.Orders.Add(order);
-            await dbContext.SaveChangesAsync();
-            dbContext.ChangeTracker.Clear();
+            await SaveOrderWithRecipients(
+                order,
+                originalCatalogueItem,
+                CataloguePriceQuantityCalculationType.PerSolutionOrService,
+                provisioningType,
+                new HashSet<OrderRecipient>() { recipient1, recipient2 },
+                dbContext,
+                fixture);
 
             await using var fullOrderStream = new MemoryStream();
             await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
@@ -596,6 +588,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             records.First().ServiceRecipientId.Should().Be(order.OrderingParty.ExternalIdentifier);
             records.First().ServiceRecipientName.Should().Be(order.OrderingParty.Name);
             records.First().ServiceRecipientItemId.Should().StartWith($"{order.CallOffId}-{order.OrderingParty.ExternalIdentifier}-");
+        }
+
+        private static async Task SaveOrderWithRecipients(Order order, CatalogueItem originalCatalogueItem, CataloguePriceQuantityCalculationType cataloguePriceQuantityCalculationType, ProvisioningType provisioningType, ICollection<OrderRecipient> recipients, BuyingCatalogueDbContext dbContext, IFixture fixture)
+        {
+            OrderItem orderItem = BuildOrderItem(
+                fixture,
+                originalCatalogueItem,
+                OrderItemFundingType.LocalFunding,
+                provisioningType,
+                cataloguePriceQuantityCalculationType);
+
+            order.OrderItems = new HashSet<OrderItem>() { orderItem };
+            order.OrderRecipients = recipients;
+
+            dbContext.Orders.Add(order);
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
         }
 
         private static IEnumerable<T> GetRows<T>(MemoryStream fullOrderStream, ClassMap<T> map)
@@ -614,11 +623,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             IFixture fixture,
             CatalogueItem catalogueItem,
             OrderItemFundingType? fundingType,
-            CataloguePriceQuantityCalculationType cataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient)
+            ProvisioningType provisioningType,
+            CataloguePriceQuantityCalculationType cataloguePriceQuantityCalculationType)
         {
             var itemPrice = fixture.Build<OrderItemPrice>()
                 .Without(p => p.OrderItem)
                 .With(p => p.OrderItemPriceTiers, new HashSet<OrderItemPriceTier>())
+                .With(p => p.ProvisioningType, provisioningType)
                 .With(p => p.CataloguePriceQuantityCalculationType, cataloguePriceQuantityCalculationType)
                 .Create() as IPrice;
 

@@ -1,6 +1,6 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
 
-public enum MockingFramework
+internal enum MockingFramework
 {
     Moq,
     NSubstitute,

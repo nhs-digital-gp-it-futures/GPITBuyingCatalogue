@@ -1042,6 +1042,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             OrderService service)
         {
             order.SelectedFramework.FundingTypes = new List<FundingType> { fundingType };
+            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.OnDemand;
             orderItem.OrderItemFunding = null;
             order.OrderItems = new List<OrderItem>() { orderItem };
             context.Orders.Add(order);
@@ -1069,6 +1070,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         {
             organisation.OrganisationType = OrganisationType.GP;
             order.OrderingParty = organisation;
+            orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.OnDemand;
             orderItem.OrderItemFunding = null;
             order.OrderItems = new List<OrderItem>() { orderItem };
             context.Orders.Add(order);
