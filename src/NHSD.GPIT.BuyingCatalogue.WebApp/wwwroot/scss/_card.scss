@@ -13,7 +13,19 @@
     vertical-align: middle
 }
 
-.nhs-card-v2__content{
+.card-content-icon {
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 8px
+}
+
+.card-content-text-with-icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 90%
+}
+
+.nhs-card-v2__content {
     .nhsuk-pagination {
         margin-bottom: 0;
     }

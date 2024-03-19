@@ -15,7 +15,6 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
 {
     public const string AdviceText = "Enter the quantity you want for each practice for the duration of your order.";
     public const string AdviceTextPatient = "We’ve included the latest practice list sizes published by NHS Digital.";
-    public const string AdviceTextServiceRecipient = "You can only order one solution per Service Recipient.";
     public const string AdviceTextMergerSplit = "Review the quantity you’ll be ordering based on the Service Recipients you’ve selected.";
     public const string QuantityColumnTitleText = "Quantity";
     public const string QuantityColumnTitleTextPatient = "Practice list size";
@@ -35,7 +34,6 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
         Advice = price.ProvisioningType switch
         {
             ProvisioningType.Patient => AdviceTextPatient,
-            ProvisioningType.PerServiceRecipient => AdviceTextServiceRecipient,
             _ => AdviceText,
         };
         ProvisioningType = price.ProvisioningType;
@@ -98,18 +96,10 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
             Location = recipient.Location,
         };
 
-        if (ProvisioningType is ProvisioningType.PerServiceRecipient)
-        {
-            recipientQuantityModel.Quantity = 1;
-            recipientQuantityModel.InputQuantity = "1";
-        }
-        else
-        {
-            recipientQuantityModel.Quantity = recipient.Quantity ?? 0;
-            recipientQuantityModel.InputQuantity = recipient.Quantity.HasValue
-                ? $"{recipient.Quantity}"
-                : string.Empty;
-        }
+        recipientQuantityModel.Quantity = recipient.Quantity ?? 0;
+        recipientQuantityModel.InputQuantity = recipient.Quantity.HasValue
+            ? $"{recipient.Quantity}"
+            : string.Empty;
 
         return recipientQuantityModel;
     }

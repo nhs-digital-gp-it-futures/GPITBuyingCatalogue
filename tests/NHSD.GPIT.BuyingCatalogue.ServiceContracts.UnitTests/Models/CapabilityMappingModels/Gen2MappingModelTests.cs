@@ -4,6 +4,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
@@ -12,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models.Capability
 public static class Gen2MappingModelTests
 {
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static void Constructing_SetsPropertiesAsExpected(
         List<Solution> solutions)
     {
@@ -42,7 +43,7 @@ public static class Gen2MappingModelTests
     }
 
     [Theory]
-    [CommonAutoData(MockingFramework.NSubstitute)]
+    [MockAutoData]
     public static void Constructing_WithAdditionalServices_SetsPropertiesAsExpected(
         List<Solution> solutions)
     {

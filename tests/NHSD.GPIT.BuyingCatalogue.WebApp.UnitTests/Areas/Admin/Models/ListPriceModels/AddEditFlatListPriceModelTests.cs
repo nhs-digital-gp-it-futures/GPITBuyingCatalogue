@@ -24,7 +24,6 @@ public static class AddEditFlatListPriceModelTests
 
         model.OnDemandBillingPeriod.Should().Be(billingPeriod);
         model.DeclarativeBillingPeriod.Should().BeNull();
-        model.PerServiceRecipientBillingPeriod.Should().BeNull();
     }
 
     [Theory]
@@ -43,26 +42,6 @@ public static class AddEditFlatListPriceModelTests
 
         model.OnDemandBillingPeriod.Should().BeNull();
         model.DeclarativeBillingPeriod.Should().Be(billingPeriod);
-        model.PerServiceRecipientBillingPeriod.Should().BeNull();
-    }
-
-    [Theory]
-    [CommonInlineAutoData(null)]
-    [CommonInlineAutoData(TimeUnit.PerMonth)]
-    [CommonInlineAutoData(TimeUnit.PerYear)]
-    public static void Construct_PerServiceRecipientPrice_AssignsBillingPeriod(
-        TimeUnit? billingPeriod,
-        CatalogueItem catalogueItem,
-        CataloguePrice price)
-    {
-        price.ProvisioningType = ProvisioningType.PerServiceRecipient;
-        price.TimeUnit = billingPeriod;
-
-        var model = new AddEditFlatListPriceModel(catalogueItem, price);
-
-        model.OnDemandBillingPeriod.Should().BeNull();
-        model.DeclarativeBillingPeriod.Should().BeNull();
-        model.PerServiceRecipientBillingPeriod.Should().Be(billingPeriod);
     }
 
     [Theory]
@@ -100,23 +79,6 @@ public static class AddEditFlatListPriceModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-    [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerSolutionOrService)]
-    public static void Construct_NullQuantityCalculationType(
-        CataloguePriceQuantityCalculationType calculationType,
-        CatalogueItem catalogueItem,
-        CataloguePrice price)
-    {
-        price.ProvisioningType = ProvisioningType.PerServiceRecipient;
-        price.CataloguePriceQuantityCalculationType = calculationType;
-
-        var model = new AddEditFlatListPriceModel(catalogueItem, price);
-
-        model.OnDemandQuantityCalculationType.Should().BeNull();
-        model.DeclarativeQuantityCalculationType.Should().BeNull();
-    }
-
-    [Theory]
     [CommonAutoData]
     public static void GetBillingPeriod_Patient_PerYear(
         AddEditFlatListPriceModel model)
@@ -124,20 +86,6 @@ public static class AddEditFlatListPriceModelTests
         model.SelectedProvisioningType = ProvisioningType.Patient;
 
         model.GetBillingPeriod().Should().Be(TimeUnit.PerYear);
-    }
-
-    [Theory]
-    [CommonInlineAutoData(null)]
-    [CommonInlineAutoData(TimeUnit.PerMonth)]
-    [CommonInlineAutoData(TimeUnit.PerYear)]
-    public static void GetBillingPeriod_PerServiceRecipient_SelectedTimeUnit(
-        TimeUnit? selectedBillingPeriod,
-        AddEditFlatListPriceModel model)
-    {
-        model.SelectedProvisioningType = ProvisioningType.PerServiceRecipient;
-        model.PerServiceRecipientBillingPeriod = selectedBillingPeriod;
-
-        model.GetBillingPeriod().Should().Be(selectedBillingPeriod);
     }
 
     [Theory]

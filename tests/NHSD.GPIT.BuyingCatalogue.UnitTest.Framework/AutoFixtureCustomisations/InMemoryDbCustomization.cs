@@ -6,10 +6,12 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
-    public sealed class InMemoryDbCustomization : ICustomization
+    [ExcludesAutoCustomization]
+    internal sealed class InMemoryDbCustomization : ICustomization
     {
         private readonly MockingFramework mockingFramework;
         private readonly DbContextOptions<BuyingCatalogueDbContext> dbContextOptions;

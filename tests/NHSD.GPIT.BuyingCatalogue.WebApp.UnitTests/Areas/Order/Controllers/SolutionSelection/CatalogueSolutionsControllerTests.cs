@@ -19,8 +19,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
@@ -49,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Get_SelectSolution_AssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -74,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Get_SelectSolution_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -110,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_SelectSolution_WithModelErrors_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -149,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_SelectSolution_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -193,7 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Get_SelectSolutionAssociatedServicesOnly_NonNullSolutionId_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -220,7 +219,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task
             Get_SelectSolutionAssociatedServicesOnly_NonNullSolutionId_FromSelectAssociatedServices_ReturnsExpectedResult(
                 string internalOrgId,
@@ -259,7 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Get_SelectSolutionAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -293,7 +292,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_SelectSolutionAssociatedServicesOnly_WithModelError_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -330,7 +329,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_SelectSolutionAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -357,7 +356,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Get_EditSolution_AssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -383,7 +382,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Get_EditSolution_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -413,7 +412,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_EditSolution_NoChangesMade_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -444,7 +443,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_EditSolution_SolutionChanged_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -478,7 +477,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Get_EditSolutionAssociatedServicesOnly_NoSolutionSelected_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -504,7 +503,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Get_EditSolutionAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -538,7 +537,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_EditSolutionAssociatedServicesOnly_WithModelError_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -567,7 +566,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_EditSolutionAssociatedServicesOnly_NoChangesMade_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -592,7 +591,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_EditSolutionAssociatedServicesOnly_SolutionChanged_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -624,7 +623,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Get_ConfirmSolutionChanges_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -667,7 +666,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_ConfirmSolutionChanges_ChangesNotConfirmed_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -688,7 +687,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_ConfirmSolutionChanges_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -738,7 +737,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_ConfirmSolutionChanges_WithAdditionalServices_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -787,7 +786,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_ConfirmSolutionChanges_ClearsContract(
             string internalOrgId,
             CallOffId callOffId,
@@ -807,7 +806,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Get_ConfirmSolutionChangesAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -857,7 +856,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task
             Post_ConfirmSolutionChangesAssociatedServicesOnly_ChangesNotConfirmed_ReturnsExpectedResult(
                 string internalOrgId,
@@ -879,7 +878,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_ConfirmSolutionChangesAssociatedServicesOnly_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -920,7 +919,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_ConfirmSolutionChangesAssociatedServicesOnly_ClearsContract(
             string internalOrgId,
             CallOffId callOffId,
@@ -940,7 +939,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Get_RemoveService_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -964,7 +963,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData(MockingFramework.NSubstitute)]
+        [MockAutoData]
         public static async Task Post_RemoveService_RemovesService(
             string internalOrgId,
             CallOffId callOffId,

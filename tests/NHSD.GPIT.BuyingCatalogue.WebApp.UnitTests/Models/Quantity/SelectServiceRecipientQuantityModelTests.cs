@@ -16,18 +16,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
     public static class SelectServiceRecipientQuantityModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(ProvisioningType.Patient, SelectServiceRecipientQuantityModel.AdviceTextPatient)]
+        [CommonInlineAutoData(ProvisioningType.OnDemand, SelectServiceRecipientQuantityModel.AdviceText)]
+        [CommonInlineAutoData(ProvisioningType.Declarative, SelectServiceRecipientQuantityModel.AdviceText)]
         public static void WithValidOrderItem_PropertiesCorrectlySet(
+            ProvisioningType provisioningType,
+            string expectedAdvice,
             List<ServiceRecipientDto> serviceRecipients,
             OrderItem item)
         {
-            item.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
+            item.OrderItemPrice.ProvisioningType = provisioningType;
 
             var model = new SelectServiceRecipientQuantityModel(item.CatalogueItem, item.OrderItemPrice, serviceRecipients);
 
             model.Title.Should().Be(string.Format(SelectServiceRecipientQuantityModel.TitleText, item.CatalogueItem.CatalogueItemType.Description()));
             model.Caption.Should().Be(item.CatalogueItem.Name);
-            model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextPatient);
+            model.Advice.Should().Be(expectedAdvice);
             model.OrderType.Should().BeNull();
             model.PracticeReorganisationRecipient.Should().BeNull();
             model.ServiceRecipients.Length.Should().Be(serviceRecipients.Count);
@@ -40,6 +44,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
                 serviceRecipient.InputQuantity.Should().Be($"{recipient.Quantity}");
                 serviceRecipient.Quantity.Should().Be(recipient.Quantity);
             }
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static void WithValidOrderItem_ServiceRecipientsNull_EmptyServiceRecipients(
+           OrderItem item)
+        {
+            item.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
+
+            var model = new SelectServiceRecipientQuantityModel(item.CatalogueItem, item.OrderItemPrice, null);
+
+            model.ServiceRecipients.Length.Should().Be(0);
         }
 
         [Theory]
@@ -101,47 +117,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void WithValidOrderItem_PerServiceRecipient_QuantityCorrectlySet(
-            List<ServiceRecipientDto> serviceRecipients,
-            OrderItem item)
-        {
-            item.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
-
-            var model = new SelectServiceRecipientQuantityModel(item.CatalogueItem, item.OrderItemPrice, serviceRecipients);
-
-            model.Title.Should().Be(string.Format(SelectServiceRecipientQuantityModel.TitleText, item.CatalogueItem.CatalogueItemType.Description()));
-            model.Caption.Should().Be(item.CatalogueItem.Name);
-            model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextServiceRecipient);
-            model.OrderType.Should().BeNull();
-            model.PracticeReorganisationRecipient.Should().BeNull();
-            model.ServiceRecipients.Length.Should().Be(serviceRecipients.Count);
-
-            foreach (var serviceRecipient in model.ServiceRecipients)
-            {
-                var recipient = serviceRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
-
-                serviceRecipient.Name.Should().Be(recipient.Name);
-                serviceRecipient.InputQuantity.Should().Be("1");
-                serviceRecipient.Quantity.Should().Be(1);
-            }
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void WithValidOrderItem_ServiceRecipientsNull_EmptyServiceRecipients(
+        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static void WithValidOrderItem_PreviousServiceRecipientsEmpty_EmptyPreviouslySelected(
+           OrderType orderType,
            OrderItem item)
         {
-            item.OrderItemPrice.ProvisioningType = ProvisioningType.PerServiceRecipient;
+            item.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
 
-            var model = new SelectServiceRecipientQuantityModel(item.CatalogueItem, item.OrderItemPrice, null);
+            var model = new SelectServiceRecipientQuantityModel(orderType, null, item.CatalogueItem, item.OrderItemPrice, null, Array.Empty<ServiceRecipientDto>());
 
-            model.Title.Should().Be(string.Format(SelectServiceRecipientQuantityModel.TitleText, item.CatalogueItem.CatalogueItemType.Description()));
-            model.Caption.Should().Be(item.CatalogueItem.Name);
-            model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextServiceRecipient);
-            model.OrderType.Should().BeNull();
-            model.PracticeReorganisationRecipient.Should().BeNull();
-            model.ServiceRecipients.Length.Should().Be(0);
+            model.PreviouslySelected.Length.Should().Be(0);
         }
     }
 }

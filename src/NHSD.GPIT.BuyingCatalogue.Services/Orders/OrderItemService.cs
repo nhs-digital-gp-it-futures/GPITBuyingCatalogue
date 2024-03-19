@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             {
                 ProvisioningType.Patient => TimeUnit.PerMonth,
                 ProvisioningType.OnDemand => price.BillingPeriod,
-                ProvisioningType.Declarative or ProvisioningType.PerServiceRecipient or _ => TimeUnit.PerYear,
+                ProvisioningType.Declarative or _ => TimeUnit.PerYear,
             };
 
             await dbContext.SaveChangesAsync();

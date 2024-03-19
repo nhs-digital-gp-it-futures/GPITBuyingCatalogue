@@ -80,56 +80,27 @@
                                     <input type="hidden" asp-for="@Model.ServiceRecipients[index].OdsCode" />
                                     <input type="hidden" asp-for="@Model.ServiceRecipients[index].Quantity" />
                                     <input type="hidden" asp-for="@Model.ServiceRecipients[index].Location" />
-                                    @{
-#pragma warning disable CS0618 // Type or member is obsolete
-                                        if (Model.ServiceRecipients[index].Quantity > 0
-                                        && Model.ProvisioningType == ProvisioningType.PerServiceRecipient)
-                                        {
-                                            @Model.ServiceRecipients[index].Name
-                                        }
-                                        else
-                                        {
-                                            <div style="margin-top: 6px">
-                                                @Model.ServiceRecipients[index].Name
-                                            </div>
-                                        }
-#pragma warning restore CS0618 // Type or member is obsolete
-                                    }
+                                    <div style="margin-top: 6px">
+                                        @Model.ServiceRecipients[index].Name
+                                    </div>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    @{
-#pragma warning disable CS0618 // Type or member is obsolete
-                                        if (Model.ServiceRecipients[index].Quantity > 0
-                                        && Model.ProvisioningType == ProvisioningType.PerServiceRecipient)
-                                        {
-                                            @Model.ServiceRecipients[index].OdsCode
-                                        }
-                                        else
-                                        {
-                                            <div style="margin-top: 6px">
-                                                @Model.ServiceRecipients[index].OdsCode
-                                            </div>
-                                        }
-                                    }
+                                    <div style="margin-top: 6px">
+                                        @Model.ServiceRecipients[index].OdsCode
+                                    </div>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    @{
-#pragma warning disable CS0618 // Type or member is obsolete
-                                        if (Model.ServiceRecipients[index].Quantity > 0
-                                        && (Model.ProvisioningType == ProvisioningType.PerServiceRecipient
-                                        || (Model.OrderType?.MergerOrSplit ?? false)))
-                                        {
-                                            <input type="hidden" asp-for="@Model.ServiceRecipients[index].InputQuantity" />
-                                            @($"{Model.ServiceRecipients[index].Quantity:N0}")
-                                        }
-                                        else
-                                        {
-                                            inputRequired = true;
-                                            <nhs-input asp-for="@Model.ServiceRecipients[index].InputQuantity"
-                                                       input-width="Five"
-                                                       data-test-id="input_quantity" />
-#pragma warning restore CS0618 // Type or member is obsolete
-                                        }
+                                    @if (Model.ServiceRecipients[index].Quantity > 0 && (Model.OrderType?.MergerOrSplit ?? false))
+                                    {
+                                        <input type="hidden" asp-for="@Model.ServiceRecipients[index].InputQuantity" />
+                                        @($"{Model.ServiceRecipients[index].Quantity:N0}")
+                                    }
+                                    else
+                                    {
+                                        inputRequired = true;
+                                        <nhs-input asp-for="@Model.ServiceRecipients[index].InputQuantity"
+                                                   input-width="Five"
+                                                   data-test-id="input_quantity" />
                                     }
                                 </nhs-table-cell>
                             </nhs-table-row-container>
