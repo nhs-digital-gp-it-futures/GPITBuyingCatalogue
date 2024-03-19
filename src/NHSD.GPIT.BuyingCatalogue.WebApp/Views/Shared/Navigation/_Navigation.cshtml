@@ -7,7 +7,7 @@
 
     if ((User.Identity?.IsAuthenticated).GetValueOrDefault())
     {
-        if (User.IsInRole(OrganisationFunction.Buyer.Name))
+        if (User.IsBuyer() || User.IsAccountManager())
         {
             navigationItems.Insert(
                 1,
