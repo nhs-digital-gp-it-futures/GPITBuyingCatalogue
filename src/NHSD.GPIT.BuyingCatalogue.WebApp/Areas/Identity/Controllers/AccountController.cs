@@ -263,11 +263,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
                 ? Url.Action(
                     nameof(Admin.Controllers.HomeController.Index),
                     typeof(Admin.Controllers.HomeController).ControllerName(),
-                    new { area = typeof(Admin.Controllers.HomeController).ControllerName() })
+                    new { area = typeof(Admin.Controllers.HomeController).AreaName() })
                 : Url.Action(
                     nameof(BuyerDashboardController.Index),
                     typeof(BuyerDashboardController).ControllerName(),
-                    new { internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() });
+                    new { area = typeof(BuyerDashboardController).AreaName(), internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() });
         }
     }
 }
