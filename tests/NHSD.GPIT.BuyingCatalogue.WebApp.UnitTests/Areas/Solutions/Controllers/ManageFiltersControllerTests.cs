@@ -24,6 +24,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
+using NHSD.GPIT.BuyingCatalogue.Services.Framework;
+using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
@@ -544,6 +547,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             actualResult.ActionName.Should().Be(nameof(ManageFiltersController.Index));
             manageFiltersService.Verify(x => x.DeleteFilter(deleteFilterModel.FilterId), Times.Once);
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async void Get_MaximumShortlists_ReturnsExpectedResult(
+            int filterId,
+            FilterDetailsModel filterDetailsModel,
+            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
+            [Frozen] Mock<IEpicsService> epicsService,
+            [Frozen] Mock<IFrameworkService> frameworkService,
+            [Frozen] Mock<IManageFiltersService> manageFiltersService,
+            [Frozen] Mock<IUrlHelper> mockUrlHelper,
+            [Frozen] Mock<IPdfService> mockPdfService,
+            string primaryOrganisationInternalId,
+            Organisation organisation)
+        {
+            organisationsService
+                .Setup(x => x.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId))
+                .ReturnsAsync(organisation);
+            manageFiltersService
+                .Setup(x => x.GetFilterDetails(organisation.Id, filterId))
+                .ReturnsAsync(filterDetailsModel);
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                mockPdfService,
+                primaryOrganisationInternalId);
+
+            var result = await controller.MaximumShortlists();
+            
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+            actualResult.Model.Should().BeOfType<MaximumShortlistsModel>();
+            //actualResult.Model.OrganisationName.Should().Be(organisation.Name);
         }
 
         private static ManageFiltersController CreateController(
