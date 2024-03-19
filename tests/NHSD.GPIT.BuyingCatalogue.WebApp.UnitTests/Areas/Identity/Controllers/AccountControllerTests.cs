@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
@@ -256,8 +256,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             LoginViewModel model,
             Mock<UserManager<AspNetUser>> mockUserManager,
             Mock<SignInManager<AspNetUser>> mockSignInManager,
+            Mock<IUrlHelper> mockUrlHelper,
             Mock<IOdsService> mockOdsService)
         {
+            const string userName = "Name";
+            const string url = "~/";
+
             model.ReturnUrl = string.Empty;
 
             user.Disabled = false;
@@ -279,7 +283,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 .Setup(x => x.UpdateOrganisationDetails(odsCode))
                 .Verifiable();
 
+            mockUrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns(url);
+
+            var userPrincipal = new ClaimsPrincipal(
+                new ClaimsIdentity(
+                    new Claim[]
+                    {
+                        new(ClaimTypes.Name, userName),
+                        new(CatalogueClaims.PrimaryOrganisationInternalIdentifier, odsCode),
+                    },
+                    "mock"));
+
             var controller = CreateController(mockUserManager.Object, mockSignInManager.Object, odsService: mockOdsService.Object);
+            controller.Url = mockUrlHelper.Object;
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = userPrincipal, },
+            };
 
             var result = await controller.Login(model);
 

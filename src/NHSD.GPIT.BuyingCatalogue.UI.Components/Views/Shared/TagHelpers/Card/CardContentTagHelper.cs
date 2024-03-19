@@ -13,6 +13,7 @@ public class CardContentTagHelper : TagHelper
     internal const string TitleName = "title";
     internal const string UrlName = "url";
     private const string SizeName = "size";
+    private const string AlignmentName = "centre-alignment";
 
     [HtmlAttributeName(TitleName)]
     public string Title { get; set; }
@@ -23,6 +24,9 @@ public class CardContentTagHelper : TagHelper
     [HtmlAttributeName(SizeName)]
     public HeadingSize HeadingSize { get; set; } = HeadingSize.Small;
 
+    [HtmlAttributeName(AlignmentName)]
+    public bool CentralAlignment { get; set; } = false;
+
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var cardContext = (CardContext)context.Items[typeof(CardV2TagHelper)];
@@ -30,14 +34,16 @@ public class CardContentTagHelper : TagHelper
         var content = new TagBuilder(TagHelperConstants.Div);
 
         content.AddCssClass(CardStyles.CardContentClass);
+        content.AddCssClass(CardStyles.CardV2ContentClass);
+
+        if (CentralAlignment)
+            content.AddCssClass(CardStyles.CardCenterAlignmentClass);
 
         var childContent = await output.GetChildContentAsync();
 
         content.InnerHtml
             .AppendHtml(BuildHeading(cardContext))
             .AppendHtml(childContent.GetContent());
-
-        content.AddCssClass("nhs-card-v2__content");
 
         cardContext.ShouldBeClickable = !string.IsNullOrWhiteSpace(Url);
         cardContext.BodyContent = content;

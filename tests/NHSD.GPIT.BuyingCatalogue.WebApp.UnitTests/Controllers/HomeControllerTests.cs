@@ -1,5 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using AutoFixture;
+using AutoFixture.AutoNSubstitute;
+using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Diagnostics;
@@ -18,9 +20,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
     public static class HomeControllerTests
     {
         [Fact]
-        public static void CreateHomeController_ContactUsServiceNull()
+        public static void Constructors_VerifyGuardClauses()
         {
-            Assert.Throws<ArgumentNullException>(() => new HomeController(null));
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(HomeController).GetConstructors();
+
+            assertion.Verify(constructors);
         }
 
         [Theory]

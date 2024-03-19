@@ -1,16 +1,21 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 @using HomeController = NHSD.GPIT.BuyingCatalogue.WebApp.Controllers.HomeController
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity
 @{
-    var navigationItems = new List<KeyValuePair<string, string>>()
-    {
-        new ("Home", Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())),
-        new ("Catalogue Solutions", Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { area = typeof(SolutionsController).AreaName() })),
-        new ("Buyer Dashboard", Url.Action(nameof(BuyerDashboardController.Index), typeof(BuyerDashboardController).ControllerName())),
-    };
+    var navigationItems = new List<KeyValuePair<string, string>>() { new("Home", Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())), new("Catalogue Solutions", Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { area = typeof(SolutionsController).AreaName() })), };
 
-    if (User.Identity?.IsAuthenticated ?? false)
+    if ((User.Identity?.IsAuthenticated).GetValueOrDefault())
+    {
+        if (User.IsBuyer() || User.IsAccountManager())
+        {
+            navigationItems.Insert(
+                1,
+                new("Dashboard", Url.Action(nameof(BuyerDashboardController.Index), typeof(BuyerDashboardController).ControllerName(), new { internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() })));
+        }
+
         navigationItems.Add(new("Log out", Url.Action(nameof(AccountController.Logout), typeof(AccountController).ControllerName(), new { area = typeof(AccountController).AreaName() })));
+    }
 }
 
-<vc:nhs-navigation-panel title="Menu" items="navigationItems" />
+<vc:nhs-navigation-panel title="Menu" items="navigationItems"/>
