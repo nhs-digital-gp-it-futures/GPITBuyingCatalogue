@@ -16,9 +16,7 @@
             Competitions allow you to compare available
             <a asp-action="@nameof(SolutionsController.Index)"
                asp-controller="@typeof(SolutionsController).ControllerName()"
-               asp-area="@typeof(SolutionsController).AreaName()">
-                Catalogue Solutions
-            </a>.
+               asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>.
         </p>
         <vc:nhs-secondary-button text="Create new shortlist"
                                  url="@(Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() }))"

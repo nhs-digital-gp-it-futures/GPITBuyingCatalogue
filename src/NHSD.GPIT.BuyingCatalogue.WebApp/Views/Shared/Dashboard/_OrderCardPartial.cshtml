@@ -23,9 +23,7 @@
                    asp-action="@(nameof(OrderTriageController.OrderItemType))"
                    asp-controller="@(typeof(OrderTriageController).ControllerName())"
                    asp-route-internalOrgId="@(Model.InternalOrgId)"
-                   asp-route-area="@(typeof(OrderTriageController).ControllerName())">
-                    Create new order
-                </a>
+                   asp-route-area="@(typeof(OrderTriageController).ControllerName())">Create new order</a>
             </div>
             <hr class="nhsuk-u-margin-bottom-4 nhsuk-u-margin-top-4"/>
         }
@@ -112,9 +110,7 @@
                     Browse the
                     <a asp-action="@nameof(SolutionsController.Index)"
                        asp-controller="@typeof(SolutionsController).ControllerName()"
-                       asp-area="@typeof(SolutionsController).AreaName()">
-                        Catalogue Solutions
-                    </a> available to order.
+                       asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a> available to order.
                 </p>
                 <vc:nhs-secondary-button text="Create new order"
                                          url="@Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { internalOrgId = Model.InternalOrgId, area = typeof(OrderTriageController).AreaName() })"

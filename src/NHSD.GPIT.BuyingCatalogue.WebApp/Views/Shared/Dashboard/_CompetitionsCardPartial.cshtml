@@ -17,9 +17,7 @@
             Competitions allow you to compare available
             <a asp-action="@nameof(SolutionsController.Index)"
                asp-controller="@typeof(SolutionsController).ControllerName()"
-               asp-area="@typeof(SolutionsController).AreaName()">
-                Catalogue Solutions
-            </a>.
+               asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>.
         </p>
         <vc:nhs-secondary-button text="Create new competition"
                                  url="@(Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart), typeof(CompetitionsDashboardController).ControllerName(), new { area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId }))"
