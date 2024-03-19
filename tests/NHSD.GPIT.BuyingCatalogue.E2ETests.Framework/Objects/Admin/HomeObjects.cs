@@ -17,5 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
         public static By ManageAllUsersLink => By.LinkText("Manage all users");
 
         public static By ManageAllOrdersLink => By.LinkText("Manage all orders");
+
+        public static By ManageCapabilitiesAndEpics => By.LinkText("Manage Capabilities and Epics");
     }
 }
