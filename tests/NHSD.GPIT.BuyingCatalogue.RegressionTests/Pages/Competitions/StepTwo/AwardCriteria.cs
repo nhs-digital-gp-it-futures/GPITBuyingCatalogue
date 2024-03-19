@@ -28,13 +28,5 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo
 
             CommonActions.LedeText().Should().Be("Complete the following steps to carry out a competition.".FormatForComparison());
         }
-
-        public void PriceAndNonPriceElements()
-        {
-            CommonActions.ClickRadioButtonWithText("Price and non-price elements");
-            CommonActions.ClickSave();
-
-            CommonActions.LedeText().Should().Be("Complete the following steps to carry out a competition.".FormatForComparison());
-        }
     }
 }
