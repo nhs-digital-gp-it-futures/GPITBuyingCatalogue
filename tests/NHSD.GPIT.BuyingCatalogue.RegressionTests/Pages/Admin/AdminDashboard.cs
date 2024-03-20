@@ -20,7 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         public void ManageCapabilitiesAndEpics()
         {
             CommonActions.ClickLinkElement(HomeObjects.ManageCapabilitiesAndEpics);
-            CommonActions.LedeText().Should().Be("Upload a correctly formatted CSV file to map updated Capabilities to the correct solutions and services.".FormatForComparison());
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(Gen2MappingController),
                 nameof(Gen2MappingController.Capabilities))

@@ -3,6 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.CompetitionToOrder;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne;
@@ -24,8 +25,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         public AdminPages(IWebDriver driver, CommonActions commonActions, LocalWebApplicationFactory factory)
         {
             AdminDashboard = new AdminDashboard(driver, commonActions);
+            CapabilitiesAndEpicsMappings = new CapabilitiesAndEpicsMappings(driver, commonActions);
         }
 
         internal AdminDashboard AdminDashboard { get; }
+
+        internal CapabilitiesAndEpicsMappings CapabilitiesAndEpicsMappings { get; }
     }
 }
