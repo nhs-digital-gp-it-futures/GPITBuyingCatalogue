@@ -15,8 +15,8 @@
         <partial name="Partials/_CookieConsentPartial" />
     }
     <partial name="Partials/_BetaBanner" />
-    <partial name="Headers/_Header" model="@("_Navigation")" />
-    
+    <partial name="Headers/_Header" />
+
     @if (Model.ShowBreadcrumb)
     {
         <vc:nhs-breadcrumbs items="@Model.BreadcrumbItems.ToDictionary(x => x.Name, x => @Url.Action(x.Action, x.Controller, x.RouteData))"></vc:nhs-breadcrumbs>
@@ -62,7 +62,7 @@
                 <div class="nhsuk-grid-column-two-thirds" id="content">
                     <nhs-page-title title="@ViewBag.Title"
                                     caption="@ViewBag.Caption" />
-                    
+
                     @RenderBody()
 
                     @if (Model.ShowPagination)
@@ -87,7 +87,7 @@
     <partial name="Footers/_Footer" />
 
     <partial name="Partials/_JsAssetIncludes" />
-    
+
 @if (Model.ShowBackToTop)
 {
         <a href="#">

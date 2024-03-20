@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 .ReturnsAsync(user);
 
             var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
-                new Claim[] { new("organisationFunction", "Buyer") },
+                new Claim[] { new(ClaimTypes.Role, "Buyer") },
                 "mock"));
 
             var controller = new TermsOfUseController(userManager.Object, settings)

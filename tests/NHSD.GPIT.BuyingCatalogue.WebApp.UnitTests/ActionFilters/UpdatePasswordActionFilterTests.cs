@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var claims = new Claim[]
             {
-                new Claim(CatalogueClaims.OrganisationFunction, "Authority"),
+                new Claim(ClaimTypes.Role, "Authority"),
             };
 
             executingContext.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims, "mock"));
@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var claims = new Claim[]
             {
-                new Claim(CatalogueClaims.OrganisationFunction, "Authority"),
+                new Claim(ClaimTypes.Role, "Authority"),
             };
 
             executingContext.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims, "mock"));
@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             var userId = "1";
             var claims = new Claim[]
             {
-                new Claim(CatalogueClaims.OrganisationFunction, "Authority"),
+                new Claim(ClaimTypes.Role, "Authority"),
             };
 
             passwordSettings.PasswordExpiryDays = 365;
@@ -203,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             var userId = "1";
             var claims = new Claim[]
             {
-                new Claim(CatalogueClaims.OrganisationFunction, "Authority"),
+                new Claim(ClaimTypes.Role, "Authority"),
             };
 
             executingContext.HttpContext.User = new ClaimsPrincipal(

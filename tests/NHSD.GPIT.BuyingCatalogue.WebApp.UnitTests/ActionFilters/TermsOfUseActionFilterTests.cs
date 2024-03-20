@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         {
             var claims = new Claim[]
             {
-                new Claim(CatalogueClaims.OrganisationFunction, "Authority"),
+                new Claim(ClaimTypes.Role, "Authority"),
             };
 
             executingContext.HttpContext.Request.Path = "/order";
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         {
             var claims = new Claim[]
             {
-                new Claim(CatalogueClaims.OrganisationFunction, "Buyer"),
+                new Claim(ClaimTypes.Role, "Buyer"),
             };
 
             executingContext.HttpContext.Request.Path = "/fake";
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         {
             var claims = new Claim[]
             {
-                new Claim(CatalogueClaims.OrganisationFunction, "Buyer"),
+                new Claim(ClaimTypes.Role, "Buyer"),
             };
 
             executingContext.HttpContext.Request.Path = "/order";
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         {
             var claims = new Claim[]
             {
-                new Claim(CatalogueClaims.OrganisationFunction, "Buyer"),
+                new Claim(ClaimTypes.Role, "Buyer"),
             };
 
             executingContext.HttpContext.Request.Path = "/order";
