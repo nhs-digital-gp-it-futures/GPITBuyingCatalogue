@@ -12,11 +12,11 @@ using HomeController = NHSD.GPIT.BuyingCatalogue.WebApp.Controllers.HomeControll
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
-public class NavigationMenuModel
+public readonly struct NavigationMenuModel
 {
-    private readonly
+    private static readonly
         List<(Func<ClaimsPrincipal, bool> Key, Func<ClaimsPrincipal, IUrlHelper, List<KeyValuePair<string, string>>>
-            Factory)> linksFactories =
+            Factory)> LinksFactories =
             new()
             {
                 (
@@ -56,7 +56,7 @@ public class NavigationMenuModel
                                 new { area = typeof(SolutionsController).AreaName() })),
                     ]),
                 (
-                    user => user.IsAdmin(), (user, urlHelper) =>
+                    user => user.IsAdmin(), (_, urlHelper) =>
                     [
                         new(
                             "Home",
@@ -96,7 +96,7 @@ public class NavigationMenuModel
         IUrlHelper urlHelper)
     {
         (_, Func<ClaimsPrincipal, IUrlHelper, List<KeyValuePair<string, string>>> linkFactory) =
-            linksFactories.First(x => x.Key(user));
+            LinksFactories.First(x => x.Key(user));
 
         Links = linkFactory(user, urlHelper);
 

@@ -14,6 +14,7 @@
             typeof(AccountController).ControllerName(),
             new { area = typeof(AccountController).AreaName() } );
     var text = User.Identity?.IsAuthenticated ?? false ? User.Identity?.Name : "Log in";
+
     var navMenuModel = new NavigationMenuModel(User, Url);
 }
 <header class="nhsuk-header nhsuk-header--organisation" role="banner">

@@ -76,6 +76,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
         }
 
         private static bool HasOrganisationClaim(ClaimsPrincipal user, string name) =>
-            GetClaimValue(user, Constants.CatalogueClaims.OrganisationFunction).EqualsIgnoreCase(name);
+            GetClaimValue(user, ClaimTypes.Role).EqualsIgnoreCase(name);
     }
 }

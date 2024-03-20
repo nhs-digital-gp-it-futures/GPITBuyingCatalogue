@@ -36,7 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 
             foreach (var role in roles)
             {
-                id.AddClaim(new Claim(Constants.CatalogueClaims.OrganisationFunction, role));
                 id.AddClaim(new Claim(ClaimTypes.Role, role));
             }
 

@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 
             var principal = await factory.CreateAsync(user);
 
-            Assert.Equal(organisationFunction, GetClaimValue(principal, "organisationFunction"));
+            Assert.Equal(organisationFunction, GetClaimValue(principal, ClaimTypes.Role));
             Assert.Equal("Fred Smith", GetClaimValue(principal, "userDisplayName"));
             Assert.Equal("CG-123", GetClaimValue(principal, "primaryOrganisationInternalIdentifier"));
             Assert.Equal(3, GetClaimValues(principal, "secondaryOrganisationInternalIdentifier").Length);

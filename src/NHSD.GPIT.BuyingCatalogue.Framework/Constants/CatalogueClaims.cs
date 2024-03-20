@@ -11,7 +11,5 @@
         public const string PrimaryOrganisationInternalIdentifier = "primaryOrganisationInternalIdentifier";
 
         public const string SecondaryOrganisationInternalIdentifier = "secondaryOrganisationInternalIdentifier";
-
-        public const string OrganisationFunction = "organisationFunction";
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
@@ -90,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         [Fact]
         public static void IsAdmin_True_WithClaim()
         {
-            var user = CreatePrincipal("organisationFunction", "Authority");
+            var user = CreatePrincipal(ClaimTypes.Role, OrganisationFunction.Authority.Name);
 
             Assert.True(user.IsAdmin());
             Assert.False(user.IsBuyer());
@@ -108,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         [Fact]
         public static void IsBuyer_True_WithClaim()
         {
-            var user = CreatePrincipal("organisationFunction", "Buyer");
+            var user = CreatePrincipal(ClaimTypes.Role, OrganisationFunction.Buyer.Name);
 
             Assert.False(user.IsAdmin());
             Assert.False(user.IsAccountManager());
@@ -126,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         [Fact]
         public static void IsAccountManager_True_WithClaim()
         {
-            var user = CreatePrincipal("organisationFunction", "AccountManager");
+            var user = CreatePrincipal(ClaimTypes.Role, OrganisationFunction.AccountManager.Name);
 
             Assert.True(user.IsAccountManager());
             Assert.False(user.IsAdmin());
