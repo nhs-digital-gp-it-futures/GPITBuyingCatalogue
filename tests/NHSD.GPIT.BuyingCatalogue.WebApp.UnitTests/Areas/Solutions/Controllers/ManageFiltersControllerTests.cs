@@ -24,9 +24,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
-using NHSD.GPIT.BuyingCatalogue.Services.Framework;
-using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
@@ -94,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ManageFiltersModel(existingFilters, organisation.Name);
+            var expected = new ManageFiltersModel(organisation.InternalIdentifier, existingFilters, organisation.Name);
             actualResult.Model.Should().BeEquivalentTo(expected);
         }
 
@@ -578,12 +575,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 manageFiltersService,
                 mockPdfService,
                 primaryOrganisationInternalId);
+            controller.Url = mockUrlHelper.Object;
 
             var result = await controller.MaximumShortlists();
-            
+
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.Model.Should().BeOfType<MaximumShortlistsModel>();
-            //actualResult.Model.OrganisationName.Should().Be(organisation.Name);
+            ((MaximumShortlistsModel)actualResult.Model).OrganisationName.Should().Be(organisation.Name);
         }
 
         private static ManageFiltersController CreateController(

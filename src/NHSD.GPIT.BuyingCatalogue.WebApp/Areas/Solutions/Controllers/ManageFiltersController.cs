@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             var organisation = await GetUserOrganisation();
             var existingFilters = await manageFiltersService.GetFilters(organisation.Id);
-            var model = new ManageFiltersModel(existingFilters, organisation.Name);
+            var model = new ManageFiltersModel(organisation.InternalIdentifier, existingFilters, organisation.Name);
             return View(model);
         }
 

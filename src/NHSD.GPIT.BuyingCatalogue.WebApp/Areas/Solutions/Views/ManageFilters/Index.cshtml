@@ -4,6 +4,9 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Dashboard
 @using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters.ManageFiltersModel
 
@@ -17,13 +20,13 @@
         <nhs-validation-summary/>
 
         <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName" />
-
+        <partial name="Dashboard/_ShortlistCardPartial" model="@(new DashboardCardBaseModel<Filter>(Model.InternalOrgId, Model.Shortlists, Model.Shortlists.Count, isDashboardView: false))" />
         <nhs-card-v2>
             <nhs-card-content>
                 <div class="header-with-detail">
-                    <h3 class="nhsuk-heading-m">Total number of shortlists (@Model.Filters.Count)</h3>
+                    <h3 class="nhsuk-heading-m">Total number of shortlists (@Model.Shortlists.Count)</h3>
                 </div>
-                @if (Model.Filters is null || Model.Filters.Count < 10)
+                @if (Model.Shortlists is null || Model.Shortlists.Count < 10)
                 {
                     <div class="detail">
                         <a class="nhsuk-button nhsuk-u-margin-bottom-2" href="@Url.Action(
@@ -40,7 +43,7 @@
                     </div>
                 }
 
-                @if (Model.Filters is null || !Model.Filters.Any())
+                @if (Model.Shortlists is null || !Model.Shortlists.Any())
                 {
                     <p data-test-id="no-filters">No filters have been added for your organisation yet.</p>
                 }
@@ -56,7 +59,7 @@
                             <nhs-table-column>@heading</nhs-table-column>
                         }
 
-                        @foreach (var item in Model.Filters)
+                        @foreach (var item in Model.Shortlists)
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>
