@@ -11,7 +11,10 @@
     ViewData["nhsuk-width-container"] = "bc-wider-container";
 }
 
-<script type="text/javascript" src="@Url.Content("~/js/Filters.min.js")" asp-append-version="true"></script>
+@section Scripts {
+    <script type="text/javascript" src="@Url.Content("~/js/Filters.min.js")" asp-append-version="true"></script>
+    <script type="text/javascript" src="@Url.Content("~/js/FrameworkExpiry.min.js")" asp-append-version="true"></script>
+}
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
