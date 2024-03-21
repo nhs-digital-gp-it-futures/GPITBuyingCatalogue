@@ -1,6 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Authorization;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering;
 using OpenQA.Selenium;
@@ -39,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 
             OrderingPages = new OrderingPages(Driver, CommonActions, factory);
             CompetitionPages = new CompetitionPages(Driver, CommonActions, factory);
+            AdminPages = new AdminPages(Driver, CommonActions, factory);
 
             NavigateToUrl(urlArea);
         }
@@ -56,6 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         internal OrderingPages OrderingPages { get; }
 
         internal CompetitionPages CompetitionPages { get; }
+
+        internal AdminPages AdminPages { get; }
 
         internal void AuthorityLogin()
         {

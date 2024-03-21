@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
             ImportServiceReceipients.UploadServiceRecipients();
 
-            var importFile = CommonActions.GetRecipientImportCsv(fileName);
+            var importFile = CommonActions.ImportCsvFile(fileName);
 
             CommonActions.UploadFile(ServiceRecipientObjects.ImportRecipientsFileInput, importFile);
 
