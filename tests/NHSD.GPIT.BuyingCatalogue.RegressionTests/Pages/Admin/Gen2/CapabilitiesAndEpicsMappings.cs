@@ -1,8 +1,6 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using OpenQA.Selenium;
@@ -42,6 +40,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(Gen2MappingController),
                 nameof(Gen2MappingController.Mapping))
+                .Should().BeTrue();
+
+            CommonActions.ClickReturnToAdminHomePage();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.Index))
                 .Should().BeTrue();
         }
     }

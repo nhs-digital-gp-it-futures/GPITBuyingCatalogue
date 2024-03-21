@@ -28,6 +28,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public void ClickStartNewSearch() =>
             Driver.FindElement(By.LinkText("Start a new search")).Click();
 
+        public void ClickReturnToAdminHomePage() =>
+            Driver.FindElement(By.LinkText("Return to admin homepage")).Click();
+
         public void ClickContinue() =>
             Driver.FindElement(CommonSelectors.ContinueButton).Click();
 

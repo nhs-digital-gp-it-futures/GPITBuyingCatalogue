@@ -16,14 +16,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Admin", "Gen2")]
-        public void Gen2CapabilitiesAndEpicsMapping()
+        [Trait("Gen2", "Success")]
+        public void Gen2CapabilitiesAndEpicsMappingSuccess()
         {
             AdminPages.AdminDashboard.ManageCapabilitiesAndEpics();
 
             AdminPages.CapabilitiesAndEpicsMappings.ImportCapabilities(CapabilitiesFileName);
 
             AdminPages.CapabilitiesAndEpicsMappings.ImportEpics(EpicsFileName);
+
+            AdminPages.CapabilitiesAndEpicsMappings.CapabilitiesAndEpicsMappingSuccess();
         }
     }
 }
