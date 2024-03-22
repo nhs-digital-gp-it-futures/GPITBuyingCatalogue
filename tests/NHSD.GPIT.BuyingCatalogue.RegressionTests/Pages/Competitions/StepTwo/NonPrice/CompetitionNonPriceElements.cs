@@ -64,15 +64,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             CommonActions.LedeText().Should().Be("You can add any or all optional non-price elements to help you score your shortlisted solutions.".FormatForComparison());
         }
 
-        public void NonPriceElementsPage()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CompetitionNonPriceElementsController),
-                nameof(CompetitionNonPriceElementsController.AddNonPriceElement))
-                .Should().BeTrue();
-            CommonActions.ClickLinkElement(NonPriceObjects.AddNonPriceElementLink);
-        }
-
         public void AddNonPriceElement()
         {
                 CommonActions.LedeText().Should().Be("Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.".FormatForComparison());

@@ -49,17 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
              nameof(OrderController.Order)).Should().BeTrue();
         }
 
-        public void SelectAssociatedServicePrice(string associatedServiceName)
-        {
-            CommonActions.ClickLinkElement(ReviewSolutionsObjects.EditCatalogueItemPriceLink(GetAssociatedServiceID(associatedServiceName)));
-
-            CommonActions.PageLoadedCorrectGetIndex(
-             typeof(PricesController),
-             nameof(PricesController.ConfirmPrice)).Should().BeTrue();
-
-            CommonActions.ClickSave();
-        }
-
         private void SelectPrice()
         {
             if (CommonActions.GetNumberOfRadioButtonsDisplayed() > 0)

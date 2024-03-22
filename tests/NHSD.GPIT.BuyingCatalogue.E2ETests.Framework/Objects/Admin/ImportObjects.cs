@@ -7,5 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
         public static By CsvUrlInput => By.Id("CsvUrl");
 
         public static By CsvUrlError => By.Id("CsvUrl-error");
+
+        public static By ImportCsvFileInput => By.Id("File");
     }
 }

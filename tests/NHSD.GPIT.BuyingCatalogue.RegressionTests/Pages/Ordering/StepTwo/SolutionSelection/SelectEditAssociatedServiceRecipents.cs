@@ -17,15 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public LocalWebApplicationFactory Factory { get; }
 
-        public void AddServiceRecipient()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-                 typeof(ServiceRecipientsController),
-                 nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
-
-            CommonActions.ClickSave();
-        }
-
         public void EditServiceRecipient(string associatedServiceName)
         {
             CommonActions.PageLoadedCorrectGetIndex(
@@ -37,15 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickCheckboxByLabel("BEECHWOOD MEDICAL CENTRE");
 
             CommonActions.ClickSave();
-        }
-
-        private string GetAssociatedServiceID(string associatedServiceName)
-        {
-            using var dbContext = Factory.DbContext;
-
-            var solution = dbContext.AssociatedServices.FirstOrDefault(i => i.CatalogueItem.Name == associatedServiceName);
-
-            return (solution != null) ? solution.CatalogueItemId.ToString() : string.Empty;
         }
     }
 }

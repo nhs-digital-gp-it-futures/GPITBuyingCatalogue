@@ -17,26 +17,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public LocalWebApplicationFactory Factory { get; }
 
-        public void AddServiceRecipients()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-             typeof(ServiceRecipientsController),
-             nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
-
-            CommonActions.ClickSave();
-        }
-
-        public void AmendEditAdditionalServiceRecipient(string additionalService)
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-            typeof(ServiceRecipientsController),
-            nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
-
-            CommonActions.ClickCheckboxByLabel("BRIG ROYD SURGERY");
-
-            CommonActions.ClickSave();
-        }
-
         public void EditAdditionalServiceRecipient(string additionalServiceName)
         {
             CommonActions.PageLoadedCorrectGetIndex(
@@ -48,15 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             CommonActions.ClickCheckboxByLabel("BEECHWOOD MEDICAL CENTRE");
 
             CommonActions.ClickSave();
-        }
-
-        private string GetAdditionalServiceID(string additionalServiceName)
-        {
-            using var db = Factory.DbContext;
-
-            var additionalService = db.AdditionalServices.FirstOrDefault(a => a.CatalogueItem.Name == additionalServiceName);
-
-            return (additionalService != null) ? additionalService.CatalogueItemId.ToString() : string.Empty;
         }
     }
 }

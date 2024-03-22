@@ -3,7 +3,6 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection
@@ -18,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         public void ImportServiceRecipients(string fileName)
         {
             UploadServiceRecipients();
-            var importFile = CommonActions.GetRecipientImportCsv(fileName);
+            var importFile = CommonActions.ImportCsvFile(fileName);
 
             CommonActions.UploadFile(ServiceRecipientObjects.ImportRecipientsFileInput, importFile);
 

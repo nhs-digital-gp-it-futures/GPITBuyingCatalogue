@@ -20,22 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
 
         public LocalWebApplicationFactory Factory { get; }
 
-        public void AddCatalogueSolutionServiceRecipient(int multipleServiceRecipients, bool allServiceRecipients)
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-              typeof(ServiceRecipientsController),
-              nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
-
-            if (multipleServiceRecipients > 0 && !allServiceRecipients)
-                CommonActions.ClickMultipleCheckboxes(multipleServiceRecipients);
-            else if (multipleServiceRecipients == 0 && allServiceRecipients)
-                CommonActions.ClickAllCheckboxes();
-            else
-                CommonActions.ClickFirstCheckbox();
-
-            CommonActions.ClickSave();
-        }
-
         public void EditCatalogueSolutionServiceRecipient(string solutionName)
         {
             CommonActions.PageLoadedCorrectGetIndex(
@@ -73,20 +57,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
             ImportServiceReceipients.UploadServiceRecipients();
 
-            var importFile = CommonActions.GetRecipientImportCsv(fileName);
+            var importFile = CommonActions.ImportCsvFile(fileName);
 
             CommonActions.UploadFile(ServiceRecipientObjects.ImportRecipientsFileInput, importFile);
 
             CommonActions.ClickSave();
-        }
-
-        private string GetCatalogueSolutionID(string solutionName)
-        {
-            using var dbContext = Factory.DbContext;
-
-            var solution = dbContext.Solutions.FirstOrDefault(i => i.CatalogueItem.Name == solutionName);
-
-            return (solution != null) ? solution.CatalogueItemId.ToString() : string.Empty;
         }
     }
 }

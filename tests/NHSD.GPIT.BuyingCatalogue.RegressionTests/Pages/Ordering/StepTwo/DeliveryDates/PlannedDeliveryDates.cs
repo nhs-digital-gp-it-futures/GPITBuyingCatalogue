@@ -52,15 +52,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
             CommonActions.ClickContinue();
         }
 
-        public void AmendEditPlannedDeliveryDate(string name)
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(DeliveryDatesController),
-                    nameof(DeliveryDatesController.EditDates)).Should().BeTrue();
-
-            CommonActions.ClickSave();
-        }
-
         public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)
         {
             var names = SelectSolutionAndServices.SelectSolutionServices(solutionName, isAssociatedServiceOnly, associatedServices, additionalServices);
