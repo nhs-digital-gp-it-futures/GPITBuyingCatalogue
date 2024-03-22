@@ -22,5 +22,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
                 nameof(Gen2MappingController.Capabilities))
                 .Should().BeTrue();
         }
+
+        public void ManageFrameworks()
+        {
+            CommonActions.ClickLinkElement(HomeObjects.ManageFrameWorks);
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(FrameworksController),
+                nameof(FrameworksController.Dashboard))
+                .Should().BeTrue();
+        }
     }
 }

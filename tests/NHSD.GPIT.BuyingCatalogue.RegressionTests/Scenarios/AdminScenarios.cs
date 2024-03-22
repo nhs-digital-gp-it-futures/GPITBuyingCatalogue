@@ -27,5 +27,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             AdminPages.CapabilitiesAndEpicsMappings.CapabilitiesAndEpicsMappingSuccess();
         }
+
+        [Fact]
+        [Trait("Framework", "AddNewFramework")]
+        public void AddNewFramework()
+        {
+            AdminPages.AdminDashboard.ManageFrameworks();
+
+            AdminPages.AddFramework.NewFramework();
+
+            AdminPages.AddFramework.AddFrameworkDetails();
+        }
     }
 }
