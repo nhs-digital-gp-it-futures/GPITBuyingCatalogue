@@ -42,7 +42,7 @@ public static class DashboardCardBaseModelTests
 
         model.InternalOrgId.Should().Be(internalOrgId);
         model.Items.Should().BeEquivalentTo(items);
-        model.NumberOfItems.Should().Be(items.Count);
+        model.NumberOfItems.Should().Be(pageOptions.TotalNumberOfItems);
         model.IsDashboardView.Should().Be(false);
         model.PageOptions.Should().Be(pageOptions);
         model.ShouldUsePagination.Should().BeTrue();
