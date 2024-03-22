@@ -4,10 +4,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 {
     public class MaximumShortlistsModel : NavBaseModel
     {
-        public MaximumShortlistsModel()
-        {
-        }
-
         public MaximumShortlistsModel(
             string organisationName)
         {
