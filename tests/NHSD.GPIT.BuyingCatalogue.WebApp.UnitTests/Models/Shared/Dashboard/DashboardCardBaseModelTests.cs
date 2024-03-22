@@ -18,7 +18,6 @@ public static class DashboardCardBaseModelTests
         var model = new DashboardCardBaseModel<DashboardCardBaseModelStub>(
             internalOrgId,
             items,
-            items.Count,
             isDashboardView: true);
 
         model.InternalOrgId.Should().Be(internalOrgId);
@@ -39,7 +38,6 @@ public static class DashboardCardBaseModelTests
         var model = new DashboardCardBaseModel<DashboardCardBaseModelStub>(
             internalOrgId,
             items,
-            items.Count,
             pageOptions: pageOptions);
 
         model.InternalOrgId.Should().Be(internalOrgId);

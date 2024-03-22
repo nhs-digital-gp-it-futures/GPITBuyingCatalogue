@@ -6,6 +6,7 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels
 @model BuyerDashboardModel
 @{
     ViewBag.Title = "Your organisation's dashboard";
@@ -31,20 +32,20 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <h3 class="nhsuk-heading-m">Most recent orders</h3>
-        <partial name="Dashboard/_OrderCardPartial" model="@(new DashboardCardBaseModel<Order>(Model.InternalOrgId, Model.Orders, Model.Orders.Count, isDashboardView: true))"/>
+        <partial name="Dashboard/_OrderCardPartial" model="@(new DashboardCardBaseModel<Order>(Model.InternalOrgId, Model.Orders, isDashboardView: true))"/>
     </div>
 </div>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <h3 class="nhsuk-heading-m">Most recent shortlists</h3>
-        <partial name="Dashboard/_ShortlistCardPartial" model="@(new DashboardCardBaseModel<Filter>(Model.InternalOrgId, Model.Shortlists, Model.Shortlists.Count, isDashboardView: true))"/>
+        <partial name="Dashboard/_ShortlistCardPartial" model="@(new DashboardCardBaseModel<Filter>(Model.InternalOrgId, Model.Shortlists, isDashboardView: true))"/>
     </div>
 </div>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <h3 class="nhsuk-heading-m">Most recent competitions</h3>
-        <partial name="Dashboard/_CompetitionsCardPartial" model="@(new DashboardCardBaseModel<Competition>(Model.InternalOrgId, Model.Competitions, Model.Competitions.Count, isDashboardView: true))"/>
+        <partial name="Dashboard/_CompetitionsCardPartial" model="@(new DashboardCardBaseModel<CompetitionDashboardItem>(Model.InternalOrgId, Model.Competitions, isDashboardView: true))"/>
     </div>
 </div>
