@@ -60,14 +60,15 @@
                         </nhs-table-cell>
                         <nhs-table-cell>
                             <span data-test-id="filter-date-created">
-                                @item.Created.ToShortDateString()
+                                @item.Created.ToString("d MMM yyyy")
                             </span>
                         </nhs-table-cell>
                         <nhs-table-cell>
                             <span data-test-id="filter-view-link">
                                 <a asp-action="@nameof(ManageFiltersController.FilterDetails)"
                                     asp-controller="@typeof(ManageFiltersController).ControllerName()"
-                                    asp-route-filterId="@item.Id">View</a>
+                                    asp-route-filterId="@item.Id"
+                                    asp-route-area="@typeof(ManageFiltersController).AreaName()">View</a>
                             </span>
                         </nhs-table-cell>
                     </nhs-table-row-container>
