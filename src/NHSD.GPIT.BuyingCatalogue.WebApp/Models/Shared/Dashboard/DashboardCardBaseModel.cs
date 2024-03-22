@@ -8,11 +8,13 @@ public class DashboardCardBaseModel<T>
     public DashboardCardBaseModel(
         string internalOrgId,
         ICollection<T> items,
+        int numberOfItems,
         bool isDashboardView = false,
         PageOptions pageOptions = null)
     {
         InternalOrgId = internalOrgId;
         Items = items;
+        NumberOfItems = numberOfItems;
         IsDashboardView = isDashboardView;
         PageOptions = pageOptions;
     }
@@ -23,13 +25,13 @@ public class DashboardCardBaseModel<T>
 
     public ICollection<T> Items { get; set; }
 
-    public int NumberOfItems => Items.Count;
+    public int NumberOfItems { get; set; }
 
     public bool ShouldUsePagination => PageOptions is not null;
 
     public bool IsDashboardView { get; set; }
 
-    public bool HasItems => NumberOfItems > 0;
+    public bool HasItems => Items.Count > 0;
 
-    public int ItemsToIterate => IsDashboardView ? 5 : NumberOfItems;
+    public int ItemsToIterate => IsDashboardView ? 5 : Items.Count;
 }
