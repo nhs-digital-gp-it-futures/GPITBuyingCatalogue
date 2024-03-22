@@ -3,14 +3,14 @@ window.onload = function () {
     const container: HTMLElement = warningCallout.querySelector('div[class="container"]');
     container.style.display = 'none';
 
-    const link = document.createElement('a');
+    const link: HTMLAnchorElement = document.createElement('a');
     link.text = 'Show more';
     link.href = '#';
     link.style.color = '#000';
 
     link.addEventListener('click', _ => {
         const container: HTMLElement = warningCallout.querySelector('div[class="container"]');
-        const isHidden = container.style.display === 'none';
+        const isHidden: boolean = container.style.display === 'none';
 
         if (isHidden) {
             link.text = 'Show less';
