@@ -1,4 +1,4 @@
-window.onload = function () {
+window.addEventListener('load', function () {
     const warningCallout: HTMLElement = document.getElementById('framework-expired-warning');
     const container: HTMLElement = warningCallout.querySelector('div[class="container"]');
     container.style.display = 'none';
@@ -22,4 +22,4 @@ window.onload = function () {
     });
 
     warningCallout.appendChild(link);
-}
+});
