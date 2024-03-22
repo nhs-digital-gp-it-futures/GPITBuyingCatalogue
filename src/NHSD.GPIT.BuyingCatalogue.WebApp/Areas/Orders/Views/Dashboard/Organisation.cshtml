@@ -40,7 +40,7 @@
             }
             <br/>
 
-            <partial name="Dashboard/_OrderCardPartial" model="@(new DashboardCardBaseModel<Order>(Model.InternalOrgId, Model.Orders, Model.OrderIds.Count(), pageOptions: Model.Options))" />
+            <partial name="Dashboard/_OrderCardPartial" model="@(new DashboardCardBaseModel<Order>(Model.InternalOrgId, Model.Orders, pageOptions: Model.Options))"/>
         </div>
     </div>
 </div>

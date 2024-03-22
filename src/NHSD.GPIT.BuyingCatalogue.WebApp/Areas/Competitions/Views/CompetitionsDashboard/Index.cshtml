@@ -10,6 +10,6 @@
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.OrganisationName"/>
 
-        <partial name="Dashboard/_CompetitionsCardPartial" model="@(new DashboardCardBaseModel<CompetitionDashboardItem>(Model.InternalOrgId, Model.Competitions, Model.Competitions.Count))" />
+        <partial name="Dashboard/_CompetitionsCardPartial" model="@(new DashboardCardBaseModel<CompetitionDashboardItem>(Model.InternalOrgId, Model.Competitions))" />
     </div>
 </div>
