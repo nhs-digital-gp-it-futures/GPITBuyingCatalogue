@@ -23,7 +23,7 @@ public class DashboardCardBaseModel<T>
 
     public ICollection<T> Items { get; set; }
 
-    public int NumberOfItems => Items.Count;
+    public int NumberOfItems => PageOptions?.TotalNumberOfItems ?? Items.Count;
 
     public bool ShouldUsePagination => PageOptions is not null;
 
