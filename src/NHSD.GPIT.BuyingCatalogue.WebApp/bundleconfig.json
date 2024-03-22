@@ -60,6 +60,12 @@
     ]
   },
   {
+    "outputFileName": "wwwroot/js/FrameworkExpiry.min.js",
+    "inputFiles": [
+      "wwwroot/js/FrameworkExpiry.js"
+    ]
+  },
+  {
     "outputFileName": "wwwroot/govuk-frontend/assets/js/govuk-frontend.min.js",
     "inputFiles": [
       "wwwroot/govuk-frontend/assets/js/govuk-frontend.min.js"
