@@ -4,5 +4,5 @@ public class Gen2CapabilitiesCsvModel : Gen2CsvBase
 {
     public string CapabilityAssessmentResult { get; set; }
 
-    public bool IsValidResult => CapabilityAssessmentResult.StartsWith("Passed");
+    public bool IsValidAssessmentResult => CapabilityAssessmentResult.StartsWith("Passed");
 }

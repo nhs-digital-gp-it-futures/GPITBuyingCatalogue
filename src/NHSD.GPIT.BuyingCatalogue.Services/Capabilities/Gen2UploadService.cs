@@ -93,7 +93,7 @@ public class Gen2UploadService : CsvServiceBase, IGen2UploadService
     private static IEnumerable<Gen2CapabilitiesCsvModel> GetInvalidCapabilities(
         IEnumerable<Gen2CapabilitiesCsvModel> records) => records.Where(
         x => !IsBaseRecordValid(x) || (string.IsNullOrWhiteSpace(x.CapabilityAssessmentResult)
-                || !x.IsValidResult));
+                || !x.IsValidAssessmentResult));
 
     private static IEnumerable<Gen2EpicsCsvModel> GetInvalidEpics(
         IEnumerable<Gen2EpicsCsvModel> records) => records.Where(
