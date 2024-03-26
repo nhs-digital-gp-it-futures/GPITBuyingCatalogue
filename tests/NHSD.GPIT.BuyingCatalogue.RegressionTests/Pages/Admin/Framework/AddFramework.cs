@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework
 
         public void AddFrameworkDetails()
         {
-            TextGenerators.FirstNameInputAddText(AddFrameworkObjects.FrameworkNameInput, 10);
+            TextGenerators.OrganisationInputAddText(AddFrameworkObjects.FrameworkNameInput, 30);
             CommonActions.ClickAllCheckboxes();
             CommonActions.ClickFirstRadio();
             CommonActions.ClickSave();

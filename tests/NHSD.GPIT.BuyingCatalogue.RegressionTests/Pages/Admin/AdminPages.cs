@@ -1,6 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedEpics;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
@@ -11,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         {
             AdminDashboard = new AdminDashboard(driver, commonActions);
             CapabilitiesAndEpicsMappings = new CapabilitiesAndEpicsMappings(driver, commonActions);
-            AddFramework = new  AddFramework(driver, commonActions);
+            AddFramework = new AddFramework(driver, commonActions);
+            AddSupplierDefinedEpics = new AddSupplierDefinedEpics(driver, commonActions);
             Factory = factory;
         }
 
@@ -22,5 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal CapabilitiesAndEpicsMappings CapabilitiesAndEpicsMappings { get; }
 
         internal AddFramework AddFramework { get; }
+
+        internal AddSupplierDefinedEpics AddSupplierDefinedEpics { get; }
     }
 }

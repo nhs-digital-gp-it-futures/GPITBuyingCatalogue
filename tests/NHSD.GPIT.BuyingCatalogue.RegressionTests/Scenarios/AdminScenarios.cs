@@ -9,6 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
     {
         private const string CapabilitiesFileName = "CapabilitiesAndSolutions.csv";
         private const string EpicsFileName = "EpicsAndSolutions.csv";
+        private const string FailedEpicsFileName = "EpicsAndSolutions_MissingData.csv";
+        private const string FailedCapabilitiesFileName = "CapabilitiesAndSolutions_MissingData.csv";
 
         public AdminScenarios(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
            : base(factory, typeof(HomeController), nameof(HomeController.Index), null, testOutputHelper)
@@ -29,6 +31,30 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Gen2", "Failed Capabilities")]
+        public void Gen2FailedCapabilities()
+        {
+            AdminPages.AdminDashboard.ManageCapabilitiesAndEpics();
+
+            AdminPages.CapabilitiesAndEpicsMappings.ImportCapabilities(FailedCapabilitiesFileName);
+
+            AdminPages.CapabilitiesAndEpicsMappings.CapabilitiesAndEpicsMappinFailed();
+        }
+
+        [Fact]
+        [Trait("Gen2", "Failed Epics")]
+        public void Gen2FailedEpics()
+        {
+            AdminPages.AdminDashboard.ManageCapabilitiesAndEpics();
+
+            AdminPages.CapabilitiesAndEpicsMappings.ImportCapabilities(CapabilitiesFileName);
+
+            AdminPages.CapabilitiesAndEpicsMappings.ImportEpics(FailedEpicsFileName);
+
+            AdminPages.CapabilitiesAndEpicsMappings.SolutionsAndEpicsMappinFailed();
+        }
+
+        [Fact]
         [Trait("Framework", "AddNewFramework")]
         public void AddNewFramework()
         {
@@ -37,6 +63,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddFramework.NewFramework();
 
             AdminPages.AddFramework.AddFrameworkDetails();
+        }
+
+        [Fact]
+        [Trait("SupplierDefindEpics", "AddNewSupplierDefindEpics")]
+        public void AddNewSupplierDefindEpics()
+        {
+            AdminPages.AdminDashboard.ManageSupplierDefinedEpics();
+
+            AdminPages.AddSupplierDefinedEpics.AddNewSupplierDefinedEpic();
+
+            AdminPages.AddSupplierDefinedEpics.SupplierDefinedEpicDetails();
+
+            AdminPages.AddSupplierDefinedEpics.SupplierDefinedEpicInformation();
         }
     }
 }
