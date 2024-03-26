@@ -2,7 +2,7 @@
 
 public class Gen2CapabilitiesCsvModel : Gen2CsvBase
 {
-    public static readonly string[] ValidAssessmentResults = new[] { "Passed - Full", "Passed - Partial" };
-
     public string CapabilityAssessmentResult { get; set; }
+
+    public bool IsValidAssessmentResult => CapabilityAssessmentResult.StartsWith("Passed");
 }
