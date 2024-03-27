@@ -22,6 +22,7 @@
         <form method="post">
             <input type="hidden" asp-for="@Model.ServiceName" />
             <input type="hidden" asp-for="@Model.ServiceType" />
+            <input type="hidden" asp-for="@Model.CatalogueItemId" />
             <input type="hidden" asp-for="BackLink" />
             <nhs-fieldset-form-label asp-for="@Model" label-text="Remove @Model.ServiceName">
                 <nhs-radio-buttons asp-for="ConfirmRemoveService"

@@ -393,9 +393,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new { internalOrgId, callOffId, source = RoutingSource.EditSolution });
         }
 
-        [HttpGet("remove-service/{catalogueItemId}")]
-        public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
+        [HttpGet("remove-service/{itemNumber}")]
+        public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, int itemNumber)
         {
+            var catalogueItemId = (await orderService.GetOrderThin(callOffId, internalOrgId))
+                .Order.OrderItems.Where(x => x.CatalogueItem.CatalogueItemType != CatalogueItemType.Solution)
+                .OrderBy(x => x.CatalogueItemId.ToString()).ElementAt(itemNumber).CatalogueItemId;
             var service = await catalogueItemService.GetCatalogueItem(catalogueItemId);
             var model = new RemoveServiceModel(service)
             {
@@ -408,8 +411,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             return View(model);
         }
 
-        [HttpPost("remove-service/{catalogueItemId}")]
-        public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, RemoveServiceModel model)
+        [HttpPost("remove-service/{itemNumber}")]
+        public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, int itemNumber, RemoveServiceModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -418,7 +421,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             if (model.ConfirmRemoveService ?? false)
             {
-                await orderItemService.DeleteOrderItems(internalOrgId, callOffId, new List<CatalogueItemId> { catalogueItemId });
+                await orderItemService.DeleteOrderItems(internalOrgId, callOffId, new List<CatalogueItemId> { model.CatalogueItemId });
             }
 
             return RedirectToAction(

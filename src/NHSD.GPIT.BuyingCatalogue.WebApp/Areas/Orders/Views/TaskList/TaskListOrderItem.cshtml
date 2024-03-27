@@ -113,7 +113,7 @@
 {
     <vc:nhs-delete-button url="@Url.Action(nameof(CatalogueSolutionsController.RemoveService),
         typeof(CatalogueSolutionsController).ControllerName(),
-        new { Model.InternalOrgId, Model.CallOffId, catalogueItemId = Model.CatalogueItemId })"
+        new { Model.InternalOrgId, Model.CallOffId, itemNumber = Model.ItemNumber })"
         text="Remove @Model.Name" />
     <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
 }

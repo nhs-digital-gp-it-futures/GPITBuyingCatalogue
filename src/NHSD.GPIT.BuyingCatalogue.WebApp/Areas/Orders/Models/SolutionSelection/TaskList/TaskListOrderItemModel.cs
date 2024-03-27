@@ -53,6 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public int PriceId { get; set; }
 
+        public int ItemNumber { get; set; }
+
         public bool IsPerServiceRecipient { get; set; }
 
         public bool IsAssociatedService { get; set; }

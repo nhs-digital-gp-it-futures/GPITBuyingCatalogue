@@ -43,6 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             AdditionalServices = rolledUpOrder.GetAdditionalServices();
             AssociatedServices = rolledUpOrder.GetAssociatedServices();
 
+            var allServices = AdditionalServices.Concat(AssociatedServices).OrderBy(x => x.CatalogueItemId.ToString()).ToList();
             var currentAdditionalServices = wrapper.Order.GetAdditionalServices();
 
             if (rolledUpOrder.OrderType.AssociatedServicesOnly)
@@ -78,6 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                 QuantityChanged = (Previous?.OrderItems.Where(y => y.CatalogueItemId == x.CatalogueItemId).FirstOrDefault()?.Quantity ?? 0) !=
                     (currentAdditionalServices?.Where(y => y.CatalogueItemId == x.CatalogueItemId).FirstOrDefault()?.Quantity ?? 0),
                 CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.CatalogueItemId) ?? false)),
+                ItemNumber = allServices.FindIndex(y => y.CatalogueItemId == x.CatalogueItemId),
             }));
 
             AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, x)
@@ -89,6 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                     : 0,
                 CanBeRemoved = !OrderType.MergerOrSplit && !IsAmendment,
+                ItemNumber = allServices.FindIndex(y => y.CatalogueItemId == x.CatalogueItemId),
             }));
         }
 
