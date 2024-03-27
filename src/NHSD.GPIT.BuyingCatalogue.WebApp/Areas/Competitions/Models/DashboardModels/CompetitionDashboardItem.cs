@@ -15,7 +15,7 @@ public class CompetitionDashboardItem
         Name = competition.Name;
         Description = competition.Description;
         Solutions = competition.CompetitionSolutions;
-        LastUpdated = competition.LastUpdated;
+        Created = competition.Created;
         ShortlistAccepted = competition.ShortlistAccepted;
         Progress = competition.Completed.HasValue ? TaskProgress.Completed : TaskProgress.InProgress;
     }
@@ -28,7 +28,7 @@ public class CompetitionDashboardItem
 
     public IEnumerable<CompetitionSolution> Solutions { get; set; }
 
-    public DateTime LastUpdated { get; set; }
+    public DateTime Created { get; set; }
 
     public DateTime? ShortlistAccepted { get; set; }
 
