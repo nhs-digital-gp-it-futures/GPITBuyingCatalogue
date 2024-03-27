@@ -21,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         {
             ServiceName = service.Name;
             ServiceType = service.CatalogueItemType.DisplayName();
+            CatalogueItemId = service.Id;
         }
 
         public IList<SelectOption<bool>> RemoveServiceOptions => new List<SelectOption<bool>>
@@ -32,6 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public string ServiceType { get; set; }
 
         public string ServiceName { get; set; }
+
+        public CatalogueItemId CatalogueItemId { get; set; }
 
         public bool? ConfirmRemoveService { get; set; }
     }

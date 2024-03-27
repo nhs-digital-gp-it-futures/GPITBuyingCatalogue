@@ -951,9 +951,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId)
                 .Returns(new OrderWrapper { Order = order });
 
+            orderService.GetOrderThin(order.CallOffId, internalOrgId)
+                .Returns(new OrderWrapper { Order = order });
+
             catalogueItemService.GetCatalogueItem(catalogueItem.Id).Returns(catalogueItem);
 
-            var result = await controller.RemoveService(internalOrgId, order.CallOffId, catalogueItem.Id);
+            var result = await controller.RemoveService(internalOrgId, order.CallOffId, 0);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -972,7 +975,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] IOrderItemService mockOrderItemService,
             CatalogueSolutionsController controller)
         {
-            var result = await controller.RemoveService(internalOrgId, callOffId, catalogueItem.Id, model);
+            var result = await controller.RemoveService(internalOrgId, callOffId, 0, model);
 
             await mockOrderItemService.Received()
                 .DeleteOrderItems(internalOrgId, callOffId, Arg.Any<List<CatalogueItemId>>());
