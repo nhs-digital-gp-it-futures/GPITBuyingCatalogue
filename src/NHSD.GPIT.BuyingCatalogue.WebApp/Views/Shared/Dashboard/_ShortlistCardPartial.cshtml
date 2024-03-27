@@ -2,20 +2,101 @@
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Dashboard.DashboardCardBaseModel<NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models.Filter>
 
-<nhs-card-v2>
-    <nhs-card-content centre-alignment="true">
-        <img src="~/images/filters-splash-with-shadow.svg" alt="Shortlist image" class="splash-intro-img nhsuk-u-margin-top-2"/>
-        <h3 class="nhsuk-heading-m">No shortlists created yet</h3>
-        <p class="nhsuk-body">
-            Shortlists you create for your organisation will appear here.<br/>
+@{
+    var hasFilters = Model.Items.Count > 0;
+    var shortlistsToIterate = Model.IsDashboardView ? 5 : Model.Items.Count;
+}
 
-            Browse the
-            <a asp-action="@nameof(SolutionsController.Index)"
-               asp-controller="@typeof(SolutionsController).ControllerName()"
-               asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a> available and create a shortlist.
-        </p>
-        <vc:nhs-secondary-button text="Create new shortlist"
-                                 url="@(Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() }))"
-                                 type="Primary"/>
+<nhs-card-v2>
+    <nhs-card-content centre-alignment="@(!hasFilters)">
+        @if(hasFilters)
+        {
+            if (!Model.IsDashboardView)
+            {
+                <div class="header-with-detail">
+                    <h3 class="nhsuk-heading-m">Total number of shortlists (@Model.NumberOfItems)</h3>
+                </div>
+                @if (Model.NumberOfItems < 10)
+                {
+                    <div class="detail">
+                        <a class="nhsuk-button nhsuk-u-margin-bottom-2" href="@Url.Action(
+                                                         nameof(SolutionsController.Index),
+                                                         typeof(SolutionsController).ControllerName())">Create new shortlist</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="detail">
+                        <a class="nhsuk-button nhsuk-u-margin-bottom-2" href="@Url.Action(
+                                                         nameof(ManageFiltersController.MaximumShortlists),
+                                                         typeof(ManageFiltersController).ControllerName())">Create new shortlist</a>
+                    </div>
+                }
+
+                <p class="nhsuk-body-s nhsuk-u-margin-top-3" style="width: 80%">You can save a maximum of 10 shortlists for use by your organisation.<br />To delete a filter, use the relevant view link in the table.</p>
+
+                <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible nhsuk-u-padding-bottom-0 nhsuk-u-margin-bottom-0">
+            }
+
+            <nhs-table data-test-id="filters-table">
+                @foreach (var heading in new[] { "Name", "Description", "Date created" })
+                {
+                    <nhs-table-column>@heading</nhs-table-column>
+                }
+                <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
+
+                @foreach (var item in Model.Items.OrderByDescending(x => x.Created).Take(shortlistsToIterate))
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>
+                            <span data-test-id="filter-name">
+                                @item.Name
+                            </span>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <span data-test-id="filter-description">
+                                @item.Description
+                            </span>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <span data-test-id="filter-date-created">
+                                @item.Created.ToString("d MMM yyyy")
+                            </span>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <span data-test-id="filter-view-link">
+                                <a asp-action="@nameof(ManageFiltersController.FilterDetails)"
+                                    asp-controller="@typeof(ManageFiltersController).ControllerName()"
+                                    asp-route-filterId="@item.Id"
+                                    asp-route-area="@typeof(ManageFiltersController).AreaName()">View</a>
+                            </span>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+
+            @if (Model.IsDashboardView)
+            {
+                <a asp-action="@(nameof(ManageFiltersController.Index))" asp-controller="@(typeof(ManageFiltersController).ControllerName())" asp-route-internalOrgId="@Model.InternalOrgId" asp-route-area="@(typeof(ManageFiltersController).AreaName())">
+                    View shortlists
+                </a>
+            }
+        }
+        else
+        {
+            <img src="~/images/filters-splash-with-shadow.svg" alt="Shortlist image" class="splash-intro-img nhsuk-u-margin-top-2" />
+            <h3 class="nhsuk-heading-m">No shortlists created yet</h3>
+            <p class="nhsuk-body">
+                Shortlists you create for your organisation will appear here.<br/>
+
+                Browse the
+                <a asp-action="@nameof(SolutionsController.Index)"
+                   asp-controller="@typeof(SolutionsController).ControllerName()"
+                   asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a> available and create a shortlist.
+            </p>
+            <vc:nhs-secondary-button text="Create new shortlist"
+                                     url="@(Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() }))"
+                                     type="Primary" />
+        }
     </nhs-card-content>
 </nhs-card-v2>

@@ -4,6 +4,10 @@
     ViewBag.Title = "Before you start an order";
 }
 
+@section Scripts {
+    <script type="text/javascript" src="@Url.Content("~/js/FrameworkExpiry.min.js")" asp-append-version="true"></script>
+}
+
 <div>
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">

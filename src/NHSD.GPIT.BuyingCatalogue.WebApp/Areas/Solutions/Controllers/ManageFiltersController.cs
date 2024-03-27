@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             var organisation = await GetUserOrganisation();
             var existingFilters = await manageFiltersService.GetFilters(organisation.Id);
-            var model = new ManageFiltersModel(existingFilters, organisation.Name);
+            var model = new ManageFiltersModel(organisation.InternalIdentifier, existingFilters, organisation.Name);
             return View(model);
         }
 
@@ -233,6 +233,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var fileName = $"{filter.Name} Catalogue Solutions.pdf";
             return File(result, "application/pdf", fileName);
+        }
+
+        [HttpGet("maximum-shortlists")]
+        public async Task<IActionResult> MaximumShortlists()
+        {
+            var organisation = await GetUserOrganisation();
+            var model = new MaximumShortlistsModel(organisation.Name)
+            {
+                BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
+            };
+            return View(model);
         }
 
         private async Task<Organisation> GetUserOrganisation()
