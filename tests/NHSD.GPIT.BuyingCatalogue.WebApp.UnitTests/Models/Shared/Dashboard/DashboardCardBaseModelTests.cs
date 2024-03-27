@@ -24,6 +24,7 @@ public static class DashboardCardBaseModelTests
         model.Items.Should().BeEquivalentTo(items);
         model.NumberOfItems.Should().Be(items.Count);
         model.IsDashboardView.Should().Be(true);
+        model.ItemsToIterate.Should().Be(5);
         model.PageOptions.Should().BeNull();
         model.ShouldUsePagination.Should().BeFalse();
     }
@@ -44,6 +45,7 @@ public static class DashboardCardBaseModelTests
         model.Items.Should().BeEquivalentTo(items);
         model.NumberOfItems.Should().Be(pageOptions.TotalNumberOfItems);
         model.IsDashboardView.Should().Be(false);
+        model.ItemsToIterate.Should().Be(model.NumberOfItems);
         model.PageOptions.Should().Be(pageOptions);
         model.ShouldUsePagination.Should().BeTrue();
     }
