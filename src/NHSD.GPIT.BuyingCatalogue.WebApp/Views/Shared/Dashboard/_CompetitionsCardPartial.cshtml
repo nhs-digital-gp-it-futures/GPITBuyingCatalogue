@@ -39,7 +39,7 @@
                     <nhs-table-row-container>
                         <nhs-table-cell style="word-break:break-all">@competition.Name</nhs-table-cell>
                         <nhs-table-cell style="word-break:break-all">@competition.Description</nhs-table-cell>
-                        <nhs-table-cell>@competition.Created.ToShortDateString()</nhs-table-cell>
+                        <nhs-table-cell>@competition.Created.ToString("d MMM yyyy")</nhs-table-cell>
                         <nhs-table-cell>
                             <nhs-tag status-enum="@competition.Progress" />
                         </nhs-table-cell>
@@ -47,7 +47,7 @@
                             @{
                                 var competitionAction = GetCompetitionActionLink(competition);
                             }
-                            <a href="@competitionAction.Link">@competitionAction.LinkText</a>
+                            <a href="@competitionAction">View</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
@@ -81,11 +81,11 @@
 </nhs-card-v2>
 
 @{
-    (string LinkText, string Link) GetCompetitionActionLink(CompetitionDashboardItem competition)
+    string GetCompetitionActionLink(CompetitionDashboardItem competition)
         => competition.Progress == TaskProgress.Completed
-            ? ("View", competition.IsDirectAward() ? Url.Action(nameof(CompetitionResultsController.DirectAward), typeof(CompetitionResultsController).ControllerName(), new { Area = typeof(CompetitionResultsController).AreaName(), internalOrgId = Model.InternalOrgId, competitionId = competition.Id }) :
-                Url.Action(nameof(CompetitionResultsController.ViewResults), typeof(CompetitionResultsController).ControllerName(), new { Area = typeof(CompetitionResultsController).AreaName(), internalOrgId = Model.InternalOrgId, competitionId = competition.Id }))
-            : ("Edit", GetEditLink(competition));
+            ? competition.IsDirectAward() ? Url.Action(nameof(CompetitionResultsController.DirectAward), typeof(CompetitionResultsController).ControllerName(), new { Area = typeof(CompetitionResultsController).AreaName(), internalOrgId = Model.InternalOrgId, competitionId = competition.Id }) :
+                Url.Action(nameof(CompetitionResultsController.ViewResults), typeof(CompetitionResultsController).ControllerName(), new { Area = typeof(CompetitionResultsController).AreaName(), internalOrgId = Model.InternalOrgId, competitionId = competition.Id })
+            : GetEditLink(competition);
 
     string GetEditLink(CompetitionDashboardItem competition)
     {
