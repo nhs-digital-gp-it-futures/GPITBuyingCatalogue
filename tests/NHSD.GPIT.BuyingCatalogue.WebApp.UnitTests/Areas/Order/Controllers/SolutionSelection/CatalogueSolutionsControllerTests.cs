@@ -954,7 +954,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderService.GetOrderThin(order.CallOffId, internalOrgId)
                 .Returns(new OrderWrapper { Order = order });
 
-            catalogueItemService.GetCatalogueItem(catalogueItem.Id).Returns(catalogueItem);
+            catalogueItemService.GetCatalogueItem(Arg.Any<CatalogueItemId>()).Returns(catalogueItem);
 
             var result = await controller.RemoveService(internalOrgId, order.CallOffId, 0);
 
