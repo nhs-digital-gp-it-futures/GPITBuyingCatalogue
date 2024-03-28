@@ -971,7 +971,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             string internalOrgId,
             CallOffId callOffId,
             RemoveServiceModel model,
-            CatalogueItem catalogueItem,
             [Frozen] IOrderItemService mockOrderItemService,
             CatalogueSolutionsController controller)
         {
