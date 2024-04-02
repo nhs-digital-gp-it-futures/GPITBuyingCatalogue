@@ -40,5 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             .Should()
             .Be("Add a supplier defined Epic or edit an existing one.".FormatForComparison());
         }
+
+        public void ManageAllUsers()
+        {
+            CommonActions.ClickLinkElement(HomeObjects.ManageAllUsersLink);
+            CommonActions.LedeText()
+            .Should()
+            .Be("Add a new user or edit the details for one that's already been created.".FormatForComparison());
+        }
     }
 }

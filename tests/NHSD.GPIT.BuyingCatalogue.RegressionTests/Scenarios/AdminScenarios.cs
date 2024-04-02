@@ -1,4 +1,6 @@
-﻿using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
+﻿using Microsoft.SqlServer.Server;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
 using Xunit.Abstractions;
@@ -11,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         private const string EpicsFileName = "EpicsAndSolutions.csv";
         private const string FailedEpicsFileName = "EpicsAndSolutions_MissingData.csv";
         private const string FailedCapabilitiesFileName = "CapabilitiesAndSolutions_MissingData.csv";
+        private const string OrganisationName = "NHS HUMBER AND NORTH YORKSHIRE INTEGRATED CARE BOARD";
+        private const string AdminOrganisationName = "NHS Digital";
 
         public AdminScenarios(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
            : base(factory, typeof(HomeController), nameof(HomeController.Index), null, testOutputHelper)
@@ -18,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Gen2", "Success")]
+        [Trait("Gen2", "CapabilityAndEpics")]
         public void Gen2CapabilitiesAndEpicsMappingSuccess()
         {
             AdminPages.AdminDashboard.ManageCapabilitiesAndEpics();
@@ -31,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Gen2", "Failed Capabilities")]
+        [Trait("Gen2", "CapabilityAndEpics")]
         public void Gen2FailedCapabilities()
         {
             AdminPages.AdminDashboard.ManageCapabilitiesAndEpics();
@@ -42,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Gen2", "Failed Epics")]
+        [Trait("Gen2", "CapabilityAndEpics")]
         public void Gen2FailedEpics()
         {
             AdminPages.AdminDashboard.ManageCapabilitiesAndEpics();
@@ -76,6 +80,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddSupplierDefinedEpics.SupplierDefinedEpicDetails();
 
             AdminPages.AddSupplierDefinedEpics.SupplierDefinedEpicInformation();
+        }
+
+        [Fact]
+        [Trait("ManageUsers", "Users")]
+        public void AddNewOranisatinBuyerUser()
+        {
+            AdminPages.AdminDashboard.ManageAllUsers();
+
+            AdminPages.AddOrganisationUser.AddNewUser();
+
+            AdminPages.AddOrganisationUser.NewUserDetails(OrganisationName);
         }
     }
 }
