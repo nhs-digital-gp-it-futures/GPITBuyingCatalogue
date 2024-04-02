@@ -19,11 +19,14 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.SolutionSelection
@@ -943,23 +946,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task Get_RemoveService_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] IOrderService orderService,
-            [Frozen] ICatalogueItemService catalogueItemService,
+            [Frozen] IOrderItemService orderItemService,
             CatalogueSolutionsController controller,
-            CatalogueItem catalogueItem)
+            OrderItem orderItem)
         {
-            orderService.GetOrderWithOrderItems(order.CallOffId, internalOrgId)
-                .Returns(new OrderWrapper { Order = order });
+            orderItemService.GetOrderItem(order.CallOffId, internalOrgId, orderItem.CatalogueItemId).Returns(orderItem);
 
-            catalogueItemService.GetCatalogueItem(catalogueItem.Id).Returns(catalogueItem);
-
-            var result = await controller.RemoveService(internalOrgId, order.CallOffId, catalogueItem.Id);
+            var result = await controller.RemoveService(internalOrgId, order.CallOffId, orderItem.CatalogueItemId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new RemoveServiceModel(catalogueItem);
+            var expected = new RemoveServiceModel(orderItem.CatalogueItem);
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_RemoveService_IncorrectCatalogueItemId_ReturnsRedirect(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderItemService orderItemService,
+            CatalogueSolutionsController controller,
+            OrderItem orderItem)
+        {
+            orderItemService.GetOrderItem(order.CallOffId, internalOrgId, orderItem.CatalogueItemId).ReturnsNull();
+
+            var result = await controller.RemoveService(internalOrgId, order.CallOffId, orderItem.CatalogueItemId);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(TaskListController).ControllerName());
+            actualResult.ActionName.Should()
+                .Be(nameof(TaskListController.TaskList));
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, { "callOffId", order.CallOffId }, });
         }
 
         [Theory]
