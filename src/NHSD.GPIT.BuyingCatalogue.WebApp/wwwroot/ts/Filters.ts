@@ -102,13 +102,13 @@ var filters = (function (): CapabilitiesAndEpics {
 
     const capabilitiesAndEpicsInstance = new capabilitiesAndEpics();
 
-    window.onload = async () => {
+    window.addEventListener('load', async () => {
         const currentUrl = new URL(window.location.href);
         const initialSortByValue = currentUrl.searchParams.get(SORT_BY_PARAM_NAME);
         renderSortBy(await getSortOrderContent(), initialSortByValue);
         const filters = document.querySelectorAll(`#${FRAMEWORK_FILTERS_ID}, #${APPLICATION_TYPE_FILTERS_ID}, #${HOSTING_TYPE_FILTERS_ID}, #${INTEROPERABILITY_FILTERS_ID}`);
         filters.forEach((filter) => filter.addEventListener('change', async (event) => handleFilterChange(event, filter), false));
-    }
+    });
 
     async function getSortOrderContent(): Promise<string> {
         const currentUrl = new URL(window.location.href);
