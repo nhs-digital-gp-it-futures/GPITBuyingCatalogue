@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,12 +41,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_Index_ReturnsDefaultViewWithModelSet(
+            [Frozen] IOrganisationsService mockOrganisationsService,
             Organisation organisation,
-            IFixture fixture)
+            YourAccountController controller)
         {
-            var mockOrganisationsService = fixture.Freeze<IOrganisationsService>();
             mockOrganisationsService.GetOrganisationByInternalIdentifier(Arg.Any<string>()).ReturnsForAnyArgs(Task.FromResult(organisation));
-            var controller = fixture.Create<YourAccountController>();
 
             var expectedModel = new YourAccountModel(organisation)
             {
@@ -65,15 +65,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         [MockInlineAutoData(false)]
         public static async Task Get_ManageEmailNotifications_ReturnsDefaultViewWithModelSet(
             bool? saved,
+            [Frozen] IEmailPreferenceService mockEmailPreferenceService,
             UserEmailPreferenceModel userEmailPreferenceModel,
-            IFixture fixture)
+            YourAccountController controller)
         {
             var preferences = new List<UserEmailPreferenceModel> { userEmailPreferenceModel };
 
-            var mockEmailPreferenceService = fixture.Freeze<IEmailPreferenceService>();
             mockEmailPreferenceService.Get(Arg.Any<int>()).ReturnsForAnyArgs(Task.FromResult(preferences));
-
-            var controller = fixture.Create<YourAccountController>();
 
             var expectedModel = new ManageEmailPreferencesModel()
             {
@@ -119,6 +117,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             {
                 { "saved", true },
             });
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_Invalid(
+            UserEmailPreferenceModel userEmailPreferenceModel,
+            YourAccountController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var preferences = new List<UserEmailPreferenceModel> { userEmailPreferenceModel };
+
+            var model = new ManageEmailPreferencesModel()
+            {
+                Title = YourAccountController.ManageEmailNotificationsTitle,
+                EmailPreferences = preferences,
+            };
+
+            var result = await controller.ManageEmailNotifications(model);
+            result.Should().BeAssignableTo<ViewResult>();
         }
     }
 }

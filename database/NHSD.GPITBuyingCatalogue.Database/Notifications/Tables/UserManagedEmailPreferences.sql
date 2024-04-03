@@ -1,6 +1,6 @@
 CREATE TABLE [notifications].[UserEmailPreferences]
 (
-	[UserId] INT NOT NULL,
+    [UserId] INT NOT NULL,
     [EmailPreferenceTypeId] INT NOT NULL,
     [Enabled] BIT NOT NULL,
     CONSTRAINT PK_UserEmailPreferences PRIMARY KEY (UserId, EmailPreferenceTypeId),

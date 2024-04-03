@@ -6,10 +6,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models
 {
     public class ContractDueToExpireEmailModel() : GovNotifyEmailModel(EmailNotificationTypeEnum.ContractDueToExpire)
     {
-        private const string OrderIdToken = "order_id";
-        private const string FirstNameToken = "first_name";
-        private const string LastNameToken = "last_name";
-        private const string DaysRemainingToken = "number_of_days";
+        public const string OrderIdToken = "order_id";
+        public const string FirstNameToken = "first_name";
+        public const string LastNameToken = "last_name";
+        public const string DaysRemainingToken = "number_of_days";
 
         public string CallOffId { get; set; }
 
