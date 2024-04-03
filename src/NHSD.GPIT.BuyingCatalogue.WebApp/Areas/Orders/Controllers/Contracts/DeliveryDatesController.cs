@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -231,23 +232,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Order;
 
+            var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
+            List<RecipientDeliveryDateDto> dates;
+
             if (model.MatchDates == true)
             {
                 var solutionId = order.GetSolutionId();
-
-                if (solutionId != null)
-                {
-                    await deliveryDateService.MatchDeliveryDates(order.Id, solutionId.Value, catalogueItemId);
-                }
+                dates = recipients
+                    .Select(x => new RecipientDeliveryDateDto(x.OdsCode, x.GetDeliveryDateForItem(solutionId!.Value)!.Value))
+                    .ToList();
             }
             else
             {
-                var recipients = wrapper.DetermineOrderRecipients(catalogueItemId)
+                dates = recipients
                     .Select(x => new RecipientDeliveryDateDto(x.OdsCode, order.DeliveryDate!.Value))
                     .ToList();
-
-                await deliveryDateService.SetDeliveryDates(order.Id, catalogueItemId, recipients);
             }
+
+            await deliveryDateService.SetDeliveryDates(order.Id, catalogueItemId, dates);
 
             return RedirectToAction(
                 nameof(EditDates),

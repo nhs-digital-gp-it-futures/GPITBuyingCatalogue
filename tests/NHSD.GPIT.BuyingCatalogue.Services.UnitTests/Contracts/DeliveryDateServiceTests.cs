@@ -156,47 +156,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
 
         [Theory]
         [InMemoryDbAutoData]
-        public static async Task MatchDeliveryDates_WithMatchingRecipients_UpdatesDatabase(
-            Order order,
-            [Frozen] BuyingCatalogueDbContext context,
-            DeliveryDateService service)
-        {
-            var initialDate = DateTime.Today;
-            var newDate = initialDate.AddDays(1);
-
-            order.DeliveryDate = initialDate;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
-            var solution = order.OrderItems.First();
-            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(solution.CatalogueItemId, newDate));
-            context.Orders.Add(order);
-            await context.SaveChangesAsync();
-
-            var serviceToTest = order.GetAdditionalServices().First();
-            await service.MatchDeliveryDates(order.Id, solution.CatalogueItemId, serviceToTest.CatalogueItemId);
-            context.ChangeTracker.Clear();
-
-            var dbOrder = await context.Orders
-                .Include(x => x.OrderRecipients)
-                    .ThenInclude(x => x.OrderItemRecipients)
-                .FirstAsync(x => x.Id == order.Id);
-
-            dbOrder.OrderItems
-                .Where(o => o.CatalogueItemId == serviceToTest.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(newDate)));
-
-            dbOrder.OrderItems
-                .Where(o => o.CatalogueItemId == solution.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(newDate)));
-
-            dbOrder.OrderItems
-                .Where(o => o.CatalogueItemId != solution.CatalogueItemId && o.CatalogueItemId != serviceToTest.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(initialDate)));
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
         public static async Task ResetDeliveryDates_AllRecipientsAffected_UpdatesDatabase(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,

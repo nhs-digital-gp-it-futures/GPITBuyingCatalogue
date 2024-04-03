@@ -636,8 +636,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [CommonInlineAutoData(true)]
+        [CommonInlineAutoData(false)]
         public static async Task Post_MatchDates_MatchDatesIsTrue_ReturnsExpectedResult(
+            bool existingOrderItemRecipients,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
@@ -652,18 +654,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
             var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
 
+            if (!existingOrderItemRecipients)
+            {
+                order.OrderRecipients.ForEach(x => x.OrderItemRecipients
+                    .Where(y => y.CatalogueItemId != solutionId)
+                    .ForEach(z => x.OrderItemRecipients.Remove(z)));
+            }
+
+            var wrapper = new OrderWrapper(order);
             orderService
                 .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .ReturnsAsync(wrapper);
 
-            deliveryDateService
-                .Setup(x => x.MatchDeliveryDates(order.Id, solutionId, catalogueItemId))
-                .Verifiable();
+            var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
+            var expectedDates = recipients
+                .Select(
+                    x => new RecipientDeliveryDateDto(x.OdsCode, x.GetDeliveryDateForItem(solutionId)!.Value))
+                .ToList();
 
             var result = await controller.MatchDates(internalOrgId, callOffId, catalogueItemId, model);
 
             orderService.VerifyAll();
-            deliveryDateService.VerifyAll();
+            deliveryDateService.Verify(x => x.SetDeliveryDates(order.Id, catalogueItemId, It.Is<List<RecipientDeliveryDateDto>>(y => y.Should().BeEquivalentTo(expectedDates, string.Empty) != null)));
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
