@@ -48,4 +48,4 @@ services:
     restart: "no"
     environment:
       AZURE_STORAGE_CONNECTION_STRING: "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://nhsd_gpitbc_azurite:10000/devstoreaccount1;QueueEndpoint=http://nhsd_gpitbc_azurite:10003/devstoreaccount1;"
-    entrypoint: ["bash", "-c", "sleep 10 && az storage container create -n orderpdfs && az storage container create -n publicdocs && az storage container create -n capabilities-update"]
+    entrypoint: ["bash", "-c", "sleep 10 && az storage container create -n orderpdfs && az storage container create -n publicdocs && az storage container create -n capabilities-update && az storage queue create -n send-email-notification && az storage queue create -n complete-email-notification"]

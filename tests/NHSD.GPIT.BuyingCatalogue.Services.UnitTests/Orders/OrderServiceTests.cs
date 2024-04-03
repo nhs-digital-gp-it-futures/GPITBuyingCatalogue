@@ -334,21 +334,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [InMemoryDbAutoData]
         public static async Task TerminateOrder_WithCompletedAmendment_TerminatesAllRevisions(
             Organisation organisation,
-            List<Order> orders,
+            Order originalOrder,
             [Frozen] BuyingCatalogueDbContext context,
             AspNetUser user,
             DateTime terminationDate,
             string reason,
             OrderService service)
         {
-            var originalOrder = orders.First();
-            var amendedOrder = orders.Skip(1).First();
-
-            amendedOrder.OrderNumber = originalOrder.OrderNumber;
             originalOrder.Revision = 1;
-            amendedOrder.Revision = 2;
+            originalOrder.OrderNumber = originalOrder.ContractOrderNumber.Id;
+            var amendedOrder = originalOrder.BuildAmendment(2);
+
             amendedOrder.Completed = DateTime.UtcNow;
             originalOrder.Completed = DateTime.UtcNow;
+
+            var orders = new List<Order>() { originalOrder, amendedOrder };
 
             organisation.Orders.AddRange(orders);
 
@@ -768,19 +768,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [InMemoryDbAutoData]
         public static async Task GetPagedOrders_WithCompletedAmendment_ReturnsSingleRevision(
             Organisation organisation,
-            List<Order> orders,
+            Order originalOrder,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            var originalOrder = orders.First();
-            var amendedOrder = orders.Skip(1).First();
-
-            amendedOrder.OrderNumber = originalOrder.OrderNumber;
+            originalOrder.OrderNumber = originalOrder.ContractOrderNumber.Id;
             originalOrder.Revision = 1;
-            amendedOrder.Revision = 2;
+            var amendedOrder = originalOrder.BuildAmendment(2);
+
             amendedOrder.Completed = DateTime.UtcNow;
             originalOrder.Completed = DateTime.UtcNow;
 
+            var orders = new List<Order> { originalOrder, amendedOrder };
             organisation.Orders.AddRange(orders);
 
             context.Orders.AddRange(orders);
@@ -937,18 +936,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [InMemoryDbAutoData]
         public static async Task GetOrdersBySearchTerm_WithInProgressAmendment_ReturnsAllOrders(
             Organisation organisation,
-            List<Order> orders,
+            Order originalOrder,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            var originalOrder = orders.First();
-            var amendedOrder = orders.Skip(1).First();
-
-            amendedOrder.OrderNumber = originalOrder.OrderNumber;
             originalOrder.Revision = 1;
-            amendedOrder.Revision = 2;
+            originalOrder.OrderNumber = originalOrder.ContractOrderNumber.Id;
+            var amendedOrder = originalOrder.BuildAmendment(2);
+
             amendedOrder.Completed = null;
             originalOrder.Completed = DateTime.UtcNow;
+
+            var orders = new List<Order> { originalOrder, amendedOrder };
 
             organisation.Orders = orders;
 
@@ -1095,6 +1094,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             OrderService service)
         {
             order.OrderingPartyId = order.OrderingParty.Id;
+            order.OrderNumber = order.ContractOrderNumber.Id;
             order.Revision = 1;
             var amendment = order.BuildAmendment(2);
             amendment.OrderItems.Clear();
