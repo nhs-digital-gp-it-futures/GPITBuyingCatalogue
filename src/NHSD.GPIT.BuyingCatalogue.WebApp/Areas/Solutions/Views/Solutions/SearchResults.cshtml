@@ -27,12 +27,21 @@
                asp-action="@nameof(SolutionsController.Index)">
                 Clear all filters
             </a>
-            <div class="filtering-card">
-                <p class="info-text">
-                    Once you’re happy with your results, you can save your filters to create a shortlist. The shortlist can then be used to carry out a competition.
+            @if (Model.CatalogueItems.Count == 0)
+            {
+                <p>
+                    There were no Catalogue Solutions found with this search criteria. Try changing the filters you've selected.
                 </p>
-                <nhs-submit-button form="filters" class="nhsuk-button--reverse" text="Save filters" formaction="@Url.Action(nameof(ManageFiltersController.SaveFilter), typeof(ManageFiltersController).ControllerName())" />
-            </div>
+            }
+            else
+            {
+                <div class="filtering-card">
+                    <p class="info-text">
+                        Once you’re happy with your results, you can save your filters to create a shortlist. The shortlist can then be used to carry out a competition.
+                    </p>
+                    <nhs-submit-button form="filters" class="nhsuk-button--reverse" text="Save filters" formaction="@Url.Action(nameof(ManageFiltersController.SaveFilter), typeof(ManageFiltersController).ControllerName())" />
+                </div>
+            }
         }
     }
     @if (Model.CatalogueItems.Count == 0)
