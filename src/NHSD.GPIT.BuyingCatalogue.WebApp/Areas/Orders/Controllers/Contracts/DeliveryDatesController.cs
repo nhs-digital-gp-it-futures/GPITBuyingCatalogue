@@ -231,15 +231,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Order;
+            var solutionId = order.GetSolutionId();
 
             var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
             List<RecipientDeliveryDateDto> dates;
 
-            if (model.MatchDates == true)
+            if (model.MatchDates == true && solutionId != null)
             {
-                var solutionId = order.GetSolutionId();
                 dates = recipients
-                    .Select(x => new RecipientDeliveryDateDto(x.OdsCode, x.GetDeliveryDateForItem(solutionId!.Value)!.Value))
+                    .Select(
+                        x => new RecipientDeliveryDateDto(
+                            x.OdsCode,
+                            x.GetDeliveryDateForItem(solutionId.Value)!.Value))
                     .ToList();
             }
             else

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
 using MoreLinq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
@@ -636,10 +637,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
+        [CommonAutoData]
         public static async Task Post_MatchDates_MatchDatesIsTrue_ReturnsExpectedResult(
-            bool existingOrderItemRecipients,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
@@ -654,39 +653,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
             var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
 
-            if (!existingOrderItemRecipients)
-            {
-                order.OrderRecipients.ForEach(x => x.OrderItemRecipients
+            var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
+
+            var recipientDates = await VerifyMatching(catalogueItemId, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
+
+            recipientDates.Select(x => x.DeliveryDate).Should().BeEquivalentTo(recipients.Select(x => x.GetDeliveryDateForItem(solutionId)!.Value));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_MatchDates_MatchDatesIsTrue_ServiceHasNoExistingOrderItemRecipients_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            MatchDatesModel model,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IDeliveryDateService> deliveryDateService,
+            DeliveryDatesController controller)
+        {
+            model.MatchDates = true;
+            order.SetupCatalogueSolution();
+
+            var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
+
+            order.OrderRecipients.ForEach(x => x.OrderItemRecipients
                     .Where(y => y.CatalogueItemId != solutionId)
                     .ForEach(z => x.OrderItemRecipients.Remove(z)));
-            }
 
-            var wrapper = new OrderWrapper(order);
-            orderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(wrapper);
+            var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
 
-            var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
-            var expectedDates = recipients
-                .Select(
-                    x => new RecipientDeliveryDateDto(x.OdsCode, x.GetDeliveryDateForItem(solutionId)!.Value))
-                .ToList();
+            var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
 
-            var result = await controller.MatchDates(internalOrgId, callOffId, catalogueItemId, model);
+            var recipientDates = await VerifyMatching(catalogueItemId, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
 
-            orderService.VerifyAll();
-            deliveryDateService.Verify(x => x.SetDeliveryDates(order.Id, catalogueItemId, It.Is<List<RecipientDeliveryDateDto>>(y => y.Should().BeEquivalentTo(expectedDates, string.Empty) != null)));
-
-            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
-
-            actual.ActionName.Should().Be(nameof(DeliveryDatesController.EditDates));
-            actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
-            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-                { "catalogueItemId", catalogueItemId },
-            });
+            recipientDates.Select(x => x.DeliveryDate).Should().BeEquivalentTo(recipients.Select(x => x.GetDeliveryDateForItem(solutionId)!.Value));
         }
 
         [Theory]
@@ -704,39 +704,68 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             order.SetupCatalogueSolution();
 
             var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
-            var orderItem = order.OrderItem(catalogueItemId);
-
-            orderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
-
-            var recipientDates = new List<RecipientDeliveryDateDto>();
-
-            deliveryDateService
-                .Setup(x => x.SetDeliveryDates(order.Id, catalogueItemId, It.IsAny<List<RecipientDeliveryDateDto>>()))
-                .Callback<int, CatalogueItemId, List<RecipientDeliveryDateDto>>((_, _, x) => recipientDates = x);
-
-            var result = await controller.MatchDates(internalOrgId, callOffId, catalogueItemId, model);
-
-            orderService.VerifyAll();
-            deliveryDateService.VerifyAll();
 
             var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
 
-            recipientDates.Count.Should().Be(recipients.Count);
-            recipientDates.Select(x => x.OdsCode).Should().BeEquivalentTo(recipients.Select(x => x.OdsCode));
+            var recipientDates = await VerifyMatching(catalogueItemId, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
+
             recipientDates.ForEach(x => x.DeliveryDate.Should().Be(order.DeliveryDate));
+        }
 
-            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_MatchDates_MatchDatesIsFalse_ServiceHasNoExistingOrderItemRecipients_ReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            MatchDatesModel model,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IDeliveryDateService> deliveryDateService,
+            DeliveryDatesController controller)
+        {
+            model.MatchDates = false;
+            order.SetupCatalogueSolution();
 
-            actual.ActionName.Should().Be(nameof(DeliveryDatesController.EditDates));
-            actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
-            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "internalOrgId", internalOrgId },
-                { "callOffId", callOffId },
-                { "catalogueItemId", catalogueItemId },
-            });
+            var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
+
+            order.OrderRecipients.ForEach(x => x.OrderItemRecipients
+                    .Where(y => y.CatalogueItemId != solutionId)
+                    .ForEach(z => x.OrderItemRecipients.Remove(z)));
+
+            var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
+
+            var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
+
+            var recipientDates = await VerifyMatching(catalogueItemId, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
+
+            recipientDates.ForEach(x => x.DeliveryDate.Should().Be(order.DeliveryDate));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Post_MatchDates_MatchDatesIsTrue_SolutionIdIsNullReturnsExpectedResult(
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            MatchDatesModel model,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IDeliveryDateService> deliveryDateService,
+            DeliveryDatesController controller)
+        {
+            model.MatchDates = true;
+            order.SetupCatalogueSolution();
+
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+
+            order.GetSolutionId().Should().BeNull();
+
+            var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
+
+            var recipients = order.DetermineOrderRecipients(null, catalogueItemId);
+
+            var recipientDates = await VerifyMatching(catalogueItemId, internalOrgId, callOffId, order, model, orderService, deliveryDateService, controller, recipients);
+
+            recipientDates.ForEach(x => x.DeliveryDate.Should().Be(order.DeliveryDate));
         }
 
         [Theory]
@@ -760,6 +789,49 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        private static async Task<List<RecipientDeliveryDateDto>> VerifyMatching(
+            CatalogueItemId catalogueItemId,
+            string internalOrgId,
+            CallOffId callOffId,
+            EntityFramework.Ordering.Models.Order order,
+            MatchDatesModel model,
+            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] Mock<IDeliveryDateService> deliveryDateService,
+            DeliveryDatesController controller,
+            ICollection<OrderRecipient> recipients)
+        {
+            orderService
+                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
+                .ReturnsAsync(new OrderWrapper(order));
+
+            var recipientDates = new List<RecipientDeliveryDateDto>();
+
+            deliveryDateService
+                .Setup(x => x.SetDeliveryDates(order.Id, catalogueItemId, It.IsAny<List<RecipientDeliveryDateDto>>()))
+                .Callback<int, CatalogueItemId, List<RecipientDeliveryDateDto>>((_, _, x) => recipientDates = x);
+
+            var result = await controller.MatchDates(internalOrgId, callOffId, catalogueItemId, model);
+
+            var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actual.ActionName.Should().Be(nameof(DeliveryDatesController.EditDates));
+            actual.ControllerName.Should().Be(typeof(DeliveryDatesController).ControllerName());
+            actual.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "callOffId", callOffId },
+                { "catalogueItemId", catalogueItemId },
+            });
+
+            orderService.VerifyAll();
+            deliveryDateService.VerifyAll();
+
+            recipientDates.Count.Should().Be(recipients.Count);
+            recipientDates.Select(x => x.OdsCode).Should().BeEquivalentTo(recipients.Select(x => x.OdsCode));
+
+            return recipientDates;
         }
     }
 }
