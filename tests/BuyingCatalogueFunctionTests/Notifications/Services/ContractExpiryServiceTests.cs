@@ -176,11 +176,10 @@ namespace BuyingCatalogueFunctionTests.Notifications.Services
             EmailPreferenceType emailPreferenceType,
             Order order,
             [Frozen] BuyingCatalogueDbContext dbContext,
+            [Frozen] IOptions<QueueOptions> options,
             IFixture fixture)
         {
-            var options = fixture.Freeze<IOptions<QueueOptions>>();
             options.Value.Returns(new QueueOptions());
-
             var service = fixture.Create<ContractExpiryService>();
 
             order.ContractOrderNumber.Id = order.OrderNumber;
@@ -208,13 +207,12 @@ namespace BuyingCatalogueFunctionTests.Notifications.Services
             AspNetUser user,
             Order order,
             [Frozen] BuyingCatalogueDbContext dbContext,
+            [Frozen] IOptions<QueueOptions> options,
+            [Frozen] QueueServiceClient queueServiceClient,
+            [Frozen] QueueClient queueClient,
             IFixture fixture)
         {
-            var options = fixture.Freeze<IOptions<QueueOptions>>();
             options.Value.Returns(new QueueOptions());
-
-            var queueServiceClient = fixture.Freeze<QueueServiceClient>();
-            var queueClient = fixture.Freeze<QueueClient>();
             queueClient.SendMessageAsync(Arg.Any<string>()).ThrowsAsync(new Exception());
             queueServiceClient.GetQueueClient(Arg.Any<string>()).Returns(queueClient);
 
