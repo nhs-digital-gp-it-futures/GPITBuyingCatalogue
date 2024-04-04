@@ -83,7 +83,7 @@ public class Gen2UploadService : CsvServiceBase, IGen2UploadService
             && int.TryParse(baseRecord.CapabilityId.AsSpan()[1..], out _);
 
         var additionalServiceIdValid = string.IsNullOrWhiteSpace(baseRecord.AdditionalServiceId)
-            || (baseRecord.AdditionalServiceId.StartsWith('A') && baseRecord.AdditionalServiceId.Length == 4 && int.TryParse(baseRecord.AdditionalServiceId.AsSpan()[1..], out _));
+            || (baseRecord.AdditionalServiceId.StartsWith('A') && baseRecord.AdditionalServiceId.Length <= 4 && int.TryParse(baseRecord.AdditionalServiceId.AsSpan()[1..], out _));
 
         var isRecordValid = keyIsValid && supplierIdValid && catalogueItemIdValid && capabilityIdValid && additionalServiceIdValid;
 
