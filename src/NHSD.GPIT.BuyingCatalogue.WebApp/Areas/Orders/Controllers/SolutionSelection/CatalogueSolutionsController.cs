@@ -396,8 +396,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         [HttpGet("remove-service/{catalogueItemId}")]
         public async Task<IActionResult> RemoveService(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId)
         {
-            var service = await catalogueItemService.GetCatalogueItem(catalogueItemId);
-            var model = new RemoveServiceModel(service)
+            var service = await orderItemService.GetOrderItem(callOffId, internalOrgId, catalogueItemId);
+
+            if (service == null)
+            {
+                return RedirectToAction(
+                    nameof(TaskListController.TaskList),
+                    typeof(TaskListController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
+            var model = new RemoveServiceModel(service.CatalogueItem)
             {
                 BackLink = Url.Action(
                     nameof(TaskListController.TaskList),
