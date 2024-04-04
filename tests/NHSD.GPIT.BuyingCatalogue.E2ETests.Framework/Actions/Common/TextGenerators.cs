@@ -132,6 +132,15 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             return firstName;
         }
 
+        public string OrganisationInputAddText(By targetField, int numChars)
+        {
+            Driver.FindElement(targetField).Clear();
+            var organisationName = Strings.RandomOrganisationName(numChars);
+            Driver.FindElement(targetField).SendKeys(organisationName.ToString());
+
+            return organisationName;
+        }
+
         public string LastNameInputAddText(By targetField, int numChars)
         {
             Driver.FindElement(targetField).Clear();
