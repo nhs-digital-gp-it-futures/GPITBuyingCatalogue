@@ -33,7 +33,13 @@
     <None Update="ImportTestData\CapabilitiesAndSolutions.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ImportTestData\CapabilitiesAndSolutions_MissingData.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ImportTestData\EpicsAndSolutions.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ImportTestData\EpicsAndSolutions_MissingData.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ImportTestData\valid_service_recipients.csv">

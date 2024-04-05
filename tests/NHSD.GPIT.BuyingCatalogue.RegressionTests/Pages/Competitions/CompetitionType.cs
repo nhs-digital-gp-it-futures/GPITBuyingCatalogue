@@ -3,6 +3,6 @@
     public enum CompetitionType
     {
         PriceOnly,
-        PriceAndNonPriceElement
+        PriceAndNonPriceElement,
     }
 }
