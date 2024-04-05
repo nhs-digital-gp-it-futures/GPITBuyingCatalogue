@@ -4,14 +4,13 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Contracts;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
@@ -19,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
     public class DeliveryDateServiceTests
     {
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void CreateDeliveryDate_NullOrderService_ThrowsException(
             [Frozen] BuyingCatalogueDbContext context)
         {
@@ -27,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void CreateDeliveryDate_NullDBContext_ThrowsException(
             [Frozen] IOrderService orderService)
         {
@@ -35,20 +34,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetDeliveryDate_UpdatesDatabase(
             Order order,
             DateTime deliveryDate,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             DeliveryDateService service)
         {
             order.DeliveryDate = null;
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
-            mockOrderService.Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
 
             await service.SetDeliveryDate(order.OrderingParty.InternalIdentifier, order.CallOffId, deliveryDate);
             context.ChangeTracker.Clear();
@@ -60,13 +58,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetAllDeliveryDates_UpdatesDatabase(
             Order order,
             DateTime initialDate,
             DateTime deliveryDate,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             DeliveryDateService service)
         {
             order.DeliveryDate = null;
@@ -74,8 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
-            mockOrderService.Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
 
             await service.SetAllDeliveryDates(order.OrderingParty.InternalIdentifier, order.CallOffId, deliveryDate);
             context.ChangeTracker.Clear();
@@ -90,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task ResetRecipientDeliveryDates_UpdatesDatabase(
             Order order,
             DateTime initialDate,
@@ -114,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetDeliveryDates_UpdatesDatabase(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
@@ -155,48 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
-        public static async Task MatchDeliveryDates_WithMatchingRecipients_UpdatesDatabase(
-            Order order,
-            [Frozen] BuyingCatalogueDbContext context,
-            DeliveryDateService service)
-        {
-            var initialDate = DateTime.Today;
-            var newDate = initialDate.AddDays(1);
-
-            order.DeliveryDate = initialDate;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
-            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
-            var solution = order.OrderItems.First();
-            solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(solution.CatalogueItemId, newDate));
-            context.Orders.Add(order);
-            await context.SaveChangesAsync();
-
-            var serviceToTest = order.GetAdditionalServices().First();
-            await service.MatchDeliveryDates(order.Id, solution.CatalogueItemId, serviceToTest.CatalogueItemId);
-            context.ChangeTracker.Clear();
-
-            var dbOrder = await context.Orders
-                .Include(x => x.OrderRecipients)
-                    .ThenInclude(x => x.OrderItemRecipients)
-                .FirstAsync(x => x.Id == order.Id);
-
-            dbOrder.OrderItems
-                .Where(o => o.CatalogueItemId == serviceToTest.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(newDate)));
-
-            dbOrder.OrderItems
-                .Where(o => o.CatalogueItemId == solution.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(newDate)));
-
-            dbOrder.OrderItems
-                .Where(o => o.CatalogueItemId != solution.CatalogueItemId && o.CatalogueItemId != serviceToTest.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(initialDate)));
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task ResetDeliveryDates_AllRecipientsAffected_UpdatesDatabase(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
@@ -220,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task ResetDeliveryDates_SomeRecipientsAffected_UpdatesDatabase(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,

@@ -82,31 +82,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task MatchDeliveryDates(int orderId, CatalogueItemId solutionId, CatalogueItemId serviceId)
-        {
-            var solutionRecipients = await dbContext.OrderItemRecipients
-                .Where(x => x.OrderId == orderId && x.CatalogueItemId == solutionId)
-                .ToListAsync();
-
-            var serviceRecipients = await dbContext.OrderItemRecipients
-                .Where(x => x.OrderId == orderId && x.CatalogueItemId == serviceId)
-                .ToListAsync();
-
-            foreach (var solutionRecipient in solutionRecipients)
-            {
-                var serviceRecipient = serviceRecipients.FirstOrDefault(x => x.OdsCode == solutionRecipient.OdsCode);
-
-                if (serviceRecipient == null)
-                {
-                    continue;
-                }
-
-                serviceRecipient.DeliveryDate = solutionRecipient.DeliveryDate;
-            }
-
-            await dbContext.SaveChangesAsync();
-        }
-
         public async Task ResetDeliveryDates(int orderId, DateTime commencementDate)
         {
             var order = await dbContext.Orders.FirstAsync(x => x.Id == orderId);
