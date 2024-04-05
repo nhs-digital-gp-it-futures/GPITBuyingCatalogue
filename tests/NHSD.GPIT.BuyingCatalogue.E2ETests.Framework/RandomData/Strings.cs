@@ -42,6 +42,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData
 
         }
 
+        public static string RandomOrganisationName(int numChars)
+        {
+            var faker = new Faker("en_GB");
+            return faker.Company.CompanyName();
+        }
+
         public static string RandomLastName(int numChars)
         {
             var faker = new Faker("en_GB");

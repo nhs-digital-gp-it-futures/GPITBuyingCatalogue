@@ -27,5 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common.Organisati
         public static By Status => By.Id("is-active");
 
         public static By StatusError => By.Id("is-active-error");
+
+        public static By Organisation => By.Id("SelectedOrganisationId");
+
+        public static By UserEmail => By.Id("Email");
     }
 }
