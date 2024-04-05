@@ -15,7 +15,10 @@
 <nhs-card>
     <div class="nhsuk-u-clear">
         <h2 class="nhsuk-card__heading nhsuk-heading-s bc-u-block-float-left">@(Model.PageOptions.TotalNumberOfItems) solutions@(suffix)</h2>
-        <div style="float: right" id="solution-sort-container"></div>
+        @if (Model.CatalogueItems!.Any())
+        {
+            <div style="float: right" id="solution-sort-container"></div>
+        }
     </div>
 
     @if (!Model.FilterResultView)
@@ -27,9 +30,10 @@
                asp-action="@nameof(SolutionsController.Index)">
                 Clear all filters
             </a>
+            <hr class="nhsuk-section-break--xl nhsuk-u-padding-top-0 nhsuk-u-margin-top-3 nhsuk-u-padding-bottom-0 nhsuk-u-margin-bottom-3" />
             @if (Model.CatalogueItems.Count == 0)
             {
-                <p>
+                <p class="info-text">
                     There were no Catalogue Solutions found with this search criteria. Try changing the filters you've selected.
                 </p>
             }
