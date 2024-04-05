@@ -48,5 +48,33 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2
                 nameof(HomeController.Index))
                 .Should().BeTrue();
         }
+
+        public void CapabilitiesAndEpicsMappinFailed()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(Gen2MappingController),
+                nameof(Gen2MappingController.FailedCapabilities))
+                .Should().BeTrue();
+
+            CommonActions.ClickReturnToAdminHomePage();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.Index))
+                .Should().BeTrue();
+        }
+
+        public void SolutionsAndEpicsMappinFailed()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(Gen2MappingController),
+                nameof(Gen2MappingController.FailedEpics))
+                .Should().BeTrue();
+
+            CommonActions.ClickReturnToAdminHomePage();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(HomeController),
+                nameof(HomeController.Index))
+                .Should().BeTrue();
+        }
     }
 }
