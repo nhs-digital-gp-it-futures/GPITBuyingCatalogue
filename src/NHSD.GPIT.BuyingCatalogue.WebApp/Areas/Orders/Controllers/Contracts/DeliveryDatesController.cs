@@ -234,23 +234,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var solutionId = order.GetSolutionId();
 
             var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
-            List<RecipientDeliveryDateDto> dates;
-
-            if (model.MatchDates == true && solutionId != null)
-            {
-                dates = recipients
+            var dates = (model.MatchDates == true && solutionId is not null)
+                ? recipients
                     .Select(
                         x => new RecipientDeliveryDateDto(
                             x.OdsCode,
                             x.GetDeliveryDateForItem(solutionId.Value)!.Value))
-                    .ToList();
-            }
-            else
-            {
-                dates = recipients
+                    .ToList()
+                : recipients
                     .Select(x => new RecipientDeliveryDateDto(x.OdsCode, order.DeliveryDate!.Value))
                     .ToList();
-            }
 
             await deliveryDateService.SetDeliveryDates(order.Id, catalogueItemId, dates);
 
