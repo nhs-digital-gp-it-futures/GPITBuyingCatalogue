@@ -5,7 +5,9 @@ using CsvHelper.Configuration;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
-    public abstract class ClassMapWithNames<T> : ClassMap<T>
+    public interface IClassMapWithNamesMarker;
+
+    public abstract class ClassMapWithNames<T> : ClassMap<T>, IClassMapWithNamesMarker
     {
         private readonly ReadOnlyDictionary<string, string> names;
 
