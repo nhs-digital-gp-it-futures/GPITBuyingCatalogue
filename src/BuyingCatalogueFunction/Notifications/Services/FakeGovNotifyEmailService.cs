@@ -30,7 +30,7 @@ namespace BuyingCatalogueFunction.Notifications.Services
             foreach (var p in personalisation ?? new Dictionary<string, dynamic>())
                 data.Add(p.Key, p.Value.ToString());
 
-            logger.LogInformation("Email request {@Data}", data);
+            logger.LogInformation("Email request {Data}", data);
 
             return await Task.FromResult("fake-id");
         }

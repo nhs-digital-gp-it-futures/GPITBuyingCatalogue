@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models
     {
         public EmailNotificationTypeEnum NotificationType { get; set; } = notificationType;
 
-        public abstract Dictionary<string, dynamic> GetTemplatePersonalisation(Func<byte[], bool, JObject> prepareUpload);
+        public abstract Dictionary<string, dynamic> GetTemplatePersonalisation();
 
         public abstract string GetTemplateId(TemplateOptions options);
     }

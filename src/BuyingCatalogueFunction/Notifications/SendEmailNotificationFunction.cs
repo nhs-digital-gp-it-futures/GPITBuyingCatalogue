@@ -75,11 +75,19 @@ namespace BuyingCatalogueFunction.Notifications
             }
             catch (NoneTransientException ex)
             {
-                logger.LogError(ex, $"{nameof(SendEmailNotification)} error - {message}. None transient exception not thrown to suppress retries");
+                logger.LogError(
+                    ex,
+                    "{Name} error - {Message}. None transient exception not thrown to suppress retries",
+                    nameof(SendEmailNotification),
+                    message);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{nameof(SendEmailNotification)} error - {message}.");
+                logger.LogError(
+                    ex,
+                    "{Name} error - {Message}.",
+                    nameof(SendEmailNotification),
+                    message);
                 throw;
             }
         }
@@ -95,8 +103,7 @@ namespace BuyingCatalogueFunction.Notifications
             var id = await emailService.SendEmailAsync(
                 notification.To,
                 details.GetTemplateId(templateOptions),
-                // TODO: NotificationClient.PrepareUpload can throw ArgumentException("File is larger than 2MB"). Consider catching and throwing NoneTransientException to suppress retries.
-                details.GetTemplatePersonalisation(NotificationClient.PrepareUpload),
+                details.GetTemplatePersonalisation(),
                 notification.Id.ToString());
             notification.ReceiptId = id;
             dbContext.SaveChanges();

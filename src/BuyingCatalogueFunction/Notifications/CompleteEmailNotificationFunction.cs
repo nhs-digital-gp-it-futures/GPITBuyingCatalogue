@@ -45,11 +45,19 @@ namespace BuyingCatalogueFunction.Notifications
             }
             catch (NoneTransientException ex)
             {
-                logger.LogError(ex, $"{nameof(CompleteEmailNotification)} error - {message}. None transient exception not thrown to suppress retries");
+                logger.LogError(
+                    ex,
+                    "{Name} error - {Message}. None transient exception not thrown to suppress retries",
+                    nameof(CompleteEmailNotification),
+                    message);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{nameof(CompleteEmailNotification)} error - {message}.");
+                logger.LogError(
+                    ex,
+                    "{Name} error - {message}.",
+                    nameof(CompleteEmailNotification),
+                    message);
                 throw;
             }
         }

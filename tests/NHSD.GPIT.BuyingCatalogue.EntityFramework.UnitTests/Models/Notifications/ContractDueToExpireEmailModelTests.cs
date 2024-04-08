@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Notificatio
         public static void GetTemplatePersonalisation(
             ContractDueToExpireEmailModel model)
         {
-            var result = model.GetTemplatePersonalisation((_, _) => null);
+            var result = model.GetTemplatePersonalisation();
             ((string)result[ContractDueToExpireEmailModel.LastNameToken]).Should().Be(model.LastName);
             ((string)result[ContractDueToExpireEmailModel.FirstNameToken]).Should().Be(model.FirstName);
             ((string)result[ContractDueToExpireEmailModel.OrderIdToken]).Should().Be(model.CallOffId);

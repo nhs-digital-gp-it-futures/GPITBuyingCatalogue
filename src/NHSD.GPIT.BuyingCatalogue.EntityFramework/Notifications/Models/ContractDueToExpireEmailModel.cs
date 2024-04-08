@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models
 
         public int DaysRemaining { get; set; }
 
-        public override Dictionary<string, dynamic> GetTemplatePersonalisation(Func<byte[], bool, JObject> prepareUpload)
+        public override Dictionary<string, dynamic> GetTemplatePersonalisation()
         {
             return new Dictionary<string, dynamic>
             {

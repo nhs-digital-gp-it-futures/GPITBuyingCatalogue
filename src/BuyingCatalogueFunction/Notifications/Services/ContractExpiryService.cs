@@ -89,7 +89,12 @@ namespace BuyingCatalogueFunction.Notifications.Services
             }
             catch (Exception e)
             {
-                logger.LogError(e, $"Order {order.CallOffId}. {eventType} - Notifications saved but problem dispatching to queue {options.SendEmailNotifications}");
+                logger.LogError(
+                    e,
+                    "Order {CallOffId}. {EventType} - Notifications saved but problem dispatching to queue {Queue}",
+                    order.CallOffId,
+                    eventType,
+                    options.SendEmailNotifications);
                 throw;
             }
         }
