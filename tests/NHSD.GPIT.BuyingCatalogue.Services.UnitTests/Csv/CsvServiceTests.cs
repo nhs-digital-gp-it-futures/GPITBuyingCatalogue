@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using CsvHelper;
@@ -17,7 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Csv;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(CsvService).GetConstructors();
 
@@ -35,34 +35,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
-        [InMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
-        [InMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
-        [InMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
-        [InMemoryDbInlineAutoData(4, "Service Recipient ID")]
-        [InMemoryDbInlineAutoData(5, "Service Recipient Name")]
-        [InMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
-        [InMemoryDbInlineAutoData(7, "Supplier ID")]
-        [InMemoryDbInlineAutoData(8, "Supplier Name")]
-        [InMemoryDbInlineAutoData(9, "Product ID")]
-        [InMemoryDbInlineAutoData(10, "Product Name")]
-        [InMemoryDbInlineAutoData(11, "Product Type")]
-        [InMemoryDbInlineAutoData(12, "Quantity Ordered")]
-        [InMemoryDbInlineAutoData(13, "Unit of Order")]
-        [InMemoryDbInlineAutoData(14, "Unit Time")]
-        [InMemoryDbInlineAutoData(15, "Estimation Period")]
-        [InMemoryDbInlineAutoData(16, "Price")]
-        [InMemoryDbInlineAutoData(17, "Order Type")]
-        [InMemoryDbInlineAutoData(18, "Funding Type")]
-        [InMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
-        [InMemoryDbInlineAutoData(20, "Actual M1 date")]
-        [InMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
-        [InMemoryDbInlineAutoData(22, "Cease Date")]
-        [InMemoryDbInlineAutoData(23, "Framework")]
-        [InMemoryDbInlineAutoData(24, "Initial Term")]
-        [InMemoryDbInlineAutoData(25, "Contract Length (Months)")]
-        [InMemoryDbInlineAutoData(26, "Pricing Type")]
-        [InMemoryDbInlineAutoData(27, "Tiered Array")]
+        [MockInMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
+        [MockInMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
+        [MockInMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
+        [MockInMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
+        [MockInMemoryDbInlineAutoData(4, "Service Recipient ID")]
+        [MockInMemoryDbInlineAutoData(5, "Service Recipient Name")]
+        [MockInMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
+        [MockInMemoryDbInlineAutoData(7, "Supplier ID")]
+        [MockInMemoryDbInlineAutoData(8, "Supplier Name")]
+        [MockInMemoryDbInlineAutoData(9, "Product ID")]
+        [MockInMemoryDbInlineAutoData(10, "Product Name")]
+        [MockInMemoryDbInlineAutoData(11, "Product Type")]
+        [MockInMemoryDbInlineAutoData(12, "Quantity Ordered")]
+        [MockInMemoryDbInlineAutoData(13, "Unit of Order")]
+        [MockInMemoryDbInlineAutoData(14, "Unit Time")]
+        [MockInMemoryDbInlineAutoData(15, "Estimation Period")]
+        [MockInMemoryDbInlineAutoData(16, "Price")]
+        [MockInMemoryDbInlineAutoData(17, "Order Type")]
+        [MockInMemoryDbInlineAutoData(18, "Funding Type")]
+        [MockInMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
+        [MockInMemoryDbInlineAutoData(20, "Actual M1 date")]
+        [MockInMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
+        [MockInMemoryDbInlineAutoData(22, "Cease Date")]
+        [MockInMemoryDbInlineAutoData(23, "Framework")]
+        [MockInMemoryDbInlineAutoData(24, "Initial Term")]
+        [MockInMemoryDbInlineAutoData(25, "Contract Length (Months)")]
+        [MockInMemoryDbInlineAutoData(26, "Pricing Type")]
+        [MockInMemoryDbInlineAutoData(27, "Tiered Array")]
         public static async Task SolutionOrder_Mapped_Columns(
             int index,
             string name,
@@ -91,34 +91,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
-        [InMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
-        [InMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
-        [InMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
-        [InMemoryDbInlineAutoData(4, "Service Recipient ID")]
-        [InMemoryDbInlineAutoData(5, "Service Recipient Name")]
-        [InMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
-        [InMemoryDbInlineAutoData(7, "Supplier ID")]
-        [InMemoryDbInlineAutoData(8, "Supplier Name")]
-        [InMemoryDbInlineAutoData(9, "Product ID")]
-        [InMemoryDbInlineAutoData(10, "Product Name")]
-        [InMemoryDbInlineAutoData(11, "Product Type")]
-        [InMemoryDbInlineAutoData(12, "Quantity Ordered")]
-        [InMemoryDbInlineAutoData(13, "Unit of Order")]
-        [InMemoryDbInlineAutoData(14, "Unit Time")]
-        [InMemoryDbInlineAutoData(15, "Estimation Period")]
-        [InMemoryDbInlineAutoData(16, "Price")]
-        [InMemoryDbInlineAutoData(17, "Order Type")]
-        [InMemoryDbInlineAutoData(18, "Funding Type")]
-        [InMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
-        [InMemoryDbInlineAutoData(20, "Actual M1 date")]
-        [InMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
-        [InMemoryDbInlineAutoData(22, "Cease Date")]
-        [InMemoryDbInlineAutoData(23, "Framework")]
-        [InMemoryDbInlineAutoData(24, "Initial Term")]
-        [InMemoryDbInlineAutoData(25, "Contract Length (Months)")]
-        [InMemoryDbInlineAutoData(26, "Pricing Type")]
-        [InMemoryDbInlineAutoData(27, "Tiered Array")]
+        [MockInMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
+        [MockInMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
+        [MockInMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
+        [MockInMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
+        [MockInMemoryDbInlineAutoData(4, "Service Recipient ID")]
+        [MockInMemoryDbInlineAutoData(5, "Service Recipient Name")]
+        [MockInMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
+        [MockInMemoryDbInlineAutoData(7, "Supplier ID")]
+        [MockInMemoryDbInlineAutoData(8, "Supplier Name")]
+        [MockInMemoryDbInlineAutoData(9, "Product ID")]
+        [MockInMemoryDbInlineAutoData(10, "Product Name")]
+        [MockInMemoryDbInlineAutoData(11, "Product Type")]
+        [MockInMemoryDbInlineAutoData(12, "Quantity Ordered")]
+        [MockInMemoryDbInlineAutoData(13, "Unit of Order")]
+        [MockInMemoryDbInlineAutoData(14, "Unit Time")]
+        [MockInMemoryDbInlineAutoData(15, "Estimation Period")]
+        [MockInMemoryDbInlineAutoData(16, "Price")]
+        [MockInMemoryDbInlineAutoData(17, "Order Type")]
+        [MockInMemoryDbInlineAutoData(18, "Funding Type")]
+        [MockInMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
+        [MockInMemoryDbInlineAutoData(20, "Actual M1 date")]
+        [MockInMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
+        [MockInMemoryDbInlineAutoData(22, "Cease Date")]
+        [MockInMemoryDbInlineAutoData(23, "Framework")]
+        [MockInMemoryDbInlineAutoData(24, "Initial Term")]
+        [MockInMemoryDbInlineAutoData(25, "Contract Length (Months)")]
+        [MockInMemoryDbInlineAutoData(26, "Pricing Type")]
+        [MockInMemoryDbInlineAutoData(27, "Tiered Array")]
         public static async Task AssociatedServiceOtherOrder_Mapped_Columns(
             int index,
             string name,
@@ -147,34 +147,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
-        [InMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
-        [InMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
-        [InMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
-        [InMemoryDbInlineAutoData(4, "Practice to close / become branch site (ODS code)")]
-        [InMemoryDbInlineAutoData(5, "Practice to be retained (ODS code)")]
-        [InMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
-        [InMemoryDbInlineAutoData(7, "Supplier ID")]
-        [InMemoryDbInlineAutoData(8, "Supplier Name")]
-        [InMemoryDbInlineAutoData(9, "Product ID")]
-        [InMemoryDbInlineAutoData(10, "Product Name")]
-        [InMemoryDbInlineAutoData(11, "Product Type")]
-        [InMemoryDbInlineAutoData(12, "Quantity Ordered")]
-        [InMemoryDbInlineAutoData(13, "Unit of Order")]
-        [InMemoryDbInlineAutoData(14, "Unit Time")]
-        [InMemoryDbInlineAutoData(15, "Estimation Period")]
-        [InMemoryDbInlineAutoData(16, "Price")]
-        [InMemoryDbInlineAutoData(17, "Order Type")]
-        [InMemoryDbInlineAutoData(18, "Funding Type")]
-        [InMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
-        [InMemoryDbInlineAutoData(20, "Actual M1 date")]
-        [InMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
-        [InMemoryDbInlineAutoData(22, "Cease Date")]
-        [InMemoryDbInlineAutoData(23, "Framework")]
-        [InMemoryDbInlineAutoData(24, "Initial Term")]
-        [InMemoryDbInlineAutoData(25, "Contract Length (Months)")]
-        [InMemoryDbInlineAutoData(26, "Pricing Type")]
-        [InMemoryDbInlineAutoData(27, "Tiered Array")]
+        [MockInMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
+        [MockInMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
+        [MockInMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
+        [MockInMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
+        [MockInMemoryDbInlineAutoData(4, "Practice to close / become branch site (ODS code)")]
+        [MockInMemoryDbInlineAutoData(5, "Practice to be retained (ODS code)")]
+        [MockInMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
+        [MockInMemoryDbInlineAutoData(7, "Supplier ID")]
+        [MockInMemoryDbInlineAutoData(8, "Supplier Name")]
+        [MockInMemoryDbInlineAutoData(9, "Product ID")]
+        [MockInMemoryDbInlineAutoData(10, "Product Name")]
+        [MockInMemoryDbInlineAutoData(11, "Product Type")]
+        [MockInMemoryDbInlineAutoData(12, "Quantity Ordered")]
+        [MockInMemoryDbInlineAutoData(13, "Unit of Order")]
+        [MockInMemoryDbInlineAutoData(14, "Unit Time")]
+        [MockInMemoryDbInlineAutoData(15, "Estimation Period")]
+        [MockInMemoryDbInlineAutoData(16, "Price")]
+        [MockInMemoryDbInlineAutoData(17, "Order Type")]
+        [MockInMemoryDbInlineAutoData(18, "Funding Type")]
+        [MockInMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
+        [MockInMemoryDbInlineAutoData(20, "Actual M1 date")]
+        [MockInMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
+        [MockInMemoryDbInlineAutoData(22, "Cease Date")]
+        [MockInMemoryDbInlineAutoData(23, "Framework")]
+        [MockInMemoryDbInlineAutoData(24, "Initial Term")]
+        [MockInMemoryDbInlineAutoData(25, "Contract Length (Months)")]
+        [MockInMemoryDbInlineAutoData(26, "Pricing Type")]
+        [MockInMemoryDbInlineAutoData(27, "Tiered Array")]
         public static async Task MergerOrder_Mapped_Columns(
             int index,
             string name,
@@ -203,34 +203,34 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
-        [InMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
-        [InMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
-        [InMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
-        [InMemoryDbInlineAutoData(4, "Practice to split (ODS code)")]
-        [InMemoryDbInlineAutoData(5, "Practice to be retained (ODS code)")]
-        [InMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
-        [InMemoryDbInlineAutoData(7, "Supplier ID")]
-        [InMemoryDbInlineAutoData(8, "Supplier Name")]
-        [InMemoryDbInlineAutoData(9, "Product ID")]
-        [InMemoryDbInlineAutoData(10, "Product Name")]
-        [InMemoryDbInlineAutoData(11, "Product Type")]
-        [InMemoryDbInlineAutoData(12, "Quantity Ordered")]
-        [InMemoryDbInlineAutoData(13, "Unit of Order")]
-        [InMemoryDbInlineAutoData(14, "Unit Time")]
-        [InMemoryDbInlineAutoData(15, "Estimation Period")]
-        [InMemoryDbInlineAutoData(16, "Price")]
-        [InMemoryDbInlineAutoData(17, "Order Type")]
-        [InMemoryDbInlineAutoData(18, "Funding Type")]
-        [InMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
-        [InMemoryDbInlineAutoData(20, "Actual M1 date")]
-        [InMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
-        [InMemoryDbInlineAutoData(22, "Cease Date")]
-        [InMemoryDbInlineAutoData(23, "Framework")]
-        [InMemoryDbInlineAutoData(24, "Initial Term")]
-        [InMemoryDbInlineAutoData(25, "Contract Length (Months)")]
-        [InMemoryDbInlineAutoData(26, "Pricing Type")]
-        [InMemoryDbInlineAutoData(27, "Tiered Array")]
+        [MockInMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
+        [MockInMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
+        [MockInMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
+        [MockInMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
+        [MockInMemoryDbInlineAutoData(4, "Practice to split (ODS code)")]
+        [MockInMemoryDbInlineAutoData(5, "Practice to be retained (ODS code)")]
+        [MockInMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
+        [MockInMemoryDbInlineAutoData(7, "Supplier ID")]
+        [MockInMemoryDbInlineAutoData(8, "Supplier Name")]
+        [MockInMemoryDbInlineAutoData(9, "Product ID")]
+        [MockInMemoryDbInlineAutoData(10, "Product Name")]
+        [MockInMemoryDbInlineAutoData(11, "Product Type")]
+        [MockInMemoryDbInlineAutoData(12, "Quantity Ordered")]
+        [MockInMemoryDbInlineAutoData(13, "Unit of Order")]
+        [MockInMemoryDbInlineAutoData(14, "Unit Time")]
+        [MockInMemoryDbInlineAutoData(15, "Estimation Period")]
+        [MockInMemoryDbInlineAutoData(16, "Price")]
+        [MockInMemoryDbInlineAutoData(17, "Order Type")]
+        [MockInMemoryDbInlineAutoData(18, "Funding Type")]
+        [MockInMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
+        [MockInMemoryDbInlineAutoData(20, "Actual M1 date")]
+        [MockInMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
+        [MockInMemoryDbInlineAutoData(22, "Cease Date")]
+        [MockInMemoryDbInlineAutoData(23, "Framework")]
+        [MockInMemoryDbInlineAutoData(24, "Initial Term")]
+        [MockInMemoryDbInlineAutoData(25, "Contract Length (Months)")]
+        [MockInMemoryDbInlineAutoData(26, "Pricing Type")]
+        [MockInMemoryDbInlineAutoData(27, "Tiered Array")]
         public static async Task SplitOrder_Mapped_Columns(
             int index,
             string name,
@@ -259,9 +259,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task OrderTypeSolution_One_OrderItem_One_Recipient_Results_In_One_Row(
             ProvisioningType provisioningType,
             Order order,
@@ -286,9 +286,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
             fullOrderStream.Position = 0;
 
-            var records = GetRows(fullOrderStream, new FullOrderCsvModelMap());
+            var records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap());
 
-            records.Count().Should().Be(1);
+            records.Count.Should().Be(1);
             var record = records.First();
             record.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
             record.ServiceRecipientId.Should().Be(recipient.OdsCode);
@@ -297,9 +297,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task OrderTypeMerger_One_OrderItem_One_Recipient_Results_In_One_Row(
             ProvisioningType provisioningType,
             Order order,
@@ -325,9 +325,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
             fullOrderStream.Position = 0;
 
-            var records = GetRows(fullOrderStream, new MergerOrderCsvModelMap(FullOrderCsvModelMap.Names));
+            var records = GetRows<MergerOrderCsvModel>(fullOrderStream, new MergerOrderCsvModelMap(FullOrderCsvModelMap.Names));
 
-            records.Count().Should().Be(1);
+            records.Count.Should().Be(1);
             var record = records.First();
             record.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
             record.ServiceRecipientToClose.Should()
@@ -339,9 +339,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task OrderTypeSplit_One_OrderItem_One_Recipient_Results_In_One_Row(
             ProvisioningType provisioningType,
             Order order,
@@ -366,9 +366,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
             fullOrderStream.Position = 0;
 
-            var records = GetRows(fullOrderStream, new SplitOrderCsvModelMap(FullOrderCsvModelMap.Names));
+            var records = GetRows<SplitOrderCsvModel>(fullOrderStream, new SplitOrderCsvModelMap(FullOrderCsvModelMap.Names));
 
-            records.Count().Should().Be(1);
+            records.Count.Should().Be(1);
             var record = records.First();
             record.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
             record.ServiceRecipientToRetain.Should()
@@ -380,9 +380,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task OrderTypeSolution_One_OrderItem_Two_Recipients_Results_In_Two_Rows_One_For_Each_Recipient(
             ProvisioningType provisioningType,
             Order order,
@@ -408,33 +408,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
             fullOrderStream.Position = 0;
 
-            var records = GetRows(fullOrderStream, new FullOrderCsvModelMap()).ToList();
+            var records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap()).ToList();
 
             records.Count.Should().Be(2);
             records[0].ServiceRecipientItemId.Should().EndWith("-0");
             records[1].ServiceRecipientItemId.Should().EndWith("-1");
 
             var record1 = records
-                .Where(r => r.ServiceRecipientId == recipient1.OdsCode)
-                .SingleOrDefault();
+                .FirstOrDefault(r => r.ServiceRecipientId == recipient1.OdsCode);
             record1.Should().NotBeNull();
-            record1.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
+            record1!.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
             record1.ServiceRecipientName.Should().Be(recipient1.OdsOrganisation.Name);
             record1.ServiceRecipientItemId.Should().StartWith($"{order.CallOffId}-{recipient1.OdsCode}-");
 
             var record2 = records
-                .Where(r => r.ServiceRecipientId == recipient2.OdsCode)
-                .SingleOrDefault();
-            record2.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
+                .FirstOrDefault(r => r.ServiceRecipientId == recipient2.OdsCode);
+            record2.Should().NotBeNull();
+            record2!.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
             record2.ServiceRecipientName.Should().Be(recipient2.OdsOrganisation.Name);
             record2.ServiceRecipientItemId.Should().StartWith($"{order.CallOffId}-{recipient2.OdsCode}-");
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
-        public static async Task Amendendment_One_Recipient_Added_To_One_OrderItem_One_Recipient_Results_In_One_Row(
+        [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
+        public static async Task Amendment_One_Recipient_Added_To_One_OrderItem_One_Recipient_Results_In_One_Row(
             ProvisioningType provisioningType,
             Order order,
             CsvService service,
@@ -473,7 +472,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             await service.CreateFullOrderCsvAsync(amend.Id, amend.OrderType, fullOrderStream);
             fullOrderStream.Position = 0;
 
-            var records = GetRows(fullOrderStream, new FullOrderCsvModelMap());
+            var records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap());
 
             records.Count().Should().Be(1);
             var record = records.First();
@@ -482,10 +481,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Patient)]
-        public static async Task Amendendment_One_Recipient_And_One_Service_Added_To_One_OrderItem_One_Recipient(
+        [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
+        public static async Task Amendment_One_Recipient_And_One_Service_Added_To_One_OrderItem_One_Recipient(
             ProvisioningType provisioningType,
             Order order,
             CsvService service,
@@ -534,27 +533,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             await service.CreateFullOrderCsvAsync(amend.Id, amend.OrderType, fullOrderStream);
             fullOrderStream.Position = 0;
 
-            var records = GetRows(fullOrderStream, new FullOrderCsvModelMap()).ToList();
+            var records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap()).ToList();
 
             records.Count.Should().Be(3);
             records[0].ServiceRecipientItemId.Should().EndWith("-0");
             records[1].ServiceRecipientItemId.Should().EndWith("-1");
             records[2].ServiceRecipientItemId.Should().EndWith("-2");
 
-            records.Where(r => r.ServiceRecipientId == addedRecipient.OdsCode && r.ProductId == addedCatalogueItem.Id.ToString())
-                .FirstOrDefault()
+            records
+                .FirstOrDefault(r => r.ServiceRecipientId == addedRecipient.OdsCode && r.ProductId == addedCatalogueItem.Id.ToString())
                 .Should().NotBeNull();
-            records.Where(r => r.ServiceRecipientId == addedRecipient.OdsCode && r.ProductId == originalCatalogueItem.Id.ToString())
-                .FirstOrDefault()
+            records
+                .FirstOrDefault(r => r.ServiceRecipientId == addedRecipient.OdsCode && r.ProductId == originalCatalogueItem.Id.ToString())
                 .Should().NotBeNull();
-            records.Where(r => r.ServiceRecipientId == originalRecipient.OdsCode && r.ProductId == addedCatalogueItem.Id.ToString())
-                .FirstOrDefault()
+            records
+                .FirstOrDefault(r => r.ServiceRecipientId == originalRecipient.OdsCode && r.ProductId == addedCatalogueItem.Id.ToString())
                 .Should().NotBeNull();
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
-        [InMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
         public static async Task One_OrderItem_Two_Recipients_With_PerOrderItemQuantity_Results_In_One_Row(
             ProvisioningType provisioningType,
             Order order,
@@ -580,7 +579,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
             fullOrderStream.Position = 0;
 
-            var records = GetRows(fullOrderStream, new FullOrderCsvModelMap()).ToList();
+            var records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap()).ToList();
 
             records.Count.Should().Be(1);
             records[0].ServiceRecipientItemId.Should().EndWith("-0");
@@ -607,15 +606,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             dbContext.ChangeTracker.Clear();
         }
 
-        private static IEnumerable<T> GetRows<T>(MemoryStream fullOrderStream, ClassMap<T> map)
+        private static List<T> GetRows<T>(Stream fullOrderStream, ClassMap map)
         {
-            IEnumerable<T> records;
             using var streamReader = new StreamReader(fullOrderStream);
             using var csv = new CsvReader(streamReader, new CsvConfiguration(CultureInfo.InvariantCulture));
             csv.Context.TypeConverterOptionsCache.AddOptions<DateTime?>(new TypeConverterOptions { Formats = new[] { "dd/MM/yyyy" } });
             csv.Context.TypeConverterCache.AddConverter<CallOffId>(new CallOffIdConverter());
             csv.Context.RegisterClassMap(map);
-            records = csv.GetRecords<T>();
+
+            IEnumerable<T> records = csv.GetRecords<T>();
             return records.ToList();
         }
 

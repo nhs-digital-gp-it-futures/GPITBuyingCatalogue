@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +15,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 {
-    [ExcludeFromCodeCoverage]
     public class CsvService : CsvServiceBase, ICsvService
     {
         private readonly BuyingCatalogueDbContext dbContext;
@@ -61,42 +59,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                     break;
                 }
             }
-        }
-
-        private async Task WriteMergerCsv(int orderId, MemoryStream stream)
-        {
-            var items = await GetModelListForMergerCsv(orderId);
-            var map = new MergerOrderCsvModelMap(FullOrderCsvModelMap.Names);
-            await WriteRecordsAsync(map, stream, items);
-        }
-
-        private async Task WriteSplitCsv(int orderId, MemoryStream stream)
-        {
-            var items = await GetModelListFormSplitCsv(orderId);
-            var map = new SplitOrderCsvModelMap(FullOrderCsvModelMap.Names);
-            await WriteRecordsAsync(map, stream, items);
-        }
-
-        private async Task WriteDefaultOrderCsv(int orderId, MemoryStream stream, bool showRevisions)
-        {
-            var items = await GetModelListForCsv(orderId);
-
-            if (showRevisions)
-            {
-                var order = await dbContext.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.Id == orderId);
-
-                var revisions = await dbContext.Orders
-                    .AsNoTracking()
-                    .Where(x => x.OrderNumber == order.OrderNumber && x.Revision < order.Revision)
-                    .OrderByDescending(x => x.Revision)
-                    .Select(y => y.Id)
-                    .ToListAsync();
-
-                foreach (var id in revisions)
-                    items.AddRange(await GetModelListForCsv(id));
-            }
-
-            await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
         }
 
         private static string TimeUnitDescription(TimeUnit? timeUnit) => timeUnit?.Description() ?? string.Empty;
@@ -163,6 +125,42 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
             return (output?.Id ?? 0,
                 string.Equals(name, legalName, StringComparison.OrdinalIgnoreCase) ? name : legalName);
+        }
+
+        private async Task WriteMergerCsv(int orderId, MemoryStream stream)
+        {
+            var items = await GetModelListForMergerCsv(orderId);
+            var map = new MergerOrderCsvModelMap(FullOrderCsvModelMap.Names);
+            await WriteRecordsAsync(map, stream, items);
+        }
+
+        private async Task WriteSplitCsv(int orderId, MemoryStream stream)
+        {
+            var items = await GetModelListFormSplitCsv(orderId);
+            var map = new SplitOrderCsvModelMap(FullOrderCsvModelMap.Names);
+            await WriteRecordsAsync(map, stream, items);
+        }
+
+        private async Task WriteDefaultOrderCsv(int orderId, MemoryStream stream, bool showRevisions)
+        {
+            var items = await GetModelListForCsv(orderId);
+
+            if (showRevisions)
+            {
+                var order = await dbContext.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.Id == orderId);
+
+                var revisions = await dbContext.Orders
+                    .AsNoTracking()
+                    .Where(x => x.OrderNumber == order.OrderNumber && x.Revision < order.Revision)
+                    .OrderByDescending(x => x.Revision)
+                    .Select(y => y.Id)
+                    .ToListAsync();
+
+                foreach (var id in revisions)
+                    items.AddRange(await GetModelListForCsv(id));
+            }
+
+            await WriteRecordsAsync<FullOrderCsvModel, FullOrderCsvModelMap>(stream, items);
         }
 
         private async Task<List<FullOrderCsvModel>> GetModelListForCsv(int orderId)
