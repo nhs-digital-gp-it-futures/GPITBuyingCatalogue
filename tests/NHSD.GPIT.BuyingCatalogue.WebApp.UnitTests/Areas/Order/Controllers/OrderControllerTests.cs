@@ -72,8 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             var result = await controller.Order(internalOrgId, order.CallOffId);
 
-            _ = orderServiceMock.Received().GetOrderForTaskListStatuses(order.CallOffId, internalOrgId);
-            _ = orderProgressService.Received().GetOrderProgress(internalOrgId, order.CallOffId);
+            await orderServiceMock.Received().GetOrderForTaskListStatuses(order.CallOffId, internalOrgId);
+            await orderProgressService.Received().GetOrderProgress(internalOrgId, order.CallOffId);
 
             var expected = new OrderModel(internalOrgId, orderTaskList, order)
             {
@@ -225,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             var result = await controller.NewOrder(internalOrgId, orderType);
 
-            _ = organisationsService.Received().GetOrganisationByInternalIdentifier(internalOrgId);
+            await organisationsService.Received().GetOrganisationByInternalIdentifier(internalOrgId);
 
             var expected = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name)
             {
@@ -398,7 +398,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             var result = (await controller.AmendOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
-            _ = orderService.Received().HasSubsequentRevisions(callOffId);
+            await orderService.Received().HasSubsequentRevisions(callOffId);
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(DashboardController.Organisation));
@@ -424,8 +424,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             var result = (await controller.AmendOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
-            _ = orderService.Received().GetOrderThin(callOffId, internalOrgId);
-            _ = orderService.Received().HasSubsequentRevisions(callOffId);
+            await orderService.Received().GetOrderThin(callOffId, internalOrgId);
+            await orderService.Received().HasSubsequentRevisions(callOffId);
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(DashboardController.Organisation));
@@ -451,8 +451,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             var result = await controller.AmendOrder(internalOrgId, callOffId, model);
 
-            _ = orderService.Received().GetOrderThin(callOffId, internalOrgId);
-            _ = orderService.Received().AmendOrder(internalOrgId, callOffId);
+            await orderService.Received().GetOrderThin(callOffId, internalOrgId);
+            await orderService.Received().AmendOrder(internalOrgId, callOffId);
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -495,8 +495,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             var result = (await controller.TerminateOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
-            _ = orderService.Received().HasSubsequentRevisions(callOffId);
-            _ = orderService.Received(0).TerminateOrder(callOffId, internalOrgId, Arg.Any<int>(), Arg.Any<DateTime>(), Arg.Any<string>());
+            await orderService.Received().HasSubsequentRevisions(callOffId);
+            await orderService.Received(0).TerminateOrder(callOffId, internalOrgId, Arg.Any<int>(), Arg.Any<DateTime>(), Arg.Any<string>());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(DashboardController.Organisation));
@@ -520,8 +520,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             var result = (await controller.TerminateOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
-            _ = orderService.Received(1).HasSubsequentRevisions(callOffId);
-            _ = orderService.Received(1).TerminateOrder(callOffId, internalOrgId, Arg.Any<int>(), Arg.Any<DateTime>(), Arg.Any<string>());
+            await orderService.Received(1).HasSubsequentRevisions(callOffId);
+            await orderService.Received(1).TerminateOrder(callOffId, internalOrgId, Arg.Any<int>(), Arg.Any<DateTime>(), Arg.Any<string>());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrderController.Summary));
@@ -630,8 +630,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
 
             var actualResult = await controller.Download(internalOrgId, order.CallOffId);
 
-            _ = orderServiceMock.Received().GetOrderForSummary(order.CallOffId, internalOrgId);
-            _ = pdfServiceMock.Received().CreateOrderSummaryPdf(Arg.Any<EntityFramework.Ordering.Models.Order>());
+            await orderServiceMock.Received().GetOrderForSummary(order.CallOffId, internalOrgId);
+            await pdfServiceMock.Received().CreateOrderSummaryPdf(Arg.Any<EntityFramework.Ordering.Models.Order>());
 
             actualResult.Should().BeOfType<FileContentResult>();
             actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
