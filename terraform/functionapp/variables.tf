@@ -21,3 +21,11 @@ variable "primary_vpn" {
 variable "nhsd_network_range" {
   type = string
 }
+
+variable "notify_api_key" {
+  type = string
+}
+
+variable "contract_expiry_template_id" {
+  type = string
+}
