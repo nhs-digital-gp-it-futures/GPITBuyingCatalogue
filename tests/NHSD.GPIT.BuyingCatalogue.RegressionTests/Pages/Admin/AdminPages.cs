@@ -4,6 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedEpics;
 using OpenQA.Selenium;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
 {
@@ -18,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             AddFramework = new AddFramework(driver, commonActions);
             AddSupplierDefinedEpics = new AddSupplierDefinedEpics(driver, commonActions);
             AddOrganisationUser = new AddOrganisationUser(driver, commonActions, factory);
+            ManageOrganisationSupplier = new ManageOrganisationSupplier(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -35,5 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal AddSupplierDefinedEpics AddSupplierDefinedEpics { get; }
 
         internal AddOrganisationUser AddOrganisationUser { get; }
+
+        internal ManageOrganisationSupplier ManageOrganisationSupplier { get; }
     }
 }

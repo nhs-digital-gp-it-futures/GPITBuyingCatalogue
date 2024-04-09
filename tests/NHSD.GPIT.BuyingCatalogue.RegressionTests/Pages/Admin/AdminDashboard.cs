@@ -48,5 +48,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             .Should()
             .Be("Add a new user or edit the details for one that's already been created.".FormatForComparison());
         }
+
+        public void ManageSupplier()
+        {
+            CommonActions.ClickLinkElement(HomeObjects.ManageSupplierOrganisationsLink);
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SuppliersController),
+                nameof(SuppliersController.Index))
+                .Should().BeTrue();
+        }
     }
 }
