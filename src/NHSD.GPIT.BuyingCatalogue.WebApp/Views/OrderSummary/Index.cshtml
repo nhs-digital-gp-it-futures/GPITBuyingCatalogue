@@ -22,6 +22,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="NHSD Order Form">
+    @{
+        // TODO: Does ViewBag.Title have a value?
+    }
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/css/main.min.css">
     <link href="https://www.nhs.uk/" rel="preconnect">
@@ -604,7 +607,7 @@
 
                             <div class="nhsuk-grid-row">
                                 <div class="nhsuk-grid-column-full">
-                                    <nhs-page-title title="@(Model.RolledUp.GetSolutions().Count() > 1 ? "Service Level Agreements" : "Service Level Agreement")"/>
+                                    <nhs-page-title title="@(Model.RolledUp.GetSolutions().Count() > 1 ? "Service Level Agreements" : "Service Level Agreement")" />
                                 </div>
                             </div>
 
@@ -617,7 +620,7 @@
                                 else
                                 {
                                     <p>No service level agreement in place for @solution.CatalogueItem.Name</p>
-                                }   
+                                }
                             }
                         }
 
@@ -626,7 +629,7 @@
                         <div class="nhsuk-grid-row">
                             <div class="nhsuk-grid-column-full">
                                 <nhs-page-title title="Signatures"
-                                                caption="Order @Model.Order.CallOffId"/>
+                                                caption="Order @Model.Order.CallOffId" />
                             </div>
                         </div>
                         <p>Both parties are entering into a Call-off Agreement in accordance with the provisions of the framework being procured from.</p>
