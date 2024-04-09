@@ -24,6 +24,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters;
@@ -470,6 +471,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             result.Should().BeOfType<ViewResult>();
             var viewResult = result.As<ViewResult>();
             viewResult.Model.Should().BeOfType<DeleteFilterModel>();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_DeleteFilter_NullFilter_ReturnsRedirectToActionResult(
+            string primaryOrganisationInternalId,
+            int filterId,
+            FilterDetailsModel filterDetailsModel,
+            Organisation organisation,
+            [Frozen] IOrganisationsService organisationsService,
+            [Frozen] ICapabilitiesService capabilitiesService,
+            [Frozen] IEpicsService epicsService,
+            [Frozen] IFrameworkService frameworkService,
+            [Frozen] IManageFiltersService manageFiltersService,
+            [Frozen] IUrlHelper mockUrlHelper,
+            [Frozen] IPdfService mockPdfService)
+        {
+            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId).Returns(Task.FromResult(organisation));
+            filterDetailsModel = null;
+            manageFiltersService.GetFilterDetails(organisation.Id, filterId).Returns(Task.FromResult(filterDetailsModel));
+            var controller = CreateController(
+                organisationsService,
+                capabilitiesService,
+                epicsService,
+                frameworkService,
+                manageFiltersService,
+                mockPdfService,
+                primaryOrganisationInternalId);
+            controller.Url = mockUrlHelper;
+
+            var result = await controller.DeleteFilter(filterId);
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(ManageFiltersController).ControllerName());
+            actualResult.ActionName.Should()
+                .Be(nameof(DashboardController.Index));
         }
 
         [Theory]
