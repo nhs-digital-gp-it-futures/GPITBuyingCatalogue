@@ -2,6 +2,8 @@
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.View_Result
@@ -21,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.View_Resu
 
         public void ViewMultipleWinningResults()
         {
-            CommonActions.ClickSave();
+            Driver.Navigate().Refresh();
             CommonActions.InsetText().Should().Be("Information:Your competition has produced more than 1 solution with a winning score. You can therefore choose to procure any of the winning solutions.".FormatForComparison());
         }
     }

@@ -364,6 +364,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         private void MultipleResults(int competitionId)
         {
+            ViewCompetitionResults.ViewResults();
             using var dbContext = Factory.DbContext;
 
             var solutions = dbContext.Competitions
@@ -375,9 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             {
                 var nextWinningSolution = solutions.First();
                 nextWinningSolution.IsWinningSolution = true;
-
                 dbContext.SaveChanges();
-
                 ViewCompetitionResults.ViewMultipleWinningResults();
             }
             else
