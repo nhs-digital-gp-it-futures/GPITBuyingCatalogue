@@ -76,16 +76,17 @@ public class Gen2UploadService : CsvServiceBase, IGen2UploadService
             && int.TryParse(baseRecord.SupplierId, out _);
 
         var catalogueItemIdValid = !string.IsNullOrWhiteSpace(baseRecord.SolutionId)
+            && Gen2ValidationRegex.CatalogueItemIdRegex().IsMatch(baseRecord.SolutionId)
             && CatalogueItemId.Parse(baseRecord.SolutionId).Success;
 
         var capabilityIdValid = !string.IsNullOrWhiteSpace(baseRecord.CapabilityId)
-            && baseRecord.CapabilityId.StartsWith('C')
-            && int.TryParse(baseRecord.CapabilityId.AsSpan()[1..], out _);
+            && Gen2ValidationRegex.CapabilityIdRegex().IsMatch(baseRecord.CapabilityId);
 
         var additionalServiceIdValid = string.IsNullOrWhiteSpace(baseRecord.AdditionalServiceId)
-            || (baseRecord.AdditionalServiceId.StartsWith('A') && baseRecord.AdditionalServiceId.Length <= 4 && int.TryParse(baseRecord.AdditionalServiceId.AsSpan()[1..], out _));
+            || Gen2ValidationRegex.AdditionalServiceRegex().IsMatch(baseRecord.AdditionalServiceId);
 
-        var isRecordValid = keyIsValid && supplierIdValid && catalogueItemIdValid && capabilityIdValid && additionalServiceIdValid;
+        var isRecordValid = keyIsValid && supplierIdValid && catalogueItemIdValid && capabilityIdValid
+            && additionalServiceIdValid;
 
         return isRecordValid;
     }
@@ -101,7 +102,9 @@ public class Gen2UploadService : CsvServiceBase, IGen2UploadService
             || (string.IsNullOrWhiteSpace(x.EpicAssessmentResult)
                 || !Gen2EpicsCsvModel.ValidAssessmentResults.Contains(x.EpicAssessmentResult)));
 
-    private static async Task<Gen2CsvImportModel<T>> ReadCsv<T, TMap>(Stream stream, Func<IEnumerable<T>, IEnumerable<T>> filter)
+    private static async Task<Gen2CsvImportModel<T>> ReadCsv<T, TMap>(
+        Stream stream,
+        Func<IEnumerable<T>, IEnumerable<T>> filter)
         where T : Gen2CsvBase
         where TMap : ClassMap<T>
     {
