@@ -11,10 +11,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.CodeAnalysis.Options;
-using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -26,9 +23,10 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
@@ -55,31 +53,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_InProgressOrder_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             AspNetUser aspNetUser,
             OrderProgress orderTaskList,
-            [Frozen] Mock<IOrderService> orderServiceMock,
-            [Frozen] Mock<IOrderProgressService> orderProgressService,
+            [Frozen] IOrderService orderServiceMock,
+            [Frozen] IOrderProgressService orderProgressService,
             OrderController controller)
         {
             order.LastUpdatedByUser = aspNetUser;
             order.Completed = null;
 
-            orderServiceMock
-                .Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderServiceMock.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
 
-            orderProgressService
-                .Setup(x => x.GetOrderProgress(internalOrgId, order.CallOffId))
-                .ReturnsAsync(orderTaskList);
+            orderProgressService.GetOrderProgress(internalOrgId, order.CallOffId).Returns(Task.FromResult(orderTaskList));
 
             var result = await controller.Order(internalOrgId, order.CallOffId);
 
-            orderServiceMock.VerifyAll();
-            orderProgressService.VerifyAll();
+            await orderServiceMock.Received().GetOrderForTaskListStatuses(order.CallOffId, internalOrgId);
+            await orderProgressService.Received().GetOrderProgress(internalOrgId, order.CallOffId);
 
             var expected = new OrderModel(internalOrgId, orderTaskList, order)
             {
@@ -92,18 +86,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_CompleteOrder_RedirectsCorrectly(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] IOrderService orderServiceMock,
             OrderController controller)
         {
             order.Completed = DateTime.UtcNow;
 
-            orderServiceMock
-                .Setup(s => s.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderServiceMock.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
 
             var actualResult = await controller.Order(internalOrgId, order.CallOffId);
 
@@ -114,27 +106,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
+        public static async Task Get_NullOrder_RedirectsToOrderDashboard(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService orderServiceMock,
+            OrderController controller)
+        {
+            var orderWrapper = new OrderWrapper(order);
+            orderWrapper.Order = null;
+
+            orderServiceMock.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId).Returns(Task.FromResult(orderWrapper));
+
+            var result = await controller.Order(internalOrgId, order.CallOffId);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(DashboardController).ControllerName());
+            actualResult.ActionName.Should()
+                .Be(nameof(DashboardController.Organisation));
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, });
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Get_Summary_ExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             ImplementationPlan defaultPlan,
             bool hasSubsequentRevisions,
-            [Frozen] Mock<IImplementationPlanService> implementationPlanService,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IImplementationPlanService implementationPlanService,
+            [Frozen] IOrderService orderService,
             OrderController controller)
         {
-            implementationPlanService
-                .Setup(x => x.GetDefaultImplementationPlan())
-                .ReturnsAsync(defaultPlan);
+            implementationPlanService.GetDefaultImplementationPlan().Returns(Task.FromResult(defaultPlan));
 
-            orderService
-                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderService.GetOrderForSummary(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
 
-            orderService
-                .Setup(s => s.HasSubsequentRevisions(order.CallOffId))
-                .ReturnsAsync(hasSubsequentRevisions);
+            orderService.HasSubsequentRevisions(order.CallOffId).Returns(Task.FromResult(hasSubsequentRevisions));
 
             var result = await controller.Summary(internalOrgId, order.CallOffId);
 
@@ -150,24 +161,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Summary_CannotComplete_ExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             ImplementationPlan defaultPlan,
-            [Frozen] Mock<IImplementationPlanService> implementationPlanService,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IImplementationPlanService implementationPlanService,
+            [Frozen] IOrderService orderService,
             OrderController controller)
         {
             order.Description = null;
 
-            implementationPlanService
-                .Setup(x => x.GetDefaultImplementationPlan())
-                .ReturnsAsync(defaultPlan);
+            implementationPlanService.GetDefaultImplementationPlan().Returns(Task.FromResult(defaultPlan));
 
-            orderService
-                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderService.GetOrderForSummary(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
 
             var result = (await controller.SummaryComplete(
                 internalOrgId,
@@ -177,11 +184,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Summary_CanComplete_ExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderService orderService,
             OrderController controller)
         {
             order.Contract = new Contract() { ContractBilling = new ContractBilling(), ImplementationPlan = new ImplementationPlan(), };
@@ -190,13 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            orderService
-                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
-
-            orderService
-                .Setup(x => x.CompleteOrder(order.CallOffId, internalOrgId, 1))
-                .Verifiable();
+            orderService.GetOrderForSummary(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
 
             var result = await controller.SummaryComplete(internalOrgId, order.CallOffId);
 
@@ -212,21 +213,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_NewOrder_ReturnsExpectedResult(
             string internalOrgId,
             OrderTypeEnum orderType,
-            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] IOrganisationsService organisationsService,
             Organisation organisation,
             OrderController controller)
         {
-            organisationsService
-                .Setup(s => s.GetOrganisationByInternalIdentifier(internalOrgId))
-                .ReturnsAsync(organisation);
+            organisationsService.GetOrganisationByInternalIdentifier(internalOrgId).Returns(Task.FromResult(organisation));
 
             var result = await controller.NewOrder(internalOrgId, orderType);
 
-            organisationsService.VerifyAll();
+            await organisationsService.Received().GetOrganisationByInternalIdentifier(internalOrgId);
 
             var expected = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name)
             {
@@ -239,19 +238,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.Unknown)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.Unknown)]
+        [MockInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static async Task Get_ReadyToStart_ReturnsView(
             OrderTypeEnum orderType,
             Organisation organisation,
-            [Frozen] Mock<IOrganisationsService> service,
+            [Frozen] IOrganisationsService service,
             OrderController controller)
         {
-            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-                .ReturnsAsync(organisation);
+            service.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(Task.FromResult(organisation));
 
             var result = await controller.ReadyToStart(organisation.InternalIdentifier, orderType);
 
@@ -262,16 +260,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Completed_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderService orderService,
             OrderController systemUnderTest)
         {
-            orderService
-                .Setup(x => x.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderService.GetOrderForSummary(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
 
             var result = await systemUnderTest.Completed(internalOrgId, order.CallOffId);
 
@@ -284,7 +280,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_ReadyToStart_Redirects(
             string internalOrgId,
             ReadyToStartModel model,
@@ -306,7 +302,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_ReadyToStart_WithFundingSource_Redirects(
             string internalOrgId,
             ReadyToStartModel model,
@@ -328,12 +324,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Download_CompleteOrder_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
-            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
+            [Frozen] IOrderService orderServiceMock,
+            [Frozen] IOrderPdfService pdfServiceMock,
             byte[] result,
             OrderController controller)
         {
@@ -343,12 +339,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Download_InProgressOrder_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
-            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
+            [Frozen] IOrderService orderServiceMock,
+            [Frozen] IOrderPdfService pdfServiceMock,
             byte[] result,
             OrderController controller)
         {
@@ -358,12 +354,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Download_TerminatedOrder_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
-            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
+            [Frozen] IOrderService orderServiceMock,
+            [Frozen] IOrderPdfService pdfServiceMock,
             byte[] result,
             OrderController controller)
         {
@@ -373,7 +369,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_AmendOrder_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -389,19 +385,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AmendOrder_HasSubsequentRevisions_Redirects(
             string internalOrgId,
             CallOffId callOffId,
             AmendOrderModel model,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderService orderService,
             OrderController controller)
         {
-            orderService.Setup(x => x.HasSubsequentRevisions(callOffId)).ReturnsAsync(true);
+            orderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper());
+            orderService.HasSubsequentRevisions(callOffId).Returns(Task.FromResult(true));
 
             var result = (await controller.AmendOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
-            orderService.VerifyAll();
+            await orderService.Received().HasSubsequentRevisions(callOffId);
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(DashboardController.Organisation));
@@ -409,27 +406,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AmendOrder_ContractExpired_Redirects(
             string internalOrgId,
             CallOffId callOffId,
             AmendOrderModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderService orderService,
             OrderController controller)
         {
             order.CommencementDate = DateTime.Now.AddMonths(-6);
             order.MaximumTerm = 1;
 
-            orderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderService.GetOrderThin(callOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
 
-            orderService.Setup(x => x.HasSubsequentRevisions(callOffId)).ReturnsAsync(false);
+            orderService.HasSubsequentRevisions(callOffId).Returns(Task.FromResult(false));
 
             var result = (await controller.AmendOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
-            orderService.VerifyAll();
+            await orderService.Received().GetOrderThin(callOffId, internalOrgId);
+            await orderService.Received().HasSubsequentRevisions(callOffId);
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(DashboardController.Organisation));
@@ -437,29 +433,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AmendOrder_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             AmendOrderModel model,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderService orderService,
             OrderController controller)
         {
             order.CommencementDate = DateTime.Now;
             order.MaximumTerm = 6;
 
-            orderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderService.GetOrderThin(callOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
 
-            orderService
-                .Setup(x => x.AmendOrder(internalOrgId, callOffId))
-                .ReturnsAsync(order);
+            orderService.AmendOrder(internalOrgId, callOffId).Returns(Task.FromResult(order));
 
             var result = await controller.AmendOrder(internalOrgId, callOffId, model);
 
-            orderService.VerifyAll();
+            await orderService.Received().GetOrderThin(callOffId, internalOrgId);
+            await orderService.Received().AmendOrder(internalOrgId, callOffId);
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -473,7 +466,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_TerminateOrder_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -489,20 +482,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_TerminateOrder_HasSubsequentRevisions_Redirects(
             string internalOrgId,
             CallOffId callOffId,
             TerminateOrderModel model,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderService orderService,
             OrderController controller)
         {
-            orderService.Setup(x => x.HasSubsequentRevisions(callOffId)).ReturnsAsync(true);
+            orderService.HasSubsequentRevisions(callOffId).Returns(Task.FromResult(true));
+            orderService.TerminateOrder(callOffId, internalOrgId, Arg.Any<int>(), Arg.Any<DateTime>(), Arg.Any<string>()).Returns(Task.CompletedTask);
 
             var result = (await controller.TerminateOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
-            orderService.Verify(x => x.HasSubsequentRevisions(callOffId), Times.Once);
-            orderService.Verify(x => x.TerminateOrder(callOffId, internalOrgId, It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<string>()), Times.Never);
+            await orderService.Received().HasSubsequentRevisions(callOffId);
+            await orderService.Received(0).TerminateOrder(callOffId, internalOrgId, Arg.Any<int>(), Arg.Any<DateTime>(), Arg.Any<string>());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(DashboardController.Organisation));
@@ -514,20 +508,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_TerminateOrder_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             TerminateOrderModel model,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderService orderService,
             OrderController controller)
         {
-            orderService.Setup(x => x.HasSubsequentRevisions(callOffId)).ReturnsAsync(false);
+            orderService.HasSubsequentRevisions(callOffId).Returns(Task.FromResult(false));
 
             var result = (await controller.TerminateOrder(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
 
-            orderService.Verify(x => x.HasSubsequentRevisions(callOffId), Times.Once);
-            orderService.Verify(x => x.TerminateOrder(callOffId, internalOrgId, It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<string>()), Times.Once);
+            await orderService.Received(1).HasSubsequentRevisions(callOffId);
+            await orderService.Received(1).TerminateOrder(callOffId, internalOrgId, Arg.Any<int>(), Arg.Any<DateTime>(), Arg.Any<string>());
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(OrderController.Summary));
@@ -540,7 +534,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetAdvice_TerminatedOrder_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
@@ -552,7 +546,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetAdvice_ExpiredOrder_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
@@ -566,7 +560,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetAdvice_CompletedAssociatedServicesOnlyOrder_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
@@ -579,7 +573,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetAdvice_CompletedOrderIsLatest_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
@@ -592,7 +586,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetAdvice_CompletedOrderIsNotLatest_ReturnsExpectedAdvice(
             EntityFramework.Ordering.Models.Order order)
         {
@@ -622,26 +616,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         private static async Task DownloadReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
-            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
+            [Frozen] IOrderService orderServiceMock,
+            [Frozen] IOrderPdfService pdfServiceMock,
             byte[] result,
             OrderController controller,
             string fileName)
         {
-            orderServiceMock
-                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderServiceMock.GetOrderForSummary(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
 
-            pdfServiceMock
-                .Setup(s => s.CreateOrderSummaryPdf(It.IsAny<EntityFramework.Ordering.Models.Order>()))
-                .ReturnsAsync(new MemoryStream(result));
+            pdfServiceMock.CreateOrderSummaryPdf(Arg.Any<EntityFramework.Ordering.Models.Order>()).Returns(Task.FromResult(new MemoryStream(result)));
 
             SetControllerHttpContext(controller);
 
             var actualResult = await controller.Download(internalOrgId, order.CallOffId);
 
-            orderServiceMock.VerifyAll();
-            pdfServiceMock.VerifyAll();
+            await orderServiceMock.Received().GetOrderForSummary(order.CallOffId, internalOrgId);
+            await pdfServiceMock.Received().CreateOrderSummaryPdf(Arg.Any<EntityFramework.Ordering.Models.Order>());
 
             actualResult.Should().BeOfType<FileContentResult>();
             actualResult.As<FileContentResult>().ContentType.Should().Be("application/pdf");
