@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels;
 
@@ -46,11 +47,15 @@ public class Gen2MappingService : IGen2MappingService
 
                 var solutionToUpdate = await dbContext.Solutions
                     .Include(x => x.CatalogueItem.CatalogueItemCapabilities)
+                    .ThenInclude(x => x.Capability)
                     .Include(x => x.CatalogueItem.CatalogueItemEpics)
+                    .ThenInclude(x => x.Epic)
                     .Include(x => x.AdditionalServices)
                     .ThenInclude(x => x.CatalogueItem.CatalogueItemCapabilities)
+                    .ThenInclude(x => x.Capability)
                     .Include(x => x.AdditionalServices)
                     .ThenInclude(x => x.CatalogueItem.CatalogueItemEpics)
+                    .ThenInclude(x => x.Epic)
                     .AsSplitQuery()
                     .FirstOrDefaultAsync(x => x.CatalogueItemId == solutionMapping.Id);
 
@@ -119,8 +124,10 @@ public class Gen2MappingService : IGen2MappingService
 
     private void UpdateCatalogueItem(CatalogueItem catalogueItem, Gen2CatalogueItemMappingModel model, ICollection<int> validCapabilities, ICollection<string> validEpics)
     {
+        var supplierDefinedEpics = catalogueItem.CatalogueItemEpics.Where(x => x.Epic.SupplierDefined).ToList();
+
         dbContext.RemoveRange(catalogueItem.CatalogueItemCapabilities);
-        dbContext.RemoveRange(catalogueItem.CatalogueItemEpics);
+        dbContext.RemoveRange(catalogueItem.CatalogueItemEpics.Except(supplierDefinedEpics));
 
         var filteredCapabilities = model.Capabilities.Where(x => validCapabilities.Contains(x.CapabilityId)).ToList();
         var allEpics = filteredCapabilities.SelectMany(x => x.Epics.Select(y => (x.CapabilityId, EpicId: y))).ToList();
@@ -147,8 +154,8 @@ public class Gen2MappingService : IGen2MappingService
             filteredCapabilities.Select(x => new CatalogueItemCapability(model.Id, x.CapabilityId) { StatusId = 1 })
                 .ToList();
 
-        catalogueItem.CatalogueItemEpics = filteredEpics
-            .Select(x => new CatalogueItemEpic(model.Id, x.CapabilityId, x.EpicId) { StatusId = 1 })
-            .ToList();
+        catalogueItem.CatalogueItemEpics.AddRange(
+            filteredEpics
+                .Select(x => new CatalogueItemEpic(model.Id, x.CapabilityId, x.EpicId) { StatusId = 1 }));
     }
 }

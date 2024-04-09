@@ -8,13 +8,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.DeleteOrder;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
@@ -39,44 +39,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteOrder_InProgress_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] IOrderService orderServiceMock,
             DeleteOrderController controller)
         {
             order.Completed = null;
 
-            orderServiceMock
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderServiceMock.GetOrderThin(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
 
             var actualResult = await controller.DeleteOrder(internalOrgId, order.CallOffId);
 
-            orderServiceMock.VerifyAll();
+            await orderServiceMock.Received().GetOrderThin(order.CallOffId, internalOrgId);
 
             actualResult.Should().BeOfType<ViewResult>();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteOrder_Completed_Redirects(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] IOrderService orderServiceMock,
             DeleteOrderController controller)
         {
             order.Completed = DateTime.UtcNow;
 
-            orderServiceMock
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderServiceMock.GetOrderThin(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
 
             var result = await controller.DeleteOrder(internalOrgId, order.CallOffId);
 
-            orderServiceMock.VerifyAll();
-            orderServiceMock.VerifyNoOtherCalls();
+            await orderServiceMock.Received().GetOrderThin(order.CallOffId, internalOrgId);
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -90,25 +85,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
+        public static async Task Get_DeleteOrder_NullOrder_Redirects(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService orderServiceMock,
+            DeleteOrderController controller)
+        {
+            var orderWrapper = new OrderWrapper(order);
+            orderWrapper.Order = null;
+
+            orderServiceMock.GetOrderThin(order.CallOffId, internalOrgId).Returns(Task.FromResult(orderWrapper));
+
+            var result = await controller.DeleteOrder(internalOrgId, order.CallOffId);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ControllerName.Should().Be(typeof(DashboardController).ControllerName());
+            actualResult.ActionName.Should()
+                .Be(nameof(DashboardController.Organisation));
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary { { "internalOrgId", internalOrgId }, });
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Post_DeleteOrder_Amendment_YesSelected_CorrectlyRedirects(
             string internalOrgId,
             CallOffId callOffId,
             DeleteOrderModel model,
-            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] IOrderService orderServiceMock,
             DeleteOrderController controller)
         {
             model.IsAmendment = true;
             model.SelectedOption = true;
 
-            orderServiceMock
-                .Setup(x => x.HardDeleteOrder(callOffId, internalOrgId))
-                .Verifiable();
+            orderServiceMock.HardDeleteOrder(callOffId, internalOrgId).Returns(Task.CompletedTask);
 
             var result = await controller.DeleteOrder(internalOrgId, callOffId, model);
 
-            orderServiceMock.VerifyAll();
-            orderServiceMock.VerifyNoOtherCalls();
+            await orderServiceMock.Received().HardDeleteOrder(callOffId, internalOrgId);
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -121,25 +138,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteOrder_Order_YesSelected_CorrectlyRedirects(
             string internalOrgId,
             CallOffId callOffId,
             DeleteOrderModel model,
-            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] IOrderService orderServiceMock,
             DeleteOrderController controller)
         {
             model.IsAmendment = false;
             model.SelectedOption = true;
 
-            orderServiceMock
-                .Setup(x => x.SoftDeleteOrder(callOffId, internalOrgId))
-                .Verifiable();
+            orderServiceMock.SoftDeleteOrder(callOffId, internalOrgId).Returns(Task.CompletedTask);
 
             var result = await controller.DeleteOrder(internalOrgId, callOffId, model);
 
-            orderServiceMock.VerifyAll();
-            orderServiceMock.VerifyNoOtherCalls();
+            await orderServiceMock.Received().SoftDeleteOrder(callOffId, internalOrgId);
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -152,19 +166,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteOrder_NoSelected_DoesNotDelete_CorrectlyRedirects(
             string internalOrgId,
             CallOffId callOffId,
             DeleteOrderModel model,
-            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] IOrderService orderServiceMock,
             DeleteOrderController controller)
         {
             model.SelectedOption = false;
 
             var result = await controller.DeleteOrder(internalOrgId, callOffId, model);
 
-            orderServiceMock.VerifyNoOtherCalls();
+            orderServiceMock.ReceivedCalls().Should().BeEmpty();
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 

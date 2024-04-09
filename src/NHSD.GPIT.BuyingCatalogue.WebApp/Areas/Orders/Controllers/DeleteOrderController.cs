@@ -26,6 +26,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
+            if (order == null)
+            {
+                return RedirectToAction(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { internalOrgId });
+            }
+
             if (order.OrderStatus == OrderStatus.Completed)
             {
                 return RedirectToAction(
