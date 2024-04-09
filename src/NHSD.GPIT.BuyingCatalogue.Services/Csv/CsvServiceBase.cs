@@ -13,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv;
 
 public abstract class CsvServiceBase
 {
+    private static readonly string[] TypeConverterOptions = new[] { "dd/MM/yyyy" };
+
     protected static async Task<IList<T>> ReadCsv<T, TMap>(Stream stream)
         where TMap : ClassMap<T>
     {
@@ -48,7 +50,7 @@ public abstract class CsvServiceBase
         await using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
         await using var csvWriter = new CsvWriter(writer, CultureInfo.CurrentCulture);
 
-        csvWriter.Context.TypeConverterOptionsCache.AddOptions<DateTime?>(new TypeConverterOptions { Formats = new[] { "dd/MM/yyyy" } });
+        csvWriter.Context.TypeConverterOptionsCache.AddOptions<DateTime?>(new TypeConverterOptions { Formats = TypeConverterOptions });
         csvWriter.Context.RegisterClassMap<TClassMap>();
 
         await csvWriter.WriteRecordsAsync(items);
@@ -62,7 +64,7 @@ public abstract class CsvServiceBase
         await using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
         await using var csvWriter = new CsvWriter(writer, CultureInfo.CurrentCulture);
 
-        csvWriter.Context.TypeConverterOptionsCache.AddOptions<DateTime?>(new TypeConverterOptions { Formats = new[] { "dd/MM/yyyy" } });
+        csvWriter.Context.TypeConverterOptionsCache.AddOptions<DateTime?>(new TypeConverterOptions { Formats = TypeConverterOptions });
         csvWriter.Context.RegisterClassMap(map);
 
         await csvWriter.WriteRecordsAsync(items);

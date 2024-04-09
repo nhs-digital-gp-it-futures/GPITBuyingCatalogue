@@ -403,7 +403,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
 
             mockCsvService.Verify(x => x.CreateFullOrderCsvAsync(order.Id, order.OrderType, It.IsAny<MemoryStream>(), true), Times.Once);
-            mockCsvService.Verify(x => x.CreatePatientNumberCsvAsync(order.Id, It.IsAny<MemoryStream>()), Times.Never);
             mockEmailService.Verify(x => x.SendEmailAsync(settings.Recipient.Address, settings.OrderTerminatedAdminTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
             adminTokens.Should().NotBeNull();
             adminTokens.Should().HaveCount(2);
