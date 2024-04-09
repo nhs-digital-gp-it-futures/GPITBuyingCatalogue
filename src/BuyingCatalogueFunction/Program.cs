@@ -5,6 +5,7 @@ using BuyingCatalogueFunction.EpicsAndCapabilities.Services;
 using BuyingCatalogueFunction.Notifications.Interfaces;
 using BuyingCatalogueFunction.Notifications.Services;
 using BuyingCatalogueFunction.Services;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,8 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using Notify.Client;
 using Notify.Interfaces;
+using Serilog;
+using Serilog.Events;
 
 namespace BuyingCatalogueFunction;
 
@@ -22,7 +25,21 @@ public static class Program
 {
     public static async Task Main(string[] args)
     {
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+#if DEBUG
+            .WriteTo.Debug()
+            .WriteTo.Seq("http://localhost:5341")
+#endif
+            .WriteTo.ApplicationInsights(TelemetryConfiguration.CreateDefault(), TelemetryConverter.Traces)
+            .WriteTo.Console()
+            .CreateLogger();
+
         var host = Host.CreateDefaultBuilder(args)
+            .UseSerilog()
             .ConfigureFunctionsWorkerDefaults()
             .ConfigureServices((context, services) =>
             {
@@ -43,8 +60,6 @@ public static class Program
                 services.AddApplicationInsightsTelemetryWorkerService();
                 services.ConfigureFunctionsApplicationInsights();
 
-                services.AddApplicationInsightsTelemetryWorkerService();
-                services.ConfigureFunctionsApplicationInsights();
                 services.ConfigureGovNotify(configuration);
                 services.ConfigureQueueStorage(configuration);
 

@@ -55,7 +55,7 @@ namespace BuyingCatalogueFunction.Notifications
             {
                 logger.LogError(
                     ex,
-                    "{Name} error - {message}.",
+                    "{Name} error - {Message}.",
                     nameof(CompleteEmailNotification),
                     message);
                 throw;
