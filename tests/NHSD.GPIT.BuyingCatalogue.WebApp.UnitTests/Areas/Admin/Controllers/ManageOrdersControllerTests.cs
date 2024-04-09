@@ -181,27 +181,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(1, 1, "")]
-        [CommonInlineAutoData(1, 2, "Amendment_")]
-        public static async Task Get_DownloadPatientNumberCsv_ReturnsExpectedResult(
-            int orderNumber,
-            int revision,
-            string prefix,
-            string externalOrgId,
-            [Frozen] Mock<ICsvService> csvService,
-            ManageOrdersController controller)
-        {
-            var callOffId = new CallOffId(orderNumber, revision);
-            var result = (await controller.DownloadPatientNumberCsv(callOffId, externalOrgId)).As<FileContentResult>();
-
-            csvService.VerifyAll();
-
-            result.Should().NotBeNull();
-            result.ContentType.Should().Be("application/octet-stream");
-            result.FileDownloadName.Should().Be($"{prefix}{callOffId}_{externalOrgId}_patient.csv");
-        }
-
-        [Theory]
         [CommonAutoData]
         public static async Task Get_DeleteNotLatest_ReturnsViewWithModel(
             EntityFramework.Ordering.Models.Order order,
