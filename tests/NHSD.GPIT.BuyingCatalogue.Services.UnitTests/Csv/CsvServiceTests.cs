@@ -572,6 +572,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 
             var recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
 
+            order.OrderNumber = order.ContractOrderNumber.Id;
             order.Revision = 1;
             order.OrderingPartyId = order.OrderingParty.Id;
 
