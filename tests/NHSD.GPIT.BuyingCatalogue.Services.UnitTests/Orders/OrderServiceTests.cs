@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using Newtonsoft.Json.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -27,8 +27,10 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Notify.Client;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
@@ -39,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(OrderService).GetConstructors();
 
@@ -47,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetOrderWithCatalogueItemAndPrices_ReturnsExpectedResults(
            Order order,
            OrderItem orderItem,
@@ -84,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetOrderWithOrderItems_ReturnsExpectedResults(
             Order order,
             OrderItem orderItem,
@@ -121,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetOrderWithOrderItemsForFunding_ReturnsExpectedResults(
             Order order,
             OrderItem orderItem,
@@ -159,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task CreateOrder_OrderType_Unknown_Throws(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
@@ -176,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task CreateOrder_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
@@ -198,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AmendOrder_UpdatesDatabase(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
@@ -241,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SoftDeleteOrder_SoftDeletedOrder(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
@@ -262,7 +264,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task HardDeleteOrder_DeletesOrder(
             Contract contract,
             ImplementationPlan plan,
@@ -310,7 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task TerminateOrder_TerminatesCurrentOrder(
             [Frozen] BuyingCatalogueDbContext context,
             AspNetUser user,
@@ -331,24 +333,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task TerminateOrder_WithCompletedAmendment_TerminatesAllRevisions(
             Organisation organisation,
-            List<Order> orders,
+            Order originalOrder,
             [Frozen] BuyingCatalogueDbContext context,
             AspNetUser user,
             DateTime terminationDate,
             string reason,
             OrderService service)
         {
-            var originalOrder = orders.First();
-            var amendedOrder = orders.Skip(1).First();
-
-            amendedOrder.OrderNumber = originalOrder.OrderNumber;
             originalOrder.Revision = 1;
-            amendedOrder.Revision = 2;
+            originalOrder.OrderNumber = originalOrder.ContractOrderNumber.Id;
+            var amendedOrder = originalOrder.BuildAmendment(2);
+
             amendedOrder.Completed = DateTime.UtcNow;
             originalOrder.Completed = DateTime.UtcNow;
+
+            var orders = new List<Order>() { originalOrder, amendedOrder };
 
             organisation.Orders.AddRange(orders);
 
@@ -366,16 +368,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task TerminateOrder_SendsFinanceCSVEmail(
             AspNetUser user,
             Order order,
             DateTime terminationDate,
             string reason,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
-            [Frozen] Mock<ICsvService> mockCsvService,
-            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            [Frozen] IGovNotifyEmailService mockEmailService,
+            [Frozen] ICsvService mockCsvService,
+            [Frozen] IOrderPdfService mockPdfService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> adminTokens = null;
@@ -386,25 +388,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.ChangeTracker.Clear();
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(settings.Recipient.Address, settings.OrderTerminatedAdminTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => adminTokens = x)
-                .Returns(Task.CompletedTask);
+            var bytes = Encoding.ASCII.GetBytes("Testing");
 
-            var expectedToken = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
+            mockCsvService
+                .CreateFullOrderCsvAsync(order.Id, order.OrderType, Arg.Any<MemoryStream>(), false)
+                .Returns(x =>
+                {
+                    var stream = x.ArgAt<MemoryStream>(2);
+                    stream.Write(bytes);
+                    return Task.CompletedTask;
+                });
+
+            mockEmailService
+                .SendEmailAsync(settings.Recipient.Address, settings.OrderTerminatedAdminTemplateId, Arg.Any<Dictionary<string, dynamic>>())
+                .Returns(Task.CompletedTask)
+                .AndDoes((x) => adminTokens = x.ArgAt<Dictionary<string, dynamic>>(2));
+
+            var expectedToken = NotificationClient.PrepareUpload(bytes, true);
 
             var service = new OrderService(
                 context,
-                mockCsvService.Object,
-                mockEmailService.Object,
-                mockPdfService.Object,
+                mockCsvService,
+                mockEmailService,
+                mockPdfService,
                 settings);
 
             await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
 
-            mockCsvService.Verify(x => x.CreateFullOrderCsvAsync(order.Id, order.OrderType, It.IsAny<MemoryStream>(), true), Times.Once);
-            mockCsvService.Verify(x => x.CreatePatientNumberCsvAsync(order.Id, It.IsAny<MemoryStream>()), Times.Never);
-            mockEmailService.Verify(x => x.SendEmailAsync(settings.Recipient.Address, settings.OrderTerminatedAdminTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
             adminTokens.Should().NotBeNull();
             adminTokens.Should().HaveCount(2);
             var organisationName = adminTokens.Should().ContainKey(OrderService.OrganisationNameToken).WhoseValue as string;
@@ -414,23 +424,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task TerminateOrder_SendsUserCSVEmail(
             AspNetUser user,
             Order order,
             string email,
             DateTime terminationDate,
             string reason,
-            byte[] pdfContents,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
-            [Frozen] Mock<ICsvService> mockCsvService,
-            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            [Frozen] IGovNotifyEmailService mockEmailService,
+            [Frozen] ICsvService mockCsvService,
+            [Frozen] IOrderPdfService mockPdfService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> userTokens = null;
-
-            var pdfData = new MemoryStream(pdfContents);
 
             await context.Orders.AddAsync(order);
 
@@ -440,27 +447,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.ChangeTracker.Clear();
 
-            mockPdfService.Setup(x => x.CreateOrderSummaryPdf(order))
-                .ReturnsAsync(pdfData);
+            var bytes = Encoding.ASCII.GetBytes("Testing");
+
+            mockCsvService
+                .CreateFullOrderCsvAsync(order.Id, order.OrderType, Arg.Any<MemoryStream>(), false)
+                .Returns(x =>
+                {
+                    var stream = x.ArgAt<MemoryStream>(2);
+                    stream.Write(bytes);
+                    return Task.CompletedTask;
+                });
 
             mockEmailService
-                .Setup(x => x.SendEmailAsync(user.Email, settings.OrderTerminatedUserTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => userTokens = x)
-                .Returns(Task.CompletedTask);
+                .SendEmailAsync(user.Email, settings.OrderTerminatedUserTemplateId, Arg.Any<Dictionary<string, dynamic>>())
+                .Returns(Task.CompletedTask)
+                .AndDoes((x) => userTokens = x.ArgAt<Dictionary<string, dynamic>>(2));
 
             var service = new OrderService(
                 context,
-                mockCsvService.Object,
-                mockEmailService.Object,
-                mockPdfService.Object,
+                mockCsvService,
+                mockEmailService,
+                mockPdfService,
                 settings);
 
-            var expectedOrderSummaryCsv = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
+            var expectedOrderSummaryCsv = NotificationClient.PrepareUpload(bytes, true);
 
             await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
-
-            mockPdfService.VerifyAll();
-            mockEmailService.VerifyAll();
 
             userTokens.Should().NotBeNull();
             userTokens.Should().HaveCount(2);
@@ -473,7 +485,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task CompleteOrder_RequestIsValid_OrderStatusUpdated(
             AspNetUser user,
             Order order,
@@ -494,14 +506,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task CompleteOrder_ContainsNoRecipients_SendsSingleCsvEmails(
             AspNetUser user,
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
-            [Frozen] Mock<ICsvService> mockCsvService,
-            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            [Frozen] IGovNotifyEmailService mockEmailService,
+            [Frozen] ICsvService mockCsvService,
+            [Frozen] IOrderPdfService mockPdfService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> adminTokens = null;
@@ -512,24 +524,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.ChangeTracker.Clear();
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(settings.Recipient.Address, settings.SingleCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => adminTokens = x)
-                .Returns(Task.CompletedTask);
+            var bytes = Encoding.ASCII.GetBytes("Testing");
 
-            var expectedToken = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
+            mockCsvService
+                .CreateFullOrderCsvAsync(order.Id, order.OrderType, Arg.Any<MemoryStream>(), false)
+                .Returns(x =>
+                {
+                    var stream = x.ArgAt<MemoryStream>(2);
+                    stream.Write(bytes);
+                    return Task.CompletedTask;
+                });
+
+            mockEmailService
+                .SendEmailAsync(settings.Recipient.Address, settings.SingleCsvTemplateId, Arg.Any<Dictionary<string, dynamic>>())
+                .Returns(Task.CompletedTask)
+                .AndDoes((x) => adminTokens = x.ArgAt<Dictionary<string, dynamic>>(2));
+
+            var expectedToken = NotificationClient.PrepareUpload(bytes, true);
 
             var service = new OrderService(
                 context,
-                mockCsvService.Object,
-                mockEmailService.Object,
-                mockPdfService.Object,
+                mockCsvService,
+                mockEmailService,
+                mockPdfService,
                 settings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
 
-            mockCsvService.VerifyAll();
-            mockEmailService.Verify(x => x.SendEmailAsync(settings.Recipient.Address, settings.SingleCsvTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
             adminTokens.Should().NotBeNull();
             adminTokens.Should().HaveCount(2);
             var organisationName = adminTokens.Should().ContainKey(OrderService.OrganisationNameToken).WhoseValue as string;
@@ -539,21 +560,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task CompleteOrder_RequestIsValid_SendsUserEmails(
             AspNetUser user,
             Order order,
             string email,
-            byte[] pdfContents,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
-            [Frozen] Mock<ICsvService> mockCsvService,
-            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            [Frozen] IGovNotifyEmailService mockEmailService,
+            [Frozen] ICsvService mockCsvService,
+            [Frozen] IOrderPdfService mockPdfService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> userTokens = null;
-
-            var pdfData = new MemoryStream(pdfContents);
 
             order.OrderType = OrderTypeEnum.Solution;
             await context.Orders.AddAsync(order);
@@ -564,27 +582,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.ChangeTracker.Clear();
 
-            mockPdfService.Setup(x => x.CreateOrderSummaryPdf(order))
-                .ReturnsAsync(pdfData);
+            var bytes = Encoding.ASCII.GetBytes("Testing");
+
+            mockCsvService
+                .CreateFullOrderCsvAsync(order.Id, order.OrderType, Arg.Any<MemoryStream>(), false)
+                .Returns(x =>
+                {
+                    var stream = x.ArgAt<MemoryStream>(2);
+                    stream.Write(bytes);
+                    return Task.CompletedTask;
+                });
 
             mockEmailService
-                .Setup(x => x.SendEmailAsync(user.Email, settings.UserTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => userTokens = x)
-                .Returns(Task.CompletedTask);
+                .SendEmailAsync(user.Email, settings.UserTemplateId, Arg.Any<Dictionary<string, dynamic>>())
+                .Returns(Task.CompletedTask)
+                .AndDoes((x) => userTokens = x.ArgAt<Dictionary<string, dynamic>>(2));
 
             var service = new OrderService(
                 context,
-                mockCsvService.Object,
-                mockEmailService.Object,
-                mockPdfService.Object,
+                mockCsvService,
+                mockEmailService,
+                mockPdfService,
                 settings);
 
-            var expectedOrderSummaryCsv = NotificationClient.PrepareUpload(new MemoryStream().ToArray(), true);
+            var expectedOrderSummaryCsv = NotificationClient.PrepareUpload(bytes, true);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
-
-            mockPdfService.VerifyAll();
-            mockEmailService.VerifyAll();
 
             userTokens.Should().NotBeNull();
             userTokens.Should().HaveCount(2);
@@ -597,15 +620,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task CompleteOrder_CatalogueSolution_EmailsCatalogueSolutionEmail(
             AspNetUser user,
             Order order,
             string email,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
-            [Frozen] Mock<ICsvService> mockCsvService,
-            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            [Frozen] IGovNotifyEmailService mockEmailService,
+            [Frozen] ICsvService mockCsvService,
+            [Frozen] IOrderPdfService mockPdfService,
             OrderMessageSettings orderMessageSettings)
         {
             order.OrderType = OrderTypeEnum.Solution;
@@ -619,26 +642,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var service = new OrderService(
                 context,
-                mockCsvService.Object,
-                mockEmailService.Object,
-                mockPdfService.Object,
+                mockCsvService,
+                mockEmailService,
+                mockPdfService,
                 orderMessageSettings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
 
-            mockEmailService.Verify(x => x.SendEmailAsync(email, orderMessageSettings.UserTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
+            await mockEmailService.Received().SendEmailAsync(email, orderMessageSettings.UserTemplateId, Arg.Any<Dictionary<string, dynamic>>());
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task CompleteOrder_AssociatedServiceOnly_EmailsAssociatedServiceEmail(
             AspNetUser user,
             Order order,
             string email,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
-            [Frozen] Mock<ICsvService> mockCsvService,
-            [Frozen] Mock<IOrderPdfService> mockPdfService,
+            [Frozen] IGovNotifyEmailService mockEmailService,
+            [Frozen] ICsvService mockCsvService,
+            [Frozen] IOrderPdfService mockPdfService,
             OrderMessageSettings orderMessageSettings)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
@@ -652,18 +675,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var service = new OrderService(
                 context,
-                mockCsvService.Object,
-                mockEmailService.Object,
-                mockPdfService.Object,
+                mockCsvService,
+                mockEmailService,
+                mockPdfService,
                 orderMessageSettings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
 
-            mockEmailService.Verify(x => x.SendEmailAsync(email, orderMessageSettings.UserAssociatedServiceTemplateId, It.IsAny<Dictionary<string, dynamic>>()));
+            await mockEmailService.Received().SendEmailAsync(email, orderMessageSettings.UserAssociatedServiceTemplateId, Arg.Any<Dictionary<string, dynamic>>());
         }
 
         [Theory(Skip = "Temporal queries not supported in EF Core 7.")]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetOrderForSummary_CompletedOrder_ReturnsExpectedResultsAsAtCompletionDate(
             Order order,
             Supplier supplier,
@@ -715,7 +738,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetPagedOrders_ReturnsExpectedPageSize(
             Organisation organisation,
             List<Order> orders,
@@ -742,7 +765,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetPagedOrders_SearchTerm_ReturnsExpectedResults(
             Organisation organisation,
             List<Order> orders,
@@ -765,22 +788,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetPagedOrders_WithCompletedAmendment_ReturnsSingleRevision(
             Organisation organisation,
-            List<Order> orders,
+            Order originalOrder,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            var originalOrder = orders.First();
-            var amendedOrder = orders.Skip(1).First();
-
-            amendedOrder.OrderNumber = originalOrder.OrderNumber;
+            originalOrder.OrderNumber = originalOrder.ContractOrderNumber.Id;
             originalOrder.Revision = 1;
-            amendedOrder.Revision = 2;
+            var amendedOrder = originalOrder.BuildAmendment(2);
+
             amendedOrder.Completed = DateTime.UtcNow;
             originalOrder.Completed = DateTime.UtcNow;
 
+            var orders = new List<Order> { originalOrder, amendedOrder };
             organisation.Orders.AddRange(orders);
 
             context.Orders.AddRange(orders);
@@ -795,7 +817,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetPagedOrders_WithInProgressAmendment_ReturnsAllOrders(
             Organisation organisation,
             List<Order> orders,
@@ -825,7 +847,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetPagedOrders_WithNoAmendment_ReturnsOriginalOrders(
             Organisation organisation,
             List<Order> orders,
@@ -850,7 +872,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetOrdersBySearchTerm_CallOffId_ReturnsExpectedResults(
             Organisation organisation,
             List<Order> orders,
@@ -877,7 +899,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetOrdersBySearchTerm_Description_ReturnsExpectedResults(
             Organisation organisation,
             List<Order> orders,
@@ -904,7 +926,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetOrdersBySearchTerm_WithCompletedAmendment_ReturnsSingleRevision(
             Organisation organisation,
             List<Order> orders,
@@ -934,21 +956,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetOrdersBySearchTerm_WithInProgressAmendment_ReturnsAllOrders(
             Organisation organisation,
-            List<Order> orders,
+            Order originalOrder,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            var originalOrder = orders.First();
-            var amendedOrder = orders.Skip(1).First();
-
-            amendedOrder.OrderNumber = originalOrder.OrderNumber;
             originalOrder.Revision = 1;
-            amendedOrder.Revision = 2;
+            originalOrder.OrderNumber = originalOrder.ContractOrderNumber.Id;
+            var amendedOrder = originalOrder.BuildAmendment(2);
+
             amendedOrder.Completed = null;
             originalOrder.Completed = DateTime.UtcNow;
+
+            var orders = new List<Order> { originalOrder, amendedOrder };
 
             organisation.Orders = orders;
 
@@ -964,16 +986,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetUserOrders_ReturnsExpectedResults(
             int userId,
             List<Order> orders,
-            [Frozen] Mock<IIdentityService> mockIdentityService,
+            [Frozen] IIdentityService mockIdentityService,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
             mockIdentityService
-                .Setup(x => x.GetUserId())
+                .GetUserId()
                 .Returns(userId);
 
             context.Orders.AddRange(orders);
@@ -985,7 +1007,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetSolutionId_UpdatesDatabase(
             Order order,
             CatalogueItemId solutionId,
@@ -1008,7 +1030,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetOrderPracticeReorganisationRecipient_UpdatesDatabase(
             Order order,
             OdsOrganisation odsOrganisation,
@@ -1060,7 +1082,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetFundingSourceForForceFundedItems_GpPractice_UpdatesDatabase(
             Order order,
             Organisation organisation,
@@ -1088,13 +1110,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EnsureOrderItemsForAmendment_Adds_OrderItems(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
             order.OrderingPartyId = order.OrderingParty.Id;
+            order.OrderNumber = order.ContractOrderNumber.Id;
             order.Revision = 1;
             var amendment = order.BuildAmendment(2);
             amendment.OrderItems.Clear();

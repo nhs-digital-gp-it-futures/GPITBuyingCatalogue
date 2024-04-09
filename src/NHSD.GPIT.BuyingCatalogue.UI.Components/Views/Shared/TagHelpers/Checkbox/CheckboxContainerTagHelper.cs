@@ -1,4 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers;
 
@@ -38,14 +43,26 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var content = await output.GetChildContentAsync();
 
-            output.Attributes.Add(
-                new TagHelperAttribute(
-                    TagHelperConstants.Class,
-                    TagHelperFunctions.BuildCssClassForConditionalContentOutput(
-                        context,
-                        conditionalContext,
-                        Size == CheckboxSize.Small ? $"{TagHelperConstants.NhsCheckboxes} {TagHelperConstants.NhsCheckboxesSizeSmall}" : $"{TagHelperConstants.NhsCheckboxes}",
-                        TagHelperConstants.NhsCheckBoxParentConditionalClass)));
+            var classesToAdd = new List<string> { TagHelperConstants.NhsCheckboxes };
+
+            if (Size == CheckboxSize.Small)
+            {
+                classesToAdd.Add(TagHelperConstants.NhsCheckboxesSizeSmall);
+            }
+
+            if (TagHelperFunctions.ShouldIncludeClassForConditionalContent(context, conditionalContext))
+            {
+                classesToAdd.Add(TagHelperConstants.NhsCheckBoxParentConditionalClass);
+            }
+
+            var existingClass = output.Attributes.FirstOrDefault(f => f.Name == TagHelperConstants.Class);
+            if (existingClass != null)
+            {
+                classesToAdd.AddRange(existingClass.Value.ToString().Split(' ', StringSplitOptions.RemoveEmptyEntries));
+                output.Attributes.Remove(existingClass);
+            }
+
+            classesToAdd.ToList().ForEach(c => output.AddClass(c, HtmlEncoder.Default));
 
             output.Content.AppendHtml(content);
         }

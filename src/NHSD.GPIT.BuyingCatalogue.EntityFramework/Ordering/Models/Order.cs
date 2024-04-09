@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             OrderItems = new HashSet<OrderItem>();
             OrderRecipients = new HashSet<OrderRecipient>();
+            OrderEvents = new HashSet<OrderEvent>();
         }
 
         public int Id { get; set; }
@@ -89,6 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
         }
 
+        public ContractOrderNumber ContractOrderNumber { get; set; }
+
         public Organisation OrderingParty { get; set; }
 
         public Contact OrderingPartyContact { get; set; }
@@ -96,6 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public Supplier Supplier { get; set; }
 
         public Contact SupplierContact { get; set; }
+
+        public ICollection<OrderEvent> OrderEvents { get; set; }
 
         public ICollection<OrderItem> OrderItems { get; set; }
 

@@ -43,6 +43,10 @@
 :r ./InsertAssociatedServices.sql
 :r ./InsertRelatedOrganisations.sql
 
+:r ./InsertEmailPreferenceTypes.sql
+:r ./InsertEventTypes.sql
+:r ./InsertEmailNotificationType.sql
+
 :r ./DropImport.sql
 :r ./DropPublish.sql
 
