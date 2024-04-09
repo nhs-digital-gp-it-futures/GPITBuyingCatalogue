@@ -24,6 +24,102 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 {
     public static class CsvServiceTests
     {
+        private static IEnumerable<string> OrderFields => new[]
+        {
+            "Call Off Agreement ID",
+            "Call Off Ordering Party ID",
+            "Call Off Ordering Party Name",
+            "Call Off Commencement Date",
+            "Service Recipient ID",
+            "Service Recipient Name",
+            "Service Recipient Item ID",
+            "Supplier ID",
+            "Supplier Name",
+            "Product ID",
+            "Product Name",
+            "Product Type",
+            "Quantity Ordered",
+            "Unit of Order",
+            "Unit Time",
+            "Estimation Period",
+            "Price",
+            "Order Type",
+            "Funding Type",
+            "M1 planned (Delivery Date)",
+            "Actual M1 date",
+            "Buyer verification date (M2)",
+            "Cease Date",
+            "Framework",
+            "Initial Term",
+            "Contract Length (Months)",
+            "Pricing Type",
+            "Tiered Array",
+        };
+
+        private static IEnumerable<string> MergerFields => new[]
+        {
+            "Call Off Agreement ID",
+            "Call Off Ordering Party ID",
+            "Call Off Ordering Party Name",
+            "Call Off Commencement Date",
+            "Practice to close / become branch site (ODS code)",
+            "Practice to be retained (ODS code)",
+            "Service Recipient Item ID",
+            "Supplier ID",
+            "Supplier Name",
+            "Product ID",
+            "Product Name",
+            "Product Type",
+            "Quantity Ordered",
+            "Unit of Order",
+            "Unit Time",
+            "Estimation Period",
+            "Price",
+            "Order Type",
+            "Funding Type",
+            "M1 planned (Delivery Date)",
+            "Actual M1 date",
+            "Buyer verification date (M2)",
+            "Cease Date",
+            "Framework",
+            "Initial Term",
+            "Contract Length (Months)",
+            "Pricing Type",
+            "Tiered Array",
+        };
+
+        private static IEnumerable<string> SplitFields => new[]
+        {
+            "Call Off Agreement ID",
+            "Call Off Ordering Party ID",
+            "Call Off Ordering Party Name",
+            "Call Off Commencement Date",
+            "Practice to split (ODS code)",
+            "Practice to be retained (ODS code)",
+            "Service Recipient Item ID",
+            "Supplier ID",
+            "Supplier Name",
+            "Product ID",
+            "Product Name",
+            "Product Type",
+            "Quantity Ordered",
+            "Unit of Order",
+            "Unit Time",
+            "Estimation Period",
+            "Price",
+            "Order Type",
+            "Funding Type",
+            "M1 planned (Delivery Date)",
+            "Actual M1 date",
+            "Buyer verification date (M2)",
+            "Cease Date",
+            "Framework",
+            "Initial Term",
+            "Contract Length (Months)",
+            "Pricing Type",
+            "Tiered Array",
+        };
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
@@ -35,42 +131,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         }
 
         [Theory]
-        [MockInMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
-        [MockInMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
-        [MockInMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
-        [MockInMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
-        [MockInMemoryDbInlineAutoData(4, "Service Recipient ID")]
-        [MockInMemoryDbInlineAutoData(5, "Service Recipient Name")]
-        [MockInMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
-        [MockInMemoryDbInlineAutoData(7, "Supplier ID")]
-        [MockInMemoryDbInlineAutoData(8, "Supplier Name")]
-        [MockInMemoryDbInlineAutoData(9, "Product ID")]
-        [MockInMemoryDbInlineAutoData(10, "Product Name")]
-        [MockInMemoryDbInlineAutoData(11, "Product Type")]
-        [MockInMemoryDbInlineAutoData(12, "Quantity Ordered")]
-        [MockInMemoryDbInlineAutoData(13, "Unit of Order")]
-        [MockInMemoryDbInlineAutoData(14, "Unit Time")]
-        [MockInMemoryDbInlineAutoData(15, "Estimation Period")]
-        [MockInMemoryDbInlineAutoData(16, "Price")]
-        [MockInMemoryDbInlineAutoData(17, "Order Type")]
-        [MockInMemoryDbInlineAutoData(18, "Funding Type")]
-        [MockInMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
-        [MockInMemoryDbInlineAutoData(20, "Actual M1 date")]
-        [MockInMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
-        [MockInMemoryDbInlineAutoData(22, "Cease Date")]
-        [MockInMemoryDbInlineAutoData(23, "Framework")]
-        [MockInMemoryDbInlineAutoData(24, "Initial Term")]
-        [MockInMemoryDbInlineAutoData(25, "Contract Length (Months)")]
-        [MockInMemoryDbInlineAutoData(26, "Pricing Type")]
-        [MockInMemoryDbInlineAutoData(27, "Tiered Array")]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static async Task SolutionOrder_Mapped_Columns(
-            int index,
-            string name,
+            OrderTypeEnum orderType,
             Order order,
             CsvService service,
             [Frozen] BuyingCatalogueDbContext dbContext)
         {
-            order.OrderType = OrderTypeEnum.Solution;
+            order.OrderType = orderType;
             dbContext.Orders.Add(order);
             await dbContext.SaveChangesAsync();
             dbContext.ChangeTracker.Clear();
@@ -87,97 +156,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 
             await csv.ReadAsync();
             csv.ReadHeader();
-            csv.GetField(index).Should().Be(name);
+            OrderFields.Select((x, i) => (Value: x, Index: i))
+                .ToList()
+                .ForEach(x => csv.GetField(x.Index).Should().Be(x.Value));
         }
 
         [Theory]
-        [MockInMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
-        [MockInMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
-        [MockInMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
-        [MockInMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
-        [MockInMemoryDbInlineAutoData(4, "Service Recipient ID")]
-        [MockInMemoryDbInlineAutoData(5, "Service Recipient Name")]
-        [MockInMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
-        [MockInMemoryDbInlineAutoData(7, "Supplier ID")]
-        [MockInMemoryDbInlineAutoData(8, "Supplier Name")]
-        [MockInMemoryDbInlineAutoData(9, "Product ID")]
-        [MockInMemoryDbInlineAutoData(10, "Product Name")]
-        [MockInMemoryDbInlineAutoData(11, "Product Type")]
-        [MockInMemoryDbInlineAutoData(12, "Quantity Ordered")]
-        [MockInMemoryDbInlineAutoData(13, "Unit of Order")]
-        [MockInMemoryDbInlineAutoData(14, "Unit Time")]
-        [MockInMemoryDbInlineAutoData(15, "Estimation Period")]
-        [MockInMemoryDbInlineAutoData(16, "Price")]
-        [MockInMemoryDbInlineAutoData(17, "Order Type")]
-        [MockInMemoryDbInlineAutoData(18, "Funding Type")]
-        [MockInMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
-        [MockInMemoryDbInlineAutoData(20, "Actual M1 date")]
-        [MockInMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
-        [MockInMemoryDbInlineAutoData(22, "Cease Date")]
-        [MockInMemoryDbInlineAutoData(23, "Framework")]
-        [MockInMemoryDbInlineAutoData(24, "Initial Term")]
-        [MockInMemoryDbInlineAutoData(25, "Contract Length (Months)")]
-        [MockInMemoryDbInlineAutoData(26, "Pricing Type")]
-        [MockInMemoryDbInlineAutoData(27, "Tiered Array")]
-        public static async Task AssociatedServiceOtherOrder_Mapped_Columns(
-            int index,
-            string name,
-            Order order,
-            CsvService service,
-            [Frozen] BuyingCatalogueDbContext dbContext)
-        {
-            order.OrderType = OrderTypeEnum.AssociatedServiceOther;
-            dbContext.Orders.Add(order);
-            await dbContext.SaveChangesAsync();
-            dbContext.ChangeTracker.Clear();
-
-            await using var fullOrderStream = new MemoryStream();
-            await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
-            fullOrderStream.Position = 0;
-
-            using var streamReader = new StreamReader(fullOrderStream);
-            using var csv = new CsvReader(streamReader, new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                TrimOptions = TrimOptions.Trim,
-            });
-
-            await csv.ReadAsync();
-            csv.ReadHeader();
-            csv.GetField(index).Should().Be(name);
-        }
-
-        [Theory]
-        [MockInMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
-        [MockInMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
-        [MockInMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
-        [MockInMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
-        [MockInMemoryDbInlineAutoData(4, "Practice to close / become branch site (ODS code)")]
-        [MockInMemoryDbInlineAutoData(5, "Practice to be retained (ODS code)")]
-        [MockInMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
-        [MockInMemoryDbInlineAutoData(7, "Supplier ID")]
-        [MockInMemoryDbInlineAutoData(8, "Supplier Name")]
-        [MockInMemoryDbInlineAutoData(9, "Product ID")]
-        [MockInMemoryDbInlineAutoData(10, "Product Name")]
-        [MockInMemoryDbInlineAutoData(11, "Product Type")]
-        [MockInMemoryDbInlineAutoData(12, "Quantity Ordered")]
-        [MockInMemoryDbInlineAutoData(13, "Unit of Order")]
-        [MockInMemoryDbInlineAutoData(14, "Unit Time")]
-        [MockInMemoryDbInlineAutoData(15, "Estimation Period")]
-        [MockInMemoryDbInlineAutoData(16, "Price")]
-        [MockInMemoryDbInlineAutoData(17, "Order Type")]
-        [MockInMemoryDbInlineAutoData(18, "Funding Type")]
-        [MockInMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
-        [MockInMemoryDbInlineAutoData(20, "Actual M1 date")]
-        [MockInMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
-        [MockInMemoryDbInlineAutoData(22, "Cease Date")]
-        [MockInMemoryDbInlineAutoData(23, "Framework")]
-        [MockInMemoryDbInlineAutoData(24, "Initial Term")]
-        [MockInMemoryDbInlineAutoData(25, "Contract Length (Months)")]
-        [MockInMemoryDbInlineAutoData(26, "Pricing Type")]
-        [MockInMemoryDbInlineAutoData(27, "Tiered Array")]
+        [MockInMemoryDbAutoData]
         public static async Task MergerOrder_Mapped_Columns(
-            int index,
-            string name,
             Order order,
             CsvService service,
             [Frozen] BuyingCatalogueDbContext dbContext)
@@ -199,41 +185,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 
             await csv.ReadAsync();
             csv.ReadHeader();
-            csv.GetField(index).Should().Be(name);
+            MergerFields.Select((x, i) => (Value: x, Index: i))
+                .ToList()
+                .ForEach(x => csv.GetField(x.Index).Should().Be(x.Value));
         }
 
         [Theory]
-        [MockInMemoryDbInlineAutoData(0, "Call Off Agreement ID")]
-        [MockInMemoryDbInlineAutoData(1, "Call Off Ordering Party ID")]
-        [MockInMemoryDbInlineAutoData(2, "Call Off Ordering Party Name")]
-        [MockInMemoryDbInlineAutoData(3, "Call Off Commencement Date")]
-        [MockInMemoryDbInlineAutoData(4, "Practice to split (ODS code)")]
-        [MockInMemoryDbInlineAutoData(5, "Practice to be retained (ODS code)")]
-        [MockInMemoryDbInlineAutoData(6, "Service Recipient Item ID")]
-        [MockInMemoryDbInlineAutoData(7, "Supplier ID")]
-        [MockInMemoryDbInlineAutoData(8, "Supplier Name")]
-        [MockInMemoryDbInlineAutoData(9, "Product ID")]
-        [MockInMemoryDbInlineAutoData(10, "Product Name")]
-        [MockInMemoryDbInlineAutoData(11, "Product Type")]
-        [MockInMemoryDbInlineAutoData(12, "Quantity Ordered")]
-        [MockInMemoryDbInlineAutoData(13, "Unit of Order")]
-        [MockInMemoryDbInlineAutoData(14, "Unit Time")]
-        [MockInMemoryDbInlineAutoData(15, "Estimation Period")]
-        [MockInMemoryDbInlineAutoData(16, "Price")]
-        [MockInMemoryDbInlineAutoData(17, "Order Type")]
-        [MockInMemoryDbInlineAutoData(18, "Funding Type")]
-        [MockInMemoryDbInlineAutoData(19, "M1 planned (Delivery Date)")]
-        [MockInMemoryDbInlineAutoData(20, "Actual M1 date")]
-        [MockInMemoryDbInlineAutoData(21, "Buyer verification date (M2)")]
-        [MockInMemoryDbInlineAutoData(22, "Cease Date")]
-        [MockInMemoryDbInlineAutoData(23, "Framework")]
-        [MockInMemoryDbInlineAutoData(24, "Initial Term")]
-        [MockInMemoryDbInlineAutoData(25, "Contract Length (Months)")]
-        [MockInMemoryDbInlineAutoData(26, "Pricing Type")]
-        [MockInMemoryDbInlineAutoData(27, "Tiered Array")]
+        [MockInMemoryDbAutoData]
         public static async Task SplitOrder_Mapped_Columns(
-            int index,
-            string name,
             Order order,
             CsvService service,
             [Frozen] BuyingCatalogueDbContext dbContext)
@@ -255,7 +214,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 
             await csv.ReadAsync();
             csv.ReadHeader();
-            csv.GetField(index).Should().Be(name);
+            SplitFields.Select((x, i) => (Value: x, Index: i))
+                .ToList()
+                .ForEach(x => csv.GetField(x.Index).Should().Be(x.Value));
         }
 
         [Theory]
@@ -432,6 +393,44 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         [Theory]
         [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
         [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        public static async Task One_OrderItem_Two_Recipients_With_PerOrderItemQuantity_Results_In_One_Row(
+            ProvisioningType provisioningType,
+            Order order,
+            CsvService service,
+            CatalogueItem originalCatalogueItem,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            IFixture fixture)
+        {
+            order.OrderType = OrderTypeEnum.Solution;
+
+            var recipient1 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
+            var recipient2 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
+            await SaveOrderWithRecipients(
+                order,
+                originalCatalogueItem,
+                CataloguePriceQuantityCalculationType.PerSolutionOrService,
+                provisioningType,
+                new HashSet<OrderRecipient>() { recipient1, recipient2 },
+                dbContext,
+                fixture);
+
+            await using var fullOrderStream = new MemoryStream();
+            await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
+            fullOrderStream.Position = 0;
+
+            var records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap()).ToList();
+
+            records.Count.Should().Be(1);
+            records[0].ServiceRecipientItemId.Should().EndWith("-0");
+            records.First().ProductId.Should().Be(originalCatalogueItem.Id.ToString());
+            records.First().ServiceRecipientId.Should().Be(order.OrderingParty.ExternalIdentifier);
+            records.First().ServiceRecipientName.Should().Be(order.OrderingParty.Name);
+            records.First().ServiceRecipientItemId.Should().StartWith($"{order.CallOffId}-{order.OrderingParty.ExternalIdentifier}-");
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
         [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task Amendment_One_Recipient_Added_To_One_OrderItem_One_Recipient_Results_In_One_Row(
             ProvisioningType provisioningType,
@@ -554,7 +553,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         [Theory]
         [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
         [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
-        public static async Task One_OrderItem_Two_Recipients_With_PerOrderItemQuantity_Results_In_One_Row(
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
+        public static async Task Amendment_ShowRevisions_Results_In_Two_Rows(
             ProvisioningType provisioningType,
             Order order,
             CsvService service,
@@ -563,30 +563,41 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             IFixture fixture)
         {
             order.OrderType = OrderTypeEnum.Solution;
-
-            var recipient1 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-            var recipient2 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-            await SaveOrderWithRecipients(
-                order,
+            OrderItem orderItem = BuildOrderItem(
+                fixture,
                 originalCatalogueItem,
-                CataloguePriceQuantityCalculationType.PerSolutionOrService,
+                OrderItemFundingType.LocalFunding,
                 provisioningType,
-                new HashSet<OrderRecipient>() { recipient1, recipient2 },
-                dbContext,
-                fixture);
+                CataloguePriceQuantityCalculationType.PerServiceRecipient);
+
+            var recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
+
+            order.Revision = 1;
+            order.OrderingPartyId = order.OrderingParty.Id;
+
+            order.OrderItems = new HashSet<OrderItem>() { orderItem };
+            order.OrderRecipients = new HashSet<OrderRecipient>() { recipient };
+
+            var amend = order.BuildAmendment(2);
+            var addedRecipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
+            amend.OrderRecipients.Add(addedRecipient);
+            amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
+
+            dbContext.Orders.Add(order);
+            dbContext.Orders.Add(amend);
+
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
 
             await using var fullOrderStream = new MemoryStream();
-            await service.CreateFullOrderCsvAsync(order.Id, order.OrderType, fullOrderStream);
+            await service.CreateFullOrderCsvAsync(amend.Id, amend.OrderType, fullOrderStream, true);
             fullOrderStream.Position = 0;
 
-            var records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap()).ToList();
+            var records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap());
 
-            records.Count.Should().Be(1);
-            records[0].ServiceRecipientItemId.Should().EndWith("-0");
-            records.First().ProductId.Should().Be(originalCatalogueItem.Id.ToString());
-            records.First().ServiceRecipientId.Should().Be(order.OrderingParty.ExternalIdentifier);
-            records.First().ServiceRecipientName.Should().Be(order.OrderingParty.Name);
-            records.First().ServiceRecipientItemId.Should().StartWith($"{order.CallOffId}-{order.OrderingParty.ExternalIdentifier}-");
+            records.Count.Should().Be(2);
+            records.Should().Contain(x => x.CallOffId == order.CallOffId);
+            records.Should().Contain(x => x.CallOffId == amend.CallOffId);
         }
 
         private static async Task SaveOrderWithRecipients(Order order, CatalogueItem originalCatalogueItem, CataloguePriceQuantityCalculationType cataloguePriceQuantityCalculationType, ProvisioningType provisioningType, ICollection<OrderRecipient> recipients, BuyingCatalogueDbContext dbContext, IFixture fixture)
