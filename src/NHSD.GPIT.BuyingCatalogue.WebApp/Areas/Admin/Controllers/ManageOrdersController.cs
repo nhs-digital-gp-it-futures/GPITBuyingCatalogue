@@ -101,18 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return File(memoryStream.ToArray(), "application/octet-stream", $"{callOffIdPrefix}{externalOrgId}_full.csv");
         }
 
-        [HttpGet("{callOffId}/download/patient-order-csv")]
-        public async Task<IActionResult> DownloadPatientNumberCsv(CallOffId callOffId, string externalOrgId)
-        {
-            var orderId = await orderService.GetOrderId(callOffId);
-            using var memoryStream = new MemoryStream();
-            await csvService.CreatePatientNumberCsvAsync(orderId, memoryStream);
-            memoryStream.Position = 0;
-            var callOffIdPrefix = GetFileNamePrefix(callOffId);
-
-            return File(memoryStream.ToArray(), "application/octet-stream", $"{callOffIdPrefix}{externalOrgId}_patient.csv");
-        }
-
         [HttpGet("{callOffId}/download/pdf")]
         public async Task<IActionResult> Download(CallOffId callOffId, string internalOrgId)
         {
