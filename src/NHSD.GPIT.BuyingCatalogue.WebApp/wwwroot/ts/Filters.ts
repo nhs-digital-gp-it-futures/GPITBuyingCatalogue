@@ -136,6 +136,9 @@ var filters = (function (): CapabilitiesAndEpics {
         innerHtml: string,
         sortByValue: string) {
         const solutionSortContainer = document.getElementById('solution-sort-container');
+        if (solutionSortContainer == null)
+            return;
+
         solutionSortContainer.innerHTML = innerHtml;
 
         const sortOptions = document.getElementById('SelectedSortOption') as HTMLOptionElement;
@@ -193,7 +196,7 @@ var filters = (function (): CapabilitiesAndEpics {
 
     function getSortBy(): string {
         const sortOptions = document.getElementById('SelectedSortOption') as HTMLOptionElement;
-        return sortOptions.value;
+        return sortOptions?.value;
     }
 
     function getSelectedFamework(): string {
