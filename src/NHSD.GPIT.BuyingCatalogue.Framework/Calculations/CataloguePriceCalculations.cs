@@ -134,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
         private static int GetTerm(this Order order)
         {
             return order.DeliveryDate.HasValue && order.IsAmendment
-                ? order.EndDate.RemainingTerm(order.DeliveryDate.Value)
+                ? order.EndDate.RemainingTermInMonths(order.DeliveryDate.Value)
                 : order.MaximumTerm ?? 36;
         }
     }

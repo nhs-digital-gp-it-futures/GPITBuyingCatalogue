@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
@@ -18,7 +21,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public string DisplayValue => DateTime.HasValue ? $"{DateTime:d MMMM yyyy}" : string.Empty;
 
-        public int RemainingTerm(DateTime plannedDelivery)
+        public bool ContractExpired => DateTime.HasValue && System.DateTime.UtcNow.Date > DateTime.Value.Date;
+
+        public int RemainingDays(DateTime date)
+        {
+            if (!DateTime.HasValue)
+            {
+                throw new InvalidOperationException("A known end date is required to calculate the remaining number of days");
+            }
+
+            return Math.Max(0, (DateTime.Value.Date - date.Date).Days);
+        }
+
+        public int RemainingTermInMonths(DateTime plannedDelivery)
         {
             if (!DateTime.HasValue)
             {
@@ -26,6 +41,48 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
 
             return Math.Max(0, DifferenceInMonths(plannedDelivery, DateTime.Value.AddDays(1)));
+        }
+
+        public EventTypeEnum DetermineEventToRaise(DateTime date, ICollection<OrderEvent> orderEvents)
+        {
+            var result = EventTypeEnum.Nothing;
+
+            if (DateTime.HasValue)
+            {
+                int remainingDays = RemainingDays(date);
+
+                if (MaximumTerm >= 3)
+                {
+                    result = DetermineEventToRaiseForThresholds(orderEvents, remainingDays, 90, 45);
+                }
+                else
+                {
+                    result = DetermineEventToRaiseForThresholds(orderEvents, remainingDays, 30, 14);
+                }
+            }
+
+            return result;
+        }
+
+        private static EventTypeEnum DetermineEventToRaiseForThresholds(ICollection<OrderEvent> orderEvents, int remainingDays, int firstThreshold, int secondThreshold)
+        {
+            if (remainingDays <= 0)
+                return EventTypeEnum.Nothing;
+
+            if (remainingDays <= secondThreshold)
+            {
+                return orderEvents.Any(e => e.EventTypeId == (int)EventTypeEnum.OrderEnteredSecondExpiryThreshold)
+                    ? EventTypeEnum.Nothing
+                    : EventTypeEnum.OrderEnteredSecondExpiryThreshold;
+            }
+            else if (remainingDays <= firstThreshold)
+            {
+                return orderEvents.Any(e => e.EventTypeId == (int)EventTypeEnum.OrderEnteredFirstExpiryThreshold)
+                    ? EventTypeEnum.Nothing
+                    : EventTypeEnum.OrderEnteredFirstExpiryThreshold;
+            }
+
+            return EventTypeEnum.Nothing;
         }
 
         private int DifferenceInMonths(DateTime plannedDelivery, DateTime endDate)

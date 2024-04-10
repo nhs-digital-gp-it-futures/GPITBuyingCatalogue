@@ -19,7 +19,7 @@ public static class AzureBlobContainerClientFactoryTests
         var fixture = new Fixture().Customize(
             new CompositeCustomization(
                 new AutoMoqCustomization(),
-                new BlobServiceClientCustomization()));
+                new BlobServiceClientMoqCustomization()));
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(AzureBlobContainerClientFactory).GetConstructors();
 

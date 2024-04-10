@@ -54,10 +54,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Orders_OrderingParty");
 
+            builder.HasOne(o => o.ContractOrderNumber)
+                .WithMany()
+                .HasForeignKey(o => o.OrderNumber);
+
             builder.HasMany(x => x.OrderRecipients)
                 .WithOne(x => x.Order)
                 .HasForeignKey(x => x.OrderId)
                 .HasConstraintName("FK_OrderRecipients_Orders");
+
+            builder.HasMany(x => x.OrderEvents)
+                .WithOne()
+                .HasForeignKey(x => x.OrderId)
+                .IsRequired(false);
 
             builder.HasOne(o => o.SupplierContact)
                 .WithMany()

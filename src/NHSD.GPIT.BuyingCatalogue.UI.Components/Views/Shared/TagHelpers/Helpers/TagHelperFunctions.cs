@@ -132,21 +132,28 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var stringBuilder = new StringBuilder();
 
             stringBuilder.Append(baseClass);
-
-            // only apply to self if this is the parent container
-            if (!context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out object value))
-                return stringBuilder.ToString();
-
-            if (!((ConditionalContext)value).ContainsConditionalContent)
-                return stringBuilder.ToString();
-
-            if (conditionalContext is null)
-                return stringBuilder.ToString();
-
-            stringBuilder.Append(' ');
-            stringBuilder.Append(additionalClass);
+            if (ShouldIncludeClassForConditionalContent(context, conditionalContext))
+            {
+                stringBuilder.Append(' ');
+                stringBuilder.Append(additionalClass);
+            }
 
             return stringBuilder.ToString();
+        }
+
+        public static bool ShouldIncludeClassForConditionalContent(TagHelperContext context, ConditionalContext conditionalContext)
+        {
+            // only apply to self if this is the parent container
+            if (!context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out object value))
+                return false;
+
+            if (!((ConditionalContext)value).ContainsConditionalContent)
+                return false;
+
+            if (conditionalContext is null)
+                return false;
+
+            return true;
         }
     }
 }
