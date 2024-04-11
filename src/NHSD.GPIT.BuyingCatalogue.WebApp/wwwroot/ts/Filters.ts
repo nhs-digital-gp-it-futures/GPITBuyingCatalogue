@@ -189,7 +189,9 @@ var filters = (function (): CapabilitiesAndEpics {
         searchResultsUrl.searchParams.set(GPCONNECT_INTEGRATIONS_PARAM_NAME, getGPConnectIntegrationsOptionsFilterString());
         searchResultsUrl.searchParams.set(SELECTED_PARAM_NAME, getSelectedFilterString());
         const currentSortBy = getSortBy();
-        searchResultsUrl.searchParams.set(SORT_BY_PARAM_NAME, currentSortBy);
+
+        if (currentSortBy)
+            searchResultsUrl.searchParams.set(SORT_BY_PARAM_NAME, currentSortBy);
 
         await renderResults(await getResultsContent(searchResultsUrl), currentSortBy);
     }
