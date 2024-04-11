@@ -3,6 +3,6 @@
     public enum EmailPreferenceTypeEnum
     {
         ContractExpiry = 1,
-        PasswordExpity = 2,
+        PasswordExpiry = 2,
     }
 }
