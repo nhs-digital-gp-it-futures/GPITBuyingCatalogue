@@ -4,7 +4,7 @@
 @using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ContractBilling.ContractBillingItemModel
 @{
-    // TODO: Should set ViewData["Title"] or ViewBag.Title
+    ViewBag.Title = "Bespoke Associated Service milestone";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -13,7 +13,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary/>
 
-        <nhs-page-title title="Bespoke Associated Service milestone"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
                         advice="@Model.Advice"/>
 

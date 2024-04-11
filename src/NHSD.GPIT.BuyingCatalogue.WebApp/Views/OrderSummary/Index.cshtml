@@ -8,7 +8,7 @@
     var contractTerm = Model.Order.MaximumTerm.HasValue
         ? $"({Model.Order.MaximumTerm.Value} months)"
         : "(estimated)";
-    var title = Model.Order.OrderStatus == OrderStatus.Terminated ? "Terminated contract details" : "Call-off Order Form";
+    ViewBag.Title = Model.Order.OrderStatus == OrderStatus.Terminated ? "Terminated contract details" : "Call-off Order Form";
 }
 
 <!DOCTYPE html>
@@ -22,9 +22,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="NHSD Order Form">
-    @{
-        // TODO: Does ViewBag.Title have a value?
-    }
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="~/css/main.min.css">
     <link href="https://www.nhs.uk/" rel="preconnect">
@@ -174,7 +171,7 @@
         <main class="nhsuk-main-wrapper" id="maincontent">
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
-                    <nhs-page-title title="@title"
+                    <nhs-page-title title="@ViewBag.Title"
                                     caption="Order @Model.Order.CallOffId" />
 
                     <pdf-summary-list>
