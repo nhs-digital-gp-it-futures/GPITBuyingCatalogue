@@ -276,18 +276,7 @@
 
                     @if (!Model.Order.OrderType.MergerOrSplit)
                     {
-                        <h1>Service Recipients</h1>
-
-                        <pdf-summary-list>
-                            <pdf-summary-list-row label-text="Number of Service Recipients">
-                                @Model.RolledUp.OrderRecipients.Count
-                            </pdf-summary-list-row>
-                        </pdf-summary-list>
-
-                        <p>You can find the list of Service Recipients and their planned delivery dates by logging into the Buying Catalogue and viewing the summary of this order.</p>
-
-                        <div style="page-break-after: always"></div>
-                        <h1>Solution and services</h1>
+                        <h1>Items added to this order</h1>
                     }
 
                     @if (Model.RolledUp.GetSolutions().Any())
@@ -298,6 +287,8 @@
                             var itemModel = Model.BuildAmendOrderItemModel(solution);
                             <partial name="OrderItem" model="@itemModel" />
                         }
+
+                        <div style="page-break-after: always"></div>
                     }
 
                     @if (Model.RolledUp.GetAdditionalServices().Any())
@@ -308,9 +299,11 @@
                             var itemModel = Model.BuildAmendOrderItemModel(service);
                             <partial name="OrderItem" model="@itemModel" />
                         }
-                    }
 
-                    @if (Model.RolledUp.GetAssociatedServices().Any())
+                        <div style="page-break-after: always"></div>
+                    }
+                    
+                @if (Model.RolledUp.GetAssociatedServices().Any())
                     {
                         <h2>@(Model.RolledUp.GetAdditionalServices().Count() > 1 ? "Associated Services" : "Associated Service")</h2>
                         @foreach (var service in Model.RolledUp.GetAssociatedServices())
@@ -318,9 +311,10 @@
                             var itemModel = Model.BuildAmendOrderItemModel(service);
                             <partial name="OrderItem" model="@itemModel" />
                         }
+                        <div style="page-break-after: always"></div>
                     }
 
-                    <div class="pdf-container">
+                <div class="pdf-container">
                         <h3>Total indicative costs excluding VAT</h3>
                         @if (Model.Order.IsAmendment)
                         {

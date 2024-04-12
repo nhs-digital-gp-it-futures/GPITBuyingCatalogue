@@ -1,10 +1,8 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-@using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.AmendOrderItemModel;
 @if (Model.IsAmendment && Model.IsOrderItemAdded)
 {
@@ -17,142 +15,165 @@ else
     <h3>@Model.CatalogueItem.Name</h3>
 }
 
-@if (Model.OrderType.MergerOrSplit)
-{
+@{
     var itemType = Model.CatalogueItem.CatalogueItemType.DisplayName();
     var hasServiceRecipientQuantities = ((IPrice)Model.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
+}
 
+@if (Model.OrderType.MergerOrSplit)
+{
     <table>
         <caption>@Model.OrderType.GetPracticeReorganisationRecipientTitle()</caption>
         <tr class="alternating">
             <td>@Model.PracticeReorganisationName</td>
         </tr>
     </table>
+}
 
-    @if (Model.RolledUpRecipientsForItem.Count > 20)
+<table>
+    <caption>@Model.OrderType.GetServiceRecipientsTitle()</caption>
+    <thead>
+        <tr>
+            @if (Model.IsAmendment && !Model.OrderType.MergerOrSplit)
+            {
+                <th>Status</th>
+            }
+            <th>Organisation (ODS code)</th>
+            <th>Item ID</th>
+            <th>Planned delivery date</th>
+
+            @if (hasServiceRecipientQuantities)
+            {
+                <th class="numeric">Quantity</th>
+            }
+        </tr>
+    </thead>
+
+    @if (!(Model.RolledUpRecipientsForItem?.Any() ?? false))
     {
-        <h4>Number of @Model.OrderType.GetServiceRecipientsTitle(): @Model.RolledUpRecipientsForItem.Count</h4>
-        <p>You can find the list of Service Recipients and their planned delivery dates by logging into the Buying Catalogue and viewing the summary of this order.</p>
-        <br />
+        <tr>
+            <td style="column-span: all">No Service Recipients have been entered for this @itemType.</td>
+        </tr>
     }
     else
     {
-        <table>
-            <caption>@Model.OrderType.GetServiceRecipientsTitle()</caption>
-            <thead>
-                <tr>
-                    <th>Organisation (ODS code)</th>
-                    <th>Item ID</th>
-                    <th>Planned delivery date</th>
+        @foreach (var recipient in Model.RolledUpRecipientsForItem)
+        {
+            var quantity = recipient.GetQuantityForItem(Model.CatalogueItem.Id);
+            var deliveryDate = recipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
+            var deliveryDateText = deliveryDate.HasValue
+            ? $"{deliveryDate.Value:d MMMM yyyy}"
+            : "No date entered";
 
-                    @if (hasServiceRecipientQuantities)
-                    {
-                        <th class="numeric">Quantity</th>
-                    }
-                </tr>
-            </thead>
-
-            @if (!(Model.RolledUpRecipientsForItem?.Any() ?? false))
-            {
-                <tr>
-                    <td style="column-span: all">No Service Recipients have been entered for this @itemType.</td>
-                </tr>
-            }
-            else
-            {
-                @foreach (var recipient in Model.RolledUpRecipientsForItem)
+            <tr class="alternating">
+            @if (Model.IsAmendment && !Model.OrderType.MergerOrSplit)
                 {
-                    var quantity = recipient.GetQuantityForItem(Model.CatalogueItem.Id);
-                    var deliveryDate = recipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
-                    var deliveryDateText = deliveryDate.HasValue
-                    ? $"{deliveryDate.Value:d MMMM yyyy}"
-                    : "No date entered";
-
-                    <tr class="alternating">
-                        <td>
-                            @($"{recipient.OdsOrganisation.Name} ({recipient.OdsCode})")
-                        </td>
-                        <td>
-                            @($"{Model.CallOffId}-{recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
-                        </td>
-                        <td>
-                            @deliveryDateText
-                        </td>
-
-                        @if (hasServiceRecipientQuantities)
+                    <td>
+                        @if (Model.IsServiceRecipientAdded(recipient.OdsCode))
                         {
-                            <td class="numeric">
-                                @(quantity.HasValue ? $"{quantity:N0}" : "-")
-                            </td>
+                            @("Added")
+                        }
+                    </td>
+                }
+                <td>
+                    @($"{recipient.OdsOrganisation.Name} ({recipient.OdsCode})")
+                </td>
+                <td>
+                    @($"{Model.CallOffId}-{recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
+                </td>
+                <td>
+                    @deliveryDateText
+                </td>
+
+                @if (hasServiceRecipientQuantities)
+                {
+                    <td class="numeric">
+                        @(quantity.HasValue ? $"{quantity:N0}" : "-")
+                    </td>
+                }
+            </tr>
+        }
+    @if (!Model.OrderType.MergerOrSplit && hasServiceRecipientQuantities
+            && Model.RolledUpRecipientsForItem.Count > 1)
+        {
+            <tr class="totals">
+                @if (Model.IsAmendment)
+                {
+                    <td />
+                }
+                <td />
+                <td />
+                <td />
+                <td class="numeric total">
+                    @($"{Model.RolledUpRecipientsForItem.Sum(x => x.GetQuantityForItem(Model.CatalogueItem.Id) ?? 0):N0}")
+                </td>
+            </tr>
+        }
+    }
+</table>
+
+<div class="pdf-container">
+    @{
+        var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
+
+        if (Model.OrderItemPrice?.OrderItemPriceTiers.Any() ?? false)
+        {
+            var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? "one-off";
+
+            <h4>Pricing and quantities</h4>
+            <table>
+                <thead>
+                    <tr>
+                        @if (hasTieredPricing)
+                        {
+                            <th>Pricing tier</th>
+                        }
+                        <th>Price per unit</th>
+                        @if (Model.IsAmendment)
+                        {
+                            <th>Old quantity</th>
+                            <th>New quantity</th>
+                            <th>Old price</th>
+                            <th>New price</th>
+                        }
+                        else
+                        {
+                            <th>Quantity</th>
+                            <th>Total cost</th>
                         }
                     </tr>
-                }
+                <thead>
+                        @{
+                            var rolledUpCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
+                            var previousCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.PreviousTotalQuantity);
+                            @for (var i = 0; i < rolledUpCosts.Count; i++)
+                            {
+                            <tr>
+                                    @if (hasTieredPricing)
+                                    {
+                                    <td>Tier @rolledUpCosts[i].Id</td>
+                                    }
+                                <td>£@rolledUpCosts[i].Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</td>
 
-            }
-        </table>
-    }
-}
-
-@{
-    var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
-
-    if (Model.OrderItemPrice?.OrderItemPriceTiers.Any() ?? false)
-    {
-        var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? "one-off";
-
-        <h4>Pricing and quantities</h4>
-        <table>
-            <thead>
-                <tr>
-                    @if (hasTieredPricing)
-                    {
-                        <th>Pricing tier</th>
-                    }
-                    <th>Price per unit</th>
-                    @if (Model.IsAmendment)
-                    {
-                        <th>Old quantity</th>
-                        <th>New quantity</th>
-                        <th>Old price</th>
-                        <th>New price</th>
-                    }
-                    else
-                    {
-                        <th>Quantity</th>
-                        <th>Total cost</th>
-                    }
-                </tr>
-            <thead>
-                    @{
-                        var rolledUpCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
-                        var previousCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.PreviousTotalQuantity);
-                        @for (var i = 0; i < rolledUpCosts.Count; i++)
-                        {
-                        <tr>
-                                @if (hasTieredPricing)
-                                {
-                                <td>Tier @rolledUpCosts[i].Id</td>
-                                }
-                            <td>£@rolledUpCosts[i].Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</td>
-
-                                @if (Model.IsAmendment)
-                                {
-                                <td>@($"{previousCosts[i].Quantity:N0}")</td>
-                                <td>@($"{rolledUpCosts[i].Quantity:N0}")</td>
-                                <td>£@previousCosts[i].Cost.ToString("N2")</td>
-                                <td>£@rolledUpCosts[i].Cost.ToString("N2")</td>
-                                }
-                                else
-                                {
-                                <td>@($"{rolledUpCosts[i].Quantity:N0}")</td>
-                                <td>£@rolledUpCosts[i].Cost.ToString("N2")</td>
-                                }
-                        </tr>
+                                    @if (Model.IsAmendment)
+                                    {
+                                    <td>@($"{previousCosts[i].Quantity:N0}")</td>
+                                    <td>@($"{rolledUpCosts[i].Quantity:N0}")</td>
+                                    <td>£@previousCosts[i].Cost.ToString("N2")</td>
+                                    <td>£@rolledUpCosts[i].Cost.ToString("N2")</td>
+                                    }
+                                    else
+                                    {
+                                    <td>@($"{rolledUpCosts[i].Quantity:N0}")</td>
+                                    <td>£@rolledUpCosts[i].Cost.ToString("N2")</td>
+                                    }
+                            </tr>
+                            }
                         }
-                    }
-        </table>
+            </table>
+        }
     }
-}
+</div>
 
 <div class="pdf-container">
     <h3>Funding source</h3>
