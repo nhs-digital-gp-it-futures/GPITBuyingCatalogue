@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using BuyingCatalogueFunction.Notifications.Interfaces;
+using BuyingCatalogueFunction.Notifications.Templates;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -98,7 +99,7 @@ namespace BuyingCatalogueFunction.Notifications
             dbContext.SaveChanges();
         }
 
-        private async Task Send(EmailNotification notification, GovNotifyEmailModel details)
+        private async Task Send(EmailNotification notification, GovNotifyEmailTemplate details)
         {
             var id = await emailService.SendEmailAsync(
                 notification.To,
@@ -115,12 +116,12 @@ namespace BuyingCatalogueFunction.Notifications
             await client.SendMessageAsync(Convert.ToBase64String(Encoding.UTF8.GetBytes(message)));
         }
 
-        private GovNotifyEmailModel GetNotificationDetails(EmailNotification notification)
+        private GovNotifyEmailTemplate GetNotificationDetails(EmailNotification notification)
         {
             switch (notification.EmailNotificationType)
             {
                 case EmailNotificationTypeEnum.ContractDueToExpire:
-                    return notification.JsonAs<ContractDueToExpireEmailModel>();
+                    return new ContractDueToExpireEmailTemplate(notification.JsonAs<ContractDueToExpireEmailModel>());
                 default:
                     throw new NoneTransientException($"Unhandled notification type {notification.EmailNotificationType}");
             }

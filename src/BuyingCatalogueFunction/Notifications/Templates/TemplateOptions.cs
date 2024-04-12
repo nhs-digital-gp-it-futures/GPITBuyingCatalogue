@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models
+namespace BuyingCatalogueFunction.Notifications.Templates
 {
     [ExcludeFromCodeCoverage]
     public class TemplateOptions

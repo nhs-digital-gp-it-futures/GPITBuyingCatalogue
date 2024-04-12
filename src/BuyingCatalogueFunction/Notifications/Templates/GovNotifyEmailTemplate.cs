@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models
+namespace BuyingCatalogueFunction.Notifications.Templates
 {
-    public abstract class GovNotifyEmailModel(EmailNotificationTypeEnum notificationType)
+    public abstract class GovNotifyEmailTemplate(EmailNotificationTypeEnum notificationType)
     {
         public EmailNotificationTypeEnum NotificationType { get; set; } = notificationType;
 

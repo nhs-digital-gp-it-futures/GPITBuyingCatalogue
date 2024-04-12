@@ -17,13 +17,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models
         public DateTime Created { get; set; } = DateTime.UtcNow;
 
         public T JsonAs<T>()
-            where T : GovNotifyEmailModel
+            where T : EmailModel
         {
             return System.Text.Json.JsonSerializer.Deserialize<T>(Json);
         }
 
         public void JsonFrom<T>(T obj)
-            where T : GovNotifyEmailModel
+            where T : EmailModel
         {
             EmailNotificationType = obj.NotificationType;
             Json = System.Text.Json.JsonSerializer.Serialize(obj);

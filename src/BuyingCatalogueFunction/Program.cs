@@ -4,6 +4,7 @@ using BuyingCatalogueFunction.EpicsAndCapabilities.Interfaces;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Services;
 using BuyingCatalogueFunction.Notifications.Interfaces;
 using BuyingCatalogueFunction.Notifications.Services;
+using BuyingCatalogueFunction.Notifications.Templates;
 using BuyingCatalogueFunction.Services;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Functions.Worker;
