@@ -2,6 +2,8 @@
 using Azure.Storage.Queues;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Interfaces;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Services;
+using BuyingCatalogueFunction.Notifications.ContractExpiry.Interfaces;
+using BuyingCatalogueFunction.Notifications.ContractExpiry.Services;
 using BuyingCatalogueFunction.Notifications.Interfaces;
 using BuyingCatalogueFunction.Notifications.Services;
 using BuyingCatalogueFunction.Services;

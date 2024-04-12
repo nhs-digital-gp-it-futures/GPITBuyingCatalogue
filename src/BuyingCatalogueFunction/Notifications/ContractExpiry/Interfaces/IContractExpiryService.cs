@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-namespace BuyingCatalogueFunction.Notifications.Interfaces
+namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Interfaces
 {
     public interface IContractExpiryService
     {

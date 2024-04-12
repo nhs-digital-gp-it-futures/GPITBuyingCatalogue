@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using Azure.Storage.Queues;
-using BuyingCatalogueFunction.Notifications.Services;
+using BuyingCatalogueFunction.Notifications.ContractExpiry.Services;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -17,7 +17,7 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Xunit;
 
-namespace BuyingCatalogueFunctionTests.Notifications.Services
+namespace BuyingCatalogueFunctionTests.Notifications.ContractExpiry.Services
 {
     public static class ContractExpiryServiceTests
     {

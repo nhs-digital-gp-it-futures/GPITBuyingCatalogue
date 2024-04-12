@@ -45,23 +45,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public EventTypeEnum DetermineEventToRaise(DateTime date, ICollection<OrderEvent> orderEvents)
         {
-            var result = EventTypeEnum.Nothing;
+            if (!DateTime.HasValue) return EventTypeEnum.Nothing;
 
-            if (DateTime.HasValue)
-            {
-                int remainingDays = RemainingDays(date);
+            int remainingDays = RemainingDays(date);
 
-                if (MaximumTerm >= 3)
-                {
-                    result = DetermineEventToRaiseForThresholds(orderEvents, remainingDays, 90, 45);
-                }
-                else
-                {
-                    result = DetermineEventToRaiseForThresholds(orderEvents, remainingDays, 30, 14);
-                }
-            }
-
-            return result;
+            return MaximumTerm >= 3
+                ? DetermineEventToRaiseForThresholds(orderEvents, remainingDays, 90, 45)
+                : DetermineEventToRaiseForThresholds(orderEvents, remainingDays, 30, 14);
         }
 
         private static EventTypeEnum DetermineEventToRaiseForThresholds(ICollection<OrderEvent> orderEvents, int remainingDays, int firstThreshold, int secondThreshold)
@@ -75,7 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                     ? EventTypeEnum.Nothing
                     : EventTypeEnum.OrderEnteredSecondExpiryThreshold;
             }
-            else if (remainingDays <= firstThreshold)
+
+            if (remainingDays <= firstThreshold)
             {
                 return orderEvents.Any(e => e.EventTypeId == (int)EventTypeEnum.OrderEnteredFirstExpiryThreshold)
                     ? EventTypeEnum.Nothing

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
-using BuyingCatalogueFunction.Notifications.Interfaces;
+using BuyingCatalogueFunction.Notifications.ContractExpiry.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
-namespace BuyingCatalogueFunction.Notifications.Services
+namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Services
 {
     public class ContractExpiryService : IContractExpiryService
     {
@@ -72,10 +72,10 @@ namespace BuyingCatalogueFunction.Notifications.Services
 
             List<AspNetUser> users = await GetUsersForOrganisation(order.OrderingPartyId);
             var notifications = await SaveUserNotifications(date, order, eventType, users, emailPreference);
-            await DisaptchNotifications(order, notifications, eventType);
+            await DispatchNotifications(order, notifications, eventType);
         }
 
-        private async Task DisaptchNotifications(Order order,
+        private async Task DispatchNotifications(Order order,
             List<EmailNotification> notifications,
             EventTypeEnum eventType)
         {
