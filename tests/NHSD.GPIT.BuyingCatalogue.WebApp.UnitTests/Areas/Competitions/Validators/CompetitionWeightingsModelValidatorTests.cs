@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.TaskListModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
 using Xunit;
@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
 public static class CompetitionWeightingsModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NullPriceWeight_SetsModelError(
         CompetitionWeightingsModel model,
         CompetitionWeightingsModelValidator validator)
@@ -23,8 +23,8 @@ public static class CompetitionWeightingsModelValidatorTests
     }
 
     [Theory]
-    [CommonInlineAutoData(25)]
-    [CommonInlineAutoData(95)]
+    [MockInlineAutoData(25)]
+    [MockInlineAutoData(95)]
     public static void Validate_PriceWeightRangeInvalid_SetsModelError(
         int priceWeight,
         CompetitionWeightingsModel model,
@@ -39,7 +39,7 @@ public static class CompetitionWeightingsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_PriceWeightNotDivisibleBy5_SetsModelError(
         CompetitionWeightingsModel model,
         CompetitionWeightingsModelValidator validator)
@@ -53,7 +53,7 @@ public static class CompetitionWeightingsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NullNonPriceWeight_SetsModelError(
         CompetitionWeightingsModel model,
         CompetitionWeightingsModelValidator validator)
@@ -67,8 +67,8 @@ public static class CompetitionWeightingsModelValidatorTests
     }
 
     [Theory]
-    [CommonInlineAutoData(5)]
-    [CommonInlineAutoData(75)]
+    [MockInlineAutoData(5)]
+    [MockInlineAutoData(75)]
     public static void Validate_NonPriceWeightRangeInvalid_SetsModelError(
         int priceWeight,
         CompetitionWeightingsModel model,
@@ -83,7 +83,7 @@ public static class CompetitionWeightingsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NonPriceWeightNotDivisibleBy5_SetsModelError(
         CompetitionWeightingsModel model,
         CompetitionWeightingsModelValidator validator)
@@ -97,7 +97,7 @@ public static class CompetitionWeightingsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_WeightingsTotalsInvalid_SetsModelError(
         CompetitionWeightingsModel model,
         CompetitionWeightingsModelValidator validator)
@@ -114,7 +114,7 @@ public static class CompetitionWeightingsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_Valid_NoModelErrors(
         CompetitionWeightingsModel model,
         CompetitionWeightingsModelValidator validator)
