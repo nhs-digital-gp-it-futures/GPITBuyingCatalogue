@@ -1,0 +1,44 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.YourAccount.ManageEmailPreferencesModel;
+@{
+    Layout = "~/Views/Shared/Layouts/_SideNavigationLayout.cshtml";
+}
+
+<div class="nhsuk-width-container">
+    <main id="maincontent" role="main">
+        <article>
+            <div class="nhsuk-grid-row">
+                <div class="nhsuk-grid-column-full">
+                    <form method="post">
+                        <nhs-card title="Email preferences">
+                            @if (Model.Saved)
+                            {
+                                <div class="filtering-card">
+                                    <p class="info-text">
+                                        Your email preferences have been saved.
+                                    </p>
+                                </div>
+                            }
+                            <p>
+                                Select the email notifications you would like to receive.
+                            </p>
+                            <nhs-checkbox-container class="nhsuk-u-margin-bottom-7">
+                                @foreach (var (emailPreference, i) in Model.EmailPreferences.Select((value, i) => (value, i)))
+                                {
+                                    <input type="hidden" asp-for="@Model.EmailPreferences[i].EmailPreferenceType" />
+                                    <input type="hidden" asp-for="@Model.EmailPreferences[i].DefaultEnabled" />
+                                    <input type="hidden" asp-for="@Model.EmailPreferences[i].UserEnabled" />
+                                    <nhs-checkbox asp-for="@Model.EmailPreferences[i].Enabled"
+                                                  label-text="@Model.GetLabel(emailPreference.EmailPreferenceType)"
+                                                  hint-text="@Model.GetHint(emailPreference.EmailPreferenceType)" />
+                                }
+                            </nhs-checkbox-container>
+                            <nhs-submit-button text="Save preferences" class="nhsuk-u-margin-right-2" />
+                        </nhs-card>
+                    </form>
+                </div>
+            </div>
+        </article>
+    </main>
+</div>
