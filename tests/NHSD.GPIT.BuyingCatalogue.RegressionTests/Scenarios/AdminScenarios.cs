@@ -92,5 +92,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             AdminPages.AddOrganisationUser.NewUserDetails(OrganisationName);
         }
+
+        [Fact]
+        [Trait("ManageSupplier", "Suppliers")]
+        public void AddNewOranisatinSupplier()
+        {
+            AdminPages.AdminDashboard.ManageSupplier();
+
+            AdminPages.ManageOrganisationSupplier.AddSupplierDetails();
+
+            AdminPages.ManageOrganisationSupplier.AddSupplilerAddress();
+
+            AdminPages.ManageOrganisationSupplier.AddSupplierContactDetails();
+
+            AdminPages.ManageOrganisationSupplier.AddSupplierStatus();
+        }
     }
 }
