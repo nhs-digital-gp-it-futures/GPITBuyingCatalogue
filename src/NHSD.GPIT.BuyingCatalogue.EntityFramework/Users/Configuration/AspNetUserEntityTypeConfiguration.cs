@@ -58,6 +58,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Configuration
 
             builder.Property(u => u.AcceptedTermsOfUseDate);
             builder.Property(u => u.HasOptedInUserResearch);
+
+            builder.HasMany(x => x.Events)
+                .WithOne()
+                .HasForeignKey(x => x.UserId);
         }
     }
 }

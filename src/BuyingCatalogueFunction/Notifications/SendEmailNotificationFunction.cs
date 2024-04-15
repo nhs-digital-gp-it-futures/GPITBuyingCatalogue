@@ -114,15 +114,15 @@ namespace BuyingCatalogueFunction.Notifications
             await client.SendMessageAsync(Convert.ToBase64String(Encoding.UTF8.GetBytes(message)));
         }
 
-        private GovNotifyEmailModel GetNotificationDetails(EmailNotification notification)
+        private static GovNotifyEmailModel GetNotificationDetails(EmailNotification notification)
         {
-            switch (notification.EmailNotificationType)
+            return notification.EmailNotificationType switch
             {
-                case EmailNotificationTypeEnum.ContractDueToExpire:
-                    return notification.JsonAs<ContractDueToExpireEmailModel>();
-                default:
-                    throw new NoneTransientException($"Unhandled notification type {notification.EmailNotificationType}");
-            }
+                EmailNotificationTypeEnum.ContractDueToExpire => notification.JsonAs<ContractDueToExpireEmailModel>(),
+                EmailNotificationTypeEnum.PasswordDueToExpire => notification.JsonAs<PasswordDueToExpireEmailModel>(),
+                _ => throw new NoneTransientException(
+                    $"Unhandled notification type {notification.EmailNotificationType}")
+            };
         }
     }
 }

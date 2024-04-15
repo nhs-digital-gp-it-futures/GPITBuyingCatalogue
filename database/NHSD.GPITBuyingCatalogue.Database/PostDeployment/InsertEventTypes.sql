@@ -2,7 +2,10 @@ MERGE INTO [notifications].[EventTypes] AS TARGET
 USING (
 VALUES 
     (1, 'OrderEnteredFirstExpiryThreshold', 1),
-    (2, 'OrderEnteredSecondExpiryThreshold', 1)
+    (2, 'OrderEnteredSecondExpiryThreshold', 1),
+    (3, 'PasswordEnteredFirstExpiryThreshold', 2),
+    (4, 'PasswordEnteredSecondExpiryThreshold', 2),
+    (5, 'PasswordEnteredThirdExpiryThreshold', 2)
 )
 
 AS SOURCE ([Id], [Name], [EmailPreferenceTypeId])

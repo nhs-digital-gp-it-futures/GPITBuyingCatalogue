@@ -5,6 +5,8 @@ using BuyingCatalogueFunction.EpicsAndCapabilities.Services;
 using BuyingCatalogueFunction.Notifications.ContractExpiry.Interfaces;
 using BuyingCatalogueFunction.Notifications.ContractExpiry.Services;
 using BuyingCatalogueFunction.Notifications.Interfaces;
+using BuyingCatalogueFunction.Notifications.PasswordExpiry.Interfaces;
+using BuyingCatalogueFunction.Notifications.PasswordExpiry.Services;
 using BuyingCatalogueFunction.Notifications.Services;
 using BuyingCatalogueFunction.Services;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -46,10 +48,7 @@ public static class Program
             .ConfigureServices((context, services) =>
             {
                 var configuration = context.Configuration;
-                services.Configure<TemplateOptions>(options =>
-                {
-                    options.ContractExpiryTemplateId = configuration.GetValue<string>("TEMPLATE:CONTRACT_EXPIRY_TEMPLATE_ID");
-                });
+                services.Configure<TemplateOptions>(configuration.GetSection("template"));
 
                 services.Configure<QueueOptions>(options =>
                 {
@@ -70,6 +69,8 @@ public static class Program
                 services.AddTransient<IEpicService, EpicService>();
                 services.AddTransient<IStandardService, StandardService>();
                 services.AddTransient<IStandardCapabilityService, StandardCapabilityService>();
+                services.AddTransient<IPasswordExpiryService, PasswordExpiryService>();
+                services.AddTransient<IEmailPreferenceService, EmailPreferenceService>();
 
                 services.AddDbContext<BuyingCatalogueDbContext>((_, options) =>
                 {

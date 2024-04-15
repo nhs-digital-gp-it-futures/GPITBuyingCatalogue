@@ -112,11 +112,12 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Services
 
             foreach (var user in users)
             {
-                if (await ShouldSendBasedOnUserPreferences(emailPreferenceType, user))
-                {
-                    notifications.Add(CreateNotificationForUser(user, order.CallOffId, order.EndDate.RemainingDays(date)));
-                }
+                if (!(await ShouldSendBasedOnUserPreferences(emailPreferenceType, user)))
+                    continue;
+
+                notifications.Add(CreateNotificationForUser(user, order.CallOffId, order.EndDate.RemainingDays(date)));
             }
+
             dbContext.AddRange(notifications);
             await dbContext.SaveChangesAsync();
 

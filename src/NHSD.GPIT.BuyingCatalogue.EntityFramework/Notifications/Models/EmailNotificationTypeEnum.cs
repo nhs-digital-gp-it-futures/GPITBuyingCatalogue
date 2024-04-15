@@ -3,5 +3,6 @@
     public enum EmailNotificationTypeEnum
     {
         ContractDueToExpire = 1,
+        PasswordDueToExpire,
     }
 }
