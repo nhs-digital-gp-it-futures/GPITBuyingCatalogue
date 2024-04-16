@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
                 .Select(x => x.Event)
                 .FirstOrDefault();
 
-            return Events.Any(x => x.EventTypeId == (int)eventToRaise)
+            return Events.Any(x => x.EventTypeId == (int)eventToRaise) || remaining == 0
                 ? EventTypeEnum.Nothing
                 : eventToRaise;
         }

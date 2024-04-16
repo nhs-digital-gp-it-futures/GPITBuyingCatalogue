@@ -103,7 +103,8 @@ public class PasswordExpiryService : IPasswordExpiryService
         if (dbContext.Database.IsSqlServer())
             query = query
                 .Where(x =>
-                    EF.Functions.DateDiffDay(today, x.PasswordUpdatedDate.AddYears(1)) <= highestThreshold);
+                    EF.Functions.DateDiffDay(today, x.PasswordUpdatedDate.AddYears(1)) <= highestThreshold
+                    && EF.Functions.DateDiffDay(today, x.PasswordUpdatedDate.AddYears(1)) > 0);
 
         return query;
     }
