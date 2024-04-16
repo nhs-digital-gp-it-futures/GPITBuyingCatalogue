@@ -17,7 +17,7 @@ namespace BuyingCatalogueFunction.Notifications.PasswordExpiry.Services;
 
 public class PasswordExpiryService : IPasswordExpiryService
 {
-    private readonly QueueOptions options;
+    private readonly IOptions<QueueOptions> options;
     private readonly QueueServiceClient queueServiceClient;
     private readonly BuyingCatalogueDbContext dbContext;
     private readonly ILogger<PasswordExpiryService> logger;
@@ -28,16 +28,17 @@ public class PasswordExpiryService : IPasswordExpiryService
         QueueServiceClient queueServiceClient,
         ILogger<PasswordExpiryService> logger)
     {
-        this.dbContext = dbContext;
-        this.options = options.Value;
-        this.queueServiceClient = queueServiceClient;
-        this.logger = logger;
+        this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        this.options = options ?? throw new ArgumentNullException(nameof(options));
+        this.queueServiceClient = queueServiceClient ?? throw new ArgumentNullException(nameof(queueServiceClient));
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<ICollection<AspNetUser>> GetUsersNearingPasswordExpiry(DateTime today)
     {
         var query = dbContext.Users.Include(x => x.Events).Where(
-            x => !(x.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.PasswordEnteredFirstExpiryThreshold) &&
+            x => !x.Disabled &&
+                 !(x.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.PasswordEnteredFirstExpiryThreshold) &&
                    x.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.PasswordEnteredSecondExpiryThreshold) &&
                    x.Events.Any(y => y.EventTypeId == (int)EventTypeEnum.PasswordEnteredThirdExpiryThreshold)));
 
@@ -48,15 +49,17 @@ public class PasswordExpiryService : IPasswordExpiryService
 
     public async Task Raise(DateTime date, AspNetUser user, EventTypeEnum eventType)
     {
-        user.Events.Add(new AspNetUserEvent((int)eventType));
+        dbContext.Attach(user);
 
-        var notification = await CreateNotification(date, user);
+        var notification = await CreateNotification(date, user, eventType);
 
         await DispatchNotification(user, notification, eventType);
     }
 
-    private async Task<EmailNotification> CreateNotification(DateTime date, AspNetUser user)
+    private async Task<EmailNotification> CreateNotification(DateTime date, AspNetUser user, EventTypeEnum eventType)
     {
+        user.Events.Add(new AspNetUserEvent((int)eventType));
+
         var notification = new EmailNotification { To = user.Email };
 
         notification.JsonFrom(new PasswordDueToExpireEmailModel
@@ -77,7 +80,8 @@ public class PasswordExpiryService : IPasswordExpiryService
         EmailNotification notification,
         EventTypeEnum eventType)
     {
-        var client = queueServiceClient.GetQueueClient(options.SendEmailNotifications);
+        var queueName = options.Value.SendEmailNotifications;
+        var client = queueServiceClient.GetQueueClient(queueName);
 
         try
         {
@@ -88,7 +92,8 @@ public class PasswordExpiryService : IPasswordExpiryService
             logger.LogError(
                 e,
                 "Password Expiry: {UserId}, {EventType} - Notifications saved but problem dispatching to queue {Queue}",
-                user.Id, eventType, options.SendEmailNotifications);
+                user.Id, eventType, queueName);
+            throw;
         }
     }
 

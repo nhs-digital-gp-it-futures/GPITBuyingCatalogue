@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
@@ -10,16 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
     [Serializable]
     public sealed class AspNetUser : IdentityUser<int>, IAudited
     {
-        public static class ExpiryThresholds
-        {
-            public static List<(int Threshold, EventTypeEnum Event)> ThresholdsMap = new()
-            {
-                (30, EventTypeEnum.PasswordEnteredFirstExpiryThreshold),
-                (14, EventTypeEnum.PasswordEnteredSecondExpiryThreshold),
-                (1, EventTypeEnum.PasswordEnteredThirdExpiryThreshold),
-            };
-        }
-
         public AspNetUser()
         {
             AspNetUserClaims = new HashSet<AspNetUserClaim>();
@@ -77,15 +68,27 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
         public EventTypeEnum DetermineEventToRaise(DateTime today)
         {
             var remaining = RemainingPasswordExpiryDays(today);
+            if (remaining == 0) return EventTypeEnum.Nothing;
 
             var eventToRaise = ExpiryThresholds.ThresholdsMap.OrderBy(x => x.Threshold)
                 .Where(x => remaining <= x.Threshold)
                 .Select(x => x.Event)
                 .FirstOrDefault();
 
-            return Events.Any(x => x.EventTypeId == (int)eventToRaise) || remaining == 0
+            return Events.Any(x => x.EventTypeId == (int)eventToRaise)
                 ? EventTypeEnum.Nothing
                 : eventToRaise;
+        }
+
+        [ExcludeFromCodeCoverage]
+        public static class ExpiryThresholds
+        {
+            public static List<(int Threshold, EventTypeEnum Event)> ThresholdsMap => new()
+            {
+                (30, EventTypeEnum.PasswordEnteredFirstExpiryThreshold),
+                (14, EventTypeEnum.PasswordEnteredSecondExpiryThreshold),
+                (1, EventTypeEnum.PasswordEnteredThirdExpiryThreshold),
+            };
         }
     }
 }

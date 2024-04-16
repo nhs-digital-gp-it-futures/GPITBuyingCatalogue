@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using BuyingCatalogueFunction.Notifications.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -13,7 +14,7 @@ public class EmailPreferenceService : IEmailPreferenceService
     public EmailPreferenceService(
         BuyingCatalogueDbContext dbContext)
     {
-        this.dbContext = dbContext;
+        this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
     public async Task<bool> ShouldTriggerForUser(EmailPreferenceType emailPreferenceType, int userId)
