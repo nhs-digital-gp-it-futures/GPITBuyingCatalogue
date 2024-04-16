@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using BuyingCatalogueFunction.Notifications.ContractExpiry.Interfaces;
+using BuyingCatalogueFunction.Notifications.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -22,17 +23,20 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Services
         private readonly QueueOptions options;
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly QueueServiceClient queueServiceClient;
+        private readonly IEmailPreferenceService emailPreferenceService;
 
         public ContractExpiryService(
             ILogger<ContractExpiryService> logger,
             IOptions<QueueOptions> options,
             BuyingCatalogueDbContext dbContext,
-            QueueServiceClient queueServiceClient)
+            QueueServiceClient queueServiceClient,
+            IEmailPreferenceService emailPreferenceService)
         {
             this.dbContext = dbContext;
             this.options = options.Value;
             this.queueServiceClient = queueServiceClient;
             this.logger = logger;
+            this.emailPreferenceService = emailPreferenceService;
         }
 
         public async Task<List<Order>> GetOrdersNearingExpiry(DateTime today)
@@ -56,14 +60,6 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Services
                 .GroupBy(x => x.OrderNumber)
                 .SelectMany(x => x.OrderByDescending(y => y.Revision).Take(1))
                 .ToList();
-        }
-
-        public async Task<EmailPreferenceType> GetDefaultEmailPreference(EventTypeEnum eventType)
-        {
-            return (await dbContext
-                .EventTypes
-                .Include(e => e.EmailPreferenceType)
-                .FirstOrDefaultAsync(u => u.Id == (int)eventType))?.EmailPreferenceType;
         }
 
         public async Task RaiseExpiry(DateTime date, Order order, EventTypeEnum eventType, EmailPreferenceType emailPreference)
@@ -112,7 +108,8 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Services
 
             foreach (var user in users)
             {
-                if (!(await ShouldSendBasedOnUserPreferences(emailPreferenceType, user)))
+                var shouldProcess = await emailPreferenceService.ShouldTriggerForUser(emailPreferenceType, user.Id);
+                if (!shouldProcess)
                     continue;
 
                 notifications.Add(CreateNotificationForUser(user, order.CallOffId, order.EndDate.RemainingDays(date)));
@@ -122,18 +119,6 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Services
             await dbContext.SaveChangesAsync();
 
             return notifications;
-        }
-
-        private async Task<bool> ShouldSendBasedOnUserPreferences(
-            EmailPreferenceType emailPreferenceType,
-            AspNetUser user)
-        {
-            var userPreference = await dbContext
-                .UserEmailPreferences
-                .FirstOrDefaultAsync(u => u.EmailPreferenceTypeId == emailPreferenceType.Id
-                    && u.UserId == user.Id);
-
-            return userPreference?.Enabled ?? emailPreferenceType.DefaultEnabled;
         }
 
         private async Task<List<AspNetUser>> GetUsersForOrganisation(int organisationId)

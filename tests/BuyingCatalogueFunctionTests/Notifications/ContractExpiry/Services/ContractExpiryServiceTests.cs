@@ -5,6 +5,7 @@ using AutoFixture;
 using AutoFixture.Xunit2;
 using Azure.Storage.Queues;
 using BuyingCatalogueFunction.Notifications.ContractExpiry.Services;
+using BuyingCatalogueFunction.Notifications.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -146,30 +147,6 @@ namespace BuyingCatalogueFunctionTests.Notifications.ContractExpiry.Services
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async Task GetDefaultEmailPreference_Returns_Null(
-            ContractExpiryService service)
-        {
-            var emailPreference = await service.GetDefaultEmailPreference(EventTypeEnum.OrderEnteredFirstExpiryThreshold);
-            emailPreference.Should().BeNull();
-        }
-
-        [Theory]
-        [MockInMemoryDbAutoData]
-        public static async Task GetDefaultEmailPreference_Returns_Expected(
-            ContractExpiryService service,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            EventType eventType)
-        {
-            dbContext.EventTypes.Add(eventType);
-            dbContext.SaveChanges();
-            dbContext.ChangeTracker.Clear();
-
-            var emailPreference = await service.GetDefaultEmailPreference((EventTypeEnum)eventType.Id);
-            emailPreference.Should().NotBeNull();
-        }
-
-        [Theory]
-        [MockInMemoryDbAutoData]
         public static async Task RaiseExpiry_Adds_OrderEvent(
             DateTime date,
             EventTypeEnum eventType,
@@ -210,11 +187,13 @@ namespace BuyingCatalogueFunctionTests.Notifications.ContractExpiry.Services
             [Frozen] IOptions<QueueOptions> options,
             [Frozen] QueueServiceClient queueServiceClient,
             [Frozen] QueueClient queueClient,
+            [Frozen] IEmailPreferenceService emailPreferenceService,
             IFixture fixture)
         {
             options.Value.Returns(new QueueOptions());
             queueClient.SendMessageAsync(Arg.Any<string>()).ThrowsAsync(new Exception());
             queueServiceClient.GetQueueClient(Arg.Any<string>()).Returns(queueClient);
+            emailPreferenceService.ShouldTriggerForUser(emailPreferenceType, user.Id).Returns(true);
 
             var service = fixture.Create<ContractExpiryService>();
 
