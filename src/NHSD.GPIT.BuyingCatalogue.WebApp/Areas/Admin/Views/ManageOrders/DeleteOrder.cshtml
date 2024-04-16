@@ -4,6 +4,8 @@
         ? "amendment"
         : "order";
 
+    ViewBag.Title = $"Are you sure you want to delete this {orderOrAmendment}?";
+
     var warningDetail = Model.IsAmendment
         ? "Deleting an amendment is permanent and any information already changed will be lost. The order will revert to its previous version."
         : "Deleting an order will remove it from the buyer’s orders dashboard permanently. It will still be visible on your orders dashboard with a status of deleted, but you’ll not be able to change the order status back once deleted.";
@@ -14,7 +16,7 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary />
-            <nhs-page-title title="Are you sure you want to delete this @orderOrAmendment?"
+            <nhs-page-title title="@ViewBag.Title"
                             caption="Order @Model.CallOffId"
                             advice="Provide details for the person who requested that this @orderOrAmendment be deleted and the person who approved it." />
 

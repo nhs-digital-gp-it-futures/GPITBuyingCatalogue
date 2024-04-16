@@ -8,7 +8,7 @@
     var contractTerm = Model.Order.MaximumTerm.HasValue
         ? $"({Model.Order.MaximumTerm.Value} months)"
         : "(estimated)";
-    var title = Model.Order.OrderStatus == OrderStatus.Terminated ? "Terminated contract details" : "Call-off Order Form";
+    ViewBag.Title = Model.Order.OrderStatus == OrderStatus.Terminated ? "Terminated contract details" : "Call-off Order Form";
 }
 
 <!DOCTYPE html>
@@ -171,7 +171,7 @@
         <main class="nhsuk-main-wrapper" id="maincontent">
             <div class="nhsuk-grid-row">
                 <div class="nhsuk-grid-column-full">
-                    <nhs-page-title title="@title"
+                    <nhs-page-title title="@ViewBag.Title"
                                     caption="Order @Model.Order.CallOffId" />
 
                     <pdf-summary-list>
@@ -598,7 +598,7 @@
 
                             <div class="nhsuk-grid-row">
                                 <div class="nhsuk-grid-column-full">
-                                    <nhs-page-title title="@(Model.RolledUp.GetSolutions().Count() > 1 ? "Service Level Agreements" : "Service Level Agreement")"/>
+                                    <nhs-page-title title="@(Model.RolledUp.GetSolutions().Count() > 1 ? "Service Level Agreements" : "Service Level Agreement")" />
                                 </div>
                             </div>
 
@@ -611,7 +611,7 @@
                                 else
                                 {
                                     <p>No service level agreement in place for @solution.CatalogueItem.Name</p>
-                                }   
+                                }
                             }
                         }
 
@@ -620,7 +620,7 @@
                         <div class="nhsuk-grid-row">
                             <div class="nhsuk-grid-column-full">
                                 <nhs-page-title title="Signatures"
-                                                caption="Order @Model.Order.CallOffId"/>
+                                                caption="Order @Model.Order.CallOffId" />
                             </div>
                         </div>
                         <p>Both parties are entering into a Call-off Agreement in accordance with the provisions of the framework being procured from.</p>

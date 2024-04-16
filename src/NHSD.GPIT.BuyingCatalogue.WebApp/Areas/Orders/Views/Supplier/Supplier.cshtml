@@ -1,5 +1,8 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier.SupplierModel;
+@{
+    ViewBag.Title = Model.Title;
+}
 
 <div data-test-id="supplier-page">
     <partial name="Partials/_BackLink" model="Model" />
