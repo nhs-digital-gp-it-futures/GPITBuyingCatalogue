@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -163,6 +164,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public DbSet<CompetitionRecipient> CompetitionRecipients { get; set; }
 
         public DbSet<SolutionScore> CompetitionSolutionScores { get; set; }
+
+        public DbSet<EmailNotification> EmailNotifications { get; set; }
+
+        public DbSet<ContractOrderNumber> OrderNumbers { get; set; }
+
+        public DbSet<EventType> EventTypes { get; set; }
+
+        public DbSet<EmailPreferenceType> EmailPreferenceTypes { get; set; }
+
+        public DbSet<UserEmailPreference> UserEmailPreferences { get; set; }
 
         public async Task<Order> Order(CallOffId callOffId)
         {

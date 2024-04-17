@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using Xunit;
 
@@ -19,12 +21,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
         }
 
         [Fact]
-        public static void EndDate_Required_For_RemainingTerm()
+        public static void EndDate_Required_For_RemainingTermInMonths()
         {
             var maximumTerm = 36;
             var commencementDate = (DateTime?)null;
             var endDate = new EndDate(commencementDate, maximumTerm);
-            endDate.Invoking(e => e.RemainingTerm(DateTime.Now))
+            endDate.Invoking(e => e.RemainingTermInMonths(DateTime.Now))
+                .Should()
+                .Throw<InvalidOperationException>();
+        }
+
+        [Fact]
+        public static void EndDate_Required_For_RemainingDays()
+        {
+            var maximumTerm = 36;
+            var commencementDate = (DateTime?)null;
+            var endDate = new EndDate(commencementDate, maximumTerm);
+            endDate.Invoking(e => e.RemainingDays(DateTime.Now))
                 .Should()
                 .Throw<InvalidOperationException>();
         }
@@ -56,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
             var commencementDate = new DateTime(2000, 2, 24);
             var endDate = new EndDate(commencementDate, maximumTerm);
 
-            endDate.RemainingTerm(new DateTime(year, month, day)).Should().Be(remainingTerm);
+            endDate.RemainingTermInMonths(new DateTime(year, month, day)).Should().Be(remainingTerm);
         }
 
         [Theory]
@@ -72,7 +85,99 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
             var commencementDate = new DateTime(2000, 1, 1);
             var endDate = new EndDate(commencementDate, maximumTerm);
 
-            endDate.RemainingTerm(new DateTime(year, month, day)).Should().Be(remainingTerm);
+            endDate.RemainingTermInMonths(new DateTime(year, month, day)).Should().Be(remainingTerm);
+        }
+
+        [Theory]
+        [InlineAutoData(2000, 2, 1, 0)]
+        [InlineAutoData(2000, 1, 31, 0)]
+        [InlineAutoData(2000, 1, 30, 1)]
+        public static void RemainingDays(int year, int month, int day, int remainingDays)
+        {
+            var maximumTerm = 1;
+            var commencementDate = new DateTime(2000, 1, 1);
+            var endDate = new EndDate(commencementDate, maximumTerm);
+
+            endDate.RemainingDays(new DateTime(year, month, day)).Should().Be(remainingDays);
+        }
+
+        [Theory]
+        [InlineAutoData(2000, 2, 1, 0, EventTypeEnum.Nothing)]
+        [InlineAutoData(2000, 1, 31, 0, EventTypeEnum.Nothing)]
+        [InlineAutoData(2000, 1, 30, 1, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
+        [InlineAutoData(2000, 1, 17, 14, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
+        [InlineAutoData(2000, 1, 16, 15, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
+        [InlineAutoData(2000, 1, 1, 30, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
+        [InlineAutoData(1999, 12, 31, 31, EventTypeEnum.Nothing)]
+        public static void RemainingDays_ShortTerm_DetermineEventToRaise(
+            int year,
+            int month,
+            int day,
+            int remainingDays,
+            EventTypeEnum eventTypeEnum)
+        {
+            var maximumTerm = 1;
+            var commencementDate = new DateTime(2000, 1, 1);
+            var endDate = new EndDate(commencementDate, maximumTerm);
+
+            endDate.RemainingDays(new DateTime(year, month, day)).Should().Be(remainingDays);
+            endDate.DetermineEventToRaise(new DateTime(year, month, day), new List<OrderEvent>()).Should().Be(eventTypeEnum);
+        }
+
+        [Theory]
+        [InlineAutoData(2000, 4, 1, 0, EventTypeEnum.Nothing)]
+        [InlineAutoData(2000, 3, 31, 0, EventTypeEnum.Nothing)]
+        [InlineAutoData(2000, 3, 30, 1, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
+        [InlineAutoData(2000, 2, 15, 45, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
+        [InlineAutoData(2000, 2, 14, 46, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
+        [InlineAutoData(2000, 1, 1, 90, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
+        [InlineAutoData(1999, 12, 31, 91, EventTypeEnum.Nothing)]
+        public static void RemainingDays_LongTerm_DetermineEventToRaise(
+            int year,
+            int month,
+            int day,
+            int remainingDays,
+            EventTypeEnum eventTypeEnum)
+        {
+            var maximumTerm = 3;
+            var commencementDate = new DateTime(2000, 1, 1);
+            var endDate = new EndDate(commencementDate, maximumTerm);
+
+            endDate.RemainingDays(new DateTime(year, month, day)).Should().Be(remainingDays);
+            endDate.DetermineEventToRaise(new DateTime(year, month, day), new List<OrderEvent>()).Should().Be(eventTypeEnum);
+        }
+
+        [Theory]
+        [InlineAutoData(2000, 2, 1, 0)]
+        [InlineAutoData(2000, 1, 31, 0)]
+        [InlineAutoData(2000, 1, 30, 1)]
+        [InlineAutoData(2000, 1, 17, 14)]
+        [InlineAutoData(2000, 1, 16, 15)]
+        [InlineAutoData(2000, 1, 1, 30)]
+        [InlineAutoData(1999, 12, 31, 31)]
+        public static void RemainingDays_DetermineEventToRaise_Suppress(
+            int year,
+            int month,
+            int day,
+            int remainingDays,
+            OrderEvent orderEvent1,
+            OrderEvent orderEvent2)
+        {
+            var maximumTerm = 1;
+            var commencementDate = new DateTime(2000, 1, 1);
+            var endDate = new EndDate(commencementDate, maximumTerm);
+
+            orderEvent1.EventTypeId = (int)EventTypeEnum.OrderEnteredFirstExpiryThreshold;
+            orderEvent2.EventTypeId = (int)EventTypeEnum.OrderEnteredSecondExpiryThreshold;
+
+            var orderEvents = new List<OrderEvent>
+            {
+                orderEvent1,
+                orderEvent2,
+            };
+
+            endDate.RemainingDays(new DateTime(year, month, day)).Should().Be(remainingDays);
+            endDate.DetermineEventToRaise(new DateTime(year, month, day), orderEvents).Should().Be(EventTypeEnum.Nothing);
         }
     }
 }

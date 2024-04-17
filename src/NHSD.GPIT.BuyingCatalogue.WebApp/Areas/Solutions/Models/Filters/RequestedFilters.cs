@@ -20,16 +20,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public int FilterCount => GetFiltersArray().Count(f => !string.IsNullOrWhiteSpace(f));
 
-        private string[] GetFiltersArray() =>
-            [
-                Selected,
-                SelectedFrameworkId,
-                SelectedApplicationTypeIds,
-                SelectedHostingTypeIds,
-                SelectedIM1Integrations,
-                SelectedGPConnectIntegrations,
-                SelectedInteroperabilityOptions];
-
         public Dictionary<int, string[]> GetCapabilityAndEpicIds() => SolutionsFilterHelper.ParseCapabilityAndEpicIds(Selected);
 
         public object ToRouteValues(int? page = null) => new
@@ -45,5 +35,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             sortBy = SortBy,
             page = page ?? 1,
         };
+
+        private string[] GetFiltersArray() =>
+            [
+                Selected,
+                SelectedFrameworkId,
+                SelectedApplicationTypeIds,
+                SelectedHostingTypeIds,
+                SelectedIM1Integrations,
+                SelectedGPConnectIntegrations,
+                SelectedInteroperabilityOptions];
     }
 }

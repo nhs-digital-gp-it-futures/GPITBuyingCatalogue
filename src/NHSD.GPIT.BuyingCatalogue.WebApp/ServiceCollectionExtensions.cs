@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using Azure.Storage.Queues;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -373,6 +374,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddSingleton(settings);
             services.AddScoped<BlobServiceClient>(_ => new(settings.ConnectionString));
+        }
+
+        public static void ConfigureQueueStorage(this IServiceCollection services, IConfiguration configuration)
+        {
+            var settings = configuration.GetSection("AzureBlobSettings").Get<AzureBlobSettings>();
+
+            services.AddSingleton(settings);
+            services.AddScoped<QueueServiceClient>(_ => new(settings.ConnectionString));
         }
 
         public static IServiceCollection ConfigureRecaptcha(this IServiceCollection services, IConfiguration configuration)

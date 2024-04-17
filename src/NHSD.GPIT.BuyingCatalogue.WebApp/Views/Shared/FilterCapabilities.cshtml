@@ -1,10 +1,11 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.FilterCapabilitiesModel
-
 @{
     if (Model.IsFilter)
     {
         Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
     }
+    var PageTitle = Model.GetPageTitle();
+    ViewBag.Title = PageTitle.Title;
 }
 
 <partial name="Partials/_BackLink" model="Model.NavModel" />
@@ -12,9 +13,6 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
-        @{
-            var PageTitle = Model.GetPageTitle();
-        }
         <nhs-page-title model="@PageTitle" />
 
         <form method="post">

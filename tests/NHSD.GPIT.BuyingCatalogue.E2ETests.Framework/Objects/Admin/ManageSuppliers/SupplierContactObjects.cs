@@ -30,5 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ManageSuppl
         public static By NoReferencingSolutionsInset => ByExtensions.DataTestId("no-related-solutions-inset");
 
         public static By DeleteLink => By.LinkText("Delete contact");
+
+        public static By AddContact => By.LinkText("Add a contact");
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -191,6 +189,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         {
             var oranisation = await GetUserOrganisation();
             var filter = await manageFiltersService.GetFilterDetails(oranisation.Id, filterId);
+            if (filter == null)
+            {
+                return RedirectToAction(
+                   nameof(Index),
+                   typeof(ManageFiltersController).ControllerName());
+            }
+
             var model = new DeleteFilterModel(filter.Id, filter.Name)
             {
                 BackLink = Url.Action(nameof(FilterDetails), new { filterId }),

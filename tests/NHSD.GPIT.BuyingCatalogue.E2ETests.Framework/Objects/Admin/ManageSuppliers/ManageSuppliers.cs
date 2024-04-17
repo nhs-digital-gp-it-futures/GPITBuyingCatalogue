@@ -74,6 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ManageSuppl
 
         public static By DeleteSupplierContactCancelLink => By.LinkText("Cancel");
 
+        public static By AddASupplierLink => By.LinkText("Add a supplier");
+
         public static By SearchBar => By.Id("suppliers-suggestion-search");
 
         public static By SearchListBox => By.Id("suppliers-suggestion-search__listbox");

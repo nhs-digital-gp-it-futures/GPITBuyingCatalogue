@@ -15,12 +15,39 @@
 <nhs-card>
     <div class="nhsuk-u-clear">
         <h2 class="nhsuk-card__heading nhsuk-heading-s bc-u-block-float-left">@(Model.PageOptions.TotalNumberOfItems) solutions@(suffix)</h2>
-        <div style="float: right" id="solution-sort-container"></div>
+        @if (Model.CatalogueItems.Count != 0)
+        {
+            <div style="float: right" id="solution-sort-container"></div>
+        }
     </div>
-
-    @if (!Model.FilterResultView)
+    
+    @if (Model.CatalogueItems.Count == 0)
     {
-        if (Model.Filters.SearchCriteriaApplied)
+        @if (Model.FilterResultView)
+        {
+            <p>
+                You'll need to use a different filter.
+            </p>
+        }
+        else
+        {
+            if (Model.Filters.SearchCriteriaApplied)
+            {
+                <a asp-area="@typeof(SolutionsController).AreaName()"
+                   asp-controller="@typeof(SolutionsController).ControllerName()"
+                   asp-action="@nameof(SolutionsController.Index)">
+                    Clear all filters
+                </a>
+                <hr class="nhsuk-section-break--xl nhsuk-u-padding-top-0 nhsuk-u-margin-top-3 nhsuk-u-padding-bottom-0 nhsuk-u-margin-bottom-3" />
+                <p class="info-text">
+                    There were no Catalogue Solutions found with this search criteria. Try changing the filters you've selected.
+                </p>
+            }
+        }
+    }
+    else
+    {
+        @if (!Model.FilterResultView && Model.Filters.SearchCriteriaApplied)
         {
             <a asp-area="@typeof(SolutionsController).AreaName()"
                asp-controller="@typeof(SolutionsController).ControllerName()"
@@ -31,27 +58,17 @@
                 <p class="info-text">
                     Once you’re happy with your results, you can save your filters to create a shortlist. The shortlist can then be used to carry out a competition.
                 </p>
-                <nhs-submit-button form="filters" class="nhsuk-button--reverse" text="Save filters" formaction="@Url.Action(nameof(ManageFiltersController.SaveFilter), typeof(ManageFiltersController).ControllerName())" />
+                <nhs-submit-button form="filters" class="nhsuk-button--reverse nhsuk-u-margin-top-2" text="Save filters" formaction="@Url.Action(nameof(ManageFiltersController.SaveFilter), typeof(ManageFiltersController).ControllerName())" />
             </div>
         }
-    }
-    @if (Model.CatalogueItems.Count == 0)
-    {
-        if (Model.FilterResultView)
-        {
-            <p>
-                You'll need to use a different filter.
-            </p>
-        }
-    }
-    else
-    {
-        <hr class="nhsuk-section-break--s" />
+
+        <hr class="nhsuk-section-break--s"/>
         @foreach (var item in Model.CatalogueItems)
         {
-            <partial name="_SolutionSearchDisplay" model="@(new SolutionSearchResultModel(item, false))" />
+            <partial name="_SolutionSearchDisplay" model="@(new SolutionSearchResultModel(item, false))"/>
         }
     }
+    
     <nhs-page-number-pagination
         next-url="@(Url.Action(
                     nameof(SolutionsController.Index),
