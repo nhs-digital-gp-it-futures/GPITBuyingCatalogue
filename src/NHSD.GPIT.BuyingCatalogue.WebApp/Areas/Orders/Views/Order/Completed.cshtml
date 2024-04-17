@@ -2,6 +2,8 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.CompletedModel
 
 @{
+    ViewBag.Title = "Order completed";
+
     var returnUrl = Url.Action(
         nameof(DashboardController.Organisation),
         typeof(DashboardController).ControllerName(),
@@ -17,7 +19,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="Order completed"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
                         advice="You’ve successfully completed your Call-off Order Form. Make sure you carry out the listed tasks where relevant to finalise your procurement." />
 

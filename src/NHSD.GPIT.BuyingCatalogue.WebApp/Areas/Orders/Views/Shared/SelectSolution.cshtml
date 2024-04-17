@@ -1,31 +1,32 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared.SelectSolutionModel;
+@{
+    string title, advice, caption;
+    if (Model.OrderType.AssociatedServicesOnly)
+    {
+        title = "Which Catalogue Solution does the service help implement?";
+        advice = Model.CatalogueSolutions.Count > 1
+                    ? "Select the Catalogue Solution the Associated Service you want to order supports."
+                    : "There is only one solution with this type of Associated Service.";
+        caption = $"Order {Model.CallOffId}";
+    }
+    else
+    {
+        title = "Catalogue Solutions";
+        advice = "Select the Catalogue Solution you want to order.";
+        caption = Model.SupplierName;
+    }
+
+    ViewBag.Title = title;
+    var submitButton = string.Empty; // uses the default text
+}
+
 
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary RadioId="SelectedCatalogueSolutionId" />
-
-        @{
-            string title, advice, caption;
-            if (Model.OrderType.AssociatedServicesOnly)
-            {
-                title = "Which Catalogue Solution does the service help implement?";
-                advice = Model.CatalogueSolutions.Count > 1
-                            ? "Select the Catalogue Solution the Associated Service you want to order supports."
-                            : "There is only one solution with this type of Associated Service.";
-                caption = $"Order {Model.CallOffId}";
-            }
-            else
-            {
-                title = "Catalogue Solutions";
-                advice = "Select the Catalogue Solution you want to order.";
-                caption = Model.SupplierName;
-            }
-
-            var submitButton = string.Empty; // uses the default text
-        }
 
         <nhs-page-title title="@title"
                         caption="@caption"
