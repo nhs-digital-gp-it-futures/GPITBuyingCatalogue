@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
+﻿using FluentAssertions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
@@ -38,5 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
         public static By ConnectivityDropdown => By.Id("SelectedConnectionSpeed");
 
         public static By ResolutionDropdown => By.Id("SelectedScreenResolution");
+
+        public static By SolutionDescriptionLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/description')]");
+
+        public static By SolutionFeatureLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/features')]");
     }
 }

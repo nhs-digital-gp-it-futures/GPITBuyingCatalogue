@@ -1,10 +1,13 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿//using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedEpics;
 using OpenQA.Selenium;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
 {
@@ -20,6 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             AddSupplierDefinedEpics = new AddSupplierDefinedEpics(driver, commonActions);
             AddOrganisationUser = new AddOrganisationUser(driver, commonActions, factory);
             ManageOrganisationSupplier = new ManageOrganisationSupplier(driver, commonActions);
+            AddNewSolution = new AddNewSolution(driver, commonActions, factory);
+            Features = new Features(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -39,5 +44,27 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal AddOrganisationUser AddOrganisationUser { get; }
 
         internal ManageOrganisationSupplier ManageOrganisationSupplier { get; }
+
+        internal AddNewSolution AddNewSolution { get; }
+
+        internal Features Features { get; }
+
+        public void AddSolutionDetailsAndDescription()
+        {
+            AddNewSolution.AddSolution();
+            AddNewSolution.AddSolutionDetails();
+
+            var solutionId = GetSolutionID();
+            AddNewSolution.AddSolutionDescription(solutionId);
+            Features.AddSolutionFeature(solutionId);
+        }
+
+        private string GetSolutionID()
+        {
+            using var dbContext = Factory.DbContext;
+
+            var solution = Driver.Url.Split('/').Last();
+            return solution;
+        }
     }
 }
