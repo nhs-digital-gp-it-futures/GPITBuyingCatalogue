@@ -1,9 +1,26 @@
-﻿<div class="nhsuk-header__logo">
-    <a class="nhsuk-header__link" href="~/" aria-label="Buying Catalogue Homepage">
+﻿@{
+    var link = User.IsAdmin() ? 
+        Url.Action(
+            nameof(NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers.HomeController.Index),
+            typeof(NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers.HomeController).ControllerName(),
+            new
+            {
+                area = typeof(NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers.HomeController).AreaName(),
+            }) : 
+        Url.Action(
+            nameof(HomeController.Index), 
+            typeof(HomeController).ControllerName(),
+            new
+            {
+                area = typeof(HomeController).AreaName(),
+            });
+}
+<div class="nhsuk-header__logo">
+    <a class="nhsuk-header__link" href="@link" aria-label="Buying Catalogue Homepage">
         <vc:nhs-logo/>
     </a>
 </div>
 
 <div class="nhsuk-header__transactional-service-name">
-    <a class="nhsuk-header__transactional-service-name--link" href="/admin">Buying Catalogue</a>
+    <a class="nhsuk-header__transactional-service-name--link" href="@link">Buying Catalogue</a>
 </div>
