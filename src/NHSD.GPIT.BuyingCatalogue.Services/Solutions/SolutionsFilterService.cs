@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -26,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     {
         private static readonly PublicationStatus[] AllowedPublicationStatuses = { PublicationStatus.Published, PublicationStatus.InRemediation };
         private readonly BuyingCatalogueDbContext dbContext;
+        private readonly ISolutionsFilterService solutionsFilterService;
 
         public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
@@ -163,6 +166,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var results = await query.ToListAsync();
 
             return (results, options, count);
+        }
+
+        public async
+            Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel>
+                CapabilitiesAndCount)> GetAllSolutionsFiltered(
+                FilterIdsModel filterIds)
+        {
+                return await GetAllSolutionsFiltered(
+                null,
+                capabilitiesAndEpics: filterIds?.CapabilityAndEpicIds,
+                selectedFrameworkId: filterIds?.FrameworkId,
+                selectedApplicationTypeIds: filterIds.ApplicationTypeIds.ToFilterString(),
+                selectedHostingTypeIds: filterIds.HostingTypeIds.ToFilterString(),
+                selectedIm1Integrations: filterIds.IM1Integrations.ToFilterString(),
+                selectedGpConnectIntegrations: filterIds.GPConnectIntegrations.ToFilterString(),
+                selectedInteroperabilityOptions: filterIds.InteroperabilityOptions.ToFilterString());
         }
 
         public async Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15)

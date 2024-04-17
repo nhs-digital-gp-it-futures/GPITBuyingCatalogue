@@ -29,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         private readonly IOrganisationsService organisationsService;
         private readonly IManageFiltersService manageFiltersService;
         private readonly ICapabilitiesService capabilitiesService;
+        private readonly ISolutionsFilterService solutionsFilterService;
         private readonly IEpicsService epicsService;
         private readonly IFrameworkService frameworkService;
         private readonly IPdfService pdfService;
@@ -39,10 +40,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             IEpicsService epicsService,
             IFrameworkService frameworkService,
             IManageFiltersService manageFiltersService,
+            ISolutionsFilterService solutionsFilterService,
             IPdfService pdfService)
         {
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.manageFiltersService = manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
+            this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
             this.epicsService = epicsService ?? throw new ArgumentNullException(nameof(epicsService));
             this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
@@ -160,6 +163,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var organisation = await GetUserOrganisation();
             var filterDetails = await manageFiltersService.GetFilterDetails(organisation.Id, filterId);
             var filterIds = await manageFiltersService.GetFilterIds(organisation.Id, filterId);
+            var (solutions, _, _) = await solutionsFilterService.GetAllSolutionsFiltered(filterIds);
+            var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
 
             if (filterDetails == null || filterIds == null)
                 return NotFound();
@@ -169,6 +174,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
                 Caption = organisation.Name,
                 InternalOrgId = organisation.InternalIdentifier,
+                FilterResults = (List<EntityFramework.Catalogue.Models.CatalogueItem>)solutions,
+                Frameworks = frameworks,
+                InExpander = true,
             };
 
             return View(model);

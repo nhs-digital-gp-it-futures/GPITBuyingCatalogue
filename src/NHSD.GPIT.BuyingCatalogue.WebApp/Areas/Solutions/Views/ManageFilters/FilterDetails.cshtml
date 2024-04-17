@@ -6,6 +6,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ReviewFilterModel
 
 @{
@@ -16,54 +17,52 @@
 <partial name="Partials/_BackLink" model="@Model" />
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.Caption"
-                        advice="These are the details for this filter." />
-        @if (Model.FilterDetails.Invalid)
-        {
-            <nhs-warning-callout label-text="Filter cannot be used">
-                <p>This filter cannot be used to run a competition as it contains some Capabilities or Epics that are no longer valid.</p>
-                <p>It should be deleted and a new filter created using valid Capabilities or Epics.</p>
-            </nhs-warning-callout>
-        }
-        else
-        {
-            <vc:nhs-action-link url="@Url.Action(
-                                    nameof(CompetitionsDashboardController.SaveCompetition),
-                                    typeof(CompetitionsDashboardController).ControllerName(),
-                                    new {
-                                        internalOrgId = Model.InternalOrgId,
-                                        filterId = Model.FilterDetails.Id,
-                                        fromFilter = true,
-                                        Area = typeof(CompetitionsDashboardController).AreaName(),})"
-                            text="Begin a competition using this filter" />
-        }
-        <partial name="Partials/_FilterDetailsPartial" model="Model" />
+    <div class="nhsuk-grid-column-full-width">
+        <nhs-page-title title="Results for this shortlist"/>
+        <nhs-card-v2>
+            <nhs-card-content>
+                
+                
+                @if (Model.FilterDetails.Invalid)
+                {
+                    <nhs-warning-callout label-text="Filter cannot be used">
+                        <p>This filter cannot be used to run a competition as it contains some Capabilities or Epics that are no longer valid.</p>
+                        <p>It should be deleted and a new filter created using valid Capabilities or Epics.</p>
+                    </nhs-warning-callout>
+                }
+                else
+                {
+                    <h3 class="header-with-detail">@Model.FilterDetails.Name (@Model.FilterResults.Count)</h3>
+                    <p class="nhsuk-body">@Model.FilterDetails.Description</p>
+                    <p class="nhsuk-body-s nhsuk-u-margin-top-1">Results updated: @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+                    
 
-        @if (!Model.FilterDetails.Invalid)
-        {
-            <h2 data-test-id="view-solutions">View solutions</h2>
-            <p>
-                The results will be based on solutions currently available that match to this filter.
-            </p>
-            <p>
-                <a href="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
-                            {
-                                selected = Model.FilterIds.CapabilityAndEpicIds.ToFilterString(),
-                                selectedFrameworkId = Model.FilterIds.FrameworkId,
-                                selectedApplicationTypeIds = Model.FilterIds.ApplicationTypeIds.ToFilterString(),
-                                selectedHostingTypeIds = Model.FilterIds.HostingTypeIds.ToFilterString(),
-                                selectedIM1Integrations = Model.FilterIds.IM1Integrations.ToFilterString(),
-                                selectedGPConnectIntegrations = Model.FilterIds.GPConnectIntegrations.ToFilterString(),
-                                selectedInteroperabilityOptions = Model.FilterIds.InteroperabilityOptions.ToFilterString(),
-                                filterId = Model.FilterDetails.Id,
-                            })" target="_blank">View results for this filter (opens in a new tab)</a>
-            </p>
-        }
+                    @if (@Model.FilterDetails.FrameworkName != null)
+                    {
+                        <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-4">Results from @Model.FilterDetails.FrameworkName (@Model.FilterResults.Count)</h2>
+                    }
+                    else
+                    {
+                        foreach(var framework in Model.Frameworks)
+                        {
+                            var newModel = new ResultsForFrameworkModel(Model.InternalOrgId, Model.FilterDetails.Id, framework, Model.FilterResults);
+                            <partial name="_ResultsForFramework.cshtml" model="newModel"/>
+                        }
+                    }
+                }
+            </nhs-card-content>
+        </nhs-card-v2>
+
+        
+
+        <nhs-expander label-text="View filters used for this shortlist" open="false">
+            <p>These are the filters used in this shortlist:</p>
+
+            <partial name="Partials/_FilterDetailsPartial" model="Model" />
+        </nhs-expander>
+            
         <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
-                                               new { filterId = Model.FilterDetails.Id })"
+                                                        new { filterId = Model.FilterDetails.Id })"
                               text="Delete filter" />
-
     </div>
 </div>

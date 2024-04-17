@@ -3,25 +3,34 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ReviewFilterModel
 
+@if (!Model.InExpander)
+{
+    <h2 data-test-id="name-and-description">Name and description</h2>
 
-<h2 data-test-id="name-and-description">Name and description</h2>
-
-<nhs-summary-list>
-    <nhs-summary-list-row label-text="Name">
-        <p>
-            @Model.FilterDetails.Name
-        </p>
-    </nhs-summary-list-row>
-    <nhs-summary-list-row label-text="Description">
-        <p>
-            @Model.FilterDetails.Description
-        </p>
-    </nhs-summary-list-row>
-</nhs-summary-list>
+    <nhs-summary-list>
+        <nhs-summary-list-row label-text="Name">
+            <p>
+                @Model.FilterDetails.Name
+            </p>
+        </nhs-summary-list-row>
+        <nhs-summary-list-row label-text="Description">
+            <p>
+                @Model.FilterDetails.Description
+            </p>
+        </nhs-summary-list-row>
+    </nhs-summary-list>
+}
 
 @if (Model.HasEpics())
 {
-    <h2 data-test-id="capabilities-and-epics">Capabilities and Epics</h2>
+    if (!Model.InExpander)
+    {
+        <h2 data-test-id="capabilities-and-epics">Capabilities and Epics</h2>
+    }
+    else
+    {
+        <h3 data-test-id="capabilities-and-epics">Capabilities and Epics</h3>
+    }
     <nhs-table>
         <nhs-table-column>Capability</nhs-table-column>
         <nhs-table-column>Epic</nhs-table-column>
@@ -63,7 +72,14 @@
 }
 else
 {
-    <h2 data-test-id="capabilities">Capabilities</h2>
+    if (!Model.InExpander)
+    {
+        <h2 data-test-id="capabilities">Capabilities</h2>
+    }
+    else
+    {
+        <h3 data-test-id="capabilities-and-epics">Capabilities and Epics</h3>
+    }
     @foreach (var capability in Model.FilterDetails.Capabilities)
     {
         <p>@capability.Key</p>
@@ -72,7 +88,10 @@ else
 
 @if (Model.HasAdditionalFilters())
 {
-    <h2 data-test-id="additional-filters">Additional filters</h2>
+    if (!Model.InExpander)
+    {
+        <h2 data-test-id="additional-filters">Additional filters</h2>
+    }
 
     <nhs-summary-list>
         <nhs-summary-list-row label-text="Application type">
