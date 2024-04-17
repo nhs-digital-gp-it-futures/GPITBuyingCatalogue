@@ -65,7 +65,7 @@ public readonly struct NavigationMenuModel
                             urlHelper.Action(
                                 nameof(CompetitionsDashboardController.Index),
                                 typeof(CompetitionsDashboardController).ControllerName(),
-                                new { Area = typeof(CompetitionsDashboardController).AreaName(),internalOrgId = user.GetPrimaryOrganisationInternalIdentifier() })),
+                                new { Area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = user.GetPrimaryOrganisationInternalIdentifier() })),
 
                         new(
                             "Catalogue Solutions",

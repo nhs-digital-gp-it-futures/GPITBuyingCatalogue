@@ -7,7 +7,9 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
@@ -64,7 +66,7 @@ public static class NavigationMenuModelTests
 
         var model = new NavigationMenuModel(claimsPrincipal, urlHelper);
 
-        model.Links.Should().HaveCount(4);
+        model.Links.Should().HaveCount(6);
 
         urlHelper.Received()
             .Action(
@@ -83,16 +85,30 @@ public static class NavigationMenuModelTests
         urlHelper.Received()
             .Action(
                 Arg.Is<UrlActionContext>(
-                    x => string.Equals(x.Action, nameof(SolutionsController.Index)) && string.Equals(
+                    x => string.Equals(x.Action, nameof(DashboardController.Index)) && string.Equals(
                         x.Controller,
-                        typeof(SolutionsController).ControllerName())));
+                        typeof(DashboardController).ControllerName())));
 
         urlHelper.Received()
             .Action(
                 Arg.Is<UrlActionContext>(
-                    x => string.Equals(x.Action, nameof(AccountController.Logout)) && string.Equals(
+                    x => string.Equals(x.Action, nameof(ManageFiltersController.Index)) && string.Equals(
                         x.Controller,
-                        typeof(AccountController).ControllerName())));
+                        typeof(ManageFiltersController).ControllerName())));
+
+        urlHelper.Received()
+            .Action(
+                Arg.Is<UrlActionContext>(
+                    x => string.Equals(x.Action, nameof(CompetitionsDashboardController.Index)) && string.Equals(
+                        x.Controller,
+                        typeof(CompetitionsDashboardController).ControllerName())));
+
+        urlHelper.Received()
+            .Action(
+                Arg.Is<UrlActionContext>(
+                    x => string.Equals(x.Action, nameof(SolutionsController.Index)) && string.Equals(
+                        x.Controller,
+                        typeof(SolutionsController).ControllerName())));
     }
 
     [Theory]
@@ -114,7 +130,7 @@ public static class NavigationMenuModelTests
 
         var model = new NavigationMenuModel(claimsPrincipal, urlHelper);
 
-        model.Links.Should().HaveCount(5);
+        model.Links.Should().HaveCount(4);
 
         urlHelper.Received()
             .Action(
@@ -143,13 +159,6 @@ public static class NavigationMenuModelTests
                     x => string.Equals(x.Action, nameof(CatalogueSolutionsController.Index)) && string.Equals(
                         x.Controller,
                         typeof(CatalogueSolutionsController).ControllerName())));
-
-        urlHelper.Received()
-            .Action(
-                Arg.Is<UrlActionContext>(
-                    x => string.Equals(x.Action, nameof(AccountController.Logout)) && string.Equals(
-                        x.Controller,
-                        typeof(AccountController).ControllerName())));
     }
 
     [Theory]
