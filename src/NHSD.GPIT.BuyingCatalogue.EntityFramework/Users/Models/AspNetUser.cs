@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
             AspNetUserLogins = new HashSet<AspNetUserLogin>();
             AspNetUserRoles = new HashSet<AspNetUserRole>();
             AspNetUserTokens = new HashSet<AspNetUserToken>();
+            Events = new HashSet<AspNetUserEvent>();
         }
 
         public int PrimaryOrganisationId { get; set; }

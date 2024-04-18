@@ -15,7 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 .Without(u => u.AspNetUserRoles)
                 .Without(u => u.AspNetUserTokens)
                 .Without(u => u.PrimaryOrganisation)
-                .Without(u => u.LastUpdatedByUser);
+                .Without(u => u.LastUpdatedByUser)
+                .Without(u => u.Events);
 
             fixture.Customize<AspNetUser>(ComposerTransformation);
         }
