@@ -37,6 +37,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
                 },
                 new()
                 {
+                    Action = nameof(YourAccountController.ManagePassword),
+                    Controller = typeof(YourAccountController).ControllerName(),
+                    RouteData = new Dictionary<string, string> { { "area", typeof(YourAccountController).AreaName() }, },
+                    Name = "Manage password",
+                },
+                new()
+                {
                     Action = nameof(AccountController.Logout),
                     Controller = typeof(AccountController).ControllerName(),
                     RouteData = new Dictionary<string, string> { { "area", typeof(YourAccountController).AreaName() }, },

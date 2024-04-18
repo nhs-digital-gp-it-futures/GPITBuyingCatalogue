@@ -1,7 +1,8 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using Microsoft.AspNetCore.Identity;
+using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.Registration;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registration;
 using Xunit;
 
@@ -12,9 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
         private const string Password = "Password";
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_AllPropertiesEmpty_ThrowsValidationError(
             string inputValue,
             UpdatePasswordViewModel model,
@@ -23,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
             model.CurrentPassword = inputValue;
             model.NewPassword = inputValue;
             model.ConfirmPassword = inputValue;
+            model.IdentityResult = null;
 
             var result = validator.TestValidate(model);
 
@@ -37,9 +39,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData("password1", "password2")]
-        [CommonInlineAutoData("password1", " password1")]
-        [CommonInlineAutoData("password1", "password1 ")]
+        [MockInlineAutoData("password1", "password2")]
+        [MockInlineAutoData("password1", " password1")]
+        [MockInlineAutoData("password1", "password1 ")]
         public static void Validate_NewPasswordAndConfirmNotMatched_ThrowsValidationError(
             string newPassword,
             string confirmPassword,
@@ -56,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EverythingOk_NoErrors(
             UpdatePasswordViewModel model,
             UpdatePasswordViewModelValidator validator)
@@ -64,10 +66,87 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
             model.CurrentPassword = Password;
             model.NewPassword = Password;
             model.ConfirmPassword = Password;
+            model.IdentityResult = null;
 
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Validate_EverythingOk_With_IdentityResult_Success_NoErrors(
+            UpdatePasswordViewModel model,
+            UpdatePasswordViewModelValidator validator)
+        {
+            model.CurrentPassword = Password;
+            model.NewPassword = Password;
+            model.ConfirmPassword = Password;
+            model.IdentityResult = IdentityResult.Success;
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldNotHaveAnyValidationErrors();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Validate_PreviouslyUsedPassword_ValidationError(
+            UpdatePasswordViewModel model,
+            UpdatePasswordViewModelValidator validator)
+        {
+            model.IdentityResult = IdentityResult.Failed(
+            [
+                new IdentityError()
+                {
+                    Code = PasswordValidator.PasswordAlreadyUsedCode,
+                },
+            ]);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.NewPassword)
+                .WithErrorMessage(PasswordValidator.PasswordAlreadyUsed);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Validate_PasswordMismatch_ValidationError(
+            UpdatePasswordViewModel model,
+            UpdatePasswordViewModelValidator validator)
+        {
+            model.IdentityResult = IdentityResult.Failed(
+            [
+                new IdentityError()
+                {
+                    Code = PasswordValidator.PasswordMismatchCode,
+                },
+            ]);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.CurrentPassword)
+                .WithErrorMessage(UpdatePasswordViewModelValidator.CurrentPasswordIncorrect);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Validate_InvalidPassword_ValidationError(
+            UpdatePasswordViewModel model,
+            UpdatePasswordViewModelValidator validator)
+        {
+            model.IdentityResult = IdentityResult.Failed(
+            [
+                new IdentityError()
+                {
+                    Code = PasswordValidator.InvalidPasswordCode,
+                },
+            ]);
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.NewPassword)
+                .WithErrorMessage(PasswordValidator.PasswordConditionsNotMet);
         }
     }
 }

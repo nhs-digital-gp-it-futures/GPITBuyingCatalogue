@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -6,9 +7,12 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
@@ -121,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async Task Post_Invalid(
+        public static async Task Post_ManageEmailNotifications_Invalid(
             UserEmailPreferenceModel userEmailPreferenceModel,
             YourAccountController controller)
         {
@@ -136,6 +140,99 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             };
 
             var result = await controller.ManageEmailNotifications(model);
+            result.Should().BeAssignableTo<ViewResult>();
+        }
+
+        [Theory]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData(true)]
+        [MockInlineAutoData(false)]
+        public static void Get_ManagePassword_ReturnsDefaultViewWithModelSet(
+            bool? saved,
+            YourAccountController controller)
+        {
+            var expectedModel = new ManagePasswordModel()
+            {
+                Title = YourAccountController.ManagePasswordTitle,
+            };
+
+            if (saved.HasValue)
+            {
+                expectedModel.Saved = saved.Value;
+            }
+
+            var result = saved.HasValue
+                ? controller.ManagePassword(saved.Value)
+                : controller.ManagePassword();
+
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
+
+            var model = actualResult.Model.Should().BeAssignableTo<ManagePasswordModel>().Subject;
+            model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.Caption));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_ManagePassword_Redirects(
+            [Frozen] IPasswordService mockPasswordService,
+            [Frozen] IObjectModelValidator mockValidator,
+            YourAccountController controller)
+        {
+            controller.ObjectValidator = mockValidator;
+
+            var identityResult = IdentityResult.Success;
+            mockPasswordService.ChangePasswordAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(identityResult);
+
+            var model = new ManagePasswordModel()
+            {
+                Title = YourAccountController.ManagePasswordTitle,
+            };
+
+            var result = await controller.ManagePassword(model);
+
+            var actualResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(YourAccountController.ManagePassword));
+            actualResult.RouteValues.Should().BeEquivalentTo(new Dictionary<string, bool>
+            {
+                { "saved", true },
+            });
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_ManagePassword_Throws(
+            [Frozen] IPasswordService mockPasswordService,
+            [Frozen] IObjectModelValidator mockValidator,
+            IdentityError[] identityErrors,
+            YourAccountController controller)
+        {
+            controller.ObjectValidator = mockValidator;
+
+            var identityResult = IdentityResult.Failed(identityErrors);
+            mockPasswordService.ChangePasswordAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(identityResult);
+
+            var model = new ManagePasswordModel()
+            {
+                Title = YourAccountController.ManagePasswordTitle,
+            };
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await controller.ManagePassword(model));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_ManagePassword_Invalid(
+            YourAccountController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var model = new ManagePasswordModel()
+            {
+                Title = YourAccountController.ManagePasswordTitle,
+            };
+
+            var result = await controller.ManagePassword(model);
             result.Should().BeAssignableTo<ViewResult>();
         }
     }
