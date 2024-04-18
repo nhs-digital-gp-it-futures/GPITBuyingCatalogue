@@ -43,6 +43,16 @@ resource "azurerm_storage_container" "function_app_container" {
   container_access_type = "container"
 }
 
+resource "azurerm_storage_queue" "send_email_queue" {
+  name                  = "send-email-notification"
+  storage_account_name  = azurerm_storage_account.function_app_storage.name
+}
+
+resource "azurerm_storage_queue" "complete_email_queue" {
+  name                  = "complete-email-notification"
+  storage_account_name  = azurerm_storage_account.function_app_storage.name
+}
+
 resource "azurerm_windows_function_app" "function_app" {
   name = "${local.project_environment}-functionapp"
 
