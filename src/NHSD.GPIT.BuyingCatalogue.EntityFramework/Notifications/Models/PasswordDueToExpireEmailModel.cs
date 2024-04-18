@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 
-public class PasswordDueToExpireEmailModel() : GovNotifyEmailModel(EmailNotificationTypeEnum.PasswordDueToExpire)
+public class PasswordDueToExpireEmailModel : GovNotifyEmailModel
 {
     public const string FirstNameToken = "first_name";
     public const string LastNameToken = "last_name";
@@ -11,6 +11,11 @@ public class PasswordDueToExpireEmailModel() : GovNotifyEmailModel(EmailNotifica
 
     private const string DaySingular = "day";
     private const string DayPlural = "days";
+
+    public PasswordDueToExpireEmailModel()
+        : base(EmailNotificationTypeEnum.PasswordDueToExpire)
+    {
+    }
 
     public string FirstName { get; set; }
 

@@ -1,7 +1,9 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
+[ExcludeFromCodeCoverage]
 public class AspNetUserEvent
 {
     public AspNetUserEvent()
