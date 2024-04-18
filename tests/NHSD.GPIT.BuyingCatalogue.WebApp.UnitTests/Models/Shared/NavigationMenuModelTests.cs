@@ -8,7 +8,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -85,7 +84,7 @@ public static class NavigationMenuModelTests
         urlHelper.Received()
             .Action(
                 Arg.Is<UrlActionContext>(
-                    x => string.Equals(x.Action, nameof(DashboardController.Index)) && string.Equals(
+                    x => string.Equals(x.Action, nameof(DashboardController.Organisation)) && string.Equals(
                         x.Controller,
                         typeof(DashboardController).ControllerName())));
 

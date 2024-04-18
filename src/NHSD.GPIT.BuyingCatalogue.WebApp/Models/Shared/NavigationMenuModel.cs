@@ -51,9 +51,9 @@ public readonly struct NavigationMenuModel
                         new(
                             "Orders",
                             urlHelper.Action(
-                                nameof(DashboardController.Index),
+                                nameof(DashboardController.Organisation),
                                 typeof(DashboardController).ControllerName(),
-                                new { Area = typeof(DashboardController).AreaName() })),
+                                new { Area = typeof(DashboardController).AreaName(), internalOrgId = user.GetPrimaryOrganisationInternalIdentifier() })),
                         new(
                             "Shortlists",
                             urlHelper.Action(
