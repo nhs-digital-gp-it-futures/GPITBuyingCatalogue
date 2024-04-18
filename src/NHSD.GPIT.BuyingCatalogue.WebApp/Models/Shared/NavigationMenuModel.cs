@@ -5,7 +5,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using HomeController = NHSD.GPIT.BuyingCatalogue.WebApp.Controllers.HomeController;
@@ -47,6 +48,24 @@ public readonly struct NavigationMenuModel
                                 nameof(BuyerDashboardController.Index),
                                 typeof(BuyerDashboardController).ControllerName(),
                                 new { internalOrgId = user.GetPrimaryOrganisationInternalIdentifier() })),
+                        new(
+                            "Orders",
+                            urlHelper.Action(
+                                nameof(DashboardController.Organisation),
+                                typeof(DashboardController).ControllerName(),
+                                new { Area = typeof(DashboardController).AreaName(), internalOrgId = user.GetPrimaryOrganisationInternalIdentifier() })),
+                        new(
+                            "Shortlists",
+                            urlHelper.Action(
+                                nameof(ManageFiltersController.Index),
+                                typeof(ManageFiltersController).ControllerName(),
+                                new { Area = typeof(ManageFiltersController).AreaName() })),
+                        new(
+                            "Competitions",
+                            urlHelper.Action(
+                                nameof(CompetitionsDashboardController.Index),
+                                typeof(CompetitionsDashboardController).ControllerName(),
+                                new { Area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = user.GetPrimaryOrganisationInternalIdentifier() })),
 
                         new(
                             "Catalogue Solutions",
@@ -99,17 +118,6 @@ public readonly struct NavigationMenuModel
             LinksFactories.First(x => x.Key(user));
 
         Links = linkFactory(user, urlHelper);
-
-        if (user.Identity?.IsAuthenticated ?? false)
-        {
-            Links.Add(
-                new(
-                    "Log out",
-                    urlHelper.Action(
-                        nameof(AccountController.Logout),
-                        typeof(AccountController).ControllerName(),
-                        new { area = typeof(AccountController).AreaName() })));
-        }
     }
 
     public IList<KeyValuePair<string, string>> Links { get; }

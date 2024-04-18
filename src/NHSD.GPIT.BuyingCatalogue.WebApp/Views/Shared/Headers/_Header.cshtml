@@ -4,17 +4,6 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsLoginIcon
 
 @{
-    var link = User.Identity?.IsAuthenticated ?? false ?
-            Url.Action(
-            nameof(YourAccountController.Index),
-            typeof(YourAccountController).ControllerName(),
-        new { area = typeof(YourAccountController).AreaName() } ) :
-            Url.Action(
-            nameof(AccountController.Login),
-            typeof(AccountController).ControllerName(),
-            new { area = typeof(AccountController).AreaName() } );
-    var text = User.Identity?.IsAuthenticated ?? false ? User.Identity?.Name : "Log in";
-
     var navMenuModel = new NavigationMenuModel(User, Url);
 }
 <header class="nhsuk-header nhsuk-header--organisation" role="banner">
@@ -25,12 +14,29 @@
             <button class="nhsuk-header__menu-toggle" id="toggle-menu" aria-controls="header-navigation" aria-expanded="false">Menu</button>
         </div>
         <div class="nhsuk-account__login">
-            <a class="nhsuk-account__login--link" href="@link">
-                @text
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <a class="nhsuk-account__login--link" href="@Url.Action(
+                                                            nameof(YourAccountController.Index),
+                                                            typeof(YourAccountController).ControllerName(),
+                                                            new { area = typeof(YourAccountController).AreaName() } )">
                 <vc:nhs-login-icon/>
+                <b>Your account</b>
+                | @User.Identity?.Name
             </a>
+            <a class="nhsuk-account__login--link logout-link" href="@Url.Action( nameof(AccountController.Logout), typeof(AccountController).ControllerName(), new { area = typeof(AccountController).AreaName() })">Log out</a>
+        }
+        else
+        {
+                    <a class="nhsuk-account__login--link  logout-link" href="@Url.Action(
+                                                            nameof(AccountController.Login),
+                                                            typeof(AccountController).ControllerName(),
+                                                            new { area = typeof(AccountController).AreaName() } )">
+                <vc:nhs-login-icon />
+                Log in
+            </a>
+        }
         </div>
     </div>
-
     </div><vc:nhs-navigation-panel title="Menu" items="@(navMenuModel.Links.ToList())"/>
 </header>
