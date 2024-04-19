@@ -31,6 +31,7 @@ public class EmailPreferenceService : IEmailPreferenceService
     {
         return await dbContext
             .EmailPreferenceTypes
+            .Include(x => x.SupportedEventTypes)
             .FirstOrDefaultAsync(u => u.Id == (int)eventType);
     }
 }

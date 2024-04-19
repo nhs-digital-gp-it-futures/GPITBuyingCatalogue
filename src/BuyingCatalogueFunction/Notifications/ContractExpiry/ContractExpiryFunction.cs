@@ -50,7 +50,7 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry
             if (defaultEmailPreference == null)
             {
                 logger.LogWarning(
-                    "Contract Expiry: {EventToRaise} not found or a ManagedEmailPreference is not configured",
+                    "Contract Expiry: {EmailPreferenceType} not found or a ManagedEmailPreference is not configured",
                     EmailPreferenceTypeEnum.ContractExpiry);
 
                 return;
@@ -86,8 +86,18 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry
                 return;
             }
 
+            if (defaultEmailPreference.SupportedEventTypes.All(x => x.Id != (int)eventToRaise))
+            {
+                logger.LogWarning(
+                    "Contract Export: Order {CallOffId}. Mismatched email preference {EmailPreferenceType} and event {EventToRaise} types",
+                    order.CallOffId, defaultEmailPreference.Id, eventToRaise);
+
+                return;
+            }
+
             logger.LogInformation("Contract Expiry: Order {CallOffId}. Raising {EventToRaise}", order.CallOffId,
                 eventToRaise);
+
             await contractExpiryService.RaiseExpiry(today, order, eventToRaise, defaultEmailPreference);
         }
     }

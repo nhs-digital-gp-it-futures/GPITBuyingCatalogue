@@ -57,7 +57,7 @@ public class PasswordExpiryFunction
         if (defaultEmailPreference is null)
         {
             logger.LogWarning(
-                "Password Expiry: {EventToRaise} not found or a ManagedEmailPreference is not configured",
+                "Password Expiry: {EmailPreferenceType} not found or a ManagedEmailPreference is not configured",
                 EmailPreferenceTypeEnum.PasswordExpiry);
 
             return;

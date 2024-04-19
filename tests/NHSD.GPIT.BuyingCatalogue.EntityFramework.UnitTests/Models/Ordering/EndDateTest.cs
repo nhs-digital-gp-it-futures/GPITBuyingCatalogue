@@ -4,6 +4,8 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
@@ -73,12 +75,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
         }
 
         [Theory]
-        [InlineAutoData(2000, 1, 1, 12)]
-        [InlineAutoData(2000, 12, 1, 1)]
-        [InlineAutoData(2000, 12, 31, 1)]
-        [InlineAutoData(2000, 7, 1, 6)]
-        [InlineAutoData(2000, 7, 30, 6)]
-        [InlineAutoData(2001, 1, 1, 0)]
+        [MockInlineAutoData(2000, 1, 1, 12)]
+        [MockInlineAutoData(2000, 12, 1, 1)]
+        [MockInlineAutoData(2000, 12, 31, 1)]
+        [MockInlineAutoData(2000, 7, 1, 6)]
+        [MockInlineAutoData(2000, 7, 30, 6)]
+        [MockInlineAutoData(2001, 1, 1, 0)]
         public static void RemainingTerm_Start_Of_Month(int year, int month, int day, int remainingTerm)
         {
             var maximumTerm = 12;
@@ -89,9 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
         }
 
         [Theory]
-        [InlineAutoData(2000, 2, 1, 0)]
-        [InlineAutoData(2000, 1, 31, 0)]
-        [InlineAutoData(2000, 1, 30, 1)]
+        [MockInlineAutoData(2000, 2, 1, 0)]
+        [MockInlineAutoData(2000, 1, 31, 0)]
+        [MockInlineAutoData(2000, 1, 30, 1)]
         public static void RemainingDays(int year, int month, int day, int remainingDays)
         {
             var maximumTerm = 1;
@@ -102,13 +104,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
         }
 
         [Theory]
-        [InlineAutoData(2000, 2, 1, 0, EventTypeEnum.Nothing)]
-        [InlineAutoData(2000, 1, 31, 0, EventTypeEnum.Nothing)]
-        [InlineAutoData(2000, 1, 30, 1, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
-        [InlineAutoData(2000, 1, 17, 14, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
-        [InlineAutoData(2000, 1, 16, 15, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
-        [InlineAutoData(2000, 1, 1, 30, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
-        [InlineAutoData(1999, 12, 31, 31, EventTypeEnum.Nothing)]
+        [MockInlineAutoData(2000, 2, 1, 0, EventTypeEnum.Nothing)]
+        [MockInlineAutoData(2000, 1, 31, 0, EventTypeEnum.Nothing)]
+        [MockInlineAutoData(2000, 1, 30, 1, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
+        [MockInlineAutoData(2000, 1, 17, 14, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
+        [MockInlineAutoData(2000, 1, 16, 15, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
+        [MockInlineAutoData(2000, 1, 1, 30, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
+        [MockInlineAutoData(1999, 12, 31, 31, EventTypeEnum.Nothing)]
         public static void RemainingDays_ShortTerm_DetermineEventToRaise(
             int year,
             int month,
@@ -125,13 +127,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
         }
 
         [Theory]
-        [InlineAutoData(2000, 4, 1, 0, EventTypeEnum.Nothing)]
-        [InlineAutoData(2000, 3, 31, 0, EventTypeEnum.Nothing)]
-        [InlineAutoData(2000, 3, 30, 1, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
-        [InlineAutoData(2000, 2, 15, 45, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
-        [InlineAutoData(2000, 2, 14, 46, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
-        [InlineAutoData(2000, 1, 1, 90, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
-        [InlineAutoData(1999, 12, 31, 91, EventTypeEnum.Nothing)]
+        [MockInlineAutoData(2000, 4, 1, 0, EventTypeEnum.Nothing)]
+        [MockInlineAutoData(2000, 3, 31, 0, EventTypeEnum.Nothing)]
+        [MockInlineAutoData(2000, 3, 30, 1, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
+        [MockInlineAutoData(2000, 2, 15, 45, EventTypeEnum.OrderEnteredSecondExpiryThreshold)]
+        [MockInlineAutoData(2000, 2, 14, 46, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
+        [MockInlineAutoData(2000, 1, 1, 90, EventTypeEnum.OrderEnteredFirstExpiryThreshold)]
+        [MockInlineAutoData(1999, 12, 31, 91, EventTypeEnum.Nothing)]
         public static void RemainingDays_LongTerm_DetermineEventToRaise(
             int year,
             int month,
@@ -148,13 +150,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
         }
 
         [Theory]
-        [InlineAutoData(2000, 2, 1, 0)]
-        [InlineAutoData(2000, 1, 31, 0)]
-        [InlineAutoData(2000, 1, 30, 1)]
-        [InlineAutoData(2000, 1, 17, 14)]
-        [InlineAutoData(2000, 1, 16, 15)]
-        [InlineAutoData(2000, 1, 1, 30)]
-        [InlineAutoData(1999, 12, 31, 31)]
+        [MockInlineAutoData(2000, 2, 1, 0)]
+        [MockInlineAutoData(2000, 1, 31, 0)]
+        [MockInlineAutoData(2000, 1, 30, 1)]
+        [MockInlineAutoData(2000, 1, 17, 14)]
+        [MockInlineAutoData(2000, 1, 16, 15)]
+        [MockInlineAutoData(2000, 1, 1, 30)]
+        [MockInlineAutoData(1999, 12, 31, 31)]
         public static void RemainingDays_DetermineEventToRaise_Suppress(
             int year,
             int month,
