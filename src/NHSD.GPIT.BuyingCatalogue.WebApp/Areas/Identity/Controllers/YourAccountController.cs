@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             await emailPreferenceService.Save(User.UserId(), model.EmailPreferences);
 
-            var saved = true;
+            const bool saved = true;
 
             return RedirectToAction(
                 nameof(ManageEmailNotifications),

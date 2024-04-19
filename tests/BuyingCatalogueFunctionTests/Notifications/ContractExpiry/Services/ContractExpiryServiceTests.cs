@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using Azure.Storage.Queues;
-using BuyingCatalogueFunction.Notifications.Services;
+using BuyingCatalogueFunction.Notifications.ContractExpiry.Services;
+using BuyingCatalogueFunction.Notifications.Interfaces;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -17,7 +18,7 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Xunit;
 
-namespace BuyingCatalogueFunctionTests.Notifications.Services
+namespace BuyingCatalogueFunctionTests.Notifications.ContractExpiry.Services
 {
     public static class ContractExpiryServiceTests
     {
@@ -146,33 +147,9 @@ namespace BuyingCatalogueFunctionTests.Notifications.Services
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async Task GetDefaultEmailPreference_Returns_Null(
-            ContractExpiryService service)
-        {
-            var emailPreference = await service.GetDefaultEmailPreference(EventTypeEnum.OrderEnteredFirstExpiryThreshold);
-            emailPreference.Should().BeNull();
-        }
-
-        [Theory]
-        [MockInMemoryDbAutoData]
-        public static async Task GetDefaultEmailPreference_Returns_Expected(
-            ContractExpiryService service,
-            [Frozen] BuyingCatalogueDbContext dbContext,
-            EventType eventType)
-        {
-            dbContext.EventTypes.Add(eventType);
-            dbContext.SaveChanges();
-            dbContext.ChangeTracker.Clear();
-
-            var emailPreference = await service.GetDefaultEmailPreference((EventTypeEnum)eventType.Id);
-            emailPreference.Should().NotBeNull();
-        }
-
-        [Theory]
-        [MockInMemoryDbAutoData]
         public static async Task RaiseExpiry_Adds_OrderEvent(
             DateTime date,
-            EventTypeEnum eventType,
+            OrderExpiryEventTypeEnum eventType,
             EmailPreferenceType emailPreferenceType,
             Order order,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -202,7 +179,7 @@ namespace BuyingCatalogueFunctionTests.Notifications.Services
         [MockInMemoryDbAutoData]
         public static async Task RaiseExpiry_Throws(
             DateTime date,
-            EventTypeEnum eventType,
+            OrderExpiryEventTypeEnum eventType,
             EmailPreferenceType emailPreferenceType,
             AspNetUser user,
             Order order,
@@ -210,11 +187,13 @@ namespace BuyingCatalogueFunctionTests.Notifications.Services
             [Frozen] IOptions<QueueOptions> options,
             [Frozen] QueueServiceClient queueServiceClient,
             [Frozen] QueueClient queueClient,
+            [Frozen] IEmailPreferenceService emailPreferenceService,
             IFixture fixture)
         {
             options.Value.Returns(new QueueOptions());
             queueClient.SendMessageAsync(Arg.Any<string>()).ThrowsAsync(new Exception());
             queueServiceClient.GetQueueClient(Arg.Any<string>()).Returns(queueClient);
+            emailPreferenceService.ShouldTriggerForUser(emailPreferenceType, user.Id).Returns(true);
 
             var service = fixture.Create<ContractExpiryService>();
 
