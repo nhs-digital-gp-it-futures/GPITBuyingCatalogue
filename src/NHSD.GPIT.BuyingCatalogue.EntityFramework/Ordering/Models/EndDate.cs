@@ -43,9 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return Math.Max(0, DifferenceInMonths(plannedDelivery, DateTime.Value.AddDays(1)));
         }
 
-        public EventTypeEnum DetermineEventToRaise(DateTime date, ICollection<OrderEvent> orderEvents)
+        public OrderExpiryEventTypeEnum DetermineEventToRaise(DateTime date, ICollection<OrderEvent> orderEvents)
         {
-            if (!DateTime.HasValue) return EventTypeEnum.Nothing;
+            if (!DateTime.HasValue) return OrderExpiryEventTypeEnum.Nothing;
 
             int remainingDays = RemainingDays(date);
 
@@ -54,26 +54,26 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 : DetermineEventToRaiseForThresholds(orderEvents, remainingDays, 30, 14);
         }
 
-        private static EventTypeEnum DetermineEventToRaiseForThresholds(ICollection<OrderEvent> orderEvents, int remainingDays, int firstThreshold, int secondThreshold)
+        private static OrderExpiryEventTypeEnum DetermineEventToRaiseForThresholds(ICollection<OrderEvent> orderEvents, int remainingDays, int firstThreshold, int secondThreshold)
         {
             if (remainingDays <= 0)
-                return EventTypeEnum.Nothing;
+                return OrderExpiryEventTypeEnum.Nothing;
 
             if (remainingDays <= secondThreshold)
             {
                 return orderEvents.Any(e => e.EventTypeId == (int)EventTypeEnum.OrderEnteredSecondExpiryThreshold)
-                    ? EventTypeEnum.Nothing
-                    : EventTypeEnum.OrderEnteredSecondExpiryThreshold;
+                    ? OrderExpiryEventTypeEnum.Nothing
+                    : OrderExpiryEventTypeEnum.OrderEnteredSecondExpiryThreshold;
             }
 
             if (remainingDays <= firstThreshold)
             {
                 return orderEvents.Any(e => e.EventTypeId == (int)EventTypeEnum.OrderEnteredFirstExpiryThreshold)
-                    ? EventTypeEnum.Nothing
-                    : EventTypeEnum.OrderEnteredFirstExpiryThreshold;
+                    ? OrderExpiryEventTypeEnum.Nothing
+                    : OrderExpiryEventTypeEnum.OrderEnteredFirstExpiryThreshold;
             }
 
-            return EventTypeEnum.Nothing;
+            return OrderExpiryEventTypeEnum.Nothing;
         }
 
         private int DifferenceInMonths(DateTime plannedDelivery, DateTime endDate)

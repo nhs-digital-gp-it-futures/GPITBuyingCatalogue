@@ -10,6 +10,6 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Interfaces
     {
         Task<List<Order>> GetOrdersNearingExpiry(DateTime day);
 
-        Task RaiseExpiry(DateTime date, Order order, EventTypeEnum eventType, EmailPreferenceType defaultEmailPreference);
+        Task RaiseExpiry(DateTime date, Order order, OrderExpiryEventTypeEnum eventType, EmailPreferenceType defaultEmailPreference);
     }
 }

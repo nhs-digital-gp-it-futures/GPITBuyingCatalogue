@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
             int month,
             int day,
             int remainingDays,
-            EventTypeEnum eventTypeEnum)
+            OrderExpiryEventTypeEnum eventTypeEnum)
         {
             var maximumTerm = 1;
             var commencementDate = new DateTime(2000, 1, 1);
@@ -139,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
             int month,
             int day,
             int remainingDays,
-            EventTypeEnum eventTypeEnum)
+            OrderExpiryEventTypeEnum eventTypeEnum)
         {
             var maximumTerm = 3;
             var commencementDate = new DateTime(2000, 1, 1);
@@ -179,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering
             };
 
             endDate.RemainingDays(new DateTime(year, month, day)).Should().Be(remainingDays);
-            endDate.DetermineEventToRaise(new DateTime(year, month, day), orderEvents).Should().Be(EventTypeEnum.Nothing);
+            endDate.DetermineEventToRaise(new DateTime(year, month, day), orderEvents).Should().Be(OrderExpiryEventTypeEnum.Nothing);
         }
     }
 }

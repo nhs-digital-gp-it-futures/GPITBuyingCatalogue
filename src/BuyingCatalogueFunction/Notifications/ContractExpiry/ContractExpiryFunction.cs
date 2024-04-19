@@ -80,7 +80,7 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry
         private async Task EvaluateOrder(DateTime today, Order order, EmailPreferenceType defaultEmailPreference)
         {
             var eventToRaise = order.EndDate.DetermineEventToRaise(today, order.ContractOrderNumber.OrderEvents);
-            if (eventToRaise == EventTypeEnum.Nothing)
+            if (eventToRaise == OrderExpiryEventTypeEnum.Nothing)
             {
                 logger.LogInformation("Contract Expiry: Order {CallOffId}. No event to raise", order.CallOffId);
                 return;
@@ -89,7 +89,7 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry
             if (defaultEmailPreference.SupportedEventTypes.All(x => x.Id != (int)eventToRaise))
             {
                 logger.LogWarning(
-                    "Contract Export: Order {CallOffId}. Mismatched email preference {EmailPreferenceType} and event {EventToRaise} types",
+                    "Contract Expiry: Order {CallOffId}. Mismatched email preference {EmailPreferenceType} and event {EventToRaise} types",
                     order.CallOffId, defaultEmailPreference.Id, eventToRaise);
 
                 return;

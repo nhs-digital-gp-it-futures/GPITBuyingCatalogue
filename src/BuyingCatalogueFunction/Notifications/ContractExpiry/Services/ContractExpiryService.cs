@@ -62,7 +62,7 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Services
                 .ToList();
         }
 
-        public async Task RaiseExpiry(DateTime date, Order order, EventTypeEnum eventType, EmailPreferenceType emailPreference)
+        public async Task RaiseExpiry(DateTime date, Order order, OrderExpiryEventTypeEnum eventType, EmailPreferenceType emailPreference)
         {
             dbContext.Attach(order);
 
@@ -73,7 +73,7 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Services
 
         private async Task DispatchNotifications(Order order,
             List<EmailNotification> notifications,
-            EventTypeEnum eventType)
+            OrderExpiryEventTypeEnum eventType)
         {
             var client = queueServiceClient.GetQueueClient(options.SendEmailNotifications);
             var tasks = notifications
@@ -98,7 +98,7 @@ namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Services
         private async Task<List<EmailNotification>> SaveUserNotifications(
             DateTime date,
             Order order,
-            EventTypeEnum eventType,
+            OrderExpiryEventTypeEnum eventType,
             List<AspNetUser> users,
             EmailPreferenceType emailPreferenceType)
         {

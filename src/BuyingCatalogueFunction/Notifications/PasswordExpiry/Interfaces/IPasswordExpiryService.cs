@@ -10,5 +10,5 @@ public interface IPasswordExpiryService
 {
     Task<ICollection<AspNetUser>> GetUsersNearingPasswordExpiry(DateTime today);
 
-    Task Raise(DateTime date, AspNetUser user, EventTypeEnum eventType);
+    Task Raise(DateTime date, AspNetUser user, PasswordExpiryEventTypeEnum eventType);
 }

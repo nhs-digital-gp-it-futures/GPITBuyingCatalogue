@@ -130,7 +130,7 @@ public static class PasswordExpiryServiceTests
         [Frozen] BuyingCatalogueDbContext context,
         PasswordExpiryService service)
     {
-        const EventTypeEnum eventType = EventTypeEnum.PasswordEnteredThirdExpiryThreshold;
+        const PasswordExpiryEventTypeEnum eventType = PasswordExpiryEventTypeEnum.PasswordEnteredThirdExpiryThreshold;
         options.Value.Returns(queueOptions);
 
         user.Disabled = false;
@@ -160,7 +160,7 @@ public static class PasswordExpiryServiceTests
         [Frozen] BuyingCatalogueDbContext context,
         PasswordExpiryService service)
     {
-        const EventTypeEnum eventType = EventTypeEnum.PasswordEnteredThirdExpiryThreshold;
+        const PasswordExpiryEventTypeEnum eventType = PasswordExpiryEventTypeEnum.PasswordEnteredThirdExpiryThreshold;
         queueClient.SendMessageAsync(Arg.Any<string>()).ThrowsAsync(new Exception());
         queueServiceClient.GetQueueClient(Arg.Any<string>()).Returns(queueClient);
         options.Value.Returns(queueOptions);
@@ -186,7 +186,7 @@ public static class PasswordExpiryServiceTests
         [Frozen] BuyingCatalogueDbContext context,
         PasswordExpiryService service)
     {
-        const EventTypeEnum eventType = EventTypeEnum.PasswordEnteredThirdExpiryThreshold;
+        const PasswordExpiryEventTypeEnum eventType = PasswordExpiryEventTypeEnum.PasswordEnteredThirdExpiryThreshold;
         queueServiceClient.GetQueueClient(Arg.Any<string>()).Returns(queueClient);
         options.Value.Returns(queueOptions);
 

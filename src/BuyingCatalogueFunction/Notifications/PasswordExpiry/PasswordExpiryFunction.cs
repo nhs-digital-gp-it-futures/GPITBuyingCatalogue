@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using BuyingCatalogueFunction.Notifications.Interfaces;
 using BuyingCatalogueFunction.Notifications.PasswordExpiry.Interfaces;
@@ -70,7 +71,7 @@ public class PasswordExpiryFunction
 
             try
             {
-                await Evaluate(today, user);
+                await Evaluate(today, user, defaultEmailPreference);
             }
             catch (Exception e)
             {
@@ -79,12 +80,21 @@ public class PasswordExpiryFunction
         }
     }
 
-    private async Task Evaluate(DateTime today, AspNetUser user)
+    private async Task Evaluate(DateTime today, AspNetUser user, EmailPreferenceType defaultEmailPreference)
     {
         var eventToRaise = user.DetermineEventToRaise(today);
-        if (eventToRaise == EventTypeEnum.Nothing)
+        if (eventToRaise == PasswordExpiryEventTypeEnum.Nothing)
         {
             logger.LogInformation("Password Expiry: User {UserId}. No event to raise", user.Id);
+            return;
+        }
+
+        if (defaultEmailPreference.SupportedEventTypes.All(x => x.Id != (int)eventToRaise))
+        {
+            logger.LogWarning(
+                "Password Expiry: User {UserId}. Mismatched email preference {EmailPreferenceType} and event {EventToRaise} types",
+                user.Id, defaultEmailPreference.Id, eventToRaise);
+
             return;
         }
 

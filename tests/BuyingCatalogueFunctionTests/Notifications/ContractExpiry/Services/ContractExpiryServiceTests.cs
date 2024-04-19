@@ -149,7 +149,7 @@ namespace BuyingCatalogueFunctionTests.Notifications.ContractExpiry.Services
         [MockInMemoryDbAutoData]
         public static async Task RaiseExpiry_Adds_OrderEvent(
             DateTime date,
-            EventTypeEnum eventType,
+            OrderExpiryEventTypeEnum eventType,
             EmailPreferenceType emailPreferenceType,
             Order order,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -179,7 +179,7 @@ namespace BuyingCatalogueFunctionTests.Notifications.ContractExpiry.Services
         [MockInMemoryDbAutoData]
         public static async Task RaiseExpiry_Throws(
             DateTime date,
-            EventTypeEnum eventType,
+            OrderExpiryEventTypeEnum eventType,
             EmailPreferenceType emailPreferenceType,
             AspNetUser user,
             Order order,

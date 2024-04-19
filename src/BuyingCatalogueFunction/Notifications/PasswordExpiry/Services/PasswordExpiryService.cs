@@ -47,7 +47,7 @@ public class PasswordExpiryService : IPasswordExpiryService
         return await query.ToListAsync();
     }
 
-    public async Task Raise(DateTime date, AspNetUser user, EventTypeEnum eventType)
+    public async Task Raise(DateTime date, AspNetUser user, PasswordExpiryEventTypeEnum eventType)
     {
         dbContext.Attach(user);
 
@@ -56,7 +56,7 @@ public class PasswordExpiryService : IPasswordExpiryService
         await DispatchNotification(user, notification, eventType);
     }
 
-    private async Task<EmailNotification> CreateNotification(DateTime date, AspNetUser user, EventTypeEnum eventType)
+    private async Task<EmailNotification> CreateNotification(DateTime date, AspNetUser user, PasswordExpiryEventTypeEnum eventType)
     {
         user.Events.Add(new AspNetUserEvent((int)eventType));
 
@@ -78,7 +78,7 @@ public class PasswordExpiryService : IPasswordExpiryService
     private async Task DispatchNotification(
         AspNetUser user,
         EmailNotification notification,
-        EventTypeEnum eventType)
+        PasswordExpiryEventTypeEnum eventType)
     {
         var queueName = options.Value.SendEmailNotifications;
         var client = queueServiceClient.GetQueueClient(queueName);

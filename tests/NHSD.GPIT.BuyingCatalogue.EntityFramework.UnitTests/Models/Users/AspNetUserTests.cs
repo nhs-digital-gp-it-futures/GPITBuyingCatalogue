@@ -4,7 +4,6 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Users
@@ -83,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Users
             user.Events.Clear();
             user.PasswordUpdatedDate = changedDate;
 
-            user.DetermineEventToRaise(today).Should().Be(EventTypeEnum.Nothing);
+            user.DetermineEventToRaise(today).Should().Be(PasswordExpiryEventTypeEnum.Nothing);
         }
 
         [Theory]
@@ -92,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Users
         [MockInlineAutoData(1, EventTypeEnum.PasswordEnteredThirdExpiryThreshold)]
         public static void DetermineEventToRaise_ReturnsExpected(
             int days,
-            EventTypeEnum expected,
+            PasswordExpiryEventTypeEnum expected,
             AspNetUser user)
         {
             var today = new DateTime(2024, 4, 16);
@@ -110,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Users
         [MockInlineAutoData(1, EventTypeEnum.PasswordEnteredThirdExpiryThreshold)]
         public static void DetermineEventToRaise_ExistingEvent_ReturnsExpected(
             int days,
-            EventTypeEnum expected,
+            PasswordExpiryEventTypeEnum expected,
             AspNetUser user)
         {
             var today = new DateTime(2024, 4, 16);
@@ -119,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Users
             user.Events = new List<AspNetUserEvent> { new AspNetUserEvent((int)expected) };
             user.PasswordUpdatedDate = changedDate;
 
-            user.DetermineEventToRaise(today).Should().Be(EventTypeEnum.Nothing);
+            user.DetermineEventToRaise(today).Should().Be(PasswordExpiryEventTypeEnum.Nothing);
         }
     }
 }

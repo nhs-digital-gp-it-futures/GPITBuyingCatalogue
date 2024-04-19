@@ -66,10 +66,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
             return remainingDays;
         }
 
-        public EventTypeEnum DetermineEventToRaise(DateTime today)
+        public PasswordExpiryEventTypeEnum DetermineEventToRaise(DateTime today)
         {
             var remaining = RemainingPasswordExpiryDays(today);
-            if (remaining == 0) return EventTypeEnum.Nothing;
+            if (remaining == 0) return PasswordExpiryEventTypeEnum.Nothing;
 
             var eventToRaise = ExpiryThresholds.ThresholdsMap.OrderBy(x => x.Threshold)
                 .Where(x => remaining <= x.Threshold)
@@ -77,18 +77,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models
                 .FirstOrDefault();
 
             return Events.Any(x => x.EventTypeId == (int)eventToRaise)
-                ? EventTypeEnum.Nothing
+                ? PasswordExpiryEventTypeEnum.Nothing
                 : eventToRaise;
         }
 
         [ExcludeFromCodeCoverage]
         public static class ExpiryThresholds
         {
-            public static List<(int Threshold, EventTypeEnum Event)> ThresholdsMap => new()
+            public static List<(int Threshold, PasswordExpiryEventTypeEnum Event)> ThresholdsMap => new()
             {
-                (30, EventTypeEnum.PasswordEnteredFirstExpiryThreshold),
-                (14, EventTypeEnum.PasswordEnteredSecondExpiryThreshold),
-                (1, EventTypeEnum.PasswordEnteredThirdExpiryThreshold),
+                (30, PasswordExpiryEventTypeEnum.PasswordEnteredFirstExpiryThreshold),
+                (14, PasswordExpiryEventTypeEnum.PasswordEnteredSecondExpiryThreshold),
+                (1, PasswordExpiryEventTypeEnum.PasswordEnteredThirdExpiryThreshold),
             };
         }
     }
