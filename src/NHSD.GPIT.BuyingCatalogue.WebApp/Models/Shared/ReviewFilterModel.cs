@@ -28,6 +28,8 @@ public class ReviewFilterModel : NavBaseModel
 
     public List<FrameworkFilterInfo> Frameworks { get; set; }
 
+    public FrameworkFilterInfo FrameworkFilterInfo { get; set; }
+
     public bool InExpander { get; set; }
 
     public bool HasEpics() => FilterDetails.Capabilities.Any(x => x.Value.Any());

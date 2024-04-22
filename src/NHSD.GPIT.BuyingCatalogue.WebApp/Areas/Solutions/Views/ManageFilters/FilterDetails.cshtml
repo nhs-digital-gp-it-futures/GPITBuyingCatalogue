@@ -7,6 +7,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
+
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ReviewFilterModel
 
 @{
@@ -39,14 +40,15 @@
 
                     @if (@Model.FilterDetails.FrameworkName != null)
                     {
-                        <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-4">Results from @Model.FilterDetails.FrameworkName (@Model.FilterResults.Count)</h2>
+                        var resultsForFrameworkModel = new ResultsForFrameworkModel(Model.InternalOrgId, Model.FilterDetails.Id, Model.FrameworkFilterInfo, Model.FilterResults);
+                        <partial name="_ResultsForFramework.cshtml" model="resultsForFrameworkModel" />
                     }
                     else
                     {
                         foreach(var framework in Model.Frameworks)
                         {
-                            var newModel = new ResultsForFrameworkModel(Model.InternalOrgId, Model.FilterDetails.Id, framework, Model.FilterResults);
-                            <partial name="_ResultsForFramework.cshtml" model="newModel"/>
+                            var resultsForFrameworkModel = new ResultsForFrameworkModel(Model.InternalOrgId, Model.FilterDetails.Id, framework, Model.FilterResults);
+                            <partial name="_ResultsForFramework.cshtml" model="resultsForFrameworkModel"/>
                         }
                     }
                 }

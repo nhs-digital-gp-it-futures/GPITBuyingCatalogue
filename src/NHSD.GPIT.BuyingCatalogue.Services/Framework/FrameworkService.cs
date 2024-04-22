@@ -36,6 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
         public async Task<EntityFramework.Catalogue.Models.Framework> GetFramework(string frameworkId) =>
             await dbContext.Frameworks.FirstOrDefaultAsync(f => f.Id == frameworkId);
 
+        public async Task<EntityFramework.Catalogue.Models.Framework> GetFrameworkByName(string frameworkName) =>
+            await dbContext.Frameworks.FirstOrDefaultAsync(f => f.ShortName == frameworkName);
+
         public async Task<IList<EntityFramework.Catalogue.Models.Framework>> GetFrameworks()
             => await dbContext.Frameworks.ToListAsync();
 

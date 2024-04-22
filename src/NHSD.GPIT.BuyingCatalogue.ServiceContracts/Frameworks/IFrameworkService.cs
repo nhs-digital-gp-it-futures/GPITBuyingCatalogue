@@ -11,6 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
 
         public Task<Framework> GetFramework(string frameworkId);
 
+        public Task<Framework> GetFrameworkByName(string frameworkName);
+
         Task<IList<Framework>> GetFrameworks();
 
         Task AddFramework(string name, IEnumerable<FundingType> fundingTypes, int maximumTerm);
