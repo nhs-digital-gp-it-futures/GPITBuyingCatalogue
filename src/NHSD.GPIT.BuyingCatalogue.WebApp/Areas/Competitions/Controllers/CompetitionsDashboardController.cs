@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -126,19 +127,29 @@ public class CompetitionsDashboardController : Controller
     }
 
     [HttpGet("select-filter/{filterId:int}/save")]
-    public async Task<IActionResult> SaveCompetition(string internalOrgId, int filterId, bool fromFilter = false)
+    public async Task<IActionResult> SaveCompetition(string internalOrgId, int filterId, string frameworkId = null, bool fromFilter = false)
     {
         _ = filterId;
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        var model = new SaveCompetitionModel(internalOrgId, organisation.Name)
-        {
-            BackLink = fromFilter == true ?
+        var backlink = fromFilter == true ?
                 Url.Action(
                     nameof(ManageFiltersController.FilterDetails),
                     typeof(ManageFiltersController).ControllerName(),
                     new { filterId, Area = typeof(ManageFiltersController).AreaName() }) :
-                Url.Action(nameof(ReviewFilter), new { internalOrgId, filterId }),
+                Url.Action(nameof(ReviewFilter), new { internalOrgId, filterId });
+
+        frameworkId = (await filterService.GetFilterIds(organisation.Id, filterId)).FrameworkId ?? frameworkId;
+
+        if (frameworkId.IsNullOrEmpty())
+        {
+            Redirect(backlink);
+        }
+
+        var model = new SaveCompetitionModel(internalOrgId, organisation.Name, frameworkId)
+        {
+            BackLink = backlink,
+            FrameworkId = frameworkId,
         };
 
         return View(model);
@@ -155,6 +166,7 @@ public class CompetitionsDashboardController : Controller
         var competitionId = await competitionsService.AddCompetition(
             organisation.Id,
             filterId,
+            model.FrameworkId,
             model.Name,
             model.Description);
 

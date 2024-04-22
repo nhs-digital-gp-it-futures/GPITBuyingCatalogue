@@ -34,7 +34,7 @@
                 {
                     <h3 class="header-with-detail">@Model.FilterDetails.Name (@Model.FilterResults.Count)</h3>
                     <p class="nhsuk-body">@Model.FilterDetails.Description</p>
-                    <p class="nhsuk-body-s nhsuk-u-margin-top-1">Results updated: @DateTime.Now.ToString("MMMM dd, yyyy")</p>
+                    <p class="nhsuk-body-s nhsuk-u-margin-top-1">Results updated: @DateTime.Now.ToString("dd MMMM yyyy")</p>
                     
 
                     @if (@Model.FilterDetails.FrameworkName != null)

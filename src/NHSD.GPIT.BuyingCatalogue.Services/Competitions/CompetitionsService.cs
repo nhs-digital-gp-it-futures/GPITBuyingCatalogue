@@ -579,11 +579,11 @@ public class CompetitionsService : ICompetitionsService
             await dbContext.SaveChangesAsync();
     }
 
-    public async Task<int> AddCompetition(int organisationId, int filterId, string name, string description)
+    public async Task<int> AddCompetition(int organisationId, int filterId, string frameworkId, string name, string description)
     {
         var competition = new Competition
         {
-            OrganisationId = organisationId, FilterId = filterId, Name = name, Description = description,
+            OrganisationId = organisationId, FilterId = filterId, Name = name, Description = description, FrameworkId = frameworkId,
         };
 
         dbContext.Competitions.Add(competition);

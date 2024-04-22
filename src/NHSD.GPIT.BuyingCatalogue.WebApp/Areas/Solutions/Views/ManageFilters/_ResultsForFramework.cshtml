@@ -1,5 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters.ResultsForFrameworkModel
 
 @if (Model.CatalogueItems?.Any() ?? false)
@@ -15,7 +16,10 @@
         <div class="nhsuk-card nhsuk-card__inverted" data-foundation-cap="false">
             <div class="nhsuk-card__content">
                 <h3 class="nhsuk-card__heading">
-                    <a href="#" class="nhsuk-link">@solution.Name</a>
+                    <a href="@Url.Action(
+                        nameof(SolutionsController.Description),
+                        typeof(SolutionsController).ControllerName(),
+                        new { solutionId = solution.Id})" class="nhsuk-link" target="_blank">@solution.Name</a>
                     <span class="nhsuk-caption-m nhsuk-caption--bottom">
                         @solution.Supplier.Name
                     </span>
@@ -32,6 +36,7 @@
        asp-controller="@(typeof(CompetitionsDashboardController).ControllerName())"
        asp-route-internalOrgId="@(Model.InternalOrgId)"
        asp-route-filterId="@Model.FilterId"
+       asp-route-frameworkId="@Model.Framework.Id"
        asp-route-fromFilter="@true"
        asp-route-area="@(typeof(CompetitionsDashboardController).AreaName())">Create competition</a>
 }
