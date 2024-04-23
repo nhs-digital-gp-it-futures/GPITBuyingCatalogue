@@ -16,7 +16,7 @@
     }
     <partial name="Partials/_BetaBanner" />
     <partial name="Headers/_Header" model="@("_Navigation")" />
-    
+
     @if (Model.ShowBreadcrumb)
     {
         <vc:nhs-breadcrumbs items="@Model.BreadcrumbItems.ToDictionary(x => x.Name, x => @Url.Action(x.Action, x.Controller, x.RouteData))"></vc:nhs-breadcrumbs>
@@ -43,7 +43,7 @@
                                         else
                                         {
                                             <li class="side-nav__list">
-                                                <a href ="@Url.Action(
+                                                <a href="@Url.Action(
                                                               item.Action,
                                                               item.Controller,
                                                               item.RouteData)"
@@ -60,9 +60,10 @@
                 </div>
 
                 <div class="nhsuk-grid-column-two-thirds" id="content">
+                    <nhs-validation-summary />
                     <nhs-page-title title="@ViewBag.Title"
                                     caption="@ViewBag.Caption" />
-                    
+
                     @RenderBody()
 
                     @if (Model.ShowPagination)
@@ -87,9 +88,9 @@
     <partial name="Footers/_Footer" />
 
     <partial name="Partials/_JsAssetIncludes" />
-    
-@if (Model.ShowBackToTop)
-{
+
+    @if (Model.ShowBackToTop)
+    {
         <a href="#">
             <div class="scroll-to-top-container">
                 <div class="goup-arrow"></div>
@@ -108,7 +109,7 @@
             };
 
         </script>
-}
+    }
 
 </body>
 </html>
