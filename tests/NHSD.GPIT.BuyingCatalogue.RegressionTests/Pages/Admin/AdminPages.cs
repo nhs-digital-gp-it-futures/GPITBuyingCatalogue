@@ -1,6 +1,4 @@
-﻿//using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Admin;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions;
@@ -25,6 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             ManageOrganisationSupplier = new ManageOrganisationSupplier(driver, commonActions);
             AddNewSolution = new AddNewSolution(driver, commonActions, factory);
             Features = new Features(driver, commonActions);
+            Interoperability = new Interoperability(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -49,6 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
 
         internal Features Features { get; }
 
+        internal Interoperability Interoperability { get; }
+
         public void AddSolutionDetailsAndDescription()
         {
             AddNewSolution.AddSolution();
@@ -57,6 +58,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             var solutionId = GetSolutionID();
             AddNewSolution.AddSolutionDescription(solutionId);
             Features.AddSolutionFeature(solutionId);
+        }
+
+        public void AddSolutionInteroperability(ProviderOrConsumer providerOrConsumer)
+        {
+            var solutionId = GetSolutionID();
+            Interoperability.AddInteroperability(solutionId);
+            Interoperability.AddIM1Integrations(providerOrConsumer);
+            Interoperability.AddGPConnect1Integrations(providerOrConsumer);
+            Interoperability.AddNHSAppIntegrations();
         }
 
         private string GetSolutionID()

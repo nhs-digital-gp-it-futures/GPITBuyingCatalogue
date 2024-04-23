@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
 
         public void AddSolutionDescription(string solutionId)
         {
-            CommonActions.ClickLinkElement(AddSolutionObjects.SolutionDescriptionLink(solutionId.ToString()));
+            CommonActions.ClickLinkElement(AddSolutionObjects.SolutionDescriptionLink(solutionId));
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.Description))

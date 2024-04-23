@@ -43,5 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
         public static By SolutionDescriptionLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/description')]");
 
         public static By SolutionFeatureLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/features')]");
+
+        public static By SolutionInteroperabilityLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/interoperability')]");
     }
 }
