@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[]
                 {
-                    new("organisationFunction", "Buyer"),
+                    new(ClaimTypes.Role, "Buyer"),
                     new("primaryOrganisationInternalIdentifier", internalOrgId),
                 },
                 "mock"));
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var orderIds = orders.Items.Select(x => x.CallOffId).ToList();
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(
-                new Claim[] { new("organisationFunction", "Buyer") },
+                new Claim[] { new(ClaimTypes.Role, "Buyer") },
                 "mock"));
 
             controller.ControllerContext = new ControllerContext
@@ -128,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[]
                 {
-                    new("organisationFunction", "Buyer"),
+                    new(ClaimTypes.Role, "Buyer"),
                     new("primaryOrganisationInternalIdentifier", organisations.First().InternalIdentifier),
                     new("secondaryOrganisationInternalIdentifier", organisations.Last().InternalIdentifier),
                 },

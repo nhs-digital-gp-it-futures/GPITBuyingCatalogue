@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                      new ClaimsIdentity(
                          new Claim[]
                          {
-                             new("organisationFunction", "Buyer"),
+                             new(ClaimTypes.Role, "Buyer"),
                              new("primaryOrganisationInternalIdentifier", "ABC"),
                          })));
 
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                      new ClaimsIdentity(
                          new Claim[]
                          {
-                             new("organisationFunction", "Buyer"),
+                             new(ClaimTypes.Role, "Buyer"),
                              new("primaryOrganisationInternalIdentifier", "ABC"),
                              new("secondaryOrganisationInternalIdentifier", "DEF"),
                              new("secondaryOrganisationInternalIdentifier", "GHI"),
@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                      new ClaimsIdentity(
                          new Claim[]
                          {
-                             new("organisationFunction", "Buyer"),
+                             new(ClaimTypes.Role, "Buyer"),
                              new("primaryOrganisationInternalIdentifier", "ABC"),
                              new("secondaryOrganisationInternalIdentifier", "DEF"),
                              new("secondaryOrganisationInternalIdentifier", "GHI"),

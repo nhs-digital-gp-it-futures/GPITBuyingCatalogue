@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 {
@@ -17,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
         public const string InvalidPasswordCode = "InvalidPassword";
         public const string PasswordConditionsNotMet = "The password you’ve entered does not meet the password policy";
         public const string PasswordAlreadyUsedCode = "HistoricalPassword";
-        public const string PasswordAlreadyUsed = "Password was used previously. Enter a different password";
+        public const string PasswordAlreadyUsed = "Password was used previously. Try a different password";
 
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly IPasswordHasher<AspNetUser> passwordHash;
@@ -39,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
 
         public static void ConfigurePasswordOptions(PasswordOptions options)
         {
-            if (options == null) throw new ArgumentNullException(nameof(options));
+            ArgumentNullException.ThrowIfNull(options);
 
             options.RequireDigit = true;
             options.RequireUppercase = true;

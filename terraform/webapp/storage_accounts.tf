@@ -22,15 +22,3 @@ resource "azurerm_storage_container" "public_documents_container" {
   container_access_type = "container"
   depends_on            = [module.documentstorageaccount]
 }
-
-resource "azurerm_storage_queue" "send_email_queue" {
-  name                  = "send-email-notification"
-  storage_account_name  = module.documentstorageaccount.storage_account_name
-  depends_on            = [module.documentstorageaccount]
-}
-
-resource "azurerm_storage_queue" "complete_email_queue" {
-  name                  = "complete-email-notification"
-  storage_account_name  = module.documentstorageaccount.storage_account_name
-  depends_on            = [module.documentstorageaccount]
-}

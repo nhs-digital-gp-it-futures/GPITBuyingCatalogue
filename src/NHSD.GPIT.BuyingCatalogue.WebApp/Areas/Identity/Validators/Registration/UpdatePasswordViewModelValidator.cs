@@ -1,11 +1,12 @@
 ﻿using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registration
 {
     public class UpdatePasswordViewModelValidator : AbstractValidator<UpdatePasswordViewModel>
     {
-        public const string CurrentPasswordRequired = "Enter current password";
+        public const string CurrentPasswordRequired = "Enter your current password";
         public const string CurrentPasswordIncorrect = "Current password incorrect";
         public const string NewPasswordRequired = "Enter a new password";
         public const string ConfirmPasswordRequired = "Confirm new password";
@@ -26,6 +27,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registratio
                 .WithMessage(ConfirmPasswordRequired)
                 .Equal(x => x.NewPassword)
                 .WithMessage(ConfirmPasswordMismatch);
+
+            RuleFor(x => x)
+                .Custom((x, context) =>
+                {
+                    if (!x.IdentityResult.Succeeded)
+                    {
+                        if (x.IncorrectPasswordError)
+                            context.AddFailure(nameof(x.CurrentPassword), CurrentPasswordIncorrect);
+
+                        if (x.InvalidPasswordError)
+                            context.AddFailure(nameof(x.NewPassword), PasswordValidator.PasswordConditionsNotMet);
+
+                        if (x.PasswordUsedBefore)
+                            context.AddFailure(nameof(x.NewPassword), PasswordValidator.PasswordAlreadyUsed);
+                    }
+                })
+                .When(x => x.IdentityResult != null);
         }
     }
 }

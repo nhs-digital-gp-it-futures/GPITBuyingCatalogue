@@ -1,27 +1,20 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Azure.Storage.Queues;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 
 namespace BuyingCatalogueFunction.Notifications
 {
     public class CompleteEmailNotificationFunction
     {
-        private readonly QueueOptions queueOptions;
         private readonly ILogger<SendEmailNotificationFunction> logger;
         private readonly BuyingCatalogueDbContext dbContext;
 
         public CompleteEmailNotificationFunction(
-            IOptions<QueueOptions> queueOptions,
             ILogger<SendEmailNotificationFunction> logger,
-            BuyingCatalogueDbContext dbContext,
-            QueueServiceClient queueServiceClient)
+            BuyingCatalogueDbContext dbContext)
         {
-            this.queueOptions = queueOptions.Value;
             this.logger = logger;
             this.dbContext = dbContext;
         }

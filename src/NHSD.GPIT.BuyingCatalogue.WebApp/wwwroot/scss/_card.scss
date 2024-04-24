@@ -25,6 +25,12 @@
     width: 90%
 }
 
+.nhs-card-v2__content {
+    .nhsuk-pagination {
+        margin-bottom: 0;
+    }
+}
+
 .nhs-card-v2__footer p {
     margin-bottom: 16px !important;
     margin-top: 16px !important;

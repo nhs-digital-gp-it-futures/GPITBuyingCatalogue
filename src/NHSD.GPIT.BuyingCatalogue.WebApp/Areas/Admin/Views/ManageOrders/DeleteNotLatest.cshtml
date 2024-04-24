@@ -4,6 +4,8 @@
         ? "amendment"
         : "order";
 
+    ViewBag.Title = $"This {orderOrAmendment} cannot be deleted";
+
     var advice = Model.IsAmendment
         ? "This amendment cannot be deleted as a more recent amendment already exists. Any more recent amendments must be deleted before you can delete this one."
         : "This order cannot be deleted as a more recent amendment already exists. To delete this order you must first delete the amendment.";
@@ -13,7 +15,7 @@
     <partial name="Partials/_BackLink" model="Model" />
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-page-title title="This @orderOrAmendment cannot be deleted"
+            <nhs-page-title title="@ViewBag.Title"
                             caption="Order @Model.CallOffId"
                             advice="@advice" />
 

@@ -43,6 +43,16 @@ resource "azurerm_storage_container" "function_app_container" {
   container_access_type = "container"
 }
 
+resource "azurerm_storage_queue" "send_email_queue" {
+  name                  = local.send_notification
+  storage_account_name  = azurerm_storage_account.function_app_storage.name
+}
+
+resource "azurerm_storage_queue" "complete_email_queue" {
+  name                  = local.complete_notification
+  storage_account_name  = azurerm_storage_account.function_app_storage.name
+}
+
 resource "azurerm_windows_function_app" "function_app" {
   name = "${local.project_environment}-functionapp"
 
@@ -50,9 +60,8 @@ resource "azurerm_windows_function_app" "function_app" {
     APPLICATIONINSIGHTS_CONNECTION_STRING   = data.azurerm_application_insights.app_insights.connection_string
     BUYINGCATALOGUECONNECTIONSTRING         = "Server=tcp:${data.azurerm_mssql_server.buyingcataloguedb.fully_qualified_domain_name},1433;Initial Catalog=${var.database_catalog};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.sqladminusername.value};Password=${data.azurerm_key_vault_secret.sqladminpassword.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     NOTIFY_API_KEY                          = var.notify_api_key
-    QUEUE__SEND_EMAIL_NOTIFICATION          = "send-email-notification"
-    QUEUE__COMPLETE_EMAIL_NOTIFICATION      = "complete-email-notification"
-    TEMPLATE__CONTRACT_EXPIRY_TEMPLATE_ID   = var.contract_expiry_template_id
+    QUEUE__SEND_EMAIL_NOTIFICATION          = local.send_notification
+    QUEUE__COMPLETE_EMAIL_NOTIFICATION      = local.complete_notification
     OrganisationUri                         = "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations"
     RelationshipsUri                        = "https://directory.spineservices.nhs.uk/ORD/2-0-0/rels"
     RolesUri                                = "https://directory.spineservices.nhs.uk/ORD/2-0-0/roles"

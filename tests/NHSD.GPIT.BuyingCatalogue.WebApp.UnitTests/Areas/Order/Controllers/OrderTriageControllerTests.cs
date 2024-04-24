@@ -423,7 +423,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[]
                 {
-                    new(CatalogueClaims.OrganisationFunction, "Buyer"),
+                    new(ClaimTypes.Role, "Buyer"),
                     new(CatalogueClaims.PrimaryOrganisationInternalIdentifier, organisations.First().InternalIdentifier),
                     new(CatalogueClaims.SecondaryOrganisationInternalIdentifier, organisations.Last().InternalIdentifier),
                 },
@@ -458,7 +458,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[]
                 {
-                    new(CatalogueClaims.OrganisationFunction, "Buyer"),
+                    new(ClaimTypes.Role, "Buyer"),
                     new(CatalogueClaims.PrimaryOrganisationInternalIdentifier, organisation.InternalIdentifier),
                 },
                 "mock"));
@@ -485,7 +485,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[]
                 {
-                    new(CatalogueClaims.OrganisationFunction, "Buyer"),
+                    new(ClaimTypes.Role, "Buyer"),
                     new(CatalogueClaims.PrimaryOrganisationInternalIdentifier, organisation.InternalIdentifier),
                 },
                 "mock"));
@@ -513,7 +513,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[]
                 {
-                    new(CatalogueClaims.OrganisationFunction, "Buyer"),
+                    new(ClaimTypes.Role, "Buyer"),
                     new(CatalogueClaims.PrimaryOrganisationInternalIdentifier, organisations.First().InternalIdentifier),
                     new(CatalogueClaims.SecondaryOrganisationInternalIdentifier, organisations.Last().InternalIdentifier),
                 },
@@ -545,7 +545,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[]
                 {
-                    new(CatalogueClaims.OrganisationFunction, "Buyer"),
+                    new(ClaimTypes.Role, "Buyer"),
                     new(CatalogueClaims.PrimaryOrganisationInternalIdentifier, organisations.First().InternalIdentifier),
                     new(CatalogueClaims.SecondaryOrganisationInternalIdentifier, organisations.Last().InternalIdentifier),
                 },
