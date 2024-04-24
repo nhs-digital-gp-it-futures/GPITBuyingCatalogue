@@ -34,6 +34,8 @@ public interface ICompetitionsService
 
     Task<Competition> GetCompetitionWithServices(string internalOrgId, int competitionId, bool shouldTrack = false);
 
+    Task<Competition> GetCompetitionWithServicesAndFramework(string internalOrgId, int competitionId, bool shouldTrack = false);
+
     Task<Competition> GetCompetitionWithSolutions(string internalOrgId, int competitionId);
 
     Task<Competition> GetCompetitionWithSolutionsHub(string internalOrgId, int competitionId);

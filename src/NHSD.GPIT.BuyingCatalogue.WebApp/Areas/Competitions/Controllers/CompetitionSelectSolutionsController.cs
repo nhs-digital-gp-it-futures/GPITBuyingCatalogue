@@ -34,7 +34,7 @@ public class CompetitionSelectSolutionsController : Controller
     [HttpGet("select-solutions")]
     public async Task<IActionResult> SelectSolutions(string internalOrgId, int competitionId)
     {
-        var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
+        var competition = await competitionsService.GetCompetitionWithServicesAndFramework(internalOrgId, competitionId);
 
         if (competition == null)
         {

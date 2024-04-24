@@ -12,8 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -28,7 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
     {
         private static readonly PublicationStatus[] AllowedPublicationStatuses = { PublicationStatus.Published, PublicationStatus.InRemediation };
         private readonly BuyingCatalogueDbContext dbContext;
-        private readonly ISolutionsFilterService solutionsFilterService;
 
         public SolutionsFilterService(BuyingCatalogueDbContext dbContext) =>
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
