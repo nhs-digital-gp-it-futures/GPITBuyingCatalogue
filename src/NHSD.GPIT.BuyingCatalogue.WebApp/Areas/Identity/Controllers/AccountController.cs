@@ -222,33 +222,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         [HttpPost("UpdatePassword")]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-                return View(viewModel);
-
-            var res = await passwordService.ChangePasswordAsync(User.Identity.Name, viewModel.CurrentPassword, viewModel.NewPassword);
-
-            if (res.Succeeded)
+            if (ModelState.IsValid)
             {
-                await passwordService.UpdatePasswordChangedDate(User.Identity.Name);
-                await signInManager.SignOutAsync().ConfigureAwait(false);
-                return RedirectToAction(nameof(Login));
+                viewModel.IdentityResult = await passwordService.ChangePasswordAsync(User.Identity.Name, viewModel.CurrentPassword, viewModel.NewPassword);
+                if (TryValidateModel(viewModel))
+                {
+                    if (!viewModel.IdentityResult.Succeeded)
+                    {
+                        // it's not succeeded and the validator hasn't handled it
+                        throw new InvalidOperationException($"Unexpected errors whilst updating password: {string.Join(" & ", viewModel.IdentityResult.Errors.Select(error => error.Description))}");
+                    }
+
+                    await passwordService.UpdatePasswordChangedDate(User.Identity.Name);
+                    await signInManager.SignOutAsync().ConfigureAwait(false);
+                    return RedirectToAction(nameof(Login));
+                }
             }
 
-            var passwordUsedBefore = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.PasswordAlreadyUsedCode);
-            var incorrectPasswordError = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.PasswordMismatchCode);
-            var invalidPasswordError = res.Errors.FirstOrDefault(error => error.Code == PasswordValidator.InvalidPasswordCode);
-
-            if (incorrectPasswordError is null && invalidPasswordError is null && passwordUsedBefore is null)
-                throw new InvalidOperationException($"Unexpected errors whilst updating password: {string.Join(" & ", res.Errors.Select(error => error.Description))}");
-
-            if (incorrectPasswordError is not null)
-                ModelState.AddModelError(nameof(UpdatePasswordViewModel.CurrentPassword), UpdatePasswordViewModelValidator.CurrentPasswordIncorrect);
-
-            if (invalidPasswordError is not null)
-                ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), PasswordValidator.PasswordConditionsNotMet);
-
-            if (passwordUsedBefore is not null)
-                ModelState.AddModelError(nameof(UpdatePasswordViewModel.NewPassword), PasswordValidator.PasswordAlreadyUsed);
             return View(viewModel);
         }
 

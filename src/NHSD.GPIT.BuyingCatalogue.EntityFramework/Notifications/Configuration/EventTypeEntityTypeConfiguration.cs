@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Configuration
             builder.HasKey(c => c.Id);
 
             builder.HasOne(o => o.EmailPreferenceType)
-                .WithMany()
+                .WithMany(x => x.SupportedEventTypes)
                 .HasForeignKey(o => o.EmailPreferenceTypeId)
                 .HasConstraintName("FK_EventTypes_EmailPreferenceType");
         }

@@ -28,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
             new MarketingContactCustomization(),
             new FrameworkSolutionCustomization(),
             new MoqControllerCustomization(),
+            new EmailPreferenceTypeCustomization(),
             new MobileConnectionDetailsCustomization(),
             new MobileOperatingSystemsCustomization(),
             new ApplicationTypeCustomization(),

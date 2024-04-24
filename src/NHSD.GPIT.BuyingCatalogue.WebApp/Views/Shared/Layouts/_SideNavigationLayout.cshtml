@@ -43,7 +43,7 @@
                                         else
                                         {
                                             <li class="side-nav__list">
-                                                <a href ="@Url.Action(
+                                                <a href="@Url.Action(
                                                               item.Action,
                                                               item.Controller,
                                                               item.RouteData)"
@@ -60,6 +60,7 @@
                 </div>
 
                 <div class="nhsuk-grid-column-two-thirds" id="content">
+                    <nhs-validation-summary />
                     <nhs-page-title title="@ViewBag.Title"
                                     caption="@ViewBag.Caption" />
 
@@ -108,7 +109,7 @@
             };
 
         </script>
-}
+    }
 
 </body>
 </html>
