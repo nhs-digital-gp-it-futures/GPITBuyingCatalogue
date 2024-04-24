@@ -15,7 +15,7 @@
         <partial name="Partials/_CookieConsentPartial" />
     }
     <partial name="Partials/_BetaBanner" />
-    <partial name="Headers/_Header" model="@("_Navigation")" />
+    <partial name="Headers/_Header" />
 
     @if (Model.ShowBreadcrumb)
     {
@@ -89,8 +89,8 @@
 
     <partial name="Partials/_JsAssetIncludes" />
 
-    @if (Model.ShowBackToTop)
-    {
+@if (Model.ShowBackToTop)
+{
         <a href="#">
             <div class="scroll-to-top-container">
                 <div class="goup-arrow"></div>

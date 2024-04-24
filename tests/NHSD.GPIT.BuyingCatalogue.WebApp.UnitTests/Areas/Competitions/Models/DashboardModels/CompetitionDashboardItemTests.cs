@@ -24,7 +24,7 @@ public static class CompetitionDashboardItemTests
         model.Id.Should().Be(competition.Id);
         model.Name.Should().Be(competition.Name);
         model.Description.Should().Be(competition.Description);
-        model.LastUpdated.Should().Be(competition.LastUpdated);
+        model.Created.Should().Be(competition.Created);
     }
 
     [Theory]

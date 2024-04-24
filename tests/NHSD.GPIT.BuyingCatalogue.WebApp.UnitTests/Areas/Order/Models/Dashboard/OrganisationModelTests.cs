@@ -24,112 +24,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
         {
             var model = new OrganisationModel(organisation, user, allOrders);
 
-            model.BackLink.Should().Be("/");
-            model.BackLinkText.Should().Be("Go back to homepage");
             model.Title.Should().Be(organisation.Name);
             model.OrganisationName.Should().Be(organisation.Name);
             model.InternalOrgId.Should().Be(organisation.InternalIdentifier);
             model.CanActOnBehalf.Should().Be(user.GetSecondaryOrganisationInternalIdentifiers().Any());
             model.Orders.Should().BeEquivalentTo(allOrders);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void LinkName_Terminated_ReturnsExpectedLink(
-            EntityFramework.Ordering.Models.Order order,
-            OrganisationModel model)
-        {
-            order.Completed = DateTime.UtcNow;
-            order.IsDeleted = false;
-            order.IsTerminated = true;
-
-            model.OrderIds = Enumerable.Empty<CallOffId>();
-
-            model.LinkName(order).Should().Be("View");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void LinkName_CompletedNoSubsequentRevisions_ReturnsExpectedLink(
-            EntityFramework.Ordering.Models.Order order,
-            OrganisationModel model)
-        {
-            order.Completed = DateTime.UtcNow;
-            order.IsDeleted = false;
-
-            model.OrderIds = Enumerable.Empty<CallOffId>();
-
-            model.LinkName(order).Should().Be("View");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void LinkName_InProgressNoSubsequentRevisions_ReturnsExpectedLink(
-            EntityFramework.Ordering.Models.Order order,
-            OrganisationModel model)
-        {
-            order.Completed = null;
-            order.IsDeleted = false;
-
-            model.OrderIds = Enumerable.Empty<CallOffId>();
-
-            model.LinkName(order).Should().Be("Edit");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void LinkName_CompletedWithSubsequentRevisions_ReturnsExpectedLink(
-            EntityFramework.Ordering.Models.Order order,
-            OrganisationModel model)
-        {
-            order.Completed = DateTime.UtcNow;
-            order.IsDeleted = false;
-
-            model.OrderIds = Enumerable.Range(2, 6).Select(x => new CallOffId(order.OrderNumber, x));
-
-            model.LinkName(order).Should().Be("View");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void LinkName_InProgressWithSubsequentRevisions_ReturnsExpectedLink(
-            EntityFramework.Ordering.Models.Order order,
-            OrganisationModel model)
-        {
-            order.Completed = null;
-            order.IsDeleted = false;
-
-            model.OrderIds = Enumerable.Range(2, 6).Select(x => new CallOffId(order.OrderNumber, x));
-
-            model.LinkName(order).Should().Be("Edit");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void LinkName_CompletedAssociatedServiceOrder_ReturnsExpectedLink(
-            EntityFramework.Ordering.Models.Order order,
-            OrganisationModel model)
-        {
-            order.Completed = DateTime.UtcNow;
-            order.IsDeleted = false;
-
-            model.OrderIds = Enumerable.Empty<CallOffId>();
-
-            model.LinkName(order).Should().Be("View");
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void LinkName_InProgressAssociatedServiceOrder_ReturnsExpectedLink(
-            EntityFramework.Ordering.Models.Order order,
-            OrganisationModel model)
-        {
-            order.Completed = null;
-            order.IsDeleted = false;
-
-            model.OrderIds = Enumerable.Empty<CallOffId>();
-
-            model.LinkName(order).Should().Be("Edit");
         }
 
         [Theory]

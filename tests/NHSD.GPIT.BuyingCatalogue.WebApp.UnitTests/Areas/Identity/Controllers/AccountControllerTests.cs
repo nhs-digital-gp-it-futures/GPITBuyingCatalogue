@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
@@ -249,8 +250,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             LoginViewModel model,
             UserManager<AspNetUser> mockUserManager,
             SignInManager<AspNetUser> mockSignInManager,
-            IOdsService mockOdsService)
+            IOdsService mockOdsService,
+            IUrlHelper mockUrlHelper)
         {
+            const string userName = "Name";
+            const string url = "~/";
+
             model.ReturnUrl = string.Empty;
 
             user.Disabled = false;
@@ -268,7 +273,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 .PasswordSignInAsync(user, model.Password, false, true)
                 .Returns(SignInResult.Success);
 
+            mockUrlHelper
+                .Action(Arg.Any<UrlActionContext>())
+                .Returns(url);
+
+            var userPrincipal = new ClaimsPrincipal(
+                new ClaimsIdentity(
+                    new Claim[]
+                    {
+                        new(ClaimTypes.Name, userName),
+                        new(CatalogueClaims.PrimaryOrganisationInternalIdentifier, odsCode),
+                    },
+                    "mock"));
             var controller = CreateController(mockUserManager, mockSignInManager, odsService: mockOdsService);
+
+            controller.Url = mockUrlHelper;
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = userPrincipal, },
+            };
 
             var result = await controller.Login(model);
 
