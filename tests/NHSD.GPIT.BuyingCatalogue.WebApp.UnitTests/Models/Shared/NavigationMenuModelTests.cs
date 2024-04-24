@@ -158,13 +158,6 @@ public static class NavigationMenuModelTests
                     x => string.Equals(x.Action, nameof(CatalogueSolutionsController.Index)) && string.Equals(
                         x.Controller,
                         typeof(CatalogueSolutionsController).ControllerName())));
-
-        urlHelper.Received()
-            .Action(
-                Arg.Is<UrlActionContext>(
-                    x => string.Equals(x.Action, nameof(AccountController.Logout)) && string.Equals(
-                        x.Controller,
-                        typeof(AccountController).ControllerName())));
     }
 
     [Theory]

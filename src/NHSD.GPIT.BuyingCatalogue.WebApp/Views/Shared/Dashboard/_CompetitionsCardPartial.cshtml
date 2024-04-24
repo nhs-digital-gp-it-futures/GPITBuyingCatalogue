@@ -44,13 +44,13 @@
                             <nhs-tag status-enum="@competition.Progress" />
                         </nhs-table-cell>
                         <nhs-table-cell>
-@{
+                            @{
                                 var competitionAction = GetCompetitionActionLink(competition);
                             }
                             <a href="@competitionAction">View</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
-}
+                }
             </nhs-table>
 
             @if (Model.IsDashboardView)
@@ -70,19 +70,19 @@
         }
         else
         {
-        <img src="~/images/competitions-splash-with-shadow.svg" alt="Competition image" class="splash-intro-img nhsuk-u-margin-top-2"/>
-        <h3 class="nhsuk-heading-m">No competitions created yet</h3>
-        <p class="nhsuk-body">
-            Competitions you create for your organisation will appear here.<br/>
+            <img src="~/images/competitions-splash-with-shadow.svg" alt="Competition image" class="splash-intro-img nhsuk-u-margin-top-2"/>
+            <h3 class="nhsuk-heading-m">No competitions created yet</h3>
+            <p class="nhsuk-body">
+                Competitions you create for your organisation will appear here.<br/>
 
-            Competitions allow you to compare
-            <a asp-action="@nameof(SolutionsController.Index)"
-               asp-controller="@typeof(SolutionsController).ControllerName()"
-               asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>.
-        </p>
-        <vc:nhs-secondary-button text="Create new competition"
-                                 url="@(Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart), typeof(CompetitionsDashboardController).ControllerName(), new { area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId }))"
-                                 type="Primary"/>
+                Competitions allow you to compare
+                <a asp-action="@nameof(SolutionsController.Index)"
+                   asp-controller="@typeof(SolutionsController).ControllerName()"
+                   asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>.
+            </p>
+            <vc:nhs-secondary-button text="Create new competition"
+                                     url="@(Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart), typeof(CompetitionsDashboardController).ControllerName(), new { area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId }))"
+                                     type="Primary"/>
         }
         
     </nhs-card-content>
