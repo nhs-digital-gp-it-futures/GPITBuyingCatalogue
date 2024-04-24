@@ -13,6 +13,7 @@
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
     ViewBag.Title = Model.FilterDetails.Name;
+    var hasResults = @Model.FilterResults?.Any() ?? false;
 }
 
 <partial name="Partials/_BackLink" model="@Model" />
@@ -38,10 +39,22 @@
                     <p class="nhsuk-body-s nhsuk-u-margin-top-1">Results updated: @DateTime.Now.ToString("dd MMMM yyyy")</p>
                     
 
-                    @if (@Model.FilterDetails.FrameworkName != null)
+                    @if (!hasResults)
                     {
-                        var resultsForFrameworkModel = new ResultsForFrameworkModel(Model.InternalOrgId, Model.FilterDetails.Id, Model.FrameworkFilterInfo, Model.FilterResults);
-                        <partial name="_ResultsForFramework.cshtml" model="resultsForFrameworkModel" />
+                        <hr class="nhsuk-u-padding-bottom-5 nhsuk-u-margin-bottom-5 nhsuk-u-margin-top-0">
+                        <p>Due to changes on the Buying Catalogue, there are currently no results returned using the selected filters. This may change in future as a wider range of solutions are added.</p>
+                        <div style="display: inline-block" class="nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-4">
+                            <vc:nhs-secondary-button url="@Url.Action(
+                                      nameof(ManageFiltersController.Index),
+                                      typeof(ManageFiltersController).ControllerName())"
+                                                     type="Secondary"
+                                                     text="Return to shortlists" />
+                            <a href="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
+                                                    new { filterId = Model.FilterDetails.Id })" style="color: #CC0000; " class=" modal-link-adjuster nhsuk-u-margin-left-3" draggable="false">
+                                Delete this shortlist
+                            </a>
+                        </div>
+                        
                     }
                     else
                     {
@@ -63,8 +76,10 @@
             <partial name="Partials/_FilterDetailsPartial" model="Model" />
         </nhs-expander>
             
-        <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
+        @if(hasResults){
+            <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
                                                         new { filterId = Model.FilterDetails.Id })"
-                              text="Delete filter" />
+                                  text="Delete filter" />
+        }
     </div>
 </div>

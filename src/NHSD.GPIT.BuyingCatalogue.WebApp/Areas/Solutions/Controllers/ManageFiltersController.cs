@@ -4,12 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -181,17 +179,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 Frameworks = frameworks,
                 InExpander = true,
             };
-
-            if (!filterDetails.FrameworkName.IsNullOrEmpty())
-            {
-                var framework = await frameworkService.GetFrameworkByName(filterDetails.FrameworkName);
-                model.FrameworkFilterInfo = new FrameworkFilterInfo
-                {
-                    Id = framework.Id,
-                    ShortName = framework.Name,
-                    Expired = framework.IsExpired,
-                };
-            }
 
             return View(model);
         }

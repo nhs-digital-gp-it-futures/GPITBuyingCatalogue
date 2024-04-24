@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
@@ -20,11 +21,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 public class CompetitionSelectSolutionsController : Controller
 {
     private readonly ICompetitionsService competitionsService;
+    private readonly IFrameworkService frameworkService;
 
     public CompetitionSelectSolutionsController(
-        ICompetitionsService competitionsService)
+        ICompetitionsService competitionsService,
+        IFrameworkService frameworkService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+        this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
     }
 
     [HttpGet("select-solutions")]
@@ -40,7 +44,9 @@ public class CompetitionSelectSolutionsController : Controller
                 new { internalOrgId });
         }
 
-        var model = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions)
+        var availableSolutions = competition.CompetitionSolutions.Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId));
+
+        var model = new SelectSolutionsModel(competition.Name, availableSolutions)
         {
             BackLinkText = "Go back to manage competitions",
             BackLink = Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId }),
