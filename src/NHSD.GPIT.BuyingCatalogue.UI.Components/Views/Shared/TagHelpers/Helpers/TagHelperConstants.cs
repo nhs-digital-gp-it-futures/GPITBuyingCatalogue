@@ -36,12 +36,14 @@
         internal const string Xmlns = "xmlns";
         internal const string ViewBox = "viewBox";
         internal const string AriaHidden = "aria-hidden";
+        internal const string Focusable = "focusable";
         internal const string DataModule = "data-module";
         internal const string DataMaxLength = "data-maxlength";
         internal const string AriaDescribedBy = "aria-describedby";
         internal const string AriaDescription = "aria-description";
         internal const string AriaControls = "aria-controls";
         internal const string AriaExpanded = "aria-expanded";
+        internal const string AriaCurrent = "aria-current";
         internal const string AriaLive = "aria-live";
         internal const string Class = "class";
         internal const string Style = "style";
@@ -122,6 +124,18 @@
         internal const string NhsPaginationLinkNext = "nhsuk-pagination__link--next";
         internal const string NhsPaginationTitle = "nhsuk-pagination__title";
         internal const string NhsPaginationPage = "nhsuk-pagination__page";
+        internal const string GovUkPagination = "govuk-pagination";
+        internal const string GovUkPaginationList = "govuk-pagination__list";
+        internal const string GovUkPaginationItem = "govuk-pagination__item";
+        internal const string GovUkPaginationEllipses = "govuk-pagination__item--ellipses";
+        internal const string GovUkPaginationLink = "govuk-link govuk-pagination__link";
+        internal const string GovUkPaginationCurrent = "govuk-pagination__item--current";
+        internal const string GovUkPaginationPrevious = "govuk-pagination__prev";
+        internal const string GovUkPaginationPreviousIcon = "govuk-pagination__icon--prev";
+        internal const string GovUkPaginationNext = "govuk-pagination__next";
+        internal const string GovUkPaginationNextIcon = "govuk-pagination__icon--next";
+        internal const string GovUkPaginationTitle = "govuk-pagination__link-title";
+        internal const string GovUkPaginationIcon = "govuk-pagination__icon";
 
         /* Messages */
         internal const string CharacterCountMessage = "Maximum character length {0}";
