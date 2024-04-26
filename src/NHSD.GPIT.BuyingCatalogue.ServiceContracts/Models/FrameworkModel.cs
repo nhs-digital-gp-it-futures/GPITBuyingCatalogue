@@ -9,7 +9,5 @@
         public string FrameworkId { get; set; }
 
         public bool Selected { get; set; }
-
-        public bool SupportsFoundationSolution { get; set; }
     }
 }

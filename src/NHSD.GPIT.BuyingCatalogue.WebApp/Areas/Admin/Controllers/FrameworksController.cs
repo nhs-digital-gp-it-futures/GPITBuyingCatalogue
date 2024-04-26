@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 
@@ -41,7 +42,10 @@ public class FrameworksController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        await frameworkService.AddFramework(model.Name, model.FundingTypes.Where(x => x.Selected).Select(x => x.Value), model.SupportsFoundationSolution ?? false);
+        await frameworkService.AddFramework(
+            model.Name,
+            model.FundingTypes.Where(x => x.Selected).Select(x => x.Value),
+            model.MaximumTerm.AsNullableInt().Value);
 
         return RedirectToAction(nameof(Dashboard));
     }
@@ -67,7 +71,11 @@ public class FrameworksController : Controller
         if (!ModelState.IsValid)
             return View("add", model);
 
-        await frameworkService.UpdateFramework(frameworkId, model.Name, model.FundingTypes.Where(x => x.Selected).Select(x => x.Value), model.SupportsFoundationSolution ?? false);
+        await frameworkService.UpdateFramework(
+            frameworkId,
+            model.Name,
+            model.FundingTypes.Where(x => x.Selected).Select(x => x.Value),
+            model.MaximumTerm.AsNullableInt().Value);
 
         return RedirectToAction(nameof(Dashboard));
     }

@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.Services.Framework;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Frameworks;
@@ -23,7 +22,7 @@ public static class FrameworkServiceTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(FrameworkService).GetConstructors();
 
@@ -31,7 +30,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetFrameworksByCatalogueItems_PublishedItem_ReturnsExpected(
         EntityFramework.Catalogue.Models.Framework framework,
         FrameworkSolution frameworkSolution,
@@ -70,7 +69,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetFrameworksByCatalogueItems_ExpiredFramework_ReturnsExpected(
         EntityFramework.Catalogue.Models.Framework framework,
         FrameworkSolution frameworkSolution,
@@ -104,7 +103,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetFrameworksByCatalogueItems_NoCatalogueItems_ReturnsExpected(
     EntityFramework.Catalogue.Models.Framework framework,
     FrameworkSolution frameworkSolution,
@@ -137,7 +136,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetFrameworksByCatalogueItem_UnpublishedItem_ReturnsExpected(
         EntityFramework.Catalogue.Models.Framework framework,
         FrameworkSolution frameworkSolution,
@@ -169,7 +168,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetFramework_ReturnsExpected(
         EntityFramework.Catalogue.Models.Framework framework,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -184,7 +183,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetFrameworks_ReturnsExpected(
         List<EntityFramework.Catalogue.Models.Framework> frameworks,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -200,21 +199,21 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static Task AddFramework_NullName_ThrowsException(FrameworkService service) => FluentActions
-        .Invoking(() => service.AddFramework(null, Enumerable.Empty<FundingType>(), false))
+        .Invoking(() => service.AddFramework(null, Enumerable.Empty<FundingType>(), 0))
         .Should()
         .ThrowAsync<ArgumentException>();
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static Task AddFramework_NullFundingType_ThrowsException(string name, FrameworkService service) => FluentActions
-        .Invoking(() => service.AddFramework(name, null, false))
+        .Invoking(() => service.AddFramework(name, null, 0))
         .Should()
         .ThrowAsync<ArgumentException>();
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task<ArgumentNullException> EditFramework_NullName_ThrowsException(
         FrameworkService service,
         List<EntityFramework.Catalogue.Models.Framework> frameworks,
@@ -227,16 +226,17 @@ public static class FrameworkServiceTests
 
         dbContext.ChangeTracker.Clear();
 
-        return await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>(), false));
+        return await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>(), 0));
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task EditFramework_Valid_UpdatesFramework(
         FrameworkService service,
         List<EntityFramework.Catalogue.Models.Framework> frameworks,
         [Frozen] BuyingCatalogueDbContext dbContext,
-        List<FundingType> fundingTypes)
+        List<FundingType> fundingTypes,
+        int maximumTerm)
     {
         var frameworkId = frameworks.First().Id;
         string newName = "New Name";
@@ -247,16 +247,17 @@ public static class FrameworkServiceTests
 
         dbContext.ChangeTracker.Clear();
 
-        await service.UpdateFramework(frameworkId, newName, fundingTypes, false);
+        await service.UpdateFramework(frameworkId, newName, fundingTypes, maximumTerm);
 
         var framework = dbContext.Frameworks.AsNoTracking().FirstOrDefault(x => x.Id == frameworkId);
 
         framework.Name.Should().Be(newName);
         framework.FundingTypes.Should().BeEquivalentTo(fundingTypes);
+        framework.MaximumTerm.Should().Be(maximumTerm);
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task MarkAsExpired_InvalidFramework_DoesNothing(
         string frameworkId,
         List<EntityFramework.Catalogue.Models.Framework> frameworks,
@@ -275,7 +276,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task MarkAsExpired_Valid_ExpiresFramework(
         List<EntityFramework.Catalogue.Models.Framework> frameworks,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -296,7 +297,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task FrameworkNameExists_ReturnsTrue(
         EntityFramework.Catalogue.Models.Framework framework,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -311,7 +312,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task FrameworkNameExists_ReturnsFalse(
         string frameworkName,
         FrameworkService service)
@@ -322,7 +323,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task FrameworkNameExistsExcludeSelf_ReturnsTrue(
         EntityFramework.Catalogue.Models.Framework framework,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -340,7 +341,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task FrameworkNameExistsExcludeSelf_SameId_ReturnsFalse(
         EntityFramework.Catalogue.Models.Framework framework,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -357,7 +358,7 @@ public static class FrameworkServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task FrameworkNameExistsExcludeSelf_UniqueName_ReturnsFalse(
         string frameworkName,
         string frameworkId,

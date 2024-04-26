@@ -24,7 +24,7 @@
             </span>
         </h3>
         <p>
-            @Model.CatalogueItem.Solution.Summary
+            @Html.Raw(Model.CatalogueItem.Solution.Summary)
         </p>
         @if (Model.CatalogueItem.Solution.AdditionalServices.Any())
         {

@@ -1,33 +1,39 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels.AddEditFrameworkModel
 
 @{
-    ViewBag.Title = Model.FrameworkId is null
-        ? "Add a framework"
-        : "Edit framework";
+    var titleModel = Model.GetPageTitle();
+    ViewBag.Title = titleModel.Title;
 }
 
-<partial name="Partials/_BackLink" model="Model"/>
+<partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary/>
+        <nhs-validation-summary />
 
-        <nhs-page-title title="@ViewBag.Title" advice="Provide details for this framework."/>
+        <nhs-page-title model="titleModel" />
 
         <form method="post">
-            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="BackLink" />
 
             <nhs-input label-text="Name"
                        label-hint="Provide a unique name for this framework"
-                       asp-for="Name"/>
+                       asp-for="Name" />
+            <br />
+
+            <nhs-bookended-input asp-for="@Model.MaximumTerm"
+                                 label-text="What is the maximum duration (in months)?"
+                                 label-hint="This is the maximum length of time a Call-off Agreement can run for under this framework."
+                                 Suffix="months" />
+            <br />
 
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="What type of funding can be used"
-                                     label-hint="Select all funding types that apply."
+                                     label-hint="Select all that apply."
                                      size="Small">
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.FundingTypes.Count; i++)
                     {
-                        <input type="hidden" asp-for="@Model.FundingTypes[i].Text"/>
+                        <input type="hidden" asp-for="@Model.FundingTypes[i].Text" />
                         <nhs-checkbox asp-for="@Model.FundingTypes[i].Selected"
                                       label-text="@Model.FundingTypes[i].Text"
                                       hidden-input="@Model.FundingTypes[i].Value"
@@ -35,35 +41,23 @@
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>
-            <div class="nhsuk-form-group">
-                <nhs-fieldset-form-label asp-for="@Model"
-                                         label-text="Does this framework support Foundation Solutions?"
-                                         label-hint="These are solutions that have met all 6 Foundation Capabilities (Appointments Management - GP, Referral Management, Resource Management, Patient Information Maintenance, Prescribing and Recording Consultations)."
-                                         size="Small">
-                    <nhs-radio-buttons asp-for="SupportsFoundationSolution"
-                                       values="@Model.FoundationSolutionOptions"
-                                       value-name="Value"
-                                       display-name="Text" />
-                </nhs-fieldset-form-label>
-            </div>
-            <div>
-                <nhs-submit-button/>
-            </div>
-            <div>
+            <br />
+
+            <nhs-submit-button />
+            <br />
+            <p class="nhsuk-body">
                 <a href="@Model.BackLink">Cancel</a>
-            </div>
-            @if(Model.FrameworkId is not null)
+            </p>
+            @if (Model.FrameworkId is not null)
             {
-                <div style="margin-top:15px">
+                <p>
                     <vc:nhs-delete-button url="@Url.Action(
                                                    nameof(FrameworksController.Expire),
                                                    typeof(FrameworksController).ControllerName(),
                                                    new { Model.FrameworkId})"
-                                      text="Expire this framework" />
-                </div>
+                                          text="Expire this framework" />
+                </p>
             }
-            
-
         </form>
     </div>
 </div>
