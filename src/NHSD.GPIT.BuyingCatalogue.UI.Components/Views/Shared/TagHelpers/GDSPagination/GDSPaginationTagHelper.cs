@@ -61,7 +61,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPag
             var hasEllipses = false;
             for (var i = 1; i <= TotalNumberOfPages; i++)
             {
-                if (i == 1 || Enumerable.Range(CurrentPageNumber - 2, CurrentPageNumber + 2).Contains(i) || i == TotalNumberOfPages)
+                var floor = CurrentPageNumber - 2;
+
+                if (CurrentPageNumber + 2 > TotalNumberOfPages)
+                    floor = TotalNumberOfPages - 4;
+
+                if (i == 1 || Enumerable.Range(Math.Max(floor, 1), 5).Contains(i) || i == TotalNumberOfPages)
                 {
                     paginationList.InnerHtml.AppendHtml(GdsPaginationBuilders.GetPageLinkBuilder(i, GenerateLinkHrefForPage(i), CurrentPageNumber == i));
                     hasEllipses = false;
