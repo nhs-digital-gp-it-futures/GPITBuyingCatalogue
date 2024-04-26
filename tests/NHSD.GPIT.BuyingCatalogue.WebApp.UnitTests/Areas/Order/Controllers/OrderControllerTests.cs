@@ -284,11 +284,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         public static void Post_ReadyToStart_Redirects(
             string internalOrgId,
             ReadyToStartModel model,
-            OrderTriageValue option,
             OrderTypeEnum orderType,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId, model, orderType, option).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model, orderType).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.NewOrder));
@@ -296,29 +295,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
                 new RouteValueDictionary
                 {
                     { nameof(internalOrgId), internalOrgId },
-                    { nameof(option), option },
-                    { nameof(orderType), orderType },
-                });
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void Post_ReadyToStart_WithFundingSource_Redirects(
-            string internalOrgId,
-            ReadyToStartModel model,
-            OrderTriageValue option,
-            OrderTypeEnum orderType,
-            OrderController controller)
-        {
-            var result = controller.ReadyToStart(internalOrgId, model, orderType, option).As<RedirectToActionResult>();
-
-            result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(controller.NewOrder));
-            result.RouteValues.Should().BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(option), option },
                     { nameof(orderType), orderType },
                 });
         }

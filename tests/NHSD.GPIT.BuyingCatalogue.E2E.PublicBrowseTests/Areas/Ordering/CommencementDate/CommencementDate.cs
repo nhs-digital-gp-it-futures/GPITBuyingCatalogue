@@ -315,8 +315,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CommencementDate
 
             var order = await context.Order(CallOffId);
 
-            order.OrderTriageValue = OrderTriageValue.Under40K;
-
             await context.SaveChangesAsync();
 
             Driver.Navigate().Refresh();
@@ -435,8 +433,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.CommencementDate
             using var context = GetEndToEndDbContext();
 
             var order = context.Order(CallOffId).Result;
-
-            order.OrderTriageValue = OrderTriageValue.Over250K;
 
             context.SaveChanges();
         }

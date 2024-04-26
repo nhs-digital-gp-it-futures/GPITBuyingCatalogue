@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm);
 
-        public Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, OrderTypeEnum orderType);
+        public Task<Order> CreateOrder(string description, string internalOrgId, OrderTypeEnum orderType);
 
         public Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId);
 

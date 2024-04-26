@@ -12,7 +12,6 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.AssociatedServiceOnly;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
@@ -23,7 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             OrderingDashboard = new OrderingDashboard(driver, commonActions);
             OrderType = new OrderType.OrderType(driver, commonActions);
-            OrderingTriage = new OrderingTriage(driver, commonActions);
             StartOrder = new StartOrder(driver, commonActions);
             TaskList = new TaskList(driver, commonActions);
             OrderingStepOne = new OrderingStepOne(driver, commonActions);
@@ -61,8 +59,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal OrderingDashboard OrderingDashboard { get; }
 
         internal OrderType.OrderType OrderType { get; }
-
-        internal OrderingTriage OrderingTriage { get; }
 
         internal StartOrder StartOrder { get; }
 

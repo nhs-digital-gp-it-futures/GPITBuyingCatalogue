@@ -9,6 +9,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contracts.DeliveryDates
 {
+    // TODO: MJK NSubstitue
     public static class SelectDateModelTests
     {
         [Theory]
@@ -39,7 +40,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.CommencementDate.Should().Be(order.CommencementDate);
             model.MaximumTerm.Should().Be(order.MaximumTerm);
             model.IsAmend.Should().Be(order.IsAmendment);
-            model.TriageValue.Should().Be(order.OrderTriageValue);
 
             model.Date.Should().Be(date.Date);
             model.Day.Should().Be($"{date.Day:00}");
@@ -69,17 +69,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTriageValue.Under40K)]
-        [CommonInlineAutoData(OrderTriageValue.Between40KTo250K)]
-        [CommonInlineAutoData(OrderTriageValue.Over250K)]
+        [CommonAutoData]
         public static void ContractEndDate_ExpectedResult(
-            OrderTriageValue triageValue,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order)
         {
-            order.OrderTriageValue = triageValue;
-
             var model = new SelectDateModel(internalOrgId, callOffId, order, null);
 
             var expected = order.CommencementDate!.Value

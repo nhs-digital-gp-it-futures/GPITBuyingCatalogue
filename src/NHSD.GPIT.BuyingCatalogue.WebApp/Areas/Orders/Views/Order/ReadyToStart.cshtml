@@ -47,7 +47,7 @@
                                          new { returnUrl = Url.Action(
                                              nameof(OrderController.ReadyToStart),
                                              typeof(OrderController).ControllerName(),
-                                             new { Model!.InternalOrgId, Model.Option, orderType = Model.OrderType.Value }) })"
+                                             new { Model!.InternalOrgId, orderType = Model.OrderType.Value }) })"
                                 text="Get procurement support" />
         </div>
     </div>

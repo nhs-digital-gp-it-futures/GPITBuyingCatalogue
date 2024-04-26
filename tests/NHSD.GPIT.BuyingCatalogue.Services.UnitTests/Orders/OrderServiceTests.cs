@@ -165,14 +165,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task CreateOrder_OrderType_Unknown_Throws(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
-            OrderTriageValue orderTriageValue,
             Organisation organisation,
             OrderService service)
         {
             await context.Organisations.AddAsync(organisation);
             await context.SaveChangesAsync();
 
-            await FluentActions.Invoking(async () => await service.CreateOrder(description, organisation.InternalIdentifier, orderTriageValue, OrderTypeEnum.Unknown))
+            await FluentActions.Invoking(async () => await service.CreateOrder(description, organisation.InternalIdentifier, OrderTypeEnum.Unknown))
                 .Should()
                 .ThrowAsync<InvalidOperationException>();
         }
@@ -182,14 +181,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task CreateOrder_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
-            OrderTriageValue orderTriageValue,
             Organisation organisation,
             OrderService service)
         {
             await context.Organisations.AddAsync(organisation);
             await context.SaveChangesAsync();
 
-            await service.CreateOrder(description, organisation.InternalIdentifier, orderTriageValue, OrderTypeEnum.Solution);
+            await service.CreateOrder(description, organisation.InternalIdentifier, OrderTypeEnum.Solution);
 
             var order = await context.Orders.Include(o => o.OrderingParty).FirstAsync();
 
@@ -219,7 +217,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             result.InitialPeriod.Should().Be(order.InitialPeriod);
             result.MaximumTerm.Should().Be(order.MaximumTerm);
             result.OrderingPartyId.Should().Be(order.OrderingPartyId);
-            result.OrderTriageValue.Should().Be(order.OrderTriageValue);
             result.SelectedFrameworkId.Should().Be(order.SelectedFrameworkId);
             result.SupplierId.Should().Be(order.SupplierId);
 

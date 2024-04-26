@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -145,7 +145,6 @@ public class CompetitionSelectSolutionsController : Controller
             {
                 Area = typeof(OrderDescriptionController).AreaName(),
                 internalOrgId = internalOrgId,
-                option = OrderTriageValue.Under40K,
                 orderType = CatalogueItemType.Solution,
             });
     }

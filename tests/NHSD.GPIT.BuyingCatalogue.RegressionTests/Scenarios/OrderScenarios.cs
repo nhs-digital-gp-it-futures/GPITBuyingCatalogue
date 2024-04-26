@@ -48,8 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -70,8 +68,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -94,8 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -116,8 +110,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -140,8 +132,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -163,8 +153,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -185,8 +173,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -211,8 +197,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Between40KTo250K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Between40KTo250K);
@@ -235,8 +219,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -263,8 +245,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -289,8 +269,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -320,8 +298,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -346,8 +322,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -380,8 +354,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Between40KTo250K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, true, OrderTriageValue.Between40KTo250K);
@@ -402,8 +374,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Between40KTo250K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -426,8 +396,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Between40KTo250K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Between40KTo250K);
@@ -448,8 +416,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Between40KTo250K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -472,8 +438,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Between40KTo250K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Between40KTo250K);
@@ -494,8 +458,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Between40KTo250K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -518,8 +480,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
@@ -540,8 +500,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -564,8 +522,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
@@ -586,8 +542,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -610,8 +564,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
@@ -632,8 +584,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -763,8 +713,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -787,8 +735,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -813,8 +759,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -837,8 +781,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -886,8 +828,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -910,8 +850,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -936,8 +874,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -960,8 +896,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -986,8 +920,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1010,8 +942,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1036,8 +966,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1061,8 +989,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1085,8 +1011,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1134,8 +1058,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1158,8 +1080,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1184,8 +1104,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1208,8 +1126,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1234,8 +1150,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1258,8 +1172,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1284,8 +1196,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1309,8 +1219,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1333,8 +1241,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1428,8 +1334,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1456,8 +1360,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1487,8 +1389,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1513,8 +1413,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1538,8 +1436,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1593,8 +1489,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1617,8 +1511,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1644,8 +1536,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1669,8 +1559,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1722,8 +1610,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1747,8 +1633,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1774,8 +1658,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1849,8 +1731,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1873,8 +1753,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1899,8 +1777,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1923,8 +1799,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -1949,8 +1823,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1974,8 +1846,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -1998,8 +1868,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -2050,8 +1918,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -2074,8 +1940,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -2100,8 +1964,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -2125,8 +1987,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
@@ -2149,8 +2009,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 
@@ -2459,8 +2317,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Over250K);
-
             OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
@@ -2487,8 +2343,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.OrderingTriage.SelectOrderTriage(OrderTriageValue.Under40K);
 
             OrderingPages.StartOrder.ReadyToStart();
 

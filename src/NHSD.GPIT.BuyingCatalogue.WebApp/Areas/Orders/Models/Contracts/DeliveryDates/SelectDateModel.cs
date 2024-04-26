@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
@@ -27,7 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             CallOffId = callOffId;
             CommencementDate = order.CommencementDate;
             MaximumTerm = order.MaximumTerm;
-            TriageValue = order.OrderTriageValue;
 
             IsAmend = order.IsAmendment;
 
@@ -43,8 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         public DateTime? CommencementDate { get; set; }
 
         public int? MaximumTerm { get; set; }
-
-        public OrderTriageValue? TriageValue { get; set; }
 
         public bool IsAmend { get; set; }
 

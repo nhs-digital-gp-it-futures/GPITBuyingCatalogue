@@ -7,8 +7,6 @@
     var advice = Model.IsAmendment
         ? "This is the commencement date, initial period and maximum term for the original order. They cannot be changed."
         : "Provide the commencement date, initial period and maximum term for the Call-off Agreement.";
-
-    var isUnder40K = Model.OrderTriageValue == OrderTriageValue.Under40K;
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -18,16 +16,6 @@
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
                         advice="@advice" />
-
-        @if (!isUnder40K)
-        {
-            <div class="nhsuk-inset-text">
-                <span class="nhsuk-u-visually-hidden">Information: </span>
-                <p>The Call-off Agreement will extend automatically up to a maximum of 48 months unless notice to terminate is given 30 days before the end of the initial period.</p>
-                <p>This is to allow implementation at multiple sites over an extended period. However, no Service Recipient can receive solutions or services for more than 36 months within the 48 month period.</p>
-                <p>After the initial period, the Call-off Agreement can be terminated at any time by giving at least 30 days written notice to the supplier. The initial period begins on the commencement date for the Call-off Agreement.</p>
-            </div>
-        }
 
         @if (Model.IsAmendment)
         {
@@ -62,7 +50,6 @@
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
-                <input type="hidden" asp-for="@Model.OrderTriageValue" />
 
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-fieldset-form-label asp-for="@Model"

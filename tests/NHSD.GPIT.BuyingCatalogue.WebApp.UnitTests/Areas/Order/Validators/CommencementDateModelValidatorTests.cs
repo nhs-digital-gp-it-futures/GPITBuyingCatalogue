@@ -8,6 +8,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 {
+    // TODO: MJK NSubstitue
     public static class CommencementDateModelValidatorTests
     {
         [Theory]
@@ -165,36 +166,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 
             result.ShouldHaveValidationErrorFor(m => m.MaximumTerm)
                 .WithErrorMessage(CommencementDateModelValidator.MaximumTermTooLowErrorMessage);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Validate_ValueOver40k_MaximumTermTooHigh_ThrowsValidationError(
-            CommencementDateModel model,
-            CommencementDateModelValidator validator)
-        {
-            model.OrderTriageValue = OrderTriageValue.Over250K;
-            model.MaximumTerm = "37";
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.MaximumTerm)
-                .WithErrorMessage(string.Format(CommencementDateModelValidator.MaximumTermTooHighErrorMessage, "36"));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Validate_ValueUnder40k_MaximumTermTooHigh_ThrowsValidationError(
-            CommencementDateModel model,
-            CommencementDateModelValidator validator)
-        {
-            model.OrderTriageValue = OrderTriageValue.Under40K;
-            model.MaximumTerm = "37";
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.MaximumTerm)
-                .WithErrorMessage(string.Format(CommencementDateModelValidator.MaximumTermTooHighErrorMessage, "12"));
         }
 
         [Theory]

@@ -248,7 +248,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 MaximumTerm = MaximumTerm,
                 OrderingPartyId = OrderingPartyId,
                 OrderingPartyContact = OrderingPartyContact.Clone(),
-                OrderTriageValue = OrderTriageValue,
                 SelectedFrameworkId = SelectedFrameworkId,
                 SupplierId = SupplierId,
                 SupplierContact = SupplierContact.Clone(),

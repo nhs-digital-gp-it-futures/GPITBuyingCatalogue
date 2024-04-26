@@ -22,7 +22,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public OrderType OrderType { get; set; }
 
         public string InternalOrgId { get; set; }
-
-        public OrderTriageValue? Option { get; set; }
     }
 }

@@ -304,7 +304,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return matches.ToList();
         }
 
-        public async Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, OrderTypeEnum orderType)
+        public async Task<Order> CreateOrder(string description, string internalOrgId, OrderTypeEnum orderType)
         {
             if (orderType == OrderTypeEnum.Unknown)
             {
@@ -320,7 +320,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 Description = description,
                 OrderingParty = orderingParty,
                 OrderType = orderType,
-                OrderTriageValue = orderTriageValue,
             };
 
             dbContext.Add(order);

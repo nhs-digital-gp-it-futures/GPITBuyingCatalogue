@@ -206,7 +206,6 @@ public static class CompetitionOrderServiceTests
         order.MaximumTerm.Should().Be(competition.ContractLength);
         order.OrderingPartyId.Should().Be(competition.OrganisationId);
         order.SupplierId.Should().Be(solution.CatalogueItem.SupplierId);
-        order.OrderTriageValue.Should().Be(OrderTriageValue.Between40KTo250K);
         order.OrderRecipients.Should()
             .BeEquivalentTo(
                 recipients.Select(x => new OrderRecipient(x.Id)),

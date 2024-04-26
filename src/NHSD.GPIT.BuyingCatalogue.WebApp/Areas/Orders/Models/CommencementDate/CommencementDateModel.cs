@@ -15,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.CommencementDate
             InternalOrgId = internalOrgId;
             CallOffId = order.CallOffId;
             IsAmendment = order.IsAmendment;
-            OrderTriageValue = order.OrderTriageValue;
             InitialPeriod = $"{order.InitialPeriod}";
             MaximumTerm = $"{order.MaximumTerm}";
 
@@ -35,7 +34,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.CommencementDate
         public string MaximumTerm { get; set; }
 
         public int? MaximumTermValue => MaximumTerm.AsNullableInt();
-
-        public OrderTriageValue? OrderTriageValue { get; set; }
     }
 }

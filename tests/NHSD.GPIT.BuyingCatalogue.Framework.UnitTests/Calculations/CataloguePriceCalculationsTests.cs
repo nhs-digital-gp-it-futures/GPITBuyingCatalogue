@@ -611,7 +611,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         {
             return fixture.Build<Order>()
                 .With(o => o.Revision, 1)
-                .With(o => o.OrderTriageValue, OrderTriageValue.Under40K)
                 .With(o => o.CommencementDate, commencementDate)
                 .With(o => o.OrderItems, new HashSet<OrderItem>(orderItems))
                 .With(o => o.OrderRecipients, new HashSet<OrderRecipient>(recipients))
