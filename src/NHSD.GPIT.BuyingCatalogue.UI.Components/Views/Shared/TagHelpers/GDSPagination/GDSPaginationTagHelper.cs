@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPag
             {
                 if (i == 1 || Enumerable.Range(CurrentPageNumber - 2, CurrentPageNumber + 2).Contains(i) || i == TotalNumberOfPages)
                 {
-                    paginationList.InnerHtml.AppendHtml(GdsPaginationBuilders.GetPageLinkBuilder(1, GenerateLinkHrefForPage(i), CurrentPageNumber == i));
+                    paginationList.InnerHtml.AppendHtml(GdsPaginationBuilders.GetPageLinkBuilder(i, GenerateLinkHrefForPage(i), CurrentPageNumber == i));
                     hasEllipses = false;
                 }
                 else

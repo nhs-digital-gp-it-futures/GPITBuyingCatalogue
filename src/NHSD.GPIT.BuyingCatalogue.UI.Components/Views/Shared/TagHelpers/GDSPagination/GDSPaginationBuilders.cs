@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Formats.Asn1;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Newtonsoft.Json.Linq;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPagination
@@ -73,7 +75,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPag
 
             builder.AddCssClass(TagHelperConstants.GovUkPaginationPrevious);
 
-            var link = GetArrowLinkBuilder(href, "Previous", TagHelperConstants.GovUkPaginationPreviousIcon, PreviousArrowPath);
+            var link = GetArrowLinkBuilder(href, "Previous");
+            var title = GetArrowTitleBuilder("Previous");
+            var svg = GetArrowSvgBuilder(TagHelperConstants.GovUkPaginationPreviousIcon, PreviousArrowPath);
+
+            link.InnerHtml
+                .AppendHtml(svg)
+                .AppendHtml(title);
+
             builder.InnerHtml
                 .AppendHtml(link);
             return builder;
@@ -85,7 +94,14 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPag
 
             builder.AddCssClass(TagHelperConstants.GovUkPaginationNext);
 
-            var link = GetArrowLinkBuilder(href, "Next", TagHelperConstants.GovUkPaginationNextIcon, NextArrowPath);
+            var link = GetArrowLinkBuilder(href, "Next");
+            var title = GetArrowTitleBuilder("Next");
+            var svg = GetArrowSvgBuilder(TagHelperConstants.GovUkPaginationNextIcon, NextArrowPath);
+
+            link.InnerHtml
+                .AppendHtml(title)
+                .AppendHtml(svg);
+
             builder.InnerHtml
                 .AppendHtml(link);
             return builder;
@@ -105,18 +121,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPag
             return builder;
         }
 
-        private static TagBuilder GetArrowLinkBuilder(string href, string value, string svgClass, string arrowSvgPath)
+        private static TagBuilder GetArrowLinkBuilder(string href, string value)
         {
             var builder = GetLinkBuilder(href);
 
             builder.MergeAttribute("rel", value.ToLower());
-
-            var title = GetArrowTitleBuilder(value);
-            var svg = GetArrowSvgBuilder(svgClass, arrowSvgPath);
-
-            builder.InnerHtml
-                .AppendHtml(title)
-                .AppendHtml(svg);
 
             return builder;
         }
