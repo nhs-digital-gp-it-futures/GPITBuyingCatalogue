@@ -57,5 +57,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
                 nameof(SuppliersController.Index))
                 .Should().BeTrue();
         }
+
+        public void ManageCatalogueSolutions()
+        {
+            CommonActions.ClickLinkElement(HomeObjects.ManageCatalogueSolutionsLink);
+            CommonActions.LedeText()
+            .Should()
+            .Be("Add a new solution or edit one that's already been created.".FormatForComparison());
+        }
     }
 }

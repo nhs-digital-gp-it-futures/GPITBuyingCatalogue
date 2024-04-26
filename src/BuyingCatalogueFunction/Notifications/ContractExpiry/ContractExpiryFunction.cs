@@ -2,33 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Azure.Storage.Queues;
+using BuyingCatalogueFunction.Notifications.ContractExpiry.Interfaces;
 using BuyingCatalogueFunction.Notifications.Interfaces;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-namespace BuyingCatalogueFunction.Notifications
+namespace BuyingCatalogueFunction.Notifications.ContractExpiry
 {
     public class ContractExpiryFunction
     {
         private readonly ILogger<ContractExpiryFunction> logger;
-        private readonly BuyingCatalogueDbContext dbContext;
         private readonly IContractExpiryService contractExpiryService;
-        private readonly QueueServiceClient queueServiceClient;
+        private readonly IEmailPreferenceService emailPreferenceService;
 
         public ContractExpiryFunction(
             ILogger<ContractExpiryFunction> logger,
-            BuyingCatalogueDbContext dbContext,
             IContractExpiryService contractExpiryService,
-            QueueServiceClient queueServiceClient)
+            IEmailPreferenceService emailPreferenceService)
         {
             this.logger = logger;
-            this.dbContext = dbContext;
             this.contractExpiryService = contractExpiryService;
-            this.queueServiceClient = queueServiceClient;
+            this.emailPreferenceService = emailPreferenceService;
         }
 
         [Function(nameof(ContractExpiryFunction))]
@@ -37,7 +33,7 @@ namespace BuyingCatalogueFunction.Notifications
             var utcNow = DateTime.UtcNow;
 
             logger.LogInformation("Contract Expiry: Executed at {Date}", utcNow);
-            
+
             if (timerInfo.ScheduleStatus is not null)
             {
                 logger.LogInformation("Contract Expiry: Next timer schedule at {Next}", timerInfo.ScheduleStatus.Next);
@@ -49,9 +45,20 @@ namespace BuyingCatalogueFunction.Notifications
         private async Task RunFor(DateTime today)
         {
             logger.LogInformation("Contract Expiry: Evaluating Orders for {Date}", today);
+
+            var defaultEmailPreference = await emailPreferenceService.GetDefaultEmailPreference(EmailPreferenceTypeEnum.ContractExpiry);
+            if (defaultEmailPreference == null)
+            {
+                logger.LogWarning(
+                    "Contract Expiry: {EmailPreferenceType} not found or a ManagedEmailPreference is not configured",
+                    EmailPreferenceTypeEnum.ContractExpiry);
+
+                return;
+            }
+
             List<Order> orders = await contractExpiryService.GetOrdersNearingExpiry(today);
 
-            if (!orders.Any())
+            if (orders.Count == 0)
             {
                 logger.LogInformation("Contract Expiry: No orders found nearing expiry for {Date}", today);
                 return;
@@ -61,7 +68,7 @@ namespace BuyingCatalogueFunction.Notifications
             {
                 try
                 {
-                    await EvaluateOrder(today, order);
+                    await EvaluateOrder(today, order, defaultEmailPreference);
                 }
                 catch (Exception e)
                 {
@@ -70,26 +77,28 @@ namespace BuyingCatalogueFunction.Notifications
             }
         }
 
-        private async Task EvaluateOrder(DateTime today, Order order)
+        private async Task EvaluateOrder(DateTime today, Order order, EmailPreferenceType defaultEmailPreference)
         {
             var eventToRaise = order.EndDate.DetermineEventToRaise(today, order.ContractOrderNumber.OrderEvents);
-            if (eventToRaise != EventTypeEnum.Nothing)
-            {
-                var defaultEmailPreference = await contractExpiryService.GetDefaultEmailPreference(eventToRaise);
-                if (defaultEmailPreference != null)
-                {
-                    logger.LogInformation("Contract Expiry: Order {CallOffId}. Raising {EventToRaise}", order.CallOffId, eventToRaise);
-                    await contractExpiryService.RaiseExpiry(today, order, eventToRaise, defaultEmailPreference);
-                }
-                else
-                {
-                    logger.LogWarning("Contract Expiry: Order {CallOffId}. {EventToRaise} not found or a ManagedEmailPreference is not configuired", order.CallOffId, eventToRaise);
-                }
-            }
-            else
+            if (eventToRaise == OrderExpiryEventTypeEnum.Nothing)
             {
                 logger.LogInformation("Contract Expiry: Order {CallOffId}. No event to raise", order.CallOffId);
+                return;
             }
+
+            if (defaultEmailPreference.SupportedEventTypes.All(x => x.Id != (int)eventToRaise))
+            {
+                logger.LogWarning(
+                    "Contract Expiry: Order {CallOffId}. Mismatched email preference {EmailPreferenceType} and event {EventToRaise} types",
+                    order.CallOffId, defaultEmailPreference.Id, eventToRaise);
+
+                return;
+            }
+
+            logger.LogInformation("Contract Expiry: Order {CallOffId}. Raising {EventToRaise}", order.CallOffId,
+                eventToRaise);
+
+            await contractExpiryService.RaiseExpiry(today, order, eventToRaise, defaultEmailPreference);
         }
     }
 }

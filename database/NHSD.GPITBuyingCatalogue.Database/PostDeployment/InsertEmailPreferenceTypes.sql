@@ -1,7 +1,8 @@
 MERGE INTO [notifications].[EmailPreferenceTypes] AS TARGET
 USING (
 VALUES 
-    (1, 'ContractExpiry', 1)
+    (1, 'ContractExpiry', 1),
+    (2, 'PasswordExpiry', 1)
 )
 AS SOURCE ([Id], [Name], [DefaultEnabled])
 ON TARGET.[Id] = SOURCE.[Id]

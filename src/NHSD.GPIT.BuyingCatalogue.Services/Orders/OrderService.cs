@@ -241,11 +241,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return new OrderWrapper(orders);
         }
 
-        public async Task<(PagedList<Order> Orders, IEnumerable<CallOffId> OrderIds)> GetPagedOrders(int organisationId, PageOptions options, string search = null)
+        public async Task<List<Order>> GetOrders(int organisationId)
         {
-            options ??= new PageOptions();
-
-            var query = (await dbContext.Orders
+            return (await dbContext.Orders
                     .AsNoTracking()
                     .Include(o => o.LastUpdatedByUser)
                     .Where(o => o.OrderingPartyId == organisationId)
@@ -253,6 +251,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .GroupBy(x => x.OrderNumber)
                 .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated))
                 .ToList();
+        }
+
+        public async Task<(PagedList<Order> Orders, IEnumerable<CallOffId> OrderIds)> GetPagedOrders(int organisationId, PageOptions options, string search = null)
+        {
+            options ??= new PageOptions();
+
+            var query = await GetOrders(organisationId);
 
             if (!string.IsNullOrWhiteSpace(search))
             {

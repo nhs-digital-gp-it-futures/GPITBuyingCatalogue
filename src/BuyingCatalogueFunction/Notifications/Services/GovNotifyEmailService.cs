@@ -27,7 +27,8 @@ namespace BuyingCatalogueFunction.Notifications.Services
                 .ToArray();
         }
 
-        public async Task<string> SendEmailAsync(string emailAddress, string templateId, Dictionary<string, dynamic> personalisation, string notficationId)
+        public async Task<string> SendEmailAsync(string emailAddress, string templateId,
+            Dictionary<string, dynamic> personalisation, string notficationId)
         {
             var response = await notificationClient.SendEmailAsync(
                 emailAddress,

@@ -11,15 +11,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
         }
 
         public ManageFiltersModel(
-            List<Filter> filters,
+            string internalOrgId,
+            List<Filter> shortlists,
             string organisationName)
         {
-            Filters = filters;
+            InternalOrgId = internalOrgId;
+            Shortlists = shortlists;
             OrganisationName = organisationName;
         }
 
+        public string InternalOrgId { get; set; }
+
         public string OrganisationName { get; set; }
 
-        public List<Filter> Filters { get; init; }
+        public List<Filter> Shortlists { get; init; }
     }
 }

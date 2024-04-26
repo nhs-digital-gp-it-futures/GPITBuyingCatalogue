@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
+using BuyingCatalogueFunction.Notifications.ContractExpiry.Interfaces;
 using BuyingCatalogueFunction.Notifications.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,7 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
-namespace BuyingCatalogueFunction.Notifications.Services
+namespace BuyingCatalogueFunction.Notifications.ContractExpiry.Services
 {
     public class ContractExpiryService : IContractExpiryService
     {
@@ -22,17 +23,20 @@ namespace BuyingCatalogueFunction.Notifications.Services
         private readonly QueueOptions options;
         private readonly BuyingCatalogueDbContext dbContext;
         private readonly QueueServiceClient queueServiceClient;
+        private readonly IEmailPreferenceService emailPreferenceService;
 
         public ContractExpiryService(
             ILogger<ContractExpiryService> logger,
             IOptions<QueueOptions> options,
             BuyingCatalogueDbContext dbContext,
-            QueueServiceClient queueServiceClient)
+            QueueServiceClient queueServiceClient,
+            IEmailPreferenceService emailPreferenceService)
         {
             this.dbContext = dbContext;
             this.options = options.Value;
             this.queueServiceClient = queueServiceClient;
             this.logger = logger;
+            this.emailPreferenceService = emailPreferenceService;
         }
 
         public async Task<List<Order>> GetOrdersNearingExpiry(DateTime today)
@@ -58,26 +62,18 @@ namespace BuyingCatalogueFunction.Notifications.Services
                 .ToList();
         }
 
-        public async Task<EmailPreferenceType> GetDefaultEmailPreference(EventTypeEnum eventType)
-        {
-            return (await dbContext
-                .EventTypes
-                .Include(e => e.EmailPreferenceType)
-                .FirstOrDefaultAsync(u => u.Id == (int)eventType))?.EmailPreferenceType;
-        }
-
-        public async Task RaiseExpiry(DateTime date, Order order, EventTypeEnum eventType, EmailPreferenceType emailPreference)
+        public async Task RaiseExpiry(DateTime date, Order order, OrderExpiryEventTypeEnum eventType, EmailPreferenceType emailPreference)
         {
             dbContext.Attach(order);
 
             List<AspNetUser> users = await GetUsersForOrganisation(order.OrderingPartyId);
             var notifications = await SaveUserNotifications(date, order, eventType, users, emailPreference);
-            await DisaptchNotifications(order, notifications, eventType);
+            await DispatchNotifications(order, notifications, eventType);
         }
 
-        private async Task DisaptchNotifications(Order order,
+        private async Task DispatchNotifications(Order order,
             List<EmailNotification> notifications,
-            EventTypeEnum eventType)
+            OrderExpiryEventTypeEnum eventType)
         {
             var client = queueServiceClient.GetQueueClient(options.SendEmailNotifications);
             var tasks = notifications
@@ -102,7 +98,7 @@ namespace BuyingCatalogueFunction.Notifications.Services
         private async Task<List<EmailNotification>> SaveUserNotifications(
             DateTime date,
             Order order,
-            EventTypeEnum eventType,
+            OrderExpiryEventTypeEnum eventType,
             List<AspNetUser> users,
             EmailPreferenceType emailPreferenceType)
         {
@@ -112,27 +108,17 @@ namespace BuyingCatalogueFunction.Notifications.Services
 
             foreach (var user in users)
             {
-                if (await ShouldSendBasedOnUserPreferences(emailPreferenceType, user))
-                {
-                    notifications.Add(CreateNotificationForUser(user, order.CallOffId, order.EndDate.RemainingDays(date)));
-                }
+                var shouldProcess = await emailPreferenceService.ShouldTriggerForUser(emailPreferenceType, user.Id);
+                if (!shouldProcess)
+                    continue;
+
+                notifications.Add(CreateNotificationForUser(user, order.CallOffId, order.EndDate.RemainingDays(date)));
             }
+
             dbContext.AddRange(notifications);
             await dbContext.SaveChangesAsync();
 
             return notifications;
-        }
-
-        private async Task<bool> ShouldSendBasedOnUserPreferences(
-            EmailPreferenceType emailPreferenceType,
-            AspNetUser user)
-        {
-            var userPreference = await dbContext
-                .UserEmailPreferences
-                .FirstOrDefaultAsync(u => u.EmailPreferenceTypeId == emailPreferenceType.Id
-                    && u.UserId == user.Id);
-
-            return userPreference?.Enabled ?? emailPreferenceType.DefaultEnabled;
         }
 
         private async Task<List<AspNetUser>> GetUsersForOrganisation(int organisationId)

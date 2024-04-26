@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models
 {
@@ -7,6 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models
         public EmailPreferenceType()
         {
             UserPreferences = new HashSet<UserEmailPreference>();
+            SupportedEventTypes = new HashSet<EventType>();
         }
 
         public int Id { get; set; }
@@ -18,5 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models
         public bool DefaultEnabled { get; set; }
 
         public ICollection<UserEmailPreference> UserPreferences { get; set; }
+
+        public ICollection<EventType> SupportedEventTypes { get; set; }
     }
 }

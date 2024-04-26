@@ -70,6 +70,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Solutions", "AddNewSolutions")]
+        public void AddNewSolutions()
+        {
+            AdminPages.AdminDashboard.ManageCatalogueSolutions();
+
+            AdminPages.AddSolutionDetailsAndDescription();
+
+            AdminPages.AddSolutionInteroperability(ProviderOrConsumer.Provider);
+        }
+
+        [Fact]
         [Trait("SupplierDefindEpics", "AddNewSupplierDefindEpics")]
         public void AddNewSupplierDefindEpics()
         {

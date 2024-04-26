@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models
 {
     public abstract class GovNotifyEmailModel(EmailNotificationTypeEnum notificationType)
     {
-        public EmailNotificationTypeEnum NotificationType { get; set; } = notificationType;
+        public EmailNotificationTypeEnum NotificationType { get; } = notificationType;
 
         public abstract Dictionary<string, dynamic> GetTemplatePersonalisation();
 

@@ -10,6 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Models
     {
         [Theory]
         [MockInlineAutoData(EmailPreferenceTypeEnum.ContractExpiry, ManageEmailPreferencesModel.ContractExpiryLabel)]
+        [MockInlineAutoData(EmailPreferenceTypeEnum.PasswordExpiry, ManageEmailPreferencesModel.PasswordExpiryLabel)]
         public static void GetLabel(
             EmailPreferenceTypeEnum emailPreferenceTypeEnum,
             string expectedValue,
@@ -20,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Models
 
         [Theory]
         [MockInlineAutoData(EmailPreferenceTypeEnum.ContractExpiry, ManageEmailPreferencesModel.ContractExpiryHint)]
+        [MockInlineAutoData(EmailPreferenceTypeEnum.PasswordExpiry, ManageEmailPreferencesModel.PasswordExpiryHint)]
         public static void GetHint(
             EmailPreferenceTypeEnum emailPreferenceTypeEnum,
             string expectedValue,

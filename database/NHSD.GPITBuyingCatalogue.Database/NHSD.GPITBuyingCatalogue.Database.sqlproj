@@ -154,6 +154,9 @@
     <Folder Include="PostDeployment\TestData\" />
     <Folder Include="PostDeployment\TestData\Competitions\" />
     <Folder Include="PostDeployment\TestData\Solutions\" />
+    <Folder Include="Notifications\" />
+    <Folder Include="Notifications\Tables\" />
+    <Folder Include="Notifications\TemporalTables\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.Dacpacs.Azure.Master" Version="160.0.0">

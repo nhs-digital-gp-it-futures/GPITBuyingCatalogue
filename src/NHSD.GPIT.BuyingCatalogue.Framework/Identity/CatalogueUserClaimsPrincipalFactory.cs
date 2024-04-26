@@ -35,7 +35,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Identity
             id.AddClaim(new Claim(Constants.CatalogueClaims.UserId, user.Id.ToString(CultureInfo.InvariantCulture)));
 
             foreach (var role in roles)
-                id.AddClaim(new Claim(Constants.CatalogueClaims.OrganisationFunction, role));
+            {
+                id.AddClaim(new Claim(ClaimTypes.Role, role));
+            }
 
             var organisation = await organisationService.GetOrganisation(user.PrimaryOrganisationId);
             id.AddClaim(new Claim(Constants.CatalogueClaims.PrimaryOrganisationInternalIdentifier, organisation.InternalIdentifier));

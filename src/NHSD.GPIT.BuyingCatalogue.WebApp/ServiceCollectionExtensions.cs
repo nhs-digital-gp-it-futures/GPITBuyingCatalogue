@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
@@ -55,19 +56,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.AddPolicy(
                     "AdminOnly",
                     policy => policy.RequireClaim(
-                        "organisationFunction",
+                        ClaimTypes.Role,
                         new[] { OrganisationFunction.Authority.Name }));
 
                 options.AddPolicy(
                     "Buyer",
                     policy => policy.RequireClaim(
-                        "organisationFunction",
+                        ClaimTypes.Role,
                         new[] { OrganisationFunction.Buyer.Name, OrganisationFunction.AccountManager.Name }));
 
                 options.AddPolicy(
                     "AccountManager",
                     policy => policy.RequireClaim(
-                        "organisationFunction",
+                        ClaimTypes.Role,
                         new[] { OrganisationFunction.AccountManager.Name }));
 
                 options.AddPolicy(

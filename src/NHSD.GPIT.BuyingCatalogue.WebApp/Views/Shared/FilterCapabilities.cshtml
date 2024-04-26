@@ -1,15 +1,8 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.FilterCapabilitiesModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.FilterCapabilitiesModel
 @{
     if (Model.IsFilter)
     {
         Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
-    }
-    else if (User.IsAdmin())
-    {
-        Layout = "~/Views/Shared/Layouts/_AdminLayout.cshtml";
     }
     var PageTitle = Model.GetPageTitle();
     ViewBag.Title = PageTitle.Title;

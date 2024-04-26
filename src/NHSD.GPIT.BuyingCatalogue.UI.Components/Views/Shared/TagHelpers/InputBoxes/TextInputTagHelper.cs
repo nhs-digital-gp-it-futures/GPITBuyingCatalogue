@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -8,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
+    [RestrictChildren(LabelHintTagHelper.TagHelperName)]
     public sealed class TextInputTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-input";
@@ -56,8 +58,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         private int DefaultMaxLength => MaximumCharacterLength ?? 500;
 
-        public override void Process(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
+            LabelHintContext labelHintContext = new LabelHintContext();
+            context.Items.Add(typeof(LabelHintContext), labelHintContext);
+
+            await output.GetChildContentAsync();
+
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
@@ -68,6 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             formGroup.InnerHtml
                 .AppendHtml(label)
                 .AppendHtml(hint)
+                .AppendHtml(labelHintContext.LabelHintHtml)
                 .AppendHtml(validation)
                 .AppendHtml(input)
                 .AppendHtml(counter);
