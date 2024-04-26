@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -119,17 +118,6 @@ public readonly struct NavigationMenuModel
             LinksFactories.First(x => x.Key(user));
 
         Links = linkFactory(user, urlHelper);
-
-        if (user.Identity?.IsAuthenticated ?? false)
-        {
-            Links.Add(
-                new(
-                    "Log out",
-                    urlHelper.Action(
-                        nameof(AccountController.Logout),
-                        typeof(AccountController).ControllerName(),
-                        new { area = typeof(AccountController).AreaName() })));
-        }
     }
 
     public IList<KeyValuePair<string, string>> Links { get; }

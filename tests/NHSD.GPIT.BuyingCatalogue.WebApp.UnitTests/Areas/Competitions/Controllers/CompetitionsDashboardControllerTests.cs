@@ -209,14 +209,15 @@ public static class CompetitionsDashboardControllerTests
     public static async Task SaveCompetition_ReturnsViewWithModel(
         Organisation organisation,
         int filterId,
+        string frameworkId,
         [Frozen] IOrganisationsService organisationsService,
         CompetitionsDashboardController controller)
     {
         organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
-        var expectedModel = new SaveCompetitionModel(organisation.InternalIdentifier, organisation.Name);
+        var expectedModel = new SaveCompetitionModel(organisation.InternalIdentifier, organisation.Name, frameworkId);
 
-        var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId)).As<ViewResult>();
+        var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, frameworkId: frameworkId)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));

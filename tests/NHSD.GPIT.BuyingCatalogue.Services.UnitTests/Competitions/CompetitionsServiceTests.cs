@@ -126,6 +126,7 @@ public static class CompetitionsServiceTests
     public static async Task AddCompetition_AddsCompetition(
         Organisation organisation,
         Filter filter,
+        string frameworkId,
         string name,
         string description,
         [Frozen] BuyingCatalogueDbContext context,
@@ -140,12 +141,12 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.AddCompetition(organisation.Id, filter.Id, name, description);
+        await service.AddCompetition(organisation.Id, filter.Id, frameworkId, name, description);
 
         context.Competitions.Should()
             .Contain(
                 x => x.Name == name && x.Description == description && x.OrganisationId == organisation.Id
-                    && x.FilterId == filter.Id);
+                    && x.FilterId == filter.Id && x.FrameworkId == frameworkId);
     }
 
     [Theory]
