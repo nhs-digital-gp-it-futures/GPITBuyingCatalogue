@@ -58,28 +58,24 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPag
         {
             var paginationList = GdsPaginationBuilders.GetPaginationListBuilder();
 
-            var hasEllipses = false;
-            for (var i = 1; i <= TotalNumberOfPages; i++)
+            var rangeFloor = Math.Max((CurrentPageNumber + 2 > TotalNumberOfPages) ? TotalNumberOfPages - 4 : CurrentPageNumber - 2, 1);
+            var rangeCeiling = Math.Min(rangeFloor + 4, TotalNumberOfPages);
+
+            if (rangeFloor > 1)
             {
-                var floor = CurrentPageNumber - 2;
-
-                if (CurrentPageNumber + 2 > TotalNumberOfPages)
-                    floor = TotalNumberOfPages - 4;
-
-                if (i == 1 || Enumerable.Range(Math.Max(floor, 1), 5).Contains(i) || i == TotalNumberOfPages)
-                {
-                    paginationList.InnerHtml.AppendHtml(GdsPaginationBuilders.GetPageLinkBuilder(i, GenerateLinkHrefForPage(i), CurrentPageNumber == i));
-                    hasEllipses = false;
-                }
-                else
-                {
-                    if (hasEllipses)
-                        continue;
-
-                    paginationList.InnerHtml.AppendHtml(GdsPaginationBuilders.GetEllipsesBuilder());
-                    hasEllipses = true;
-                }
+                paginationList.InnerHtml.AppendHtml(GdsPaginationBuilders.GetPageLinkBuilder(1, GenerateLinkHrefForPage(1), CurrentPageNumber == 1));
+                paginationList.InnerHtml.AppendHtml(GdsPaginationBuilders.GetEllipsesBuilder());
             }
+
+            for (var i = rangeFloor; i <= rangeCeiling; i++)
+            {
+                paginationList.InnerHtml.AppendHtml(GdsPaginationBuilders.GetPageLinkBuilder(i, GenerateLinkHrefForPage(i), CurrentPageNumber == i));
+            }
+
+            if (rangeCeiling == TotalNumberOfPages) return paginationList;
+
+            paginationList.InnerHtml.AppendHtml(GdsPaginationBuilders.GetEllipsesBuilder());
+            paginationList.InnerHtml.AppendHtml(GdsPaginationBuilders.GetPageLinkBuilder(TotalNumberOfPages, GenerateLinkHrefForPage(TotalNumberOfPages), CurrentPageNumber == TotalNumberOfPages));
 
             return paginationList;
         }
