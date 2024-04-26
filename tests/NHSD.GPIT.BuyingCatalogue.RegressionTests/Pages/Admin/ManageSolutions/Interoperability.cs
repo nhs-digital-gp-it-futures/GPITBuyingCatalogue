@@ -38,6 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
                 typeof(InteroperabilityController),
                 nameof(InteroperabilityController.Interoperability))
                 .Should().BeTrue();
+
+            CommonActions.ClickSave();
         }
 
         public void AddIM1Integrations(ProviderOrConsumer providerOrConsumer)

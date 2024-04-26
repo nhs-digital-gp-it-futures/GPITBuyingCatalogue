@@ -2,9 +2,11 @@
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.HostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedEpics;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
@@ -24,6 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             AddNewSolution = new AddNewSolution(driver, commonActions, factory);
             Features = new Features(driver, commonActions);
             Interoperability = new Interoperability(driver, commonActions);
+            Implementation = new Implementation(driver, commonActions);
+            SolutionApplicationTypes = new SolutionApplicationTypes(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -50,6 +54,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
 
         internal Interoperability Interoperability { get; }
 
+        internal Implementation Implementation { get; }
+
+        internal SolutionApplicationTypes SolutionApplicationTypes { get; }
+
         public void AddSolutionDetailsAndDescription()
         {
             AddNewSolution.AddSolution();
@@ -67,6 +75,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             Interoperability.AddIM1Integrations(providerOrConsumer);
             Interoperability.AddGPConnect1Integrations(providerOrConsumer);
             Interoperability.AddNHSAppIntegrations();
+        }
+
+        public void AddSolutionImplementation()
+        {
+            var solutionId = GetSolutionID();
+            Implementation.AddImpementation(solutionId);
+            Implementation.AddImplementationDetails();
+        }
+
+        public void AddSolutionApplicationTypes()
+        {
+            var solutionId = GetSolutionID();
+            SolutionApplicationTypes.AddApplicationType(solutionId);
         }
 
         private string GetSolutionID()

@@ -11,6 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By CreateManageOrders => By.LinkText("Create or manage orders");
 
+        public static By ViewOrders => By.LinkText("View orders");
+
+        public static By CreateNewOrderLink => By.LinkText("Create new order");
+
         public static By SearchBar => By.Id("orders-suggestion-search");
 
         public static By SearchListBox => By.Id("orders-suggestion-search__listbox");

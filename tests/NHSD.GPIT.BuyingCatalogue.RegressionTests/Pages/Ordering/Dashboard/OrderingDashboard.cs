@@ -16,10 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
 
         public void CreateNewOrder()
         {
-            CommonActions.ClickLinkElement(OrganisationDashboard.CreateManageOrders);
+            CommonActions.ClickLinkElement(OrganisationDashboard.ViewOrders);
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(DashboardController),
+                nameof(DashboardController.Organisation)).Should().BeTrue();
 
-            CommonActions.ClickLinkElement(OrganisationDashboard.CreateOrderLink);
-
+            CommonActions.ClickLinkElement(OrganisationDashboard.CreateNewOrderLink);
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderTriageController),
                 nameof(OrderTriageController.OrderItemType)).Should().BeTrue();
