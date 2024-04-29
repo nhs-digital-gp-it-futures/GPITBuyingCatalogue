@@ -1,21 +1,19 @@
 ﻿using System;
 using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.CommencementDate;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 {
-    // TODO: MJK NSubstitue
     public static class CommencementDateModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(-59)]
-        [CommonInlineAutoData(-20)]
-        [CommonInlineAutoData(-1)]
-        [CommonInlineAutoData(0)]
+        [MockInlineAutoData(-59)]
+        [MockInlineAutoData(-20)]
+        [MockInlineAutoData(-1)]
+        [MockInlineAutoData(0)]
         public static void Validate_CommencementDateOutsideThreshold_ThrowsValidationError(
             int days,
             CommencementDateModel model,
@@ -34,10 +32,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(1)]
-        [CommonInlineAutoData(20)]
-        [CommonInlineAutoData(60)]
-        [CommonInlineAutoData(180)]
+        [MockInlineAutoData(1)]
+        [MockInlineAutoData(20)]
+        [MockInlineAutoData(60)]
+        [MockInlineAutoData(180)]
         public static void Validate_CommencementDateWithinThreshold_NoValidationError(
             int days,
             CommencementDateModel model,
@@ -55,9 +53,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_InitialPeriodNotEntered_ThrowsValidationError(
             string initialPeriod,
             CommencementDateModel model,
@@ -72,9 +70,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData("1 month")]
-        [CommonInlineAutoData("one")]
-        [CommonInlineAutoData("abcdef")]
+        [MockInlineAutoData("1 month")]
+        [MockInlineAutoData("one")]
+        [MockInlineAutoData("abcdef")]
         public static void Validate_InitialPeriodNotANumber_ThrowsValidationError(
             string initialPeriod,
             CommencementDateModel model,
@@ -89,8 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(-1)]
-        [CommonInlineAutoData(0)]
+        [MockInlineAutoData(-1)]
+        [MockInlineAutoData(0)]
         public static void Validate_InitialPeriodTooLow_ThrowsValidationError(
             string initialPeriod,
             CommencementDateModel model,
@@ -105,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_InitialPeriodTooHigh_ThrowsValidationError(
             CommencementDateModel model,
             CommencementDateModelValidator validator)
@@ -119,9 +117,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_MaximumTermNotEntered_ThrowsValidationError(
             string maximumTerm,
             CommencementDateModel model,
@@ -136,9 +134,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData("1 month")]
-        [CommonInlineAutoData("one")]
-        [CommonInlineAutoData("abcdef")]
+        [MockInlineAutoData("1 month")]
+        [MockInlineAutoData("one")]
+        [MockInlineAutoData("abcdef")]
         public static void Validate_MaximumTermNotANumber_ThrowsValidationError(
             string maximumTerm,
             CommencementDateModel model,
@@ -153,8 +151,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(-1)]
-        [CommonInlineAutoData(0)]
+        [MockInlineAutoData(-1)]
+        [MockInlineAutoData(0)]
         public static void Validate_MaximumTermTooLow_ThrowsValidationError(
             string maximumTerm,
             CommencementDateModel model,
@@ -169,10 +167,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null, 1)]
-        [CommonInlineAutoData(1, 1)]
-        [CommonInlineAutoData(2, 1)]
-        [CommonInlineAutoData(2, 2)]
+        [MockInlineAutoData(null, 1)]
+        [MockInlineAutoData(1, 1)]
+        [MockInlineAutoData(2, 1)]
+        [MockInlineAutoData(2, 2)]
         public static void Validate_InvalidMaximumTerm_ThrowsValidationError(
             string initialPeriod,
             string maximumTerm,
@@ -189,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidModel_NoValidationError(
             CommencementDateModel model,
             CommencementDateModelValidator validator)

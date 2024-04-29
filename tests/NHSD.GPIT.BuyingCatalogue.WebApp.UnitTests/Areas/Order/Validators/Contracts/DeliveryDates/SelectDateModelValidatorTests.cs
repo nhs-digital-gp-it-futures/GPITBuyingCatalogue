@@ -1,20 +1,19 @@
 ﻿using System;
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.DeliveryDates;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Contracts.DeliveryDates
 {
-    // TODO: MJK NSubstitue
     public static class SelectDateModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(0)]
-        [CommonInlineAutoData(-1)]
-        [CommonInlineAutoData(-10)]
+        [MockInlineAutoData(0)]
+        [MockInlineAutoData(-1)]
+        [MockInlineAutoData(-10)]
         public static void Validate_PresentOrPastDate_ThrowsValidationError(
             int daysToAdd,
             SelectDateModel model,
@@ -33,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DateBeforeCommencementDate_ThrowsValidationError(
             SelectDateModel model,
             SelectDateModelValidator validator)
@@ -55,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DateAfterContractEndDate_ThrowsValidationError(
             SelectDateModel model,
             SelectDateModelValidator validator)
@@ -90,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DateAfterContractEndDate_Amend_ThrowsValidationError(
             SelectDateModel model,
             SelectDateModelValidator validator)
@@ -125,9 +124,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         }
 
         [Theory]
-        [CommonInlineAutoData(1)]
-        [CommonInlineAutoData(10)]
-        [CommonInlineAutoData(100)]
+        [MockInlineAutoData(1)]
+        [MockInlineAutoData(10)]
+        [MockInlineAutoData(100)]
         public static void Validate_FutureDate_NoErrors(
             int daysToAdd,
             SelectDateModel model,

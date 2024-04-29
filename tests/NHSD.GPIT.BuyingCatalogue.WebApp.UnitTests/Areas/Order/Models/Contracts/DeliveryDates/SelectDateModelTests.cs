@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contracts.DeliveryDates
 {
-    // TODO: MJK NSubstitue
     public static class SelectDateModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NullOrder_ThrowsException(
             string internalOrgId,
             CallOffId callOffId,
@@ -25,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
             CallOffId callOffId,
@@ -48,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ContractEndDate_WithInvalidArguments_ReturnsNull(
             string internalOrgId,
             CallOffId callOffId,
@@ -69,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ContractEndDate_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,

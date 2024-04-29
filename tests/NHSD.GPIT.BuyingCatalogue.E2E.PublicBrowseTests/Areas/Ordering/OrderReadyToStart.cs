@@ -6,7 +6,6 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -19,16 +18,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
         : BuyerTestBase
     {
         private const string InternalOrgId = "CG-03F";
-        private const OrderTriageValue Option = OrderTriageValue.Between40KTo250K;
 
         private static readonly Dictionary<string, string> Parameters = new()
         {
             { nameof(InternalOrgId), InternalOrgId },
-        };
-
-        private static readonly Dictionary<string, string> QueryParameters = new()
-        {
-            { nameof(Option), Option.ToString() },
         };
 
         public OrderReadyToStart(LocalWebApplicationFactory factory)
@@ -36,8 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering
                   factory,
                   typeof(OrderController),
                   nameof(OrderController.ReadyToStart),
-                  Parameters,
-                  queryParameters: QueryParameters)
+                  Parameters)
         {
         }
 

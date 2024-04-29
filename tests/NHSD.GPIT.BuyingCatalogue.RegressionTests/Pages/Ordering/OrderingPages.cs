@@ -1,5 +1,4 @@
-﻿using EnumsNET;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -122,7 +121,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             string supplierName,
             string orderDescription,
             bool addNewSupplierContact = false,
-            EntityFramework.Ordering.Models.OrderTriageValue orderTriage = EntityFramework.Ordering.Models.OrderTriageValue.Under40K,
             EntityFramework.Catalogue.Models.CatalogueItemType itemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution,
             AssociatedServiceType associatedServiceType = AssociatedServiceType.AssociatedServiceOther)
         {
@@ -161,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SupplierContacts.ConfirmContact(addNewSupplierContact);
 
             TaskList.TimescalesForCallOffAgreementTask();
-            OrderingStepOne.AddTimescaleForCallOffAgreement(orderTriage, itemType);
+            OrderingStepOne.AddTimescaleForCallOffAgreement();
         }
 
         public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", int multipleServiceRecipients = 0, bool importServiceRecipients = false, string fileName = "", bool allServiceRecipients = false)
@@ -247,9 +245,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             }
             else
             {
-                    MergerAndSplit.MergerAndSplitSolutionSelection();
-                    var serviceid = GetSplitOrMergeAssociatedServiceID(orderId);
-                    SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
+                MergerAndSplit.MergerAndSplitSolutionSelection();
+                var serviceid = GetSplitOrMergeAssociatedServiceID(orderId);
+                SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
@@ -486,7 +484,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectPlannedDeliveryDatesTask();
-            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder,  newAssociatedServices, additionalServices);
+            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, additionalServices);
 
             TaskList.SelectFundingSourcesTask();
             SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, additionalServices);

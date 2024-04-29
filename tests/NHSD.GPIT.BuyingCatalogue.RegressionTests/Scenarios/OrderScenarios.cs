@@ -1,5 +1,4 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType;
@@ -50,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -71,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionForLocalfundingonly);
 
@@ -92,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionWithMultipleFrameworks);
 
@@ -113,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
@@ -134,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
@@ -155,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -176,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -199,7 +198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Between40KTo250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -222,7 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -247,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -272,7 +271,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -300,7 +299,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
@@ -325,7 +324,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -356,7 +355,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, true, OrderTriageValue.Between40KTo250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, true);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -377,7 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Between40KTo250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
@@ -398,7 +397,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Between40KTo250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
@@ -419,7 +418,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Between40KTo250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
@@ -440,7 +439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Between40KTo250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -461,7 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Between40KTo250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -482,7 +481,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName, allServiceRecipients: true);
 
@@ -503,7 +502,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -524,7 +523,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -545,7 +544,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
@@ -566,7 +565,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
@@ -587,7 +586,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -715,7 +714,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -738,7 +737,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -761,7 +760,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -784,7 +783,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -830,7 +829,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -853,7 +852,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -876,7 +875,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, AdditionalServiceName);
 
@@ -899,7 +898,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
@@ -922,7 +921,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, AdditionalServiceName, NewAssociatedServiceName);
 
@@ -945,7 +944,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -968,7 +967,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
@@ -991,7 +990,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: AssociatedServiceNameForWebGP);
 
@@ -1014,7 +1013,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName, AssociatedServiceNameForWebGP);
 
@@ -1060,7 +1059,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -1083,7 +1082,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -1106,7 +1105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -1129,7 +1128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
@@ -1152,7 +1151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
@@ -1175,7 +1174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
@@ -1198,7 +1197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
@@ -1221,7 +1220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
@@ -1244,7 +1243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
@@ -1336,7 +1335,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1363,7 +1362,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1391,7 +1390,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1415,7 +1414,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1439,7 +1438,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1491,7 +1490,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1514,7 +1513,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1538,7 +1537,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1562,7 +1561,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1612,7 +1611,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1636,7 +1635,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1661,7 +1660,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, orderTriage: OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1733,7 +1732,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1756,7 +1755,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1779,7 +1778,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1802,7 +1801,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1825,7 +1824,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1848,7 +1847,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1871,7 +1870,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1920,7 +1919,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1943,7 +1942,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -1966,7 +1965,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, "Document Management", multipleServiceRecipients: 0);
 
@@ -1989,7 +1988,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -2012,7 +2011,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -2319,7 +2318,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Over250K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -2346,7 +2345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, OrderTriageValue.Under40K);
+            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
