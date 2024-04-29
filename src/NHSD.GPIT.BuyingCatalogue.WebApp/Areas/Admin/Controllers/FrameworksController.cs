@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
@@ -89,7 +88,8 @@ public class FrameworksController : Controller
 
         var model = new ExpireFrameworkModel
         {
-            Name = framework.ShortName, BackLink = Url.Action(nameof(Edit), new { frameworkId }),
+            Name = framework.ShortName,
+            BackLink = Url.Action(nameof(Edit), new { frameworkId }),
         };
 
         return View(model);

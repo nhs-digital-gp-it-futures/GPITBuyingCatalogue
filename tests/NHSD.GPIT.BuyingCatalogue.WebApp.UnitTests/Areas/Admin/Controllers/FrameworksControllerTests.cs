@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -74,19 +75,39 @@ public static class FrameworksControllerTests
     }
 
     [Theory]
-    [MockAutoData]
+    [MockInlineAutoData(true)]
+    [MockInlineAutoData(true)]
     public static async Task Add_Valid_AddsFrameworkAndRedirects(
+        bool selected,
         AddEditFrameworkModel model,
         [Frozen] IFrameworkService service,
         FrameworksController controller)
     {
         model.MaximumTerm = "36";
+        model.FundingTypes.ForEach(f => f.Selected = selected);
 
         var result = (await controller.Add(model)).As<RedirectToActionResult>();
 
         await service
             .Received()
-            .AddFramework(model.Name, Arg.Any<IEnumerable<FundingType>>(), Arg.Any<int>());
+            .AddFramework(model.Name, Arg.Is<IEnumerable<FundingType>>(f => f.Any() == selected), Arg.Any<int>());
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Dashboard));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Edit_Redirects_Dashboard(
+        string frameworkId,
+        [Frozen] IFrameworkService service,
+        FrameworksController controller)
+    {
+        service
+            .GetFramework(frameworkId)
+            .Returns((EntityFramework.Catalogue.Models.Framework)null);
+
+        var result = (await controller.Edit(frameworkId)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Dashboard));
@@ -127,20 +148,23 @@ public static class FrameworksControllerTests
     }
 
     [Theory]
-    [MockAutoData]
+    [MockInlineAutoData(true)]
+    [MockInlineAutoData(true)]
     public static async Task Edit_Valid_AddsFrameworkAndRedirects(
+        bool selected,
         string frameworkId,
         AddEditFrameworkModel model,
         [Frozen] IFrameworkService service,
         FrameworksController controller)
     {
         model.MaximumTerm = "36";
+        model.FundingTypes.ForEach(f => f.Selected = selected);
 
         var result = (await controller.Edit(frameworkId, model)).As<RedirectToActionResult>();
 
         await service
             .Received()
-            .UpdateFramework(frameworkId, model.Name, Arg.Any<IEnumerable<FundingType>>(), Arg.Any<int>());
+            .UpdateFramework(frameworkId, model.Name, Arg.Is<IEnumerable<FundingType>>(f => f.Any() == selected), Arg.Any<int>());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Dashboard));
