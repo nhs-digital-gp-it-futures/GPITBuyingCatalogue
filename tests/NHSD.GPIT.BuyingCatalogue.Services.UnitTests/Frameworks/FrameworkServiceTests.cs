@@ -258,6 +258,18 @@ public static class FrameworkServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
+    public static async Task EditFramework_When_FrameworkNotFound_Returns_WithoutError(
+        FrameworkService service,
+        EntityFramework.Catalogue.Models.Framework framework)
+    {
+       await FluentActions
+            .Awaiting(async () => await service.UpdateFramework(framework.Id, null, null, 0))
+            .Should()
+            .NotThrowAsync();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static async Task MarkAsExpired_InvalidFramework_DoesNothing(
         string frameworkId,
         List<EntityFramework.Catalogue.Models.Framework> frameworks,

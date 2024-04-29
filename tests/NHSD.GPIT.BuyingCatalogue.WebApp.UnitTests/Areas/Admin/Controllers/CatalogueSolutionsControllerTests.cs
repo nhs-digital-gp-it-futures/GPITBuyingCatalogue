@@ -451,35 +451,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async Task Get_Details_ReturnsViewWithExpectedModel(
+        public static async Task Get_Details_BadRequest(
+            [Frozen] ISolutionsService mockSolutionService,
+            CatalogueSolutionsController controller,
+            CatalogueItemId solutionId)
+        {
+            mockSolutionService.GetSolutionWithBasicInformation(solutionId)
+                .Returns((CatalogueItem)null);
+
+            var actual = (await controller.Details(solutionId)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_Details_WhenNoFrameworkSolutions_ReturnsViewWithExpectedModel(
             [Frozen] ISolutionsService mockSolutionService,
             [Frozen] ISuppliersService mockSuppliersService,
             CatalogueSolutionsController controller,
             string shortName,
             string frameworkId,
-            bool selected,
-            bool isFoundation,
             CatalogueItemId solutionId,
             CatalogueItem catalogueItem,
             Solution solution,
             List<Supplier> suppliers)
         {
-            var frameworkModel = new FrameworkModel
-            {
-                Name = $"{shortName} Framework",
-                FrameworkId = frameworkId,
-                Selected = selected,
-                IsFoundation = isFoundation,
-            };
-            var expected = new SolutionModel
-            {
-                Frameworks = new List<FrameworkModel> { frameworkModel },
-                SolutionId = solutionId,
-            };
-
             catalogueItem.Id = solutionId;
             solution.FrameworkSolutions.Clear();
-            solution.FrameworkSolutions.Add(new FrameworkSolution { IsFoundation = isFoundation });
             solution.IsPilotSolution = true;
             catalogueItem.Solution = solution;
 
@@ -502,7 +501,53 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
-            var model = actual.Model.As<SolutionModel>();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_Details_WithFrameworkSolutions_ReturnsViewWithExpectedModel(
+            bool isFoundation,
+            [Frozen] ISolutionsService mockSolutionService,
+            [Frozen] ISuppliersService mockSuppliersService,
+            CatalogueSolutionsController controller,
+            string shortName,
+            string frameworkId,
+            CatalogueItemId solutionId,
+            CatalogueItem catalogueItem,
+            Solution solution,
+            List<Supplier> suppliers)
+        {
+            catalogueItem.Id = solutionId;
+            solution.FrameworkSolutions.Clear();
+            solution.FrameworkSolutions.Add(
+                new FrameworkSolution
+                {
+                    FrameworkId = frameworkId,
+                    IsFoundation = isFoundation,
+                });
+
+            solution.IsPilotSolution = true;
+            catalogueItem.Solution = solution;
+
+            mockSolutionService.GetSolutionWithBasicInformation(solutionId)
+                .Returns(catalogueItem);
+
+            mockSuppliersService.GetAllActiveSuppliers()
+                .Returns(suppliers);
+
+            var framework = new EntityFramework.Catalogue.Models.Framework
+            {
+                Id = frameworkId,
+                ShortName = shortName,
+            };
+
+            mockSolutionService.GetAllFrameworks()
+                .Returns(new List<EntityFramework.Catalogue.Models.Framework> { framework });
+
+            var actual = (await controller.Details(solutionId)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNull();
         }
 
         [Theory]
