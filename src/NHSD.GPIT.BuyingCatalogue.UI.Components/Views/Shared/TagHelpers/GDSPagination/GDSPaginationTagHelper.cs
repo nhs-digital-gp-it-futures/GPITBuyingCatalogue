@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPag
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             // if either the page number data isn't correctly set, suppress and return
-            if (TotalNumberOfPages == 0 || CurrentPageNumber == 0)
+            if (TotalNumberOfPages <= 1 || CurrentPageNumber == 0)
             {
                 output.SuppressOutput();
                 return;

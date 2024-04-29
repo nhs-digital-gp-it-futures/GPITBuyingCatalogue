@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Formats.Asn1;
+using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Newtonsoft.Json.Linq;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
@@ -19,14 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPag
         {
             output.TagName = TagHelperConstants.Nav;
             output.TagMode = TagMode.StartTagAndEndTag;
-
-            var attributes = new List<TagHelperAttribute>
-            {
-                new TagHelperAttribute(TagHelperConstants.Class, TagHelperConstants.GovUkPagination),
-                new TagHelperAttribute(TagHelperConstants.AriaLabel, AriaLabel),
-            };
-
-            attributes.ForEach(a => output.Attributes.Add(a));
+            output.AddClass(TagHelperConstants.GovUkPagination, HtmlEncoder.Default);
+            output.AddClass(TagHelperConstants.NhsAlignCenter, HtmlEncoder.Default);
+            output.Attributes.Add(TagHelperConstants.AriaLabel, AriaLabel);
         }
 
         public static TagBuilder GetPageLinkBuilder(

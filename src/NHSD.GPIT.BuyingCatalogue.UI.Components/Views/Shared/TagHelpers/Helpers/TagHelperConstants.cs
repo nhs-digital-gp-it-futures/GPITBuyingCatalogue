@@ -78,6 +78,7 @@
         internal const string NhsInput = "nhsuk-input";
         internal const string NhsLabel = "nhsuk-label";
         internal const string NhsInLineLabel = "bc-inline-label";
+        internal const string NhsAlignCenter = "bc-u-align-justify-center";
         internal const string NhsHint = "nhsuk-hint";
         internal const string GovUkHint = "govuk-hint";
         internal const string GovUkCharacterCountMessage = "govuk-character-count__message";
