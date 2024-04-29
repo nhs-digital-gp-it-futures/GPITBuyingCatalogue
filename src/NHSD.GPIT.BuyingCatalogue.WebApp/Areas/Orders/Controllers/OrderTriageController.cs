@@ -40,10 +40,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var model = new OrderItemTypeModel(organisation.Name)
             {
-                BackLink = Url.Action(
-                    nameof(DashboardController.Organisation),
-                    typeof(DashboardController).ControllerName(),
-                    new { internalOrgId }),
+                BackLink = User.GetSecondaryOrganisationInternalIdentifiers().Any()
+                    ? Url.Action(
+                        nameof(SelectOrganisation),
+                        new { internalOrgId })
+                    : Url.Action(
+                        nameof(OrderController.ReadyToStart),
+                        typeof(OrderController).ControllerName(),
+                        new { internalOrgId }),
                 SelectedOrderItemType = orderType,
             };
 
@@ -60,7 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             {
                 case CatalogueItemType.Solution:
                     return RedirectToAction(
-                    nameof(SelectOrganisation),
+                    nameof(OrderController.NewOrder),
+                    typeof(OrderController).ControllerName(),
                     new { internalOrgId, orderType = OrderTypeEnum.Solution });
 
                 case CatalogueItemType.AssociatedService:
@@ -98,15 +103,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 return View(model);
 
             return RedirectToAction(
-                nameof(SelectOrganisation),
+                nameof(OrderController.NewOrder),
+                typeof(OrderController).ControllerName(),
                 new { internalOrgId, orderType = model.OrderType.Value });
         }
 
         [HttpGet("proxy-select")]
-        public async Task<IActionResult> SelectOrganisation(string internalOrgId, OrderType orderType)
+        public async Task<IActionResult> SelectOrganisation(string internalOrgId)
         {
             if (!User.GetSecondaryOrganisationInternalIdentifiers().Any())
-                return RedirectToAction(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId, orderType = orderType.Value });
+                return RedirectToAction(nameof(OrderItemType), new { internalOrgId });
 
             var internalOrgIds = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
             {
@@ -117,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var model = new SelectOrganisationModel(internalOrgId, organisations)
             {
-                BackLink = Url.Action(nameof(OrderItemType), new { internalOrgId, orderType = orderType.ToCatalogueItemType }),
+                BackLink = Url.Action(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId }),
                 Title = "Which organisation are you ordering for?",
             };
 
@@ -125,15 +131,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpPost("proxy-select")]
-        public IActionResult SelectOrganisation(string internalOrgId, SelectOrganisationModel model, OrderTypeEnum? orderType = null)
+        public IActionResult SelectOrganisation(string internalOrgId, SelectOrganisationModel model)
         {
             if (!User.GetSecondaryOrganisationInternalIdentifiers().Any())
-                return RedirectToAction(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId, orderType });
+                return RedirectToAction(nameof(OrderItemType), new { internalOrgId });
 
             if (!ModelState.IsValid)
                 return View(model);
 
-            return RedirectToAction(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId = model.SelectedOrganisation, orderType });
+            return RedirectToAction(nameof(OrderItemType), new { internalOrgId = model.SelectedOrganisation });
         }
     }
 }

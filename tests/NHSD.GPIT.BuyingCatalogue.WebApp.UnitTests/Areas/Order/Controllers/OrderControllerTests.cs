@@ -238,25 +238,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         }
 
         [Theory]
-        [MockInlineAutoData(OrderTypeEnum.Unknown)]
-        [MockInlineAutoData(OrderTypeEnum.Solution)]
-        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockAutoData]
         public static async Task Get_ReadyToStart_ReturnsView(
-            OrderTypeEnum orderType,
             Organisation organisation,
             [Frozen] IOrganisationsService service,
             OrderController controller)
         {
             service.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(Task.FromResult(organisation));
 
-            var result = await controller.ReadyToStart(organisation.InternalIdentifier, orderType);
+            var result = await controller.ReadyToStart(organisation.InternalIdentifier);
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
-            var model = actual.Model.Should().BeAssignableTo<ReadyToStartModel>().Subject;
-
-            model.OrderType.Value.Should().Be(orderType);
+            actual.Model.Should().BeAssignableTo<ReadyToStartModel>();
         }
 
         [Theory]
@@ -284,18 +277,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         public static void Post_ReadyToStart_Redirects(
             string internalOrgId,
             ReadyToStartModel model,
-            OrderTypeEnum orderType,
             OrderController controller)
         {
-            var result = controller.ReadyToStart(internalOrgId, model, orderType).As<RedirectToActionResult>();
+            var result = controller.ReadyToStart(internalOrgId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(controller.NewOrder));
+            result.ActionName.Should().Be(nameof(OrderTriageController.SelectOrganisation));
             result.RouteValues.Should().BeEquivalentTo(
                 new RouteValueDictionary
                 {
                     { nameof(internalOrgId), internalOrgId },
-                    { nameof(orderType), orderType },
                 });
         }
 

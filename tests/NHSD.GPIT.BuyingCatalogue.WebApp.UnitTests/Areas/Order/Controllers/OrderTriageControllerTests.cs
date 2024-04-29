@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.OrderItemType(internalOrgId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderTriageController.SelectOrganisation));
+            result.ActionName.Should().Be(nameof(OrderController.NewOrder));
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -182,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.DetermineAssociatedServiceType(internalOrgId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderTriageController.SelectOrganisation));
+            result.ActionName.Should().Be(nameof(OrderController.NewOrder));
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -193,7 +193,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_SelectOrganisation_ReturnsView(
-            OrderTypeEnum orderType,
             [Frozen] IOrganisationsService organisationService,
             List<Organisation> organisations,
             OrderTriageController controller)
@@ -222,7 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 Title = "Which organisation are you ordering for?",
             };
 
-            var result = (await controller.SelectOrganisation(organisations.First().InternalIdentifier, orderType)).As<ViewResult>();
+            var result = (await controller.SelectOrganisation(organisations.First().InternalIdentifier)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
@@ -231,7 +230,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_SelectOrganisation_NoSecondaryOds_RedirectsToIndex(
-            OrderTypeEnum orderType,
             Organisation organisation,
             OrderTriageController controller)
         {
@@ -249,10 +247,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                     HttpContext = new DefaultHttpContext { User = user },
                 };
 
-            var result = (await controller.SelectOrganisation(organisation.InternalIdentifier, orderType)).As<RedirectToActionResult>();
+            var result = (await controller.SelectOrganisation(organisation.InternalIdentifier)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderController.ReadyToStart));
+            result.ActionName.Should().Be(nameof(OrderTriageController.OrderItemType));
         }
 
         [Theory]
@@ -279,7 +277,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.SelectOrganisation(organisation.InternalIdentifier, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderController.ReadyToStart));
+            result.ActionName.Should().Be(nameof(OrderTriageController.OrderItemType));
         }
 
         [Theory]
@@ -323,7 +321,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.SelectOrganisation(internalOrgId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderController.ReadyToStart));
+            result.ActionName.Should().Be(nameof(OrderTriageController.OrderItemType));
         }
     }
 }
