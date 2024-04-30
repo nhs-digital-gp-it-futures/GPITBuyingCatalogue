@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 
@@ -43,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
         [ExcludeFromCodeCoverage(
             Justification =
                 "Can't be tested until the ID migration due to another bizarre Entity Framework design choice where HasDefaultValue doesn't work for the In-memory provider.")]
-        public async Task AddFramework(string name, IEnumerable<FundingType> fundingTypes, bool supportsFoundationSolution)
+        public async Task AddFramework(string name, IEnumerable<FundingType> fundingTypes, int maximumTerm)
         {
             ArgumentException.ThrowIfNullOrEmpty(name);
             ArgumentNullException.ThrowIfNull(fundingTypes);
@@ -51,25 +50,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             var framework =
                 new EntityFramework.Catalogue.Models.Framework
                 {
-                    Name = name, ShortName = name, FundingTypes = fundingTypes.ToArray(), SupportsFoundationSolution = supportsFoundationSolution,
+                    Name = name,
+                    ShortName = name,
+                    FundingTypes = fundingTypes.ToArray(),
+                    MaximumTerm = maximumTerm,
                 };
 
             dbContext.Frameworks.Add(framework);
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateFramework(string frameworkId, string name, IEnumerable<FundingType> fundingTypes, bool supportsFoundationSolution)
+        public async Task UpdateFramework(string frameworkId, string name, IEnumerable<FundingType> fundingTypes, int maximumTerm)
         {
             var framework = await GetFramework(frameworkId);
             if (framework is null)
                 return;
-            ArgumentNullException.ThrowIfNullOrEmpty(name);
+
+            ArgumentException.ThrowIfNullOrEmpty(name);
             ArgumentNullException.ThrowIfNull(fundingTypes);
 
             framework.Name = name;
             framework.ShortName = name;
             framework.FundingTypes = fundingTypes.ToArray();
-            framework.SupportsFoundationSolution = supportsFoundationSolution;
+            framework.MaximumTerm = maximumTerm;
+
             await dbContext.SaveChangesAsync();
         }
 

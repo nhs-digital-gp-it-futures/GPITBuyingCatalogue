@@ -1,14 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Frameworks;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Frameworks;
@@ -16,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Fram
 public static class AddFrameworkModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoFundingType_SetsModelError(
         AddEditFrameworkModel model,
         AddFrameworkModelValidator validator)
@@ -30,7 +27,7 @@ public static class AddFrameworkModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoName_SetsModelError(
         AddEditFrameworkModel model,
         AddFrameworkModelValidator validator)
@@ -44,15 +41,15 @@ public static class AddFrameworkModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_DuplicateName_SetsModelError(
         AddEditFrameworkModel model,
-        [Frozen] Mock<IFrameworkService> frameworkService,
+        [Frozen] IFrameworkService frameworkService,
         AddFrameworkModelValidator validator)
     {
         frameworkService
-            .Setup(x => x.FrameworkNameExistsExcludeSelf(It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync(true);
+            .FrameworkNameExistsExcludeSelf(Arg.Any<string>(), Arg.Any<string>())
+            .Returns(true);
 
         var result = validator.TestValidate(model);
 
@@ -61,18 +58,68 @@ public static class AddFrameworkModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockInlineAutoData(null)]
+    [MockInlineAutoData("")]
+    [MockInlineAutoData("  ")]
+    public static void Validate_NoMaximumTerm_SetsModelError(
+        string maximumTerm,
+        AddEditFrameworkModel model,
+        AddFrameworkModelValidator validator)
+    {
+        model.MaximumTerm = maximumTerm;
+
+        var result = validator.TestValidate(model);
+
+        result.ShouldHaveValidationErrorFor(x => x.MaximumTerm)
+            .WithErrorMessage(AddFrameworkModelValidator.MaximumDurationMissingError);
+    }
+
+    [Theory]
+    [MockInlineAutoData("1.2")]
+    [MockInlineAutoData("test")]
+    public static void Validate_NotInteger_SetsModelError(
+        string maximumTerm,
+        AddEditFrameworkModel model,
+        AddFrameworkModelValidator validator)
+    {
+        model.MaximumTerm = maximumTerm;
+
+        var result = validator.TestValidate(model);
+
+        result.ShouldHaveValidationErrorFor(x => x.MaximumTerm)
+            .WithErrorMessage(AddFrameworkModelValidator.MaximumDurationMustBeANumberError);
+    }
+
+    [Theory]
+    [MockInlineAutoData("0")]
+    [MockInlineAutoData("-5")]
+    public static void Validate_GreaterThanZero_SetsModelError(
+        string maximumTerm,
+        AddEditFrameworkModel model,
+        AddFrameworkModelValidator validator)
+    {
+        model.MaximumTerm = maximumTerm;
+
+        var result = validator.TestValidate(model);
+
+        result.ShouldHaveValidationErrorFor(x => x.MaximumTerm)
+            .WithErrorMessage(AddFrameworkModelValidator.MaximumDurationGreaterThanZeroError);
+    }
+
+    [Theory]
+    [MockAutoData]
     public static void Validate_Valid_NoErrors(
         AddEditFrameworkModel model,
-        [Frozen] Mock<IFrameworkService> frameworkService,
+        [Frozen] IFrameworkService frameworkService,
         AddFrameworkModelValidator validator)
     {
         frameworkService
-            .Setup(x => x.FrameworkNameExists(It.IsAny<string>()))
-            .ReturnsAsync(false);
+            .FrameworkNameExists(Arg.Any<string>())
+            .Returns(false);
 
         model.Name = new string('a', 9);
         model.FundingTypes.First().Selected = true;
+        model.MaximumTerm = "32";
 
         var result = validator.TestValidate(model);
 
