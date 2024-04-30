@@ -3,6 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.HostingType;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedEpics;
@@ -28,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             Interoperability = new Interoperability(driver, commonActions);
             Implementation = new Implementation(driver, commonActions);
             SolutionApplicationTypes = new SolutionApplicationTypes(driver, commonActions);
+            BrowserBased = new BrowserBased(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -57,6 +59,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal Implementation Implementation { get; }
 
         internal SolutionApplicationTypes SolutionApplicationTypes { get; }
+
+        internal BrowserBased BrowserBased { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -88,6 +92,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         {
             var solutionId = GetSolutionID();
             SolutionApplicationTypes.AddApplicationType(solutionId);
+            BrowserBased.AddBrowserBasedApplication();
+            BrowserBased.AddBrowserBasedApplicationTypes();
         }
 
         private string GetSolutionID()
