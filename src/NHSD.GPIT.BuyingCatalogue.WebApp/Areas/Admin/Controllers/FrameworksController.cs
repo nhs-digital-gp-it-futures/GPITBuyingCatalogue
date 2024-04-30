@@ -44,7 +44,7 @@ public class FrameworksController : Controller
         await frameworkService.AddFramework(
             model.Name,
             model.FundingTypes.Where(x => x.Selected).Select(x => x.Value),
-            model.MaximumTerm.AsNullableInt().Value);
+            model.MaximumTerm.AsNullableInt().GetValueOrDefault());
 
         return RedirectToAction(nameof(Dashboard));
     }

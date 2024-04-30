@@ -35,7 +35,6 @@
                     {
                         @if (Model.Frameworks[i].Name == "GP IT Futures Framework")
                         {
-                            //@if (Model.Frameworks[i].SupportsFoundationSolution)
                             <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
                                           label-text="@Model.Frameworks[i].Name"
                                           hidden-input="@Model.Frameworks[i].FrameworkId"
