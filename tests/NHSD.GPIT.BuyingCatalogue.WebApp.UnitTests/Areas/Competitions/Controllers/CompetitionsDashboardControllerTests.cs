@@ -51,7 +51,7 @@ public static class CompetitionsDashboardControllerTests
         organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
             .ReturnsAsync(organisation);
 
-        competitionsService.Setup(x => x.GetCompetitionsDashboard(organisation.InternalIdentifier))
+        competitionsService.Setup(x => x.GetCompetitions(organisation.InternalIdentifier))
             .ReturnsAsync(competitions);
 
         var expectedModel = new CompetitionDashboardModel(

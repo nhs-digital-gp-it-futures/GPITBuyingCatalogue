@@ -8,8 +8,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions;
@@ -36,11 +38,29 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Features)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-    public async Task<IEnumerable<Competition>> GetCompetitionsDashboard(string internalOrgId)
+    public async Task<List<Competition>> GetCompetitions(string internalOrgId)
         => await dbContext.Competitions.Include(x => x.CompetitionSolutions)
             .Where(x => x.Organisation.InternalIdentifier == internalOrgId)
             .IgnoreQueryFilters()
             .ToListAsync();
+
+    public async Task<PagedList<Competition>> GetPagedCompetitions(string internalOrgId, PageOptions options)
+    {
+        options ??= new PageOptions();
+
+        var query = await GetCompetitions(internalOrgId);
+        options.TotalNumberOfItems = query.Count;
+        query = query
+            .OrderByDescending(o => o.LastUpdated)
+            .ToList();
+
+        if (options.PageNumber != 0)
+            query = query.Skip((options.PageNumber - 1) * options.PageSize).ToList();
+
+        var results = query.Take(options.PageSize).ToList();
+
+        return new PagedList<Competition>(results, options);
+    }
 
     public async Task<Competition> GetCompetitionForResults(string internalOrgId, int competitionId) =>
         await dbContext
