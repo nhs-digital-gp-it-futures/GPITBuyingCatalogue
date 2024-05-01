@@ -20,7 +20,7 @@ public static class EmailPreferenceRoleTypeExtensions
                 => roles.Any(
                     x => string.Equals(x.Name, OrganisationFunction.Buyer.Name)
                         || string.Equals(x.Name, OrganisationFunction.AccountManager.Name)),
-            EmailPreferenceRoleType.None or _ => throw new ArgumentOutOfRangeException(nameof(type)),
+            _ => throw new ArgumentOutOfRangeException(nameof(type)),
         };
     }
 }
