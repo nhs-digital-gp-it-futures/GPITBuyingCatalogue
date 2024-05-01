@@ -43,6 +43,7 @@
 :r ./InsertAssociatedServices.sql
 :r ./InsertRelatedOrganisations.sql
 
+:r ./InsertEmailPreferenceRoleTypes.sql
 :r ./InsertEmailPreferenceTypes.sql
 :r ./InsertEventTypes.sql
 :r ./InsertEmailNotificationType.sql

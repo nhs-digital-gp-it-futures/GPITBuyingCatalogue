@@ -13,17 +13,20 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
         [MockInlineAutoData(false)]
         public static void Constructor(
             bool defaultPreference,
-            EmailPreferenceTypeEnum emailPreferenceType)
+            EmailPreferenceTypeEnum emailPreferenceType,
+            EmailPreferenceRoleType roleType)
         {
             var model = new UserEmailPreferenceModel(
                 emailPreferenceType,
                 defaultPreference,
-                null);
+                null,
+                roleType);
 
             model.EmailPreferenceType.Should().Be(emailPreferenceType);
             model.DefaultEnabled.Should().Be(defaultPreference);
             model.UserEnabled.Should().BeNull();
             model.Enabled.Should().Be(defaultPreference);
+            model.RoleType.Should().Be(roleType);
         }
 
         [Theory]
@@ -32,17 +35,20 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Email
         public static void Constructor2(
             bool defaultPreference,
             bool userPreference,
-            EmailPreferenceTypeEnum emailPreferenceType)
+            EmailPreferenceTypeEnum emailPreferenceType,
+            EmailPreferenceRoleType roleType)
         {
             var model = new UserEmailPreferenceModel(
                 EmailPreferenceTypeEnum.ContractExpiry,
                 defaultPreference,
-                userPreference);
+                userPreference,
+                roleType);
 
             model.EmailPreferenceType.Should().Be(emailPreferenceType);
             model.DefaultEnabled.Should().Be(defaultPreference);
             model.UserEnabled.Should().Be(userPreference);
             model.Enabled.Should().Be(userPreference);
+            model.RoleType.Should().Be(roleType);
         }
     }
 }
