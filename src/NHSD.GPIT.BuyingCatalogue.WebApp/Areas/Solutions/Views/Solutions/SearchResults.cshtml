@@ -70,14 +70,11 @@
     }
     
     <govuk-pagination
-        next-url="@(Url.Action(
+        base-url="@(Url.Action(
                     nameof(SolutionsController.Index),
                     typeof(SolutionsController).ControllerName(),
-                    Model.Filters.ToRouteValues(Model.PageOptions.PageNumber+1)))"
-        previous-url="@(Url.Action(
-                    nameof(SolutionsController.Index),
-                    typeof(SolutionsController).ControllerName(),
-                    Model.Filters.ToRouteValues(Model.PageOptions.PageNumber-1)))"
-        current-page-number="@Model.PageOptions.PageNumber"
+                    Model.Filters.ToRouteValues(),
+                     Url.ActionContext.HttpContext.Request.Scheme ))"
+        current-page-number="@Model.PageOptions.PageNumber" 
         total-number-of-pages="@Model.PageOptions.NumberOfPages" />
 </nhs-card>
