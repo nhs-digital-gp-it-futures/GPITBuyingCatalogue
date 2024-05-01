@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
         [EnumMember(Value = "Connectivity and resolution")]
         connectivity_and_resolution,
         [EnumMember(Value = "Hardware requirements")]
-        hardware_requirementsn,
+        hardware_requirements,
         [EnumMember(Value = "Additional information")]
         additional_information,
     }

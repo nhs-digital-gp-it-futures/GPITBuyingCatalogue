@@ -14,6 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.EditSolutio
 
         public static By ResolutionDropdown => By.Id("SelectedResolution");
 
+        public static By ScreenResolutionDropdown => By.Id("SelectedScreenResolution");
+
+        public static By ConnectionSpeedDropdown => By.Id("SelectedConnectionSpeed");
+
         public static By StorageSpace => By.Id("StorageSpace");
 
         public static By DeleteApplicationTypeLink => By.LinkText("Delete application type");
