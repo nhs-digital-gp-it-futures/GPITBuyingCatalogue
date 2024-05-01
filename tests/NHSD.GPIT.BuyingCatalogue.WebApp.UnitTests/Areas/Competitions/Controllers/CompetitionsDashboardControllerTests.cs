@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -18,11 +17,12 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controllers;
@@ -32,7 +32,7 @@ public static class CompetitionsDashboardControllerTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(CompetitionsDashboardController).GetConstructors();
 
@@ -40,24 +40,25 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Index_ReturnsViewWithModel(
         Organisation organisation,
-        List<Competition> competitions,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        PagedList<Competition> competitions,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionsDashboardController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
-        competitionsService.Setup(x => x.GetCompetitions(organisation.InternalIdentifier))
-            .ReturnsAsync(competitions);
+        competitionsService.GetPagedCompetitions(organisation.InternalIdentifier, It.IsAny<PageOptions>()).Returns(competitions);
 
         var expectedModel = new CompetitionDashboardModel(
             organisation.InternalIdentifier,
             organisation.Name,
-            competitions);
+            competitions.Items)
+        {
+            Options = competitions.Options,
+        };
 
         var result = (await controller.Index(organisation.InternalIdentifier)).As<ViewResult>();
 
@@ -66,7 +67,7 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void BeforeYouStart_ReturnsViewWithModel(
         string internalOrgId,
         CompetitionsDashboardController controller)
@@ -78,7 +79,7 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Post_BeforeYouStart_Redirects(
         string internalOrgId,
         NavBaseModel model,
@@ -91,19 +92,17 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectFilter_ReturnsViewWithModel(
         Organisation organisation,
         List<Filter> filters,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
-        [Frozen] Mock<IManageFiltersService> filterService,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] IManageFiltersService filterService,
         CompetitionsDashboardController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(It.IsAny<string>()))
-            .ReturnsAsync(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(It.IsAny<string>()).Returns(organisation);
 
-        filterService.Setup(x => x.GetFilters(It.IsAny<int>()))
-            .ReturnsAsync(filters);
+        filterService.GetFilters(It.IsAny<int>()).Returns(filters);
 
         var expectedModel = new SelectFilterModel(organisation.Name, filters);
 
@@ -114,19 +113,17 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Post_SelectFilter_InvalidModel_ReturnsViewWithModel(
         Organisation organisation,
         List<Filter> filters,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
-        [Frozen] Mock<IManageFiltersService> filterService,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] IManageFiltersService filterService,
         CompetitionsDashboardController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(It.IsAny<string>()))
-            .ReturnsAsync(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(It.IsAny<string>()).Returns(organisation);
 
-        filterService.Setup(x => x.GetFilters(It.IsAny<int>()))
-            .ReturnsAsync(filters);
+        filterService.GetFilters(It.IsAny<int>()).Returns(filters);
 
         var expectedModel = new SelectFilterModel(organisation.Name, filters);
 
@@ -139,7 +136,7 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Post_SelectFilter_Redirects(
         string internalOrgId,
         SelectFilterModel model,
@@ -152,19 +149,17 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ReviewFilter_NullFilterDetails_Redirects(
         Organisation organisation,
         int filterId,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
-        [Frozen] Mock<IManageFiltersService> filtersService,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] IManageFiltersService filtersService,
         CompetitionsDashboardController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
-        filtersService.Setup(x => x.GetFilterDetails(It.IsAny<int>(), filterId))
-            .ReturnsAsync((FilterDetailsModel)null);
+        filtersService.GetFilterDetails(It.IsAny<int>(), filterId).Returns((FilterDetailsModel)null);
 
         var result = (await controller.ReviewFilter(organisation.InternalIdentifier, filterId))
             .As<RedirectToActionResult>();
@@ -174,20 +169,18 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ReviewFilter_ValidFilter_ReturnsViewWithModel(
         Organisation organisation,
         int filterId,
         FilterDetailsModel filterDetailsModel,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
-        [Frozen] Mock<IManageFiltersService> filtersService,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] IManageFiltersService filtersService,
         CompetitionsDashboardController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
-        filtersService.Setup(x => x.GetFilterDetails(organisation.Id, filterId))
-            .ReturnsAsync(filterDetailsModel);
+        filtersService.GetFilterDetails(organisation.Id, filterId).Returns(filterDetailsModel);
 
         var expectedModel = new ReviewFilterModel(filterDetailsModel) { Caption = filterDetailsModel.Name };
 
@@ -198,7 +191,7 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Post_ReviewFilter_Redirects(
         string internalOrgId,
         int filterId,
@@ -212,15 +205,14 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SaveCompetition_ReturnsViewWithModel(
         Organisation organisation,
         int filterId,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] IOrganisationsService organisationsService,
         CompetitionsDashboardController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
         var expectedModel = new SaveCompetitionModel(organisation.InternalIdentifier, organisation.Name);
 
@@ -231,7 +223,7 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Post_SaveCompetition_InvalidModel_ReturnsViewWithModel(
         string internalOrgId,
         int filterId,
@@ -247,7 +239,7 @@ public static class CompetitionsDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Post_SaveCompetition_ValidInput_SavesCompetition(
         Organisation organisation,
         Competition competition,
@@ -255,43 +247,28 @@ public static class CompetitionsDashboardControllerTests
         FilterIdsModel filterIdsModel,
         SaveCompetitionModel model,
         List<CatalogueItem> catalogueItems,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<ISolutionsFilterService> solutionsFilterService,
-        [Frozen] Mock<IManageFiltersService> filtersService,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] ISolutionsFilterService solutionsFilterService,
+        [Frozen] IManageFiltersService filtersService,
         CompetitionsDashboardController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-            .ReturnsAsync(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
-        competitionsService.Setup(x => x.GetCompetitionWithServices(organisation.InternalIdentifier, It.IsAny<int>(), true))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithServices(organisation.InternalIdentifier, It.IsAny<int>(), true).Returns(competition);
 
-        filtersService.Setup(x => x.GetFilterIds(organisation.Id, filterId))
-            .ReturnsAsync(filterIdsModel);
+        filtersService.GetFilterIds(organisation.Id, filterId).Returns(filterIdsModel);
 
-        solutionsFilterService.Setup(
-                x => x.GetAllSolutionsFiltered(
-                    It.IsAny<PageOptions>(),
-                    It.IsAny<Dictionary<int, string[]>>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>()))
-            .ReturnsAsync((catalogueItems, null, null));
+        solutionsFilterService.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), It.IsAny<Dictionary<int, string[]>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()).Returns((catalogueItems, null, null));
 
         var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, model))
             .As<RedirectToActionResult>();
 
-        competitionsService.Verify(x => x.AddCompetition(organisation.Id, filterId, model.Name, model.Description));
-        competitionsService.Verify(
-            x => x.AddCompetitionSolutions(
+        await competitionsService.Received().AddCompetition(organisation.Id, filterId, model.Name, model.Description);
+        await competitionsService.Received().AddCompetitionSolutions(
                 organisation.InternalIdentifier,
                 competition.Id,
-                It.IsAny<IEnumerable<CompetitionSolution>>()));
+                It.IsAny<IEnumerable<CompetitionSolution>>());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(CompetitionSelectSolutionsController.SelectSolutions));

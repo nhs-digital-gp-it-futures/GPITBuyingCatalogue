@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -16,9 +16,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions;
@@ -28,7 +29,7 @@ public static class CompetitionsServiceTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(CompetitionsService).GetConstructors();
 
@@ -36,7 +37,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetCompetitionCriteriaReview_ReturnsCompetition(
         Organisation organisation,
         Competition competition,
@@ -57,7 +58,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetCompetitions_ReturnsCompetitions(
         Organisation organisation,
         List<Competition> competitions,
@@ -88,7 +89,38 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
+    public static async Task GetPagedOrders_ReturnsExpectedPageSize(
+        Organisation organisation,
+        List<Competition> competitions,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competitions.ForEach(
+            x =>
+            {
+                x.OrganisationId = organisation.Id;
+                x.Organisation = organisation;
+                x.IsDeleted = false;
+            });
+
+        context.Organisations.Add(organisation);
+        context.Competitions.AddRange(competitions);
+
+        await context.SaveChangesAsync();
+
+        var pagedCompetitions = await service.GetPagedCompetitions(organisation.InternalIdentifier, new PageOptions("0", 2));
+
+        pagedCompetitions.Items.Count.Should().Be(2);
+        pagedCompetitions.Options.TotalNumberOfItems.Should().Be(competitions.Count);
+
+        var expected = (int)Math.Ceiling((double)competitions.Count / pagedCompetitions.Options.PageSize);
+
+        pagedCompetitions.Options.NumberOfPages.Should().Be(expected);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static async Task AddCompetition_AddsCompetition(
         Organisation organisation,
         Filter filter,
@@ -115,7 +147,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetCompetitionWithServices_ReturnsCompetition(
         Organisation organisation,
         Competition competition,
@@ -136,7 +168,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetCompetitionForResults_ReturnsCompetition(
         Organisation organisation,
         Competition competition,
@@ -157,7 +189,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetCompetition_ReturnsExpected(
         Organisation organisation,
         Competition competition,
@@ -178,7 +210,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task AddCompetitionSolutions_Adds(
         Organisation organisation,
         Competition competition,
@@ -210,7 +242,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetShortlistedSolutions_ShortlistsSolutions(
         Organisation organisation,
         Competition competition,
@@ -249,7 +281,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetShortlistedSolutions_WithPreviousSelection_ErasesPreviousSelection(
         Organisation organisation,
         Competition competition,
@@ -291,7 +323,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionJustifications_SetsJustifications(
         Organisation organisation,
         Competition competition,
@@ -328,7 +360,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionJustifications_PreviousJustifications_ErasesPreviousJustifications(
         string previousJustification,
         Organisation organisation,
@@ -372,7 +404,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task AcceptShortlist_SetsAcceptanceDate(
         Organisation organisation,
         Competition competition,
@@ -397,7 +429,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task AcceptShortlist_PreviouslyAccepted_DoesNothing(
         Organisation organisation,
         Competition competition,
@@ -424,7 +456,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task CompleteCompetition_SetsCompletionDate(
         Organisation organisation,
         Competition competition,
@@ -460,7 +492,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task CompleteCompetition_DirectAward_SetsCompletionDate(
         Organisation organisation,
         Competition competition,
@@ -485,7 +517,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task CompleteCompetition_PreviouslyCompleted_DoesNothing(
         Organisation organisation,
         Competition competition,
@@ -512,7 +544,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task DeleteCompetition_SetsDeleted(
         Organisation organisation,
         Competition competition,
@@ -537,7 +569,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task DeleteCompetition_PreviouslyDeleted_DoesNothing(
         Organisation organisation,
         Competition competition,
@@ -562,7 +594,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task Exists_ReturnsExpected(
         Organisation organisation,
         Filter filter,
@@ -590,7 +622,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetCompetitionWithRecipients_ReturnsExpected(
         Organisation organisation,
         Competition competition,
@@ -618,7 +650,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetCompetitionRecipients_AddsNewRecipients(
         Organisation organisation,
         Competition competition,
@@ -648,7 +680,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetCompetitionRecipients_RemovesStaleRecipients(
         Organisation organisation,
         Competition competition,
@@ -680,7 +712,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetCompetitionTaskList_ReturnsExpected(
         Organisation organisation,
         Competition competition,
@@ -704,7 +736,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetCompetitionName_ReturnsExpected(
         Organisation organisation,
         Competition competition,
@@ -726,7 +758,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetContractLength_SetsLength(
         int contractLength,
         Organisation organisation,
@@ -751,7 +783,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetCompetitionCriteria(
         Organisation organisation,
         Competition competition,
@@ -776,7 +808,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetCompetitionWeightings_SetsWeightings(
         int priceWeighting,
         int nonPriceWeighting,
@@ -804,7 +836,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetCompetitionWithWeightings_ReturnsExpected(
         Weightings weightings,
         Organisation organisation,
@@ -827,7 +859,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetImplementationCriteria_NullNonPriceElements_CreatesNonPriceElements(
         Organisation organisation,
         Competition competition,
@@ -857,7 +889,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetImplementationCriteria_NullImplementationCriteria_CreatesImplementationCriteria(
         Organisation organisation,
         Competition competition,
@@ -889,7 +921,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetImplementationCriteria_ExistingRequirements_UpdatesRequirements(
         string oldRequirements,
         Organisation organisation,
@@ -926,7 +958,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetImplementationCriteria_WithImplementationScore_RemovesScore(
         string oldRequirements,
         Organisation organisation,
@@ -973,7 +1005,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetServiceLevelCriteria_NullNonPriceElements_CreatesNonPriceElements(
         List<Iso8601DayOfWeek> applicableDays,
         DateTime timeFrom,
@@ -1015,7 +1047,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetServiceLevelCriteria_NullServiceLevelCriteria_CreatesServiceLevelCriteria(
         List<Iso8601DayOfWeek> applicableDays,
         DateTime timeFrom,
@@ -1059,7 +1091,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetServiceLevelCriteria_ExistingServiceLevelCriteria_UpdatesServiceLevelCriteria(
         ServiceLevelCriteria oldServiceLevelCriteria,
         ServiceLevelCriteria newServiceLevelCriteria,
@@ -1101,7 +1133,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetServiceLevelCriteria_WithServiceLevelScore_RemovesScore(
         ServiceLevelCriteria oldServiceLevelCriteria,
         ServiceLevelCriteria newServiceLevelCriteria,
@@ -1153,7 +1185,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetInteroperabilityCriteria_AddsIntegrations(
         Organisation organisation,
         Competition competition,
@@ -1183,7 +1215,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetInteroperabilityCriteria_StaleIntegrations_RemovesStaleIntegrations(
         Organisation organisation,
         Competition competition,
@@ -1224,7 +1256,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetInteroperabilityCriteria_WithInteroperabilityScore_RemovesScores(
         Organisation organisation,
         Competition competition,
@@ -1279,7 +1311,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetCriteriaReviewed_SetsCriteriaReviewed(
         Organisation organisation,
         Competition competition,
@@ -1303,7 +1335,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetNonPriceWeights_NullNonPriceWeights_CreatesAndSetsWeights(
         int implementationWeight,
         int interoperabilityWeight,
@@ -1346,7 +1378,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetNonPriceWeights_ExistingNonPriceWeights_SetsWeights(
         int implementationWeight,
         int interoperabilityWeight,
@@ -1390,7 +1422,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static Task SetSolutionsImplementationScores_NullSolutionsScores_ThrowsArgumentNullException(
         string internalOrgId,
         int competitionId,
@@ -1401,7 +1433,7 @@ public static class CompetitionsServiceTests
             .ThrowAsync<ArgumentNullException>();
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionsImplementationScores_ExistingScore_UpdatesScore(
         Organisation organisation,
         Competition competition,
@@ -1446,7 +1478,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionsImplementationScores_NewScore_AddsScore(
         Organisation organisation,
         Competition competition,
@@ -1490,7 +1522,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static Task SetSolutionsInteroperabilityScores_NullSolutionsScores_ThrowsArgumentNullException(
         string internalOrgId,
         int competitionId,
@@ -1501,7 +1533,7 @@ public static class CompetitionsServiceTests
             .ThrowAsync<ArgumentNullException>();
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionsInteroperabilityScores_ExistingScore_UpdatesScore(
         Organisation organisation,
         Competition competition,
@@ -1546,7 +1578,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionsInteroperabilityScores_NewScore_AddsScore(
         Organisation organisation,
         Competition competition,
@@ -1590,7 +1622,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static Task SetSolutionsServiceLevelScores_NullSolutionsScores_ThrowsArgumentNullException(
         string internalOrgId,
         int competitionId,
@@ -1601,7 +1633,7 @@ public static class CompetitionsServiceTests
             .ThrowAsync<ArgumentNullException>();
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionsServiceLevelScores_ExistingScore_UpdatesScore(
         Organisation organisation,
         Competition competition,
@@ -1646,7 +1678,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionsServiceLevelScores_NewScore_AddsScore(
         Organisation organisation,
         Competition competition,
@@ -1690,7 +1722,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static Task SetSolutionsFeaturesScores_NullSolutionsScores_ThrowsArgumentNullException(
         string internalOrgId,
         int competitionId,
@@ -1701,7 +1733,7 @@ public static class CompetitionsServiceTests
             .ThrowAsync<ArgumentNullException>();
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionsFeaturesScores_ExistingScore_UpdatesScore(
         Organisation organisation,
         Competition competition,
@@ -1746,7 +1778,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionsFeaturesScores_NewScore_AddsScore(
         Organisation organisation,
         Competition competition,
@@ -1790,7 +1822,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task RemoveNonPriceElements_RemovesNonPriceElements(
         Organisation organisation,
         Competition competition,
@@ -1826,7 +1858,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task RemoveNonPriceElements_RemovesNonPriceElementScores(
         Organisation organisation,
         Competition competition,
@@ -1872,7 +1904,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetAssociatedServices_UpdatesAssociatedServices(
         Organisation organisation,
         Supplier supplier,
@@ -1945,7 +1977,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void ScoreSolutionPrices_IncludesNonPriceElements_ScoresAsExpected(
         Competition competition,
         CompetitionSolution winningSolution,
@@ -1992,7 +2024,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void ScoreSolutionPrices_PriceOnly_ScoresAsExpected(
         Competition competition,
         CompetitionSolution winningSolution,
@@ -2035,7 +2067,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void SetNonPriceScoreWeightings(
         Competition competition,
         CompetitionSolution competitionSolution)
@@ -2069,7 +2101,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void SetWinningSolution(
         Competition competition,
         CompetitionSolution winningSolution,
@@ -2103,7 +2135,7 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetNonShortlistedSolutions_ReturnsExpected(
         Organisation organisation,
         Competition competition,
