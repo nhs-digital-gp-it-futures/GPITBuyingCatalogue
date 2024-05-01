@@ -50,7 +50,7 @@ public static class CompetitionsDashboardControllerTests
     {
         organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
-        competitionsService.GetPagedCompetitions(organisation.InternalIdentifier, It.IsAny<PageOptions>()).Returns(competitions);
+        competitionsService.GetPagedCompetitions(organisation.InternalIdentifier, Arg.Any<PageOptions>()).Returns(competitions);
 
         var expectedModel = new CompetitionDashboardModel(
             organisation.InternalIdentifier,
@@ -100,9 +100,9 @@ public static class CompetitionsDashboardControllerTests
         [Frozen] IManageFiltersService filterService,
         CompetitionsDashboardController controller)
     {
-        organisationsService.GetOrganisationByInternalIdentifier(It.IsAny<string>()).Returns(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(Arg.Any<string>()).Returns(organisation);
 
-        filterService.GetFilters(It.IsAny<int>()).Returns(filters);
+        filterService.GetFilters(Arg.Any<int>()).Returns(filters);
 
         var expectedModel = new SelectFilterModel(organisation.Name, filters);
 
@@ -121,9 +121,9 @@ public static class CompetitionsDashboardControllerTests
         [Frozen] IManageFiltersService filterService,
         CompetitionsDashboardController controller)
     {
-        organisationsService.GetOrganisationByInternalIdentifier(It.IsAny<string>()).Returns(organisation);
+        organisationsService.GetOrganisationByInternalIdentifier(Arg.Any<string>()).Returns(organisation);
 
-        filterService.GetFilters(It.IsAny<int>()).Returns(filters);
+        filterService.GetFilters(Arg.Any<int>()).Returns(filters);
 
         var expectedModel = new SelectFilterModel(organisation.Name, filters);
 
@@ -159,7 +159,7 @@ public static class CompetitionsDashboardControllerTests
     {
         organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
-        filtersService.GetFilterDetails(It.IsAny<int>(), filterId).Returns((FilterDetailsModel)null);
+        filtersService.GetFilterDetails(Arg.Any<int>(), filterId).Returns((FilterDetailsModel)null);
 
         var result = (await controller.ReviewFilter(organisation.InternalIdentifier, filterId))
             .As<RedirectToActionResult>();
@@ -255,11 +255,11 @@ public static class CompetitionsDashboardControllerTests
     {
         organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
-        competitionsService.GetCompetitionWithServices(organisation.InternalIdentifier, It.IsAny<int>(), true).Returns(competition);
+        competitionsService.GetCompetitionWithServices(organisation.InternalIdentifier, Arg.Any<int>(), true).Returns(competition);
 
         filtersService.GetFilterIds(organisation.Id, filterId).Returns(filterIdsModel);
 
-        solutionsFilterService.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), It.IsAny<Dictionary<int, string[]>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()).Returns((catalogueItems, null, null));
+        solutionsFilterService.GetAllSolutionsFiltered(Arg.Any<PageOptions>(), Arg.Any<Dictionary<int, string[]>>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns((catalogueItems, null, null));
 
         var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, model))
             .As<RedirectToActionResult>();
@@ -268,7 +268,7 @@ public static class CompetitionsDashboardControllerTests
         await competitionsService.Received().AddCompetitionSolutions(
                 organisation.InternalIdentifier,
                 competition.Id,
-                It.IsAny<IEnumerable<CompetitionSolution>>());
+                Arg.Any<IEnumerable<CompetitionSolution>>());
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(CompetitionSelectSolutionsController.SelectSolutions));

@@ -90,7 +90,7 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task GetPagedOrders_ReturnsExpectedPageSize(
+    public static async Task GetPagedCompetitions_ReturnsExpectedPageSize(
         Organisation organisation,
         List<Competition> competitions,
         [Frozen] BuyingCatalogueDbContext context,
