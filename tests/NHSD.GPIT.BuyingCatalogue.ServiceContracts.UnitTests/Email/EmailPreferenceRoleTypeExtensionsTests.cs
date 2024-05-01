@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -70,4 +71,12 @@ public static class EmailPreferenceRoleTypeExtensionsTests
     {
         emailPreferenceRoleType.IsRoleMatch(new List<AspNetRole> { role }).Should().Be(expected);
     }
+
+    [Theory]
+    [MockAutoData]
+    public static void IsRoleMatch_InvalidRoleType_ThrowsOutOfRangeException(
+        AspNetRole role) => FluentActions
+        .Invoking(() => EmailPreferenceRoleType.None.IsRoleMatch(new List<AspNetRole> { role }))
+        .Should()
+        .Throw<ArgumentOutOfRangeException>();
 }
