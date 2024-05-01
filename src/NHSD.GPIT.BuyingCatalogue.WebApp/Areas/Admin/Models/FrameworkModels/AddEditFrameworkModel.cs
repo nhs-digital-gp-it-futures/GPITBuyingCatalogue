@@ -4,12 +4,25 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.FrameworkModels;
 
 public class AddEditFrameworkModel : NavBaseModel
 {
+    public static readonly PageTitleModel AddPageTitle = new()
+    {
+        Title = "Add a framework",
+        Advice = "Provide details for this framework.",
+    };
+
+    public static readonly PageTitleModel EditPageTitle = new()
+    {
+        Title = "Edit framework",
+        Advice = "These are the current details for this framework.",
+    };
+
     public AddEditFrameworkModel()
     {
     }
@@ -18,7 +31,7 @@ public class AddEditFrameworkModel : NavBaseModel
     {
         FrameworkId = framework.Id;
         Name = framework.ShortName;
-        SupportsFoundationSolution = framework.SupportsFoundationSolution;
+        MaximumTerm = framework.MaximumTerm.ToString();
 
         foreach (FundingType i in framework.FundingTypes)
         {
@@ -31,6 +44,8 @@ public class AddEditFrameworkModel : NavBaseModel
     [StringLength(100)]
     public string Name { get; set; }
 
+    public string MaximumTerm { get; set; }
+
     public List<SelectOption<FundingType>> FundingTypes { get; set; } = new()
     {
         new SelectOption<FundingType>(FundingType.Gpit.Description(), FundingType.Gpit),
@@ -38,11 +53,10 @@ public class AddEditFrameworkModel : NavBaseModel
         new SelectOption<FundingType>(FundingType.Pcarp.Description(), FundingType.Pcarp),
     };
 
-    public List<SelectOption<bool>> FoundationSolutionOptions => new List<SelectOption<bool>>
-        {
-            new("Yes", true),
-            new("No", false),
-        };
-
-    public bool? SupportsFoundationSolution { get; set; }
+    public PageTitleModel GetPageTitle()
+    {
+        return FrameworkId is null
+            ? AddPageTitle
+            : EditPageTitle;
+    }
 }

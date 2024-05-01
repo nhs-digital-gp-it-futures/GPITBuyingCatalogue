@@ -21,7 +21,7 @@
 :r ./InsertSolutionCapabilityStatuses.sql
 :r ./InsertSolutionEpicStatuses.sql
 :r ./InsertCatalogueItemTypes.sql
-:r ./InsertFrameworks.sql
+:r ./TestData/InsertFrameworks.sql
 :r ./TestData/InsertCapabilities.sql
 :r ./InsertCataloguePriceTypes.sql
 :r ./InsertCataloguePriceCalculationTypes.sql
@@ -75,3 +75,4 @@
 :r ./MigrateOrderItemRecipients.sql
 :r ./MigrateMergersAndSplits.sql
 :r ./MigrateOrderType.sql
+:r ./MigrateFrameworks.sql

@@ -68,6 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string SupplierName { get; }
 
+        [Obsolete("All solutions are foundation solutions so this will be removed as part of story #23333")]
         public string IsFoundation { get; }
 
         public override string Title
