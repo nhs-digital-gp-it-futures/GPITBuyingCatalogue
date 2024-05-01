@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType
 {
-    public enum BrowserBasedApplication
+    public enum BrowserBasedApplications
     {
         [EnumMember(Value = "Supported browsers")]
         supported_browser,

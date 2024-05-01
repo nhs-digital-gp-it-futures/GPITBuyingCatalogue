@@ -1,8 +1,8 @@
-﻿using EnumsNET;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.EditSolution;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.HostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using OpenQA.Selenium;
@@ -14,7 +14,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
         public BrowserBased(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
+            SolutionApplicationTypes = new SolutionApplicationTypes(driver, commonActions);
         }
+
+        internal SolutionApplicationTypes SolutionApplicationTypes { get; }
 
         public void AddBrowserBasedApplication()
         {
@@ -33,16 +36,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
             {
                 switch (type)
                 {
-                    case nameof(BrowserBasedApplication.supported_browser):
+                    case nameof(BrowserBasedApplications.supported_browser):
                         AddSupportedBrowser(type);
                         break;
-                    case nameof(BrowserBasedApplication.plug_ins_or_extensions):
+                    case nameof(BrowserBasedApplications.plug_ins_or_extensions):
                         AddPluginsOrExtensions(type);
                         break;
-                    case nameof(BrowserBasedApplication.connectivity_and_resolution):
+                    case nameof(BrowserBasedApplications.connectivity_and_resolution):
                         AddConnectivityResolution(type);
                         break;
-                    case nameof(BrowserBasedApplication.hardware_requirements):
+                    case nameof(BrowserBasedApplications.hardware_requirements):
                         AddHardwareRequirements(type);
                         break;
                     default:
@@ -60,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
 
         public void AddSupportedBrowser(string type)
         {
-            var value = GetApplicationTypeValue(type);
+            var value = SolutionApplicationTypes.GetApplicationTypeValue(type);
             CommonActions.ClickLinkElement(AddApplicationTypeObjects.SupportedBrowserLink(value));
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(BrowserBasedController),
@@ -79,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
 
         public void AddPluginsOrExtensions(string type)
         {
-            var value = GetApplicationTypeValue(type);
+            var value = SolutionApplicationTypes.GetApplicationTypeValue(type);
             CommonActions.ClickLinkElement(AddApplicationTypeObjects.PluginsOrExtensionsLink(value));
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(BrowserBasedController),
@@ -98,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
 
         public void AddConnectivityResolution(string type)
         {
-            var value = GetApplicationTypeValue(type);
+            var value = SolutionApplicationTypes.GetApplicationTypeValue(type);
             CommonActions.ClickLinkElement(AddApplicationTypeObjects.ConnectivityAndResolutionLink(value));
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(BrowserBasedController),
@@ -117,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
 
         public void AddHardwareRequirements(string type)
         {
-            var value = GetApplicationTypeValue(type);
+            var value = SolutionApplicationTypes.GetApplicationTypeValue(type);
             CommonActions.ClickLinkElement(AddApplicationTypeObjects.HardwareRequirementsLink(value));
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(BrowserBasedController),
@@ -135,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
 
         public void AddAdditionalInformation(string type)
         {
-            var value = GetApplicationTypeValue(type);
+            var value = SolutionApplicationTypes.GetApplicationTypeValue(type);
             CommonActions.ClickLinkElement(AddApplicationTypeObjects.AdditionalInformationLink(value));
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(BrowserBasedController),
@@ -153,18 +156,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
 
         public List<string> GetBrowserBasedApplicationTypes()
         {
-            var browserBasedTypes = Enum.GetValues(typeof(BrowserBasedApplication))
-            .Cast<BrowserBasedApplication>()
+            var browserBasedTypes = Enum.GetValues(typeof(BrowserBasedApplications))
+            .Cast<BrowserBasedApplications>()
             .Select(v => v.ToString())
             .ToList();
 
             return browserBasedTypes;
-        }
-
-        private string GetApplicationTypeValue(string type)
-        {
-            var value = type.Replace("_", "-");
-            return value;
         }
     }
 }

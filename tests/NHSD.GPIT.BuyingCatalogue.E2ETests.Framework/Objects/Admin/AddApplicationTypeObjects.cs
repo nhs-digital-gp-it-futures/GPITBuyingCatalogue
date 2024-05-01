@@ -15,6 +15,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 
         public static By AdditionalInformationLink(string type) => By.XPath($"//a[contains(@href, '/application-type/browser-based/" + type + "')]");
 
+        public static By SupportedOperatingSystemLink(string type) => By.XPath($"//a[contains(@href, '/application-type/mobiletablet/" + type + "')]");
+
+        public static By ConnectivityLink(string type) => By.XPath($"//a[contains(@href, '/application-type/mobiletablet/" + type + "')]");
+
+        public static By MemoryAndStorageLink(string type) => By.XPath($"//a[contains(@href, '/application-type/mobiletablet/" + type + "')]");
+
         public static By AdditionalInformation => By.Id("AdditionalInformation");
     }
 }

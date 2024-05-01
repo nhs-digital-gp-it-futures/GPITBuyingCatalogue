@@ -21,13 +21,21 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.ApplicationType))
                 .Should().BeTrue();
+        }
 
+        public void ApplicationTypeDashboard()
+        {
             CommonActions.ClickLinkElement(AddSolutionObjects.AddApplicationTypeLink);
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.AddApplicationType))
                 .Should().BeTrue();
+        }
 
+        public string GetApplicationTypeValue(string type)
+        {
+            var value = type.Replace("_", "-");
+            return value;
         }
     }
 }

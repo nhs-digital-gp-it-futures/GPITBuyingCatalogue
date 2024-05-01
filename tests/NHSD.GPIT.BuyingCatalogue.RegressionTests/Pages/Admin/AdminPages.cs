@@ -7,7 +7,6 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.Solu
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedEpics;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
@@ -30,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             Implementation = new Implementation(driver, commonActions);
             SolutionApplicationTypes = new SolutionApplicationTypes(driver, commonActions);
             BrowserBased = new BrowserBased(driver, commonActions);
+            MobileOrTablet = new MobileOrTablet(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -62,6 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
 
         internal BrowserBased BrowserBased { get; }
 
+        internal MobileOrTablet MobileOrTablet { get; }
+
         public void AddSolutionDetailsAndDescription()
         {
             AddNewSolution.AddSolution();
@@ -92,8 +94,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         {
             var solutionId = GetSolutionID();
             SolutionApplicationTypes.AddApplicationType(solutionId);
+            SolutionApplicationTypes.ApplicationTypeDashboard();
             BrowserBased.AddBrowserBasedApplication();
             BrowserBased.AddBrowserBasedApplicationTypes();
+            SolutionApplicationTypes.ApplicationTypeDashboard();
+            MobileOrTablet.AddMobileOrTabletApplication();
+            MobileOrTablet.AddMobileOrTabletApplicationTypes();
         }
 
         private string GetSolutionID()
