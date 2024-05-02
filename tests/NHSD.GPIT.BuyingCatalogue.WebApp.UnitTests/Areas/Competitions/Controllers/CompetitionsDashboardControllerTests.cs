@@ -211,13 +211,17 @@ public static class CompetitionsDashboardControllerTests
         int filterId,
         string frameworkId,
         [Frozen] IOrganisationsService organisationsService,
+        [Frozen] IManageFiltersService filterService,
         CompetitionsDashboardController controller)
     {
         organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
+        filterService.GetFilterIds(organisation.Id, filterId)
+            .Returns(Task.FromResult(new FilterIdsModel() { FrameworkId = frameworkId }));
+
         var expectedModel = new SaveCompetitionModel(organisation.InternalIdentifier, organisation.Name, frameworkId);
 
-        var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, frameworkId: frameworkId)).As<ViewResult>();
+        var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, frameworkId)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));

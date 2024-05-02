@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.Framework;
+using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -25,20 +30,26 @@ public class CompetitionsDashboardController : Controller
     private readonly IOrganisationsService organisationsService;
     private readonly ICompetitionsService competitionsService;
     private readonly IManageFiltersService filterService;
+    private readonly IManageFiltersService manageFiltersService;
+    private readonly IFrameworkService frameworkService;
     private readonly ISolutionsFilterService solutionsFilterService;
 
     public CompetitionsDashboardController(
         IOrganisationsService organisationsService,
         ICompetitionsService competitionsService,
         IManageFiltersService filterService,
-        ISolutionsFilterService solutionsFilterService)
+        IManageFiltersService manageFiltersService,
+        ISolutionsFilterService solutionsFilterService,
+        IFrameworkService frameworkService)
     {
         this.organisationsService =
             organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
         this.filterService = filterService ?? throw new ArgumentNullException(nameof(filterService));
+        this.manageFiltersService = manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
         this.solutionsFilterService =
             solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
+        this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
     }
 
     [HttpGet]
@@ -105,17 +116,26 @@ public class CompetitionsDashboardController : Controller
     {
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var filterDetails = await filterService.GetFilterDetails(organisation.Id, filterId);
+        var filterIds = await manageFiltersService.GetFilterIds(organisation.Id, filterId);
+        var (solutions, _, _) = await solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds);
+        var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
 
         if (filterDetails == null)
             return RedirectToAction(nameof(SelectFilter), new { internalOrgId });
 
         var model = new ReviewFilterModel(filterDetails)
         {
-            BackLink = Url.Action(nameof(SelectFilter), new { internalOrgId }),
-            Caption = filterDetails.Name,
+            BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
+            Caption = organisation.Name,
+            InternalOrgId = organisation.InternalIdentifier,
+            FilterResults = (List<EntityFramework.Catalogue.Models.CatalogueItem>)solutions,
+            Frameworks = frameworks,
+            OrganisationName = organisation.Name,
+            InExpander = true,
+            InCompetition = true,
         };
 
-        return View(model);
+        return View("Views/Shared/Shortlists/FilterDetails.cshtml", model);
     }
 
     [HttpPost("select-filter/{filterId:int}/review")]
@@ -141,10 +161,12 @@ public class CompetitionsDashboardController : Controller
 
         frameworkId = (await filterService.GetFilterIds(organisation.Id, filterId)).FrameworkId ?? frameworkId;
 
-        if (frameworkId.IsNullOrEmpty())
+        if (frameworkId.IsNullOrEmpty() || frameworkId)
         {
             Redirect(backlink);
         }
+        var filterDetails = await filterService.GetFilterDetails(organisation.Id, filterId);
+        filterDetails
 
         var model = new SaveCompetitionModel(internalOrgId, organisation.Name, frameworkId)
         {

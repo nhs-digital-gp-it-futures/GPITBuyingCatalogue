@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
              string selectedGpConnectIntegrations = null,
              string selectedInteroperabilityOptions = null);
 
-        Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFiltered(
+        Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel> CapabilitiesAndCount)> GetAllSolutionsFilteredFromFilterIds(
             FilterIdsModel filterIds);
 
         Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15);

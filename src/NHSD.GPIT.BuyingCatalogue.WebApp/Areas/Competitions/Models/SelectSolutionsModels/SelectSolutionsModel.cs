@@ -15,18 +15,22 @@ public class SelectSolutionsModel : NavBaseModel
 
     public SelectSolutionsModel(
         string competitionName,
-        IEnumerable<CompetitionSolution> competitionSolutions)
+        IEnumerable<CompetitionSolution> competitionSolutions,
+        string frameworkName)
     {
         CompetitionName = competitionName;
         Solutions = competitionSolutions.Select(
                 x => new SolutionModel(x))
             .OrderBy(x => x.SolutionName)
             .ToList();
+        FrameworkName = frameworkName;
     }
 
     public string CompetitionName { get; set; }
 
     public List<SolutionModel> Solutions { get; set; }
+
+    public string FrameworkName { get; set; }
 
     public bool? IsDirectAward { get; set; }
 

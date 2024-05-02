@@ -45,8 +45,9 @@ public class CompetitionSelectSolutionsController : Controller
         }
 
         var availableSolutions = competition.CompetitionSolutions.Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId));
+        var frameworkName = (await frameworkService.GetFramework(competition.FrameworkId)).ShortName;
 
-        var model = new SelectSolutionsModel(competition.Name, availableSolutions)
+        var model = new SelectSolutionsModel(competition.Name, availableSolutions, frameworkName)
         {
             BackLinkText = "Go back to manage competitions",
             BackLink = Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId }),

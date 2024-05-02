@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
 {
     public class ResultsForFrameworkModel : NavBaseModel
     {
@@ -17,12 +15,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
             string internalOrgId,
             int filterId,
             FrameworkFilterInfo framework,
-            List<CatalogueItem> catalogueItems)
+            List<CatalogueItem> catalogueItems,
+            bool fromFilter)
         {
             InternalOrgId = internalOrgId;
             FilterId = filterId;
             Framework = framework;
             CatalogueItems = catalogueItems.Where(x => x.Solution.CatalogueItem.Solution.FrameworkSolutions.Any(x => x.FrameworkId == Framework.Id)).ToList();
+            FromFilter = fromFilter;
         }
 
         public string InternalOrgId { get; set; }
@@ -32,5 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
         public FrameworkFilterInfo Framework { get; set; }
 
         public List<CatalogueItem> CatalogueItems { get; init; }
+
+        public bool FromFilter { get; set; }
     }
 }

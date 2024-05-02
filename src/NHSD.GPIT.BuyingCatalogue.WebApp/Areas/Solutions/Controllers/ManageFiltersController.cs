@@ -164,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var organisation = await GetUserOrganisation();
             var filterDetails = await manageFiltersService.GetFilterDetails(organisation.Id, filterId);
             var filterIds = await manageFiltersService.GetFilterIds(organisation.Id, filterId);
-            var (solutions, _, _) = await solutionsFilterService.GetAllSolutionsFiltered(filterIds);
+            var (solutions, _, _) = await solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds);
             var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
 
             if (filterDetails == null || filterIds == null)
@@ -177,10 +177,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 InternalOrgId = organisation.InternalIdentifier,
                 FilterResults = (List<EntityFramework.Catalogue.Models.CatalogueItem>)solutions,
                 Frameworks = frameworks,
+                OrganisationName = organisation.Name,
                 InExpander = true,
+                InCompetition = false,
             };
 
-            return View(model);
+            return View("Views/Shared/Shortlists/FilterDetails.cshtml", model);
         }
 
         [HttpGet("save-failed")]

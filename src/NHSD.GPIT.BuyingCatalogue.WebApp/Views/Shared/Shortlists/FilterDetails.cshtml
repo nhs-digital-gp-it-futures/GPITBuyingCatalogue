@@ -7,6 +7,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ReviewFilterModel
 
@@ -20,7 +21,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full-width">
-        <nhs-page-title title="Results for this shortlist"/>
+        <nhs-page-title title="Results for this shortlist" caption=@Model.OrganisationName/>
         <nhs-card-v2>
             <nhs-card-content>
                 
@@ -60,7 +61,7 @@
                     {
                         foreach(var framework in Model.Frameworks)
                         {
-                            var resultsForFrameworkModel = new ResultsForFrameworkModel(Model.InternalOrgId, Model.FilterDetails.Id, framework, Model.FilterResults);
+                            var resultsForFrameworkModel = new ResultsForFrameworkModel(Model.InternalOrgId, Model.FilterDetails.Id, framework, Model.FilterResults, !Model.InCompetition);
                             <partial name="_ResultsForFramework.cshtml" model="resultsForFrameworkModel"/>
                         }
                     }
@@ -76,7 +77,7 @@
             <partial name="Partials/_FilterDetailsPartial" model="Model" />
         </nhs-expander>
             
-        @if(hasResults){
+        @if(hasResults && !Model.InCompetition){
             <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
                                                         new { filterId = Model.FilterDetails.Id })"
                                   text="Delete filter" />

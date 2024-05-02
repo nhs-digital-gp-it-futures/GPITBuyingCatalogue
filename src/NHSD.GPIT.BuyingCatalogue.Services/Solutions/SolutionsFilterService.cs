@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async
             Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel>
-                CapabilitiesAndCount)> GetAllSolutionsFiltered(
+                CapabilitiesAndCount)> GetAllSolutionsFilteredFromFilterIds(
                 FilterIdsModel filterIds)
         {
                 return await GetAllSolutionsFiltered(
