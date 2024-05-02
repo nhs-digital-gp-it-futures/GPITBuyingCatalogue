@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using BuyingCatalogueFunction.Notifications.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
+using IEmailPreferenceService = BuyingCatalogueFunction.Notifications.Interfaces.IEmailPreferenceService;
 
 namespace BuyingCatalogueFunction.Notifications.Services;
 
@@ -21,8 +23,18 @@ public class EmailPreferenceService : IEmailPreferenceService
     {
         var userPreference = await dbContext
             .UserEmailPreferences
+            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.EmailPreferenceTypeId == emailPreferenceType.Id
                                       && u.UserId == userId);
+
+        var userRoles = await dbContext.UserRoles
+            .Where(x => x.UserId == userId)
+            .Select(x => x.Role)
+            .AsNoTracking()
+            .ToListAsync();
+
+        if (!emailPreferenceType.RoleType.IsRoleMatch(userRoles))
+            return false;
 
         return userPreference?.Enabled ?? emailPreferenceType.DefaultEnabled;
     }

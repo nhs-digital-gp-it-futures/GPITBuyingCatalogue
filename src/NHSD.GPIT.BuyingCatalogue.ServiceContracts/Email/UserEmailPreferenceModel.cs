@@ -11,12 +11,14 @@ public class UserEmailPreferenceModel
     public UserEmailPreferenceModel(
         EmailPreferenceTypeEnum emailPreferenceType,
         bool defaultEnabled,
-        bool? userEnabled)
+        bool? userEnabled,
+        EmailPreferenceRoleType roleType)
     {
         EmailPreferenceType = emailPreferenceType;
         DefaultEnabled = defaultEnabled;
         UserEnabled = userEnabled;
         Enabled = UserEnabled ?? DefaultEnabled;
+        RoleType = roleType;
     }
 
     public EmailPreferenceTypeEnum EmailPreferenceType { get; set; }
@@ -26,4 +28,6 @@ public class UserEmailPreferenceModel
     public bool? UserEnabled { get; set; }
 
     public bool Enabled { get; set; }
+
+    public EmailPreferenceRoleType RoleType { get; set; }
 }
