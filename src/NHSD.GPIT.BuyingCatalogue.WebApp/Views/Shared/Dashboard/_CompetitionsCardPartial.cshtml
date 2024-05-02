@@ -59,6 +59,14 @@
                     View competitions
                 </a>
             }
+            @if (Model.ShouldUsePagination)
+            {
+                <div id="pagination">
+                    <govuk-pagination current-page-number="@Model.PageOptions.PageNumber"
+                                      total-number-of-pages="@Model.PageOptions.NumberOfPages"/>
+
+                </div>
+            }
         }
         else
         {

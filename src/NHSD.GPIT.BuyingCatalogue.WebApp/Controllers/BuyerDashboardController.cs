@@ -39,10 +39,10 @@ public class BuyerDashboardController : Controller
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
         var filters = await manageFiltersService.GetFilters(organisation.Id);
-        var competitions = await competitionsService.GetCompetitionsDashboard(internalOrgId);
+        var competitions = await competitionsService.GetCompetitions(internalOrgId);
         var orders = await orderService.GetOrders(organisation.Id);
 
-        var model = new BuyerDashboardModel(organisation, orders, competitions.ToList(), filters);
+        var model = new BuyerDashboardModel(organisation, orders, competitions, filters);
 
         return View(model);
     }

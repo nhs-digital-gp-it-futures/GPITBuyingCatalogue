@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -19,7 +20,9 @@ public interface ICompetitionsService
 
     Task<Competition> GetCompetitionCriteriaReview(string internalOrgId, int competitionId);
 
-    Task<IEnumerable<Competition>> GetCompetitionsDashboard(string internalOrgId);
+    Task<List<Competition>> GetCompetitions(string internalOrgId);
+
+    Task<PagedList<Competition>> GetPagedCompetitions(string internalOrgId, PageOptions options);
 
     Task<Competition> GetCompetitionForResults(string internalOrgId, int competitionId);
 
