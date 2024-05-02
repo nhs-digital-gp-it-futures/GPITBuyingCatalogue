@@ -1,0 +1,35 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage.SelectFrameworkModel
+@{
+    ViewBag.Title = "Which framework are you buying from?";
+}
+
+<div>
+    <partial name="Partials/_BackLink" model="Model" />
+    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
+        <div class="nhsuk-grid-column-two-thirds">
+            <nhs-validation-summary RadioId="@nameof(Model.SelectedFrameworkId)" />
+            <nhs-page-title title="@ViewBag.Title"
+                            caption="@Model.OrganisationName" />
+            <label-hint>
+                Select the procurement framework that the solution you want to order is available on.
+            </label-hint>
+            <form method="post">
+                <input type="hidden" asp-for="OrganisationName" />
+                <input type="hidden" asp-for="BackLink" />
+                <div class="nhsuk-form-group">
+                    <div class="nhsuk-radios">
+                        @foreach (var (option, i) in Model.Frameworks.Select((f, i) => (f, i)))
+                        {
+                            <input type="hidden" asp-for="Frameworks[i].Text" />
+                            <input type="hidden" asp-for="Frameworks[i].Value" />
+                            <nhs-radio-button asp-for="SelectedFrameworkId"
+                                              display-text="@option.Text"
+                                              value="@option.Value" />
+                        }
+                    </div>
+                </div>
+                <nhs-submit-button class="nhsuk-u-margin-top-4" />
+            </form>
+        </div>
+    </div>
+</div>

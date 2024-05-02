@@ -217,13 +217,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Orders.Controllers
         public static async Task Get_NewOrder_ReturnsExpectedResult(
             string internalOrgId,
             OrderTypeEnum orderType,
+            string frameworkId,
             [Frozen] IOrganisationsService organisationsService,
             Organisation organisation,
             OrderController controller)
         {
             organisationsService.GetOrganisationByInternalIdentifier(internalOrgId).Returns(Task.FromResult(organisation));
 
-            var result = await controller.NewOrder(internalOrgId, orderType);
+            var result = await controller.NewOrder(internalOrgId, orderType, frameworkId);
 
             await organisationsService.Received().GetOrganisationByInternalIdentifier(internalOrgId);
 

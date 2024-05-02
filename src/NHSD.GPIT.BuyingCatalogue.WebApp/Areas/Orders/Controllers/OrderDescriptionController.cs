@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderTypeEnum orderType)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderTypeEnum orderType, string selectedFrameworkId)
         {
             var user = await usersService.GetUser(User.UserId());
             var organisation = await organisationsService.GetOrganisation(user?.PrimaryOrganisationId ?? 0);
@@ -74,19 +74,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 BackLink = Url.Action(
                     nameof(OrderController.NewOrder),
                     typeof(OrderController).ControllerName(),
-                    new { internalOrgId, orderType }),
+                    new { internalOrgId, orderType, selectedFrameworkId }),
             };
 
             return View("OrderDescription", descriptionModel);
         }
 
         [HttpPost("~/organisation/{internalOrgId}/order/neworder/description")]
-        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model, OrderTypeEnum orderType)
+        public async Task<IActionResult> NewOrderDescription(string internalOrgId, OrderDescriptionModel model, OrderTypeEnum orderType, string selectedFrameworkId)
         {
             if (!ModelState.IsValid)
                 return View("OrderDescription", model);
 
-            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId, orderType);
+            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId, orderType, selectedFrameworkId);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

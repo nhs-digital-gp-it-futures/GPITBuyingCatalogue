@@ -304,11 +304,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return matches.ToList();
         }
 
-        public async Task<Order> CreateOrder(string description, string internalOrgId, OrderTypeEnum orderType)
+        public async Task<Order> CreateOrder(
+            string description,
+            string internalOrgId,
+            OrderTypeEnum orderType,
+            string selectedFrameworkId)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(selectedFrameworkId);
+
             if (orderType == OrderTypeEnum.Unknown)
             {
                 throw new InvalidOperationException($"Something has gone wrong during order triage. Cannot create an order if we dont know the order type {orderType}");
+            }
+
+            var framework = dbContext.Frameworks.Where(f => f.Id == selectedFrameworkId).FirstOrDefault();
+            if (framework == null || framework.IsExpired)
+            {
+                throw new InvalidOperationException($"Something has gone wrong during order triage. Cannot create an order without a valid selected framework {selectedFrameworkId}");
             }
 
             var orderingParty = await dbContext.Organisations.FirstAsync(o => o.InternalIdentifier == internalOrgId);
@@ -320,6 +332,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 Description = description,
                 OrderingParty = orderingParty,
                 OrderType = orderType,
+                SelectedFrameworkId = selectedFrameworkId,
             };
 
             dbContext.Add(order);
@@ -477,15 +490,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     OrderItemFundingType = selectedFundingType,
                 };
             }
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteSelectedFramework(string internalOrgId, CallOffId callOffId)
-        {
-            var order = await dbContext.Order(internalOrgId, callOffId);
-
-            order.SelectedFrameworkId = null;
 
             await dbContext.SaveChangesAsync();
         }

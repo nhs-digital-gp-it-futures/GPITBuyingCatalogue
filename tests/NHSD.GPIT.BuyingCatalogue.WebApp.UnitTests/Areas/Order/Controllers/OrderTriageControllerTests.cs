@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
@@ -83,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.OrderItemType(internalOrgId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderController.NewOrder));
+            result.ActionName.Should().Be(nameof(OrderTriageController.SelectFramework));
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -182,11 +183,76 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.DetermineAssociatedServiceType(internalOrgId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderController.NewOrder));
+            result.ActionName.Should().Be(nameof(OrderTriageController.SelectFramework));
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
                 { "orderType", orderType },
+            });
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_SelectFramework_ReturnsView(
+            Organisation organisation,
+            [Frozen] IOrganisationsService service,
+            [Frozen] IFrameworkService frameworkService,
+            EntityFramework.Catalogue.Models.Framework framework,
+            OrderTriageController controller)
+        {
+            framework.IsExpired = false;
+            var frameworks = new List<EntityFramework.Catalogue.Models.Framework>()
+            {
+                framework,
+            };
+
+            var expectedModel = new SelectFrameworkModel(organisation.Name, frameworks, null);
+
+            service
+                .GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
+                .Returns(organisation);
+
+            frameworkService
+                .GetFrameworks()
+                .Returns(frameworks);
+
+            var result = (await controller.SelectFramework(organisation.InternalIdentifier, OrderTypeEnum.Solution)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Post_SelectFramework_InvalidModel_ReturnsView(
+            string internalOrgId,
+            SelectFrameworkModel model,
+            OrderTriageController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            var result = controller.SelectFramework(internalOrgId, model).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Post_SelectFramework_ReturnsView(
+            string internalOrgId,
+            SelectFrameworkModel model,
+            OrderTriageController controller)
+        {
+            var result = controller.SelectFramework(internalOrgId, model).As<RedirectToActionResult>();
+
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrderController.NewOrder));
+            result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "orderType", model.OrderType },
+                { "selectedFrameworkId", model.SelectedFrameworkId },
             });
         }
 

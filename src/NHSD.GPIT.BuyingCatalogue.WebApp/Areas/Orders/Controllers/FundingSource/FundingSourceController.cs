@@ -33,6 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
             this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
         }
 
+        [Obsolete("Orders should be given a framework on creation going forward, however this remains to allow the framework to be set on any existing orders as a form of data migration. This is ONLY used when an order doesn't already have a framework set")]
         [HttpGet("select-framework")]
         public async Task<IActionResult> SelectFramework(string internalOrgId, CallOffId callOffId)
         {
@@ -61,6 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
             return View(model);
         }
 
+        [Obsolete("Orders should be given a framework on creation going forward, however this remains to allow the framework to be set on any existing orders as a form of data migration. This is ONLY used when an order doesn't already have a framework set")]
         [HttpPost("select-framework")]
         public async Task<IActionResult> SelectFramework(SelectFrameworkModel model, string internalOrgId, CallOffId callOffId)
         {
@@ -72,63 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            if (order.SelectedFramework != null && model.SelectedFramework != order.SelectedFrameworkId)
-            {
-                return RedirectToAction(
-                    nameof(ConfirmFrameworkChange),
-                    typeof(FundingSourceController).ControllerName(),
-                    new { internalOrgId, callOffId, selectedFrameworkId = model.SelectedFramework });
-            }
-
-            if (order.SelectedFramework is null)
-                await orderFrameworkService.SetSelectedFrameworkForOrder(callOffId, internalOrgId, model.SelectedFramework);
-
-            return RedirectToAction(
-                nameof(FundingSources),
-                typeof(FundingSourceController).ControllerName(),
-                new { internalOrgId, callOffId });
-        }
-
-        [HttpGet("select-framework/confirm-new-framework")]
-        public async Task<IActionResult> ConfirmFrameworkChange(
-            string internalOrgId,
-            CallOffId callOffId,
-            [FromQuery] string selectedFrameworkId)
-        {
-            var selectedFramework = await frameworkService.GetFramework(selectedFrameworkId);
-
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
-
-            var model = new ConfirmFrameworkChangeModel(order, selectedFramework)
-            {
-                BackLink = Url.Action(
-                    nameof(SelectFramework),
-                    typeof(FundingSourceController).ControllerName(),
-                    new { internalOrgId, callOffId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("select-framework/confirm-new-framework")]
-        public async Task<IActionResult> ConfirmFrameworkChange(
-            ConfirmFrameworkChangeModel model,
-            string internalOrgId,
-            CallOffId callOffId,
-            [FromQuery] string selectedFrameworkId)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            if (model.ConfirmChanges is false)
-            {
-                return RedirectToAction(
-                    nameof(SelectFramework),
-                    typeof(FundingSourceController).ControllerName(),
-                    new { internalOrgId, callOffId });
-            }
-
-            await orderFrameworkService.UpdateFundingSourceAndSetSelectedFrameworkForOrder(callOffId, internalOrgId, model.SelectedFramework.Id);
+            await orderFrameworkService.SetSelectedFrameworkForOrder(callOffId, internalOrgId, model.SelectedFramework);
 
             return RedirectToAction(
                 nameof(FundingSources),

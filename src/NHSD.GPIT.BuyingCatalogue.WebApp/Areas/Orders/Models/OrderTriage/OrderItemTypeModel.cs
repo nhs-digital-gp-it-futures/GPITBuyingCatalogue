@@ -24,12 +24,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage
         public IList<SelectOption<CatalogueItemType>> AvailableOrderItemTypes => new List<SelectOption<CatalogueItemType>>
         {
             new(
-                CatalogueItemType.Solution.AsString(EnumFormat.DisplayName),
-                "These are clinical IT systems that have meet the necessary requirements to feature on the Buying Catalogue.",
+                "Catalogue Solution and other services",
+                "Order clinical IT systems and their related services.",
                 CatalogueItemType.Solution),
             new(
-                CatalogueItemType.AssociatedService.AsString(EnumFormat.DisplayName),
-                "These are products that support the implementation of a solution and can be bought independently. For example, training or data migration or arranging the merging or splitting of existing practices.",
+                "Associated Service only",
+                "Order products to support the implementation of a solution. For example, training or data migration or arranging the merging or splitting of existing practices.",
                 CatalogueItemType.AssociatedService),
         };
     }

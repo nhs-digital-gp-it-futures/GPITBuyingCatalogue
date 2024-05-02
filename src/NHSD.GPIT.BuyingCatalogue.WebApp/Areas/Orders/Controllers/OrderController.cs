@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
@@ -107,8 +105,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/new-order")]
-        public async Task<IActionResult> NewOrder(string internalOrgId, OrderType orderType)
+        public async Task<IActionResult> NewOrder(string internalOrgId, OrderType orderType, string selectedFrameworkId)
         {
+            ArgumentNullException.ThrowIfNull(orderType);
+            ArgumentNullException.ThrowIfNull(selectedFrameworkId);
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
             var orderModel = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name)
@@ -116,16 +116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.NewOrderDescription),
                     typeof(OrderDescriptionController).ControllerName(),
-                    new { internalOrgId, orderType = orderType.Value }),
-                BackLink = orderType.ToCatalogueItemType != CatalogueItemType.AssociatedService
-                    ? Url.Action(
-                        nameof(OrderTriageController.OrderItemType),
+                    new { internalOrgId, orderType = orderType.Value, selectedFrameworkId }),
+                BackLink = Url.Action(
+                        nameof(OrderTriageController.SelectFramework),
                         typeof(OrderTriageController).ControllerName(),
-                        new { internalOrgId, orderType = orderType.Value })
-                    : Url.Action(
-                        nameof(OrderTriageController.DetermineAssociatedServiceType),
-                        typeof(OrderTriageController).ControllerName(),
-                        new { internalOrgId, orderType = orderType.Value }),
+                        new { internalOrgId, orderType = orderType.Value, selectedFrameworkId }),
             };
 
             return View("Order", orderModel);

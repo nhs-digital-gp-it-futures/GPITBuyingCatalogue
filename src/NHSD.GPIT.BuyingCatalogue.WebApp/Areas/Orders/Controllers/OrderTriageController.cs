@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage;
@@ -21,16 +22,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
     {
         private readonly IOrganisationsService organisationsService;
         private readonly ISupplierService supplierService;
+        private readonly IFrameworkService frameworkService;
 
         public OrderTriageController(
             IOrganisationsService organisationsService,
-            ISupplierService supplierService)
+            ISupplierService supplierService,
+            IFrameworkService frameworkService)
         {
             ArgumentNullException.ThrowIfNull(organisationsService);
             ArgumentNullException.ThrowIfNull(supplierService);
+            ArgumentNullException.ThrowIfNull(frameworkService);
 
             this.organisationsService = organisationsService;
             this.supplierService = supplierService;
+            this.frameworkService = frameworkService;
         }
 
         [HttpGet("order-item-type")]
@@ -64,8 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             {
                 case CatalogueItemType.Solution:
                     return RedirectToAction(
-                    nameof(OrderController.NewOrder),
-                    typeof(OrderController).ControllerName(),
+                    nameof(SelectFramework),
                     new { internalOrgId, orderType = OrderTypeEnum.Solution });
 
                 case CatalogueItemType.AssociatedService:
@@ -103,9 +107,52 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 return View(model);
 
             return RedirectToAction(
+                nameof(SelectFramework),
+                new { internalOrgId, orderType = model.OrderType.Value });
+        }
+
+        [HttpGet("select-framework")]
+        public async Task<IActionResult> SelectFramework(string internalOrgId, OrderType orderType, string selectedFrameworkId = null)
+        {
+            ArgumentNullException.ThrowIfNull(orderType);
+
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
+            var availableFrameworks = (await frameworkService
+                .GetFrameworks())
+                    .Where(f => f.IsExpired == false)
+                    .OrderBy(f => f.Name)
+                    .ToList();
+
+            var model = new SelectFrameworkModel(
+                organisation.Name,
+                availableFrameworks,
+                selectedFrameworkId)
+            {
+                BackLink = orderType.ToCatalogueItemType != CatalogueItemType.AssociatedService
+                    ? Url.Action(
+                        nameof(OrderItemType),
+                        new { internalOrgId, orderType = CatalogueItemType.Solution })
+                    : Url.Action(
+                        nameof(DetermineAssociatedServiceType),
+                        new { internalOrgId, orderType = orderType.Value }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("select-framework")]
+        public IActionResult SelectFramework(string internalOrgId, SelectFrameworkModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return RedirectToAction(
                 nameof(OrderController.NewOrder),
                 typeof(OrderController).ControllerName(),
-                new { internalOrgId, orderType = model.OrderType.Value });
+                new { internalOrgId, orderType = model.OrderType, selectedFrameworkId = model.SelectedFrameworkId });
         }
 
         [HttpGet("proxy-select")]
