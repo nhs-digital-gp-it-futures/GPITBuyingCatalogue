@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -21,13 +20,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
 
         public async Task<List<UserEmailPreferenceModel>> Get(int userId)
         {
-            return await dbContext
+            var user = await dbContext.AspNetUsers.Include(x => x.AspNetUserRoles)
+                .ThenInclude(x => x.Role)
+                .FirstOrDefaultAsync(x => x.Id == userId);
+
+            var userRoles = user.AspNetUserRoles.Select(x => x.Role).ToList();
+
+            var emailPreferences = await dbContext
                 .EmailPreferenceTypes
                 .Select(e => new UserEmailPreferenceModel(
                     e.EmailPreferenceTypeAsEnum,
                     e.DefaultEnabled,
-                    e.UserPreferences.FirstOrDefault(u => u.UserId == userId) != null ? e.UserPreferences.FirstOrDefault(u => u.UserId == userId).Enabled : null))
+                    e.UserPreferences.FirstOrDefault(u => u.UserId == user.Id) != null ? e.UserPreferences.FirstOrDefault(u => u.UserId == user.Id).Enabled : null,
+                    e.RoleType))
                 .ToListAsync();
+
+            return emailPreferences
+                .Where(x => x.RoleType.IsRoleMatch(userRoles))
+                .ToList();
         }
 
         public async Task Save(int userId, ICollection<UserEmailPreferenceModel> preferences)
@@ -39,6 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Email
                 var userEmailPreference = await dbContext
                     .UserEmailPreferences
                     .FirstOrDefaultAsync(e => e.UserId == userId && e.EmailPreferenceTypeId == (int)userPreference.EmailPreferenceType);
+
                 if (userEmailPreference != null)
                 {
                     userEmailPreference.Enabled = userPreference.Enabled;
