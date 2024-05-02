@@ -48,16 +48,17 @@ public class CompetitionsService : ICompetitionsService
     {
         options ??= new PageOptions();
 
-        var query = await GetCompetitions(internalOrgId);
-        options.TotalNumberOfItems = query.Count;
-        query = query
+        var query = dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .Where(x => x.Organisation.InternalIdentifier == internalOrgId)
             .OrderByDescending(o => o.LastUpdated)
-            .ToList();
+            .IgnoreQueryFilters();
+
+        options.TotalNumberOfItems = query.Count();
 
         if (options.PageNumber != 0)
-            query = query.Skip((options.PageNumber - 1) * options.PageSize).ToList();
+            query = query.Skip((options.PageNumber - 1) * options.PageSize);
 
-        var results = query.Take(options.PageSize).ToList();
+        var results = await query.Take(options.PageSize).ToListAsync();
 
         return new PagedList<Competition>(results, options);
     }
