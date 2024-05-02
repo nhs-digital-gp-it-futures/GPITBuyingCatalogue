@@ -89,8 +89,10 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [MockInMemoryDbAutoData]
+    [MockInMemoryDbInlineAutoData(0)]
+    [MockInMemoryDbInlineAutoData(1)]
     public static async Task GetPagedCompetitions_ReturnsExpectedPageSize(
+        int page,
         Organisation organisation,
         List<Competition> competitions,
         [Frozen] BuyingCatalogueDbContext context,
@@ -109,7 +111,7 @@ public static class CompetitionsServiceTests
 
         await context.SaveChangesAsync();
 
-        var pagedCompetitions = await service.GetPagedCompetitions(organisation.InternalIdentifier, new PageOptions("0", 2));
+        var pagedCompetitions = await service.GetPagedCompetitions(organisation.InternalIdentifier, new PageOptions(page.ToString(), 2));
 
         pagedCompetitions.Items.Count.Should().Be(2);
         pagedCompetitions.Options.TotalNumberOfItems.Should().Be(competitions.Count);
