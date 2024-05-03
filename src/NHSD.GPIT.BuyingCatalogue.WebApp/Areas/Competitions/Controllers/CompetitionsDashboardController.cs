@@ -125,10 +125,10 @@ public class CompetitionsDashboardController : Controller
 
         var model = new ReviewFilterModel(filterDetails)
         {
-            BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
+            BackLink = Url.Action(nameof(SelectFilter), new { internalOrgId }),
             Caption = organisation.Name,
             InternalOrgId = organisation.InternalIdentifier,
-            FilterResults = (List<EntityFramework.Catalogue.Models.CatalogueItem>)solutions,
+            FilterResults = (List<CatalogueItem>)solutions,
             Frameworks = frameworks,
             OrganisationName = organisation.Name,
             InExpander = true,
@@ -161,12 +161,18 @@ public class CompetitionsDashboardController : Controller
 
         frameworkId = (await filterService.GetFilterIds(organisation.Id, filterId)).FrameworkId ?? frameworkId;
 
-        if (frameworkId.IsNullOrEmpty() || frameworkId)
+        if (frameworkId.IsNullOrEmpty())
         {
-            Redirect(backlink);
+            return Redirect(backlink);
         }
-        var filterDetails = await filterService.GetFilterDetails(organisation.Id, filterId);
-        filterDetails
+
+        var filterIds = await filterService.GetFilterIds(organisation.Id, filterId);
+        var (results, _, _) = await solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds);
+        var availableSolutions = results.Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == frameworkId));
+        if (!availableSolutions.Any())
+        {
+            return Redirect(backlink);
+        }
 
         var model = new SaveCompetitionModel(internalOrgId, organisation.Name, frameworkId)
         {

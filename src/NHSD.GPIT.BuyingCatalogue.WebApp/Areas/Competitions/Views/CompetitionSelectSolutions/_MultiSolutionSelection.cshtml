@@ -28,16 +28,9 @@
             {
                 <input type="hidden" asp-for="@Model.Solutions[i].RequiredServices[x]"/>
             }
-            //<div class="nhsuk-card nhsuk-card__inverted" data-foundation-cap="false">
+
             <nhs-card-v2 class="nhsuk-card__inverted" style="margin-bottom:20px">
                 <nhs-card-content>
-                @*<nhs-checkbox-container>
-                    <nhs-checkbox asp-for="@Model.Solutions[i].Selected"
-                              label-text="<a href='@GetSolutionMarketingPageUrl(Model.Solutions[i].SolutionId)' target='_blank'>@Model.Solutions[i].SolutionName (opens in a new tab)</a>"
-                              hint-text="@Model.Solutions[i].SupplierName"
-                              sub-hint="@content @Model.Solutions[i].GetAdditionalServicesList()"
-                              use-embedded-html="true"/>
-                </nhs-checkbox-container>*@
                     <div style="width: 10%; display: inline-block; vertical-align:top">
                         <nhs-checkbox-container>
                             <nhs-checkbox asp-for="@Model.Solutions[i].Selected" />
@@ -45,15 +38,11 @@
                     </div>
                     <div style="width: 80%; display: inline-block;">
                         <h3 class="nhsuk-card__heading">
-                            <a href="@Url.Action(
-                        nameof(SolutionsController.Description),
-                        typeof(SolutionsController).ControllerName(),
-                        new { solutionId = Model.Solutions[i].SolutionId})" class="nhsuk-link" target="_blank">@Model.Solutions[i].SolutionName</a>
+                            <a href="@GetSolutionMarketingPageUrl(Model.Solutions[i].SolutionId)" class="nhsuk-link" target="_blank">@Model.Solutions[i].SolutionName</a>
                             <span class="nhsuk-caption-m nhsuk-caption--bottom">
                                 @Model.Solutions[i].SupplierName
                             </span>
                         </h3>
-                        @*Model.Solutions[i].Solution.Summary*@
                         <p class="nhsuk-card__description">
                             @Model.Solutions[i].Summary
                         </p>
@@ -71,7 +60,6 @@
                     </div>
                 </nhs-card-content>
             </nhs-card-v2>
-            //</div>
         }
         
     </nhs-fieldset-form-label>
