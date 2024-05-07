@@ -153,6 +153,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
+        [MockAutoData]
+        public static void Validate_MaximumTermTooHigh_ThrowsValidationError(
+            CommencementDateModel model,
+            CommencementDateModelValidator validator)
+        {
+            model.MaxumimTermUpperLimit = 36;
+            model.MaximumTerm = "37";
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.MaximumTerm)
+                .WithErrorMessage(string.Format(CommencementDateModelValidator.MaximumTermTooHighErrorMessage, "36"));
+        }
+
+        [Theory]
         [MockInlineAutoData(null, 1)]
         [MockInlineAutoData(1, 1)]
         [MockInlineAutoData(2, 1)]
@@ -179,6 +194,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             CommencementDateModelValidator validator)
         {
             var validDate = DateTime.UtcNow.AddDays(20).Date;
+            model.MaxumimTermUpperLimit = 24;
 
             model.Day = validDate.Day.ToString();
             model.Month = validDate.Month.ToString();

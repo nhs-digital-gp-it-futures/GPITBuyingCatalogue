@@ -213,7 +213,47 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.Frameworks.AddAsync(framework);
             await context.SaveChangesAsync();
 
+            await FluentActions.Invoking(async () => await service.CreateOrder(description, organisation.InternalIdentifier, OrderTypeEnum.Unknown, framework.Id))
+                .Should()
+                .ThrowAsync<InvalidOperationException>();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task CreateOrder_Framework_Unknown_Throws(
+            [Frozen] BuyingCatalogueDbContext context,
+            string description,
+            Organisation organisation,
+            EntityFramework.Catalogue.Models.Framework framework,
+            OrderService service)
+        {
+            framework.IsExpired = true;
+
+            await context.Organisations.AddAsync(organisation);
+            await context.Frameworks.AddAsync(framework);
+            await context.SaveChangesAsync();
+
             await FluentActions.Invoking(async () => await service.CreateOrder(description, organisation.InternalIdentifier, OrderTypeEnum.Solution, framework.Id))
+                .Should()
+                .ThrowAsync<InvalidOperationException>();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task CreateOrder_OrderType_Unknown_NoFramework_Throws(
+            [Frozen] BuyingCatalogueDbContext context,
+            string description,
+            Organisation organisation,
+            EntityFramework.Catalogue.Models.Framework framework,
+            OrderService service)
+        {
+            framework.IsExpired = true;
+
+            await context.Organisations.AddAsync(organisation);
+            await context.Frameworks.AddAsync(framework);
+            await context.SaveChangesAsync();
+
+            await FluentActions.Invoking(async () => await service.CreateOrder(description, organisation.InternalIdentifier, OrderTypeEnum.Unknown))
                 .Should()
                 .ThrowAsync<InvalidOperationException>();
         }
@@ -234,6 +274,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
 
             await service.CreateOrder(description, organisation.InternalIdentifier, OrderTypeEnum.Solution, framework.Id);
+
+            var order = await context.Orders.Include(o => o.OrderingParty).FirstAsync();
+
+            order.OrderNumber.Should().Be(1);
+            order.Revision.Should().Be(1);
+            order.Description.Should().Be(description);
+            order.SelectedFrameworkId.Should().Be(framework.Id);
+            order.OrderingParty.InternalIdentifier.Should().Be(organisation.InternalIdentifier);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task CreateOrder_NoFramework_UpdatesDatabase(
+            [Frozen] BuyingCatalogueDbContext context,
+            string description,
+            Organisation organisation,
+            OrderService service)
+        {
+            await context.Organisations.AddAsync(organisation);
+            await context.SaveChangesAsync();
+
+            await service.CreateOrder(description, organisation.InternalIdentifier, OrderTypeEnum.Solution);
 
             var order = await context.Orders.Include(o => o.OrderingParty).FirstAsync();
 
