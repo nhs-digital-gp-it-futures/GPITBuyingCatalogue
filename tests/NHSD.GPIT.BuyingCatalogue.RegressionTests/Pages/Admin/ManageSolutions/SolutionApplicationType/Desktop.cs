@@ -9,9 +9,9 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType
 {
-    public class MobileOrTablet : PageBase
+    public class Desktop : PageBase
     {
-        public MobileOrTablet(IWebDriver driver, CommonActions commonActions)
+        public Desktop(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
             SolutionApplicationTypes = new SolutionApplicationTypes(driver, commonActions);
@@ -19,37 +19,37 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
 
         internal SolutionApplicationTypes SolutionApplicationTypes { get; }
 
-        public void AddMobileOrTabletApplication()
+        public void AddDesktopApplication()
         {
-            string mobileTablet = ApplicationTypes.Mobile_or_tablet.ToString().Replace("_", " ");
-            CommonActions.ClickRadioButtonWithText(mobileTablet);
+            string desktop = ApplicationTypes.Desktop.ToString();
+            CommonActions.ClickRadioButtonWithText(desktop);
             CommonActions.ClickSave();
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.MobileTablet))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.Desktop))
                 .Should().BeTrue();
         }
 
-        public void AddMobileOrTabletApplicationTypes()
+        public void AdDesktopApplicationTypes()
         {
-            var mobilOrTableApplication = GetMobileOrTabletApplicationTypes();
-            foreach (var type in mobilOrTableApplication)
+            var desktopBasedTypes = GetDesktopApplicationTypes();
+            foreach (var type in desktopBasedTypes)
             {
                 switch (type)
                 {
-                    case nameof(MobileOrTabletApplications.operating_systems):
-                        AddSupportedOperatingSystams(type);
+                    case nameof(DesktopApplications.operating_systems):
+                        AddDesktopOperatingSystem(type);
                         break;
-                    case nameof(MobileOrTabletApplications.connectivity):
+                    case nameof(DesktopApplications.connectivity):
                         AddConnectivity(type);
                         break;
-                    case nameof(MobileOrTabletApplications.memory_and_storage):
+                    case nameof(DesktopApplications.memory_and_storage):
                         AddMemoryAndStorage(type);
                         break;
-                    case nameof(MobileOrTabletApplications.third_party_components):
+                    case nameof(DesktopApplications.third_party_components):
                         AddThirdPartyComponents(type);
                         break;
-                    case nameof(MobileOrTabletApplications.hardware_requirements):
+                    case nameof(DesktopApplications.hardware_requirements):
                         AddHardwareRequirements(type);
                         break;
                     default:
@@ -65,71 +65,71 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
                 .Should().BeTrue();
         }
 
-        public void AddSupportedOperatingSystams(string type)
+        public void AddDesktopOperatingSystem(string type)
         {
             var value = SolutionApplicationTypes.GetApplicationTypeValue(type);
-            CommonActions.ClickLinkElement(AddApplicationTypeObjects.SupportedOperatingSystemLink(value));
+            CommonActions.ClickLinkElement(AddApplicationTypeObjects.DesktopOperatingSystemLink(value));
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.OperatingSystems))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.OperatingSystems))
                 .Should().BeTrue();
 
-            CommonActions.ClickAllCheckboxes();
             TextGenerators.TextInputAddText(E2ETests.Framework.Objects.Common.CommonSelectors.Description, 500);
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.MobileTablet))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.Desktop))
                 .Should().BeTrue();
         }
 
         public void AddConnectivity(string type)
         {
             var value = SolutionApplicationTypes.GetApplicationTypeValue(type);
-            CommonActions.ClickLinkElement(AddApplicationTypeObjects.ConnectivityLink(value));
+            CommonActions.ClickLinkElement(AddApplicationTypeObjects.DesktopConnectivityLink(value));
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.Connectivity))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.Connectivity))
                 .Should().BeTrue();
 
-            CommonActions.ClickAllCheckboxes();
             CommonActions.SelectRandomDropDownItem(ApplicationTypeObjects.ConnectionSpeedDropdown);
-            TextGenerators.TextInputAddText(E2ETests.Framework.Objects.Common.CommonSelectors.Description, 500);
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.MobileTablet))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.Desktop))
                 .Should().BeTrue();
         }
 
         public void AddMemoryAndStorage(string type)
         {
             var value = SolutionApplicationTypes.GetApplicationTypeValue(type);
-            CommonActions.ClickLinkElement(AddApplicationTypeObjects.MemoryAndStorageLink(value));
+            CommonActions.ClickLinkElement(AddApplicationTypeObjects.DesktopMemoryAndStorageLink(value));
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.MemoryAndStorage))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.MemoryAndStorage))
                 .Should().BeTrue();
 
-            CommonActions.SelectRandomDropDownItem(ApplicationTypeObjects.MinimumMemoryDropDown);
-            TextGenerators.TextInputAddText(E2ETests.Framework.Objects.Common.CommonSelectors.Description, 500);
+            CommonActions.SelectRandomDropDownItem(E2ETests.Framework.Objects.Admin.EditSolution.ApplicationTypeObjects.MinimumMemoryDropDown);
+            TextGenerators.TextInputAddText(E2ETests.Framework.Objects.Admin.EditSolution.ApplicationTypeObjects.StorageSpace, 300);
+            TextGenerators.TextInputAddText(E2ETests.Framework.Objects.Admin.EditSolution.ApplicationTypeObjects.ProcessingPower, 300);
+            CommonActions.SelectRandomDropDownItem(E2ETests.Framework.Objects.Admin.EditSolution.ApplicationTypeObjects.ResolutionDropdown);
+
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.MobileTablet))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.Desktop))
                 .Should().BeTrue();
         }
 
         public void AddThirdPartyComponents(string type)
         {
             var value = SolutionApplicationTypes.GetApplicationTypeValue(type);
-            CommonActions.ClickLinkElement(AddApplicationTypeObjects.ThirdPartyComponentsLink(value));
+            CommonActions.ClickLinkElement(AddApplicationTypeObjects.DesktopThirdPartyComponentsLink(value));
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.ThirdPartyComponents))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.ThirdPartyComponents))
                 .Should().BeTrue();
 
             TextGenerators.TextInputAddText(E2ETests.Framework.Objects.Admin.EditSolution.ApplicationTypeObjects.ThirdPartyComponents, 500);
@@ -137,55 +137,55 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.MobileTablet))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.Desktop))
                 .Should().BeTrue();
         }
 
         public void AddHardwareRequirements(string type)
         {
             var value = SolutionApplicationTypes.GetApplicationTypeValue(type);
-            CommonActions.ClickLinkElement(AddApplicationTypeObjects.MobileTabletHardwareRequirementsLink(value));
+            CommonActions.ClickLinkElement(AddApplicationTypeObjects.DesktopHardwareRequirementsLink(value));
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.HardwareRequirements))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.HardwareRequirements))
                 .Should().BeTrue();
 
             TextGenerators.TextInputAddText(E2ETests.Framework.Objects.Common.CommonSelectors.Description, 500);
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.MobileTablet))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.Desktop))
                 .Should().BeTrue();
         }
 
         public void AddAdditionalInformation(string type)
         {
             var value = SolutionApplicationTypes.GetApplicationTypeValue(type);
-            CommonActions.ClickLinkElement(AddApplicationTypeObjects.MobileTabletAdditionalInformationLink(value));
+            CommonActions.ClickLinkElement(AddApplicationTypeObjects.DesktopAdditionalInformationLink(value));
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.AdditionalInformation))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.AdditionalInformation))
                 .Should().BeTrue();
 
             TextGenerators.TextInputAddText(AddApplicationTypeObjects.AdditionalInformation, 500);
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(MobileTabletBasedController),
-                nameof(MobileTabletBasedController.MobileTablet))
+                typeof(DesktopBasedController),
+                nameof(DesktopBasedController.Desktop))
                 .Should().BeTrue();
         }
 
-        public List<string> GetMobileOrTabletApplicationTypes()
+        public List<string> GetDesktopApplicationTypes()
         {
-            var browserBasedTypes = Enum.GetValues(typeof(MobileOrTabletApplications))
-            .Cast<MobileOrTabletApplications>()
+            var desktopBasedTypes = Enum.GetValues(typeof(DesktopApplications))
+            .Cast<DesktopApplications>()
             .Select(v => v.ToString())
             .ToList();
 
-            return browserBasedTypes;
+            return desktopBasedTypes;
         }
     }
 }

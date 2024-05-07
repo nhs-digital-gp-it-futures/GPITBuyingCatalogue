@@ -30,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             SolutionApplicationTypes = new SolutionApplicationTypes(driver, commonActions);
             BrowserBased = new BrowserBased(driver, commonActions);
             MobileOrTablet = new MobileOrTablet(driver, commonActions);
+            Desktop = new Desktop(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -63,6 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal BrowserBased BrowserBased { get; }
 
         internal MobileOrTablet MobileOrTablet { get; }
+
+        internal Desktop Desktop { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -100,6 +103,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             SolutionApplicationTypes.ApplicationTypeDashboard();
             MobileOrTablet.AddMobileOrTabletApplication();
             MobileOrTablet.AddMobileOrTabletApplicationTypes();
+            SolutionApplicationTypes.ApplicationTypeDashboard();
+            Desktop.AddDesktopApplication();
+            Desktop.AdDesktopApplicationTypes();
+            SolutionApplicationTypes.ManageCatalogueSolution();
         }
 
         private string GetSolutionID()

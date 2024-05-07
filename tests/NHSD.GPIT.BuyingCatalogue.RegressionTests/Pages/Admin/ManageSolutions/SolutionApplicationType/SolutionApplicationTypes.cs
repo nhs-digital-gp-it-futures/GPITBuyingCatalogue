@@ -32,6 +32,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
                 .Should().BeTrue();
         }
 
+        public void ManageCatalogueSolution()
+        {
+            CommonActions.ClickContinue();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.ManageCatalogueSolution))
+                .Should().BeTrue();
+        }
+
         public string GetApplicationTypeValue(string type)
         {
             var value = type.Replace("_", "-");

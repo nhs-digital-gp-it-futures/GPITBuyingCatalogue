@@ -21,7 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
 
         public void AddBrowserBasedApplication()
         {
-            CommonActions.ClickRadioButtonWithText("Browser-based");
+            var browserBased = ApplicationTypes.Browser_based.ToString().Replace("_", "-");
+            CommonActions.ClickRadioButtonWithText(browserBased);
             CommonActions.ClickSave();
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(BrowserBasedController),
