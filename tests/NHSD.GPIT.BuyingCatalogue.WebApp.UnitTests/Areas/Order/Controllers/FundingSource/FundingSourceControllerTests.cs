@@ -123,7 +123,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             EntityFramework.Ordering.Models.Order order,
             EntityFramework.Catalogue.Models.Framework framework,
             List<EntityFramework.Catalogue.Models.Framework> frameworks,
-            [Frozen] IOrderFrameworkService orderFrameworkMock,
             [Frozen] IOrderService orderServiceMock,
             FundingSourceController controller)
         {
