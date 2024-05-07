@@ -15,16 +15,15 @@
                 <input type="hidden" asp-for="OrganisationName" />
                 <input type="hidden" asp-for="BackLink" />
                 <nhs-fieldset-form-label asp-for="SelectedFrameworkId">
-                    <nhs-radio-button-container>
-                        @foreach (var (option, i) in Model.Frameworks.Select((f, i) => (f, i)))
-                        {
-                            <input type="hidden" asp-for="Frameworks[i].Text" />
-                            <input type="hidden" asp-for="Frameworks[i].Value" />
-                            <nhs-radio-button asp-for="SelectedFrameworkId"
-                                              display-text="@option.Text"
-                                              value="@option.Value" />
-                        }
-                    </nhs-radio-button-container>
+                    @for (int i = 0; i < Model.Frameworks.Count; i++)
+                    {
+                        <input type="hidden" asp-for="Frameworks[i].Text" />
+                        <input type="hidden" asp-for="Frameworks[i].Value" />
+                    }
+                    <nhs-radio-buttons asp-for="SelectedFrameworkId"
+                                       values="@Model.Frameworks.Cast<object>()"
+                                       display-name="Text"
+                                       value-name="Value" />
                 </nhs-fieldset-form-label>
                 <nhs-submit-button class="nhsuk-u-margin-top-4" />
             </form>
