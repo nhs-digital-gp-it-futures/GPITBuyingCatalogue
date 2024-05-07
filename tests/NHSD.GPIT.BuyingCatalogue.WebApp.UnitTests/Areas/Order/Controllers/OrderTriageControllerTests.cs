@@ -295,7 +295,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async Task Get_SelectOrganisation_NoSecondaryOds_RedirectsToIndex(
+        public static async Task Get_SelectOrganisation_NoSecondaryOds_RedirectsToOrderItemType(
             Organisation organisation,
             OrderTriageController controller)
         {
@@ -321,7 +321,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [MockAutoData]
-        public static void Post_SelectOrganisation_NoSecondaryOds_RedirectsToIndex(
+        public static void Post_SelectOrganisation_NoSecondaryOds_RedirectsToOrderItemType(
             Organisation organisation,
             SelectOrganisationModel model,
             OrderTriageController controller)
@@ -379,11 +379,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [MockAutoData]
-        public static void Post_SelectOrganisation_RedirectsToNewOrder(
+        public static void Post_SelectOrganisation_RedirectsToOrderItemType(
             string internalOrgId,
+            List<Organisation> organisations,
             SelectOrganisationModel model,
             OrderTriageController controller)
         {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(
+                new Claim[]
+                {
+                    new(ClaimTypes.Role, "Buyer"),
+                    new(CatalogueClaims.PrimaryOrganisationInternalIdentifier, organisations.First().InternalIdentifier),
+                    new(CatalogueClaims.SecondaryOrganisationInternalIdentifier, organisations.Last().InternalIdentifier),
+                },
+                "mock"));
+
+            controller.ControllerContext =
+                new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext { User = user },
+                };
+
             var result = controller.SelectOrganisation(internalOrgId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();

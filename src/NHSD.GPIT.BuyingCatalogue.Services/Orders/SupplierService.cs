@@ -83,21 +83,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task SetSupplierSection(Order order, Supplier supplier, Contact contact)
-        {
-            ArgumentNullException.ThrowIfNull(order);
-            ArgumentNullException.ThrowIfNull(supplier);
-            ArgumentNullException.ThrowIfNull(contact);
-
-            order.Supplier ??= await dbContext.Suppliers.FindAsync(supplier.Id) ?? new Supplier { Id = supplier.Id, };
-
-            order.Supplier.Name = supplier.Name;
-            order.Supplier.Address = supplier.Address;
-            order.SupplierContact = contact;
-
-            await dbContext.SaveChangesAsync();
-        }
-
         private IQueryable<Supplier> GetActiveSuppliersForSolutions(string selectedFrameworkId = null)
         {
             var query = dbContext.Suppliers

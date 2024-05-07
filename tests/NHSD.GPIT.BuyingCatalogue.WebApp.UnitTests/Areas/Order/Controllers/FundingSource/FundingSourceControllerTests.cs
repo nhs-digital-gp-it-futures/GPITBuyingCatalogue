@@ -33,6 +33,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
 
         [Theory]
         [MockAutoData]
+        public static async Task Get_SelectFramework_Order_HasFramework_BadRequest(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            EntityFramework.Catalogue.Models.Framework framework,
+            [Frozen] IOrderService orderServiceMock,
+            FundingSourceController controller)
+        {
+            order.SelectedFramework = framework;
+
+            orderServiceMock
+                .GetOrderThin(order.CallOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
+
+            var actual = await controller.SelectFramework(internalOrgId, order.CallOffId);
+
+            actual.Should().BeOfType<BadRequestResult>();
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Get_SelectFramework_OnlyOneFramework_Redirects(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -93,6 +113,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             actual.As<ViewResult>().ViewData.Model
                 .Should()
                 .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_SelectFramework_ExistingFramework_BadRequest(
+            string internalOrgId,
+            string selectedFrameworkId,
+            EntityFramework.Ordering.Models.Order order,
+            EntityFramework.Catalogue.Models.Framework framework,
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
+            [Frozen] IOrderFrameworkService orderFrameworkMock,
+            [Frozen] IOrderService orderServiceMock,
+            FundingSourceController controller)
+        {
+            order.SelectedFramework = framework;
+
+            orderServiceMock
+                .GetOrderThin(order.CallOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
+
+            var model = new SelectFrameworkModel(order, frameworks)
+            {
+                SelectedFramework = selectedFrameworkId,
+            };
+
+            var actual = await controller.SelectFramework(model, internalOrgId, order.CallOffId);
+
+            actual.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory]

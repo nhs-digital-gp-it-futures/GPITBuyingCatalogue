@@ -79,6 +79,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
 
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
+            if (order.SelectedFramework != null)
+            {
+                return BadRequest();
+            }
+
             await orderFrameworkService.SetSelectedFrameworkForOrder(callOffId, internalOrgId, model.SelectedFramework);
 
             return RedirectToAction(
