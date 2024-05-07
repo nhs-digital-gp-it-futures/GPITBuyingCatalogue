@@ -21,7 +21,7 @@
 :r ./InsertSolutionCapabilityStatuses.sql
 :r ./InsertSolutionEpicStatuses.sql
 :r ./InsertCatalogueItemTypes.sql
-:r ./InsertFrameworks.sql
+:r ./TestData/InsertFrameworks.sql
 :r ./TestData/InsertCapabilities.sql
 :r ./InsertCataloguePriceTypes.sql
 :r ./InsertCataloguePriceCalculationTypes.sql
@@ -43,6 +43,7 @@
 :r ./InsertAssociatedServices.sql
 :r ./InsertRelatedOrganisations.sql
 
+:r ./InsertEmailPreferenceRoleTypes.sql
 :r ./InsertEmailPreferenceTypes.sql
 :r ./InsertEventTypes.sql
 :r ./InsertEmailNotificationType.sql
@@ -75,3 +76,4 @@
 :r ./MigrateOrderItemRecipients.sql
 :r ./MigrateMergersAndSplits.sql
 :r ./MigrateOrderType.sql
+:r ./MigrateFrameworks.sql

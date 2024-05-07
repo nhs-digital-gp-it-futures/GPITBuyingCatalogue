@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.UnitTest.Framework", "tests\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.csproj", "{5E38DA3D-B215-42A6-ABE4-EBFDE342DBC6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHSD.GPIT.BuyingCatalogue.ServiceContracts", "src\NHSD.GPIT.BuyingCatalogue.ServiceContracts\NHSD.GPIT.BuyingCatalogue.ServiceContracts.csproj", "{44C6ED4B-8ACE-430C-A0FF-B9A35EE33D28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{5E38DA3D-B215-42A6-ABE4-EBFDE342DBC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E38DA3D-B215-42A6-ABE4-EBFDE342DBC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E38DA3D-B215-42A6-ABE4-EBFDE342DBC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44C6ED4B-8ACE-430C-A0FF-B9A35EE33D28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44C6ED4B-8ACE-430C-A0FF-B9A35EE33D28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44C6ED4B-8ACE-430C-A0FF-B9A35EE33D28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44C6ED4B-8ACE-430C-A0FF-B9A35EE33D28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{FC7540B8-DF85-4109-837C-723D58E6A1C3} = {4050EEA0-BD2D-4B83-9AF4-C51F8101BF29}
 		{0C833764-BE86-42C1-978D-757F63AE54BF} = {DD404B70-89A9-4B2D-B81D-5CDCE12B8E70}
 		{5E38DA3D-B215-42A6-ABE4-EBFDE342DBC6} = {4050EEA0-BD2D-4B83-9AF4-C51F8101BF29}
+		{44C6ED4B-8ACE-430C-A0FF-B9A35EE33D28} = {DD404B70-89A9-4B2D-B81D-5CDCE12B8E70}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {97DF6B01-83A4-41A7-8309-524CE51B4920}

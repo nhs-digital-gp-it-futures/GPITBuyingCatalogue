@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
@@ -8,6 +9,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
@@ -33,6 +35,8 @@ public static class EmailPreferenceServiceTests
         [Frozen] BuyingCatalogueDbContext context,
         EmailPreferenceService service)
     {
+        emailPreferenceType.RoleType = EmailPreferenceRoleType.All;
+
         context.UserEmailPreferences.RemoveRange(context.UserEmailPreferences);
         context.Add(emailPreferenceType);
         context.Add(user);
@@ -56,6 +60,7 @@ public static class EmailPreferenceServiceTests
     {
         var expected = !emailPreferenceType.DefaultEnabled;
 
+        emailPreferenceType.RoleType = EmailPreferenceRoleType.All;
         context.UserEmailPreferences.RemoveRange(context.UserEmailPreferences);
 
         context.UserEmailPreferences.Add(new()
@@ -72,6 +77,40 @@ public static class EmailPreferenceServiceTests
         var result = await service.ShouldTriggerForUser(emailPreferenceType, user.Id);
 
         result.Should().Be(expected);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task ShouldTriggerForUser_MismatchedRole_ReturnsExpected(
+        AspNetUser user,
+        EmailPreferenceType emailPreferenceType,
+        [Frozen] BuyingCatalogueDbContext context,
+        EmailPreferenceService service)
+    {
+        var role = new AspNetRole
+        {
+            Name = OrganisationFunction.Buyer.Name,
+            NormalizedName = OrganisationFunction.Buyer.Name.ToUpperInvariant()
+        };
+
+        context.Roles.Add(role);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        user.AspNetUserRoles = new List<AspNetUserRole> { new() { RoleId = role.Id } };
+
+        emailPreferenceType.RoleType = EmailPreferenceRoleType.Admins;
+
+        context.Add(emailPreferenceType);
+        context.Add(user);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var result = await service.ShouldTriggerForUser(emailPreferenceType, user.Id);
+
+        result.Should().BeFalse();
     }
 
     [Theory]

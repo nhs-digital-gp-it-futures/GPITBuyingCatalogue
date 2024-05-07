@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
@@ -14,9 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks
 
         Task<IList<Framework>> GetFrameworks();
 
-        Task AddFramework(string name, IEnumerable<FundingType> fundingTypes, bool supportsFoundationSolution);
+        Task AddFramework(string name, IEnumerable<FundingType> fundingTypes, int maximumTerm);
 
-        Task UpdateFramework(string frameworkId, string name, IEnumerable<FundingType> fundingTypes, bool supportsFoundationSolution);
+        Task UpdateFramework(string frameworkId, string name, IEnumerable<FundingType> fundingTypes, int maximumTerm);
 
         Task MarkAsExpired(string frameworkId);
 

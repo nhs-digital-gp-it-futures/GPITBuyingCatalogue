@@ -31,8 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .WithMany()
                 .HasForeignKey(f => f.LastUpdatedBy)
                 .HasConstraintName("FK_Frameworks_LastUpdatedBy");
-
-            builder.Property(f => f.SupportsFoundationSolution).HasDefaultValue(false);
         }
     }
 }

@@ -41,13 +41,17 @@ public class CompetitionsDashboardController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string internalOrgId)
+    public async Task<IActionResult> Index(string internalOrgId, [FromQuery] string page = "")
     {
+        var options = new PageOptions(page, pageSize: 10);
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        var competitions = await competitionsService.GetCompetitionsDashboard(internalOrgId);
+        var competitions = await competitionsService.GetPagedCompetitions(internalOrgId, options);
 
-        var model = new CompetitionDashboardModel(internalOrgId, organisation.Name, competitions);
+        var model = new CompetitionDashboardModel(internalOrgId, organisation.Name, competitions.Items)
+        {
+            Options = competitions.Options,
+        };
 
         return View(model);
     }

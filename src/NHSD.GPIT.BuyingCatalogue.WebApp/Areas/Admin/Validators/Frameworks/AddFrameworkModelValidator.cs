@@ -11,7 +11,9 @@ public sealed class AddFrameworkModelValidator : AbstractValidator<AddEditFramew
     internal const string FundingTypeError = "Select a funding type";
     internal const string NameMissingError = "Enter a name";
     internal const string NameDuplicationError = "Name already exists. Try another name";
-    internal const string SupportsFoundationSolutionError = "Select yes if this framework supports Foundation Solutions";
+    internal const string MaximumDurationMissingError = "Enter a maximum duration";
+    internal const string MaximumDurationMustBeANumberError = "Maximum duration must be a number";
+    internal const string MaximumDurationGreaterThanZeroError = "Maximum duration must be greater than zero";
 
     public AddFrameworkModelValidator(
         IFrameworkService frameworkService)
@@ -27,8 +29,12 @@ public sealed class AddFrameworkModelValidator : AbstractValidator<AddEditFramew
             .Must((model, name) => !frameworkService.FrameworkNameExistsExcludeSelf(name, model.FrameworkId).GetAwaiter().GetResult())
             .WithMessage(NameDuplicationError);
 
-        RuleFor(x => x.SupportsFoundationSolution)
-            .Must(x => x.HasValue)
-            .WithMessage(SupportsFoundationSolutionError);
+        RuleFor(x => x.MaximumTerm)
+             .NotEmpty()
+             .WithMessage(MaximumDurationMissingError)
+             .Must(x => int.TryParse(x, out _))
+             .WithMessage(MaximumDurationMustBeANumberError)
+             .Must(x => int.Parse(x) > 0)
+             .WithMessage(MaximumDurationGreaterThanZeroError);
     }
 }

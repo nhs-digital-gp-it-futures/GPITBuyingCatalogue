@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/Layouts/_NoBannersLayout.cshtml";
     ViewBag.Title = Model.Heading;
 }
-<partial name="Partials/_BackLink" model="Model"/>
+<partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <nhs-validation-summary />
 
@@ -33,27 +33,10 @@
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.Frameworks.Count; i++)
                     {
-                        @if (Model.Frameworks[i].SupportsFoundationSolution)
-                        {
-                            <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
-                                          label-text="@Model.Frameworks[i].Name"
-                                          hidden-input="@Model.Frameworks[i].FrameworkId"
-                                          data-test-id="framework-names">
-                                <nhs-checkbox-container>
-                                    <nhs-checkbox asp-for="@Model.Frameworks[i].IsFoundation"
-                                                  label-text="Foundation Solution"
-                                                  hidden-input="@Model.Frameworks[i].FrameworkId"
-                                                  data-test-id="foundation-solution" />
-                                </nhs-checkbox-container>
-                            </nhs-checkbox>
-                        }
-                        else
-                        {
-                            <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
-                                          label-text="@Model.Frameworks[i].Name"
-                                          hidden-input="@Model.Frameworks[i].FrameworkId"
-                                          data-test-id="framework-names" />
-                        }
+                        <nhs-checkbox asp-for="@Model.Frameworks[i].Selected"
+                                      label-text="@Model.Frameworks[i].Name"
+                                      hidden-input="@Model.Frameworks[i].FrameworkId"
+                                      data-test-id="framework-names" />
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>
@@ -62,15 +45,14 @@
                 <input type="hidden" asp-for="@Model.Frameworks[i].Name" />
             }
 
-            <nhs-fieldset-form-label 
-                label-text="Is this solution available for pilot?"
-                label-hint="A solution available for pilot is yet to be deployed in a live, patient facing environment and can only be sold to a single buyer organisation."
-                asp-for="IsPilotSolution">
+            <nhs-fieldset-form-label label-text="Is this solution available for pilot?"
+                                     label-hint="A solution available for pilot is yet to be deployed in a live, patient facing environment and can only be sold to a single buyer organisation."
+                                     asp-for="IsPilotSolution">
                 <nhs-checkbox-container>
                     <nhs-checkbox asp-for="IsPilotSolution" label-text="Yes, this solution is available for pilot"></nhs-checkbox>
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>
-            <br/>
+            <br />
             <nhs-submit-button />
         </form>
     </div>

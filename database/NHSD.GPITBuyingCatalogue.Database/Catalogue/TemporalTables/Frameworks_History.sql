@@ -14,5 +14,6 @@
     LocalFundingOnly BIT NULL,
     FundingTypes NVARCHAR(30) NULL,
     IsExpired BIT NOT NULL DEFAULT(0),
-    SupportsFoundationSolution BIT NOT NULL DEFAULT(0),
+    SupportsFoundationSolution BIT NULL DEFAULT(0),
+    MaximumTerm INT NULL,
 );

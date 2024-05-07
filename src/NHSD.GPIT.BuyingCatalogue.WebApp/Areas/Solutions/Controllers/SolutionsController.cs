@@ -93,7 +93,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 selectedInteroperabilityOptions,
                 sortBy);
 
-            var inputOptions = new PageOptions(page, sortBy);
+            var inputOptions = new PageOptions(page, sortBy)
+            {
+                PageSize = 10,
+            };
 
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
@@ -180,7 +183,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public async Task<IActionResult> SearchResults(
             RequestedFilters filters = null)
         {
-            var inputOptions = new PageOptions(null, filters.SortBy);
+            var inputOptions = new PageOptions(null, filters.SortBy)
+            {
+                PageSize = 10,
+            };
 
             (IList<CatalogueItem> catalogueItems, PageOptions options, _) =
                 await solutionsFilterService.GetAllSolutionsFiltered(
