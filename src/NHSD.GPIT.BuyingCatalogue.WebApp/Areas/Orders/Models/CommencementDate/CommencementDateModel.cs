@@ -10,16 +10,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.CommencementDate
         {
         }
 
-        public CommencementDateModel(string internalOrgId, Order order)
+        public CommencementDateModel(string internalOrgId, Order order, int maximumTermUpperLimit)
         {
             InternalOrgId = internalOrgId;
             CallOffId = order.CallOffId;
             IsAmendment = order.IsAmendment;
             InitialPeriod = $"{order.InitialPeriod}";
             MaximumTerm = $"{order.MaximumTerm}";
+            MaxumimTermUpperLimit = maximumTermUpperLimit;
 
             SetDateFields(order.CommencementDate);
         }
+
+        public int MaxumimTermUpperLimit { get; set; }
 
         public string InternalOrgId { get; set; }
 

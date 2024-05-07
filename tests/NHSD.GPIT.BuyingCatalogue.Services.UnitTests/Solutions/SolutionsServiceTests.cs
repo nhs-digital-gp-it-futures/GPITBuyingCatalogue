@@ -4,21 +4,22 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using EnumsNET;
 using FluentAssertions;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.TestData;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
@@ -32,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(SolutionsService).GetConstructors();
 
@@ -40,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionWithCapabilities_Valid_Returns(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -55,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionWithCapabilities_Invalid_ReturnsNull(
             Solution solution,
             SolutionsService service)
@@ -66,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionWithServiceLevelAgreements_Valid_Returns(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -81,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionWithServiceLevelAgreements_Invalid_ReturnsNull(
             Solution solution,
             SolutionsService service)
@@ -92,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionWithCataloguePrice_Valid_Returns(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -107,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionWithCataloguePrice_Invalid_ReturnsNull(
             Solution solution,
             SolutionsService service)
@@ -118,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionWithSupplierDetails_Valid_Returns(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -133,7 +134,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionWithSupplierDetails_Invalid_ReturnsNull(
             Solution solution,
             SolutionsService service)
@@ -144,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionLoadingStatuses_With_Null_ApplicationType_Should_be_Status_NotStarted(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -160,7 +161,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionLoadingStatuses_With_ApplicationType_Should_be_Status_Completed(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -175,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task SaveSupplierContacts_ModelNull_ThrowsException(SolutionsService service)
         {
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(() => service.SaveSupplierContacts(default));
@@ -184,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveSupplierContacts_ModelValid_CallsSetSolutionIdOnModel(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -203,7 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveSupplierContacts_NoContactsInDatabase_AddsValidContactsToRepository(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -235,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveSupplierContacts_ContactsInDatabase_RemovesEmptyContactsFromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -271,7 +272,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveSupplierContacts_ContactsInDatabase_UpdatesNonEmptyContacts(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -310,7 +311,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveSupplierContacts_AddsNewAndValidContacts_ToDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem solution,
@@ -333,7 +334,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [MemberData(nameof(InvalidStringData.TestData), MemberType = typeof(InvalidStringData))]
         public static async Task SaveSolutionDescription_InvalidSummary_ThrowsException(string summary)
         {
-            var service = new SolutionsService(Mock.Of<BuyingCatalogueDbContext>());
+            var service = new SolutionsService(Substitute.For<BuyingCatalogueDbContext>());
 
             var actual = await Assert.ThrowsAsync<ArgumentException>(
                 () => service.SaveSolutionDescription(
@@ -346,7 +347,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveSolutionDetails_CallsSaveChangesAsync_OnRepository(
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsService service,
@@ -377,7 +378,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveSolutionDescription_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -400,7 +401,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveSolutionFeatures_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -419,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveImplementationDetail_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -438,7 +439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task SaveApplication_InvalidModel_ThrowsException(SolutionsService service)
         {
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(
@@ -448,7 +449,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveApplication_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -468,7 +469,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task SaveHosting_InvalidModel_ThrowsException(SolutionsService service)
         {
             var actual = await Assert.ThrowsAsync<ArgumentNullException>(
@@ -478,7 +479,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveHosting_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -498,7 +499,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveSupplier_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier supplier,
@@ -518,7 +519,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task AddCatalogueSolution_NullModel_ThrowsException(SolutionsService service)
         {
             (await Assert.ThrowsAsync<ArgumentNullException>(() => service.AddCatalogueSolution(null)))
@@ -527,7 +528,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task AddCatalogueSolution_NullListOfFrameWorkModels_ThrowsException(
             SolutionsService service)
         {
@@ -538,7 +539,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddCatalogueSolution_ModelValid_AddsCatalogueItemToDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem catalogueItem,
@@ -555,7 +556,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SupplierHasSolutionName_Returns_FromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem catalogueItem,
@@ -570,7 +571,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteApplicationType_UpdatesDatabase(
             Solution catalogueSolution,
             ApplicationTypeDetail applicationTypeDetail,
@@ -599,7 +600,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Remove_BrowserBased_ApplicationType_RemovesBrowserBasedEntries(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -662,7 +663,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Remove_Desktop_ApplicationType_RemovesDesktopEntries(ApplicationTypeDetail applicationTypeDetail)
         {
             applicationTypeDetail.ApplicationTypes = new HashSet<string>
@@ -718,7 +719,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Remove_Mobile_ApplicationType_RemovesMobileEntries(ApplicationTypeDetail applicationTypeDetail)
         {
             applicationTypeDetail.ApplicationTypes = new HashSet<string>
@@ -775,9 +776,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void GetAllSolutionsForSearchTerm_NullSearchTerm_ThrowsException(
             string searchTerm,
             SolutionsService systemUnderTest)
@@ -789,7 +790,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetAllSolutionsForSearchTerm_ReturnsExpectedResults(
             string searchTerm,
             [Frozen] BuyingCatalogueDbContext context,
@@ -822,14 +823,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSupplierSolutions_ReturnsExpectedResults(
             Supplier supplier,
             List<Solution> solutions,
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsService service)
         {
-            var expectedSolutions = solutions.Where(x => x.FrameworkSolutions.Any(y => !y.Framework.IsExpired))
+            solutions.ForEach(s => s.FrameworkSolutions.ForEach(f => f.Framework.IsExpired = false));
+            var expectedSolutions = solutions
                 .Select(x => x.CatalogueItem)
                 .ToList();
 
@@ -845,15 +847,74 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             await context.SaveChangesAsync();
 
-            var result = await service.GetSupplierSolutions(supplier.Id);
+            var result = await service.GetSupplierSolutions(supplier.Id, null);
 
             result.Should().BeEquivalentTo(expectedSolutions);
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [MockInMemoryDbAutoData]
+        public static async Task GetSupplierSolutions_With_Framework_ReturnsNoResults(
+            Supplier supplier,
+            string nonMatchingFrameworkId,
+            List<Solution> solutions,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            solutions.ForEach(
+                x =>
+                {
+                    x.FrameworkSolutions.ForEach(f => f.Framework.IsExpired = false);
+                    x.CatalogueItem.Supplier = supplier;
+                    x.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+                });
+
+            context.Solutions.AddRange(solutions);
+            context.Suppliers.Add(supplier);
+
+            await context.SaveChangesAsync();
+
+            var result = await service.GetSupplierSolutions(supplier.Id, nonMatchingFrameworkId);
+
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetSupplierSolutions_With_Framework_ReturnsExpectedResults(
+            Supplier supplier,
+            List<Solution> solutions,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            solutions.ForEach(s => s.FrameworkSolutions.ForEach(f => f.Framework.IsExpired = false));
+            var matchingFrameworkId = solutions.First().FrameworkSolutions.First().Framework.Id;
+            var expectedSolutions = solutions
+                .Take(1)
+                .Select(x => x.CatalogueItem)
+                .ToList();
+
+            solutions.ForEach(
+                x =>
+                {
+                    x.CatalogueItem.Supplier = supplier;
+                    x.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+                });
+
+            context.Solutions.AddRange(solutions);
+            context.Suppliers.Add(supplier);
+
+            await context.SaveChangesAsync();
+
+            var result = await service.GetSupplierSolutions(supplier.Id, matchingFrameworkId);
+
+            result.Should().BeEquivalentTo(expectedSolutions);
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
         public static async Task GetSupplierSolutionsWithAssociatedServices_ReturnsMatchingResults(
             PracticeReorganisationTypeEnum practiceReorganisationType,
             Supplier supplier,
@@ -870,6 +931,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             solutions.ForEach(
                 x =>
                 {
+                    x.FrameworkSolutions.ForEach(f => f.Framework.IsExpired = false);
                     x.CatalogueItem.Supplier = supplier;
                     x.CatalogueItem.PublishedStatus = PublicationStatus.Published;
                     x.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>
@@ -878,7 +940,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                     };
                 });
 
-            var expectedSolutions = solutions.Where(x => x.FrameworkSolutions.Any(y => !y.Framework.IsExpired))
+            var expectedSolutions = solutions
                 .Select(x => x.CatalogueItem)
                 .ToList();
 
@@ -889,15 +951,106 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.GetSupplierSolutionsWithAssociatedServices(supplier.Id, practiceReorganisationType);
+            var result = await service.GetSupplierSolutionsWithAssociatedServices(supplier.Id, practiceReorganisationType, null);
 
             result.Should().NotBeEmpty();
             result.Should().HaveCount(expectedSolutions.Count);
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        public static async Task GetSupplierSolutionsWithAssociatedServices_With_NonMatchingFramework_ReturnsNoResults(
+            PracticeReorganisationTypeEnum practiceReorganisationType,
+            string nonMatchingFramework,
+            Supplier supplier,
+            AssociatedService associatedService,
+            List<Solution> solutions,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            supplier.CatalogueItems.Clear();
+            associatedService.CatalogueItem.Supplier = supplier;
+            associatedService.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            associatedService.PracticeReorganisationType = practiceReorganisationType;
+
+            solutions.ForEach(
+                x =>
+                {
+                    x.FrameworkSolutions.ForEach(f => f.Framework.IsExpired = false);
+                    x.CatalogueItem.Supplier = supplier;
+                    x.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+                    x.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>
+                    {
+                        new(x.CatalogueItemId, associatedService.CatalogueItemId),
+                    };
+                });
+
+            context.AssociatedServices.Add(associatedService);
+            context.Solutions.AddRange(solutions);
+            context.Suppliers.Add(supplier);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = await service.GetSupplierSolutionsWithAssociatedServices(supplier.Id, practiceReorganisationType, nonMatchingFramework);
+
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        public static async Task GetSupplierSolutionsWithAssociatedServices_With_MatchingFramework_ReturnsMatchingResults(
+            PracticeReorganisationTypeEnum practiceReorganisationType,
+            Supplier supplier,
+            AssociatedService associatedService,
+            List<Solution> solutions,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            supplier.CatalogueItems.Clear();
+            associatedService.CatalogueItem.Supplier = supplier;
+            associatedService.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            associatedService.PracticeReorganisationType = practiceReorganisationType;
+
+            solutions.ForEach(
+                x =>
+                {
+                    x.FrameworkSolutions.ForEach(f => f.Framework.IsExpired = false);
+                    x.CatalogueItem.Supplier = supplier;
+                    x.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+                    x.CatalogueItem.SupplierServiceAssociations = new List<SupplierServiceAssociation>
+                    {
+                        new(x.CatalogueItemId, associatedService.CatalogueItemId),
+                    };
+                });
+
+            var matchingFrameworkId = solutions.First().FrameworkSolutions.First().Framework.Id;
+
+            var expectedSolutions = solutions
+                .Take(1)
+                .Select(x => x.CatalogueItem)
+                .ToList();
+
+            context.AssociatedServices.Add(associatedService);
+            context.Solutions.AddRange(solutions);
+            context.Suppliers.Add(supplier);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = await service.GetSupplierSolutionsWithAssociatedServices(supplier.Id, practiceReorganisationType, matchingFrameworkId);
+
+            result.Should().NotBeEmpty();
+            result.Should().HaveCount(expectedSolutions.Count);
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
         public static async Task GetSupplierSolutionsWithAssociatedServices_WithMergerOrSplit_OnlyReturnsMergersOrSplits(
             PracticeReorganisationTypeEnum practiceReorganisationType,
             Supplier supplier,
@@ -929,7 +1082,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            var result = await service.GetSupplierSolutionsWithAssociatedServices(supplier.Id, practiceReorganisationType);
+            var result = await service.GetSupplierSolutionsWithAssociatedServices(supplier.Id, practiceReorganisationType, null);
 
             result.Should().BeEmpty();
         }

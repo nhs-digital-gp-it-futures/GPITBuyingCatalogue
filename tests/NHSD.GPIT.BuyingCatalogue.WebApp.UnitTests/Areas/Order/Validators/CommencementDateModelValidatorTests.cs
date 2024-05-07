@@ -103,20 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [MockAutoData]
-        public static void Validate_InitialPeriodTooHigh_ThrowsValidationError(
-            CommencementDateModel model,
-            CommencementDateModelValidator validator)
-        {
-            model.InitialPeriod = $"{CommencementDateModelValidator.MaximumInitialPeriod + 1}";
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.InitialPeriod)
-                .WithErrorMessage(CommencementDateModelValidator.InitialPeriodTooHighErrorMessage);
-        }
-
-        [Theory]
         [MockInlineAutoData(null)]
         [MockInlineAutoData("")]
         [MockInlineAutoData(" ")]
@@ -183,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.MaximumTerm)
-                .WithErrorMessage(CommencementDateModelValidator.MaximumTermInvalidErrorMessage);
+                .WithErrorMessage(CommencementDateModelValidator.DurationInvalidErrorMessage);
         }
 
         [Theory]

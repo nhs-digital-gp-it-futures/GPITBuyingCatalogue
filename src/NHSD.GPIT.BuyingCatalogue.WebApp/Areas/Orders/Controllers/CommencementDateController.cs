@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
     {
         public const string DateFormat = "yyyyMMdd";
         public const string Delimiter = ".";
-
+        private const int DefaultMaximumTerm = 36;
         private readonly IOrderService orderService;
         private readonly ICommencementDateService commencementDateService;
         private readonly IDeliveryDateService deliveryDateService;
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
-            var model = new CommencementDateModel(internalOrgId, order)
+            var model = new CommencementDateModel(internalOrgId, order, order.SelectedFramework?.MaximumTerm ?? DefaultMaximumTerm)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),

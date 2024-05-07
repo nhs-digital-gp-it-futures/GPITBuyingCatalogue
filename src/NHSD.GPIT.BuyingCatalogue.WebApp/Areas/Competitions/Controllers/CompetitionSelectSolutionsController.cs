@@ -144,9 +144,6 @@ public class CompetitionSelectSolutionsController : Controller
             new
             {
                 // TODO: MJK set selectedFrameworkId - dependent on #23410
-                // Although this should be functional as is as the code still exists
-                // to ask user for framework within the Funding Source page
-                // if the order is/has been created without one.
                 Area = typeof(OrderDescriptionController).AreaName(),
                 internalOrgId = internalOrgId,
                 orderType = CatalogueItemType.Solution,

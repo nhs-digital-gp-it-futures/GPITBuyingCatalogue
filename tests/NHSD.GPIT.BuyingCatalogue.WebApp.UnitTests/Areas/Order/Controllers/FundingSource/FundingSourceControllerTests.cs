@@ -41,6 +41,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] IOrderService orderServiceMock,
             FundingSourceController controller)
         {
+            order.SelectedFramework = null;
+            order.SelectedFrameworkId = null;
+
             orderServiceMock
                 .GetOrderThin(order.CallOffId, internalOrgId)
                 .Returns(new OrderWrapper(order));
@@ -71,6 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
             [Frozen] IOrderService orderServiceMock,
             FundingSourceController controller)
         {
+            order.SelectedFramework = null;
+            order.SelectedFrameworkId = null;
+
             orderServiceMock
                 .GetOrderThin(order.CallOffId, internalOrgId)
                 .Returns(new OrderWrapper(order));
@@ -173,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Fun
                 .GetFrameworksForOrder(order.CallOffId, internalOrgId, order.OrderType.AssociatedServicesOnly)
                 .Returns(new List<EntityFramework.Catalogue.Models.Framework>() { framework });
 
-            var expectedViewData = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
+            var expectedViewData = new FundingSources(internalOrgId, order.CallOffId, orderWrapper);
 
             var actual = await controller.FundingSources(internalOrgId, order.CallOffId);
 

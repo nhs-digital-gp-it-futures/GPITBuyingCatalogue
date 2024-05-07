@@ -39,6 +39,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
         {
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
 
+            if (order.SelectedFramework != null)
+            {
+                return BadRequest();
+            }
+
             var availableFrameworks = await orderFrameworkService.GetFrameworksForOrder(callOffId, internalOrgId, order.OrderType.AssociatedServicesOnly);
 
             if (availableFrameworks.Count == 1)
@@ -88,9 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
             var orderWrapper = await orderService.GetOrderWithOrderItemsForFunding(callOffId, internalOrgId);
             var order = orderWrapper.Order;
 
-            var availableFrameworks = await orderFrameworkService.GetFrameworksForOrder(callOffId, internalOrgId, order.OrderType.AssociatedServicesOnly);
-
-            var model = new FundingSources(internalOrgId, callOffId, orderWrapper, availableFrameworks.Count)
+            var model = new FundingSources(internalOrgId, callOffId, orderWrapper)
             {
                 BackLink = Url.Action(
                     nameof(OrderController.Order),

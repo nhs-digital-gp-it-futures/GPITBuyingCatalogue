@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources;
 using Xunit;
 
@@ -15,29 +15,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
     public static class FundingSourcesModelTests
     {
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void Constructor_NullOrderWrapper_ThrowsException(
             string internalOrgId,
             CallOffId id)
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new FundingSources(internalOrgId, id, null, 1));
+            var actual = Assert.Throws<ArgumentNullException>(() => new FundingSources(internalOrgId, id, null));
 
             actual.ParamName.Should().Be("orderWrapper");
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void Constructor_NullOrder_ThrowsException(
             string internalOrgId,
             CallOffId id)
         {
-            var actual = Assert.Throws<ArgumentNullException>(() => new FundingSources(internalOrgId, id, new OrderWrapper(), 1));
+            var actual = Assert.Throws<ArgumentNullException>(() => new FundingSources(internalOrgId, id, new OrderWrapper()));
 
             actual.ParamName.Should().Be("orderWrapper");
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_CatalogueSolution_SingleFundingType_SetsCorrectly(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding };
 
             var orderWrapper = new OrderWrapper(order);
-            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
+            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper);
 
             model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(order.CallOffId);
@@ -59,11 +59,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {order.CallOffId}");
             model.OrderItemsSingleFundingType.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeNull();
-            model.CountOfOrderFrameworks.Should().Be(1);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_CatalogueSolution_GpPRactice_SetsCorrectly(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -79,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding, FundingType.Gpit };
             var orderWrapper = new OrderWrapper(order);
 
-            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
+            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper);
 
             model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(order.CallOffId);
@@ -87,11 +86,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {order.CallOffId}");
             model.OrderItemsSingleFundingType.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeNull();
-            model.CountOfOrderFrameworks.Should().Be(1);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_CatalogueSolutionAndAdditionalService_SingleFundingType_SetsCorrectly(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -105,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.Gpit };
             var orderWrapper = new OrderWrapper(order);
 
-            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
+            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper);
 
             model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(order.CallOffId);
@@ -113,11 +111,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {order.CallOffId}");
             model.OrderItemsSingleFundingType.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeNull();
-            model.CountOfOrderFrameworks.Should().Be(1);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_CatalogueSolutionAndAdditionalService_GPPractice_SetsCorrectly(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -132,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding, FundingType.Gpit };
             var orderWrapper = new OrderWrapper(order);
 
-            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
+            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper);
 
             model.Title.Should().Be("Funding source");
             model.CallOffId.Should().Be(order.CallOffId);
@@ -140,11 +137,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {order.CallOffId}");
             model.OrderItemsSingleFundingType.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
             model.OrderItemsSelectable.Should().BeNull();
-            model.CountOfOrderFrameworks.Should().Be(1);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_CatalogueSolution_MultipleFundingFrameworks_SetsCorrectly(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -159,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
 
             order.SelectedFramework.FundingTypes = new List<FundingType> { FundingType.LocalFunding, FundingType.Gpit };
 
-            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper, 1);
+            var model = new FundingSources(internalOrgId, order.CallOffId, orderWrapper);
 
             model.Title.Should().Be("Funding sources");
             model.CallOffId.Should().Be(order.CallOffId);
@@ -167,7 +163,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
             model.Caption.Should().Be($"Order {order.CallOffId}");
             model.OrderItemsSingleFundingType.Should().BeNull();
             model.OrderItemsSelectable.Should().NotBeEmpty().And.HaveCount(order.OrderItems.Count);
-            model.CountOfOrderFrameworks.Should().Be(1);
         }
     }
 }

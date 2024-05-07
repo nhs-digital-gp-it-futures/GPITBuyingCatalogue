@@ -406,21 +406,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        public Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId)
+        public Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId, string selectedFrameworkId)
         {
-            return dbContext.CatalogueItems
+            var query = dbContext.CatalogueItems
                 .Include(i => i.Solution)
                 .Include(i => i.CatalogueItemCapabilities).ThenInclude(sc => sc.Capability)
                 .Include(i => i.Supplier)
                 .Where(i => i.SupplierId == supplierId.GetValueOrDefault()
                     && i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().Any(x => !x.IsExpired))
+                    && i.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().Any(x => !x.IsExpired));
+
+            if (!string.IsNullOrEmpty(selectedFrameworkId))
+            {
+                query = query
+                    .Where(i => i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == selectedFrameworkId));
+            }
+
+            return query
                 .OrderBy(i => i.Name)
                 .ToListAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetSupplierSolutionsWithAssociatedServices(int? supplierId, PracticeReorganisationTypeEnum practiceReorganisationType = PracticeReorganisationTypeEnum.None)
+        public async Task<List<CatalogueItem>> GetSupplierSolutionsWithAssociatedServices(int? supplierId, PracticeReorganisationTypeEnum practiceReorganisationType, string selectedFrameworkId)
         {
             var query = dbContext.CatalogueItems.AsNoTracking()
                 .Include(x => x.SupplierServiceAssociations).ThenInclude(x => x.AssociatedService).ThenInclude(x => x.CatalogueItem)
@@ -445,6 +453,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 query = query
                     .Where(i => i.SupplierServiceAssociations.Any(x => x.AssociatedService != null
                         && x.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published));
+            }
+
+            if (!string.IsNullOrEmpty(selectedFrameworkId))
+            {
+                query = query
+                    .Where(i => i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == selectedFrameworkId));
             }
 
             return await query

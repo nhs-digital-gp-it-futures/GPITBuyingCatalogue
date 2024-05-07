@@ -445,8 +445,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var solutionId = order.GetSolutionId();
 
             var solutions = order.OrderType.AssociatedServicesOnly
-                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType)
-                : await solutionsService.GetSupplierSolutions(order.SupplierId);
+                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType, order.SelectedFrameworkId)
+                : await solutionsService.GetSupplierSolutions(order.SupplierId, order.SelectedFrameworkId);
 
             var additionalServices = includeAdditionalServices
                 ? await additionalServicesService.GetAdditionalServicesBySolutionIds(solutions.Select(x => x.Id))

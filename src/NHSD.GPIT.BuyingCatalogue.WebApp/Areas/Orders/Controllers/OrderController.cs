@@ -109,6 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         {
             ArgumentNullException.ThrowIfNull(orderType);
             ArgumentNullException.ThrowIfNull(selectedFrameworkId);
+
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
             var orderModel = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name)

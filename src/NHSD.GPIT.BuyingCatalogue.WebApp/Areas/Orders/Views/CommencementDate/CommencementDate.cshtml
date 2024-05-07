@@ -5,8 +5,8 @@
     ViewBag.Title = "Timescales for Call-off Agreement";
 
     var advice = Model.IsAmendment
-        ? "This is the commencement date, initial period and maximum term for the original order. They cannot be changed."
-        : "Provide the commencement date, initial period and maximum term for the Call-off Agreement.";
+        ? "This is the commencement date, initial period and duration for the original order. They cannot be changed."
+        : "Provide the commencement date, initial period and duration of the Call-off Agreement.";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -48,13 +48,14 @@
         else
         {
             <form method="post">
+                <input type="hidden" asp-for="@Model.MaxumimTermUpperLimit" />
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
 
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-fieldset-form-label asp-for="@Model"
-                                             label-text="What is commencement date for this Call-off Agreement?"
-                                             label-hint="This is the date you’ve agreed with the supplier that the Call-off Agreement will begin."
+                                             label-text="What is the Call-off Agreement commencement date?"
+                                             label-hint="This is the date you've agreed with the supplier that the Call-off Agreement will begin."
                                              size="ExtraSmall">
                         <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
                     </nhs-fieldset-form-label>
@@ -62,15 +63,15 @@
 
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-bookended-input asp-for="@Model.InitialPeriod"
-                                         label-text="What is the initial period for this Call-off Agreement (in months)?"
-                                         label-hint="This is the period after which the Call-off Agreement can be terminated without incurring charges and begins on the same day as the commencement date. It is recommended the initial period is 6 months, and it cannot exceed 12 months. "
+                                         label-text="What is the Call-off Agreement initial period (in months)?"
+                                         label-hint="This is the period after which the Call-off Agreement can be terminated without incurring charges by giving 30 days' notice."
                                          Suffix="months" />
                 </div>
 
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-bookended-input asp-for="@Model.MaximumTerm"
-                                         label-text="What is the maximum term for this Call-off Agreement (in months)?"
-                                         label-hint="This is the maximum length the Call-off Agreement can run for each Service Recipient, which includes the initial period. It cannot exceed 36 months from the delivery date - which is when solutions or services start being used. "
+                                         label-text="What is the Call-off Agreement duration (in months)?"
+                                         label-hint="This is the maximum length of time the Call-off Agreement can run for and begins on the date the first of your ordered items starts being used. It includes the initial period and cannot exceed @Model.MaxumimTermUpperLimit months."
                                          Suffix="months" />
                 </div>
 

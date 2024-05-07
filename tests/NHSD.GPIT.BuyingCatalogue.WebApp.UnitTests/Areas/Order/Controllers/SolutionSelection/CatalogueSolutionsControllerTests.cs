@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(CatalogueSolutionsController).GetConstructors();
 
@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockOrderService.GetOrderThin(callOffId, internalOrgId)
                 .Returns(new OrderWrapper(order));
 
-            mockSolutionsService.GetSupplierSolutions(order.SupplierId)
+            mockSolutionsService.GetSupplierSolutions(order.SupplierId, Arg.Any<string>())
                 .Returns(supplierSolutions);
 
             mockAdditionalServicesService.GetAdditionalServicesBySolutionIds(Arg.Any<IEnumerable<CatalogueItemId>>())
@@ -127,7 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockOrderService.GetOrderThin(callOffId, internalOrgId)
                 .Returns(new OrderWrapper(order));
 
-            mockSolutionsService.GetSupplierSolutions(order.SupplierId)
+            mockSolutionsService.GetSupplierSolutions(order.SupplierId, Arg.Any<string>())
                 .Returns(supplierSolutions);
 
             mockAdditionalServicesService.GetAdditionalServicesBySolutionIds(Arg.Any<IEnumerable<CatalogueItemId>>())
@@ -239,7 +239,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockSolutionsService
                 .GetSupplierSolutionsWithAssociatedServices(
                     order.SupplierId,
-                    order.OrderType.ToPracticeReorganisationType)
+                    order.OrderType.ToPracticeReorganisationType,
+                    Arg.Any<string>())
                 .Returns(supplierSolutions);
 
             var result = await controller.SelectSolutionAssociatedServicesOnly(
@@ -276,7 +277,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockSolutionsService
                 .GetSupplierSolutionsWithAssociatedServices(
                     order.SupplierId,
-                    order.OrderType.ToPracticeReorganisationType)
+                    order.OrderType.ToPracticeReorganisationType,
+                    Arg.Any<string>())
                 .Returns(supplierSolutions);
 
             var result = await controller.SelectSolutionAssociatedServicesOnly(internalOrgId, callOffId);
@@ -311,7 +313,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             mockSolutionsService
                 .GetSupplierSolutionsWithAssociatedServices(
                     order.SupplierId,
-                    order.OrderType.ToPracticeReorganisationType)
+                    order.OrderType.ToPracticeReorganisationType,
+                    Arg.Any<string>())
                 .Returns(supplierSolutions);
 
             controller.ModelState.AddModelError("key", "errorMessage");
@@ -397,7 +400,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockSolutionsService.GetSupplierSolutions(order.SupplierId).Returns(solutions);
+            mockSolutionsService.GetSupplierSolutions(order.SupplierId, Arg.Any<string>()).Returns(solutions);
 
             var result = await controller.EditSolution(internalOrgId, order.CallOffId);
 
@@ -521,7 +524,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockSolutionsService.GetSupplierSolutionsWithAssociatedServices(
                     order.SupplierId,
-                    order.OrderType.ToPracticeReorganisationType)
+                    order.OrderType.ToPracticeReorganisationType,
+                    Arg.Any<string>())
                 .Returns(solutions);
 
             var result = await controller.EditSolutionAssociatedServicesOnly(internalOrgId, order.CallOffId);
@@ -549,7 +553,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockSolutionsService.GetSupplierSolutions(order.SupplierId).Returns(solutions);
+            mockSolutionsService.GetSupplierSolutions(order.SupplierId, Arg.Any<string>()).Returns(solutions);
 
             controller.ModelState.AddModelError("key", "errorMessage");
 
