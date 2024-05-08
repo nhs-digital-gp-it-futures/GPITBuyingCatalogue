@@ -337,7 +337,7 @@ public static class CompetitionsDashboardControllerTests
         var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, model))
             .As<RedirectToActionResult>();
 
-        await competitionsService.Received().AddCompetition(organisation.Id, filterId, model.Name, model.Description);
+        await competitionsService.Received().AddCompetition(organisation.Id, filterId, model.FrameworkId, model.Name, model.Description);
         await competitionsService.Received().AddCompetitionSolutions(
                 organisation.InternalIdentifier,
                 competition.Id,
