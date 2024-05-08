@@ -199,7 +199,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 Created = timeNow,
                 IsDeleted = false,
                 Description = "This is an Order Description",
-                OrderTriageValue = OrderTriageValue.Over250K,
                 OrderingPartyContact = new Contact
                 {
                     FirstName = "Clark",
@@ -1780,7 +1779,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
                 CommencementDate = timeNow.AddMonths(1),
                 InitialPeriod = 6,
                 MaximumTerm = 12,
-                OrderTriageValue = OrderTriageValue.Under40K,
                 LastUpdatedBy = user.Id,
             };
 

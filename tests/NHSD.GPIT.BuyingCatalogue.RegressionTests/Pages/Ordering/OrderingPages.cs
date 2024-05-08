@@ -1,5 +1,4 @@
-﻿using EnumsNET;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -12,7 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.AssociatedServiceOnly;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.SolutionSelection;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Triage;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
@@ -23,7 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             OrderingDashboard = new OrderingDashboard(driver, commonActions);
             OrderType = new OrderType.OrderType(driver, commonActions);
-            OrderingTriage = new OrderingTriage(driver, commonActions);
             StartOrder = new StartOrder(driver, commonActions);
             TaskList = new TaskList(driver, commonActions);
             OrderingStepOne = new OrderingStepOne(driver, commonActions);
@@ -61,8 +58,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal OrderingDashboard OrderingDashboard { get; }
 
         internal OrderType.OrderType OrderType { get; }
-
-        internal OrderingTriage OrderingTriage { get; }
 
         internal StartOrder StartOrder { get; }
 
@@ -126,7 +121,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             string supplierName,
             string orderDescription,
             bool addNewSupplierContact = false,
-            EntityFramework.Ordering.Models.OrderTriageValue orderTriage = EntityFramework.Ordering.Models.OrderTriageValue.Under40K,
             EntityFramework.Catalogue.Models.CatalogueItemType itemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution,
             AssociatedServiceType associatedServiceType = AssociatedServiceType.AssociatedServiceOther)
         {
@@ -165,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SupplierContacts.ConfirmContact(addNewSupplierContact);
 
             TaskList.TimescalesForCallOffAgreementTask();
-            OrderingStepOne.AddTimescaleForCallOffAgreement(orderTriage, itemType);
+            OrderingStepOne.AddTimescaleForCallOffAgreement();
         }
 
         public void StepTwoAddSolutionsAndServices(string solutionName, string additionalService = "", string associatedService = "", int multipleServiceRecipients = 0, bool importServiceRecipients = false, string fileName = "", bool allServiceRecipients = false)
@@ -251,9 +245,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             }
             else
             {
-                    MergerAndSplit.MergerAndSplitSolutionSelection();
-                    var serviceid = GetSplitOrMergeAssociatedServiceID(orderId);
-                    SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
+                MergerAndSplit.MergerAndSplitSolutionSelection();
+                var serviceid = GetSplitOrMergeAssociatedServiceID(orderId);
+                SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(serviceid);
             }
 
             SolutionAndServicesReview.ReviewSolutionAndServices();
@@ -490,7 +484,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             SolutionAndServicesReview.ReviewSolutionAndServices();
 
             TaskList.SelectPlannedDeliveryDatesTask();
-            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder,  newAssociatedServices, additionalServices);
+            PlannedDeliveryDates.EditPlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, additionalServices);
 
             TaskList.SelectFundingSourcesTask();
             SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, newAssociatedServices, additionalServices);

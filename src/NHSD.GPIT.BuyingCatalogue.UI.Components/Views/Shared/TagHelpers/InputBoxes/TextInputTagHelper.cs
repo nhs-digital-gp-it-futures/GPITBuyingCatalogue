@@ -5,11 +5,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.HintText;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
     [HtmlTargetElement(TagHelperName)]
-    [RestrictChildren(LabelHintTagHelper.TagHelperName)]
+    [RestrictChildren(HintTextTagHelper.TagHelperName)]
     public sealed class TextInputTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-input";

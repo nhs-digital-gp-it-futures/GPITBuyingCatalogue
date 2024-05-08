@@ -4,8 +4,6 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
@@ -16,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
         {
         }
 
-        public FundingSources(string internalOrgId, CallOffId callOffId, OrderWrapper orderWrapper, int countOfOrderFrameworks)
+        public FundingSources(string internalOrgId, CallOffId callOffId, OrderWrapper orderWrapper)
         {
             ArgumentNullException.ThrowIfNull(orderWrapper);
             var order = orderWrapper.Order;
@@ -30,7 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
             InternalOrgId = internalOrgId;
             CallOffId = callOffId;
             Caption = $"Order {CallOffId}";
-            CountOfOrderFrameworks = countOfOrderFrameworks;
 
             SelectedFramework = order.SelectedFramework;
 
@@ -65,7 +62,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources
         public List<OrderItem> OrderItemsNoFundingRequired { get; set; }
 
         public EntityFramework.Catalogue.Models.Framework SelectedFramework { get; set; }
-
-        public int CountOfOrderFrameworks { get; set; }
     }
 }

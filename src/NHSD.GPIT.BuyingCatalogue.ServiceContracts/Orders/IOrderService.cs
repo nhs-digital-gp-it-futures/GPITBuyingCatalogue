@@ -35,7 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm);
 
-        public Task<Order> CreateOrder(string description, string internalOrgId, OrderTriageValue? orderTriageValue, OrderTypeEnum orderType);
+        public Task<Order> CreateOrder(string description, string internalOrgId, OrderTypeEnum orderType, string selectedFrameworkId);
+
+        [Obsolete("Used by competition direct awards")]
+        public Task<Order> CreateOrder(string description, string internalOrgId, OrderTypeEnum orderType);
 
         public Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId);
 
@@ -56,7 +59,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         public Task SetOrderPracticeReorganisationRecipient(string internalOrgId, CallOffId callOffId, string odsCode);
 
         public Task SetFundingSourceForForceFundedItems(string internalOrgId, CallOffId callOffId);
-
-        public Task DeleteSelectedFramework(string internalOrgId, CallOffId callOffId);
     }
 }

@@ -35,16 +35,6 @@
                         advice="@advice"
                         caption="@Model.Caption"/>
 
-        @if (Model.Order.IsAmendment == false && Model.CountOfOrderFrameworks > 1)
-        {
-            <nhs-inset-text data-test-id="funding-sources-multiple-frameworks-change">
-                <p>
-                    These items are available from more than one framework. You’re procuring them from the @(Model.SelectedFramework.ShortName) framework.
-                    <a href="@Url.Action(nameof(FundingSourceController.SelectFramework), typeof(FundingSourceController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">Change framework</a>
-                </p>
-            </nhs-inset-text>
-        }
-
         <nhs-card-v2>
             <nhs-card-content>
                 @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())

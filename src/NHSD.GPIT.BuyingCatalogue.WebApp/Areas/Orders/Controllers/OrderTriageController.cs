@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage;
@@ -19,31 +20,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
     [Route("order/organisation/{internalOrgId}/order/triage")]
     public class OrderTriageController : Controller
     {
-        private static readonly Dictionary<OrderTriageValue, (string Title, string Advice, string ValidationError)> TriageSelectionContent = new()
-        {
-            [OrderTriageValue.Under40K] = ("Have you identified what you want to order?",
-                   "As your order is under £40k, you can execute a Direct Award. Any Catalogue Solution or service on the Buying Catalogue can be procured without carrying out a competition.",
-                   "Select yes if you’ve identified what you want to order"),
-            [OrderTriageValue.Between40KTo250K] = ("Have you carried out a competition using the Buying Catalogue?",
-                   "As your order is between £40k and £250k, you should have executed an On-Catalogue Competition to identify the Catalogue Solution that best meets your needs.",
-                   "Select yes if you’ve carried out a competition on the Buying Catalogue"),
-            [OrderTriageValue.Over250K] = ("Have you sent out Invitations to Tender to suppliers?",
-                   "As your order is over £250k, you should have executed an Off-Catalogue Competition to identify the Catalogue Solution that best meets your needs.",
-                   "Select yes if you’ve carried out an Off-Catalogue Competition with suppliers"),
-        };
-
         private readonly IOrganisationsService organisationsService;
         private readonly ISupplierService supplierService;
+        private readonly IFrameworkService frameworkService;
 
         public OrderTriageController(
             IOrganisationsService organisationsService,
-            ISupplierService supplierService)
+            ISupplierService supplierService,
+            IFrameworkService frameworkService)
         {
             ArgumentNullException.ThrowIfNull(organisationsService);
             ArgumentNullException.ThrowIfNull(supplierService);
+            ArgumentNullException.ThrowIfNull(frameworkService);
 
             this.organisationsService = organisationsService;
             this.supplierService = supplierService;
+            this.frameworkService = frameworkService;
         }
 
         [HttpGet("order-item-type")]
@@ -53,10 +45,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var model = new OrderItemTypeModel(organisation.Name)
             {
-                BackLink = Url.Action(
-                    nameof(DashboardController.Organisation),
-                    typeof(DashboardController).ControllerName(),
-                    new { internalOrgId }),
+                BackLink = User.GetSecondaryOrganisationInternalIdentifiers().Any()
+                    ? Url.Action(
+                        nameof(SelectOrganisation),
+                        new { internalOrgId })
+                    : Url.Action(
+                        nameof(OrderController.ReadyToStart),
+                        typeof(OrderController).ControllerName(),
+                        new { internalOrgId }),
                 SelectedOrderItemType = orderType,
             };
 
@@ -73,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             {
                 case CatalogueItemType.Solution:
                     return RedirectToAction(
-                    nameof(SelectOrganisation),
+                    nameof(SelectFramework),
                     new { internalOrgId, orderType = OrderTypeEnum.Solution });
 
                 case CatalogueItemType.AssociatedService:
@@ -111,15 +107,59 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 return View(model);
 
             return RedirectToAction(
-                nameof(SelectOrganisation),
+                nameof(SelectFramework),
                 new { internalOrgId, orderType = model.OrderType.Value });
         }
 
+        [HttpGet("select-framework")]
+        public async Task<IActionResult> SelectFramework(string internalOrgId, OrderType orderType, string selectedFrameworkId = null)
+        {
+            ArgumentNullException.ThrowIfNull(orderType);
+
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
+            var availableFrameworks = (await frameworkService
+                .GetFrameworks())
+                    .Where(f => f.IsExpired == false)
+                    .OrderBy(f => f.Name)
+                    .ToList();
+
+            var model = new SelectFrameworkModel(
+                organisation.Name,
+                availableFrameworks,
+                selectedFrameworkId)
+            {
+                BackLink = orderType.ToCatalogueItemType != CatalogueItemType.AssociatedService
+                    ? Url.Action(
+                        nameof(OrderItemType),
+                        new { internalOrgId, orderType = CatalogueItemType.Solution })
+                    : Url.Action(
+                        nameof(DetermineAssociatedServiceType),
+                        new { internalOrgId, orderType = orderType.Value }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("select-framework")]
+        public IActionResult SelectFramework(string internalOrgId, SelectFrameworkModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            return RedirectToAction(
+                nameof(OrderController.NewOrder),
+                typeof(OrderController).ControllerName(),
+                new { internalOrgId, orderType = model.OrderType, selectedFrameworkId = model.SelectedFrameworkId });
+        }
+
         [HttpGet("proxy-select")]
-        public async Task<IActionResult> SelectOrganisation(string internalOrgId, OrderType orderType, OrderTriageValue? option = null)
+        public async Task<IActionResult> SelectOrganisation(string internalOrgId)
         {
             if (!User.GetSecondaryOrganisationInternalIdentifiers().Any())
-                return RedirectToAction(nameof(Index), new { internalOrgId, option, orderType = orderType.Value });
+                return RedirectToAction(nameof(OrderItemType), new { internalOrgId });
 
             var internalOrgIds = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
             {
@@ -130,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var model = new SelectOrganisationModel(internalOrgId, organisations)
             {
-                BackLink = Url.Action(nameof(OrderItemType), new { internalOrgId, orderType = orderType.ToCatalogueItemType }),
+                BackLink = Url.Action(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId }),
                 Title = "Which organisation are you ordering for?",
             };
 
@@ -138,146 +178,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpPost("proxy-select")]
-        public IActionResult SelectOrganisation(string internalOrgId, SelectOrganisationModel model, OrderTriageValue? option = null, OrderTypeEnum? orderType = null)
+        public IActionResult SelectOrganisation(string internalOrgId, SelectOrganisationModel model)
         {
             if (!User.GetSecondaryOrganisationInternalIdentifiers().Any())
-                return RedirectToAction(nameof(Index), new { internalOrgId, option, orderType });
+                return RedirectToAction(nameof(OrderItemType), new { internalOrgId });
 
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (!string.Equals(internalOrgId, model.SelectedOrganisation, StringComparison.OrdinalIgnoreCase))
-                option = null;
-
-            return RedirectToAction(nameof(Index), new { internalOrgId = model.SelectedOrganisation, option, orderType });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Index(string internalOrgId, OrderType orderType, OrderTriageValue? option = null)
-        {
-            if (orderType.ToCatalogueItemType == CatalogueItemType.AssociatedService)
-                return RedirectToAction(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId, orderType = orderType.Value });
-
-            var backlink = User.GetSecondaryOrganisationInternalIdentifiers().Any()
-                ? Url.Action(
-                    nameof(SelectOrganisation),
-                    new { internalOrgId, option, orderType = orderType.Value })
-                : Url.Action(
-                    nameof(OrderItemType),
-                    new { internalOrgId, orderType = orderType.ToCatalogueItemType });
-
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-            var model = new OrderTriageModel(organisation)
-            {
-                BackLink = backlink,
-                SelectedOrderTriageValue = option,
-            };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public IActionResult Index(string internalOrgId, OrderTriageModel model, OrderTypeEnum orderType)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            if (model.SelectedOrderTriageValue == OrderTriageValue.NotSure)
-                return RedirectToAction(nameof(NotSure), new { internalOrgId, orderType });
-
-            return RedirectToAction(nameof(TriageSelection), new { internalOrgId, option = model.SelectedOrderTriageValue, orderType });
-        }
-
-        [HttpGet("not-sure")]
-        public async Task<IActionResult> NotSure(string internalOrgId, OrderTypeEnum orderType)
-        {
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-            var model = new GenericOrderTriageModel(organisation)
-            {
-                BackLink = Url.Action(nameof(Index), new { internalOrgId, option = OrderTriageValue.NotSure, orderType }),
-                InternalOrgId = internalOrgId,
-                OrdersDashboardLink = Url.Action(
-                    nameof(DashboardController.Organisation),
-                    typeof(DashboardController).ControllerName(),
-                    new { internalOrgId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpGet("{option}")]
-        public async Task<IActionResult> TriageSelection(string internalOrgId, OrderTriageValue? option, OrderTypeEnum orderType, bool? selected = null)
-        {
-            if (option is null)
-                return RedirectToAction(nameof(Index), new { internalOrgId });
-
-            var (title, advice, _) = GetTriageSelectionContent(option!.Value);
-
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-            var model = new TriageDueDiligenceModel(organisation)
-            {
-                BackLink = Url.Action(nameof(Index), new { internalOrgId, option, orderType }),
-                Advice = advice,
-                Title = title,
-                Selected = selected,
-                Option = option,
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("{option}")]
-        public IActionResult TriageSelection(string internalOrgId, TriageDueDiligenceModel model, OrderTriageValue? option, OrderTypeEnum orderType)
-        {
-            if (!model.Selected.HasValue)
-            {
-                var (_, _, validationError) = GetTriageSelectionContent(option!.Value);
-                ModelState.AddModelError(nameof(model.Selected), validationError);
-            }
-
-            if (!ModelState.IsValid)
-                return View(model);
-
-            if (!model.Selected.GetValueOrDefault())
-                return RedirectToAction(nameof(StepsNotCompleted), new { internalOrgId, option, orderType });
-
-            return RedirectToAction(
-                   nameof(OrderController.ReadyToStart),
-                   typeof(OrderController).ControllerName(),
-                   new { internalOrgId, option, orderType });
-        }
-
-        [HttpGet("{option}/steps-incomplete")]
-        public async Task<IActionResult> StepsNotCompleted(string internalOrgId, OrderTriageValue option, OrderTypeEnum orderType)
-        {
-            var viewName = option switch
-            {
-                OrderTriageValue.Under40K => "Incomplete40k",
-                OrderTriageValue.Between40KTo250K => "Incomplete40kTo250k",
-                OrderTriageValue.Over250K => "IncompleteOver250k",
-                _ => throw new KeyNotFoundException(),
-            };
-
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-            var model = new GenericOrderTriageModel(organisation)
-            {
-                BackLink = Url.Action(nameof(TriageSelection), new { internalOrgId, option, orderType, selected = false }),
-                InternalOrgId = internalOrgId,
-                OrdersDashboardLink = Url.Action(
-                    nameof(DashboardController.Organisation),
-                    typeof(DashboardController).ControllerName(),
-                    new { internalOrgId }),
-            };
-
-            return View(viewName, model);
-        }
-
-        private static (string Title, string Advice, string ValidationError) GetTriageSelectionContent(OrderTriageValue option)
-        {
-            if (!TriageSelectionContent.TryGetValue(option, out var content))
-                throw new KeyNotFoundException($"Key '{option}' is not a valid triage selection");
-
-            return content;
+            return RedirectToAction(nameof(OrderItemType), new { internalOrgId = model.SelectedOrganisation });
         }
     }
 }

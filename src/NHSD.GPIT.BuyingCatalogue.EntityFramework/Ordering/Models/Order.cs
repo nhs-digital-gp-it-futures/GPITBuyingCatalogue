@@ -48,8 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderType OrderType { get; set; } = OrderTypeEnum.Unknown;
 
-        public OrderTriageValue? OrderTriageValue { get; set; }
-
         public string SelectedFrameworkId { get; set; }
 
         public DateTime? DeliveryDate { get; set; }

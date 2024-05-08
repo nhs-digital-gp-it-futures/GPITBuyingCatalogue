@@ -7,7 +7,6 @@ using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
@@ -36,36 +35,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = await dbContext.Order(internalOrgId, callOffId);
 
             order.SelectedFrameworkId = frameworkId;
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder(
-            CallOffId callOffId,
-            string internalOrgId,
-            string frameworkId)
-        {
-            var order = await dbContext.Orders
-                .Include(o => o.SelectedFramework)
-                .Include(o => o.OrderingParty)
-                .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.OrderItemFunding)
-                .FirstOrDefaultAsync(o => o.OrderNumber == callOffId.OrderNumber
-                    && o.Revision == callOffId.Revision
-                    && o.OrderingParty.InternalIdentifier == internalOrgId);
-
-            var selectedFramework = await dbContext.Frameworks.FirstAsync(f => f.Id == frameworkId);
-
-            if (order.OrderingParty.OrganisationType != OrganisationType.GP)
-            {
-                order.OrderItems.Where(oi => oi.OrderItemFunding != null).ForEach(oi =>
-                {
-                    if (oi.OrderItemFunding.OrderItemFundingType != OrderItemFundingType.NoFundingRequired)
-                        oi.OrderItemFunding = null;
-                });
-            }
-
-            order.SelectedFramework = selectedFramework;
 
             await dbContext.SaveChangesAsync();
         }

@@ -15,10 +15,10 @@
             </div>
             <div class="detail">
                 <a class="nhsuk-button nhsuk-u-margin-bottom-2"
-                   asp-action="@(nameof(OrderTriageController.OrderItemType))"
-                   asp-controller="@(typeof(OrderTriageController).ControllerName())"
+                   asp-action="@(nameof(OrderController.ReadyToStart))"
+                   asp-controller="@(typeof(OrderController).ControllerName())"
                    asp-route-internalOrgId="@(Model.InternalOrgId)"
-                   asp-route-area="@(typeof(OrderTriageController).AreaName())">Create new order</a>
+                   asp-route-area="@(typeof(OrderController).AreaName())">Create new order</a>
             </div>
             <hr class="nhsuk-u-margin-bottom-4 nhsuk-u-margin-top-4"/>
         }
@@ -108,7 +108,7 @@
                        asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a> available to order.
                 </p>
                 <vc:nhs-secondary-button text="Create new order"
-                                         url="@Url.Action(nameof(OrderTriageController.OrderItemType), typeof(OrderTriageController).ControllerName(), new { internalOrgId = Model.InternalOrgId, area = typeof(OrderTriageController).AreaName() })"
+                                         url="@Url.Action(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId = Model.InternalOrgId, area = typeof(OrderController).AreaName() })"
                                          type="Primary"/>
             }
         }
