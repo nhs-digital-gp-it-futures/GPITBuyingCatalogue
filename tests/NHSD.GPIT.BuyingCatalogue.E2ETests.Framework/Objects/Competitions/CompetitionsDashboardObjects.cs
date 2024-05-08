@@ -7,13 +7,15 @@ public static class CompetitionsDashboardObjects
 {
     public static By CompetitionsTable => ByExtensions.DataTestId("competitions-table");
 
-    public static By CreateCompetitionLink => By.LinkText("Create a new competition");
+    public static By CreateCompetitionLink => By.LinkText("Create new competition");
 
     public static By SelectAllServiceRecipients => By.LinkText("Select all");
 
     public static By CreateManageCompetitionLink => By.LinkText("Create or manage competitions");
 
     public static By ServiceRecipientsLink => By.LinkText("Service Recipients");
+
+    public static By ViewCompetitions => By.LinkText("View competitions");
 
     public static By ContractLengthLink => By.LinkText("Contract length");
 
