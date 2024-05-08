@@ -159,7 +159,7 @@ public class CompetitionsDashboardController : Controller
                     new { filterId, Area = typeof(ManageFiltersController).AreaName() }) :
                 Url.Action(nameof(ReviewFilter), new { internalOrgId, filterId });
 
-        frameworkId = (await filterService.GetFilterIds(organisation.Id, filterId)).FrameworkId ?? frameworkId;
+        frameworkId = (await filterService.GetFilterIds(organisation.Id, filterId))?.FrameworkId ?? frameworkId;
 
         if (frameworkId.IsNullOrEmpty())
         {

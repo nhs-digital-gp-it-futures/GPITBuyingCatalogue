@@ -8,15 +8,14 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared;
@@ -44,12 +43,15 @@ public static class CompetitionSelectSolutionsControllerTests
         Organisation organisation,
         Competition competition,
         Solution solution,
+        EntityFramework.Catalogue.Models.Framework framework,
         List<CompetitionSolution> competitionSolutions,
         [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IFrameworkService frameworkService,
         CompetitionSelectSolutionsController controller)
     {
         const bool shouldTrack = false;
 
+        frameworkService.GetFramework(competition.FrameworkId).Returns(framework);
         solution.FrameworkSolutions = new List<FrameworkSolution> { new FrameworkSolution() { FrameworkId = competition.FrameworkId, Solution = solution } };
         competitionSolutions.ForEach(
             x =>
@@ -63,7 +65,7 @@ public static class CompetitionSelectSolutionsControllerTests
         competitionsService.GetCompetitionWithServicesAndFramework(organisation.InternalIdentifier, competition.Id, shouldTrack)
             .Returns(Task.FromResult(competition));
 
-        var expectedModel = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions)
+        var expectedModel = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions, framework.ShortName)
         {
             BackLinkText = "Go back to manage competitions",
         };
@@ -100,7 +102,9 @@ public static class CompetitionSelectSolutionsControllerTests
     public static async Task SelectSolutions_NoSolutions_DeletesCompetition(
         Organisation organisation,
         Competition competition,
+        EntityFramework.Catalogue.Models.Framework framework,
         [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IFrameworkService frameworkService,
         CompetitionSelectSolutionsController controller)
     {
         const bool shouldTrack = false;
@@ -109,7 +113,9 @@ public static class CompetitionSelectSolutionsControllerTests
 
         competitionsService.GetCompetitionWithServicesAndFramework(organisation.InternalIdentifier, competition.Id, shouldTrack).Returns(Task.FromResult(competition));
 
-        var expectedModel = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions)
+        frameworkService.GetFramework(competition.FrameworkId).Returns(framework);
+
+        var expectedModel = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions, framework.ShortName)
         {
             BackLinkText = "Go back to manage competitions",
         };
