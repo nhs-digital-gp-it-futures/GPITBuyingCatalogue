@@ -12,11 +12,11 @@
         <p class="nhsuk-body-s nhsuk-u-margin-top-3">You can only carry out competitions using solutions from the same framework. The results are grouped by framework so you can create a valid competition. </p>
         <p><b>All links open in a new tab.</b></p>
     </div>
-    <h3></h3>
+
     @foreach (var solution in Model.CatalogueItems)
     {
-        <div class="nhsuk-card nhsuk-card__inverted" data-foundation-cap="false">
-            <div class="nhsuk-card__content">
+        <nhs-card-v2 inverted="true">
+            <nhs-card-content>
                 <h3 class="nhsuk-card__heading">
                     <a href="@Url.Action(
                         nameof(SolutionsController.Description),
@@ -26,12 +26,11 @@
                         @solution.Supplier.Name
                     </span>
                 </h3>
-                <p class="nhsuk-card__description">
+                <p>
                     @solution.Solution.Summary
                 </p>
-
-            </div>
-        </div>
+            </nhs-card-content>
+        </nhs-card-v2>
     }
     <a class="nhsuk-button nhsuk-u-margin-bottom-3"
        asp-action="@(nameof(CompetitionsDashboardController.SaveCompetition))"

@@ -7,16 +7,20 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using LinqKit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.Framework;
+using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
@@ -173,28 +177,37 @@ public static class CompetitionsDashboardControllerTests
     public static async Task ReviewFilter_ValidFilter_ReturnsViewWithModel(
         Organisation organisation,
         int filterId,
+        List<FrameworkFilterInfo> frameworks,
+        List<CatalogueItem> filterResults,
         FilterDetailsModel filterDetailsModel,
+        FilterIdsModel filterIds,
         [Frozen] IOrganisationsService organisationsService,
         [Frozen] IManageFiltersService filtersService,
+        [Frozen] ISolutionsFilterService solutionsFilterService,
+        [Frozen] IFrameworkService frameworkService,
         CompetitionsDashboardController controller)
     {
         organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
         filtersService.GetFilterDetails(organisation.Id, filterId).Returns(filterDetailsModel);
 
-        var expectedModel = new ReviewFilterModel(filterDetailsModel)
+        filtersService.GetFilterIds(organisation.Id, filterId).Returns(Task.FromResult(filterIds));
+
+        solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds).Returns(filterResults);
+
+        frameworkService.GetFrameworksWithPublishedCatalogueItems().Returns(frameworks);
+
+        var expected = new ReviewFilterModel(filterDetailsModel, organisation.InternalIdentifier, frameworks, filterResults, true, filterIds)
         {
             Caption = organisation.Name,
-            InternalOrgId = organisation.InternalIdentifier,
             OrganisationName = organisation.Name,
             InExpander = true,
-            InCompetition = true,
         };
 
         var result = (await controller.ReviewFilter(organisation.InternalIdentifier, filterId)).As<ViewResult>();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
     }
 
     [Theory]
@@ -232,7 +245,7 @@ public static class CompetitionsDashboardControllerTests
         catalogueItems.ForEach(x => x.Solution = new Solution() { FrameworkSolutions = new List<FrameworkSolution> { new FrameworkSolution() { FrameworkId = frameworkId } } });
 
         solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds)
-            .Returns((catalogueItems, null, null));
+            .Returns(catalogueItems);
 
         var expectedModel = new SaveCompetitionModel(organisation.InternalIdentifier, organisation.Name, frameworkId);
 
@@ -285,7 +298,7 @@ public static class CompetitionsDashboardControllerTests
         catalogueItems.ForEach(x => x.Solution = new Solution() { FrameworkSolutions = new List<FrameworkSolution> { new FrameworkSolution() { FrameworkId = "DifferentId" } } });
 
         solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds)
-            .Returns((catalogueItems, null, null));
+            .Returns(catalogueItems);
 
         var expectedModel = new SaveCompetitionModel(organisation.InternalIdentifier, organisation.Name, frameworkId);
 

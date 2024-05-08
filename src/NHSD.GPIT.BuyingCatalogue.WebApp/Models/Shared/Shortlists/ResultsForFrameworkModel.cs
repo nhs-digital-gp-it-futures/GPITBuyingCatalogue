@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
             InternalOrgId = internalOrgId;
             FilterId = filterId;
             Framework = framework;
-            CatalogueItems = catalogueItems.Where(x => x.Solution.CatalogueItem.Solution.FrameworkSolutions.Any(x => x.FrameworkId == Framework.Id)).ToList();
+            CatalogueItems = catalogueItems;
             FromFilter = fromFilter;
         }
 

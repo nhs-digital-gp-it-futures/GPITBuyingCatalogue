@@ -117,22 +117,18 @@ public class CompetitionsDashboardController : Controller
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var filterDetails = await filterService.GetFilterDetails(organisation.Id, filterId);
         var filterIds = await manageFiltersService.GetFilterIds(organisation.Id, filterId);
-        var (solutions, _, _) = await solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds);
+        var solutions = await solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds);
         var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
 
         if (filterDetails == null)
             return RedirectToAction(nameof(SelectFilter), new { internalOrgId });
 
-        var model = new ReviewFilterModel(filterDetails)
+        var model = new ReviewFilterModel(filterDetails, organisation.InternalIdentifier, frameworks, solutions.ToList(), true, filterIds)
         {
-            BackLink = Url.Action(nameof(SelectFilter), new { internalOrgId }),
+            BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
             Caption = organisation.Name,
-            InternalOrgId = organisation.InternalIdentifier,
-            FilterResults = (List<CatalogueItem>)solutions,
-            Frameworks = frameworks,
             OrganisationName = organisation.Name,
             InExpander = true,
-            InCompetition = true,
         };
 
         return View("Views/Shared/Shortlists/FilterDetails.cshtml", model);
@@ -161,13 +157,13 @@ public class CompetitionsDashboardController : Controller
 
         frameworkId = (await filterService.GetFilterIds(organisation.Id, filterId))?.FrameworkId ?? frameworkId;
 
-        if (frameworkId.IsNullOrEmpty())
+        if (string.IsNullOrWhiteSpace(frameworkId))
         {
             return Redirect(backlink);
         }
 
         var filterIds = await filterService.GetFilterIds(organisation.Id, filterId);
-        var (results, _, _) = await solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds);
+        var results = await solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds);
         var availableSolutions = results.Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == frameworkId));
         if (!availableSolutions.Any())
         {

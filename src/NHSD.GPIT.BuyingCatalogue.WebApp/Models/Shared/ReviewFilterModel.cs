@@ -2,6 +2,7 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
@@ -18,6 +19,30 @@ public class ReviewFilterModel : NavBaseModel
         FilterIds = filterIds;
     }
 
+    public ReviewFilterModel(FilterDetailsModel filterDetails, string internalOrgId, List<FrameworkFilterInfo> frameworks, List<CatalogueItem> filterResults, bool inCompetition, FilterIdsModel filterIds = null)
+        : this(filterDetails, filterIds)
+    {
+        ResultsCount = filterResults.Count;
+        InCompetition = inCompetition;
+        ResultsForFrameworks = new List<ResultsForFrameworkModel>();
+        if (filterIds.FrameworkId == null)
+        {
+            foreach (var framework in frameworks)
+            {
+                var results = filterResults.Where(x => x.Solution.CatalogueItem.Solution.FrameworkSolutions.Any(x => x.FrameworkId == framework.Id)).ToList();
+                if (results.Any())
+                {
+                    ResultsForFrameworks.Add(new ResultsForFrameworkModel(internalOrgId, filterDetails.Id, framework, results, !inCompetition));
+                }
+            }
+        }
+        else
+        {
+            var framework = frameworks.Where(x => x.Id == filterIds.FrameworkId).FirstOrDefault();
+            ResultsForFrameworks.Add(new ResultsForFrameworkModel(internalOrgId, filterDetails.Id, framework, filterResults, !inCompetition));
+        }
+    }
+
     public FilterDetailsModel FilterDetails { get; set; }
 
     public FilterIdsModel FilterIds { get; set; }
@@ -26,9 +51,9 @@ public class ReviewFilterModel : NavBaseModel
 
     public string OrganisationName { get; set; }
 
-    public List<CatalogueItem> FilterResults { get; set; }
+    public int ResultsCount { get; set; }
 
-    public List<FrameworkFilterInfo> Frameworks { get; set; }
+    public List<ResultsForFrameworkModel> ResultsForFrameworks { get; set; }
 
     public bool InExpander { get; set; }
 

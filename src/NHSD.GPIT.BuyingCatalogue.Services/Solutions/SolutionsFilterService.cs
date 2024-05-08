@@ -166,11 +166,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
         }
 
         public async
-            Task<(IList<CatalogueItem> CatalogueItems, PageOptions Options, List<CapabilitiesAndCountModel>
-                CapabilitiesAndCount)> GetAllSolutionsFilteredFromFilterIds(
+            Task<IList<CatalogueItem>> GetAllSolutionsFilteredFromFilterIds(
                 FilterIdsModel filterIds)
         {
-                return await GetAllSolutionsFiltered(
+            var (catalogueItems, _, _) = await GetAllSolutionsFiltered(
                 null,
                 capabilitiesAndEpics: filterIds?.CapabilityAndEpicIds,
                 selectedFrameworkId: filterIds?.FrameworkId,
@@ -179,6 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 selectedIm1Integrations: filterIds.IM1Integrations.ToFilterString(),
                 selectedGpConnectIntegrations: filterIds.GPConnectIntegrations.ToFilterString(),
                 selectedInteroperabilityOptions: filterIds.InteroperabilityOptions.ToFilterString());
+            return catalogueItems;
         }
 
         public async Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15)

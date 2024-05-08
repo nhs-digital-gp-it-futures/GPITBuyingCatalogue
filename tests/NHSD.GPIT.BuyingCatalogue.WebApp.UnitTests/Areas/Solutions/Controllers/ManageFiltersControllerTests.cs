@@ -240,7 +240,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             string primaryOrganisationInternalId,
             int filterId,
             FilterDetailsModel filterDetailsModel,
-            FilterIdsModel filterIdsModel,
+            List<FrameworkFilterInfo> frameworks,
+            List<CatalogueItem> filterResults,
+            FilterIdsModel filterIds,
             Organisation organisation,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
@@ -255,7 +257,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             manageFiltersService.GetFilterDetails(organisation.Id, filterId).Returns(Task.FromResult(filterDetailsModel));
 
-            manageFiltersService.GetFilterIds(organisation.Id, filterId).Returns(Task.FromResult(filterIdsModel));
+            manageFiltersService.GetFilterIds(organisation.Id, filterId).Returns(Task.FromResult(filterIds));
+
+            solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds).Returns(filterResults);
+
+            frameworkService.GetFrameworksWithPublishedCatalogueItems().Returns(frameworks);
 
             var controller = CreateController(
                 organisationsService,
@@ -273,7 +279,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ReviewFilterModel(filterDetailsModel, filterIdsModel) { Caption = organisation.Name, InternalOrgId = organisation.InternalIdentifier, InExpander = true, OrganisationName = organisation.Name };
+            var expected = new ReviewFilterModel(filterDetailsModel, organisation.InternalIdentifier, frameworks, filterResults, false, filterIds)
+            {
+                Caption = organisation.Name,
+                OrganisationName = organisation.Name,
+                InExpander = true,
+            };
             actualResult.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(x => x.BackLink));
         }
 
