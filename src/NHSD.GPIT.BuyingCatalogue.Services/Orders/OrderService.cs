@@ -346,7 +346,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 throw new InvalidOperationException($"Something has gone wrong during order triage. Cannot create an order if we dont know the order type {orderType}");
             }
 
-            var framework = dbContext.Frameworks.Where(f => f.Id == selectedFrameworkId).FirstOrDefault();
+            var framework = await dbContext.Frameworks.Where(f => f.Id == selectedFrameworkId).FirstOrDefaultAsync();
             if (framework == null || framework.IsExpired)
             {
                 throw new InvalidOperationException($"Something has gone wrong during order triage. Cannot create an order without a valid selected framework {selectedFrameworkId}");
