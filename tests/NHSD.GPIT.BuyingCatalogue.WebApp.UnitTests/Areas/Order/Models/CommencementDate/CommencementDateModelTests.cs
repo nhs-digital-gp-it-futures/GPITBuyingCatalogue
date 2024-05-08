@@ -1,6 +1,6 @@
 ﻿using System;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.CommencementDate;
 using Xunit;
 
@@ -9,14 +9,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
     public static class CommencementDateModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
+            int maximumTermUpperLimit,
             EntityFramework.Ordering.Models.Order order,
             DateTime commencementDate)
         {
             order.CommencementDate = commencementDate;
-            var model = new CommencementDateModel(internalOrgId, order);
+            var model = new CommencementDateModel(internalOrgId, order, maximumTermUpperLimit);
 
             model.InternalOrgId.Should().Be(internalOrgId);
             model.IsAmendment.Should().Be(order.IsAmendment);
@@ -28,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void CommencementDate_WithValidDate_ParsesSuccessfully(
             CommencementDateModel model)
         {
@@ -46,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Commence
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void CommencementDate_WithInvalidDate_DoesNotParse(
             CommencementDateModel model)
         {

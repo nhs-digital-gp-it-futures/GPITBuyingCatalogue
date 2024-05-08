@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
@@ -82,51 +80,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public async Task<IActionResult> ReadyToStart(string internalOrgId, OrderType orderType, OrderTriageValue? option = null)
+        public async Task<IActionResult> ReadyToStart(string internalOrgId)
         {
-            string backLink;
-
-            if (orderType.ToCatalogueItemType != CatalogueItemType.AssociatedService)
-            {
-                backLink = Url.Action(
-                    nameof(OrderTriageController.TriageSelection),
-                    typeof(OrderTriageController).ControllerName(),
-                    new { internalOrgId, option, selected = true, orderType = orderType.Value });
-            }
-            else
-            {
-                var actionName = User.GetSecondaryOrganisationInternalIdentifiers().Any()
-                    ? nameof(OrderTriageController.SelectOrganisation)
-                    : nameof(OrderTriageController.DetermineAssociatedServiceType);
-
-                backLink = Url.Action(
-                    actionName,
-                    typeof(OrderTriageController).ControllerName(),
-                    new { internalOrgId, orderType = orderType.Value });
-            }
-
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var model = new ReadyToStartModel(organisation, orderType)
+            var model = new ReadyToStartModel(organisation)
             {
-                Option = option,
-                BackLink = backLink,
+                BackLink = Url.Action(
+                nameof(DashboardController.Organisation),
+                typeof(DashboardController).ControllerName(),
+                new { internalOrgId }),
             };
 
             return View(model);
         }
 
         [HttpPost("~/order/organisation/{internalOrgId}/order/ready-to-start")]
-        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model, OrderTypeEnum orderType, OrderTriageValue? option = null)
+        public IActionResult ReadyToStart(string internalOrgId, ReadyToStartModel model)
         {
             return RedirectToAction(
-                nameof(NewOrder),
-                new { internalOrgId, option, orderType });
+                nameof(OrderTriageController.SelectOrganisation),
+                typeof(OrderTriageController).ControllerName(),
+                new { internalOrgId });
         }
 
         [HttpGet("~/order/organisation/{internalOrgId}/order/new-order")]
-        public async Task<IActionResult> NewOrder(string internalOrgId, OrderTypeEnum orderType, OrderTriageValue? option = null)
+        public async Task<IActionResult> NewOrder(string internalOrgId, OrderType orderType, string selectedFrameworkId)
         {
+            ArgumentNullException.ThrowIfNull(orderType);
+            ArgumentNullException.ThrowIfNull(selectedFrameworkId);
+
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
             var orderModel = new OrderModel(internalOrgId, orderType, new OrderProgress(), organisation.Name)
@@ -134,8 +117,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 DescriptionUrl = Url.Action(
                     nameof(OrderDescriptionController.NewOrderDescription),
                     typeof(OrderDescriptionController).ControllerName(),
-                    new { internalOrgId, option, orderType }),
-                BackLink = Url.Action(nameof(ReadyToStart), new { internalOrgId, option, orderType }),
+                    new { internalOrgId, orderType = orderType.Value, selectedFrameworkId }),
+                BackLink = Url.Action(
+                        nameof(OrderTriageController.SelectFramework),
+                        typeof(OrderTriageController).ControllerName(),
+                        new { internalOrgId, orderType = orderType.Value, selectedFrameworkId }),
             };
 
             return View("Order", orderModel);

@@ -311,7 +311,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
                 await contractsService.RemoveContract(orderId);
                 await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
-                await orderService.DeleteSelectedFramework(internalOrgId, callOffId);
                 await orderItemService.AddOrderItems(internalOrgId, callOffId, model.ToAdd.Select(x => x.CatalogueItemId));
             }
 
@@ -384,7 +383,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             await contractsService.RemoveContract(orderId);
             await orderItemService.DeleteOrderItems(internalOrgId, callOffId, model.ToRemove.Select(x => x.CatalogueItemId));
-            await orderService.DeleteSelectedFramework(internalOrgId, callOffId);
             await orderService.SetSolutionId(internalOrgId, callOffId, model.ToAdd.First().CatalogueItemId);
 
             return RedirectToAction(
@@ -447,8 +445,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var solutionId = order.GetSolutionId();
 
             var solutions = order.OrderType.AssociatedServicesOnly
-                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType)
-                : await solutionsService.GetSupplierSolutions(order.SupplierId);
+                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType, order.SelectedFrameworkId)
+                : await solutionsService.GetSupplierSolutions(order.SupplierId, order.SelectedFrameworkId);
 
             var additionalServices = includeAdditionalServices
                 ? await additionalServicesService.GetAdditionalServicesBySolutionIds(solutions.Select(x => x.Id))

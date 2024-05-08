@@ -119,7 +119,6 @@ public class CompetitionOrderService : ICompetitionOrderService
         OrderingPartyId = competition.OrganisationId,
         SupplierId = winningSolution.Solution.CatalogueItem.SupplierId,
         CompetitionId = competition.Id,
-        OrderTriageValue = OrderTriageValue.Between40KTo250K,
     };
 
     private static void AssignRecipientQuantities(Order order, CompetitionSolution winningSolution)

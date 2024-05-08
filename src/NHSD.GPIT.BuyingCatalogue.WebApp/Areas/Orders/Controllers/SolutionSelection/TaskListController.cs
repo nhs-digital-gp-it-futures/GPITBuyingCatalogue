@@ -53,8 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var order = wrapper.IsAmendment ? wrapper.RolledUp : wrapper.Order;
 
             var solutions = order.OrderType.AssociatedServicesOnly
-                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType)
-                : await solutionsService.GetSupplierSolutions(order.SupplierId);
+                ? await solutionsService.GetSupplierSolutionsWithAssociatedServices(order.SupplierId, order.OrderType.ToPracticeReorganisationType, order.SelectedFrameworkId)
+                : await solutionsService.GetSupplierSolutions(order.SupplierId, order.SelectedFrameworkId);
 
             var backRoute = routingService.GetRoute(
                 RoutingPoint.TaskListBackLink,

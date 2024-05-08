@@ -3,13 +3,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
-namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.HintText
 {
     [HtmlTargetElement(TagHelperName)]
-    public class LabelHintTagHelper : TagHelper
+    public class HintTextTagHelper : TagHelper
     {
-        public const string TagHelperName = "label-hint";
+        public const string TagHelperName = "nhs-hint-text";
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {

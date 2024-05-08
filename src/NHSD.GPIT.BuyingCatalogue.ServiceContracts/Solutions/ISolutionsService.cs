@@ -64,9 +64,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task SaveSupplierContacts(SupplierContactsModel model);
 
-        Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId);
+        Task<List<CatalogueItem>> GetSupplierSolutions(int? supplierId, string selectedFrameworkId);
 
-        Task<List<CatalogueItem>> GetSupplierSolutionsWithAssociatedServices(int? supplierId, PracticeReorganisationTypeEnum practiceReorganisationType = PracticeReorganisationTypeEnum.None);
+        Task<List<CatalogueItem>> GetSupplierSolutionsWithAssociatedServices(int? supplierId, PracticeReorganisationTypeEnum practiceReorganisationType, string selectedFrameworkId);
 
         Task<IList<CatalogueItem>> GetAllSolutions(PublicationStatus? publicationStatus = null);
 

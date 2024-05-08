@@ -4,25 +4,25 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(OrderTriageController).GetConstructors();
 
@@ -40,16 +40,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_OrderItemType_ReturnsView(
             Organisation organisation,
-            [Frozen] Mock<IOrganisationsService> service,
+            [Frozen] IOrganisationsService service,
             OrderTriageController controller)
         {
             var expectedModel = new OrderItemTypeModel(organisation.Name);
 
-            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-                .ReturnsAsync(organisation);
+            service
+                .GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
+                .Returns(organisation);
 
             var result = (await controller.OrderItemType(organisation.InternalIdentifier)).As<ViewResult>();
 
@@ -58,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_OrderItemType_InvalidModel_ReturnsView(
             string internalOrgId,
             OrderItemTypeModel model,
@@ -73,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_OrderItemType_Solution_Redirects(
             string internalOrgId,
             OrderItemTypeModel model,
@@ -83,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.OrderItemType(internalOrgId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderTriageController.SelectOrganisation));
+            result.ActionName.Should().Be(nameof(OrderTriageController.SelectFramework));
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -92,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_OrderItemType_AssociatedService_Redirects(
             string internalOrgId,
             OrderItemTypeModel model,
@@ -110,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_OrderItemType_Throws(
             string internalOrgId,
             OrderItemTypeModel model,
@@ -122,13 +123,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DetermineAssociatedServiceType_ReturnsView(
             Organisation organisation,
             bool mergerEnabled,
             bool splitEnabled,
-            [Frozen] Mock<IOrganisationsService> service,
-            [Frozen] Mock<ISupplierService> supplierService,
+            [Frozen] IOrganisationsService service,
+            [Frozen] ISupplierService supplierService,
             OrderTriageController controller)
         {
             var expectedModel = new DetermineAssociatedServiceTypeModel(organisation.Name, mergerEnabled, splitEnabled)
@@ -136,14 +137,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 InternalOrgId = organisation.InternalIdentifier,
             };
 
-            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-                .ReturnsAsync(organisation);
+            service
+                .GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
+                .Returns(organisation);
 
-            supplierService.Setup(s => s.HasActiveSuppliers(OrderTypeEnum.AssociatedServiceMerger))
-                .ReturnsAsync(mergerEnabled);
+            supplierService
+                .HasActiveSuppliers(OrderTypeEnum.AssociatedServiceMerger)
+                .Returns(mergerEnabled);
 
-            supplierService.Setup(s => s.HasActiveSuppliers(OrderTypeEnum.AssociatedServiceSplit))
-                .ReturnsAsync(splitEnabled);
+            supplierService.HasActiveSuppliers(OrderTypeEnum.AssociatedServiceSplit)
+                .Returns(splitEnabled);
 
             var result = (await controller.DetermineAssociatedServiceType(organisation.InternalIdentifier)).As<ViewResult>();
 
@@ -152,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_DetermineAssociatedServiceType_InvalidModel_ReturnsView(
             string internalOrgId,
             DetermineAssociatedServiceTypeModel model,
@@ -167,9 +170,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static void Post_DetermineAssociatedServiceType_Solution_Redirects(
             OrderTypeEnum orderType,
             string internalOrgId,
@@ -180,7 +183,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.DetermineAssociatedServiceType(internalOrgId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderTriageController.SelectOrganisation));
+            result.ActionName.Should().Be(nameof(OrderTriageController.SelectFramework));
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
                 { "internalOrgId", internalOrgId },
@@ -189,234 +192,74 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.Unknown)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
-        public static async Task Get_Index_ReturnsModel(
-            OrderTypeEnum orderType,
+        [MockAutoData]
+        public static async Task Get_SelectFramework_ReturnsView(
             Organisation organisation,
-            [Frozen] Mock<IOrganisationsService> service,
+            [Frozen] IOrganisationsService service,
+            [Frozen] IFrameworkService frameworkService,
+            EntityFramework.Catalogue.Models.Framework framework,
             OrderTriageController controller)
         {
-            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-                .ReturnsAsync(organisation);
+            framework.IsExpired = false;
+            var frameworks = new List<EntityFramework.Catalogue.Models.Framework>()
+            {
+                framework,
+            };
 
-            var result = await controller.Index(organisation.InternalIdentifier, orderType);
+            var expectedModel = new SelectFrameworkModel(organisation.Name, frameworks, null);
 
-            result.As<ViewResult>().Should().NotBeNull();
-            result.As<ViewResult>().Model.Should().NotBeNull();
-        }
+            service
+                .GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
+                .Returns(organisation);
 
-        [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
-        public static async Task Get_Index_WithAssociatedServiceOrderType_Redirects(
-            OrderTypeEnum orderType,
-            string internalOrgId,
-            OrderTriageController controller)
-        {
-            var result = (await controller.Index(
-                internalOrgId,
-                orderType)).As<RedirectToActionResult>();
+            frameworkService
+                .GetFrameworks()
+                .Returns(frameworks);
+
+            var result = (await controller.SelectFramework(organisation.InternalIdentifier, OrderTypeEnum.Solution)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderController.ReadyToStart));
-            result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
+            result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Post_Index_InvalidModelState_ReturnsView(
+        [MockAutoData]
+        public static void Post_SelectFramework_InvalidModel_ReturnsView(
             string internalOrgId,
-            OrderTypeEnum orderType,
-            OrderTriageModel model,
+            SelectFrameworkModel model,
             OrderTriageController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = controller.Index(internalOrgId, model, orderType);
+            var result = controller.SelectFramework(internalOrgId, model).As<ViewResult>();
 
-            result.As<ViewResult>().Should().NotBeNull();
-            result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+            result.Should().NotBeNull();
+            result.Model.Should().BeEquivalentTo(model);
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Post_Index_NotSureOrderTriageValue_RedirectsToView(
+        [MockAutoData]
+        public static void Post_SelectFramework_ReturnsView(
             string internalOrgId,
-            OrderTypeEnum orderType,
-            OrderTriageModel model,
+            SelectFrameworkModel model,
             OrderTriageController controller)
         {
-            model.SelectedOrderTriageValue = OrderTriageValue.NotSure;
+            var result = controller.SelectFramework(internalOrgId, model).As<RedirectToActionResult>();
 
-            var result = controller.Index(internalOrgId, model, orderType);
-
-            result.As<RedirectToActionResult>().Should().NotBeNull();
-            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.NotSure));
+            result.Should().NotBeNull();
+            result.ActionName.Should().Be(nameof(OrderController.NewOrder));
+            result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
+            {
+                { "internalOrgId", internalOrgId },
+                { "orderType", model.OrderType },
+                { "selectedFrameworkId", model.SelectedFrameworkId },
+            });
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Post_Index_Valid_RedirectsToTriageSelection(
-            string internalOrgId,
-            OrderTypeEnum orderType,
-            OrderTriageModel model,
-            OrderTriageController controller)
-        {
-            model.SelectedOrderTriageValue = OrderTriageValue.Under40K;
-
-            var result = controller.Index(internalOrgId, model, orderType);
-
-            result.As<RedirectToActionResult>().Should().NotBeNull();
-            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.TriageSelection));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_NotReady_ReturnsView(
-            Organisation organisation,
-            OrderTypeEnum orderType,
-            [Frozen] Mock<IOrganisationsService> service,
-            OrderTriageController controller)
-        {
-            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-                .ReturnsAsync(organisation);
-
-            var result = await controller.NotSure(organisation.InternalIdentifier, orderType);
-
-            result.As<ViewResult>().Should().NotBeNull();
-            result.As<ViewResult>().Model.Should().BeOfType(typeof(GenericOrderTriageModel));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_TriageSelection_InvalidOption_Redirects(
-            string internalOrgId,
-            OrderTypeEnum orderType,
-            OrderTriageController controller)
-        {
-            var result = await controller.TriageSelection(internalOrgId, null, orderType);
-
-            result.As<RedirectToActionResult>().Should().NotBeNull();
-            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.Index));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_TriageSelection_ReturnsView(
-            Organisation organisation,
-            OrderTypeEnum orderType,
-            OrderTriageValue option,
-            [Frozen] Mock<IOrganisationsService> service,
-            OrderTriageController controller)
-        {
-            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-                .ReturnsAsync(organisation);
-
-            var result = await controller.TriageSelection(organisation.InternalIdentifier, option, orderType);
-
-            result.As<ViewResult>().Should().NotBeNull();
-        }
-
-        [Theory]
-        [CommonInlineAutoData(OrderTriageValue.Under40K, "Select yes if you’ve identified what you want to order")]
-        [CommonInlineAutoData(OrderTriageValue.Between40KTo250K, "Select yes if you’ve carried out a competition on the Buying Catalogue")]
-        [CommonInlineAutoData(OrderTriageValue.Over250K, "Select yes if you’ve carried out an Off-Catalogue Competition with suppliers")]
-        public static void Post_TriageSelection_NoSelection_AddsModelError(
-            OrderTriageValue option,
-            string expectedErrorMessage,
-            OrderTypeEnum orderType,
-            string internalOrgId,
-            TriageDueDiligenceModel model,
-            OrderTriageController controller)
-        {
-            model.Selected = null;
-
-            _ = controller.TriageSelection(internalOrgId, model, option, orderType);
-
-            var modelStateErrors = controller.ModelState.Values.SelectMany(mse => mse.Errors.Select(e => e.ErrorMessage));
-
-            modelStateErrors.Should().Contain(expectedErrorMessage);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Post_TriageSelection_InvalidModelState_ReturnsView(
-            string internalOrgId,
-            OrderTypeEnum orderType,
-            OrderTriageValue option,
-            TriageDueDiligenceModel model,
-            OrderTriageController controller)
-        {
-            controller.ModelState.AddModelError("some-key", "some-error");
-
-            var result = controller.TriageSelection(internalOrgId, model, option, orderType);
-
-            result.As<ViewResult>().Should().NotBeNull();
-            result.As<ViewResult>().Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Post_TriageSelection_NotSelected_RedirectsToStepsNotCompleted(
-            string internalOrgId,
-            OrderTypeEnum orderType,
-            OrderTriageValue option,
-            TriageDueDiligenceModel model,
-            OrderTriageController controller)
-        {
-            model.Selected = false;
-
-            var result = controller.TriageSelection(internalOrgId, model, option, orderType);
-
-            result.As<RedirectToActionResult>().Should().NotBeNull();
-            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(controller.StepsNotCompleted));
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Post_TriageSelection_Selected_Redirects(
-            string internalOrgId,
-            OrderTypeEnum orderType,
-            OrderTriageValue option,
-            TriageDueDiligenceModel model,
-            OrderTriageController controller)
-        {
-            model.Selected = true;
-
-            var result = controller.TriageSelection(internalOrgId, model, option, orderType);
-
-            result.As<RedirectToActionResult>().Should().NotBeNull();
-            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(OrderController.ReadyToStart));
-        }
-
-        [Theory]
-        [CommonInlineAutoData(OrderTriageValue.Under40K, "Incomplete40k")]
-        [CommonInlineAutoData(OrderTriageValue.Between40KTo250K, "Incomplete40kTo250k")]
-        [CommonInlineAutoData(OrderTriageValue.Over250K, "IncompleteOver250k")]
-        public static async Task Get_StepsNotCompleted_ReturnsView(
-            OrderTriageValue option,
-            string expectedViewName,
-            OrderTypeEnum orderType,
-            Organisation organisation,
-            [Frozen] Mock<IOrganisationsService> service,
-            OrderTriageController controller)
-        {
-            service.Setup(s => s.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier))
-                .ReturnsAsync(organisation);
-
-            var result = await controller.StepsNotCompleted(organisation.InternalIdentifier, option, orderType);
-
-            result.As<ViewResult>().Should().NotBeNull();
-            result.As<ViewResult>().ViewName.Should().Be(expectedViewName);
-        }
-
-        [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_SelectOrganisation_ReturnsView(
-            OrderTypeEnum orderType,
-            [Frozen] Mock<IOrganisationsService> organisationService,
+            [Frozen] IOrganisationsService organisationService,
             List<Organisation> organisations,
             OrderTriageController controller)
         {
@@ -435,23 +278,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                     HttpContext = new DefaultHttpContext { User = user },
                 };
 
-            organisationService.Setup(s => s.GetOrganisationsByInternalIdentifiers(It.IsAny<string[]>())).ReturnsAsync(organisations);
+            organisationService
+                .GetOrganisationsByInternalIdentifiers(Arg.Any<string[]>())
+                .Returns(organisations);
 
             var expected = new SelectOrganisationModel(organisations.First().InternalIdentifier, organisations)
             {
                 Title = "Which organisation are you ordering for?",
             };
 
-            var result = (await controller.SelectOrganisation(organisations.First().InternalIdentifier, orderType)).As<ViewResult>();
+            var result = (await controller.SelectOrganisation(organisations.First().InternalIdentifier)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
-        [CommonAutoData]
-        public static async Task Get_SelectOrganisation_NoSecondaryOds_RedirectsToIndex(
-            OrderTypeEnum orderType,
+        [MockAutoData]
+        public static async Task Get_SelectOrganisation_NoSecondaryOds_RedirectsToOrderItemType(
             Organisation organisation,
             OrderTriageController controller)
         {
@@ -469,15 +313,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                     HttpContext = new DefaultHttpContext { User = user },
                 };
 
-            var result = (await controller.SelectOrganisation(organisation.InternalIdentifier, orderType)).As<RedirectToActionResult>();
+            var result = (await controller.SelectOrganisation(organisation.InternalIdentifier)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderTriageController.Index));
+            result.ActionName.Should().Be(nameof(OrderTriageController.OrderItemType));
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Post_SelectOrganisation_NoSecondaryOds_RedirectsToIndex(
+        [MockAutoData]
+        public static void Post_SelectOrganisation_NoSecondaryOds_RedirectsToOrderItemType(
             Organisation organisation,
             SelectOrganisationModel model,
             OrderTriageController controller)
@@ -499,11 +343,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             var result = controller.SelectOrganisation(organisation.InternalIdentifier, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(controller.Index));
+            result.ActionName.Should().Be(nameof(OrderTriageController.OrderItemType));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_SelectOrganisation_InvalidModel_ReturnsView(
             string internalOrgId,
             List<Organisation> organisations,
@@ -534,9 +378,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Post_SelectOrganisation_SelectedDifferent_ResetsOption(
-            OrderTriageValue? option,
+        [MockAutoData]
+        public static void Post_SelectOrganisation_RedirectsToOrderItemType(
             string internalOrgId,
             List<Organisation> organisations,
             SelectOrganisationModel model,
@@ -557,22 +400,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                     HttpContext = new DefaultHttpContext { User = user },
                 };
 
-            var result = controller.SelectOrganisation(internalOrgId, model, option).As<RedirectToActionResult>();
-
-            result.RouteValues["option"].As<OrderTriageValue?>().Should().BeNull();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Post_SelectOrganisation_RedirectsToNewOrder(
-            string internalOrgId,
-            SelectOrganisationModel model,
-            OrderTriageController controller)
-        {
             var result = controller.SelectOrganisation(internalOrgId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrderTriageController.Index));
+            result.ActionName.Should().Be(nameof(OrderTriageController.OrderItemType));
         }
     }
 }

@@ -44,8 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
         private void CatalogueSolutionCorrectPage()
         {
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderTriageController),
-                nameof(OrderTriageController.Index)).Should().BeTrue();
+                typeof(OrderController),
+                nameof(OrderController.ReadyToStart)).Should().BeTrue();
         }
 
         private void AssociatedServiceCorrectPage(AssociatedServiceType associatedServiceType)

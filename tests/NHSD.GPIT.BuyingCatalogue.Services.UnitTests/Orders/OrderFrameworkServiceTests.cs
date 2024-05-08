@@ -2,17 +2,15 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
@@ -22,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(OrderFrameworkService).GetConstructors();
 
@@ -30,114 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(FundingType.LocalFunding)]
-        [InMemoryDbInlineAutoData(FundingType.Gpit)]
-        public static async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder_NotGP_LocalFrameworkOnlyUnchanged_UpdatesSelectedFramework(
-            FundingType fundingType,
-            Order order,
-            OrderItem orderItem,
-            EntityFramework.Catalogue.Models.Framework selectedFramework,
-            [Frozen] BuyingCatalogueDbContext context,
-            OrderFrameworkService service)
-        {
-            var fundingTypes = new List<FundingType> { fundingType };
-
-            selectedFramework.FundingTypes = fundingTypes;
-
-            orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
-
-            order.OrderItems.Clear();
-            order.OrderItems.Add(orderItem);
-            order.OrderingParty.OrganisationType = OrganisationType.IB;
-            order.SelectedFramework.FundingTypes = fundingTypes;
-
-            context.Frameworks.Add(selectedFramework);
-            context.Orders.Add(order);
-
-            await context.SaveChangesAsync();
-
-            await service.UpdateFundingSourceAndSetSelectedFrameworkForOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, selectedFramework.Id);
-
-            var result = await context.Orders.FirstAsync(x => x.Id == order.Id);
-            result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
-            result.OrderItems.Count.Should().Be(order.OrderItems.Count);
-            result.OrderItems.First().OrderItemFunding.Should().BeEquivalentTo(orderItem.OrderItemFunding);
-        }
-
-        [Theory]
-        [InMemoryDbInlineAutoData(FundingType.LocalFunding, FundingType.Gpit)]
-        [InMemoryDbInlineAutoData(FundingType.Gpit, FundingType.LocalFunding)]
-        public static async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder_GPPractice_LocalFrameworkOnlyChanged_UpdatesSelectedFramework(
-            FundingType fundingType,
-            FundingType orderFundingType,
-            Order order,
-            OrderItem orderItem,
-            EntityFramework.Catalogue.Models.Framework selectedFramework,
-            [Frozen] BuyingCatalogueDbContext context,
-            OrderFrameworkService service)
-        {
-            var fundingTypes = new List<FundingType> { fundingType };
-
-            selectedFramework.FundingTypes = fundingTypes;
-
-            orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
-
-            order.OrderItems.Clear();
-            order.OrderItems.Add(orderItem);
-            order.OrderingParty.OrganisationType = OrganisationType.GP;
-            order.SelectedFramework.FundingTypes = new List<FundingType> { orderFundingType };
-
-            context.Frameworks.Add(selectedFramework);
-            context.Orders.Add(order);
-
-            await context.SaveChangesAsync();
-
-            await service.UpdateFundingSourceAndSetSelectedFrameworkForOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, selectedFramework.Id);
-
-            var result = await context.Orders.FirstAsync(x => x.Id == order.Id);
-            result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
-            result.OrderItems.Count.Should().Be(order.OrderItems.Count);
-            result.OrderItems.First().OrderItemFunding.Should().BeEquivalentTo(orderItem.OrderItemFunding);
-        }
-
-        [Theory]
-        [InMemoryDbInlineAutoData(FundingType.LocalFunding, FundingType.Gpit)]
-        [InMemoryDbInlineAutoData(FundingType.Gpit, FundingType.LocalFunding)]
-        public static async Task UpdateFundingSourceAndSetSelectedFrameworkForOrder_NotGP_LocalFrameworkOnlyChanged_OrderItemFundingNull(
-            FundingType fundingType,
-            FundingType orderFundingType,
-            Order order,
-            OrderItem orderItem,
-            EntityFramework.Catalogue.Models.Framework selectedFramework,
-            [Frozen] BuyingCatalogueDbContext context,
-            OrderFrameworkService service)
-        {
-            var fundingTypes = new List<FundingType> { fundingType };
-
-            selectedFramework.FundingTypes = fundingTypes;
-
-            orderItem.OrderItemFunding.OrderItemFundingType = OrderItemFundingType.LocalFundingOnly;
-
-            order.OrderItems.Clear();
-            order.OrderItems.Add(orderItem);
-            order.OrderingParty.OrganisationType = OrganisationType.IB;
-            order.SelectedFramework.FundingTypes = new List<FundingType> { orderFundingType };
-
-            context.Frameworks.Add(selectedFramework);
-            context.Orders.Add(order);
-
-            await context.SaveChangesAsync();
-
-            await service.UpdateFundingSourceAndSetSelectedFrameworkForOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, selectedFramework.Id);
-
-            var result = await context.Orders.FirstAsync(x => x.Id == order.Id);
-            result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
-            result.OrderItems.Count.Should().Be(order.OrderItems.Count);
-            result.OrderItems.First().OrderItemFunding.Should().BeNull();
-        }
-
-        [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetFrameworksForOrder_Solution_ReturnsExpected(
             Order order,
             OrderItem orderItem,
@@ -173,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetFrameworksForOrder_AssociatedService_ReturnsExpected(
             Order order,
             OrderItem orderItem,

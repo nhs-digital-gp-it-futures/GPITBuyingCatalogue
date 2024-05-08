@@ -169,25 +169,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Ordering.FundingSources
             });
         }
 
-        [Fact]
-        public void SelectFramework_ExistingFramework_RedirectsToConfirmPage()
-        {
-            RunTest(() =>
-            {
-                NavigateToUrl(
-                    typeof(FundingSourceController),
-                    nameof(FundingSourceController.SelectFramework),
-                    ParametersEF);
-
-                CommonActions.ClickFirstUnselectedRadio();
-                CommonActions.ClickSave();
-
-                CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(FundingSourceController),
-                    nameof(FundingSourceController.ConfirmFrameworkChange)).Should().BeTrue();
-            });
-        }
-
         public void Dispose()
         {
             Reset(CallOffIdMultipleFrameworks);
