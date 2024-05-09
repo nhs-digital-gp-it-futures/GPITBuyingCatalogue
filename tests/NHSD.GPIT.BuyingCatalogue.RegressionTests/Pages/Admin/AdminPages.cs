@@ -4,9 +4,11 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.HostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionHostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedEpics;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
@@ -31,6 +33,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             BrowserBased = new BrowserBased(driver, commonActions);
             MobileOrTablet = new MobileOrTablet(driver, commonActions);
             Desktop = new Desktop(driver, commonActions);
+            SolutionHostingTypes = new SolutionHostingTypes(driver, commonActions);
+            PublicCloud = new PublicCloud(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -66,6 +70,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal MobileOrTablet MobileOrTablet { get; }
 
         internal Desktop Desktop { get; }
+
+        internal SolutionHostingTypes SolutionHostingTypes { get; }
+
+        internal PublicCloud PublicCloud { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -107,6 +115,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             Desktop.AddDesktopApplication();
             Desktop.AdDesktopApplicationTypes();
             SolutionApplicationTypes.ManageCatalogueSolution();
+        }
+
+        public void AddSolutionHostingTypes()
+        {
+            var solutionId = GetSolutionID();
+            SolutionHostingTypes.AddHostingType(solutionId);
+            SolutionHostingTypes.HostingTypeDashboard();
+            PublicCloud.AddHostingTypePublicCloud();
         }
 
         private string GetSolutionID()

@@ -82,6 +82,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddSolutionImplementation();
 
             AdminPages.AddSolutionApplicationTypes();
+
+            AdminPages.AddSolutionHostingTypes();
         }
 
         [Fact]
