@@ -15,7 +15,7 @@ public static class ColumnWidthExtensionsTests
 
     [Fact]
     public static void ToClass_InvalidSelection_ThrowsArgumentOutOfRangeException() => FluentActions
-        .Invoking(() => ((ColumnWidth)int.MaxValue))
+        .Invoking(() => ((ColumnWidth)int.MaxValue).ToClass())
         .Should()
         .Throw<ArgumentOutOfRangeException>();
 }
