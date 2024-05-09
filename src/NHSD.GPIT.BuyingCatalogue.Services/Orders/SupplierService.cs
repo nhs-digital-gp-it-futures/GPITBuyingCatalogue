@@ -23,14 +23,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
-        public Task<List<Supplier>> GetActiveSuppliers(OrderType orderType)
+        public Task<List<Supplier>> GetActiveSuppliers(OrderType orderType, string selectedFrameworkId)
         {
             ArgumentNullException.ThrowIfNull(orderType);
 
             return orderType.Value switch
             {
-                OrderTypeEnum.Solution => GetActiveSuppliersForSolutions().ToListAsync(),
-                _ => GetActiveSuppliersForSolutionsWithAssociatedServices(orderType.ToPracticeReorganisationType).ToListAsync(),
+                OrderTypeEnum.Solution => GetActiveSuppliersForSolutions(selectedFrameworkId).ToListAsync(),
+                _ => GetActiveSuppliersForSolutionsWithAssociatedServices(orderType.ToPracticeReorganisationType, selectedFrameworkId).ToListAsync(),
             };
         }
 
@@ -83,40 +83,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task SetSupplierSection(Order order, Supplier supplier, Contact contact)
+        private IQueryable<Supplier> GetActiveSuppliersForSolutions(string selectedFrameworkId = null)
         {
-            if (order is null)
-                throw new ArgumentNullException(nameof(order));
-
-            if (supplier is null)
-                throw new ArgumentNullException(nameof(supplier));
-
-            if (contact is null)
-                throw new ArgumentNullException(nameof(contact));
-
-            order.Supplier ??= await dbContext.Suppliers.FindAsync(supplier.Id) ?? new Supplier { Id = supplier.Id, };
-
-            order.Supplier.Name = supplier.Name;
-            order.Supplier.Address = supplier.Address;
-            order.SupplierContact = contact;
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        private IQueryable<Supplier> GetActiveSuppliersForSolutions()
-        {
-            return dbContext.Suppliers
+            var query = dbContext.Suppliers
                 .Include(x => x.CatalogueItems)
                 .Where(
                     x => x.IsActive
                         && x.CatalogueItems.Any(
                             ci => ci.CatalogueItemType == CatalogueItemType.Solution
                                 && ci.PublishedStatus == PublicationStatus.Published
-                                && ci.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired)))
+                                && ci.Solution.FrameworkSolutions.Select(f => f.Framework).Distinct().Any(f => !f.IsExpired)));
+
+            if (!string.IsNullOrEmpty(selectedFrameworkId))
+            {
+                query = query
+                .Where(
+                    x => x.CatalogueItems.Any(
+                        ci => ci.Solution.FrameworkSolutions.Any(f => f.FrameworkId == selectedFrameworkId)));
+            }
+
+            return query
                 .OrderBy(x => x.Name);
         }
 
-        private IQueryable<Supplier> GetActiveSuppliersForSolutionsWithAssociatedServices(PracticeReorganisationTypeEnum practiceReorganisationType)
+        private IQueryable<Supplier> GetActiveSuppliersForSolutionsWithAssociatedServices(PracticeReorganisationTypeEnum practiceReorganisationType, string selectedFrameworkId = null)
         {
             var query = dbContext
                 .CatalogueItems
@@ -136,6 +126,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             else
             {
                 query = query.Where(ci => ci.SupplierServiceAssociations.Any());
+            }
+
+            if (!string.IsNullOrEmpty(selectedFrameworkId))
+            {
+                query = query
+                .Where(
+                    ci => ci.Solution.FrameworkSolutions.Any(f => f.FrameworkId == selectedFrameworkId));
             }
 
             return query

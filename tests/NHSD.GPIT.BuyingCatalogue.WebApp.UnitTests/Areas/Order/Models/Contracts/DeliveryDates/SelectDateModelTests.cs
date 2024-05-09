@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 using Xunit;
 
@@ -12,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
     public static class SelectDateModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NullOrder_ThrowsException(
             string internalOrgId,
             CallOffId callOffId,
@@ -24,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
             CallOffId callOffId,
@@ -39,7 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.CommencementDate.Should().Be(order.CommencementDate);
             model.MaximumTerm.Should().Be(order.MaximumTerm);
             model.IsAmend.Should().Be(order.IsAmendment);
-            model.TriageValue.Should().Be(order.OrderTriageValue);
 
             model.Date.Should().Be(date.Date);
             model.Day.Should().Be($"{date.Day:00}");
@@ -48,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ContractEndDate_WithInvalidArguments_ReturnsNull(
             string internalOrgId,
             CallOffId callOffId,
@@ -69,17 +66,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTriageValue.Under40K)]
-        [CommonInlineAutoData(OrderTriageValue.Between40KTo250K)]
-        [CommonInlineAutoData(OrderTriageValue.Over250K)]
+        [MockAutoData]
         public static void ContractEndDate_ExpectedResult(
-            OrderTriageValue triageValue,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order)
         {
-            order.OrderTriageValue = triageValue;
-
             var model = new SelectDateModel(internalOrgId, callOffId, order, null);
 
             var expected = order.CommencementDate!.Value

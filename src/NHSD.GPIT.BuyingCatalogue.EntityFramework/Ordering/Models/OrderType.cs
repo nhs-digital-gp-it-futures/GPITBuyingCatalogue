@@ -13,8 +13,8 @@ public record OrderType(OrderTypeEnum Value) : IParsable<OrderType>
             return Value switch
             {
                 OrderTypeEnum.Unknown => null,
-                OrderTypeEnum.Solution => (CatalogueItemType?)CatalogueItemType.Solution,
-                OrderTypeEnum.AssociatedServiceOther or OrderTypeEnum.AssociatedServiceMerger or OrderTypeEnum.AssociatedServiceSplit => (CatalogueItemType?)CatalogueItemType.AssociatedService,
+                OrderTypeEnum.Solution => CatalogueItemType.Solution,
+                OrderTypeEnum.AssociatedServiceOther or OrderTypeEnum.AssociatedServiceMerger or OrderTypeEnum.AssociatedServiceSplit => CatalogueItemType.AssociatedService,
                 _ => throw new InvalidOperationException($"Unhandled {nameof(OrderTypeEnum)} {Value}"),
             };
         }

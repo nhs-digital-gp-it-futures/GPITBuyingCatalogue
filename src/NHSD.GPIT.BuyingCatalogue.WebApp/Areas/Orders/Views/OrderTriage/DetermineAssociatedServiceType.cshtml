@@ -36,13 +36,9 @@
                         </nhs-fieldset-form-label>
                     }
                 }
+                <br />
                 <nhs-submit-button text="@submitButton" />
             </form>
-            <a id="cancel-link"
-               href="@Url.Action(
-                     nameof(DashboardController.Organisation),
-                     typeof(DashboardController).ControllerName(),
-                     new { Model.InternalOrgId })">Cancel</a>
         </div>
     </div>
 </div>

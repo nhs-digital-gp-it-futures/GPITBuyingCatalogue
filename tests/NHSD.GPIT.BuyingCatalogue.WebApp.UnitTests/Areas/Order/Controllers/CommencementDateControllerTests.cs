@@ -9,15 +9,15 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.CommencementDate;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
@@ -42,18 +42,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_CommencementDate_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] IOrderService orderServiceMock,
             CommencementDateController controller)
         {
-            var expected = new CommencementDateModel(internalOrgId, order);
+            var expected = new CommencementDateModel(internalOrgId, order, order.SelectedFramework.MaximumTerm);
 
             orderServiceMock
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .GetOrderThin(order.CallOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
 
             var actualResult = await controller.CommencementDate(internalOrgId, order.CallOffId);
 
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_CommencementDate_WithModelErrors_ExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
@@ -89,12 +89,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_CommencementDate_ExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<ICommencementDateService> commencementDateService,
+            [Frozen] IOrderService orderService,
+            [Frozen] ICommencementDateService commencementDateService,
             CommencementDateController controller)
         {
             var date = DateTime.UtcNow.AddDays(1).Date;
@@ -113,17 +113,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             order.OrderRecipients.SelectMany(x => x.OrderItemRecipients).ForEach(x => x.DeliveryDate = null);
 
             orderService
-                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .GetOrderWithOrderItems(order.CallOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
 
             commencementDateService
-                .Setup(x => x.SetCommencementDate(order.CallOffId, internalOrgId, date, initialPeriod, maximumTerm))
+                .SetCommencementDate(order.CallOffId, internalOrgId, date, initialPeriod, maximumTerm)
                 .Returns(Task.CompletedTask);
 
             var result = await controller.CommencementDate(internalOrgId, order.CallOffId, model);
-
-            orderService.VerifyAll();
-            commencementDateService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -137,12 +134,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_CommencementDate_WithClashingDeliveryDates_ExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<ICommencementDateService> commencementDateService,
+            [Frozen] IOrderService orderService,
+            [Frozen] ICommencementDateService commencementDateService,
             CommencementDateController controller)
         {
             var date = DateTime.UtcNow.AddDays(1).Date;
@@ -161,13 +158,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             order.OrderItems.ForEach(i => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(i.CatalogueItemId, DateTime.Today)));
 
             orderService
-                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .GetOrderWithOrderItems(order.CallOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
 
             var result = await controller.CommencementDate(internalOrgId, order.CallOffId, model);
 
-            orderService.VerifyAll();
-            commencementDateService.VerifyNoOtherCalls();
+            await commencementDateService
+                .Received(0)
+                .SetCommencementDate(
+                    Arg.Any<CallOffId>(),
+                    Arg.Any<string>(),
+                    Arg.Any<DateTime>(),
+                    Arg.Any<int>(),
+                    Arg.Any<int>());
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -188,11 +191,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_ConfirmChanges_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderService orderService,
             CommencementDateController controller)
         {
             order.CommencementDate = DateTime.Today;
@@ -200,14 +203,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             dates.ForEach(x => x.DeliveryDate = DateTime.Today);
 
             orderService
-                .Setup(s => s.GetOrderWithOrderItems(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+                .GetOrderWithOrderItems(order.CallOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
 
             var tomorrow = DateTime.Today.AddDays(1).ToString(CommencementDateController.DateFormat);
             var details = string.Join(CommencementDateController.Delimiter, tomorrow, "3", "12");
             var result = await controller.ConfirmChanges(internalOrgId, order.CallOffId, details);
-
-            orderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -225,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ConfirmChanges_WithModelErrors_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -252,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ConfirmChanges_ConfirmChangesIsFalse_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -278,16 +279,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ConfirmChanges_ConfirmChangesIsTrue_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             int initialPeriod,
             int maximumTerm,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<ICommencementDateService> commencementDateService,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<IDeliveryDateService> deliveryDateService,
+            [Frozen] ICommencementDateService commencementDateService,
+            [Frozen] IOrderService orderService,
+            [Frozen] IDeliveryDateService deliveryDateService,
             CommencementDateController controller)
         {
             var newDate = DateTime.Today.AddDays(1);
@@ -304,23 +305,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 $"{initialPeriod}",
                 $"{maximumTerm}");
 
-            commencementDateService
-                .Setup(x => x.SetCommencementDate(callOffId, internalOrgId, newDate, initialPeriod, maximumTerm))
-                .Verifiable();
-
             orderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
-
-            deliveryDateService
-                .Setup(x => x.ResetDeliveryDates(order.Id, newDate))
-                .Verifiable();
+                .GetOrderThin(callOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
 
             var result = await controller.ConfirmChanges(internalOrgId, callOffId, details, model);
 
-            commencementDateService.VerifyAll();
-            orderService.VerifyAll();
-            deliveryDateService.VerifyAll();
+            await commencementDateService
+                .Received()
+                .SetCommencementDate(callOffId, internalOrgId, newDate, initialPeriod, maximumTerm);
+
+            await orderService
+                .Received()
+                .GetOrderThin(callOffId, internalOrgId);
+
+            await deliveryDateService
+                .Received()
+                .ResetDeliveryDates(order.Id, newDate);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 

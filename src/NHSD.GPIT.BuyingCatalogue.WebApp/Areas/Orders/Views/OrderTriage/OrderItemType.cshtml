@@ -9,8 +9,7 @@
         <div class="nhsuk-grid-column-two-thirds">
             <nhs-validation-summary RadioId="@nameof(Model.SelectedOrderItemType)" />
             <nhs-page-title title="@ViewBag.Title"
-                            caption="@Model.OrganisationName"
-                            advice="If you want to order both, select Catalogue Solution and you'll be able to add Associated Services afterwards." />
+                            caption="@Model.OrganisationName" />
 
             <form method="post">
                 <input type="hidden" asp-for="OrganisationName" />
@@ -21,7 +20,7 @@
                                        value-name="Value"
                                        hint-name="Advice" />
                 </nhs-fieldset-form-label>
-
+                <br />
                 <nhs-submit-button />
             </form>
         </div>

@@ -78,6 +78,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddSolutionDetailsAndDescription();
 
             AdminPages.AddSolutionInteroperability(ProviderOrConsumer.Provider);
+
+            AdminPages.AddSolutionImplementation();
+
+            AdminPages.AddSolutionApplicationTypes();
         }
 
         [Fact]

@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
     public interface ISupplierService
     {
-        public Task<List<Supplier>> GetActiveSuppliers(OrderType orderType);
+        public Task<List<Supplier>> GetActiveSuppliers(OrderType orderType, string selectedFrameworkId);
 
         public Task<bool> HasActiveSuppliers(OrderType orderType);
 
@@ -16,7 +16,5 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         public Task AddOrderSupplier(CallOffId callOffId, string internalOrgId, int supplierId);
 
         public Task AddOrUpdateOrderSupplierContact(CallOffId callOffId, string internalOrgId, SupplierContact contact);
-
-        public Task SetSupplierSection(Order order, Supplier supplier, Contact contact);
     }
 }
