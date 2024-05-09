@@ -123,7 +123,7 @@ public class CompetitionsDashboardController : Controller
         if (filterDetails == null)
             return RedirectToAction(nameof(SelectFilter), new { internalOrgId });
 
-        var model = new ReviewFilterModel(filterDetails, organisation.InternalIdentifier, frameworks, solutions.ToList(), true, filterIds)
+        var model = new ReviewFilterModel(filterDetails, organisation.InternalIdentifier, solutions.ToList(), true, filterIds)
         {
             BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
             Caption = organisation.Name,
@@ -155,7 +155,7 @@ public class CompetitionsDashboardController : Controller
                     new { filterId, Area = typeof(ManageFiltersController).AreaName() }) :
                 Url.Action(nameof(ReviewFilter), new { internalOrgId, filterId });
 
-        frameworkId = (await filterService.GetFilterIds(organisation.Id, filterId))?.FrameworkId ?? frameworkId;
+        frameworkId = frameworkId ?? (await filterService.GetFilterIds(organisation.Id, filterId))?.FrameworkId;
 
         if (string.IsNullOrWhiteSpace(frameworkId))
         {

@@ -177,14 +177,13 @@ public static class CompetitionsDashboardControllerTests
     public static async Task ReviewFilter_ValidFilter_ReturnsViewWithModel(
         Organisation organisation,
         int filterId,
-        List<FrameworkFilterInfo> frameworks,
         List<CatalogueItem> filterResults,
+        Solution solution,
         FilterDetailsModel filterDetailsModel,
         FilterIdsModel filterIds,
         [Frozen] IOrganisationsService organisationsService,
         [Frozen] IManageFiltersService filtersService,
         [Frozen] ISolutionsFilterService solutionsFilterService,
-        [Frozen] IFrameworkService frameworkService,
         CompetitionsDashboardController controller)
     {
         organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
@@ -193,11 +192,11 @@ public static class CompetitionsDashboardControllerTests
 
         filtersService.GetFilterIds(organisation.Id, filterId).Returns(Task.FromResult(filterIds));
 
+        filterResults.ForEach(x => x.Solution = solution);
+
         solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds).Returns(filterResults);
 
-        frameworkService.GetFrameworksWithPublishedCatalogueItems().Returns(frameworks);
-
-        var expected = new ReviewFilterModel(filterDetailsModel, organisation.InternalIdentifier, frameworks, filterResults, true, filterIds)
+        var expected = new ReviewFilterModel(filterDetailsModel, organisation.InternalIdentifier, filterResults, true, filterIds)
         {
             Caption = organisation.Name,
             OrganisationName = organisation.Name,

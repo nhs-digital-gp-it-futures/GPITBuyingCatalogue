@@ -170,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (filterDetails == null || filterIds == null)
                 return NotFound();
 
-            var model = new ReviewFilterModel(filterDetails, organisation.InternalIdentifier, frameworks, solutions.ToList(), false, filterIds)
+            var model = new ReviewFilterModel(filterDetails, organisation.InternalIdentifier, solutions.ToList(), false, filterIds)
             {
                 BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
                 Caption = organisation.Name,

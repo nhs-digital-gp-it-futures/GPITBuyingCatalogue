@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists;
+using NuGet.Frameworks;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
@@ -19,27 +21,20 @@ public class ReviewFilterModel : NavBaseModel
         FilterIds = filterIds;
     }
 
-    public ReviewFilterModel(FilterDetailsModel filterDetails, string internalOrgId, List<FrameworkFilterInfo> frameworks, List<CatalogueItem> filterResults, bool inCompetition, FilterIdsModel filterIds = null)
+    public ReviewFilterModel(FilterDetailsModel filterDetails, string internalOrgId, List<CatalogueItem> filterResults, bool inCompetition, FilterIdsModel filterIds = null)
         : this(filterDetails, filterIds)
     {
         ResultsCount = filterResults.Count;
         InCompetition = inCompetition;
         ResultsForFrameworks = new List<ResultsForFrameworkModel>();
-        if (filterIds.FrameworkId == null)
+
+        var selectedFrameworks = filterResults
+            .SelectMany(x => x.Solution.FrameworkSolutions)
+            .GroupBy(x => (x.Framework.ShortName, x.Framework.Id));
+
+        foreach (var framework in selectedFrameworks)
         {
-            foreach (var framework in frameworks)
-            {
-                var results = filterResults.Where(x => x.Solution.CatalogueItem.Solution.FrameworkSolutions.Any(x => x.FrameworkId == framework.Id)).ToList();
-                if (results.Any())
-                {
-                    ResultsForFrameworks.Add(new ResultsForFrameworkModel(internalOrgId, filterDetails.Id, framework, results, !inCompetition));
-                }
-            }
-        }
-        else
-        {
-            var framework = frameworks.Where(x => x.Id == filterIds.FrameworkId).FirstOrDefault();
-            ResultsForFrameworks.Add(new ResultsForFrameworkModel(internalOrgId, filterDetails.Id, framework, filterResults, !inCompetition));
+            ResultsForFrameworks.Add(new ResultsForFrameworkModel(internalOrgId, filterDetails.Id, framework.Select(x => x.FrameworkId).FirstOrDefault(), framework.Select(x => x.Framework.ShortName).FirstOrDefault(), framework.Select(x => x.Solution.CatalogueItem).ToList(), !inCompetition));
         }
     }
 

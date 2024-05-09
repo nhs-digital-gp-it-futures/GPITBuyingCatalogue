@@ -14,13 +14,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
         public ResultsForFrameworkModel(
             string internalOrgId,
             int filterId,
-            FrameworkFilterInfo framework,
+            string frameworkId,
+            string frameworkName,
             List<CatalogueItem> catalogueItems,
             bool fromFilter)
         {
             InternalOrgId = internalOrgId;
             FilterId = filterId;
-            Framework = framework;
+            FrameworkId = frameworkId;
+            FrameworkName = frameworkName;
             CatalogueItems = catalogueItems;
             FromFilter = fromFilter;
         }
@@ -30,6 +32,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
         public int FilterId { get; set; }
 
         public FrameworkFilterInfo Framework { get; set; }
+        public string FrameworkId { get; set; }
+
+        public string FrameworkName { get; set; }
 
         public List<CatalogueItem> CatalogueItems { get; init; }
 

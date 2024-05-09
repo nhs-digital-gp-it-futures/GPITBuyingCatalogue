@@ -240,8 +240,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             string primaryOrganisationInternalId,
             int filterId,
             FilterDetailsModel filterDetailsModel,
-            List<FrameworkFilterInfo> frameworks,
             List<CatalogueItem> filterResults,
+            Solution solution,
             FilterIdsModel filterIds,
             Organisation organisation,
             [Frozen] IOrganisationsService organisationsService,
@@ -259,9 +259,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             manageFiltersService.GetFilterIds(organisation.Id, filterId).Returns(Task.FromResult(filterIds));
 
-            solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds).Returns(filterResults);
+            filterResults.ForEach(x => x.Solution = solution);
 
-            frameworkService.GetFrameworksWithPublishedCatalogueItems().Returns(frameworks);
+            solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds).Returns(filterResults);
 
             var controller = CreateController(
                 organisationsService,
@@ -279,7 +279,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ReviewFilterModel(filterDetailsModel, organisation.InternalIdentifier, frameworks, filterResults, false, filterIds)
+            var expected = new ReviewFilterModel(filterDetailsModel, organisation.InternalIdentifier, filterResults, false, filterIds)
             {
                 Caption = organisation.Name,
                 OrganisationName = organisation.Name,
