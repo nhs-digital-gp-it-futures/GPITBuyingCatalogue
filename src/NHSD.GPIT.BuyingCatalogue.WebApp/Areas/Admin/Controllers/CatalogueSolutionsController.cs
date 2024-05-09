@@ -162,7 +162,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                         Name = $"{f.ShortName} Framework",
                         FrameworkId = f.Id,
                         Selected = sol is not null,
-                        IsFoundation = sol?.IsFoundation ?? false,
                     };
                 }).ToList();
 
