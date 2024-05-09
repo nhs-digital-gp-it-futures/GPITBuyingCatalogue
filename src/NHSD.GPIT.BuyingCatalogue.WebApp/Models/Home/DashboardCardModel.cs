@@ -36,4 +36,3 @@ public class DashboardCardModel : ActionCardModel
 
     public ColumnWidth ColumnWidth { get; set; } = ColumnWidth.OneThird;
 }
-
