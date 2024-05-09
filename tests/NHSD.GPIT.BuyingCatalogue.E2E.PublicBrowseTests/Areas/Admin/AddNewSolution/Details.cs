@@ -76,7 +76,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             var solutions = solution.Solution.FrameworkSolutions.ToList();
             solutions[0].FrameworkId.Should().Be("NHSDGP001");
-            solutions[0].IsFoundation.Should().Be(true);
         }
 
         [Fact]
@@ -99,7 +98,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             var solutions = solution.Solution.FrameworkSolutions.ToList();
             solutions[0].FrameworkId.Should().Be("DFOCVC001");
-            solutions[0].IsFoundation.Should().Be(false);
         }
 
         [Fact]
@@ -118,7 +116,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
 
             var solutions = solution.Solution.FrameworkSolutions.ToList();
             solutions[0].FrameworkId.Should().Be("NHSDGP001");
-            solutions[0].IsFoundation.Should().Be(false);
         }
 
         public void Dispose()
@@ -138,7 +135,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Admin.AddNewSolution
             catalogueItem.Solution.FrameworkSolutions.Add(new EntityFramework.Catalogue.Models.FrameworkSolution
             {
                 FrameworkId = framework,
-                IsFoundation = false,
                 LastUpdated = DateTime.Now,
                 SolutionId = catalogueItem.Id,
             });

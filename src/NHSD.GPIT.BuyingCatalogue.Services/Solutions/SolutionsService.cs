@@ -295,12 +295,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     frameworks.Add(new FrameworkSolution
                     {
                         FrameworkId = framework.FrameworkId,
-                        IsFoundation = framework.IsFoundation,
                     });
-                }
-                else
-                {
-                    existingFramework.IsFoundation = framework.IsFoundation;
                 }
             }
 
@@ -501,8 +496,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<CatalogueItemId> AddCatalogueSolution(CreateSolutionModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             model.Frameworks.ValidateNotNull(nameof(CreateSolutionModel.Frameworks));
 
@@ -515,7 +509,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 frameworkSolutions.Add(new FrameworkSolution
                 {
                     FrameworkId = framework.FrameworkId,
-                    IsFoundation = framework.IsFoundation,
                 });
             }
 
