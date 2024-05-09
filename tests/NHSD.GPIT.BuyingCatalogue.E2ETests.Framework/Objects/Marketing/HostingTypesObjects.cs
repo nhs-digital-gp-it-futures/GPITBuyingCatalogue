@@ -14,6 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Marketing
 
         public static By DeleteHostingTypeCancelLink => By.LinkText("Cancel");
 
-        public static By PublicCloudEditLink(string type) => By.XPath($"//a[contains(@href, '/hosting-type/hosting-type-" + type + "')]");
+        public static By HostingTypeEditLink(string type) => By.XPath($"//a[contains(@href, '/hosting-type/hosting-type-" + type + "')]");
     }
 }

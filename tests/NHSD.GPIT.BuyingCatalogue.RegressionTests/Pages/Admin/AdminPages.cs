@@ -35,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             Desktop = new Desktop(driver, commonActions);
             SolutionHostingTypes = new SolutionHostingTypes(driver, commonActions);
             PublicCloud = new PublicCloud(driver, commonActions);
+            PrivateCloud = new PrivateCloud(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -74,6 +75,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal SolutionHostingTypes SolutionHostingTypes { get; }
 
         internal PublicCloud PublicCloud { get; }
+
+        internal PrivateCloud PrivateCloud { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -123,6 +126,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             SolutionHostingTypes.AddHostingType(solutionId);
             SolutionHostingTypes.HostingTypeDashboard();
             PublicCloud.AddHostingTypePublicCloud();
+            SolutionHostingTypes.HostingTypeDashboard();
+            PrivateCloud.AddHostingTypePrivateCloud();
         }
 
         private string GetSolutionID()
