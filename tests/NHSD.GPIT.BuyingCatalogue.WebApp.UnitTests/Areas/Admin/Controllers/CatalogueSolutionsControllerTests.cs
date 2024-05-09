@@ -506,7 +506,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_Details_WithFrameworkSolutions_ReturnsViewWithExpectedModel(
-            bool isFoundation,
             [Frozen] ISolutionsService mockSolutionService,
             [Frozen] ISuppliersService mockSuppliersService,
             CatalogueSolutionsController controller,
@@ -523,7 +522,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 new FrameworkSolution
                 {
                     FrameworkId = frameworkId,
-                    IsFoundation = isFoundation,
                 });
 
             solution.IsPilotSolution = true;

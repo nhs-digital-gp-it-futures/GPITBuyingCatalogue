@@ -17,9 +17,4 @@
             <partial name="DisplayTemplates/TableListCell" model="((IEnumerable<Framework>)Model.Frameworks).Select(x => x.ShortName).ToArray()" />
         </p>
     </nhs-summary-list-row>
-    <nhs-summary-list-row label-text="Foundation Solution">
-        <p>
-            @Model.IsFoundation
-        </p>
-    </nhs-summary-list-row>
 </nhs-summary-list>
