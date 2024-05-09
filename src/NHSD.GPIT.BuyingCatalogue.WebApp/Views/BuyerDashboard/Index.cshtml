@@ -4,7 +4,8 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Dashboard
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels
 @model BuyerDashboardModel
 @{
@@ -16,33 +17,6 @@
         <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName"/>
     </div>
 </div>
-
-@if (User.IsAccountManager())
-{
-    <div class="nhsuk-grid-row">
-        <div class="nhsuk-grid-column-full">
-            <h2 class="nhsuk-heading-m">Organisation management</h2>
-            <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
-                <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
-                    <nhs-card-v2>
-                        <nhs-card-content>
-                            <h3 class="nhsuk-card__heading nhsuk-heading-s">
-                                Manage organisation
-                                <span class="nhsuk-caption-m nhsuk-caption--bottom">
-                                    Add or edit user accounts and manage organisations that can act on your behalf.
-                                </span>
-                            </h3>
-                            <p class="nhsuk-body">
-                                <a class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@(nameof(ManageAccountController.Index))" asp-controller="@(typeof(ManageAccountController).ControllerName())" asp-area="@(typeof(ManageAccountController).AreaName())" aria-label="Manage organisation">Manage organisation</a>
-                            </p>
-                        </nhs-card-content>
-                    </nhs-card-v2>
-                </li>
-
-            </ul>
-        </div>
-    </div>
-}
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
