@@ -3,5 +3,5 @@
 public enum ColumnWidth
 {
     OneThird,
-    Half
+    Half,
 }
