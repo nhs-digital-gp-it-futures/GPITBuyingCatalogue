@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.NominateOrganisation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.NominateOrganisation;
 using Xunit;
@@ -9,9 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.NominateOrganisa
     public static class NominateOrganisationDetailsModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_OrganisationNameEmpty_ThrowsValidationError(
             string inputValue,
             NominateOrganisationDetailsModel model,
@@ -26,27 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.NominateOrganisa
         }
 
         [Theory]
-        [CommonAutoData]
-        public static void Validate_PrivacyPolicyNotChecked_ThrowsValidationError(
-            NominateOrganisationDetailsModel model,
-            NominateOrganisationDetailsModelValidator validator)
-        {
-            model.HasReadPrivacyPolicy = false;
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(m => m.HasReadPrivacyPolicy)
-                .WithErrorMessage(NominateOrganisationDetailsModelValidator.HasReadPrivacyPolicyErrorMessage);
-        }
-
-        [Theory]
-        [CommonAutoData]
+        [MockInlineAutoData]
         public static void Validate_EverythingOk_NoErrors(
             NominateOrganisationDetailsModel model,
             NominateOrganisationDetailsModelValidator validator)
         {
-            model.HasReadPrivacyPolicy = true;
-
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();

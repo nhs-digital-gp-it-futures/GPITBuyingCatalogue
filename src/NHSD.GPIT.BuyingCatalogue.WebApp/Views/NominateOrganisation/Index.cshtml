@@ -1,44 +1,30 @@
-﻿@{
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.NominateOrganisation.NominateOrganisationDetailsModel
+@{
+    Layout = "Layouts/_AllBannersLayout";
     ViewBag.Title = "Nominate an organisation to create orders on your behalf";
-    var backLinkModel = new NavBaseModel { BackLink = "/", BackLinkText = "Go back to homepage"};
 }
 
-<partial name="Partials/_BackLink" model="@backLinkModel" />
+<partial name="Partials/_BackLink" model="@Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
-                        advice="Get support procuring IT systems from the Buying Catalogue." />
-        <hr />
-        <p>
-            You can nominate an organisation registered on the Buying Catalogue to create orders on your behalf using our online form. You’ll need to provide the name of the organisation you're nominating and its ODS code if you know it.
-        </p>
-        <p>
-            We’ll send you an email to confirm this has been set up and then registered users from that organisation will be able to create orders for you.
-        </p>
-        <p>
-            The Buying Catalogue Team aims to respond to nomination requests within 5 working days.
-        </p>
-        <p>
-            If for any reason the button does not work, you can send your details to buying.catalogue@nhs.net with the subject line: Buying Catalogue nomination request.
-        </p>
-        <br />
-        <vc:nhs-action-link url="@Url.Action(
-                                     nameof(NominateOrganisationController.Details),
-                                     typeof(NominateOrganisationController).ControllerName())"
-                            text="Nominate an organisation") />
+                        advice="Provide the following information to nominate an organisation. The Buying Catalogue Team will respond to your request within 5 working days." />
 
-        <p>
-            If you need advice about using the Buying Catalogue or procuring IT systems, contact the National Commercial and Procurement Hub.
-        </p>
-        <br />
-        <vc:nhs-action-link url="@Url.Action(
-                                     nameof(ProcurementHubController.Index),
-                                     typeof(ProcurementHubController).ControllerName(),
-                                     new { returnUrl = Url.Action(
-                                         nameof(NominateOrganisationController.Index),
-                                         typeof(NominateOrganisationController).ControllerName()),
-                                     })"
-                            text="Get procurement support"  />
-        <br/>
+        <form method="post">
+            <div class="nhsuk-u-margin-bottom-9">
+                <nhs-input asp-for="OrganisationName"
+                           label-text="Name of organisation you're nominating"
+                           label-hint="We currently only support buyers from Integrated Care Boards (ICBs) and Commissioning Support Units (CSUs)." />
+                <nhs-input asp-for="OdsCode"
+                           label-text="ODS code for organisation you're nominating (optional)"
+                           label-hint="Provide the ODS code for the organisation you're nominating if you know it." />
+            </div>
+
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="BackLinkText" />
+
+            <nhs-submit-button text="Submit nomination request" />
+        </form>
     </div>
 </div>

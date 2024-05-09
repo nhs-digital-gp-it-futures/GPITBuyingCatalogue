@@ -1,17 +1,17 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.NominateOrganisation;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(NominateOrganisationController).GetConstructors();
 
@@ -36,40 +36,77 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_ReturnsDefaultView(
-            [Frozen] Mock<INominateOrganisationService> mockNominateOrganisationService,
+            [Frozen] INominateOrganisationService nominateOrganisationService,
             NominateOrganisationController systemUnderTest)
         {
-            mockNominateOrganisationService
-                .Setup(x => x.IsGpPractice(It.IsAny<int>()))
-                .ReturnsAsync(false);
+            nominateOrganisationService.IsGpPractice(Arg.Any<int>()).Returns(false);
 
             var result = await systemUnderTest.Index();
 
-            mockNominateOrganisationService.VerifyAll();
+            await nominateOrganisationService.Received().IsGpPractice(Arg.Any<int>());
             Assert.Null(((ViewResult)result).ViewName);
+            Assert.IsAssignableFrom<NominateOrganisationDetailsModel>(((ViewResult)result).Model);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_GP_Redirects(
-            [Frozen] Mock<INominateOrganisationService> mockNominateOrganisationService,
+            [Frozen] INominateOrganisationService nominateOrganisationService,
             NominateOrganisationController systemUnderTest)
         {
-            mockNominateOrganisationService
-                .Setup(x => x.IsGpPractice(It.IsAny<int>()))
-                .ReturnsAsync(true);
+            nominateOrganisationService.IsGpPractice(Arg.Any<int>()).Returns(true);
 
             var result = await systemUnderTest.Index() as RedirectToActionResult;
 
-            mockNominateOrganisationService.VerifyAll();
+            await nominateOrganisationService.Received().IsGpPractice(Arg.Any<int>());
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(NominateOrganisationController.Unavailable));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
+        public static async Task Post_Index_InvalidModelState_ReturnsDefaultView(
+            NominateOrganisationController systemUnderTest)
+        {
+            systemUnderTest.ModelState.AddModelError("test", "test");
+
+            var result = await systemUnderTest.Index(new NominateOrganisationDetailsModel());
+
+            Assert.IsAssignableFrom<ViewResult>(result);
+            Assert.Null(((ViewResult)result).ViewName);
+            Assert.IsAssignableFrom<NominateOrganisationDetailsModel>(((ViewResult)result).Model);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_Index_ValidModelState_RedirectsToConfirmation(
+            NominateOrganisationDetailsModel expected,
+            [Frozen] INominateOrganisationService nominateOrganisationService,
+            NominateOrganisationController systemUnderTest)
+        {
+            NominateOrganisationRequest actual = null;
+
+            nominateOrganisationService.NominateOrganisation(Arg.Any<int>(), Arg.Any<NominateOrganisationRequest>())
+                    .Returns(Task.CompletedTask)
+                    .AndDoes(callInfo =>
+                    {
+                        actual = callInfo.Arg<NominateOrganisationRequest>();
+                    });
+            var result = await systemUnderTest.Index(expected);
+
+            await nominateOrganisationService.Received().NominateOrganisation(Arg.Any<int>(), Arg.Any<NominateOrganisationRequest>());
+
+            result.As<RedirectToActionResult>().Should().NotBeNull();
+            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(NominateOrganisationController.Confirmation));
+
+            actual.OrganisationName.Should().Be(expected.OrganisationName);
+            actual.OdsCode.Should().Be(expected.OdsCode);
+        }
+
+        [Theory]
+        [MockAutoData]
         public static void Get_Confirmation_ReturnsDefaultView(
             NominateOrganisationController systemUnderTest)
         {
@@ -80,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Unavailable_ReturnsDefaultView(
             NominateOrganisationController systemUnderTest)
         {
@@ -90,57 +127,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             result.Model.Should().NotBeNull();
             result.Model.Should().BeAssignableTo<NavBaseModel>();
             result.ViewName.Should().BeNull();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static void Get_Details_ReturnsDefaultView(
-            NominateOrganisationController systemUnderTest)
-        {
-            var result = systemUnderTest.Details();
-
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Null(((ViewResult)result).ViewName);
-            Assert.IsAssignableFrom<NominateOrganisationDetailsModel>(((ViewResult)result).Model);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_Details_InvalidModelState_ReturnsDefaultView(
-            NominateOrganisationController systemUnderTest)
-        {
-            systemUnderTest.ModelState.AddModelError("test", "test");
-
-            var result = await systemUnderTest.Details(new NominateOrganisationDetailsModel());
-
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Null(((ViewResult)result).ViewName);
-            Assert.IsAssignableFrom<NominateOrganisationDetailsModel>(((ViewResult)result).Model);
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Post_Details_ValidModelState_RedirectsToConfirmation(
-            NominateOrganisationDetailsModel expected,
-            [Frozen] Mock<INominateOrganisationService> mockNominateOrganisationService,
-            NominateOrganisationController systemUnderTest)
-        {
-            NominateOrganisationRequest actual = null;
-
-            mockNominateOrganisationService
-                .Setup(x => x.NominateOrganisation(It.IsAny<int>(), It.IsAny<NominateOrganisationRequest>()))
-                .Callback<int, NominateOrganisationRequest>((_, x) => actual = x)
-                .Returns(Task.CompletedTask);
-
-            var result = await systemUnderTest.Details(expected);
-
-            mockNominateOrganisationService.VerifyAll();
-
-            result.As<RedirectToActionResult>().Should().NotBeNull();
-            result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(NominateOrganisationController.Confirmation));
-
-            actual.OrganisationName.Should().Be(expected.OrganisationName);
-            actual.OdsCode.Should().Be(expected.OdsCode);
         }
     }
 }

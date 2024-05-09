@@ -30,23 +30,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                     nameof(Unavailable));
             }
 
-            return View();
-        }
-
-        [HttpGet("details")]
-        public IActionResult Details()
-        {
             var model = new NominateOrganisationDetailsModel
             {
-                BackLink = Url.Action(nameof(Index)),
+                BackLink = Url.Action(nameof(BuyerDashboardController.Index), typeof(BuyerDashboardController).ControllerName()),
                 BackLinkText = "Go back",
             };
 
             return View(model);
         }
 
-        [HttpPost("details")]
-        public async Task<IActionResult> Details(NominateOrganisationDetailsModel viewModel)
+        [HttpPost]
+        public async Task<IActionResult> Index(NominateOrganisationDetailsModel viewModel)
         {
             if (!ModelState.IsValid)
                 return View(viewModel);
