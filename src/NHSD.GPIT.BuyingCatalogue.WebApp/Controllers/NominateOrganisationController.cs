@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models.NominateOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
-    [Authorize]
+    [Authorize("Buyer")]
     [Route("nominate-organisation")]
     public class NominateOrganisationController : Controller
     {
