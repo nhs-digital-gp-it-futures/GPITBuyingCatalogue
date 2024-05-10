@@ -391,7 +391,7 @@
             {
                 if (Model.Order.OrderStatus == OrderStatus.InProgress)
                 {
-                    <vc:nhs-secondary-button text="Continue"
+                    <vc:nhs-secondary-button text="Save and continue"
                                              type="Primary"
                                              url="@Url.Action(
                                                       nameof(OrderController.Order),
@@ -400,7 +400,7 @@
                 }
                 else
                 {
-                    <vc:nhs-secondary-button text="Continue"
+                    <vc:nhs-secondary-button text="Save and continue"
                                              type="Primary"
                                              url="@Url.Action(
                                                       nameof(DashboardController.Organisation),
