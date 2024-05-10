@@ -46,7 +46,6 @@ public class CardV2TagHelper : TagHelper
             cardContext.BodyContent.AddCssClass("nhs-card-v2__content-with-footer");
         }
 
-
         output.Content
             .AppendHtml(cardContext.BodyContent)
             .AppendHtml(cardContext.FooterContent);
