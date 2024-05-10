@@ -7,17 +7,17 @@
 }
 @if (!string.IsNullOrWhiteSpace(Model.Title) && !string.IsNullOrWhiteSpace(Model.Caption))
 {
-    <h1>
-        @Model.Title
-        <span class="nhsuk-caption-xl nhsuk-caption--bottom">
-            <span class="nhsuk-u-visually-hidden"> - </span>
+    <h1 class="nhsuk-u-margin-bottom-2">
+        <span class="nhsuk-caption-m nhsuk-caption--top">
             @Model.Caption
+            <span class="nhsuk-u-visually-hidden"> - </span>
         </span>
+        @Model.Title
     </h1>
 }
 @if (!string.IsNullOrWhiteSpace(Model.Advice))
 {
-    <p class="nhsuk-lede-text">@Model.Advice</p>
+    <p class="nhsuk-hint">@Model.Advice</p>
 }
 @if (!string.IsNullOrWhiteSpace(Model.AdditionalAdvice))
 {
