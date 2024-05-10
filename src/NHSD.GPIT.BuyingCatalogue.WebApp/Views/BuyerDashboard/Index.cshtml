@@ -5,7 +5,8 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Dashboard
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.AccountManagement.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels
 @model BuyerDashboardModel
 @{
@@ -18,13 +19,25 @@
     </div>
 </div>
 
+@if (User.IsAccountManager())
+{
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+            <h2 class="nhsuk-heading-m">Organisation management</h2>
+            <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
+                <partial name="_DashboardOverview" model="@(new DashboardCardModel("Manage organisation", "Add or edit user accounts and manage organisations that can act on your behalf.", Url.Action(nameof(ManageAccountController.Index), typeof(ManageAccountController).ControllerName(), new { area = typeof(ManageAccountController).AreaName() }), "Manage organisation", HeadingSize.Small, ColumnWidth.Half))"/>
+            </ul>
+        </div>
+    </div>
+}
+
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
         <h2 class="nhsuk-heading-m">Account overview</h2>
         <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
-            <partial name="_AccountOverview" model="@(new ActionCardModel(Model.Orders.Count.ToString(), "orders", Url.Action(nameof(DashboardController.Index), typeof(DashboardController).ControllerName(), new { Area = typeof(DashboardController).AreaName() })))"/>
-            <partial name="_AccountOverview" model="@(new ActionCardModel(Model.Shortlists.Count.ToString(), "shortlists", Url.Action(nameof(ManageFiltersController.Index), typeof(ManageFiltersController).ControllerName(), new { Area = typeof(ManageFiltersController).AreaName() })))"/>
-            <partial name="_AccountOverview" model="@(new ActionCardModel(Model.Competitions.Count.ToString(), "competitions", Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { Area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId })))"/>
+            <partial name="_DashboardOverview" model="@(new DashboardCardModel(Model.Orders.Count.ToString(), "orders", Url.Action(nameof(DashboardController.Index), typeof(DashboardController).ControllerName(), new { Area = typeof(DashboardController).AreaName() }), "View orders"))"/>
+            <partial name="_DashboardOverview" model="@(new DashboardCardModel(Model.Shortlists.Count.ToString(), "shortlists", Url.Action(nameof(ManageFiltersController.Index), typeof(ManageFiltersController).ControllerName(), new { Area = typeof(ManageFiltersController).AreaName() }), "View shortlists"))"/>
+            <partial name="_DashboardOverview" model="@(new DashboardCardModel(Model.Competitions.Count.ToString(), "competitions", Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { Area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId }), "View competitions"))"/>
         </ul>
     </div>
 </div>
