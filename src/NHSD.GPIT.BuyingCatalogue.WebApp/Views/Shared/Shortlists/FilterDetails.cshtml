@@ -14,7 +14,7 @@
 @{
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
     ViewBag.Title = Model.FilterDetails.Name;
-    var hasResults = @Model.ResultsCount > 0;
+    var hasResults = Model.ResultsCount > 0;
 }
 
 <partial name="Partials/_BackLink" model="@Model" />
@@ -48,10 +48,11 @@
                                       typeof(ManageFiltersController).ControllerName())"
                                                      type="Secondary"
                                                      text="Return to shortlists" />
-                            <a href="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
-                                                    new { filterId = Model.FilterDetails.Id })" style="color: #CC0000; " class=" modal-link-adjuster nhsuk-u-margin-left-3" draggable="false">
-                                Delete this shortlist
-                            </a>
+                            <span class="modal-link-adjuster nhsuk-u-margin-left-3" draggable="false">
+                                <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
+                                                        new { filterId = Model.FilterDetails.Id })"
+                                                      text="Delete this shortlist" />
+                            </span>
                         </div>
                         
                     }
@@ -59,7 +60,7 @@
                     {
                         foreach (var resultsForFrameworkModel in Model.ResultsForFrameworks)
                         {
-                            <partial name="_ResultsForFramework" model="resultsForFrameworkModel"/>
+                            <partial name="Shortlists/_ResultsForFramework" model="resultsForFrameworkModel"/>
                         }
                     }
                 }

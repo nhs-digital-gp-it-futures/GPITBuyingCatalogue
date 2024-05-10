@@ -172,6 +172,27 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionWithServicesAndFramework_ReturnsCompetition(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var result = await service.GetCompetitionWithServicesAndFramework(organisation.InternalIdentifier, competition.Id);
+
+        result.Should().BeEquivalentTo(competition, opt => opt.Excluding(x => x.Organisation));
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static async Task GetCompetitionForResults_ReturnsCompetition(
         Organisation organisation,
         Competition competition,

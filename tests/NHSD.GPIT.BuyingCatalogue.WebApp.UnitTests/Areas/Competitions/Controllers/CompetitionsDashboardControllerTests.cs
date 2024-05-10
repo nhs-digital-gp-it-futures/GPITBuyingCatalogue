@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -7,7 +8,6 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using LinqKit;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
@@ -19,8 +19,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.Services.Framework;
-using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
@@ -229,13 +227,17 @@ public static class CompetitionsDashboardControllerTests
         Organisation organisation,
         int filterId,
         string frameworkId,
+        EntityFramework.Catalogue.Models.Framework framework,
         IList<CatalogueItem> catalogueItems,
         [Frozen] IOrganisationsService organisationsService,
         [Frozen] IManageFiltersService filterService,
+        [Frozen] IFrameworkService frameworkService,
         [Frozen] ISolutionsFilterService solutionsFilterService,
         CompetitionsDashboardController controller)
     {
         organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
+
+        frameworkService.GetFramework(frameworkId).Returns(framework);
 
         var filterIds = new FilterIdsModel() { FrameworkId = frameworkId };
         filterService.GetFilterIds(organisation.Id, filterId)

@@ -31,7 +31,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
 
         public int FilterId { get; set; }
 
-        public FrameworkFilterInfo Framework { get; set; }
         public string FrameworkId { get; set; }
 
         public string FrameworkName { get; set; }

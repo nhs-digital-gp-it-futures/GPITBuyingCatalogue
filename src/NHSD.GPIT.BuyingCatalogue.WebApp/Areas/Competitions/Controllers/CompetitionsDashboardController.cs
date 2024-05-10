@@ -131,7 +131,7 @@ public class CompetitionsDashboardController : Controller
             InExpander = true,
         };
 
-        return View("Views/Shared/Shortlists/FilterDetails.cshtml", model);
+        return View("Shortlists/FilterDetails", model);
     }
 
     [HttpPost("select-filter/{filterId:int}/review")]
@@ -157,7 +157,7 @@ public class CompetitionsDashboardController : Controller
 
         frameworkId = frameworkId ?? (await filterService.GetFilterIds(organisation.Id, filterId))?.FrameworkId;
 
-        if (string.IsNullOrWhiteSpace(frameworkId))
+        if (string.IsNullOrWhiteSpace(frameworkId) || (await frameworkService.GetFramework(frameworkId)) == null)
         {
             return Redirect(backlink);
         }
