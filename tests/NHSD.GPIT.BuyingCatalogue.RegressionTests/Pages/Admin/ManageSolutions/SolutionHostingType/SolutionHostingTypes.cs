@@ -31,5 +31,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
                 nameof(HostingTypesController.AddHostingType))
                 .Should().BeTrue();
         }
+
+        public void CatalogueSolutionDashboard()
+        {
+            CommonActions.ClickSave();
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.ManageCatalogueSolution))
+                .Should().BeTrue();
+        }
     }
 }

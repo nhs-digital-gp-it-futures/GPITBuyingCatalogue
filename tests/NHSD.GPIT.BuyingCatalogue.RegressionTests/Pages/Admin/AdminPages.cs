@@ -8,7 +8,6 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.Solu
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedEpics;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
@@ -36,6 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             SolutionHostingTypes = new SolutionHostingTypes(driver, commonActions);
             PublicCloud = new PublicCloud(driver, commonActions);
             PrivateCloud = new PrivateCloud(driver, commonActions);
+            Hybrid = new Hybrid(driver, commonActions);
+            OnPremise = new OnPremise(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -77,6 +78,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal PublicCloud PublicCloud { get; }
 
         internal PrivateCloud PrivateCloud { get; }
+
+        internal Hybrid Hybrid { get; }
+
+        internal OnPremise OnPremise { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -128,6 +133,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             PublicCloud.AddHostingTypePublicCloud();
             SolutionHostingTypes.HostingTypeDashboard();
             PrivateCloud.AddHostingTypePrivateCloud();
+            SolutionHostingTypes.HostingTypeDashboard();
+            Hybrid.AddHostingTypeHybrid();
+            SolutionHostingTypes.HostingTypeDashboard();
+            OnPremise.AddHostingTypeOnPremise();
+            SolutionHostingTypes.CatalogueSolutionDashboard();
         }
 
         private string GetSolutionID()

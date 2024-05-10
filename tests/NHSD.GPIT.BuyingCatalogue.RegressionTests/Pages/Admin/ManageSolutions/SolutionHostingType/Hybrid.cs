@@ -7,31 +7,32 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionHostingType
 {
-    public class PrivateCloud : PageBase
+    public class Hybrid : PageBase
     {
-        public PrivateCloud(IWebDriver driver, CommonActions commonActions)
+        public Hybrid(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }
 
-        public void AddHostingTypePrivateCloud()
+        public void AddHostingTypeHybrid()
         {
-            string privateCloud = HostingTypes.Private_cloud.ToString().Replace("_", " ");
-            CommonActions.ClickRadioButtonWithText(privateCloud);
+            string hybrid = HostingTypes.Hybrid.ToString();
+            CommonActions.ClickRadioButtonWithText(hybrid);
             CommonActions.ClickSave();
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(HostingTypesController),
-                nameof(HostingTypesController.PrivateCloud))
+                nameof(HostingTypesController.Hybrid))
                 .Should().BeTrue();
 
-            AddPrivateCloudDetails();
+            AddHybridDetails();
         }
 
-        public void AddPrivateCloudDetails()
+        public void AddHybridDetails()
         {
             TextGenerators.TextInputAddText(HostingTypesObjects.HostingType_Summary, 500);
-            TextGenerators.UrlInputAddText(HostingTypesObjects.HostingType_Link, 500);
+            TextGenerators.UrlInputAddText(HostingTypesObjects.HostingType_Link, 1000);
             TextGenerators.TextInputAddText(HostingTypesObjects.HostingType_HostingModel, 1000);
+            CommonActions.ClickFirstCheckbox();
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -39,8 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
                 nameof(HostingTypesController.HostingType))
                 .Should().BeTrue();
 
-            string privateCloudEditLink = HostingTypes.Private_cloud.ToString().Replace("_", "-");
-            CommonActions.ElementIsDisplayed(HostingTypesObjects.HostingTypeEditLink(privateCloudEditLink));
+            string hybridEditLink = HostingTypes.Hybrid.ToString();
+            CommonActions.ElementIsDisplayed(HostingTypesObjects.HostingTypeEditLink(hybridEditLink));
         }
     }
 }

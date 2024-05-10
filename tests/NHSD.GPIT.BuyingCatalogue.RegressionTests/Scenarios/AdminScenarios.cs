@@ -1,5 +1,4 @@
-﻿using Microsoft.SqlServer.Server;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin;
+﻿using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
