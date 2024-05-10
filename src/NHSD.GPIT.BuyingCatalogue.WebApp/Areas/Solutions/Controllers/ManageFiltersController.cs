@@ -165,7 +165,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var filterDetails = await manageFiltersService.GetFilterDetails(organisation.Id, filterId);
             var filterIds = await manageFiltersService.GetFilterIds(organisation.Id, filterId);
             var solutions = await solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds);
-            var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
 
             if (filterDetails == null || filterIds == null)
                 return NotFound();

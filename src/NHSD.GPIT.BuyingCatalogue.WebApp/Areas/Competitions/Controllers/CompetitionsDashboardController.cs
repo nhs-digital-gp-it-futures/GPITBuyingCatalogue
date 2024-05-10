@@ -118,7 +118,6 @@ public class CompetitionsDashboardController : Controller
         var filterDetails = await filterService.GetFilterDetails(organisation.Id, filterId);
         var filterIds = await manageFiltersService.GetFilterIds(organisation.Id, filterId);
         var solutions = await solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds);
-        var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
 
         if (filterDetails == null)
             return RedirectToAction(nameof(SelectFilter), new { internalOrgId });
@@ -155,8 +154,6 @@ public class CompetitionsDashboardController : Controller
                     new { filterId, Area = typeof(ManageFiltersController).AreaName() }) :
                 Url.Action(nameof(ReviewFilter), new { internalOrgId, filterId });
 
-        frameworkId = frameworkId ?? (await filterService.GetFilterIds(organisation.Id, filterId))?.FrameworkId;
-
         if (string.IsNullOrWhiteSpace(frameworkId) || (await frameworkService.GetFramework(frameworkId)) == null)
         {
             return Redirect(backlink);
@@ -173,7 +170,6 @@ public class CompetitionsDashboardController : Controller
         var model = new SaveCompetitionModel(internalOrgId, organisation.Name, frameworkId)
         {
             BackLink = backlink,
-            FrameworkId = frameworkId,
         };
 
         return View(model);
