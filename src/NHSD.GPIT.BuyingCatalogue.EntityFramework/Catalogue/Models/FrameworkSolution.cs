@@ -11,9 +11,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public CatalogueItemId SolutionId { get; set; }
 
-        [Obsolete("All solutions are foundation solutions so this will be removed as part of story #23333")]
-        public bool IsFoundation { get; set; }
-
         public DateTime LastUpdated { get; set; }
 
         public int? LastUpdatedBy { get; set; }

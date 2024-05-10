@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class SolutionModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_FrameworkNotValid_SetsModelErrorForListFrameworkModel(
             SolutionModelValidator validator,
             SolutionModel model)
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_FrameworkValid_NoErrorForFrameworkModel(
             SolutionModel model,
             SolutionModelValidator validator)
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmptySupplierId_SetsModelErrorForSupplierId(
             SolutionModel model,
             SolutionModelValidator validator)
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidSupplierId_NoModelErrorForSupplierId(
             SolutionModel model,
             SolutionModelValidator validator)
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SolutionNameNotValid_SetsModelError(
             SolutionModel model,
             SolutionModelValidator validator)
@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SolutionNameTooLong_SetsModelError(
             SolutionModel model,
             SolutionModelValidator validator)
@@ -97,16 +97,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AddSolutionNameAlreadyExists_SetsModelErrorForSolutionName(
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] ISolutionsService mockSolutionsService,
             SolutionModel model,
             SolutionModelValidator validator)
         {
             model.SolutionId = null;
 
-            mockSolutionsService.Setup(s => s.CatalogueSolutionExistsWithName(model.SolutionName, default))
-                .ReturnsAsync(true);
+            mockSolutionsService
+                .CatalogueSolutionExistsWithName(model.SolutionName, default)
+                .Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -114,14 +115,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EditSolutionNameAlreadyExists_SetsModelErrorForSolutionName(
-            [Frozen] Mock<ISolutionsService> mockSolutionsService,
+            [Frozen] ISolutionsService mockSolutionsService,
             SolutionModel model,
             SolutionModelValidator validator)
         {
-            mockSolutionsService.Setup(s => s.CatalogueSolutionExistsWithName(model.SolutionName, model.SolutionId.Value))
-                .ReturnsAsync(true);
+            mockSolutionsService
+                .CatalogueSolutionExistsWithName(model.SolutionName, model.SolutionId.Value)
+                .Returns(true);
 
             var result = validator.TestValidate(model);
 
