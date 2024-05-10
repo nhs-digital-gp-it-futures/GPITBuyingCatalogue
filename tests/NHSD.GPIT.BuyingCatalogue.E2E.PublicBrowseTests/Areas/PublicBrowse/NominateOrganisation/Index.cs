@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.TestBases;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.NominateOrganisation;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -31,8 +32,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.NominateOrganisa
             {
                 CommonActions.GoBackLinkDisplayed().Should().BeTrue();
                 CommonActions.ElementIsDisplayed(CommonSelectors.Header1).Should().BeTrue();
-                CommonActions.ElementIsDisplayed(NominateOrganisationObjects.ProcurementHubLink).Should().BeTrue();
-                CommonActions.ElementIsDisplayed(NominateOrganisationObjects.NominateAnOrganisationLink).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(NominateOrganisationObjects.OrganisationNameInput).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(NominateOrganisationObjects.OdsCodeInput).Should().BeTrue();
+                CommonActions.ElementIsDisplayed(CommonSelectors.CheckboxItem).Should().BeTrue();
+                CommonActions.GetNumberOfCheckBoxesDisplayed().Should().Be(1);
+                CommonActions.GetNumberOfSelectedCheckBoxes().Should().Be(0);
+                CommonActions.ElementIsDisplayed(CommonSelectors.SubmitButton).Should().BeTrue();
             });
         }
 
@@ -44,40 +49,44 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.PublicBrowse.NominateOrganisa
                 CommonActions.ClickGoBackLink();
 
                 CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(HomeController),
-                    nameof(HomeController.Index)).Should().BeTrue();
-            });
-        }
-
-        [Fact]
-        public void Index_ClickProcurementHubLink_ExpectedResult()
-        {
-            RunTest(() =>
-            {
-                CommonActions.ClickLinkElement(NominateOrganisationObjects.ProcurementHubLink);
-
-                CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(ProcurementHubController),
-                    nameof(ProcurementHubController.Index)).Should().BeTrue();
-
-                CommonActions.ClickGoBackLink();
-
-                CommonActions.PageLoadedCorrectGetIndex(
                     typeof(NominateOrganisationController),
                     nameof(NominateOrganisationController.Index)).Should().BeTrue();
             });
         }
 
         [Fact]
-        public void Index_ClickNominateOrganisationLink_ExpectedResult()
+        public void Index_NoInput_ThrowsError()
         {
             RunTest(() =>
             {
-                CommonActions.ClickLinkElement(NominateOrganisationObjects.NominateAnOrganisationLink);
+                CommonActions.ClickSave();
 
                 CommonActions.PageLoadedCorrectGetIndex(
                     typeof(NominateOrganisationController),
-                    nameof(NominateOrganisationController.Details)).Should().BeTrue();
+                    nameof(NominateOrganisationController.Index)).Should().BeTrue();
+
+                CommonActions.ErrorSummaryDisplayed().Should().BeTrue();
+                CommonActions.ErrorSummaryLinksExist().Should().BeTrue();
+
+                CommonActions.ElementShowingCorrectErrorMessage(
+                    NominateOrganisationObjects.OrganisationNameError,
+                    NominateOrganisationDetailsModelValidator.OrganisationNameErrorMessage).Should().BeTrue();
+            });
+        }
+
+        [Fact]
+        public void Index_ValidInput_ExpectedResult()
+        {
+            RunTest(() =>
+            {
+                TextGenerators.TextInputAddText(NominateOrganisationObjects.OrganisationNameInput, 10);
+                CommonActions.ClickCheckboxByLabel("I have read and understood the privacy policy");
+
+                CommonActions.ClickSave();
+
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(NominateOrganisationController),
+                    nameof(NominateOrganisationController.Confirmation)).Should().BeTrue();
             });
         }
 
