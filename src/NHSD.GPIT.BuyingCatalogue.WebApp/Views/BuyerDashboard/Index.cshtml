@@ -63,26 +63,14 @@
     </div>
 </div>
 
-<div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full">
-        <h2 class="nhsuk-heading-m">Organisation management</h2>
-        <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
-        <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
-            <nhs-card-v2>
-                <nhs-card-content>
-                    <h3 class="nhsuk-card__heading nhsuk-heading-m">
-                        Nominate organisation
-                        <span class="nhsuk-caption-m nhsuk-caption--bottom">
-                            <span class="nhsuk-u-visually-hidden"> - </span>
-                            Allow other organisations to create orders on your behalf
-                        </span>
-                    </h3>
-                    <p class="nhsuk-body">
-                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(NominateOrganisationController.Index), typeof(NominateOrganisationController).ControllerName(), new { Area = typeof(NominateOrganisationController).AreaName() })" aria-label="Nominate organisation">Nominate organisation</a>
-                    </p> 
-                </nhs-card-content>
-            </nhs-card-v2>
-        </li>
-        </ul>
+@if (!User.IsAccountManager())
+{
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+            <h2 class="nhsuk-heading-m">Organisation management</h2>
+            <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
+                <partial name="_DashboardOverview" model="@(new DashboardCardModel("Nominate organisation", "Allow other organisations to create orders on your behalf.", Url.Action(nameof(NominateOrganisationController.Index), typeof(NominateOrganisationController).ControllerName(), new { area = typeof(NominateOrganisationController).AreaName() }), "Nominate organisation", HeadingSize.Medium, ColumnWidth.Half))"/>
+            </ul>
         </div>
-</div>
+    </div>
+}

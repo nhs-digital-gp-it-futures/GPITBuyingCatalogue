@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
             var model = new NominateOrganisationDetailsModel
             {
-                BackLink = Url.Action(nameof(BuyerDashboardController.Index), typeof(BuyerDashboardController).ControllerName()),
+                BackLink = Url.Action(nameof(BuyerDashboardController.Index), typeof(BuyerDashboardController).ControllerName(), new { Area = typeof(BuyerDashboardController).AreaName(), internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() }),
                 BackLinkText = "Go back",
             };
 
