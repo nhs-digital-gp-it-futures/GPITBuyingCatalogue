@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -143,6 +142,7 @@ public class CompetitionSelectSolutionsController : Controller
 
     private async Task<IActionResult> HandleDirectAward(string internalOrgId, int competitionId)
     {
+        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
         await competitionsService.CompleteCompetition(internalOrgId, competitionId, true);
 
         return RedirectToAction(
@@ -150,10 +150,10 @@ public class CompetitionSelectSolutionsController : Controller
             typeof(OrderDescriptionController).ControllerName(),
             new
             {
-                // TODO: MJK set selectedFrameworkId - dependent on #23410
                 Area = typeof(OrderDescriptionController).AreaName(),
                 internalOrgId = internalOrgId,
-                orderType = CatalogueItemType.Solution,
+                orderType = OrderTypeEnum.Solution,
+                selectedFrameworkId = competition.FrameworkId,
             });
     }
 

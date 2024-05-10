@@ -149,7 +149,7 @@ public static class CompetitionSelectSolutionsControllerTests
     [MockAutoData]
     public static async Task Post_SelectSolutions_SingleDirectAward_RedirectsToOrderDescription(
         Organisation organisation,
-        int competitionId,
+        Competition competition,
         SelectSolutionsModel model,
         SolutionModel solution,
         [Frozen] ICompetitionsService competitionsService,
@@ -158,13 +158,27 @@ public static class CompetitionSelectSolutionsControllerTests
         model.Solutions = new() { solution };
         model.IsDirectAward = true;
 
-        var result = (await controller.SelectSolutions(organisation.InternalIdentifier, competitionId, model)).As<RedirectToActionResult>();
+        competitionsService
+            .GetCompetition(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
 
-        await competitionsService.Received(1).CompleteCompetition(organisation.InternalIdentifier, competitionId, true);
+        var result = (await controller.SelectSolutions(organisation.InternalIdentifier, competition.Id, model)).As<RedirectToActionResult>();
+
+        await competitionsService
+            .Received(1)
+            .CompleteCompetition(organisation.InternalIdentifier, competition.Id, true);
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(OrderDescriptionController.NewOrderDescription));
         result.ControllerName.Should().Be(typeof(OrderDescriptionController).ControllerName());
+        result.RouteValues.Should().BeEquivalentTo(
+            new Dictionary<string, object>()
+            {
+                ["Area"] = typeof(OrderDescriptionController).AreaName(),
+                ["InternalOrgId"] = organisation.InternalIdentifier,
+                ["orderType"] = CatalogueItemType.Solution,
+                ["selectedFrameworkId"] = competition.FrameworkId,
+            });
     }
 
     [Theory]
