@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 InExpander = true,
             };
 
-            return View("Views/Shared/Shortlists/FilterDetails.cshtml", model);
+            return View("Shortlists/FilterDetails", model);
         }
 
         [HttpGet("save-failed")]

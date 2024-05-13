@@ -50,7 +50,8 @@
                             {
                                 <span class="modal-link-adjuster nhsuk-u-margin-left-3" draggable="false">
                                     <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
-                                                        new { filterId = Model.FilterDetails.Id })"
+                                                        typeof(ManageFiltersController).ControllerName(),
+                                                        new { Area = typeof(ManageFiltersController).AreaName(), filterId = Model.FilterDetails.Id })"
                                                           text="Delete this shortlist" />
                                 </span>
                             }
@@ -78,7 +79,8 @@
             
         @if(hasResults && !Model.InCompetition){
             <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
-                                                        new { filterId = Model.FilterDetails.Id })"
+                                                typeof(ManageFiltersController).ControllerName(),
+                                                new { Area = typeof(ManageFiltersController).AreaName(), filterId = Model.FilterDetails.Id })"
                                   text="Delete shortlist" />
         }
     </div>
