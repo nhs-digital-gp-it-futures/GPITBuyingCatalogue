@@ -43,16 +43,17 @@
                         <hr class="nhsuk-u-padding-bottom-5 nhsuk-u-margin-bottom-5 nhsuk-u-margin-top-0">
                         <p>Due to changes on the Buying Catalogue, there are currently no results returned using the selected filters. This may change in future as a wider range of solutions are added.</p>
                         <div style="display: inline-block" class="nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-4">
-                            <vc:nhs-secondary-button url="@Url.Action(
-                                      nameof(ManageFiltersController.Index),
-                                      typeof(ManageFiltersController).ControllerName())"
+                            <vc:nhs-secondary-button url="@Model.BackLink"
                                                      type="Secondary"
                                                      text="Return to shortlists" />
-                            <span class="modal-link-adjuster nhsuk-u-margin-left-3" draggable="false">
-                                <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
+                            @if (!Model.InCompetition)
+                            {
+                                <span class="modal-link-adjuster nhsuk-u-margin-left-3" draggable="false">
+                                    <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
                                                         new { filterId = Model.FilterDetails.Id })"
-                                                      text="Delete this shortlist" />
-                            </span>
+                                                          text="Delete this shortlist" />
+                                </span>
+                            }
                         </div>
                         
                     }

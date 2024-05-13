@@ -124,7 +124,7 @@ public class CompetitionsDashboardController : Controller
 
         var model = new ReviewFilterModel(filterDetails, organisation.InternalIdentifier, solutions.ToList(), true, filterIds)
         {
-            BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
+            BackLink = Url.Action(nameof(SelectFilter), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId, Area = typeof(CompetitionsDashboardController).AreaName() }),
             Caption = organisation.Name,
             OrganisationName = organisation.Name,
             InExpander = true,

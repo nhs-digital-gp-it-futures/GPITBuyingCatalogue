@@ -32,10 +32,18 @@ public class ReviewFilterModel : NavBaseModel
             .SelectMany(x => x.Solution.FrameworkSolutions)
             .GroupBy(x => (x.Framework.ShortName, x.Framework.Id));
 
-        foreach (var framework in selectedFrameworks)
-        {
-            ResultsForFrameworks.Add(new ResultsForFrameworkModel(internalOrgId, filterDetails.Id, framework.Select(x => x.FrameworkId).FirstOrDefault(), framework.Select(x => x.Framework.ShortName).FirstOrDefault(), framework.Select(x => x.Solution.CatalogueItem).ToList(), !inCompetition));
-        }
+        if (!string.IsNullOrWhiteSpace(filterIds.FrameworkId))
+            selectedFrameworks = selectedFrameworks.Where(x => string.Equals(x.Key.Id, filterIds.FrameworkId));
+
+        ResultsForFrameworks = selectedFrameworks.Select(
+            x => new ResultsForFrameworkModel(
+                internalOrgId,
+                filterDetails.Id,
+                x.Key.Id,
+                x.Key.ShortName,
+                x.Select(y => y.Solution.CatalogueItem).ToList(),
+                !inCompetition))
+        .ToList();
     }
 
     public FilterDetailsModel FilterDetails { get; set; }
