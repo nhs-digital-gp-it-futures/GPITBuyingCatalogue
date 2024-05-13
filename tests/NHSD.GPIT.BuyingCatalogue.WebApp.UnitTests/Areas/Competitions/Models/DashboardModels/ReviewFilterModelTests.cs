@@ -103,6 +103,8 @@ public static class ReviewFilterModelTests
         FilterIdsModel filterIds)
     {
         filterResults.ForEach(x => x.Solution = solution);
+        filterIds.FrameworkId = null;
+
         var result = new ReviewFilterModel(filterDetails, internalOrgId, filterResults, inCompetition, filterIds);
 
         result.ResultsCount.Should().Be(filterResults.Count);
