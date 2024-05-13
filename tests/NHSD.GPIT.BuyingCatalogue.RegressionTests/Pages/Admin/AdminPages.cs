@@ -1,6 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.HostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType;
@@ -37,6 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             PrivateCloud = new PrivateCloud(driver, commonActions);
             Hybrid = new Hybrid(driver, commonActions);
             OnPremise = new OnPremise(driver, commonActions);
+            ListPrice = new ListPrice(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -82,6 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal Hybrid Hybrid { get; }
 
         internal OnPremise OnPremise { get; }
+
+        internal ListPrice ListPrice { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -138,6 +142,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             SolutionHostingTypes.HostingTypeDashboard();
             OnPremise.AddHostingTypeOnPremise();
             SolutionHostingTypes.CatalogueSolutionDashboard();
+        }
+
+        public void AddSolutionListPrice(ListPriceTypes listPriceTypes)
+        {
+            var solutionId = GetSolutionID();
+            ListPrice.AddListPrice(solutionId);
         }
 
         private string GetSolutionID()
