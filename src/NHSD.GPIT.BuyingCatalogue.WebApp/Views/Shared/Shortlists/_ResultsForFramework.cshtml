@@ -21,7 +21,7 @@
                     <a href="@Url.Action(
                         nameof(SolutionsController.Description),
                         typeof(SolutionsController).ControllerName(),
-                        new { solutionId = solution.Id})" class="nhsuk-link" target="_blank">@solution.Name</a>
+                        new { Area = typeof(SolutionsController).AreaName(), solutionId = solution.Id})" class="nhsuk-link" target="_blank">@solution.Name</a>
                     <span class="nhsuk-caption-m nhsuk-caption--bottom">
                         @solution.Supplier.Name
                     </span>

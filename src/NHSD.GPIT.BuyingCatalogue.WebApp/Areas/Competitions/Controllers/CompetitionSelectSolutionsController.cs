@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
@@ -70,7 +71,12 @@ public class CompetitionSelectSolutionsController : Controller
         SelectSolutionsModel model)
     {
         if (!ModelState.IsValid)
+        {
+            var competition = await competitionsService.GetCompetitionWithServicesAndFramework(internalOrgId, competitionId);
+            var filterDetails = await filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId);
+            model.ReviewFilter = new ReviewFilterModel(filterDetails) { InExpander = true };
             return View(model);
+        }
 
         if (model.HasSingleSolution())
         {
