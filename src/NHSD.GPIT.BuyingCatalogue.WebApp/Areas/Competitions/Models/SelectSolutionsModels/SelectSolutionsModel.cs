@@ -2,8 +2,10 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
 
@@ -16,7 +18,8 @@ public class SelectSolutionsModel : NavBaseModel
     public SelectSolutionsModel(
         string competitionName,
         IEnumerable<CompetitionSolution> competitionSolutions,
-        string frameworkName)
+        string frameworkName,
+        FilterDetailsModel filterDetails)
     {
         CompetitionName = competitionName;
         Solutions = competitionSolutions.Select(
@@ -24,6 +27,7 @@ public class SelectSolutionsModel : NavBaseModel
             .OrderBy(x => x.SolutionName)
             .ToList();
         FrameworkName = frameworkName;
+        ReviewFilter = new ReviewFilterModel(filterDetails) { InExpander = true };
     }
 
     public string CompetitionName { get; set; }
@@ -33,6 +37,8 @@ public class SelectSolutionsModel : NavBaseModel
     public string FrameworkName { get; set; }
 
     public bool? IsDirectAward { get; set; }
+
+    public ReviewFilterModel ReviewFilter { get; set; }
 
     public List<SelectOption<bool>> DirectAwardOptions => new()
     {
@@ -49,12 +55,4 @@ public class SelectSolutionsModel : NavBaseModel
     public bool HasNoSolutions() => !Solutions.Any();
 
     public bool HasSingleSolution() => Solutions.Count == 1;
-
-    public string GetAdvice() => Solutions switch
-    {
-        [] or null => "There were no results from your chosen filter.",
-        [not null] => "These are the results from your chosen filter.",
-        [..] =>
-            "These are the results from your chosen filter. You must provide a reason if any of the solutions listed are not taken through to your competition shortlist.",
-    };
 }

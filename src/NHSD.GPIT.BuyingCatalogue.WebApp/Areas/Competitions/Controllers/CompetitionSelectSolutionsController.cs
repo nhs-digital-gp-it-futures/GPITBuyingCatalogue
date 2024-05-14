@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
@@ -21,13 +22,16 @@ public class CompetitionSelectSolutionsController : Controller
 {
     private readonly ICompetitionsService competitionsService;
     private readonly IFrameworkService frameworkService;
+    private readonly IManageFiltersService filtersService;
 
     public CompetitionSelectSolutionsController(
         ICompetitionsService competitionsService,
-        IFrameworkService frameworkService)
+        IFrameworkService frameworkService,
+        IManageFiltersService filtersService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
         this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
+        this.filtersService = filtersService ?? throw new ArgumentNullException(nameof(filtersService));
     }
 
     [HttpGet("select-solutions")]
@@ -45,8 +49,9 @@ public class CompetitionSelectSolutionsController : Controller
 
         var availableSolutions = competition.CompetitionSolutions.Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId));
         var frameworkName = (await frameworkService.GetFramework(competition.FrameworkId)).ShortName;
+        var filterDetails = await filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId);
 
-        var model = new SelectSolutionsModel(competition.Name, availableSolutions, frameworkName)
+        var model = new SelectSolutionsModel(competition.Name, availableSolutions, frameworkName, filterDetails)
         {
             BackLinkText = "Go back to manage competitions",
             BackLink = Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId }),

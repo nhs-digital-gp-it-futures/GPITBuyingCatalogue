@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
@@ -34,11 +35,12 @@ public static class SelectSolutionsModelTests
         string competitionName,
         Solution solution,
         string frameworkName,
-        List<CompetitionSolution> competitionSolutions)
+        List<CompetitionSolution> competitionSolutions,
+        FilterDetailsModel filterDetailsModel)
     {
         competitionSolutions.ForEach(x => x.Solution = solution);
 
-        var model = new SelectSolutionsModel(competitionName, competitionSolutions, frameworkName);
+        var model = new SelectSolutionsModel(competitionName, competitionSolutions, frameworkName, filterDetailsModel);
 
         model.CompetitionName.Should().Be(competitionName);
         model.Solutions.Should().HaveCount(competitionSolutions.Count);
@@ -64,17 +66,5 @@ public static class SelectSolutionsModelTests
         model.Solutions = solutions;
 
         model.HasSingleSolution().Should().BeFalse();
-    }
-
-    [Theory]
-    [CommonMemberAutoData(nameof(GetAdviceTestData))]
-    public static void GetAdvice_ReturnsExpectedAdvice(
-        List<SolutionModel> solutions,
-        string expectedAdvice,
-        SelectSolutionsModel model)
-    {
-        model.Solutions = solutions;
-
-        model.GetAdvice().Should().Be(expectedAdvice);
     }
 }

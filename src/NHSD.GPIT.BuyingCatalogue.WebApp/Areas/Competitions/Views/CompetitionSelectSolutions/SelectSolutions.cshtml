@@ -7,10 +7,10 @@
 <partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full-width">
+        <input type="hidden" asp-for="ReviewFilter" />
         <nhs-validation-summary RadioId="@nameof(Model.IsDirectAward)"/>
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.CompetitionName"
-                        advice="@Model.GetAdvice()"/>
+                        caption="@Model.CompetitionName"/>
 
         <nhs-card-v2>
             <nhs-card-content>
@@ -37,5 +37,10 @@
             </nhs-card-content>
         </nhs-card-v2>
 
+        <nhs-expander label-text="View filters used for this shortlist" open="false">
+            <p>These are the filters used in this shortlist:</p>
+
+            <partial name="Partials/_FilterDetailsPartial" model="Model.ReviewFilter" />
+        </nhs-expander>
     </div>
 </div>

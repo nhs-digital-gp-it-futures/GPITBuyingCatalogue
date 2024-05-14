@@ -15,6 +15,8 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
@@ -47,7 +49,9 @@ public static class CompetitionSelectSolutionsControllerTests
         List<CompetitionSolution> competitionSolutions,
         [Frozen] ICompetitionsService competitionsService,
         [Frozen] IFrameworkService frameworkService,
-        CompetitionSelectSolutionsController controller)
+        [Frozen] IManageFiltersService filtersService,
+        CompetitionSelectSolutionsController controller,
+        FilterDetailsModel filterDetails)
     {
         const bool shouldTrack = false;
 
@@ -65,7 +69,9 @@ public static class CompetitionSelectSolutionsControllerTests
         competitionsService.GetCompetitionWithServicesAndFramework(organisation.InternalIdentifier, competition.Id, shouldTrack)
             .Returns(Task.FromResult(competition));
 
-        var expectedModel = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions, framework.ShortName)
+        filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId).Returns(filterDetails);
+
+        var expectedModel = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions, framework.ShortName, filterDetails)
         {
             BackLinkText = "Go back to manage competitions",
         };
@@ -105,7 +111,9 @@ public static class CompetitionSelectSolutionsControllerTests
         EntityFramework.Catalogue.Models.Framework framework,
         [Frozen] ICompetitionsService competitionsService,
         [Frozen] IFrameworkService frameworkService,
-        CompetitionSelectSolutionsController controller)
+        [Frozen] IManageFiltersService filtersService,
+        CompetitionSelectSolutionsController controller,
+        FilterDetailsModel filterDetails)
     {
         const bool shouldTrack = false;
 
@@ -115,7 +123,9 @@ public static class CompetitionSelectSolutionsControllerTests
 
         frameworkService.GetFramework(competition.FrameworkId).Returns(framework);
 
-        var expectedModel = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions, framework.ShortName)
+        filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId).Returns(filterDetails);
+
+        var expectedModel = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions, framework.ShortName, filterDetails)
         {
             BackLinkText = "Go back to manage competitions",
         };

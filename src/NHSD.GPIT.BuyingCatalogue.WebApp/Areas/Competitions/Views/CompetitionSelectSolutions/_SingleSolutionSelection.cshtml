@@ -25,9 +25,35 @@
     <input type="hidden" asp-for="BackLink"/>
     <input type="hidden" asp-for="BackLinkText"/>
     <input type="hidden" asp-for="CompetitionName"/>
-    <input type="hidden" asp-for="@Model.Solutions[0].SolutionId"/>
-    <input type="hidden" asp-for="@Model.Solutions[0].SolutionName"/>
-    <input type="hidden" asp-for="@Model.Solutions[0].SupplierName"/>
+    <input type="hidden" asp-for="FrameworkName" />
+    <input type="hidden" asp-for="ReviewFilter.FilterDetails.Capabilities" />
+    <input type="hidden" asp-for="ReviewFilter.FilterDetails.FrameworkName" />
+    <input type="hidden" asp-for="ReviewFilter.InExpander" />
+    <input type="hidden" asp-for="@Model.Solutions[0].SolutionId" />
+    <input type="hidden" asp-for="@Model.Solutions[0].SolutionName" />
+    <input type="hidden" asp-for="@Model.Solutions[0].SupplierName" />
+    <input type="hidden" asp-for="@Model.Solutions[0].RequiredServices" />
+    <input type="hidden" asp-for="@Model.Solutions[0].Summary" />
+    @for (int i = 0; i < Model.ReviewFilter.FilterDetails.ApplicationTypes.Count; i++)
+    {
+        @Html.HiddenFor(m => m.ReviewFilter.FilterDetails.ApplicationTypes[i])
+    }
+    @for (int i = 0; i < Model.ReviewFilter.FilterDetails.HostingTypes.Count; i++)
+    {
+        @Html.HiddenFor(m => m.ReviewFilter.FilterDetails.HostingTypes[i])
+    }
+    @for (int i = 0; i < Model.ReviewFilter.FilterDetails.InteropIntegrationTypes.Count; i++)
+    {
+        @Html.HiddenFor(m => m.ReviewFilter.FilterDetails.InteropIntegrationTypes[i])
+    }
+    @for (int i = 0; i < Model.ReviewFilter.FilterDetails.InteropIm1IntegrationsTypes.Count; i++)
+    {
+        @Html.HiddenFor(m => m.ReviewFilter.FilterDetails.InteropIm1IntegrationsTypes[i])
+    }
+    @for (int i = 0; i < Model.ReviewFilter.FilterDetails.InteropIm1IntegrationsTypes.Count; i++)
+    {
+        @Html.HiddenFor(m => m.ReviewFilter.FilterDetails.InteropGpConnectIntegrationsTypes[i])
+    }
 
     @for (var x = 0; x < Model.Solutions[0].RequiredServices.Count; x++)
     {
