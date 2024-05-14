@@ -17,11 +17,13 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using NSubstitute;
 using Xunit;
 
@@ -143,11 +145,20 @@ public static class CompetitionSelectSolutionsControllerTests
     [MockAutoData]
     public static async Task Post_SelectSolutions_InvalidModel_ReturnsViewWithModel(
         string internalOrgId,
+        Competition competition,
+        FilterDetailsModel filterDetails,
         int competitionId,
         SelectSolutionsModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IManageFiltersService filtersService,
         CompetitionSelectSolutionsController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
+
+        competitionsService.GetCompetitionWithServicesAndFramework(internalOrgId, competitionId).Returns(competition);
+        filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId).Returns(filterDetails);
+
+        model.ReviewFilter = new ReviewFilterModel(filterDetails) { InExpander = true };
 
         var result = (await controller.SelectSolutions(internalOrgId, competitionId, model)).As<ViewResult>();
 
