@@ -7,26 +7,40 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard.OrganisationModel;
 @{
     ViewBag.Title = "Your organisation’s orders";
+    var caption = Model.CanActOnBehalf ? string.Empty : Model.OrganisationName;
 }
 
 <div data-test-id="dashboard-page">
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-full">
             <nhs-page-title title="@ViewBag.Title"
-                            caption="@Model.OrganisationName"/>
+                            caption="@caption"/>
             @if (Model.CanActOnBehalf)
             {
-                <h2>Current organisation</h2>
-                <p class="nhsuk-u-margin-bottom-2">You are currently acting on behalf of:</p>
-                <p data-test-id="dashboard-page-proxy-on-behalf" class="nhsuk-u-margin-bottom-6">
-                    @Model.OrganisationName
-                    <a asp-action="@nameof(DashboardController.SelectOrganisation)"
-                       asp-controller="@typeof(DashboardController).ControllerName()"
-                       asp-route-internalOrgId="@Model.InternalOrgId"
-                       class="nhsuk-u-margin-left-4">
-                        Change organisation
-                    </a>
-                </p>
+                <details class="bc-account-switcher">
+                    <summary>
+                        <span class="current-org-title">
+                            Current organisation:
+                        </span>
+                        <span class="currentOrg">
+                            @Model.OrganisationName
+                        </span>
+                    </summary>
+                    <form method="post">
+                        <div class="nhsuk-form-group nhsuk-u-margin-top-3">
+                            <nhs-fieldset-form-label label-text="Which organisation do you want to represent?"
+                                                     asp-for="@Model"
+                                                     size="Small">
+                                <nhs-radio-buttons asp-for="SelectedOrganisationId"
+                                                   values="Model.UserOrganisations.Cast<object>()"
+                                                   value-name="Value"
+                                                   display-name="Text"
+                                                   size="Small"/>
+                            </nhs-fieldset-form-label>
+                        </div>
+                        <nhs-submit-button text="Apply change"/>
+                    </form>
+                </details>
             }
 
             @if (Context.Request.Query["search"].Count > 0
