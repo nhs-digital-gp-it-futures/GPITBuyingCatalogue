@@ -13,6 +13,8 @@ public class CardV2TagHelper : TagHelper
 
     public bool HorizontalAlign { get; set; }
 
+    public bool Inverted { get; set; }
+
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var cardContext = new CardContext { HorizontalAlign = HorizontalAlign };
@@ -32,6 +34,11 @@ public class CardV2TagHelper : TagHelper
         if (HorizontalAlign)
         {
             output.AddClass(CardStyles.CardMinHeightClass, HtmlEncoder.Default);
+        }
+
+        if (Inverted)
+        {
+            output.AddClass(CardStyles.CardInverted, HtmlEncoder.Default);
         }
 
         if (cardContext.FooterContent is not null)

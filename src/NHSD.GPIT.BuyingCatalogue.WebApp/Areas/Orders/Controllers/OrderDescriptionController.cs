@@ -86,10 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             if (!ModelState.IsValid)
                 return View("OrderDescription", model);
 
-            // TODO: MJK update when competition provides selectedFrameworkId - dependent on #23410
-            var order = string.IsNullOrEmpty(selectedFrameworkId)
-                ? await orderService.CreateOrder(model.Description, model.InternalOrgId, orderType)
-                : await orderService.CreateOrder(model.Description, model.InternalOrgId, orderType, selectedFrameworkId);
+            var order = await orderService.CreateOrder(model.Description, model.InternalOrgId, orderType, selectedFrameworkId);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

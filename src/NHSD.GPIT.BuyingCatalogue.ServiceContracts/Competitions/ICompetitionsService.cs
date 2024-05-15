@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
 public interface ICompetitionsService
 {
-    Task<int> AddCompetition(int organisationId, int filterId, string name, string description);
+    Task<int> AddCompetition(int organisationId, int filterId, string frameworkId, string name, string description);
 
     Task<bool> Exists(string internalOrgId, string competitionName);
 
@@ -33,6 +33,8 @@ public interface ICompetitionsService
     Task<Competition> GetCompetitionWithRecipients(string internalOrgId, int competitionId);
 
     Task<Competition> GetCompetitionWithServices(string internalOrgId, int competitionId, bool shouldTrack = false);
+
+    Task<Competition> GetCompetitionWithServicesAndFramework(string internalOrgId, int competitionId, bool shouldTrack = false);
 
     Task<Competition> GetCompetitionWithSolutions(string internalOrgId, int competitionId);
 
