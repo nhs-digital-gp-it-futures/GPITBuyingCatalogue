@@ -17,10 +17,11 @@
         <form method="post">
             <input type="hidden" asp-for="BackLink"/>
             <input type="hidden" asp-for="CompetitionName"/>
+            <input type="hidden" asp-for="ContractLengthLimit"/>
 
             <nhs-bookended-input asp-for="ContractLength"
                                  label-text="How long will your contract be, in months?"
-                                 label-hint="This is the maximum length the contract can run for each Service Recipient. It must be between 6 to 36 months."
+                                 label-hint="This is the maximum length the contract can run for each Service Recipient. It cannot exceed @Model.ContractLengthLimit months."
                                  Suffix="months"/>
 
             <br/>

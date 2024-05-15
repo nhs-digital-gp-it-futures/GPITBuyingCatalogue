@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -55,6 +55,12 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
             .HasForeignKey(x => x.OrganisationId)
             .OnDelete(DeleteBehavior.NoAction)
             .HasConstraintName("FK_Competitions_Organisation");
+
+        builder.HasOne(x => x.Framework)
+            .WithMany()
+            .HasForeignKey(x => x.FrameworkId)
+            .OnDelete(DeleteBehavior.NoAction)
+            .HasConstraintName("FK_Competitions_FrameworkId");
 
         builder.HasOne(x => x.LastUpdatedByUser)
             .WithMany()
