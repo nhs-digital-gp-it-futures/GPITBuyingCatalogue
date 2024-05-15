@@ -141,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return View(model);
             }
 
-            await manageFiltersService.AddFilter(
+            var filterId = await manageFiltersService.AddFilter(
                 model.Name,
                 model.Description,
                 model.OrganisationId,
@@ -154,8 +154,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 model.InteroperabilityIntegrationTypes);
 
             return RedirectToAction(
-                nameof(Index),
-                typeof(ManageFiltersController).ControllerName());
+                nameof(FilterDetails),
+                new { filterId });
         }
 
         [HttpGet("filter-details")]
