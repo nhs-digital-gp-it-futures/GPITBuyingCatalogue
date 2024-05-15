@@ -304,35 +304,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return matches.ToList();
         }
 
-        [Obsolete("Used by competition - direct awards")]
-        public async Task<Order> CreateOrder(
-            string description,
-            string internalOrgId,
-            OrderTypeEnum orderType)
-        {
-            if (orderType == OrderTypeEnum.Unknown)
-            {
-                throw new InvalidOperationException($"Something has gone wrong during order triage. Cannot create an order if we dont know the order type {orderType}");
-            }
-
-            var orderingParty = await dbContext.Organisations.FirstAsync(o => o.InternalIdentifier == internalOrgId);
-
-            var order = new Order
-            {
-                OrderNumber = await dbContext.NextOrderNumber(),
-                Revision = 1,
-                Description = description,
-                OrderingParty = orderingParty,
-                OrderType = orderType,
-            };
-
-            dbContext.Add(order);
-
-            await dbContext.SaveChangesAsync();
-
-            return order;
-        }
-
         public async Task<Order> CreateOrder(
             string description,
             string internalOrgId,

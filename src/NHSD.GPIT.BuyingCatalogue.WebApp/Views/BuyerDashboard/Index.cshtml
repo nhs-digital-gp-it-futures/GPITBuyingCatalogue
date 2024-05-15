@@ -44,21 +44,33 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <h3 class="nhsuk-heading-m">Most recent orders</h3>
+        <h2 class="nhsuk-heading-m">Most recent orders</h2>
         <partial name="Dashboard/_OrderCardPartial" model="@(new DashboardCardBaseModel<Order>(Model.InternalOrgId, Model.Orders, isDashboardView: true))"/>
     </div>
 </div>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <h3 class="nhsuk-heading-m">Most recent shortlists</h3>
+        <h2 class="nhsuk-heading-m">Most recent shortlists</h2>
         <partial name="Dashboard/_ShortlistCardPartial" model="@(new DashboardCardBaseModel<Filter>(Model.InternalOrgId, Model.Shortlists, isDashboardView: true))"/>
     </div>
 </div>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <h3 class="nhsuk-heading-m">Most recent competitions</h3>
+        <h2 class="nhsuk-heading-m">Most recent competitions</h2>
         <partial name="Dashboard/_CompetitionsCardPartial" model="@(new DashboardCardBaseModel<CompetitionDashboardItem>(Model.InternalOrgId, Model.Competitions, isDashboardView: true))"/>
     </div>
 </div>
+
+@if (!User.IsAccountManager())
+{
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+            <h2 class="nhsuk-heading-m">Organisation management</h2>
+            <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
+                <partial name="_DashboardOverview" model="@(new DashboardCardModel("Nominate organisation", "Allow other organisations to create orders on your behalf.", Url.Action(nameof(NominateOrganisationController.Index), typeof(NominateOrganisationController).ControllerName(), new { area = typeof(NominateOrganisationController).AreaName() }), "Nominate organisation", HeadingSize.Medium, ColumnWidth.Half))"/>
+            </ul>
+        </div>
+    </div>
+}
