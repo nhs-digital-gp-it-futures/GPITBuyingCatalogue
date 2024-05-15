@@ -8,7 +8,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -201,6 +200,12 @@ public class CompetitionsService : ICompetitionsService
     public async Task<Competition> GetCompetition(string internalOrgId, int competitionId)
         => await dbContext.Competitions.AsNoTracking()
             .Include(x => x.Organisation)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+    public async Task<Competition> GetCompetitionWithFramework(string internalOrgId, int competitionId)
+        => await dbContext.Competitions.AsNoTracking()
+            .Include(x => x.Organisation)
+            .Include(x => x.Framework)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
     public async Task<Competition> GetCompetitionWithRecipients(string internalOrgId, int competitionId)
@@ -608,7 +613,11 @@ public class CompetitionsService : ICompetitionsService
     {
         var competition = new Competition
         {
-            OrganisationId = organisationId, FilterId = filterId, Name = name, Description = description, FrameworkId = frameworkId,
+            OrganisationId = organisationId,
+            FilterId = filterId,
+            Name = name,
+            Description = description,
+            FrameworkId = frameworkId,
         };
 
         dbContext.Competitions.Add(competition);

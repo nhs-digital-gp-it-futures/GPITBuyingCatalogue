@@ -16,6 +16,8 @@ public interface ICompetitionsService
 
     Task<Competition> GetCompetition(string internalOrgId, int competitionId);
 
+    Task<Competition> GetCompetitionWithFramework(string internalOrgId, int competitionId);
+
     Task<string> GetCompetitionName(string internalOrgId, int competitionId);
 
     Task<Competition> GetCompetitionCriteriaReview(string internalOrgId, int competitionId);

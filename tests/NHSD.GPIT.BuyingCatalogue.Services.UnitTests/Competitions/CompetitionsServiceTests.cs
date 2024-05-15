@@ -45,6 +45,7 @@ public static class CompetitionsServiceTests
         CompetitionsService service)
     {
         competition.OrganisationId = organisation.Id;
+        competition.FrameworkId = competition.Framework.Id;
 
         context.Organisations.Add(organisation);
         context.Competitions.Add(competition);
@@ -54,7 +55,9 @@ public static class CompetitionsServiceTests
 
         var result = await service.GetCompetitionCriteriaReview(organisation.InternalIdentifier, competition.Id);
 
-        result.Should().BeEquivalentTo(competition, opt => opt.Excluding(x => x.Organisation));
+        result.Should().BeEquivalentTo(
+            competition,
+            opt => opt.Excluding(x => x.Organisation).Excluding(x => x.Framework));
     }
 
     [Theory]
@@ -69,6 +72,7 @@ public static class CompetitionsServiceTests
             x =>
             {
                 x.OrganisationId = organisation.Id;
+                x.FrameworkId = x.Framework.Id;
                 x.Organisation = organisation;
                 x.IsDeleted = false;
             });
@@ -85,7 +89,11 @@ public static class CompetitionsServiceTests
         result.Should()
             .BeEquivalentTo(
                 competitions,
-                opt => opt.Excluding(x => x.Organisation).Excluding(x => x.LastUpdatedByUser).Excluding(x => x.Filter));
+                opt => opt
+                    .Excluding(x => x.Organisation)
+                    .Excluding(x => x.Framework)
+                    .Excluding(x => x.LastUpdatedByUser)
+                    .Excluding(x => x.Filter));
     }
 
     [Theory]
@@ -158,6 +166,7 @@ public static class CompetitionsServiceTests
         CompetitionsService service)
     {
         competition.OrganisationId = organisation.Id;
+        competition.FrameworkId = competition.Framework.Id;
 
         context.Organisations.Add(organisation);
         context.Competitions.Add(competition);
@@ -167,7 +176,7 @@ public static class CompetitionsServiceTests
 
         var result = await service.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id);
 
-        result.Should().BeEquivalentTo(competition, opt => opt.Excluding(x => x.Organisation));
+        result.Should().BeEquivalentTo(competition, opt => opt.Excluding(x => x.Organisation).Excluding(x => x.Framework));
     }
 
     [Theory]
@@ -179,6 +188,7 @@ public static class CompetitionsServiceTests
         CompetitionsService service)
     {
         competition.OrganisationId = organisation.Id;
+        competition.FrameworkId = competition.Framework.Id;
 
         context.Organisations.Add(organisation);
         context.Competitions.Add(competition);
@@ -188,7 +198,7 @@ public static class CompetitionsServiceTests
 
         var result = await service.GetCompetitionWithServicesAndFramework(organisation.InternalIdentifier, competition.Id);
 
-        result.Should().BeEquivalentTo(competition, opt => opt.Excluding(x => x.Organisation));
+        result.Should().BeEquivalentTo(competition, opt => opt.Excluding(x => x.Organisation).Excluding(x => x.Framework));
     }
 
     [Theory]
@@ -200,6 +210,7 @@ public static class CompetitionsServiceTests
         CompetitionsService service)
     {
         competition.OrganisationId = organisation.Id;
+        competition.FrameworkId = competition.Framework.Id;
 
         context.Organisations.Add(organisation);
         context.Competitions.Add(competition);
@@ -209,7 +220,9 @@ public static class CompetitionsServiceTests
 
         var result = await service.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id);
 
-        result.Should().BeEquivalentTo(competition, opt => opt.Excluding(x => x.Organisation));
+        result.Should().BeEquivalentTo(
+            competition,
+            opt => opt.Excluding(x => x.Organisation).Excluding(x => x.Framework));
     }
 
     [Theory]
@@ -221,6 +234,7 @@ public static class CompetitionsServiceTests
         CompetitionsService service)
     {
         competition.OrganisationId = organisation.Id;
+        competition.FrameworkId = competition.Framework.Id;
 
         context.Organisations.Add(organisation);
         context.Competitions.Add(competition);
@@ -230,7 +244,33 @@ public static class CompetitionsServiceTests
 
         var result = await service.GetCompetition(organisation.InternalIdentifier, competition.Id);
 
-        result.Should().BeEquivalentTo(competition, opt => opt.Excluding(x => x.Organisation));
+        result.Should().BeEquivalentTo(
+            competition,
+            opt => opt.Excluding(x => x.Organisation).Excluding(x => x.Framework));
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionWithFramework_ReturnsExpected(
+        Organisation organisation,
+        Competition competition,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.FrameworkId = competition.Framework.Id;
+
+        context.Organisations.Add(organisation);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        var result = await service.GetCompetitionWithFramework(organisation.InternalIdentifier, competition.Id);
+
+        result.Should().BeEquivalentTo(
+            competition,
+            opt => opt.Excluding(x => x.Organisation));
     }
 
     [Theory]
@@ -655,6 +695,7 @@ public static class CompetitionsServiceTests
         CompetitionsService service)
     {
         competition.OrganisationId = organisation.Id;
+        competition.FrameworkId = competition.Framework.Id;
         competition.Recipients = odsOrganisations;
 
         context.Competitions.Add(competition);
@@ -668,7 +709,9 @@ public static class CompetitionsServiceTests
         var competitionWithRecipients = await service.GetCompetitionWithRecipients(organisation.InternalIdentifier, competition.Id);
 
         competitionWithRecipients.Should()
-            .BeEquivalentTo(competition, opt => opt.Excluding(m => m.Organisation).Excluding(m => m.Recipients));
+            .BeEquivalentTo(
+            competition,
+            opt => opt.Excluding(m => m.Organisation).Excluding(x => x.Framework).Excluding(m => m.Recipients));
         competitionWithRecipients.Recipients.Should()
             .BeEquivalentTo(odsOrganisations, opt => opt.Excluding(m => m.Roles).Excluding(m => m.Related).Excluding(m => m.Parents));
     }
