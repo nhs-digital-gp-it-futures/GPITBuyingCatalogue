@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
@@ -84,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             AdminPages.AddSolutionHostingTypes();
 
-            AdminPages.AddSolutionListPrice();
+            AdminPages.AddSolutionListPrice(ListPriceTypes.Flat_price);
         }
 
         [Fact]

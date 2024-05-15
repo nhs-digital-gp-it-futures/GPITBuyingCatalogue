@@ -39,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             Hybrid = new Hybrid(driver, commonActions);
             OnPremise = new OnPremise(driver, commonActions);
             ListPrice = new ListPrice(driver, commonActions);
+            FlatPrice = new FlatPrice(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -86,6 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal OnPremise OnPremise { get; }
 
         internal ListPrice ListPrice { get; }
+
+        internal FlatPrice FlatPrice { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -148,6 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         {
             var solutionId = GetSolutionID();
             ListPrice.AddListPrice(solutionId);
+            FlatPrice.AddFlatPrice(listPriceTypes.ToString());
         }
 
         private string GetSolutionID()
