@@ -116,6 +116,31 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.SolutionServices)
             .ThenInclude(x => x.Service)
+            .Include(x => x.CompetitionSolutions)
+            .IgnoreQueryFilters()
+            .AsSplitQuery();
+
+        if (!shouldTrack)
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+    }
+
+    public async Task<Competition> GetCompetitionWithServicesAndFramework(
+        string internalOrgId,
+        int competitionId,
+        bool shouldTrack = false)
+    {
+        var query = dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Solution)
+            .ThenInclude(x => x.CatalogueItem)
+            .ThenInclude(x => x.Supplier)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Service)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Solution)
+            .ThenInclude(x => x.FrameworkSolutions)
             .IgnoreQueryFilters()
             .AsSplitQuery();
 
@@ -292,7 +317,7 @@ public class CompetitionsService : ICompetitionsService
             x => !im1Integrations.Contains(x.Qualifier) && !gpConnectIntegrations.Contains(x.Qualifier))
             .ToList();
 
-        if (staleEntities.Any()) staleEntities.ForEach(x => interopEntities.Remove(x));
+        if (staleEntities.Count != 0) staleEntities.ForEach(x => interopEntities.Remove(x));
 
         var newInteropEntities = im1Integrations
             .Select(x => new InteroperabilityCriteria(x, InteropIntegrationType.Im1))
@@ -302,7 +327,7 @@ public class CompetitionsService : ICompetitionsService
             .ToList();
 
         interopEntities.AddRange(newInteropEntities);
-        if (staleEntities.Any() || newInteropEntities.Any())
+        if (staleEntities.Count != 0 || newInteropEntities.Count != 0)
         {
             competition.HasReviewedCriteria = false;
             RemoveScoreType(ScoreType.Interoperability, competition);
@@ -569,7 +594,7 @@ public class CompetitionsService : ICompetitionsService
             .ToList();
 
         var pricesToRemove = toRemove.Where(x => x.Price != null).Select(x => x.Price).ToList();
-        if (pricesToRemove.Any())
+        if (pricesToRemove.Count != 0)
             dbContext.RemoveRange(pricesToRemove);
 
         toRemove.ForEach(x => solution.SolutionServices.Remove(x));
@@ -579,11 +604,11 @@ public class CompetitionsService : ICompetitionsService
             await dbContext.SaveChangesAsync();
     }
 
-    public async Task<int> AddCompetition(int organisationId, int filterId, string name, string description)
+    public async Task<int> AddCompetition(int organisationId, int filterId, string frameworkId, string name, string description)
     {
         var competition = new Competition
         {
-            OrganisationId = organisationId, FilterId = filterId, Name = name, Description = description,
+            OrganisationId = organisationId, FilterId = filterId, Name = name, Description = description, FrameworkId = frameworkId,
         };
 
         dbContext.Competitions.Add(competition);

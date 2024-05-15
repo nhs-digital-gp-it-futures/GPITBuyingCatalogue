@@ -1,37 +1,46 @@
 @model SelectSolutionsModel
 
 @{
-    ViewBag.Title = "Catalogue Solutions found";
+    ViewBag.Title = "Refine shortlist for this competition";
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-column-full-width">
+        <input type="hidden" asp-for="ReviewFilter" />
         <nhs-validation-summary RadioId="@nameof(Model.IsDirectAward)"/>
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.CompetitionName"
-                        advice="@Model.GetAdvice()"/>
+                        caption="@Model.CompetitionName"/>
 
-        @if (Model.HasNoSolutions())
-        {
-            <nhs-inset-text>
-                <p>There were no Catalogue Solutions found using this search criteria.</p>
+        <nhs-card-v2>
+            <nhs-card-content>
+                @if (Model.HasNoSolutions())
+                {
+                    <nhs-inset-text>
+                        <p>There were no Catalogue Solutions found using this search criteria.</p>
 
-                <p>You'll need to use a different filter.</p>
-            </nhs-inset-text>
+                        <p>You'll need to use a different filter.</p>
+                    </nhs-inset-text>
 
-            <vc:nhs-secondary-button text="Start a new search"
-                                     type="Primary"
-                                     url="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })" />
-        }
-        else if (Model.HasSingleSolution())
-        {
-            <partial name="_SingleSolutionSelection" model="Model" />
-        }
-        else
-        {
-            <partial name="_MultiSolutionSelection" model="Model" />
-        }
+                    <vc:nhs-secondary-button text="Start a new search"
+                                             type="Primary"
+                                             url="@Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })" />
+                }
+                else if (Model.HasSingleSolution())
+                {
+                    <partial name="_SingleSolutionSelection" model="Model" />
+                }
+                else
+                {
+                    <partial name="_MultiSolutionSelection" model="Model" />
+                }
+            </nhs-card-content>
+        </nhs-card-v2>
 
+        <nhs-expander label-text="View filters used for this shortlist" open="false">
+            <p>These are the filters used in this shortlist:</p>
+
+            <partial name="Partials/_FilterDetailsPartial" model="Model.ReviewFilter" />
+        </nhs-expander>
     </div>
 </div>

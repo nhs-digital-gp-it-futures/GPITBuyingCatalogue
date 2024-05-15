@@ -15,5 +15,6 @@ CREATE TABLE [competitions].[Competitions_History]
     [ContractLength] INT NULL,
     [IncludesNonPrice] BIT NULL,
     [SysStartTime] DATETIME2(0) NOT NULL,
-    [SysEndTime] DATETIME2(0) NOT NULL
+    [SysEndTime] DATETIME2(0) NOT NULL,
+    [FrameworkId] NVARCHAR(36) NULL
 )

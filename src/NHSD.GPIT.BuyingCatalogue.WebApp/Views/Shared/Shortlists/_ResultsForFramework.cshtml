@@ -1,0 +1,43 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
+@model ResultsForFrameworkModel
+
+@if (Model.CatalogueItems?.Any() ?? false)
+{
+    <hr class="nhsuk-u-padding-bottom-5 nhsuk-u-margin-bottom-5 nhsuk-u-margin-top-0">
+    <div>
+        <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-4">Results from @Model.FrameworkName (@Model.CatalogueItems.Count())</h2>
+        <p class="nhsuk-body-s nhsuk-u-margin-top-3">You can only carry out competitions using solutions from the same framework. The results are grouped by framework so you can create a valid competition. </p>
+        <p><b>All links open in a new tab.</b></p>
+    </div>
+
+    @foreach (var solution in Model.CatalogueItems)
+    {
+        <nhs-card-v2 inverted="true">
+            <nhs-card-content>
+                <h3 class="nhsuk-card__heading">
+                    <a href="@Url.Action(
+                        nameof(SolutionsController.Description),
+                        typeof(SolutionsController).ControllerName(),
+                        new { Area = typeof(SolutionsController).AreaName(), solutionId = solution.Id})" class="nhsuk-link" target="_blank">@solution.Name</a>
+                    <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                        @solution.Supplier.Name
+                    </span>
+                </h3>
+                <p>
+                    @solution.Solution.Summary
+                </p>
+            </nhs-card-content>
+        </nhs-card-v2>
+    }
+    <a class="nhsuk-button nhsuk-u-margin-bottom-3"
+       asp-action="@(nameof(CompetitionsDashboardController.SaveCompetition))"
+       asp-controller="@(typeof(CompetitionsDashboardController).ControllerName())"
+       asp-route-internalOrgId="@(Model.InternalOrgId)"
+       asp-route-filterId="@Model.FilterId"
+       asp-route-frameworkId="@Model.FrameworkId"
+       asp-route-fromFilter="@Model.FromFilter"
+       asp-route-area="@(typeof(CompetitionsDashboardController).AreaName())">Create competition</a>
+}

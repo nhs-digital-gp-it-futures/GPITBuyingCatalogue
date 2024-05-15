@@ -19,6 +19,7 @@ public class SolutionModel
         SupplierName = competitionSolution.Solution.CatalogueItem.Supplier.Name;
         RequiredServices = competitionSolution.SolutionServices.Where(x => x.IsRequired).Select(y => y.Service.Name).ToList();
         Selected = competitionSolution.IsShortlisted;
+        Summary = competitionSolution.Solution.Summary;
     }
 
     public CatalogueItemId SolutionId { get; set; }
@@ -30,6 +31,8 @@ public class SolutionModel
     public List<string> RequiredServices { get; set; } = new();
 
     public bool Selected { get; set; }
+
+    public string Summary { get; set; }
 
     public string GetAdditionalServicesList() => RequiredServices.Any()
         ? string.Join(", ", RequiredServices)

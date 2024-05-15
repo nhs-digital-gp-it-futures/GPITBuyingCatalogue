@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
@@ -43,6 +43,8 @@ public class Competition
     public int? ContractLength { get; set; }
 
     public bool? IncludesNonPrice { get; set; }
+
+    public string FrameworkId { get; set; }
 
     public bool IsShortlistAccepted => ShortlistAccepted.HasValue;
 

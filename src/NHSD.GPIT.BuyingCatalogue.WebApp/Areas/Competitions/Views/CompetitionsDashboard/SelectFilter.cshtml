@@ -2,7 +2,7 @@
 @model SelectFilterModel
 
 @{
-    ViewBag.Title = "Select a saved filter";
+    ViewBag.Title = "Select a shortlist";
     var createFilterUrl = Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() });
 }
 
@@ -10,7 +10,7 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
-        <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName" advice="The results produced by your selected filter can be taken into your competition."/>
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName" advice="Shortlists are created using filters and can then be taken into a competition." />
 
         @if (Model.Filters.Any())
         {
@@ -19,12 +19,12 @@
                 <input type="hidden" asp-for="BackLinkText"/>
 
                 <div>
-                    <label class="nhsuk-label" asp-for="SelectedFilterId">Which of your saved filters do you want to use for this competition?</label>
-                    <span class="nhsuk-hint">Choose a filter from the list. If you need to, you can <a href="@createFilterUrl">create a new filter</a>.</span>
+                    <label class="nhsuk-label" asp-for="SelectedFilterId">Which shortlist do you want to use for this competition?</label>
+                    <span class="nhsuk-hint">Choose an existing shortlist or you can use filters to <a href="@createFilterUrl">create a new shortlist</a>.</span>
                 </div>
                 <nhs-select asp-for="SelectedFilterId"
                             asp-items="@Model.Filters"
-                            default-value="Select a filter"
+                            default-value="Select a shortlist"
                             class="nhsuk-u-margin-bottom-7"/>
                 <nhs-submit-button/>
             </form>
