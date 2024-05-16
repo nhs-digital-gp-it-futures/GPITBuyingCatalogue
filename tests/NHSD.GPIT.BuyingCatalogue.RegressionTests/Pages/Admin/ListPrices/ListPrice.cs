@@ -29,5 +29,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices
                 nameof(CatalogueSolutionListPriceController.ListPriceType))
                 .Should().BeTrue();
         }
+
+        public void ManageSolutions()
+        {
+            CommonActions.ClickContinue();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(CatalogueSolutionsController),
+                nameof(CatalogueSolutionsController.ManageCatalogueSolution))
+                .Should().BeTrue();
+        }
     }
 }

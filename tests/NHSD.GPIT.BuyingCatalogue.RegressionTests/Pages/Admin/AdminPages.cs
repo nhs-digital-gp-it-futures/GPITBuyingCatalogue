@@ -151,7 +151,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         {
             var solutionId = GetSolutionID();
             ListPrice.AddListPrice(solutionId);
-            FlatPrice.AddFlatPrice(listPriceTypes.ToString());
+            if (listPriceTypes == ListPriceTypes.Flat_price)
+            {
+                FlatPrice.AddFlatPrice(listPriceTypes.ToString());
+            }
+
+            ListPrice.ManageSolutions();
         }
 
         private string GetSolutionID()
