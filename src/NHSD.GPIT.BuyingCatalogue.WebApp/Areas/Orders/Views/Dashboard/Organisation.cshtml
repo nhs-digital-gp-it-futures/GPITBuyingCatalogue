@@ -20,7 +20,7 @@
                 <details class="bc-account-switcher">
                     <summary>
                         <span class="current-org-title">
-                            Current organisation:
+                            Viewing orders for:
                         </span>
                         <span class="currentOrg">
                             @Model.OrganisationName
@@ -28,7 +28,7 @@
                     </summary>
                     <form method="post">
                         <div class="nhsuk-form-group nhsuk-u-margin-top-3">
-                            <nhs-fieldset-form-label label-text="Which organisation do you want to represent?"
+                            <nhs-fieldset-form-label label-text="Which organisation's orders do you want to view?"
                                                      asp-for="@Model"
                                                      size="Small">
                                 <nhs-radio-buttons asp-for="SelectedOrganisationId"
