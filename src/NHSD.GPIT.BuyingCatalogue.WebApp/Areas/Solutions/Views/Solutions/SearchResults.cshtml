@@ -23,31 +23,22 @@
     
     @if (Model.CatalogueItems.Count == 0)
     {
-        @if (Model.FilterResultView)
+        if (Model.Filters.SearchCriteriaApplied)
         {
-            <p>
-                You'll need to use a different filter.
+            <a asp-area="@typeof(SolutionsController).AreaName()"
+                asp-controller="@typeof(SolutionsController).ControllerName()"
+                asp-action="@nameof(SolutionsController.Index)">
+                Clear all filters
+            </a>
+            <hr class="nhsuk-section-break--xl nhsuk-u-padding-top-0 nhsuk-u-margin-top-3 nhsuk-u-padding-bottom-0 nhsuk-u-margin-bottom-3" />
+            <p class="info-text">
+                There were no Catalogue Solutions found with this search criteria. Try changing the filters you've selected.
             </p>
-        }
-        else
-        {
-            if (Model.Filters.SearchCriteriaApplied)
-            {
-                <a asp-area="@typeof(SolutionsController).AreaName()"
-                   asp-controller="@typeof(SolutionsController).ControllerName()"
-                   asp-action="@nameof(SolutionsController.Index)">
-                    Clear all filters
-                </a>
-                <hr class="nhsuk-section-break--xl nhsuk-u-padding-top-0 nhsuk-u-margin-top-3 nhsuk-u-padding-bottom-0 nhsuk-u-margin-bottom-3" />
-                <p class="info-text">
-                    There were no Catalogue Solutions found with this search criteria. Try changing the filters you've selected.
-                </p>
-            }
         }
     }
     else
     {
-        @if (!Model.FilterResultView && Model.Filters.SearchCriteriaApplied)
+        @if (Model.Filters.SearchCriteriaApplied)
         {
             <a asp-area="@typeof(SolutionsController).AreaName()"
                asp-controller="@typeof(SolutionsController).ControllerName()"

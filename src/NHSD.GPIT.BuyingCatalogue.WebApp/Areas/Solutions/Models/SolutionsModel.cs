@@ -22,10 +22,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             Advice = "These are the Catalogue Solutions currently available for your saved filter.",
         };
 
-        public string FilterName { get; set; }
-
-        public bool FilterResultView => ResultsModel.FilterResultView;
-
         public AdditionalFiltersModel AdditionalFilters { get; set; }
 
         public bool SearchCriteriaApplied => ResultsModel.Filters.SearchCriteriaApplied;
@@ -34,16 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public PageTitleModel GetPageTitle()
         {
-            if (ResultsModel.CatalogueItems?.Count == 0)
-            {
-                return FilterResultView
-                    ? SearchNoResultsFilterPageTitle with { Caption = FilterName }
-                    : SearchResultsPageTitle;
-            }
-
-            return FilterResultView
-                     ? SearchResultsFilterPageTitle with { Caption = FilterName }
-                     : SearchResultsPageTitle;
+            return SearchResultsPageTitle;
         }
     }
 }
