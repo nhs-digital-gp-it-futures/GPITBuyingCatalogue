@@ -4,7 +4,7 @@
 }
 @if (!string.IsNullOrWhiteSpace(Model.Title) && string.IsNullOrWhiteSpace(Model.Caption))
 {
-    <h1>@Model.Title</h1>
+    <h1 class="@headingClass">@Model.Title</h1>
 }
 @if (!string.IsNullOrWhiteSpace(Model.Title) && !string.IsNullOrWhiteSpace(Model.Caption))
 {
