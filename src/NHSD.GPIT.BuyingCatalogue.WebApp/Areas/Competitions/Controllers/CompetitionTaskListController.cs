@@ -64,7 +64,7 @@ public class CompetitionTaskListController : Controller
     [HttpGet("contract-length")]
     public async Task<IActionResult> ContractLength(string internalOrgId, int competitionId)
     {
-        var competition = await GetCompetition(internalOrgId, competitionId);
+        var competition = await competitionsService.GetCompetitionWithFramework(internalOrgId, competitionId);
 
         var model = new CompetitionContractModel(competition)
         {

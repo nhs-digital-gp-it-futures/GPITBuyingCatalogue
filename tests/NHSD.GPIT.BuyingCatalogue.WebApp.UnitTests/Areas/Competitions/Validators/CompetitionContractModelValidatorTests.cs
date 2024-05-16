@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.TaskListModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
 using Xunit;
@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
 public sealed class CompetitionContractModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_ContractLengthMissing_SetsModelError(
         CompetitionContractModel model,
         CompetitionContractModelValidator validator)
@@ -23,26 +23,27 @@ public sealed class CompetitionContractModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_ExceedsMaxLimit_SetsModelError(
         CompetitionContractModel model,
         CompetitionContractModelValidator validator)
     {
+        model.ContractLengthLimit = 36;
         model.ContractLength = 37;
 
         var result = validator.TestValidate(model);
 
         result.ShouldHaveValidationErrorFor(x => x.ContractLength)
-            .WithErrorMessage(CompetitionContractModelValidator.ExceedsLimitError);
+            .WithErrorMessage(string.Format(CompetitionContractModelValidator.ExceedsLimitError, model.ContractLengthLimit));
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_ValueTooLow_SetsModelError(
         CompetitionContractModel model,
         CompetitionContractModelValidator validator)
     {
-        model.ContractLength = 5;
+        model.ContractLength = 0;
 
         var result = validator.TestValidate(model);
 
@@ -51,11 +52,12 @@ public sealed class CompetitionContractModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_Valid_NoModelErrors(
         CompetitionContractModel model,
         CompetitionContractModelValidator validator)
     {
+        model.ContractLengthLimit = 24;
         model.ContractLength = 24;
 
         var result = validator.TestValidate(model);

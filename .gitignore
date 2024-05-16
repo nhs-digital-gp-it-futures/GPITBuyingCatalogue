@@ -357,6 +357,7 @@ MigrationBackup/
 
 # Generated css file
 **/wwwroot/css/*.css
+**/wwwroot/webfonts
 
 # Generated js files
 **/wwwroot/js/*.js

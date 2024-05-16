@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -16,13 +17,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 public readonly struct NavigationMenuModel
 {
     private static readonly
-        List<(Func<ClaimsPrincipal, bool> Key, Func<ClaimsPrincipal, IUrlHelper, List<KeyValuePair<string, string>>>
+        List<(Func<ClaimsPrincipal, bool> Key, Func<ClaimsPrincipal, IUrlHelper, RouteValueDictionary,
+                List<KeyValuePair<string, string>>>
             Factory)> LinksFactories =
             new()
             {
                 (
                     user => !user.Identity?.IsAuthenticated ?? false,
-                    (_, urlHelper) =>
+                    (_, urlHelper, _) =>
                     [
                         new(
                             "Home",
@@ -36,7 +38,7 @@ public readonly struct NavigationMenuModel
                                 new { area = typeof(SolutionsController).AreaName() })),
                     ]),
                 (
-                    user => user.IsBuyer() || user.IsAccountManager(), (user, urlHelper) =>
+                    user => user.IsBuyer() || user.IsAccountManager(), (user, urlHelper, routeValues) =>
                     [
                         new(
                             "Home",
@@ -53,7 +55,13 @@ public readonly struct NavigationMenuModel
                             urlHelper.Action(
                                 nameof(DashboardController.Organisation),
                                 typeof(DashboardController).ControllerName(),
-                                new { Area = typeof(DashboardController).AreaName(), internalOrgId = user.GetPrimaryOrganisationInternalIdentifier() })),
+                                new
+                                {
+                                    Area = typeof(DashboardController).AreaName(),
+                                    internalOrgId = routeValues.TryGetValue("internalOrgId", out var orgId)
+                                        ? orgId
+                                        : user.GetPrimaryOrganisationInternalIdentifier(),
+                                })),
                         new(
                             "Shortlists",
                             urlHelper.Action(
@@ -65,7 +73,11 @@ public readonly struct NavigationMenuModel
                             urlHelper.Action(
                                 nameof(CompetitionsDashboardController.Index),
                                 typeof(CompetitionsDashboardController).ControllerName(),
-                                new { Area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = user.GetPrimaryOrganisationInternalIdentifier() })),
+                                new
+                                {
+                                    Area = typeof(CompetitionsDashboardController).AreaName(),
+                                    internalOrgId = user.GetPrimaryOrganisationInternalIdentifier(),
+                                })),
 
                         new(
                             "Catalogue Solutions",
@@ -75,7 +87,7 @@ public readonly struct NavigationMenuModel
                                 new { area = typeof(SolutionsController).AreaName() })),
                     ]),
                 (
-                    user => user.IsAdmin(), (_, urlHelper) =>
+                    user => user.IsAdmin(), (_, urlHelper, _) =>
                     [
                         new(
                             "Home",
@@ -112,12 +124,13 @@ public readonly struct NavigationMenuModel
 
     public NavigationMenuModel(
         ClaimsPrincipal user,
-        IUrlHelper urlHelper)
+        IUrlHelper urlHelper,
+        RouteValueDictionary routeValues)
     {
-        (_, Func<ClaimsPrincipal, IUrlHelper, List<KeyValuePair<string, string>>> linkFactory) =
+        (_, Func<ClaimsPrincipal, IUrlHelper, RouteValueDictionary, List<KeyValuePair<string, string>>> linkFactory) =
             LinksFactories.First(x => x.Key(user));
 
-        Links = linkFactory(user, urlHelper);
+        Links = linkFactory(user, urlHelper, routeValues);
     }
 
     public IList<KeyValuePair<string, string>> Links { get; }

@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.TaskListModels;
 using Xunit;
 
@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.T
 public sealed class CompetitionContractModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsProperties(
         Competition competition)
     {
@@ -17,5 +17,6 @@ public sealed class CompetitionContractModelTests
 
         model.CompetitionName.Should().Be(competition.Name);
         model.ContractLength.Should().Be(competition.ContractLength);
+        model.ContractLengthLimit.Should().Be(competition.Framework.MaximumTerm);
     }
 }

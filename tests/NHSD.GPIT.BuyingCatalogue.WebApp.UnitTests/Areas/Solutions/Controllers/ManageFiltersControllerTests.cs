@@ -460,8 +460,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actualResult.ActionName.Should().Be(nameof(ManageFiltersController.Index));
-            actualResult.ControllerName.Should().Be(typeof(ManageFiltersController).ControllerName());
+            actualResult.ActionName.Should().Be(nameof(ManageFiltersController.FilterDetails));
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(new RouteValueDictionary { { nameof(filterId), filterId }, });
         }
 
         [Theory]
