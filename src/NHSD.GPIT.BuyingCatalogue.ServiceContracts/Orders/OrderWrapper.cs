@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             rolledUpLazy = new Lazy<Order>((Order)null);
         }
 
+        [Obsolete("Only used in tests - we should look to remove this")]
         public OrderWrapper(Order order)
         {
             Order = order;
@@ -92,6 +93,22 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         public Order Previous => previousLazy.Value;
 
         public Order RolledUp => rolledUpLazy.Value;
+
+        public static OrderWrapper Create(IEnumerable<Order> orders, CallOffId requestedCallOffId)
+        {
+            var wrapper = new OrderWrapper(orders);
+            if (wrapper.Order == null)
+            {
+                throw new InvalidOperationException($"Order not found {requestedCallOffId}");
+            }
+
+            if (wrapper.Order.CallOffId != requestedCallOffId)
+            {
+                throw new InvalidOperationException($"Latest order does not match {requestedCallOffId}");
+            }
+
+            return wrapper;
+        }
 
         public IEnumerable<string> AddedRecipientsOdsCodes()
         {
