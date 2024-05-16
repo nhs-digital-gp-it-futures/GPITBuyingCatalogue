@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 viewContext,
                 aspFor.ModelExplorer,
                 string.IsNullOrWhiteSpace(aspFor.Name) ? formName : aspFor.Name,
-                htmlAttributeLabelText, 
+                htmlAttributeLabelText,
                 new { @class = $"{TagHelperConstants.NhsLabel} {TagHelperConstants.BoldLabel}" });
         }
 
