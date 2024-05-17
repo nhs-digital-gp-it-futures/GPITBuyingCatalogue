@@ -48,7 +48,7 @@
         <br/>
 
         <nhs-button-group>
-            <vc:nhs-secondary-button type="Primary" text="Continue" url="@Model.BackLink"/>
+            <vc:nhs-secondary-button type="Primary" text="Save and continue" url="@Model.BackLink"/>
             <vc:nhs-secondary-button type="Secondary" text="Save for later" url="@Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId = Model.InternalOrgId })"/>
         </nhs-button-group>
     </div>

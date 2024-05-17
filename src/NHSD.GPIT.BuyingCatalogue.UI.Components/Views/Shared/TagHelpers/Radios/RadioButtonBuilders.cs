@@ -82,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
                 aspFor.ModelExplorer,
                 $"{aspFor.Name}_{index}",
                 display,
-                new { @class = TagHelperConstants.RadioLabelClass });
+                new { @class = $"{TagHelperConstants.RadioLabelClass} {TagHelperConstants.BoldLabel}" });
         }
 
         public static TagBuilder GetRadioInputBuilder(

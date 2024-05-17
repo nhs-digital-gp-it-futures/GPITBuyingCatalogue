@@ -77,6 +77,7 @@
         internal const string NhsFormGroupError = "nhsuk-form-group--error";
         internal const string NhsInput = "nhsuk-input";
         internal const string NhsLabel = "nhsuk-label";
+        internal const string BoldLabel = "bold-label";
         internal const string NhsInLineLabel = "bc-inline-label";
         internal const string NhsAlignCenter = "bc-u-align-justify-center";
         internal const string NhsHint = "nhsuk-hint";
