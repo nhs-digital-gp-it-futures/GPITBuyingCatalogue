@@ -28,7 +28,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Notify.Client;
 using NSubstitute;
 using Xunit;
@@ -158,6 +157,88 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             actual.CatalogueItem.Id.Should().Be(orderItem.CatalogueItem.Id);
             actual.OrderItemFunding.Should().NotBeNull();
             actual.OrderItemFunding.OrderItemFundingType.Should().Be(orderItem.OrderItemFunding.OrderItemFundingType);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetOrderWithSupplier_ReturnsExpectedResults(
+            Order order,
+            Supplier supplier,
+            Contact supplierContact,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.Supplier = supplier;
+            order.SupplierContact = supplierContact;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = (await service.GetOrderWithSupplier(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
+
+            result.CallOffId.Should().Be(order.CallOffId);
+            result.Supplier.Should().NotBeNull();
+            result.SupplierContact.Should().NotBeNull();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetOrderForTaskListStatuses_ReturnsExpectedResults(
+            Order order,
+            Supplier supplier,
+            Contact supplierContact,
+            Contact orderingPartyContact,
+            ContractFlags contractFlags,
+            Contract contract,
+            ImplementationPlan implementationPlan,
+            ContractBilling contractBilling,
+            Organisation orderingParty,
+            List<OrderItem> orderItems,
+            EntityFramework.Catalogue.Models.Framework framework,
+            List<OrderRecipient> orderRecipients,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            contract.ImplementationPlan = implementationPlan;
+            contract.ContractBilling = contractBilling;
+
+            order.Supplier = supplier;
+            order.SupplierContact = supplierContact;
+            order.SupplierContact = supplierContact;
+            order.ContractFlags = contractFlags;
+            order.Contract = contract;
+            order.OrderItems = orderItems;
+            order.OrderingPartyContact = orderingPartyContact;
+            order.OrderingParty = orderingParty;
+            order.SelectedFramework = framework;
+            order.OrderRecipients = orderRecipients;
+
+            context.Orders.Add(order);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = (await service.GetOrderForTaskListStatuses(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
+
+            result.CallOffId.Should().Be(order.CallOffId);
+            result.Supplier.Should().NotBeNull();
+            result.SupplierContact.Should().NotBeNull();
+            result.ContractFlags.Should().NotBeNull();
+            result.Contract.Should().NotBeNull();
+            result.Contract.ImplementationPlan.Should().NotBeNull();
+            result.Contract.ContractBilling.Should().NotBeNull();
+            result.OrderItems.Count.Should().BeGreaterThan(0);
+            result.OrderItems.ForEach(i => i.CatalogueItem.Should().NotBeNull());
+            result.OrderItems.ForEach(i => i.OrderItemFunding.Should().NotBeNull());
+            result.OrderItems.ForEach(i => i.OrderItemPrice.Should().NotBeNull());
+            result.OrderingPartyContact.Should().NotBeNull();
+            result.OrderingParty.Should().NotBeNull();
+            result.SelectedFramework.Should().NotBeNull();
+            result.OrderRecipients.Count.Should().BeGreaterThan(0);
+            result.OrderRecipients.ForEach(i => i.OrderItemRecipients.Should().NotBeNull());
+            result.OrderRecipients.ForEach(i => i.OdsOrganisation.Should().NotBeNull());
         }
 
         [Theory]
@@ -1117,9 +1198,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(FundingType.LocalFunding)]
-        [InMemoryDbInlineAutoData(FundingType.Gpit)]
-        [InMemoryDbInlineAutoData(FundingType.Pcarp)]
+        [MockInMemoryDbInlineAutoData(FundingType.LocalFunding)]
+        [MockInMemoryDbInlineAutoData(FundingType.Gpit)]
+        [MockInMemoryDbInlineAutoData(FundingType.Pcarp)]
         public static async Task SetFundingSourceForForceFundedItems_FrameworkHasSingleFundingType_UpdatesDatabase(
             FundingType fundingType,
             Order order,
