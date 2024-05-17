@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TimeIn
                 modelExpression.ModelExplorer,
                 modelExpression.Name,
                 labelText,
-                new { @class = $"{TagHelperConstants.NhsLabel} {TimeInputLabelClass}" });
+                new { @class = $"{TagHelperConstants.NhsLabel} {TimeInputLabelClass} {TagHelperConstants.BoldLabel}" });
         }
 
         private TagBuilder BuildTimeInput(ModelExpression modelExpression)
