@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .ToListAsync();
 
-            return new OrderWrapper(orders);
+            return OrderWrapper.Create(orders, callOffId);
         }
 
         public async Task<OrderWrapper> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId)
@@ -107,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .ToListAsync();
 
-            return new OrderWrapper(orders);
+            return OrderWrapper.Create(orders, callOffId);
         }
 
         public async Task<OrderWrapper> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId)
@@ -132,7 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .ToListAsync();
 
-            return new OrderWrapper(orders);
+            return OrderWrapper.Create(orders, callOffId);
         }
 
         public async Task<OrderWrapper> GetOrderWithOrderItemsForFunding(CallOffId callOffId, string internalOrgId)
@@ -157,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .ToListAsync();
 
-            return new OrderWrapper(orders);
+            return OrderWrapper.Create(orders, callOffId);
         }
 
         public async Task<OrderWrapper> GetOrderWithSupplier(CallOffId callOffId, string internalOrgId)
@@ -170,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
                 .ToListAsync();
 
-            return new OrderWrapper(orders);
+            return OrderWrapper.Create(orders, callOffId);
         }
 
         [ExcludeFromCodeCoverage(Justification = "Method uses Temporal tables which the In-Memory provider doesn't support.")]
@@ -206,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 }
             }
 
-            return new OrderWrapper(orders);
+            return OrderWrapper.Create(orders, callOffId);
         }
 
         public async Task<OrderWrapper> GetOrderForTaskListStatuses(CallOffId callOffId, string internalOrgId)
@@ -238,7 +238,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && x.OrderingParty.InternalIdentifier == internalOrgId)
                 .ToListAsync();
 
-            return new OrderWrapper(orders);
+            return OrderWrapper.Create(orders, callOffId);
         }
 
         public async Task<List<Order>> GetOrders(int organisationId)
@@ -344,7 +344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId)
         {
-            var orderWrapper = new OrderWrapper(await OrdersForSummary(callOffId, internalOrgId));
+            var orderWrapper = OrderWrapper.Create(await OrdersForSummary(callOffId, internalOrgId), callOffId);
             var order = orderWrapper.Order;
 
             var amendment = order.BuildAmendment(await dbContext.NextRevision(order.OrderNumber));
@@ -499,7 +499,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             order.IsTerminated = true;
             order.OrderTermination = new OrderTermination()
             {
-                OrderId = order.Id, DateOfTermination = dateOfTermination, Reason = reason,
+                OrderId = order.Id,
+                DateOfTermination = dateOfTermination,
+                Reason = reason,
             };
         }
 
