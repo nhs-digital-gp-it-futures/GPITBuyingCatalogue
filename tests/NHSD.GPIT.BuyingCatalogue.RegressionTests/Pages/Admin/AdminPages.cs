@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.Solu
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionHostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SolutionCapabilitiesAndEpics;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedEpics;
 using OpenQA.Selenium;
 
@@ -41,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             ListPrice = new ListPrice(driver, commonActions);
             FlatPrice = new FlatPrice(driver, commonActions);
             TieredPrice = new TieredPrice(driver, commonActions);
+            CapabilitiesAndEpics = new CapabilitiesAndEpics(driver, commonActions, factory);
             Factory = factory;
             Driver = driver;
         }
@@ -92,6 +94,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal FlatPrice FlatPrice { get; }
 
         internal TieredPrice TieredPrice { get; }
+
+        internal CapabilitiesAndEpics CapabilitiesAndEpics { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -164,6 +168,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             }
 
             ListPrice.ManageSolutions();
+        }
+
+        public void AddSolutionCapabilitiesAndEpics()
+        {
+            var solutionId = GetSolutionID();
+            CapabilitiesAndEpics.AddCapabilitiesAndEpics(solutionId);
         }
 
         private string GetSolutionID()

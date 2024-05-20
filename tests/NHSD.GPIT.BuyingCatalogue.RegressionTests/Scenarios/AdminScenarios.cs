@@ -105,6 +105,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddSolutionHostingTypes();
 
             AdminPages.AddSolutionListPrice(ListPriceTypes.Tiered_price);
+
+            AdminPages.AddSolutionCapabilitiesAndEpics();
         }
 
         [Fact]
