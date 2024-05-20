@@ -70,8 +70,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Solutions", "AddNewSolutions")]
-        public void AddNewSolutions()
+        [Trait("Solutions", "AddNewSolutionsForProviderAndFlatPrice")]
+        public void AddNewSolutionsForProviderAndFlatPrice()
         {
             AdminPages.AdminDashboard.ManageCatalogueSolutions();
 
@@ -86,6 +86,25 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddSolutionHostingTypes();
 
             AdminPages.AddSolutionListPrice(ListPriceTypes.Flat_price);
+        }
+
+        [Fact]
+        [Trait("Solutions", "AddNewSolutionsForProviderAndTieredPrice")]
+        public void AddNewSolutionsForProviderAndTieredPrice()
+        {
+            AdminPages.AdminDashboard.ManageCatalogueSolutions();
+
+            AdminPages.AddSolutionDetailsAndDescription();
+
+            AdminPages.AddSolutionInteroperability(ProviderOrConsumer.Provider);
+
+            AdminPages.AddSolutionImplementation();
+
+            AdminPages.AddSolutionApplicationTypes();
+
+            AdminPages.AddSolutionHostingTypes();
+
+            AdminPages.AddSolutionListPrice(ListPriceTypes.Tiered_price);
         }
 
         [Fact]

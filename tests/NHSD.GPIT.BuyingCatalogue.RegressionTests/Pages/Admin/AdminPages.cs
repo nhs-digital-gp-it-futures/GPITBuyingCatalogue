@@ -40,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             OnPremise = new OnPremise(driver, commonActions);
             ListPrice = new ListPrice(driver, commonActions);
             FlatPrice = new FlatPrice(driver, commonActions);
+            TieredPrice = new TieredPrice(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -89,6 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal ListPrice ListPrice { get; }
 
         internal FlatPrice FlatPrice { get; }
+
+        internal TieredPrice TieredPrice { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -154,6 +157,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             if (listPriceTypes == ListPriceTypes.Flat_price)
             {
                 FlatPrice.AddFlatPrice(listPriceTypes.ToString());
+            }
+            else
+            {
+                TieredPrice.AddTieredPrice(listPriceTypes.ToString());
             }
 
             ListPrice.ManageSolutions();
