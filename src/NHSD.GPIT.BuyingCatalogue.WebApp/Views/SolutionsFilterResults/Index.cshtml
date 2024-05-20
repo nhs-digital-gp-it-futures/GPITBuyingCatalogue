@@ -52,6 +52,24 @@
             break-inside: avoid;
         }
 
+        p {
+            font-size: 22px;
+        }
+
+        .description {
+            font-size: 24px;
+        }
+
+        h1 {
+            font-size: 28px;
+        }
+
+        h2 {
+            width: 100%;
+            font-size: 28px;
+            border-bottom: 1px solid lightgray;
+        }
+
         table {
             -webkit-break-inside: auto;
             break-inside: auto;
@@ -62,6 +80,7 @@
             padding-top: 4px;
             padding-right: 12px;
             padding-bottom: 0;
+            font-size: 22px;
         }
 
         th {
@@ -74,6 +93,11 @@
             -webkit-break-inside: avoid;
             break-after: auto;
             break-inside: avoid;
+            font-size: 22px;
+        }
+
+        li{
+            font-size: 22px;
         }
 
         tbody tr.alternating:nth-child(even) {
@@ -88,7 +112,7 @@
             -webkit-break-inside: avoid;
             break-inside: avoid;
             display: table;
-            font-size: 1.1875rem;
+            font-size: 24px;
             font-weight: 400;
             line-height: 1.47368;
             margin-bottom: 40px;
@@ -102,22 +126,20 @@
             margin-bottom: 32px;
         }
 
-            .pdf-summary-list-row:nth-child(even) {
-                background-color: #F8F8F8;
-            }
-
             .pdf-summary-list-row div {
                 display: table-cell;
-                padding-top: 0;
+                padding-top: 10px;
                 padding-right: 24px;
-                padding-bottom: 0;
+                padding-bottom: 10px;
                 width: 50%;
+                border-bottom: 1px solid lightgray;
             }
 
                 .pdf-summary-list-row div:first-child {
                     font-weight: 600;
                     width: 30%;
                 }
+
 
         .nhsuk-main-wrapper {
             padding-top: 5px;
@@ -130,22 +152,15 @@
     <main class="nhsuk-main-wrapper" id="maincontent">
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-full">
-                <nhs-page-title model="@Model.Title"/>
-                <pdf-summary-list>
-                    <pdf-summary-list-row label-text="Date and time">
-                        @Model.DateAndTime
-                    </pdf-summary-list-row>
-                    <pdf-summary-list-row label-text="Filter name">
-                        @Model.ReviewFilter.FilterDetails.Name
-                    </pdf-summary-list-row>
-                    <pdf-summary-list-row label-text="Description">
-                        @Model.ReviewFilter.FilterDetails.Description
-                    </pdf-summary-list-row>
-                </pdf-summary-list>
+                <h1>Results for shortlist: @Model.ReviewFilter.FilterDetails.Name</h1>
+                <p class="description">@Model.ReviewFilter.FilterDetails.Description</p>
+                <p>Date generated <b>@Model.DateAndTime</b></p>
+
+                <h2 class="underlined">Filters used to create shortlist</h2>
                 @if (Model.ReviewFilter.HasEpics())
                 {
                     <div class="pdf-container">
-                        <h2>Capabilities and Epics selected</h2>
+                        <h3>Capabilities and Epics</h3>
                         <table>
                             <thead>
                             <tr>
@@ -162,29 +177,20 @@
                                     <td>
                                         @if (capability.Value is null || !capability.Value.Any())
                                         {
-                                            <p>
+                                            <span>
                                                 None selected
-                                            </p>
+                                            </span>
                                         }
                                         else
                                         {
-                                            @if (capability.Value.Count() == 1)
-                                            {
-                                                <p>
-                                                    @capability.Value.First()
-                                                </p>
-                                            }
-                                            else
-                                            {
-                                                <ul>
-                                                    @foreach (var epic in capability.Value)
-                                                    {
-                                                        <li>
-                                                            @epic
-                                                        </li>
-                                                    }
-                                                </ul>
-                                            }
+                                            <ul>
+                                                @foreach (var epic in capability.Value)
+                                                {
+                                                    <li>
+                                                        @epic
+                                                    </li>
+                                                }
+                                            </ul>
                                         }
                                     </td>
                                 </tr>
@@ -203,32 +209,26 @@
                     </div>
                 }
                 <div class="pdf-container">
-                    <h2>Additional filters selected</h2>
                     <pdf-summary-list>
-                        <pdf-summary-list-row label-text="Framework">
-                            <p>
-                                @(Model.ReviewFilter.HasFramework() ? Model.ReviewFilter.FilterDetails.FrameworkName : "None selected")
-                            </p>
-                        </pdf-summary-list-row>
-                        <pdf-summary-list-row label-text="Application type">
+                        <pdf-summary-list-row label-text="Client application type">
                             @if (!Model.ReviewFilter.HasApplicationTypes())
                             {
-                                <p>
+                                <span>
                                     None selected
-                                </p>
+                                </span>
                             }
                             else
                             {
-                                    @if (Model.ReviewFilter.FilterDetails.ApplicationTypes.Count == 1)
+                                @if (Model.ReviewFilter.FilterDetails.ApplicationTypes.Count == 1)
                                 {
-                                    <p>
-                                            @Model.ReviewFilter.FilterDetails.ApplicationTypes.First().Name()
-                                    </p>
+                                    <span>
+                                        @Model.ReviewFilter.FilterDetails.ApplicationTypes.First().Name()
+                                    </span>
                                 }
                                 else
                                 {
                                     <ul>
-                                            @foreach (var item in Model.ReviewFilter.FilterDetails.ApplicationTypes)
+                                        @foreach (var item in Model.ReviewFilter.FilterDetails.ApplicationTypes)
                                         {
                                             <li>
                                                 @item.Name()
@@ -238,20 +238,26 @@
                                 }
                             }
                         </pdf-summary-list-row>
+                        <pdf-summary-list-row label-text="Framework">
+                            <span>
+                                @(Model.ReviewFilter.HasFramework() ? Model.ReviewFilter.FilterDetails.FrameworkName : "None selected")
+                            </span>
+                        </pdf-summary-list-row>
+                        
                         <pdf-summary-list-row label-text="Hosting type">
                             @if (!Model.ReviewFilter.HasHostingTypes())
                             {
-                                <p>
+                                <span>
                                     None selected
-                                </p>
+                                </span>
                             }
                             else
                             {
                                 @if (Model.ReviewFilter.FilterDetails.HostingTypes.Count == 1)
                                 {
-                                    <p>
+                                    <span>
                                         @Model.ReviewFilter.FilterDetails.HostingTypes.First().Name()
-                                    </p>
+                                    </span>
                                 }
                                 else
                                 {
@@ -266,49 +272,16 @@
                                 }
                             }
                         </pdf-summary-list-row>
-                            <pdf-summary-list-row label-text="Interoperability">
-                            @if (!Model.ReviewFilter.HasInteroperabilityIntegrationTypes())
-                            {
-                                <p>
-                                    None selected
-                                </p>
-                            }
-                            else
-                                {
-                                    @for (int j = 0; j < Model.ReviewFilter.FilterDetails.InteropIntegrationTypes.Count(); j++)
-                                    {
-                                        @if (@Model.ReviewFilter.FilterDetails.InteropIntegrationTypes[j].EnumMemberName() == "IM1")
-                                        {
-                                            <p> @(Model.ReviewFilter.FilterDetails.InteropIntegrationTypes[j].EnumMemberName()) integrations</p>
-                                            <ul>
-                                                @foreach (var item in Model.ReviewFilter.FilterDetails.InteropIm1IntegrationsTypes)
-                                                {
-                                                    <li>
-                                                        @item.Name()
-                                                    </li>
-                                                }
-                                            </ul>
-                                        }
-                                        @if (Model.ReviewFilter.FilterDetails.InteropIntegrationTypes[j].EnumMemberName() == "GP Connect")
-                                        {
-                                            <p> @(Model.ReviewFilter.FilterDetails.InteropIntegrationTypes[j].EnumMemberName()) integrations</p>
-                                            <ul>
-                                                @foreach (var item in Model.ReviewFilter.FilterDetails.InteropGpConnectIntegrationsTypes)
-                                                {
-                                                    <li>
-                                                        @item.Name()
-                                                    </li>
-                                                }
-                                            </ul>
-                                        }
-                                    }
-                                }
-                        </pdf-summary-list-row>
                     </pdf-summary-list>
                 </div>
-                @if (Model.CatalogueItems.Count == 0)
+
+                @if (Model.ResultsCount == 0)
                 {
-                    <partial name="/Areas/Solutions/Views/Shared/_SearchResultsHeader.cshtml" model="@(Model.CatalogueItems.Count)"/>
+                    <pdf-summary-list>
+                        <pdf-summary-list-row label-text="Total number of results">
+                            @Model.ResultsCount
+                        </pdf-summary-list-row>
+                    </pdf-summary-list>
                     <div class="pdf-container">
                         <p>
                             You'll need to use a different filter.
@@ -318,14 +291,32 @@
                 else
                 {
                     <div style="page-break-after: always"></div>
-                    <partial name="/Areas/Solutions/Views/Shared/_SearchResultsHeader.cshtml" model="@(Model.CatalogueItems.Count)"/>
+                        <h2 class="underlined">Results summary and frameworks</h2>
+                        <pdf-summary-list>
+                            <pdf-summary-list-row label-text="Total number of results">
+                                @Model.ResultsCount
+                            </pdf-summary-list-row>
+                        </pdf-summary-list>
                     <br/>
-                    @foreach (var item in Model.CatalogueItems)
+                    @foreach(var frameworkResults in Model.ResultsForFramework)
                     {
-                        <div class="pdf-container">
-                            <partial name="/Areas/Solutions/Views/Shared/_SolutionSearchDisplay.cshtml" model="@(new SolutionSearchResultModel(item, true))"/>
-                        </div>
+                        <h2 class="underlined">Results for @frameworkResults.FrameworkName framework (@frameworkResults.CatalogueItems.Count)</h2>
+                        @foreach (var item in frameworkResults.CatalogueItems)
+                        {
+                            <pdf-summary-list>
+                                <pdf-summary-list-row label-text="Solution name">
+                                    @item.Name
+                                </pdf-summary-list-row>
+                                <pdf-summary-list-row label-text="Supplier">
+                                    @item.Supplier.Name
+                                </pdf-summary-list-row>
+                                <pdf-summary-list-row label-text="Description">
+                                    @item.Solution.Summary
+                                </pdf-summary-list-row>
+                            </pdf-summary-list>
+                        }
                     }
+                        
                 }
             </div>
         </div>

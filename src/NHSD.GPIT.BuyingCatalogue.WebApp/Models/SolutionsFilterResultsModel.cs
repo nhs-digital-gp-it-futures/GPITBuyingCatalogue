@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
@@ -16,6 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
         public PageTitleModel Title { get; init; }
 
         public IList<CatalogueItem> CatalogueItems { get; init; }
+
+        public int ResultsCount { get; init; }
+
+        public List<ResultsForFrameworkModel> ResultsForFramework { get; init; }
 
         public ReviewFilterModel ReviewFilter { get; init; }
 
