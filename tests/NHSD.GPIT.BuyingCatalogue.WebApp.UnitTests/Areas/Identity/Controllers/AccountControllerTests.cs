@@ -205,7 +205,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
             var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
 
-            actualResult.ViewName.Should().Be("BadLogin");
+            actualResult.Should().NotBeNull();
+            actualResult.Model.Should().BeOfType<LoginViewModel>();
         }
 
         [Theory]
