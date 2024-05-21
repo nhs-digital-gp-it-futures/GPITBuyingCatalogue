@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices
 
         public void ManageSolutions()
         {
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),

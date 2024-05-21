@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common
 {
@@ -73,6 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common
         public static By OrderGuidance => By.Id("OrderGuidance");
 
         public static By ContinueButton => By.LinkText("Continue");
+
+        public static By SaveAndContinue => By.LinkText("Save and continue");
 
         public static By PriceDetailsHelp => ByExtensions.DataTestId("price-details");
     }

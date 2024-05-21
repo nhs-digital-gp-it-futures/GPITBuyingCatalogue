@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         public void ManageSupplierDefinedEpics()
         {
             CommonActions.ClickLinkElement(HomeObjects.ManageSupplierDefinedEpicsLink);
-            CommonActions.LedeText()
+            CommonActions.HintText()
             .Should()
             .Be("Add a supplier defined Epic or edit an existing one.".FormatForComparison());
         }
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         public void ManageAllUsers()
         {
             CommonActions.ClickLinkElement(HomeObjects.ManageAllUsersLink);
-            CommonActions.LedeText()
+            CommonActions.HintText()
             .Should()
             .Be("Add a new user or edit the details for one that's already been created.".FormatForComparison());
         }
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         public void ManageCatalogueSolutions()
         {
             CommonActions.ClickLinkElement(HomeObjects.ManageCatalogueSolutionsLink);
-            CommonActions.LedeText()
+            CommonActions.HintText()
             .Should()
             .Be("Add a new solution or edit one that's already been created.".FormatForComparison());
         }
