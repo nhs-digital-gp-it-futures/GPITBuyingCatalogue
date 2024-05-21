@@ -291,17 +291,17 @@
                 else
                 {
                     <div style="page-break-after: always"></div>
-                        <h2 class="underlined">Results summary and frameworks</h2>
-                        <pdf-summary-list>
-                            <pdf-summary-list-row label-text="Total number of results">
-                                @Model.ResultsCount
-                            </pdf-summary-list-row>
-                        </pdf-summary-list>
-                    <br/>
-                    @foreach(var frameworkResults in Model.ResultsForFramework)
+                    <h2 class="underlined">Results summary and frameworks</h2>
+                    <pdf-summary-list>
+                        <pdf-summary-list-row label-text="Total number of results">
+                            @Model.ResultsCount
+                        </pdf-summary-list-row>
+                    </pdf-summary-list>
+                    <br />
+                    @for(var i = 0; i < Model.ResultsForFramework.Count; i++)
                     {
-                        <h2 class="underlined">Results for @frameworkResults.FrameworkName framework (@frameworkResults.CatalogueItems.Count)</h2>
-                        @foreach (var item in frameworkResults.CatalogueItems)
+                        <h2 class="underlined">Results for @Model.ResultsForFramework[i].FrameworkName framework (@Model.ResultsForFramework[i].CatalogueItems.Count)</h2>
+                        @foreach (var item in Model.ResultsForFramework[i].CatalogueItems)
                         {
                             <pdf-summary-list>
                                 <pdf-summary-list-row label-text="Solution name">
@@ -315,8 +315,11 @@
                                 </pdf-summary-list-row>
                             </pdf-summary-list>
                         }
-                    }
-                        
+                        @if (i + 1 < Model.ResultsForFramework.Count)
+                        {
+                            <div style="page-break-after: always"></div>
+                        }
+                    }      
                 }
             </div>
         </div>
