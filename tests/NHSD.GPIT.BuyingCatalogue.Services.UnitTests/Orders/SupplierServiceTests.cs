@@ -91,27 +91,119 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task GetAllSuppliersByOrderType_SuppliersNoPublishedSolutions_ReturnsEmptySet(
             OrderType orderType,
             [Frozen] BuyingCatalogueDbContext context,
-            List<CatalogueItem> catalogueItems,
-            List<Supplier> suppliers,
+            List<Solution> solutions,
+            List<AssociatedService> associatedServices,
+            Supplier supplier,
             SupplierService service)
         {
-            catalogueItems.ForEach(x => x.CatalogueItemType = CatalogueItemType.Solution);
-            catalogueItems.ForEach(x => x.PublishedStatus = PublicationStatus.Draft);
-            context.CatalogueItems.AddRange(catalogueItems);
+            solutions.ForEach(x => x.FrameworkSolutions.ToList().ForEach(y => y.Framework.IsExpired = false));
+            solutions.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
+            solutions.ForEach(x => x.CatalogueItem.PublishedStatus = PublicationStatus.Draft);
+            context.Solutions.AddRange(solutions);
 
-            for (var i = 0; i < suppliers.Count; i++)
+            supplier.IsActive = true;
+            for (var i = 0; i < solutions.Count; i++)
             {
-                suppliers[i].IsActive = true;
-                suppliers[i].CatalogueItems.Add(catalogueItems[i]);
+                var solution = solutions[i];
+                var associatedService = associatedServices[i];
+                associatedService.PracticeReorganisationType = orderType.ToPracticeReorganisationType;
+                solution.CatalogueItem.SupplierServiceAssociations.Add(new(solution.CatalogueItemId, associatedService.CatalogueItemId));
+                supplier.CatalogueItems.Add(solution.CatalogueItem);
+                supplier.CatalogueItems.Add(associatedService.CatalogueItem);
             }
 
-            context.Suppliers.AddRange(suppliers);
+            context.Suppliers.Add(supplier);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var result = await service.GetActiveSuppliers(orderType, null);
 
             result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task GetAllSuppliersByOrderType_SupplierWithMixOfPublishedAndDraftSolutions_ForFramework_ReturnsEmptySet(
+            OrderType orderType,
+            [Frozen] BuyingCatalogueDbContext context,
+            List<Solution> solutions,
+            List<AssociatedService> associatedServices,
+            Supplier supplier,
+            SupplierService service)
+        {
+            solutions.ForEach(x => x.FrameworkSolutions.ToList().ForEach(y => y.Framework.IsExpired = false));
+            solutions.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
+            solutions.Take(1).ToList().ForEach(x => x.CatalogueItem.PublishedStatus = PublicationStatus.Published);
+            var draftSolutions = solutions.Skip(1).ToList();
+            draftSolutions.ForEach(x => x.CatalogueItem.PublishedStatus = PublicationStatus.Draft);
+
+            context.Solutions.AddRange(solutions);
+
+            supplier.IsActive = true;
+            for (var i = 0; i < solutions.Count; i++)
+            {
+                var solution = solutions[i];
+                var associatedService = associatedServices[i];
+                associatedService.PracticeReorganisationType = orderType.ToPracticeReorganisationType;
+                solution.CatalogueItem.SupplierServiceAssociations.Add(new(solution.CatalogueItemId, associatedService.CatalogueItemId));
+                supplier.CatalogueItems.Add(solution.CatalogueItem);
+                supplier.CatalogueItems.Add(associatedService.CatalogueItem);
+            }
+
+            context.Suppliers.Add(supplier);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = await service.GetActiveSuppliers(orderType, draftSolutions.First().FrameworkSolutions.First().Framework.Id);
+
+            result.Should().BeEmpty();
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        public static async Task GetAllSuppliersByOrderType_SupplierWithMixOfPublishedAndDraftSolutions_ForFramework_ReturnsSupplier(
+            OrderType orderType,
+            [Frozen] BuyingCatalogueDbContext context,
+            List<Solution> solutions,
+            List<AssociatedService> associatedServices,
+            Supplier supplier,
+            SupplierService service)
+        {
+            solutions.ForEach(x => x.FrameworkSolutions.ToList().ForEach(y => y.Framework.IsExpired = false));
+            solutions.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution);
+            var publishedSolutions = solutions.Take(1).ToList();
+            publishedSolutions.ForEach(x => x.CatalogueItem.PublishedStatus = PublicationStatus.Published);
+            solutions.Skip(1).ToList().ForEach(x => x.CatalogueItem.PublishedStatus = PublicationStatus.Draft);
+
+            context.Solutions.AddRange(solutions);
+
+            supplier.IsActive = true;
+            for (var i = 0; i < solutions.Count; i++)
+            {
+                var solution = solutions[i];
+                var associatedService = associatedServices[i];
+                associatedService.PracticeReorganisationType = orderType.ToPracticeReorganisationType;
+                solution.CatalogueItem.SupplierServiceAssociations.Add(new(solution.CatalogueItemId, associatedService.CatalogueItemId));
+                supplier.CatalogueItems.Add(solution.CatalogueItem);
+                supplier.CatalogueItems.Add(associatedService.CatalogueItem);
+            }
+
+            context.Suppliers.Add(supplier);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var result = await service.GetActiveSuppliers(orderType, publishedSolutions.First().FrameworkSolutions.First().Framework.Id);
+
+            result.Select(s => s.Id).Should().BeEquivalentTo([supplier.Id]);
         }
 
         [Theory]
@@ -136,10 +228,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Suppliers.AddRange(suppliers);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var result = await service.GetActiveSuppliers(OrderTypeEnum.Solution, null);
 
-            result.Should().BeEquivalentTo(suppliers);
+            result.Select(s => s.Id).Should().BeEquivalentTo(suppliers.Select(s => s.Id));
         }
 
         [Theory]
@@ -165,6 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Suppliers.AddRange(suppliers);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var result = await service.GetActiveSuppliers(OrderTypeEnum.Solution, nonMatchingFrameworkId);
 
@@ -194,10 +288,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Suppliers.AddRange(suppliers);
 
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
             var result = await service.GetActiveSuppliers(OrderTypeEnum.Solution, selectedFrameworkId);
 
-            result.Should().BeEquivalentTo(suppliers.Take(1));
+            result.Select(s => s.Id).Should().BeEquivalentTo(suppliers.Take(1).Select(s => s.Id));
         }
 
         [Theory]
