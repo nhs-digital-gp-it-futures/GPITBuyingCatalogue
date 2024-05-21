@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
@@ -6,13 +8,19 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
@@ -90,31 +98,59 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_Returns_ViewResult(
             string internalOrgId,
             int filterId,
             FilterDetailsModel filter,
             FilterIdsModel filterIds,
+            List<CatalogueItem> filterResults,
+            EntityFramework.Catalogue.Models.Framework framework,
+            Solution solution,
             [Frozen] Organisation organisation,
-            [Frozen] Mock<IOrganisationsService> organisationsService,
-            [Frozen] Mock<IManageFiltersService> manageFilterService,
+            [Frozen] IOrganisationsService organisationsService,
+            [Frozen] IManageFiltersService manageFilterService,
+            [Frozen] ISolutionsFilterService solutionsFilterService,
             SolutionsFilterResultsController controller)
         {
-            organisationsService
-                .Setup(s => s.GetOrganisationByInternalIdentifier(It.IsAny<string>()))
-                .ReturnsAsync(organisation);
+            organisationsService.GetOrganisationByInternalIdentifier(Arg.Any<string>()).Returns(organisation);
 
-            manageFilterService
-                .Setup(s => s.GetFilterDetails(It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(filter);
+            manageFilterService.GetFilterDetails(Arg.Any<int>(), Arg.Any<int>()).Returns(filter);
 
-            manageFilterService
-                .Setup(s => s.GetFilterIds(It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(filterIds);
+            manageFilterService.GetFilterIds(Arg.Any<int>(), Arg.Any<int>()).Returns(filterIds);
+
+            framework.Id = filterIds.FrameworkId;
+
+            solution.FrameworkSolutions = new List<FrameworkSolution>() { new FrameworkSolution()
+                {
+                    FrameworkId = filterIds.FrameworkId,
+                    Framework = framework,
+                    Solution = solution,
+                },
+            };
+
+            filterResults.ForEach(x => x.Solution = solution);
+
+            solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds).Returns(filterResults);
+
+            /*var selectedFrameworks = filterResults
+                .SelectMany(x => x.Solution.FrameworkSolutions)
+                .GroupBy(x => (x.Framework.ShortName, x.Framework.Id));
+
+            var resultsForFrameworks = selectedFrameworks.Select(
+                x => new ResultsForFrameworkModel(
+                    internalOrgId,
+                    filter.Id,
+                    x.Key.Id,
+                    x.Key.ShortName,
+                    x.Select(y => y.Solution.CatalogueItem).ToList(),
+                    false))
+            .ToList();*/
 
             var result = await controller.Index(internalOrgId, filterId);
             result.Should().BeOfType<ViewResult>();
+            //var model = (result as ViewResult).Model as SolutionsFilterResultsModel;
+            //model.ResultsForFramework.Should().Equal(resultsForFrameworks);
         }
     }
 }
