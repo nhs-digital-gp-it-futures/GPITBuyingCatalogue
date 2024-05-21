@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
 
 public class SelectFilterModelValidator : AbstractValidator<SelectFilterModel>
 {
-    internal const string SelectFilterError = "Select a filter";
+    internal const string SelectFilterError = "Select a shortlist";
 
     public SelectFilterModelValidator()
     {

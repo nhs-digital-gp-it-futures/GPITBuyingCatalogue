@@ -10,10 +10,13 @@ const gulp = require("gulp"),
     bundleconfig = require("./bundleconfig.json"),
     rename = require('gulp-rename');
 
+const root = 'wwwroot/';
+
 const paths = {
-    scss: 'wwwroot/scss/',
-    govuk: 'wwwroot/govuk-frontend/',
-    nhsuk: 'wwwroot/nhsuk-frontend/',
+    scss: root + 'scss/',
+    govuk: root + 'govuk-frontend/',
+    nhsuk: root + 'nhsuk-frontend/',
+    webfonts: root + 'webfonts',
     nodemod: 'node_modules/'
 };
 
@@ -38,6 +41,11 @@ gulp.task('govuk', function () {
     return gulp.src(paths.nodemod + 'govuk-frontend/govuk/all.js')
         .pipe(rename('govuk-frontend.min.js'))
         .pipe(gulp.dest(paths.govuk + 'assets/js'))
+});
+
+gulp.task('fonts', function () {
+    return gulp.src(paths.nodemod + '@fortawesome/fontawesome-free/webfonts/*')
+        .pipe(gulp.dest(paths.webfonts))
 });
 
 gulp.task("min:js", async function () {
@@ -77,4 +85,4 @@ function getBundles(regexPattern) {
     });
 }
 
-gulp.task("min", gulp.series("clean", "sass", "nhsuk", "govuk", "min:js", "min:css"));
+gulp.task("min", gulp.series("clean", "sass", "nhsuk", "govuk", 'fonts', "min:js", "min:css"));

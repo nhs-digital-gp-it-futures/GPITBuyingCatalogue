@@ -9,7 +9,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.NominateOrganisation
 
         [StringLength(10)]
         public string OdsCode { get; set; }
-
-        public bool HasReadPrivacyPolicy { get; set; }
     }
 }

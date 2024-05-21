@@ -165,6 +165,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return (results, options, count);
         }
 
+        public async
+            Task<IList<CatalogueItem>> GetAllSolutionsFilteredFromFilterIds(
+                FilterIdsModel filterIds)
+        {
+            var (catalogueItems, _, _) = await GetAllSolutionsFiltered(
+                null,
+                capabilitiesAndEpics: filterIds?.CapabilityAndEpicIds,
+                selectedFrameworkId: filterIds?.FrameworkId,
+                selectedApplicationTypeIds: filterIds.ApplicationTypeIds.ToFilterString(),
+                selectedHostingTypeIds: filterIds.HostingTypeIds.ToFilterString(),
+                selectedIm1Integrations: filterIds.IM1Integrations.ToFilterString(),
+                selectedGpConnectIntegrations: filterIds.GPConnectIntegrations.ToFilterString(),
+                selectedInteroperabilityOptions: filterIds.InteroperabilityOptions.ToFilterString());
+            return catalogueItems;
+        }
+
         public async Task<List<SearchFilterModel>> GetSolutionsBySearchTerm(string searchTerm, int maxToBringBack = 15)
         {
             var searchBySolutionNameQuery = dbContext.CatalogueItems.AsNoTracking()

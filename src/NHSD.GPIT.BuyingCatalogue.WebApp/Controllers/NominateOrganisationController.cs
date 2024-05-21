@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models.NominateOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
-    [Authorize]
+    [Authorize("Buyer")]
     [Route("nominate-organisation")]
     public class NominateOrganisationController : Controller
     {
@@ -30,23 +30,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                     nameof(Unavailable));
             }
 
-            return View();
-        }
-
-        [HttpGet("details")]
-        public IActionResult Details()
-        {
             var model = new NominateOrganisationDetailsModel
             {
-                BackLink = Url.Action(nameof(Index)),
+                BackLink = Url.Action(nameof(BuyerDashboardController.Index), typeof(BuyerDashboardController).ControllerName(), new { Area = typeof(BuyerDashboardController).AreaName(), internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() }),
                 BackLinkText = "Go back",
             };
 
             return View(model);
         }
 
-        [HttpPost("details")]
-        public async Task<IActionResult> Details(NominateOrganisationDetailsModel viewModel)
+        [HttpPost]
+        public async Task<IActionResult> Index(NominateOrganisationDetailsModel viewModel)
         {
             if (!ModelState.IsValid)
                 return View(viewModel);

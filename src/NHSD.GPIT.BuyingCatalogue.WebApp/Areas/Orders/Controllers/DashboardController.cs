@@ -10,7 +10,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
@@ -48,46 +47,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             [FromQuery] string search = "")
         {
             var options = new PageOptions(page, pageSize: 10);
-            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-            (PagedList<Order> orders, IEnumerable<CallOffId> orderIds) = await orderService.GetPagedOrders(organisation.Id, options, search);
 
-            var model = new OrganisationModel(organisation, User, orders.Items)
-            {
-                Options = orders.Options,
-                OrderIds = orderIds,
-            };
-
-            return View(model);
-        }
-
-        [HttpGet("organisation/{internalOrgId}/select")]
-        public async Task<IActionResult> SelectOrganisation(string internalOrgId)
-        {
-            var internalOrgIds = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
+            var organisationIds = new List<string>(User.GetSecondaryOrganisationInternalIdentifiers())
             {
                 User.GetPrimaryOrganisationInternalIdentifier(),
             };
 
-            var organisations = await organisationsService.GetOrganisationsByInternalIdentifiers(internalOrgIds.ToArray());
+            var organisations = await organisationsService.GetOrganisationsByInternalIdentifiers(organisationIds.ToArray());
+            var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-            var model = new SelectOrganisationModel(internalOrgId, organisations)
+            (PagedList<Order> orders, _) = await orderService.GetPagedOrders(organisation.Id, options, search);
+
+            var model = new OrganisationModel(organisation, organisations, orders.Items)
             {
-                BackLink = Url.Action(nameof(Organisation), new { internalOrgId }),
+                Options = orders.Options,
             };
 
             return View(model);
         }
 
-        [HttpPost("organisation/{internalOrgId}/select")]
-        public IActionResult SelectOrganisation(string internalOrgId, SelectOrganisationModel model)
+        [HttpPost("organisation/{internalOrgId}")]
+        public IActionResult Organisation(
+            string internalOrgId,
+            OrganisationModel model,
+            [FromQuery] string page = "",
+            [FromQuery] string search = "")
         {
+            _ = internalOrgId;
+
             if (!ModelState.IsValid)
                 return View(model);
 
             return RedirectToAction(
                 nameof(Organisation),
-                typeof(DashboardController).ControllerName(),
-                new { internalOrgId = model.SelectedOrganisation });
+                new { internalOrgId = model.SelectedOrganisationId, page, search });
         }
 
         [HttpGet("organisation/{internalOrgId}/search-suggestions")]

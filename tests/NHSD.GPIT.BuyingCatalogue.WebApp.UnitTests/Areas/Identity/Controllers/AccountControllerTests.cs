@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             UserManager<AspNetUser> mockUserManager,
             SignInManager<AspNetUser> mockSignInManager)
         {
-            const string expectedErrorMessage = "The username or password were not recognised. Please try again.";
+            const string expectedErrorMessage = "The username or password was not recognised. Try again or contact your administrator.";
 
             mockUserManager
                 .FindByNameAsync(model.EmailAddress)
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             UserManager<AspNetUser> mockUserManager,
             SignInManager<AspNetUser> mockSignInManager)
         {
-            const string expectedErrorMessage = "The username or password were not recognised. Please try again.";
+            const string expectedErrorMessage = "The username or password was not recognised. Try again or contact your administrator.";
 
             user.Disabled = false;
 
@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async Task Post_Login_UserAccountLocked_ReturnsLockedView(
+        public static async Task Post_Login_UserAccountLocked_ReturnsView(
             AspNetUser user,
             LoginViewModel model,
             UserManager<AspNetUser> mockUserManager,
@@ -203,9 +203,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             await mockUserManager.Received().FindByNameAsync(model.EmailAddress);
             await mockSignInManager.Received().PasswordSignInAsync(user, model.Password, false, true);
 
-            var actualResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
+            var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
 
-            actualResult.ActionName.Should().Be(nameof(AccountController.LockedAccount));
+            actualResult.Should().NotBeNull();
+            actualResult.Model.Should().BeOfType<LoginViewModel>();
         }
 
         [Theory]
@@ -349,16 +350,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
             var actualResult = result.Should().BeAssignableTo<RedirectResult>().Subject;
 
             actualResult.Url.Should().Be(adminUrl);
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void Get_LockedAccount_ReturnsDefaultView(AccountController controller)
-        {
-            var result = controller.LockedAccount();
-
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.Null(((ViewResult)result).ViewName);
         }
 
         [Theory]

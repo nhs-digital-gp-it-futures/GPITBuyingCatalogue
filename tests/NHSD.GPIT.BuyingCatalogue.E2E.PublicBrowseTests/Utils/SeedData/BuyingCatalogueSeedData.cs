@@ -63,16 +63,16 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Utils.SeedData
 
             List<FrameworkSolution> frameworkSolutions = new()
             {
-                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "001"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
-                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "002"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
-                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "003"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "003"), IsFoundation = true, LastUpdated = DateTime.UtcNow },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "004"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "005"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99997, "001"), IsFoundation = true, LastUpdated = DateTime.UtcNow },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99998, "001"), IsFoundation = true, LastUpdated = DateTime.UtcNow },
-                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99998, "001"), IsFoundation = true, LastUpdated = DateTime.UtcNow },
-                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99998, "002"), IsFoundation = false, LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "001"), LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "002"), LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99999, "003"), LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "003"), LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "004"), LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99999, "005"), LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99997, "001"), LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99998, "001"), LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "DFOCVC001", SolutionId = new CatalogueItemId(99998, "001"), LastUpdated = DateTime.UtcNow },
+                new FrameworkSolution { FrameworkId = "NHSDGP001", SolutionId = new CatalogueItemId(99998, "002"), LastUpdated = DateTime.UtcNow },
             };
             context.AddRange(frameworkSolutions);
 

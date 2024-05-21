@@ -25,9 +25,15 @@
     <input type="hidden" asp-for="BackLink"/>
     <input type="hidden" asp-for="BackLinkText"/>
     <input type="hidden" asp-for="CompetitionName"/>
-    <input type="hidden" asp-for="@Model.Solutions[0].SolutionId"/>
-    <input type="hidden" asp-for="@Model.Solutions[0].SolutionName"/>
-    <input type="hidden" asp-for="@Model.Solutions[0].SupplierName"/>
+    <input type="hidden" asp-for="FrameworkName" />
+    <input type="hidden" asp-for="@Model.Solutions[0].SolutionId" />
+    <input type="hidden" asp-for="@Model.Solutions[0].SolutionName" />
+    <input type="hidden" asp-for="@Model.Solutions[0].SupplierName" />
+    <input type="hidden" asp-for="@Model.Solutions[0].Summary" />
+    @for (var x = 0; x < Model.Solutions[0].RequiredServices.Count; x++)
+    {
+        <input type="hidden" asp-for="@Model.Solutions[0].RequiredServices[x]" />
+    }
 
     @for (var x = 0; x < Model.Solutions[0].RequiredServices.Count; x++)
     {

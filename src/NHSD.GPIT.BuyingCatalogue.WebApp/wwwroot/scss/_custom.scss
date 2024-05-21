@@ -64,3 +64,54 @@
   padding-bottom: 45px;
   padding-top: 45px;
 }
+
+.bc-text-light {
+    background: #ebebeb;
+    padding: 2px 5px 2px 5px;
+    display: inline-block;
+}
+
+.bc-account-switcher {
+  summary {
+    cursor: pointer;
+    outline: none;
+    position: relative;
+    padding-right: 20px;
+  }
+  summary::marker {
+    content: none !important;
+  }
+  summary::after {
+    content: '\f13a';
+    font-family: 'Font Awesome 6 Free';
+    color: #005eb8;
+    font-weight:900;
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+  }
+
+  background-color: #fff;
+  border-radius: 16px;
+  border: solid 1px #eee;
+  padding: 16px 24px;
+  margin-bottom: 24px;
+  .currentOrg {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #005eb8;
+  }
+  .currentOrg:hover {
+    text-decoration: underline;
+  }
+}
+.bc-account-switcher[open] summary::after {
+  transform: translateY(-50%) rotate(180deg);
+  transition: .5s transform ease;
+}
+
+.bold-label {
+    font-weight: bold !important;
+}

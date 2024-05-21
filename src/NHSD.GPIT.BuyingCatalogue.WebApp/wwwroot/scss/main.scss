@@ -4,6 +4,10 @@
 // GOV.UK frontend styles
 @import 'node_modules/govuk-frontend/govuk/all';
 
+// FontAwesome Free styles
+@import 'node_modules/@fortawesome/fontawesome-free/scss/fontawesome';
+@import 'node_modules/@fortawesome/fontawesome-free/scss/solid';
+
 // Helpers
 @import './helpers/typography';
 @import './helpers/colors';

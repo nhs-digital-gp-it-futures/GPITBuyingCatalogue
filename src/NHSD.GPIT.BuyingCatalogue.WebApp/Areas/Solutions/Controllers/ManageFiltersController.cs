@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -29,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         private readonly IOrganisationsService organisationsService;
         private readonly IManageFiltersService manageFiltersService;
         private readonly ICapabilitiesService capabilitiesService;
+        private readonly ISolutionsFilterService solutionsFilterService;
         private readonly IEpicsService epicsService;
         private readonly IFrameworkService frameworkService;
         private readonly IPdfService pdfService;
@@ -39,10 +41,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             IEpicsService epicsService,
             IFrameworkService frameworkService,
             IManageFiltersService manageFiltersService,
+            ISolutionsFilterService solutionsFilterService,
             IPdfService pdfService)
         {
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.manageFiltersService = manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
+            this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
             this.epicsService = epicsService ?? throw new ArgumentNullException(nameof(epicsService));
             this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
@@ -137,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 return View(model);
             }
 
-            await manageFiltersService.AddFilter(
+            var filterId = await manageFiltersService.AddFilter(
                 model.Name,
                 model.Description,
                 model.OrganisationId,
@@ -150,8 +154,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 model.InteroperabilityIntegrationTypes);
 
             return RedirectToAction(
-                nameof(Index),
-                typeof(ManageFiltersController).ControllerName());
+                nameof(FilterDetails),
+                new { filterId });
         }
 
         [HttpGet("filter-details")]
@@ -160,18 +164,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var organisation = await GetUserOrganisation();
             var filterDetails = await manageFiltersService.GetFilterDetails(organisation.Id, filterId);
             var filterIds = await manageFiltersService.GetFilterIds(organisation.Id, filterId);
+            var solutions = await solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds);
 
             if (filterDetails == null || filterIds == null)
                 return NotFound();
 
-            var model = new ReviewFilterModel(filterDetails, filterIds)
+            var model = new ReviewFilterModel(filterDetails, organisation.InternalIdentifier, solutions.ToList(), false, filterIds)
             {
                 BackLink = Url.Action(nameof(Index), typeof(ManageFiltersController).ControllerName()),
                 Caption = organisation.Name,
-                InternalOrgId = organisation.InternalIdentifier,
+                OrganisationName = organisation.Name,
+                InExpander = true,
             };
 
-            return View(model);
+            return View("Shortlists/FilterDetails", model);
         }
 
         [HttpGet("save-failed")]
