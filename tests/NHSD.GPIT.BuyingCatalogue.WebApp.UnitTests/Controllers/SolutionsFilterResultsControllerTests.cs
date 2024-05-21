@@ -133,24 +133,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds).Returns(filterResults);
 
-            /*var selectedFrameworks = filterResults
-                .SelectMany(x => x.Solution.FrameworkSolutions)
-                .GroupBy(x => (x.Framework.ShortName, x.Framework.Id));
-
-            var resultsForFrameworks = selectedFrameworks.Select(
-                x => new ResultsForFrameworkModel(
-                    internalOrgId,
-                    filter.Id,
-                    x.Key.Id,
-                    x.Key.ShortName,
-                    x.Select(y => y.Solution.CatalogueItem).ToList(),
-                    false))
-            .ToList();*/
-
             var result = await controller.Index(internalOrgId, filterId);
             result.Should().BeOfType<ViewResult>();
-            //var model = (result as ViewResult).Model as SolutionsFilterResultsModel;
-            //model.ResultsForFramework.Should().Equal(resultsForFrameworks);
         }
     }
 }
