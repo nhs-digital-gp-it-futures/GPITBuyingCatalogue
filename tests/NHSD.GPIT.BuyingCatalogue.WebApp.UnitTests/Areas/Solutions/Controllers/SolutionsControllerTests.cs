@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), capabilitiesAndEpics, null, null, null, null, null, null, null))
                 .ReturnsAsync((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
 
-            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, null, null, null);
+            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, null, null);
             result.Should().BeOfType<ViewResult>();
 
             mockService.VerifyAll();
@@ -263,27 +263,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             result.Should().BeOfType<PartialViewResult>();
 
             mockService.VerifyAll();
-        }
-
-        [Theory]
-        [CommonAutoData]
-        public static async Task Get_Index_NotFound_When_Invalid_FilterId(
-            [Frozen] Mock<IOrganisationsService> organisationsService,
-            [Frozen] Mock<IManageFiltersService> manageFiltersService,
-            Organisation organisation,
-            PageOptions options,
-            SolutionsController controller)
-        {
-            organisationsService
-                .Setup(x => x.GetOrganisationByInternalIdentifier(It.IsAny<string>()))
-                .ReturnsAsync(organisation);
-
-            manageFiltersService
-                .Setup(x => x.GetFilterDetails(It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync((FilterDetailsModel)null);
-
-            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, null, null, int.MaxValue);
-            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory]

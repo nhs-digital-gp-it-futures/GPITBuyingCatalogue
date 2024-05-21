@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
@@ -53,13 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             if (filter == null || filterIds == null)
                 return NotFound();
 
-            /*var selectedFrameworkId = filterIds.FrameworkId;
-            var selectedApplicationTypeIds = filterIds.ApplicationTypeIds.ToFilterString();
-            var selectedHostingTypeIds = filterIds.HostingTypeIds.ToFilterString();
-            var selectedIM1Integrations = filterIds.IM1Integrations.ToFilterString();
-            var selectedGPConnectIntegrations = filterIds.GPConnectIntegrations.ToFilterString();
-            var selectedInteroperabilityOptions = filterIds.InteroperabilityOptions.ToFilterString();*/
-
             var selectedFrameworks = filterResults
                 .SelectMany(x => x.Solution.FrameworkSolutions)
                 .GroupBy(x => (x.Framework.ShortName, x.Framework.Id));
@@ -67,8 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             if (!string.IsNullOrWhiteSpace(filterIds.FrameworkId))
                 selectedFrameworks = selectedFrameworks.Where(x => string.Equals(x.Key.Id, filterIds.FrameworkId));
 
-            var resultsForFrameworks = new List<ResultsForFrameworkModel>();
-            resultsForFrameworks = selectedFrameworks.Select(
+            var resultsForFrameworks = selectedFrameworks.Select(
                 x => new ResultsForFrameworkModel(
                     internalOrgId,
                     filterDetails.Id,
