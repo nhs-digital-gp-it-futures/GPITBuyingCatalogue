@@ -38,13 +38,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedE
 
         public void SupplierDefinedEpicInformation()
         {
-            CommonActions.LedeText()
+            CommonActions.HintText()
             .Should()
             .Be("Review the information for this supplier defined Epic or edit the details already added.".FormatForComparison());
 
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
 
-            CommonActions.LedeText()
+            CommonActions.HintText()
             .Should()
             .Be("Add a supplier defined Epic or edit an existing one.".FormatForComparison());
         }

@@ -7,4 +7,6 @@ public static class AddFrameworkObjects
     public static By FrameworkNameInput => By.Id("Name");
 
     public static By IsLocalFundingOnlyInput => By.Id("is-local-funding-only");
+
+    public static By MaximumTermInput => By.Id("MaximumTerm");
 }

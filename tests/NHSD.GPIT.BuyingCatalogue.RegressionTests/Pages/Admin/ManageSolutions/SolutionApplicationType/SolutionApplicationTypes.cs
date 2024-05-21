@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
 
         public void ManageCatalogueSolution()
         {
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution))

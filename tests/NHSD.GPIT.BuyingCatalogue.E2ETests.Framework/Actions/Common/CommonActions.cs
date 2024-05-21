@@ -34,6 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public void ClickContinue() =>
             Driver.FindElement(CommonSelectors.ContinueButton).Click();
 
+        public void ClickSaveAndContinue() =>
+            Driver.FindElement(CommonSelectors.SaveAndContinue).Click();
+
         public void ClickLinkElement(By targetElement) =>
             Driver.FindElement(targetElement).Click();
 
@@ -268,6 +271,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
 
         public string LedeText() =>
             Driver.FindElement(By.ClassName("nhsuk-lede-text")).Text.FormatForComparison();
+
+        public string HintText() =>
+            Driver.FindElement(By.CssSelector(".nhsuk-hint.nhsuk-u-margin-bottom-5")).Text.FormatForComparison();
 
         public string InsetText() =>
             Driver.FindElement(By.ClassName("nhsuk-inset-text")).Text.FormatForComparison();

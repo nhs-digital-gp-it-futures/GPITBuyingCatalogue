@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
                 }
             }
 
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.ApplicationType))
