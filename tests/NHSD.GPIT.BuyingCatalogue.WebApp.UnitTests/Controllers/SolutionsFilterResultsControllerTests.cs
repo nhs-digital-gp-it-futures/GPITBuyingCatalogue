@@ -121,7 +121,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             framework.Id = filterIds.FrameworkId;
 
-            solution.FrameworkSolutions = new List<FrameworkSolution>() { new FrameworkSolution()
+            solution.FrameworkSolutions = new List<FrameworkSolution>()
+            {
+                new FrameworkSolution()
                 {
                     FrameworkId = filterIds.FrameworkId,
                     Framework = framework,
