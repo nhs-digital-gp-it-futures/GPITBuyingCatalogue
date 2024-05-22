@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCr
 
         public void CreateCompetition(string competition)
         {
-            CommonActions.LedeText().Should().Be("Provide a name and description for your competition.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Provide the following details to create a competition.".FormatForComparison());
 
             CommonActions.PageLoadedCorrectGetIndex(
                typeof(CompetitionsDashboardController),

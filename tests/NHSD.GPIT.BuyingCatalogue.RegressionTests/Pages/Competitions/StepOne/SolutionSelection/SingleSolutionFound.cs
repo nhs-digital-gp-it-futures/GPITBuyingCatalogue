@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne.S
 
         public void SingleSolution()
         {
-            CommonActions.LedeText().Should().Be("These are the results from your chosen filter.".FormatForComparison());
+            CommonActions.InsetText().Should().Be("Information: Your selected filter has only returned 1 result. You therefore do not need to carry out a competition and can instead use a direct award to procure this solution.".FormatForComparison());
 
             CommonActions.ClickFirstRadio();
             CommonActions.ClickSave();

@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne
             TextGenerators.NumberInputAddRandomNumber(CompetitionsDashboardObjects.ContractLengthInput, 6, 36);
             CommonActions.ClickSave();
 
-            CommonActions.LedeText().Should().Be("Complete the following steps to carry out a competition.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Complete the following steps to carry out a competition.".FormatForComparison());
         }
     }
 }

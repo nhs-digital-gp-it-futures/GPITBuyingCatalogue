@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Competiti
         public void CreateOrderFromCompetition(string winningsolution)
         {
             CommonActions.ClickLinkElement(CompetitionToOrderObjects.CreateOrderFromeCompetitionWinningSolution(winningsolution));
-            CommonActions.LedeText().Should().Be("This is what you're ordering based on this competition.".FormatForComparison());
+            CommonActions.HintText().Should().Be("This is what you're ordering based on this competition.".FormatForComparison());
 
             CommonActions.ClickSave();
         }
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Competiti
                 typeof(DeliveryDatesController),
                 nameof(DeliveryDatesController.Review)).Should().BeTrue();
 
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
         }
 
         public void CompetitionPlannedDeliveryDate()

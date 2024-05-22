@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             CommonActions.ClickCheckboxByLabel("Features");
             CommonActions.ClickSave();
 
-            CommonActions.LedeText().Should().Be("Explain your requirements for features provided by the winning solution. You can add more features requirements later if needed.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Explain your requirements for features provided by the winning solution. You can add more features requirements later if needed.".FormatForComparison());
 
             MustFeature();
             ReviewFeatureAddAnotherRequirement();
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void ReviewFeatureAddAnotherRequirement()
         {
-            CommonActions.LedeText().Should().Be("Review the information you’ve provided and add any more features requirements if needed.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Review the information you’ve provided and add any more features requirements if needed.".FormatForComparison());
             CommonActions.ClickLinkElement(NonPriceObjects.AddAnotherRequirementLink);
         }
 
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void ReviewFeature()
         {
-            CommonActions.LedeText().Should().Be("Review the information you’ve provided and add any more features requirements if needed.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Review the information you’ve provided and add any more features requirements if needed.".FormatForComparison());
             CommonActions.ClickSave();
         }
     }

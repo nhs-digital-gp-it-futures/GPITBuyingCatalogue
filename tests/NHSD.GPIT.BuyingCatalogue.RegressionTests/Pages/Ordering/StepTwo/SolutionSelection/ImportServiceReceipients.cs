@@ -27,11 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         public void UploadServiceRecipients()
         {
             CommonActions.ClickLinkElement(OrderRecipientsObjects.ServiceRecipientsLink);
-            CommonActions.LedeText().Should().Be("Select how you want to add Service Recipients.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Select how you want to add Service Recipients.".FormatForComparison());
             CommonActions.ClickRadioButtonWithText("Upload Service Recipients using a CSV file");
             CommonActions.ClickSave();
 
-            CommonActions.LedeText().Should().Be("Create a CSV with your Service Recipients in the first column and their ODS codes in the second column.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Create a CSV with your Service Recipients in the first column and their ODS codes in the second column.".FormatForComparison());
         }
     }
 }

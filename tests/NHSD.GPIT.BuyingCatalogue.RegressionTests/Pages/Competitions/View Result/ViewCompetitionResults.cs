@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.View_Resu
         public void ViewResults()
         {
             CommonActions.ClickSave();
-            CommonActions.LedeText().Should().Be("These are the results for this competition.".FormatForComparison());
+            CommonActions.HintText().Should().Be("These are the results for this competition.".FormatForComparison());
         }
 
         public void ViewMultipleWinningResults()

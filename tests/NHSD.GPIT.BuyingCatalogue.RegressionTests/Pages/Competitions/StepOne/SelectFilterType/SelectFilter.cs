@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCr
 
         public void SelectFilterForNewCompetition(int value)
         {
-            CommonActions.LedeText().Should().Be("The results produced by your selected filter can be taken into your competition.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Shortlists are created using filters and can then be taken into a competition.".FormatForComparison());
             CommonActions.PageLoadedCorrectGetIndex(
                typeof(CompetitionsDashboardController),
                nameof(CompetitionsDashboardController.SelectFilter))

@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
         public void CatalogueSolutionAddBespokeMilestone()
         {
             CommonActions.ClickLinkElement(ImplementationPlanObjects.ImplementationPlanAddBespokeMilestone);
-            CommonActions.LedeText().Should().Be("Add an implementation plan milestone.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Add an implementation plan milestone.".FormatForComparison());
 
             CatalogueSolutionEnterMilestoneName();
             CommonActions.ClickSave();
@@ -35,14 +35,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
         public void AssociatedServicesAddBespokeMilestones(int value)
         {
             CommonActions.ClickLinkElement(ImplementationPlanObjects.AssociatedServicesAddBespokeMilestone);
-            CommonActions.LedeText().Should().Be("Add an Associated Service milestone.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Add an Associated Service milestone.".FormatForComparison());
             CommonActions.ClickDropDownListItem(value);
             AssociatedServicesEnterMilestoneName();
 
-            CommonActions.LedeText().Should().Be("Review the default milestones that will act as payment triggers and create bespoke ones if required.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Review the default milestones that will act as payment triggers and create bespoke ones if required.".FormatForComparison());
             CommonActions.ClickSave();
 
-            CommonActions.LedeText().Should().Be("Provide details of any specific requirements for your Associated Services.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Provide details of any specific requirements for your Associated Services.".FormatForComparison());
             CommonActions.ClickSave();
         }
 

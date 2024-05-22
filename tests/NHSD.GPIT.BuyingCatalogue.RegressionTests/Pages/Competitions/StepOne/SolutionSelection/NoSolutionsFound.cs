@@ -15,8 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne.S
 
         public void NoSolutions()
         {
-            CommonActions.LedeText().Should().Be("There were no results from your chosen filter.".FormatForComparison());
-            CommonActions.ClickStartNewSearch();
+            CommonActions.ClickReturnToShortLists();
+            CommonActions.HintText().Should().Be("Shortlists are created using filters and can then be taken into a competition.".FormatForComparison());
         }
     }
 }

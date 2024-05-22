@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             }
             else
             {
-                CommonActions.ClickContinue();
+                CommonActions.ClickSaveAndContinue();
 
                 CommonActions.PageLoadedCorrectGetIndex(
                   typeof(OrderController),

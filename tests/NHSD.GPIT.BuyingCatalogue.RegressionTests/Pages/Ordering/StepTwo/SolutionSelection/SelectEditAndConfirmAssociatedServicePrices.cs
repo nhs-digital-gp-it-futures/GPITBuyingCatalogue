@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
              typeof(TaskListController),
              nameof(TaskListController.TaskList)).Should().BeTrue();
 
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(OrderController),
