@@ -67,21 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedHostingTypeIds,
             [FromQuery] string selectedIM1Integrations,
             [FromQuery] string selectedGPConnectIntegrations,
-            [FromQuery] string selectedInteroperabilityOptions,
-            [FromQuery] int? filterId)
+            [FromQuery] string selectedInteroperabilityOptions)
         {
-            string filterName = null;
-            if (filterId.HasValue && (User.Identity?.IsAuthenticated ?? false))
-            {
-                var organisation = await GetUserOrganisation();
-                var filter = await manageFiltersService.GetFilterDetails(organisation.Id, filterId.Value);
-
-                if (filter == null)
-                    return NotFound();
-
-                filterName = filter.Name;
-            }
-
             var filters = new RequestedFilters(
                 selected,
                 search,
@@ -112,20 +99,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
 
-            var additionalFilters = new AdditionalFiltersModel(frameworks, filters)
-            {
-                FilterId = filterId,
-            };
+            var additionalFilters = new AdditionalFiltersModel(frameworks, filters);
 
             return View(
                 new SolutionsModel
                 {
-                    FilterName = filterName,
                     AdditionalFilters = additionalFilters,
                     ResultsModel = new SolutionsResultsModel()
                     {
                         PageOptions = options,
-                        FilterResultView = !string.IsNullOrEmpty(filterName),
                         CatalogueItems = catalogueItems,
                         Filters = filters,
                     },
@@ -203,7 +185,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var model = new SolutionsResultsModel()
             {
                 PageOptions = options,
-                FilterResultView = false,
                 CatalogueItems = catalogueItems,
                 Filters = filters,
             };
@@ -608,14 +589,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 model.BackLink = backlink;
 
             return View(model);
-        }
-
-        private async Task<Organisation> GetUserOrganisation()
-        {
-            var organisationInternalIdentifier = User.GetPrimaryOrganisationInternalIdentifier();
-            var organisation =
-                await organisationsService.GetOrganisationByInternalIdentifier(organisationInternalIdentifier);
-            return organisation;
         }
     }
 }
