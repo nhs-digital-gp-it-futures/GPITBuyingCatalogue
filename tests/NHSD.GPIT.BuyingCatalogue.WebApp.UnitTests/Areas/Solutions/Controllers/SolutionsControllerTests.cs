@@ -25,12 +25,14 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
+using NSubstitute;
 using Xunit;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -371,6 +373,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().BeEquivalentTo(associatedServicesModel);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServices_SuspendedStatus_ReturnsRedirect(
+            [Frozen] ISolutionsService solutionsServiceMock,
+            Solution solution,
+            SolutionsController controller,
+            CatalogueItemContentStatus contentStatus)
+        {
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Suspended;
+            var catalogueItem = solution.CatalogueItem;
+            var associatedServices = solution.CatalogueItem.SupplierServiceAssociations.Select(ssa => ssa.CatalogueItem).ToList();
+            var associatedServicesModel = new AssociatedServicesModel(catalogueItem, associatedServices, contentStatus);
+
+            solutionsServiceMock.GetSolutionWithBasicInformation(catalogueItem.Id).Returns(catalogueItem);
+
+            var result = await controller.AssociatedServices(catalogueItem.Id);
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectToActionResult>();
         }
 
         [Theory]
@@ -1203,6 +1226,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Theory]
+        [MockAutoData]
+        public static async Task Get_AdditionalServicePricePage_SuspendedStatus_ReturnsRedirect(
+            [Frozen] ISolutionsService mockSolutionsService,
+            [Frozen] IListPriceService mockListPriceService,
+            SolutionsController controller,
+            Solution solution,
+            AdditionalService additionalService,
+            CatalogueItemContentStatus contentStatus,
+            CatalogueItem service)
+        {
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = PublicationStatus.Suspended;
+            catalogueItem.AdditionalService = additionalService;
+            service = catalogueItem.AdditionalService.CatalogueItem;
+            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, service, contentStatus) { IndexValue = 4, };
+
+            mockListPriceService.GetCatalogueItemWithListPrices(service.Id).Returns(service);
+
+            mockSolutionsService.GetSolutionWithCataloguePrice(catalogueItem.Id).Returns(catalogueItem);
+
+            var result = await controller.AdditionalServicePrice(catalogueItem.Id, service.Id);
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectToActionResult>();
+        }
+
+        [Theory]
         [CommonAutoData]
         public static async Task Get_AdditionalServicePricePage_NullCatalogueItem_ReturnsError(
             [Frozen] Mock<ISolutionsService> mockService,
@@ -1252,6 +1302,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.Should().NotBeNull();
             actual.ViewName.Should().Be("ListPrice");
             actual.Model.Should().BeEquivalentTo(mockSolutionListPriceModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.IndexValue).Excluding(m => m.Caption));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AssociatedServicePricePage_SuspendedStatus_ReturnsRedirect(
+            [Frozen] ISolutionsService mockSolutionsService,
+            [Frozen] IListPriceService mockListPriceService,
+            SolutionsController controller,
+            Solution solution,
+            AssociatedService associatedService)
+        {
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = PublicationStatus.Suspended;
+            catalogueItem.AssociatedService = associatedService;
+            var service = catalogueItem.AssociatedService.CatalogueItem;
+
+            mockListPriceService.GetCatalogueItemWithListPrices(service.Id).Returns(service);
+
+            mockSolutionsService.GetSolutionWithCataloguePrice(catalogueItem.Id).Returns(catalogueItem);
+
+            var result = await controller.AssociatedServicePrice(catalogueItem.Id, service.Id);
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectToActionResult>();
         }
 
         [Theory]
@@ -1486,6 +1560,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
 
             actual.Model.Should().BeEquivalentTo(expectedAdditionalServicesModel);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_AdditionalServices_SuspendedStatus_ReturnsRedirect(
+            [Frozen] ISolutionsService mockService,
+            SolutionsController controller,
+            Solution solution,
+            CatalogueItemContentStatus contentStatus)
+        {
+            var id = solution.CatalogueItemId;
+            solution.CatalogueItem.PublishedStatus = PublicationStatus.Suspended;
+            var additionalServices = solution.AdditionalServices.Select(add => add.CatalogueItem).ToList();
+            var expectedAdditionalServicesModel =
+                new AdditionalServicesModel(solution.CatalogueItem, additionalServices, contentStatus);
+
+            mockService.GetSolutionWithBasicInformation(id).Returns(solution.CatalogueItem);
+
+            var result = await controller.AdditionalServices(id);
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<RedirectToActionResult>();
         }
 
         [Theory]

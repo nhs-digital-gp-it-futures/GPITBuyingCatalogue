@@ -590,13 +590,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             return View(model);
         }
-
-        private async Task<Organisation> GetUserOrganisation()
-        {
-            var organisationInternalIdentifier = User.GetPrimaryOrganisationInternalIdentifier();
-            var organisation =
-                await organisationsService.GetOrganisationByInternalIdentifier(organisationInternalIdentifier);
-            return organisation;
-        }
     }
 }
