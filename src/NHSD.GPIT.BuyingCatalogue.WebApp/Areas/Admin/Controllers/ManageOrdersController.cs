@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> FilterSearchSuggestions(
             [FromQuery] string search = "")
         {
-            var currentPageUrl = HttpContext.GetRefererUriBuilder();
+            var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
 
             var results = await orderAdminService.GetOrdersBySearchTerm(search);
 
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 new HtmlEncodedSuggestionSearchResult(
                     r.Title,
                     r.Category,
-                    currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).AppendQueryParameterToUrl("searchTermType", r.Category).ToString())));
+                    currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).AppendQueryParameterToUrl("searchTermType", r.Category).Uri.PathAndQuery)));
         }
 
         [HttpGet("{callOffId}")]

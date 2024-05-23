@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             string internalOrgId,
             [FromQuery] string search)
         {
-            var currentPageUrl = HttpContext.GetRefererUriBuilder();
+            var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
 
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             var results = await orderService.GetOrdersBySearchTerm(organisation.Id, search);
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 new HtmlEncodedSuggestionSearchResult(
                     r.Title,
                     r.Category,
-                    currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Category).ToString())));
+                    currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Category).Uri.PathAndQuery)));
         }
     }
 }

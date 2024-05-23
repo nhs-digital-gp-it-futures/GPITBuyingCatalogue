@@ -145,7 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("search-suggestions")]
         public async Task<IActionResult> FilterSearchSuggestions([FromQuery] string search)
         {
-            var currentPageUrl = HttpContext.GetRefererUriBuilder();
+            var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
 
             var results = await solutionsFilterService.GetSolutionsBySearchTerm(search);
 
@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                         new HtmlEncodedSuggestionSearchResult(
                             r.Title,
                             r.Category,
-                            currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString())));
+                            currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).Uri.PathAndQuery)));
         }
 
         [HttpGet("search-results")]

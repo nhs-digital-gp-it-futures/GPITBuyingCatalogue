@@ -166,8 +166,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             {
                 Request =
                 {
-                    Scheme = uri.Scheme,
-                    Host = new HostString(uri.Host),
                     Headers = { Referer = uri.ToString(), },
                 },
             };
@@ -176,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 r => new HtmlEncodedSuggestionSearchResult(
                     r.Title,
                     r.Category,
-                    requestUri.AppendQueryParameterToUrl("search", r.Category).ToString()));
+                    requestUri.AppendQueryParameterToUrl("search", r.Category).Uri.PathAndQuery));
 
             organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
                 .Returns(organisation);

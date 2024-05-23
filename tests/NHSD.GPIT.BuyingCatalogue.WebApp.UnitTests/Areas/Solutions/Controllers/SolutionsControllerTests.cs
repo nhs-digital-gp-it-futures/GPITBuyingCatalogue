@@ -280,9 +280,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(searchResults);
 
             var context = new DefaultHttpContext();
-            context.Request.Scheme = uri.Scheme;
-            context.Request.Host = new HostString(uri.Host);
-
             context.HttpContext.Request.Headers.Referer = uri.ToString();
 
             controller.ControllerContext = new ControllerContext
@@ -295,7 +292,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 new HtmlEncodedSuggestionSearchResult(
                     r.Title,
                     r.Category,
-                    currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString()));
+                    currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).Uri.PathAndQuery));
 
             var result = await controller.FilterSearchSuggestions(search);
 

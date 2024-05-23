@@ -75,8 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             {
                 Request =
                 {
-                    Scheme = uri.Scheme,
-                    Host = new HostString(uri.Host),
                     Headers = { Referer = uri.ToString(), },
                 },
             };
@@ -87,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 r => new HtmlEncodedSuggestionSearchResult(
                     r.Title,
                     r.Category,
-                    requestUri.AppendQueryParameterToUrl("search", r.Title).AppendQueryParameterToUrl("searchTermType", r.Category).ToString()));
+                    requestUri.AppendQueryParameterToUrl("search", r.Title).AppendQueryParameterToUrl("searchTermType", r.Category).Uri.PathAndQuery));
 
             orderAdminService.Setup(s => s.GetOrdersBySearchTerm(searchTerm))
                 .ReturnsAsync(searchResults);
