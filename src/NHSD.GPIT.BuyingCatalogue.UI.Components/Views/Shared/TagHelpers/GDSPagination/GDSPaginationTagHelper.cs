@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPag
                 var query = HttpUtility.ParseQueryString(builder.Query);
                 query.Set("page", pageNumber.ToString());
                 builder.Query = query.ToString() ?? string.Empty;
-                return builder.Uri.ToString();
+                return builder.Uri.PathAndQuery;
             }
 
             var url = string.IsNullOrWhiteSpace(BaseUrl)
