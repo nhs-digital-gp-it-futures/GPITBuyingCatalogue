@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
                 case CatalogueItemType.AssociatedService:
                     if (associatedServiceType == AssociatedServiceType.AssociatedServiceOther || associatedServiceType == AssociatedServiceType.AssociatedServiceSplit || associatedServiceType == AssociatedServiceType.AssociatedServiceMerger)
                     {
-                        AssociatedServiceCorrectPage(associatedServiceType);
+                        AssociatedServiceCorrectPage(associatedServiceType, frameworkType);
                     }
 
                     break;
@@ -56,11 +56,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
             ChooseFrameworkType(frameWorkType);
         }
 
-        private void AssociatedServiceCorrectPage(AssociatedServiceType associatedServiceType)
+        private void AssociatedServiceCorrectPage(AssociatedServiceType associatedServiceType, string frameWorkType)
         {
-            CommonActions.ClickRadioButtonWithValue(associatedServiceType.ToString());
-            CommonActions.HintText().Should().Be("Select the type of Associated Service you want to order.".FormatForComparison());
+            CommonActions.ClickLastRadio();
             CommonActions.ClickSave();
+            CommonActions.HintText().Should().Be("Select the type of Associated Service you want to order.".FormatForComparison());
+
+            CommonActions.ClickRadioButtonWithValue(associatedServiceType.ToString());
+            CommonActions.ClickSave();
+            ChooseFrameworkType(frameWorkType);
         }
     }
 }
