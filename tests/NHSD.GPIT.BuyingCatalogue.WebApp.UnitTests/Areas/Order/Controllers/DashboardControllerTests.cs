@@ -167,12 +167,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             };
             var requestUri = new UriBuilder(controller.HttpContext.Request.Headers.Referer.ToString());
             var expected = searchResults.Select(
-                r => new SuggestionSearchResult
-                {
-                    Title = r.Title,
-                    Category = r.Category,
-                    Url = requestUri.AppendQueryParameterToUrl("search", r.Category).ToString(),
-                });
+                r => new HtmlEncodedSuggestionSearchResult(
+                    r.Title,
+                    r.Category,
+                    requestUri.AppendQueryParameterToUrl("search", r.Category).ToString()));
 
             organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
                 .Returns(organisation);

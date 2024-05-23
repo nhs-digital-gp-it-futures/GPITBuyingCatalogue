@@ -271,7 +271,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [CommonAutoData]
         public static async void GetFilterSearchSuggestions_ReturnsJsonResult(
             string search,
-            string currentPage,
+            Uri uri,
             List<SearchFilterModel> searchResults,
             [Frozen] Mock<ISolutionsFilterService> mockService,
             SolutionsController controller)
@@ -280,21 +280,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .ReturnsAsync(searchResults);
 
             var context = new DefaultHttpContext();
-            context.HttpContext.Request.Headers.Referer = currentPage;
+            context.Request.Scheme = uri.Scheme;
+            context.Request.Host = new HostString(uri.Host);
+
+            context.HttpContext.Request.Headers.Referer = uri.ToString();
 
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = context,
             };
 
-            var currentPageUrl = new UriBuilder(currentPage);
+            var currentPageUrl = new UriBuilder(uri.ToString());
             var expectedResults = searchResults.Select(r =>
-                new SuggestionSearchResult
-                {
-                    Title = r.Title,
-                    Category = r.Category,
-                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString(),
-                });
+                new HtmlEncodedSuggestionSearchResult(
+                    r.Title,
+                    r.Category,
+                    currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString()));
 
             var result = await controller.FilterSearchSuggestions(search);
 

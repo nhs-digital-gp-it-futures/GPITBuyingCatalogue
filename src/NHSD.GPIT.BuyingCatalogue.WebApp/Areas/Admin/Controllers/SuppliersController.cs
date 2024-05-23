@@ -42,16 +42,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> FilterSearchSuggestions(
             [FromQuery] string search)
         {
-            var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
             var suppliers = await suppliersService.GetSuppliersBySearchTerm(search);
 
             return Json(suppliers.Select(r =>
-                new SuggestionSearchResult
-                {
-                    Title = r.Name,
-                    Category = r.Id.ToString(),
-                    Url = Url.Action(nameof(EditSupplier), new { supplierId = r.Id.ToString() }),
-                }));
+                new HtmlEncodedSuggestionSearchResult(
+                    r.Name,
+                    r.Id.ToString(),
+                    Url.Action(nameof(EditSupplier), new { supplierId = r.Id.ToString() }))));
         }
 
         [HttpGet("{supplierId}")]

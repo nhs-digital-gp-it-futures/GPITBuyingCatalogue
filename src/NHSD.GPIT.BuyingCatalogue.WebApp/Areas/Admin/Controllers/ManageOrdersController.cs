@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -63,17 +64,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> FilterSearchSuggestions(
             [FromQuery] string search = "")
         {
-            var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
+            var request = HttpContext.Request.GetUri();
+            var referer = new Uri(HttpContext.Request.Headers.Referer.ToString());
+            var currentPageUrl = new UriBuilder(request.GetLeftPart(UriPartial.Authority))
+            {
+                Path = referer.LocalPath,
+                Query = referer.Query,
+            };
 
             var results = await orderAdminService.GetOrdersBySearchTerm(search);
 
             return Json(results.Select(r =>
-                new SuggestionSearchResult
-                {
-                    Title = r.Title,
-                    Category = r.Category,
-                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).AppendQueryParameterToUrl("searchTermType", r.Category).ToString(),
-                }));
+                new HtmlEncodedSuggestionSearchResult(
+                    r.Title,
+                    r.Category,
+                    currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).AppendQueryParameterToUrl("searchTermType", r.Category).ToString())));
         }
 
         [HttpGet("{callOffId}")]

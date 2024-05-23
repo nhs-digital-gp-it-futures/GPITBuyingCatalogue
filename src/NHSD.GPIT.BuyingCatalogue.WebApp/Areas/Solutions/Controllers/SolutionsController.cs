@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -9,7 +10,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -146,19 +146,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("search-suggestions")]
         public async Task<IActionResult> FilterSearchSuggestions([FromQuery] string search)
         {
-            var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
+            var request = HttpContext.Request.GetUri();
+            var referer = new Uri(HttpContext.Request.Headers.Referer.ToString());
+            var currentPageUrl = new UriBuilder(request.GetLeftPart(UriPartial.Authority))
+            {
+                Path = referer.LocalPath,
+                Query = referer.Query,
+            };
 
             var results = await solutionsFilterService.GetSolutionsBySearchTerm(search);
 
             return Json(
                 results.Select(
                     r =>
-                        new SuggestionSearchResult
-                        {
-                            Title = r.Title,
-                            Category = r.Category,
-                            Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString(),
-                        }));
+                        new HtmlEncodedSuggestionSearchResult(
+                            r.Title,
+                            r.Category,
+                            currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Title).ToString())));
         }
 
         [HttpGet("search-results")]

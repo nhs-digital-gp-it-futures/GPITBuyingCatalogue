@@ -75,12 +75,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var results = await GetFilteredItems(search);
 
-            return Json(results.Take(15).Select(x => new SuggestionSearchResult
-            {
-                Title = x.Name,
-                Category = x.Supplier.Name,
-                Url = Url.Action(nameof(ManageCatalogueSolution), new { solutionId = $"{x.Id}" }),
-            }));
+            return Json(results.Take(15).Select(x => new HtmlEncodedSuggestionSearchResult(
+                x.Name,
+                x.Supplier.Name,
+                Url.Action(nameof(ManageCatalogueSolution), new { solutionId = $"{x.Id}" }))));
         }
 
         [HttpGet("manage/{solutionId}/features")]
