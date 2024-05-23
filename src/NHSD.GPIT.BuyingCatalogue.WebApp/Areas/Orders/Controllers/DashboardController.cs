@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -11,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
@@ -89,13 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             string internalOrgId,
             [FromQuery] string search)
         {
-            var request = HttpContext.Request.GetUri();
-            var referer = new Uri(HttpContext.Request.Headers.Referer.ToString());
-            var currentPageUrl = new UriBuilder(request.GetLeftPart(UriPartial.Authority))
-            {
-                Path = referer.LocalPath,
-                Query = referer.Query,
-            };
+            var currentPageUrl = HttpContext.GetRefererUriBuilder();
 
             var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             var results = await orderService.GetOrdersBySearchTerm(organisation.Id, search);
