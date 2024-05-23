@@ -19,11 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
         /// Choose the Order Type, Catalogue Solution or Associated Service.
         /// </summary>
         /// <param name="type">Catalogue Order Type, Defaults to Catalogue Solution.</param>
-        public void ChooseOrderType(CatalogueItemType type = CatalogueItemType.Solution, AssociatedServiceType associatedServiceType = AssociatedServiceType.AssociatedServiceOther)
+        public void ChooseOrderType(string frameworkType, CatalogueItemType type = CatalogueItemType.Solution, AssociatedServiceType associatedServiceType = AssociatedServiceType.AssociatedServiceOther)
         {
-            CommonActions.ClickRadioButtonWithValue(type.ToString());
-
             CommonActions.ClickSave();
+            //CommonActions.ClickRadioButtonWithValue(type.ToString());
+
+            //CommonActions.ClickSave();
 
             switch (type)
             {
@@ -36,16 +37,23 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
                     break;
 
                 default:
-                    CatalogueSolutionCorrectPage();
+                    CatalogueSolutionCorrectPage(frameworkType);
                     break;
             }
         }
 
-        private void CatalogueSolutionCorrectPage()
+        public void ChooseFrameworkType(string frameworkType)
         {
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.ReadyToStart)).Should().BeTrue();
+            CommonActions.HintText().Should().Be("Select the procurement framework that the solution you want to order is available on.".FormatForComparison());
+            CommonActions.ClickRadioButtonWithText(frameworkType);
+            CommonActions.ClickSave();
+        }
+
+        private void CatalogueSolutionCorrectPage(string frameWorkType)
+        {
+            CommonActions.ClickFirstRadio();
+            CommonActions.ClickSave();
+            ChooseFrameworkType(frameWorkType);
         }
 
         private void AssociatedServiceCorrectPage(AssociatedServiceType associatedServiceType)

@@ -14,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         private const string InternalOrgId = "IB-QWO";
         private const string FileName = "valid_service_recipients.csv";
         private const string SupplierName = "EMIS Health";
+        private const string FrameWorkTechInnovation = "Tech Innovation";
         private const string SolutionName = "Anywhere Consult";
         private const string SolutionWithMultipleFrameworks = "Video Consult";
         private const string SolutionForLocalfundingonly = "Online and Video Consult";
@@ -45,9 +46,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -66,9 +67,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -87,9 +88,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -108,9 +109,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -129,9 +130,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -150,9 +151,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -171,9 +172,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -194,9 +195,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -217,9 +218,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -242,9 +243,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -267,9 +268,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -295,9 +296,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -320,9 +321,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -351,9 +352,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, true);
 
@@ -372,9 +373,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -393,9 +394,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -414,9 +415,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -435,9 +436,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -456,9 +457,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -477,9 +478,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -498,9 +499,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -519,9 +520,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -540,9 +541,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -561,9 +562,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -582,9 +583,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -603,1761 +604,1761 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceOther);
+            OrderingPages.OrderType.ChooseOrderType(FrameWorkTechInnovation, CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceOther);
 
-            OrderingPages.StartOrder.ReadyToStart();
-
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
-
-            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
-
-            OrderingPages.StepThreeContractAssociatedServices();
-
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
-
-        [Fact]
-        [Trait("Associated Service Only Journey", "Split Order")]
-        public void OrderSplitAssociatedServiceOnly()
-        {
-            string orderDescription = "OrderSplitAssociatedServiceOnly";
-
-            OrderingPages.OrderingDashboard.CreateNewOrder();
-
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceSplit);
-
-            OrderingPages.StartOrder.ReadyToStart();
-
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceSplit);
-
-            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceSplit, multipleServiceRecipients: 3);
-
-            OrderingPages.StepThreeContractAssociatedServices();
-
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
-
-        [Fact]
-        [Trait("Associated Service Only Journey", "Merger Order")]
-        public void OrderMergerAssociatedServiceOnly()
-        {
-            string orderDescription = "OrderMergerAssociatedServiceOnly";
-
-            OrderingPages.OrderingDashboard.CreateNewOrder();
-
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceMerger);
-
-            OrderingPages.StartOrder.ReadyToStart();
-
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceMerger);
-
-            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceMerger, multipleServiceRecipients: 3);
-
-            OrderingPages.StepThreeContractAssociatedServices();
-
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
-
-        [Fact]
-        [Trait("Edit Associated Service Only Journey", "Order")]
-        public void EditPlannedDeliveryDateOrderAssociatedServiceOnly()
-        {
-            string orderDescription = "EditPlannedDeliveryDateOrderAssociatedServiceOnly";
-
-            OrderingPages.OrderingDashboard.CreateNewOrder();
-
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            //OrderingPages.StartOrder.ReadyToStart();
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
-            OrderingPages.EditPlannedDeliveryDate("Anywhere Consult", "Anywhere Consult – Integrated Device", " ", true);
-
             OrderingPages.StepThreeContractAssociatedServices();
 
             OrderingPages.StepFourReviewAndCompleteOrder();
         }
 
-        [Fact]
-        [Trait("Associated Service Only Journey", "Order")]
-        public void OrderAssociatedServiceOnlyWithStepThreeCustomRoute()
-        {
-            string orderDescription = "OrderAssociatedServiceOnlyWithStepThreeCustomRoute";
+        //[Fact]
+        //[Trait("Associated Service Only Journey", "Split Order")]
+        //public void OrderSplitAssociatedServiceOnly()
+        //{
+        //    string orderDescription = "OrderSplitAssociatedServiceOnly";
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceSplit);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceSplit);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
+        //    OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceSplit, multipleServiceRecipients: 3);
 
-            OrderingPages.StepThreeContractAssociatedServices(false);
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolution()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution";
+        //[Fact]
+        //[Trait("Associated Service Only Journey", "Merger Order")]
+        //public void OrderMergerAssociatedServiceOnly()
+        //{
+        //    string orderDescription = "OrderMergerAssociatedServiceOnly";
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceMerger);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceMerger);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceMerger, multipleServiceRecipients: 3);
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName);
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //[Fact]
+        //[Trait("Edit Associated Service Only Journey", "Order")]
+        //public void EditPlannedDeliveryDateOrderAssociatedServiceOnly()
+        //{
+        //    string orderDescription = "EditPlannedDeliveryDateOrderAssociatedServiceOnly";
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_EditCatalogueSolution()
-        {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditCatalogueSolution";
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.EditPlannedDeliveryDate("Anywhere Consult", "Anywhere Consult – Integrated Device", " ", true);
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, NewAdditionalServiceName);
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //[Fact]
+        //[Trait("Associated Service Only Journey", "Order")]
+        //public void OrderAssociatedServiceOnlyWithStepThreeCustomRoute()
+        //{
+        //    string orderDescription = "OrderAssociatedServiceOnlyWithStepThreeCustomRoute";
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_EditCatalogueSolution()
-        {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditCatalogueSolution";
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepThreeContractAssociatedServices(false);
 
-            OrderingPages.EditCatalogueSolution(newSolutionName: NewSolutionName, newAssociatedService: NewAssociatedServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolution()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditCatalogueSolution()
-        {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditCatalogueSolution";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(NewSolutionName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueSolution(newSolutionName: NewSolutionName, newAdditionalServiceName: NewAdditionalServiceName, newAssociatedService: NewAssociatedServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionAndAdditionalServiceUnder40K_EditCatalogueSolution()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditCatalogueSolution";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderAssociatedServiceOnly_EditCatalogueSolution()
-        {
-            string orderDescription = "OrderAssociatedServiceOnly_EditCatalogueSolution";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.EditCatalogueSolution(NewSolutionName, NewAdditionalServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueSolution(newSolutionName: NewSolutionName, newAssociatedService: NewAssociatedServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeContractAssociatedServices();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionAndAssociatedServiceUnder40K_EditCatalogueSolution()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditCatalogueSolution";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Additional Service", "Order")]
-        public void OrderWithSolutionUnder40K_SolutionDoesNotHaveAdditionalService_EditAdditionalService()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_SolutionDoesNotHaveAdditionalService_EditAdditionalService";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(newSolutionName: NewSolutionName, newAssociatedService: NewAssociatedServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAdditionalService(SolutionName, NewAdditionalServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditCatalogueSolution()
+        //{
+        //    string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditCatalogueSolution";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Additional Service", "Order")]
-        public void OrderWithSolutionUnder40K_EditAdditionalService()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditAdditionalService";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(newSolutionName: NewSolutionName, newAdditionalServiceName: NewAdditionalServiceName, newAssociatedService: NewAssociatedServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAdditionalService(NewSolutionName, NewAdditionalServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderAssociatedServiceOnly_EditCatalogueSolution()
+        //{
+        //    string orderDescription = "OrderAssociatedServiceOnly_EditCatalogueSolution";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Additional Service", "Order")]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService()
-        {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(newSolutionName: NewSolutionName, newAssociatedService: NewAssociatedServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, AdditionalServiceName);
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-            OrderingPages.EditAdditionalService(NewSolutionName, NewAdditionalServiceName, oldAdditionalService: AdditionalServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Additional Service", "Order")]
+        //public void OrderWithSolutionUnder40K_SolutionDoesNotHaveAdditionalService_EditAdditionalService()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_SolutionDoesNotHaveAdditionalService_EditAdditionalService";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Additional Service", "Order")]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAdditionalService()
-        {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAdditionalService";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAdditionalService(SolutionName, NewAdditionalServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAdditionalService(NewSolutionName, NewAdditionalServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Additional Service", "Order")]
+        //public void OrderWithSolutionUnder40K_EditAdditionalService()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditAdditionalService";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Additional Service", "Order")]
-        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAdditionalService()
-        {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAdditionalService";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAdditionalService(NewSolutionName, NewAdditionalServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, AdditionalServiceName, NewAssociatedServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAdditionalService(NewSolutionName, NewAdditionalServiceName, oldAdditionalService: AdditionalServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Additional Service", "Order")]
+        //public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Associated Service", "Order")]
-        public void OrderWithSolutionUnder40K_EditAssociatedService()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditAssociatedService";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, AdditionalServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAdditionalService(NewSolutionName, NewAdditionalServiceName, oldAdditionalService: AdditionalServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedService(NewSolutionName, NewAssociatedServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Additional Service", "Order")]
+        //public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAdditionalService()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAdditionalService";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Associated Service", "Order")]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAssociatedService()
-        {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAssociatedService";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAdditionalService(NewSolutionName, NewAdditionalServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedService(NewSolutionName, NewAssociatedServiceName, NewAdditionalServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Additional Service", "Order")]
+        //public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAdditionalService()
+        //{
+        //    string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAdditionalService";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Associated Service", "Order")]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService()
-        {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, AdditionalServiceName, NewAssociatedServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAdditionalService(NewSolutionName, NewAdditionalServiceName, oldAdditionalService: AdditionalServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: AssociatedServiceNameForWebGP);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedService(NewSolutionName, NewAssociatedServiceName, oldAssociatedServiceName: AssociatedServiceNameForWebGP);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Associated Service", "Order")]
+        //public void OrderWithSolutionUnder40K_EditAssociatedService()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditAssociatedService";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Associated Service", "Order")]
-        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAssociatedService()
-        {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAssociatedService";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAssociatedService(NewSolutionName, NewAssociatedServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName, AssociatedServiceNameForWebGP);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedService(NewSolutionName, NewAssociatedServiceName, NewAdditionalServiceName, AssociatedServiceNameForWebGP);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Associated Service", "Order")]
+        //public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAssociatedService()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAssociatedService";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Associated Service Only Journey", "Order")]
-        public void OrderAssociatedServiceOnly_EditAssociatedService()
-        {
-            string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.EditAssociatedService(NewSolutionName, NewAssociatedServiceName, NewAdditionalServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: AssociatedServiceNameForWebGP);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedServiceOnly(NewSolutionName, NewAssociatedServiceName, AssociatedServiceNameForWebGP);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeContractAssociatedServices();
+        //[Fact]
+        //[Trait("Edit Associated Service", "Order")]
+        //public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolutionServiceRecipient()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionServiceRecipient";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: AssociatedServiceNameForWebGP);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAssociatedService(NewSolutionName, NewAssociatedServiceName, oldAssociatedServiceName: AssociatedServiceNameForWebGP);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueSolutionServiceRecipient(NewSolutionName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Associated Service", "Order")]
+        //public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAssociatedService()
+        //{
+        //    string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAssociatedService";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolutionPrice()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionPrice";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName, AssociatedServiceNameForWebGP);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAssociatedService(NewSolutionName, NewAssociatedServiceName, NewAdditionalServiceName, AssociatedServiceNameForWebGP);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueSolutionPrice(NewSolutionName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Associated Service Only Journey", "Order")]
+        //public void OrderAssociatedServiceOnly_EditAssociatedService()
+        //{
+        //    string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolutionQuantity()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionQuantity";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: AssociatedServiceNameForWebGP);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAssociatedServiceOnly(NewSolutionName, NewAssociatedServiceName, AssociatedServiceNameForWebGP);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-            OrderingPages.EditCatalogueItemQuantity(NewSolutionName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolutionServiceRecipient()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionServiceRecipient";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceRecipient()
-        {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceRecipient";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolutionServiceRecipient(NewSolutionName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAdditionalServiceRecipient(NewSolutionName, NewAdditionalServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolutionPrice()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionPrice";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServicePrice()
-        {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServicePrice";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolutionPrice(NewSolutionName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAdditionalServicePrice(NewAdditionalServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolutionQuantity()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionQuantity";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceQuantity()
-        {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceQuantity";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueItemQuantity(NewSolutionName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueItemQuantity(NewAdditionalServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceRecipient()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceRecipient";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceRecipient()
-        {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceRecipient";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAdditionalServiceRecipient(NewSolutionName, NewAdditionalServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedServiceRecipient(NewSolutionName, NewAssociatedServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServicePrice()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServicePrice";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServicePrice()
-        {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServicePrice";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAdditionalServicePrice(NewAdditionalServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedServicePrice(NewAssociatedServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceQuantity()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceQuantity";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceQuantity()
-        {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceQuantity";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueItemQuantity(NewAdditionalServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueItemQuantity(NewAssociatedServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceRecipient()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceRecipient";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderAssociatedServiceOnly_EditAssociatedServiceRecipients()
-        {
-            string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServiceRecipients";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.EditAssociatedServiceRecipient(NewSolutionName, NewAssociatedServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedServiceOnlyServiceRecipients(NewAssociatedServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeContractAssociatedServices();
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServicePrice()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServicePrice";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderAssociatedServiceOnly_EditAssociatedServicePrice()
-        {
-            string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServicePrice";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.EditAssociatedServicePrice(NewAssociatedServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedServiceOnlyPrice(NewAssociatedServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeContractAssociatedServices(false);
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceQuantity()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceQuantity";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Order Journey", "Order")]
-        public void OrderAssociatedServiceOnly_EditAssociatedServiceQuantity()
-        {
-            string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServiceQuantity";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.EditCatalogueItemQuantity(NewAssociatedServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueItemQuantity(NewAssociatedServiceName);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeContractAssociatedServices();
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderAssociatedServiceOnly_EditAssociatedServiceRecipients()
+        //{
+        //    string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServiceRecipients";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionAndAdditionalServicesUnder40K_MultipleAdditionalServices()
-        {
-            string orderDescription = "OrderWithSolutionAndAdditionalServicesUnder40K_MultipleAdditionalServices";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAssociatedServiceOnlyServiceRecipients(NewAssociatedServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                additionalServices: new List<string>()
-                {
-                    AdditionalServiceName,
-                    NewAdditionalServiceName,
-                });
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderAssociatedServiceOnly_EditAssociatedServicePrice()
+        //{
+        //    string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServicePrice";
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionAdditionalAndAssociatedServicesUnder40K_MultipleAdditionalServices_OneAssociatedService()
-        {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServicesUnder40K_MultipleAdditionalServices_OneAssociatedService";
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                additionalServices: new List<string>()
-                {
-                    AdditionalServiceName,
-                    NewAdditionalServiceName,
-                },
-                AssociatedServiceNameForWebGP);
+        //    OrderingPages.EditAssociatedServiceOnlyPrice(NewAssociatedServiceName);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepThreeContractAssociatedServices(false);
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAssociatedServices_OneAdditionalService()
-        {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAssociatedServices_OneAdditionalService";
+        //[Fact]
+        //[Trait("Edit Order Journey", "Order")]
+        //public void OrderAssociatedServiceOnly_EditAssociatedServiceQuantity()
+        //{
+        //    string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServiceQuantity";
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                additionalService: AdditionalServiceName,
-                associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
+        //    OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.EditCatalogueItemQuantity(NewAssociatedServiceName);
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices()
-        {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionAndAdditionalServicesUnder40K_MultipleAdditionalServices()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAdditionalServicesUnder40K_MultipleAdditionalServices";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                additionalService: string.Empty,
-                associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        additionalServices: new List<string>()
+        //        {
+        //            AdditionalServiceName,
+        //            NewAdditionalServiceName,
+        //        });
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditionalServices_MultipleAssociatedServices()
-        {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditionalServices_MultipleAssociatedServices";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionAdditionalAndAssociatedServicesUnder40K_MultipleAdditionalServices_OneAssociatedService()
+        //{
+        //    string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServicesUnder40K_MultipleAdditionalServices_OneAssociatedService";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                additionalServices: new List<string>()
-                {
-                    AdditionalServiceName,
-                    NewAdditionalServiceName,
-                },
-                associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        additionalServices: new List<string>()
+        //        {
+        //            AdditionalServiceName,
+        //            NewAdditionalServiceName,
+        //        },
+        //        AssociatedServiceNameForWebGP);
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Associated Service Only Journey", "Order")]
-        public void OrderWithAssociatedServiceOnly_MultipleAssociatedServices()
-        {
-            string orderDescription = "OrderWithAssociatedServiceOnly_MultipleAssociatedServices";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAssociatedServices_OneAdditionalService()
+        //{
+        //    string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAssociatedServices_OneAdditionalService";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                additionalServices: null,
-                associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StepThreeContractAssociatedServices();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        additionalService: AdditionalServiceName,
+        //        associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionUnder40K_MultipleServiceRecipients()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_MultipleServiceRecipients";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                multipleServiceRecipients: 3);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        additionalService: string.Empty,
+        //        associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionUnder40K_ImportServiceRecipients()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_ImportServiceRecipients";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditionalServices_MultipleAssociatedServices()
+        //{
+        //    string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditionalServices_MultipleAssociatedServices";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                importServiceRecipients: true,
-                fileName: FileName);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        additionalServices: new List<string>()
+        //        {
+        //            AdditionalServiceName,
+        //            NewAdditionalServiceName,
+        //        },
+        //        associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients()
-        {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Associated Service Only Journey", "Order")]
+        //public void OrderWithAssociatedServiceOnly_MultipleAssociatedServices()
+        //{
+        //    string orderDescription = "OrderWithAssociatedServiceOnly_MultipleAssociatedServices";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                additionalService: AdditionalServiceName,
-                multipleServiceRecipients: 3);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        additionalServices: null,
+        //        associatedServices: new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP });
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_ImportServiceRecipients()
-        {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_ImportServiceRecipients";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionUnder40K_MultipleServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_MultipleServiceRecipients";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                additionalService: AdditionalServiceName,
-                importServiceRecipients: true,
-                fileName: FileName);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        multipleServiceRecipients: 3);
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Associated Service Only Journey", "Order")]
-        public void OrderAssociatedServiceOnly_ImportServiceRecipients()
-        {
-            string orderDescription = "OrderAssociatedServiceOnly_ImportServiceRecipients";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionUnder40K_ImportServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_ImportServiceRecipients";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: SolutionName,
-                associatedService: AssociatedServiceName,
-                importServiceRecipients: true,
-                fileName: FileName);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StepThreeContractAssociatedServices();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        importServiceRecipients: true,
+        //        fileName: FileName);
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients()
-        {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                associatedService: AssociatedServiceNameForWebGP,
-                multipleServiceRecipients: 3);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        additionalService: AdditionalServiceName,
+        //        multipleServiceRecipients: 3);
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_ImportServiceRecipients()
-        {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_ImportServiceRecipients";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionAndAdditionalServiceUnder40K_ImportServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_ImportServiceRecipients";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                associatedService: AssociatedServiceNameForWebGP,
-                multipleServiceRecipients: 3,
-                fileName: FileName);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        additionalService: AdditionalServiceName,
+        //        importServiceRecipients: true,
+        //        fileName: FileName);
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Order Journey", "Order")]
-        public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleServiceRecipients()
-        {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleServiceRecipients";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Associated Service Only Journey", "Order")]
+        //public void OrderAssociatedServiceOnly_ImportServiceRecipients()
+        //{
+        //    string orderDescription = "OrderAssociatedServiceOnly_ImportServiceRecipients";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                additionalService: AdditionalServiceName,
-                associatedService: AssociatedServiceNameForWebGP,
-                multipleServiceRecipients: 3);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: SolutionName,
+        //        associatedService: AssociatedServiceName,
+        //        importServiceRecipients: true,
+        //        fileName: FileName);
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-        [Fact]
-        [Trait("Associated Service Only Journey", "Order")]
-        public void OrderWithAssociatedServiceOnly_MultipleServiceRecipients()
-        {
-            string orderDescription = "OrderWithAssociatedServiceOnly_MultipleServiceRecipients";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: NewSolutionName,
-                associatedService: AssociatedServiceNameForWebGP,
-                multipleServiceRecipients: 3);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StepThreeContractAssociatedServices();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        associatedService: AssociatedServiceNameForWebGP,
+        //        multipleServiceRecipients: 3);
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Edit Associated Service Only Journey", "Order")]
-        public void OrderAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices()
-        {
-            string orderDescription = "OrderAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionAndAssociatedServiceUnder40K_ImportServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_ImportServiceRecipients";
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.EditCatalogueSolution(newSolutionName: NewSolutionName, newAdditionalServiceName: string.Empty, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName });
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        associatedService: AssociatedServiceNameForWebGP,
+        //        multipleServiceRecipients: 3,
+        //        fileName: FileName);
 
-            OrderingPages.StepThreeContractAssociatedServices();
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices";
+        //[Fact]
+        //[Trait("Order Journey", "Order")]
+        //public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleServiceRecipients";
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        additionalService: AdditionalServiceName,
+        //        associatedService: AssociatedServiceNameForWebGP,
+        //        multipleServiceRecipients: 3);
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, new List<string> { AdditionalServiceName, NewAdditionalServiceName }, newAssociatedService: string.Empty);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.StepThreeCompleteContract();
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //[Fact]
+        //[Trait("Associated Service Only Journey", "Order")]
+        //public void OrderWithAssociatedServiceOnly_MultipleServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithAssociatedServiceOnly_MultipleServiceRecipients";
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices";
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: NewSolutionName,
+        //        associatedService: AssociatedServiceNameForWebGP,
+        //        multipleServiceRecipients: 3);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceName: string.Empty, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName });
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Associated Service Only Journey", "Order")]
+        //public void OrderAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices()
+        //{
+        //    string orderDescription = "OrderAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditional_AddultipleAssociatedServices()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditional_AddultipleAssociatedServices";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(newSolutionName: NewSolutionName, newAdditionalServiceName: string.Empty, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName });
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, new List<string> { AdditionalServiceName, NewAdditionalServiceName }, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName });
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleServiceRecipients()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleServiceRecipients";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(NewSolutionName, new List<string> { AdditionalServiceName, NewAdditionalServiceName }, newAssociatedService: string.Empty);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, multipleServiceRecipients: 3);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_MultipleServiceRecipients()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_MultipleServiceRecipients";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceName: string.Empty, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName });
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName, AdditionalServiceName }, newAssociatedService: string.Empty, multipleServiceRecipients: 3);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditional_AddultipleAssociatedServices()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditional_AddultipleAssociatedServices";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices_MultipleServiceRecipients()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices_MultipleServiceRecipients";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(NewSolutionName, new List<string> { AdditionalServiceName, NewAdditionalServiceName }, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName });
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: null, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, multipleServiceRecipients: 3);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleServiceRecipients";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddMultipleAssociatedServices_AddMultipleServiceRecipients";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(NewSolutionName, multipleServiceRecipients: 3);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName }, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, multipleServiceRecipients: 3);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_MultipleServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_MultipleServiceRecipients";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
-        {
-            string orderDescription = "OrderWithAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices_AddMultipleServiceRecipients";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName, AdditionalServiceName }, newAssociatedService: string.Empty, multipleServiceRecipients: 3);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(
-                solutionName: SolutionName,
-                associatedService: AssociatedServiceName,
-                multipleServiceRecipients: 3);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceName: string.Empty, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, 3);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeContractAssociatedServices();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices_MultipleServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices_MultipleServiceRecipients";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
-        public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddOneAssociatedService()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddOneAssociatedService";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: null, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, multipleServiceRecipients: 3);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName, AdditionalServiceName }, AssociatedServiceNameForWebGP, multipleServiceRecipients: 3);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddMultipleAssociatedServices_AddMultipleServiceRecipients";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Additional Service", "Order")]
-        public void OrderWithSolutionUnder40K_EditAdditionalService_AddMultipleAdditionalServices()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditAdditionalService_AddMultipleAdditionalServices";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName }, newAssociatedServices: new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, multipleServiceRecipients: 3);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAdditionalService(NewSolutionName, new List<string> { NewAdditionalServiceName, AdditionalServiceName });
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
+        //{
+        //    string orderDescription = "OrderWithAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices_AddMultipleServiceRecipients";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Additional Service", "Order")]
-        public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService_MultipleAdditionalServices()
-        {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService_MultipleAdditionalServices";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(
+        //        solutionName: SolutionName,
+        //        associatedService: AssociatedServiceName,
+        //        multipleServiceRecipients: 3);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceName: string.Empty, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, 3);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, "Document Management", multipleServiceRecipients: 0);
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-            OrderingPages.EditAdditionalService(NewSolutionName, new List<string> { NewAdditionalServiceName, AdditionalServiceName }, oldAdditionalService: "Document Management");
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Catalogue Solution", "Order")]
+        //public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddOneAssociatedService()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddOneAssociatedService";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Associated Service", "Order")]
-        public void OrderWithSolutionUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
-        {
-            string orderDescription = "OrderWithSolutionUnder40K_EditAssociatedService_AddMultipleAssociatedServices";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditCatalogueSolution(NewSolutionName, newAdditionalServiceNames: new List<string> { NewAdditionalServiceName, AdditionalServiceName }, AssociatedServiceNameForWebGP, multipleServiceRecipients: 3);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedService(NewSolutionName, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, string.Empty, string.Empty);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Additional Service", "Order")]
+        //public void OrderWithSolutionUnder40K_EditAdditionalService_AddMultipleAdditionalServices()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditAdditionalService_AddMultipleAdditionalServices";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Associated Service", "Order")]
-        public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
-        {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService_AddMultipleAssociatedServices";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    OrderingPages.EditAdditionalService(NewSolutionName, new List<string> { NewAdditionalServiceName, AdditionalServiceName });
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: "Automated Arrivals – Engineering Half Day");
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedService(NewSolutionName, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, oldAssociatedServiceName: "Automated Arrivals – Engineering Half Day");
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Edit Additional Service", "Order")]
+        //public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService_MultipleAdditionalServices()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService_MultipleAdditionalServices";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Edit Associated Service Only Journey", "Order")]
-        public void OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices()
-        {
-            string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, "Document Management", multipleServiceRecipients: 0);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+        //    OrderingPages.EditAdditionalService(NewSolutionName, new List<string> { NewAdditionalServiceName, AdditionalServiceName }, oldAdditionalService: "Document Management");
 
-            OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: "Automated Arrivals – Engineering Half Day");
+        //    OrderingPages.StepThreeCompleteContract();
 
-            OrderingPages.EditAssociatedServiceOnly(NewSolutionName, new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP }, "Automated Arrivals – Engineering Half Day");
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeContractAssociatedServices();
+        //[Fact]
+        //[Trait("Edit Associated Service", "Order")]
+        //public void OrderWithSolutionUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
+        //{
+        //    string orderDescription = "OrderWithSolutionUnder40K_EditAssociatedService_AddMultipleAssociatedServices";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Further Competition", "Multiple Results")]
-        public void CompetitionForMultipleResultFilter()
-        {
-            string competitionName = "CompetitionForMultipleResultFilter";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
-        }
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
-        [Fact]
-        [Trait("Further Competition", "No Results")]
-        public void CompetitionForNoResultFilter()
-        {
-            string competitionName = "CompetitionForNoResultFilter";
+        //    OrderingPages.EditAssociatedService(NewSolutionName, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, string.Empty, string.Empty);
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //    OrderingPages.StepThreeCompleteContract();
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.NoResults, competitionName);
-        }
+        //[Fact]
+        //[Trait("Edit Associated Service", "Order")]
+        //public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
+        //{
+        //    string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService_AddMultipleAssociatedServices";
 
-        [Fact]
-        [Trait("Further Competition", "Single Results")]
-        public void CompetitionForSingleResultFilter()
-        {
-            string competitionName = "CompetitionForSingleResultFilter";
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.SingleResult, competitionName);
-        }
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
-        [Fact]
-        [Trait("Further Competition", "Price Only")]
-        public void CompetitionPriceOnly()
-        {
-            string competitionName = "CompetitionPriceOnly";
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: "Automated Arrivals – Engineering Half Day");
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //    OrderingPages.EditAssociatedService(NewSolutionName, new List<string> { AssociatedServiceNameForWebGP, NewAssociatedServiceName }, oldAssociatedServiceName: "Automated Arrivals – Engineering Half Day");
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    OrderingPages.StepThreeCompleteContract();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+        //[Fact]
+        //[Trait("Edit Associated Service Only Journey", "Order")]
+        //public void OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices()
+        //{
+        //    string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices";
 
-            CompetitionPages.ViewResults();
-        }
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
 
-        [Fact]
-        [Trait("Further Competition", "Competition to Order")]
-        public void CompetitionOrderFromPriceOnlyCompetition()
-        {
-            string competitionName = "CompetitionOrderFromPriceOnlyCompetition";
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //    OrderingPages.StartOrder.ReadyToStart();
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+        //    OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: "Automated Arrivals – Engineering Half Day");
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+        //    OrderingPages.EditAssociatedServiceOnly(NewSolutionName, new List<string> { NewAssociatedServiceName, AssociatedServiceNameForWebGP }, "Automated Arrivals – Engineering Half Day");
 
-            CompetitionPages.ViewResults();
+        //    OrderingPages.StepThreeContractAssociatedServices();
 
-            CompetitionPages.CreateOrder();
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Further Competition", "Multiple Results")]
+        //public void CompetitionForMultipleResultFilter()
+        //{
+        //    string competitionName = "CompetitionForMultipleResultFilter";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-        [Fact]
-        [Trait("Further Competition", "Competition to Order")]
-        public void CompetitionOrderFromPricAndNonPriceCompetition()
-        {
-            string competitionName = "CompetitionOrderFromPricAndNonPriceCompetition";
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+        //}
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //[Fact]
+        //[Trait("Further Competition", "No Results")]
+        //public void CompetitionForNoResultFilter()
+        //{
+        //    string competitionName = "CompetitionForNoResultFilter";
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Feature);
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.ViewResults();
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.NoResults, competitionName);
+        //}
 
-            CompetitionPages.CreateOrder();
+        //[Fact]
+        //[Trait("Further Competition", "Single Results")]
+        //public void CompetitionForSingleResultFilter()
+        //{
+        //    string competitionName = "CompetitionForSingleResultFilter";
 
-            OrderingPages.StepThreeCompleteContract();
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-        [Fact]
-        [Trait("Further Competition", "Competition to Order")]
-        public void CompetitionOrderForPriceOnlyMultipleResults()
-        {
-            string competitionName = "CompetitionOrderForPriceOnlyMultipleResults";
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.SingleResult, competitionName);
+        //}
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //[Fact]
+        //[Trait("Further Competition", "Price Only")]
+        //public void CompetitionPriceOnly()
+        //{
+        //    string competitionName = "CompetitionPriceOnly";
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
-            CompetitionPages.ViewMultipleResults();
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
-            CompetitionPages.CreateOrder();
+        //    CompetitionPages.ViewResults();
+        //}
 
-            OrderingPages.StepThreeCompleteContract();
+        //[Fact]
+        //[Trait("Further Competition", "Competition to Order")]
+        //public void CompetitionOrderFromPriceOnlyCompetition()
+        //{
+        //    string competitionName = "CompetitionOrderFromPriceOnlyCompetition";
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-        [Fact]
-        [Trait("Further Competition", "Price Only")]
-        public void CompetitionPriceOnlyMultipleRecipients()
-        {
-            string competitionName = "CompetitionPriceOnlyMultipleRecipients";
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+        //    CompetitionPages.ViewResults();
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+        //    CompetitionPages.CreateOrder();
 
-            CompetitionPages.ViewResults();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Further Competition", "Price Only")]
-        public void CompetitionPriceOnlyMultipleResults()
-        {
-            string competitionName = "CompetitionPriceOnlyMultipleResults";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //[Fact]
+        //[Trait("Further Competition", "Competition to Order")]
+        //public void CompetitionOrderFromPricAndNonPriceCompetition()
+        //{
+        //    string competitionName = "CompetitionOrderFromPricAndNonPriceCompetition";
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
-            CompetitionPages.ViewMultipleResults();
-        }
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Feature);
 
-        [Fact]
-        [Trait("Further Competition", "Price Only")]
-        public void CompetitionPriceOnlyAllICBRecipients()
-        {
-            string competitionName = "CompetitionPriceOnlyAllICBRecipients";
+        //    CompetitionPages.ViewResults();
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //    CompetitionPages.CreateOrder();
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    OrderingPages.StepThreeCompleteContract();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.All);
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
+        //[Fact]
+        //[Trait("Further Competition", "Competition to Order")]
+        //public void CompetitionOrderForPriceOnlyMultipleResults()
+        //{
+        //    string competitionName = "CompetitionOrderForPriceOnlyMultipleResults";
 
-            CompetitionPages.ViewResults();
-        }
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-        [Fact]
-        [Trait("Further Competition", "Price And Non Price")]
-        public void CompetitionPricAndNonPriceElementFeature()
-        {
-            string competitionName = "CompetitionPricAndNonPriceElementFeature";
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+        //    CompetitionPages.ViewMultipleResults();
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Feature);
+        //    CompetitionPages.CreateOrder();
 
-            CompetitionPages.ViewResults();
-        }
+        //    OrderingPages.StepThreeCompleteContract();
 
-        [Fact]
-        [Trait("Further Competition", "Price And Non Price")]
-        public void CompetitionPricAndNonPriceElementImplementation()
-        {
-            string competitionName = "CompetitionPricAndNonPriceElementImplementation";
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+        //}
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //[Fact]
+        //[Trait("Further Competition", "Price Only")]
+        //public void CompetitionPriceOnlyMultipleRecipients()
+        //{
+        //    string competitionName = "CompetitionPriceOnlyMultipleRecipients";
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Implementation);
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
 
-            CompetitionPages.ViewResults();
-        }
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
-        [Fact]
-        [Trait("Further Competition", "Price And Non Price")]
-        public void CompetitionPricAndNonPriceElementInteroperability()
-        {
-            string competitionName = "CompetitionPricAndNonPriceElementInteroperability";
+        //    CompetitionPages.ViewResults();
+        //}
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //[Fact]
+        //[Trait("Further Competition", "Price Only")]
+        //public void CompetitionPriceOnlyMultipleResults()
+        //{
+        //    string competitionName = "CompetitionPriceOnlyMultipleResults";
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Interoperability);
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
 
-            CompetitionPages.ViewResults();
-        }
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
-        [Fact]
-        [Trait("Further Competition", "Price And Non Price")]
-        public void CompetitionPricAndNonPriceElementServiceLevelAgreement()
-        {
-            string competitionName = "CompetitionPricAndNonPriceElementServiceLevelAgreement";
+        //    CompetitionPages.ViewMultipleResults();
+        //}
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //[Fact]
+        //[Trait("Further Competition", "Price Only")]
+        //public void CompetitionPriceOnlyAllICBRecipients()
+        //{
+        //    string competitionName = "CompetitionPriceOnlyAllICBRecipients";
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.ServiceLevelAgreement);
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.All);
 
-            CompetitionPages.ViewResults();
-        }
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
-        [Fact]
-        [Trait("Further Competition", "Price And Non Price")]
-        public void CompetitionAllNonPriceElements()
-        {
-            string competitionName = "CompetitionAllNonPriceElements";
+        //    CompetitionPages.ViewResults();
+        //}
 
-            CompetitionPages.CompetitionDashboard.CompetitionTriage();
+        //[Fact]
+        //[Trait("Further Competition", "Price And Non Price")]
+        //public void CompetitionPricAndNonPriceElementFeature()
+        //{
+        //    string competitionName = "CompetitionPricAndNonPriceElementFeature";
 
-            CompetitionPages.BeforeYouStart.ReadyToStart();
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.All);
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
-            CompetitionPages.ViewResults();
-        }
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Feature);
 
-        [Fact]
-        [Trait("Amend Order Journey", "Order")]
-        public void OrderAmendCatalogueSolutionGreaterThan250K()
-        {
-            string orderDescription = "CatalogueSolutionOver250K";
+        //    CompetitionPages.ViewResults();
+        //}
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //[Fact]
+        //[Trait("Further Competition", "Price And Non Price")]
+        //public void CompetitionPricAndNonPriceElementImplementation()
+        //{
+        //    string competitionName = "CompetitionPricAndNonPriceElementImplementation";
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Implementation);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    CompetitionPages.ViewResults();
+        //}
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
+        //[Fact]
+        //[Trait("Further Competition", "Price And Non Price")]
+        //public void CompetitionPricAndNonPriceElementInteroperability()
+        //{
+        //    string competitionName = "CompetitionPricAndNonPriceElementInteroperability";
 
-            OrderingPages.StepFiveAmendOrder();
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            OrderingPages.AmendSolutionsAndServices(NewSolutionName);
-        }
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-        [Fact]
-        [Trait("Amend Order Journey", "Order")]
-        public void OrderAmendCatalogueSolutionAmendDescription()
-        {
-            string orderDescription = "Amend_CatalogueSolution";
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
-            string amendOrderDescription = "AmendedOrder_CatalogueSolution";
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Interoperability);
 
-            OrderingPages.OrderingDashboard.CreateNewOrder();
+        //    CompetitionPages.ViewResults();
+        //}
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+        //[Fact]
+        //[Trait("Further Competition", "Price And Non Price")]
+        //public void CompetitionPricAndNonPriceElementServiceLevelAgreement()
+        //{
+        //    string competitionName = "CompetitionPricAndNonPriceElementServiceLevelAgreement";
 
-            OrderingPages.StartOrder.ReadyToStart();
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
 
-            OrderingPages.StepThreeCompleteContract();
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.ServiceLevelAgreement);
 
-            OrderingPages.StepFourReviewAndCompleteOrder();
+        //    CompetitionPages.ViewResults();
+        //}
 
-            OrderingPages.StepFiveAmendOrder();
+        //[Fact]
+        //[Trait("Further Competition", "Price And Non Price")]
+        //public void CompetitionAllNonPriceElements()
+        //{
+        //    string competitionName = "CompetitionAllNonPriceElements";
 
-            OrderingPages.AmendOrderDescription(amendOrderDescription);
+        //    CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
-            OrderingPages.AmendSolutionsAndServices(NewSolutionName);
-        }
+        //    CompetitionPages.BeforeYouStart.ReadyToStart();
+
+        //    CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+
+        //    CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.All);
+
+        //    CompetitionPages.ViewResults();
+        //}
+
+        //[Fact]
+        //[Trait("Amend Order Journey", "Order")]
+        //public void OrderAmendCatalogueSolutionGreaterThan250K()
+        //{
+        //    string orderDescription = "CatalogueSolutionOver250K";
+
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
+
+        //    OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+
+        //    OrderingPages.StartOrder.ReadyToStart();
+
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+        //    OrderingPages.StepThreeCompleteContract();
+
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+
+        //    OrderingPages.StepFiveAmendOrder();
+
+        //    OrderingPages.AmendSolutionsAndServices(NewSolutionName);
+        //}
+
+        //[Fact]
+        //[Trait("Amend Order Journey", "Order")]
+        //public void OrderAmendCatalogueSolutionAmendDescription()
+        //{
+        //    string orderDescription = "Amend_CatalogueSolution";
+
+        //    string amendOrderDescription = "AmendedOrder_CatalogueSolution";
+
+        //    OrderingPages.OrderingDashboard.CreateNewOrder();
+
+        //    OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
+
+        //    OrderingPages.StartOrder.ReadyToStart();
+
+        //    OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+
+        //    OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+        //    OrderingPages.StepThreeCompleteContract();
+
+        //    OrderingPages.StepFourReviewAndCompleteOrder();
+
+        //    OrderingPages.StepFiveAmendOrder();
+
+        //    OrderingPages.AmendOrderDescription(amendOrderDescription);
+
+        //    OrderingPages.AmendSolutionsAndServices(NewSolutionName);
+        //}
     }
 }
