@@ -156,6 +156,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         public static async Task Get_FilterSearchSuggestions_ReturnsResults(
             Organisation organisation,
             string searchTerm,
+            Uri uri,
             List<SearchFilterModel> searchResults,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] IOrderService orderService,
@@ -163,9 +164,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         {
             controller.ControllerContext.HttpContext = new DefaultHttpContext()
             {
-                Request = { Headers = { Referer = "http://www.test.com", }, },
+                Request =
+                {
+                    Scheme = uri.Scheme,
+                    Host = new HostString(uri.Host),
+                    Headers = { Referer = uri.ToString(), },
+                },
             };
-            var requestUri = new UriBuilder(controller.HttpContext.Request.Headers.Referer.ToString());
+            var requestUri = new UriBuilder(uri.ToString());
             var expected = searchResults.Select(
                 r => new HtmlEncodedSuggestionSearchResult(
                     r.Title,

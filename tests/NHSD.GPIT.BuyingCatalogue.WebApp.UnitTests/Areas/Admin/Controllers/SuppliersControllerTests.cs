@@ -547,17 +547,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
             SuppliersController controller)
         {
-            controller.ControllerContext.HttpContext = new DefaultHttpContext()
-            {
-                Request =
-                {
-                    Headers =
-                    {
-                        Referer = "http://www.test.com",
-                    },
-                },
-            };
-            var requestUri = new UriBuilder(controller.HttpContext.Request.Headers.Referer.ToString());
             var expected = searchResults.Select(r => new HtmlEncodedSuggestionSearchResult(
                 r.Name,
                 r.Id.ToString(),
