@@ -27,15 +27,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework
         public void AddFrameworkDetails()
         {
             TextGenerators.OrganisationInputAddText(AddFrameworkObjects.FrameworkNameInput, 30);
+            TextGenerators.NumberInputAddRandomNumber(AddFrameworkObjects.MaximumTermInput, 36, 40);
             CommonActions.ClickAllCheckboxes();
-            CommonActions.ClickFirstRadio();
             CommonActions.ClickSave();
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(FrameworksController),
                 nameof(FrameworksController.Dashboard))
                 .Should().BeTrue();
 
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(HomeController),
                 nameof(HomeController.Index))

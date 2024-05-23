@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier
                 typeof(SuppliersController),
                 nameof(SuppliersController.ManageSupplierContacts)).Should().BeTrue();
 
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(SuppliersController),

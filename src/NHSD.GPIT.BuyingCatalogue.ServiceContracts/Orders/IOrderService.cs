@@ -37,9 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<Order> CreateOrder(string description, string internalOrgId, OrderTypeEnum orderType, string selectedFrameworkId);
 
-        [Obsolete("Used by competition direct awards")]
-        public Task<Order> CreateOrder(string description, string internalOrgId, OrderTypeEnum orderType);
-
         public Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId);
 
         public Task EnsureOrderItemsForAmendment(string internalOrgId, CallOffId callOffId);

@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers
             CommonActions.ClickRadioButtonWithText("Active");
 
             CommonActions.ClickSave();
-            CommonActions.LedeText()
+            CommonActions.HintText()
             .Should()
             .Be("Add a new user or edit the details for one that's already been created.".FormatForComparison());
         }

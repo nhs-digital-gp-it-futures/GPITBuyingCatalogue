@@ -3,13 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
@@ -20,17 +22,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 public class CompetitionSelectSolutionsController : Controller
 {
     private readonly ICompetitionsService competitionsService;
+    private readonly IFrameworkService frameworkService;
+    private readonly IManageFiltersService filtersService;
 
     public CompetitionSelectSolutionsController(
-        ICompetitionsService competitionsService)
+        ICompetitionsService competitionsService,
+        IFrameworkService frameworkService,
+        IManageFiltersService filtersService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+        this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
+        this.filtersService = filtersService ?? throw new ArgumentNullException(nameof(filtersService));
     }
 
     [HttpGet("select-solutions")]
     public async Task<IActionResult> SelectSolutions(string internalOrgId, int competitionId)
     {
-        var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
+        var competition = await competitionsService.GetCompetitionWithServicesAndFramework(internalOrgId, competitionId);
 
         if (competition == null)
         {
@@ -40,7 +48,11 @@ public class CompetitionSelectSolutionsController : Controller
                 new { internalOrgId });
         }
 
-        var model = new SelectSolutionsModel(competition.Name, competition.CompetitionSolutions)
+        var availableSolutions = competition.CompetitionSolutions.Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId));
+        var frameworkName = (await frameworkService.GetFramework(competition.FrameworkId)).ShortName;
+        var filterDetails = await filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId);
+
+        var model = new SelectSolutionsModel(competition.Name, availableSolutions, frameworkName, filterDetails)
         {
             BackLinkText = "Go back to manage competitions",
             BackLink = Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId }),
@@ -59,7 +71,12 @@ public class CompetitionSelectSolutionsController : Controller
         SelectSolutionsModel model)
     {
         if (!ModelState.IsValid)
+        {
+            var competition = await competitionsService.GetCompetitionWithServicesAndFramework(internalOrgId, competitionId);
+            var filterDetails = await filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId);
+            model.ReviewFilter = new ReviewFilterModel(filterDetails) { InExpander = true };
             return View(model);
+        }
 
         if (model.HasSingleSolution())
         {
@@ -136,6 +153,7 @@ public class CompetitionSelectSolutionsController : Controller
 
     private async Task<IActionResult> HandleDirectAward(string internalOrgId, int competitionId)
     {
+        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
         await competitionsService.CompleteCompetition(internalOrgId, competitionId, true);
 
         return RedirectToAction(
@@ -143,10 +161,10 @@ public class CompetitionSelectSolutionsController : Controller
             typeof(OrderDescriptionController).ControllerName(),
             new
             {
-                // TODO: MJK set selectedFrameworkId - dependent on #23410
                 Area = typeof(OrderDescriptionController).AreaName(),
                 internalOrgId = internalOrgId,
-                orderType = CatalogueItemType.Solution,
+                orderType = OrderTypeEnum.Solution,
+                selectedFrameworkId = competition.FrameworkId,
             });
     }
 

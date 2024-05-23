@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using Xunit;
 
@@ -70,7 +70,7 @@ public static class ReviewFilterModelTests
     };
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_With_FilterDetails_SetsProperty(
         FilterDetailsModel filterDetailsModel)
     {
@@ -81,7 +81,7 @@ public static class ReviewFilterModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_With_FilterDetails_And_FilterIds_SetsProperties(
         FilterDetailsModel filterDetailsModel,
         FilterIdsModel filterIdsModel)
@@ -93,8 +93,32 @@ public static class ReviewFilterModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData("Framework", true)]
-    [CommonInlineAutoData(null, false)]
+    [MockAutoData]
+    public static void Construct_ExpectedModel(
+        FilterDetailsModel filterDetails,
+        string internalOrgId,
+        List<CatalogueItem> filterResults,
+        Solution solution,
+        bool inCompetition,
+        FilterIdsModel filterIds)
+    {
+        filterResults.ForEach(x => x.Solution = solution);
+        filterIds.FrameworkId = null;
+
+        var result = new ReviewFilterModel(filterDetails, internalOrgId, filterResults, inCompetition, filterIds);
+
+        result.ResultsCount.Should().Be(filterResults.Count);
+        result.InCompetition.Should().Be(inCompetition);
+
+        var groupedResults = filterResults
+            .SelectMany(x => x.Solution.FrameworkSolutions)
+            .GroupBy(x => (x.Framework.ShortName, x.Framework.Id));
+        result.ResultsForFrameworks.Count.Should().Be(groupedResults.Count());
+    }
+
+    [Theory]
+    [MockInlineAutoData("Framework", true)]
+    [MockInlineAutoData(null, false)]
     public static void HasFramework_ReturnsExpected(
         string framework,
         bool expected,
@@ -108,7 +132,7 @@ public static class ReviewFilterModelTests
     }
 
     [Theory]
-    [CommonMemberAutoData(nameof(HasEpicsTestData))]
+    [MockMemberAutoData(nameof(HasEpicsTestData))]
     public static void HasEpics_ReturnsExpected(
         List<KeyValuePair<string, List<string>>> capabilities,
         bool expected,
@@ -122,7 +146,7 @@ public static class ReviewFilterModelTests
     }
 
     [Theory]
-    [CommonMemberAutoData(nameof(HasHostingTypesTestData))]
+    [MockMemberAutoData(nameof(HasHostingTypesTestData))]
     public static void HasHostingTypes_ReturnsExpected(
         List<HostingType> hostingTypes,
         bool expected,
@@ -136,7 +160,7 @@ public static class ReviewFilterModelTests
     }
 
     [Theory]
-    [CommonMemberAutoData(nameof(HasApplicationTypesTestData))]
+    [MockMemberAutoData(nameof(HasApplicationTypesTestData))]
     public static void HasApplicationTypes_ReturnsExpected(
         List<ApplicationType> applicationTypes,
         bool expected,
@@ -150,7 +174,7 @@ public static class ReviewFilterModelTests
     }
 
     [Theory]
-    [CommonMemberAutoData(nameof(HasHasInteroperabilityIntegrationTypesTestData))]
+    [MockMemberAutoData(nameof(HasHasInteroperabilityIntegrationTypesTestData))]
     public static void HasInteroperabilityIntegrationTypes_ReturnsExpected(
         List<InteropIntegrationType> interopIntegrationTypes,
         bool expected,
@@ -164,7 +188,7 @@ public static class ReviewFilterModelTests
     }
 
     [Theory]
-    [CommonMemberAutoData(nameof(HasAdditionalFiltersTestData))]
+    [MockMemberAutoData(nameof(HasAdditionalFiltersTestData))]
     public static void HasAdditionalFilters_ReturnsExpected(
         FilterDetailsModel filterDetailsModel,
         bool expected)

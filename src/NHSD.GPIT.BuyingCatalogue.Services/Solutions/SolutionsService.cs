@@ -409,13 +409,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(i => i.Supplier)
                 .Where(i => i.SupplierId == supplierId.GetValueOrDefault()
                     && i.CatalogueItemType == CatalogueItemType.Solution
-                    && i.PublishedStatus == PublicationStatus.Published
-                    && i.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().Any(x => !x.IsExpired));
+                    && i.PublishedStatus == PublicationStatus.Published);
 
             if (!string.IsNullOrEmpty(selectedFrameworkId))
             {
                 query = query
-                    .Where(i => i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == selectedFrameworkId));
+                    .Where(i => i.Solution.FrameworkSolutions.Any(x => !x.Framework.IsExpired && x.FrameworkId == selectedFrameworkId));
+            }
+            else
+            {
+                query = query
+                    .Where(i => i.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().Any(x => !x.IsExpired));
             }
 
             return query
@@ -433,8 +437,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Where(i => i.SupplierId == supplierId.GetValueOrDefault()
                     && i.CatalogueItemType == CatalogueItemType.Solution
                     && i.PublishedStatus == PublicationStatus.Published
-                    && i.SupplierServiceAssociations != null
-                    && i.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().Any(x => !x.IsExpired));
+                    && i.SupplierServiceAssociations != null);
+
+            if (!string.IsNullOrEmpty(selectedFrameworkId))
+            {
+                query = query
+                    .Where(i => i.Solution.FrameworkSolutions.Any(x => !x.Framework.IsExpired && x.FrameworkId == selectedFrameworkId));
+            }
+            else
+            {
+                query = query
+                    .Where(i => i.Solution.FrameworkSolutions.Select(x => x.Framework).Distinct().Any(x => !x.IsExpired));
+            }
 
             if (practiceReorganisationType != PracticeReorganisationTypeEnum.None)
             {
@@ -448,12 +462,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 query = query
                     .Where(i => i.SupplierServiceAssociations.Any(x => x.AssociatedService != null
                         && x.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published));
-            }
-
-            if (!string.IsNullOrEmpty(selectedFrameworkId))
-            {
-                query = query
-                    .Where(i => i.Solution.FrameworkSolutions.Any(x => x.FrameworkId == selectedFrameworkId));
             }
 
             return await query

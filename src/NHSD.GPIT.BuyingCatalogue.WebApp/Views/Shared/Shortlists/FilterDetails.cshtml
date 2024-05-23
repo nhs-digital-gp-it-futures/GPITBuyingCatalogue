@@ -1,0 +1,95 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsDeleteButton
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ReviewFilterModel
+
+@{
+    Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
+    ViewBag.Title = Model.FilterDetails.Name;
+    var hasResults = Model.ResultsCount > 0;
+}
+
+<partial name="Partials/_BackLink" model="@Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full-width">
+        <nhs-page-title title="Results for this shortlist" caption=@Model.OrganisationName/>
+        <nhs-card-v2>
+            <nhs-card-content>
+                @if (Model.FilterDetails.Invalid)
+                {
+                    <nhs-warning-callout label-text="Filter cannot be used">
+                        <p>This filter cannot be used to run a competition as it contains some Capabilities or Epics that are no longer valid.</p>
+                        <p>It should be deleted and a new filter created using valid Capabilities or Epics.</p>
+                    </nhs-warning-callout>
+                }
+                else
+                {
+                    <span class="bc-flex-container" style="justify-content: space-between">
+                        <h3 class="header-with-detail">@Model.FilterDetails.Name (@Model.ResultsCount)</h3>
+                        <vc:nhs-secondary-button text="Download results (PDF)"
+                                                 url="@Url.Action(nameof(ManageFiltersController.DownloadResults),
+                                                                    typeof(ManageFiltersController).ControllerName(),
+                                                                    new { Area = typeof(ManageFiltersController).AreaName(), filterId = Model.FilterDetails.Id })"
+                                                 type="Secondary"
+                                                 class="detail"/>
+                    </span>
+                    <p class="nhsuk-body">@Model.FilterDetails.Description</p>
+                    <p class="nhsuk-body-s nhsuk-u-margin-top-1">Results updated: @DateTime.Now.ToString("dd MMMM yyyy")</p>
+                    
+
+                    @if (!hasResults)
+                    {
+                        <hr class="nhsuk-u-padding-bottom-5 nhsuk-u-margin-bottom-5 nhsuk-u-margin-top-0">
+                        <p>Due to changes on the Buying Catalogue, there are currently no results returned using the selected filters. This may change in future as a wider range of solutions are added.</p>
+                        <div style="display: inline-block" class="nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-4">
+                            <vc:nhs-secondary-button url="@Model.BackLink"
+                                                     type="Secondary"
+                                                     text="Return to shortlists" />
+                            @if (!Model.InCompetition)
+                            {
+                                <span class="modal-link-adjuster nhsuk-u-margin-left-3" draggable="false">
+                                    <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
+                                                        typeof(ManageFiltersController).ControllerName(),
+                                                        new { Area = typeof(ManageFiltersController).AreaName(), filterId = Model.FilterDetails.Id })"
+                                                          text="Delete this shortlist" />
+                                </span>
+                            }
+                        </div>
+                        
+                    }
+                    else
+                    {
+                        foreach (var resultsForFrameworkModel in Model.ResultsForFrameworks)
+                        {
+                            <partial name="Shortlists/_ResultsForFramework" model="resultsForFrameworkModel"/>
+                        }
+                    }
+                }
+            </nhs-card-content>
+        </nhs-card-v2>
+
+        
+
+        <nhs-expander label-text="View filters used for this shortlist" open="false">
+            <p>These are the filters used in this shortlist:</p>
+
+            <partial name="Partials/_FilterDetailsPartial" model="Model" />
+        </nhs-expander>
+            
+        @if(hasResults && !Model.InCompetition){
+            <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
+                                                typeof(ManageFiltersController).ControllerName(),
+                                                new { Area = typeof(ManageFiltersController).AreaName(), filterId = Model.FilterDetails.Id })"
+                                  text="Delete shortlist" />
+        }
+    </div>
+</div>

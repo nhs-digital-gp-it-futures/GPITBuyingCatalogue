@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using LinqKit;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -173,21 +175,36 @@ public static class CompetitionsDashboardControllerTests
     public static async Task ReviewFilter_ValidFilter_ReturnsViewWithModel(
         Organisation organisation,
         int filterId,
+        List<CatalogueItem> filterResults,
+        Solution solution,
         FilterDetailsModel filterDetailsModel,
+        FilterIdsModel filterIds,
         [Frozen] IOrganisationsService organisationsService,
         [Frozen] IManageFiltersService filtersService,
+        [Frozen] ISolutionsFilterService solutionsFilterService,
         CompetitionsDashboardController controller)
     {
         organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
         filtersService.GetFilterDetails(organisation.Id, filterId).Returns(filterDetailsModel);
 
-        var expectedModel = new ReviewFilterModel(filterDetailsModel) { Caption = filterDetailsModel.Name };
+        filtersService.GetFilterIds(organisation.Id, filterId).Returns(Task.FromResult(filterIds));
+
+        filterResults.ForEach(x => x.Solution = solution);
+
+        solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds).Returns(filterResults);
+
+        var expected = new ReviewFilterModel(filterDetailsModel, organisation.InternalIdentifier, filterResults, true, filterIds)
+        {
+            Caption = organisation.Name,
+            OrganisationName = organisation.Name,
+            InExpander = true,
+        };
 
         var result = (await controller.ReviewFilter(organisation.InternalIdentifier, filterId)).As<ViewResult>();
 
         result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
     }
 
     [Theory]
@@ -209,17 +226,87 @@ public static class CompetitionsDashboardControllerTests
     public static async Task SaveCompetition_ReturnsViewWithModel(
         Organisation organisation,
         int filterId,
+        string frameworkId,
+        EntityFramework.Catalogue.Models.Framework framework,
+        IList<CatalogueItem> catalogueItems,
         [Frozen] IOrganisationsService organisationsService,
+        [Frozen] IManageFiltersService filterService,
+        [Frozen] IFrameworkService frameworkService,
+        [Frozen] ISolutionsFilterService solutionsFilterService,
         CompetitionsDashboardController controller)
     {
         organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier).Returns(organisation);
 
-        var expectedModel = new SaveCompetitionModel(organisation.InternalIdentifier, organisation.Name);
+        frameworkService.GetFramework(frameworkId).Returns(framework);
 
-        var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId)).As<ViewResult>();
+        var filterIds = new FilterIdsModel() { FrameworkId = frameworkId };
+        filterService.GetFilterIds(organisation.Id, filterId)
+            .Returns(Task.FromResult(filterIds));
+
+        catalogueItems.ForEach(x => x.Solution = new Solution() { FrameworkSolutions = new List<FrameworkSolution> { new FrameworkSolution() { FrameworkId = frameworkId } } });
+
+        solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds)
+            .Returns(catalogueItems);
+
+        var expectedModel = new SaveCompetitionModel(organisation.InternalIdentifier, organisation.Name, frameworkId);
+
+        var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, frameworkId)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SaveCompetition_NullFrameworkId_Redirects(
+        Organisation organisation,
+        int filterId,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] IManageFiltersService filterService,
+        CompetitionsDashboardController controller)
+    {
+        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
+            .Returns(Task.FromResult(organisation));
+
+        filterService.GetFilterIds(organisation.Id, filterId)
+            .Returns(Task.FromResult<FilterIdsModel>(null));
+
+        var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId)).As<RedirectResult>();
+
+        result.Should().NotBeNull();
+        result.Should().BeOfType<RedirectResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SaveCompetition_NoAvailableSolutions_Redirects(
+        Organisation organisation,
+        int filterId,
+        string frameworkId,
+        IList<CatalogueItem> catalogueItems,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] IManageFiltersService filterService,
+        [Frozen] ISolutionsFilterService solutionsFilterService,
+        CompetitionsDashboardController controller)
+    {
+        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
+            .Returns(Task.FromResult(organisation));
+
+        var filterIds = new FilterIdsModel() { FrameworkId = frameworkId };
+        filterService.GetFilterIds(organisation.Id, filterId)
+            .Returns(Task.FromResult(filterIds));
+
+        catalogueItems.ForEach(x => x.Solution = new Solution() { FrameworkSolutions = new List<FrameworkSolution> { new FrameworkSolution() { FrameworkId = "DifferentId" } } });
+
+        solutionsFilterService.GetAllSolutionsFilteredFromFilterIds(filterIds)
+            .Returns(catalogueItems);
+
+        var expectedModel = new SaveCompetitionModel(organisation.InternalIdentifier, organisation.Name, frameworkId);
+
+        var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, frameworkId)).As<RedirectResult>();
+
+        result.Should().NotBeNull();
+        result.Should().BeOfType<RedirectResult>();
     }
 
     [Theory]
@@ -264,7 +351,7 @@ public static class CompetitionsDashboardControllerTests
         var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, model))
             .As<RedirectToActionResult>();
 
-        await competitionsService.Received().AddCompetition(organisation.Id, filterId, model.Name, model.Description);
+        await competitionsService.Received().AddCompetition(organisation.Id, filterId, model.FrameworkId, model.Name, model.Description);
         await competitionsService.Received().AddCompetitionSolutions(
                 organisation.InternalIdentifier,
                 competition.Id,

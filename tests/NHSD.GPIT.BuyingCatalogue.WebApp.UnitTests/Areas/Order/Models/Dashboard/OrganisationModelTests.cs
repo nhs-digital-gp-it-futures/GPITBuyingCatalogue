@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard;
 using Xunit;
 
@@ -16,25 +12,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Dashboar
     public static class OrganisationModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             Organisation organisation,
-            ClaimsPrincipal user,
+            List<Organisation> organisations,
             IList<EntityFramework.Ordering.Models.Order> allOrders)
         {
-            var model = new OrganisationModel(organisation, user, allOrders);
+            var model = new OrganisationModel(organisation, organisations, allOrders);
 
             model.Title.Should().Be(organisation.Name);
             model.OrganisationName.Should().Be(organisation.Name);
             model.InternalOrgId.Should().Be(organisation.InternalIdentifier);
-            model.CanActOnBehalf.Should().Be(user.GetSecondaryOrganisationInternalIdentifiers().Any());
+            model.CanActOnBehalf.Should().Be(organisations.Count != 0);
             model.Orders.Should().BeEquivalentTo(allOrders);
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderStatus.Terminated, NhsTagsTagHelper.TagColour.Red)]
-        [CommonInlineAutoData(OrderStatus.Completed, NhsTagsTagHelper.TagColour.Green)]
-        [CommonInlineAutoData(OrderStatus.InProgress, NhsTagsTagHelper.TagColour.Blue)]
+        [MockInlineAutoData(OrderStatus.Terminated, NhsTagsTagHelper.TagColour.Red)]
+        [MockInlineAutoData(OrderStatus.Completed, NhsTagsTagHelper.TagColour.Green)]
+        [MockInlineAutoData(OrderStatus.InProgress, NhsTagsTagHelper.TagColour.Blue)]
         public static void TagColour_WithOrderStatus_ReturnsExpected(
             OrderStatus orderStatus,
             NhsTagsTagHelper.TagColour tagColour,

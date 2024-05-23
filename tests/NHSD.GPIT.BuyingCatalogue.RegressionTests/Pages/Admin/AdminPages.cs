@@ -1,11 +1,14 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.HostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionHostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SolutionCapabilitiesAndEpics;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedEpics;
 using OpenQA.Selenium;
 
@@ -31,6 +34,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             BrowserBased = new BrowserBased(driver, commonActions);
             MobileOrTablet = new MobileOrTablet(driver, commonActions);
             Desktop = new Desktop(driver, commonActions);
+            SolutionHostingTypes = new SolutionHostingTypes(driver, commonActions);
+            PublicCloud = new PublicCloud(driver, commonActions);
+            PrivateCloud = new PrivateCloud(driver, commonActions);
+            Hybrid = new Hybrid(driver, commonActions);
+            OnPremise = new OnPremise(driver, commonActions);
+            ListPrice = new ListPrice(driver, commonActions);
+            FlatPrice = new FlatPrice(driver, commonActions);
+            TieredPrice = new TieredPrice(driver, commonActions);
+            CapabilitiesAndEpics = new CapabilitiesAndEpics(driver, commonActions, factory);
             Factory = factory;
             Driver = driver;
         }
@@ -66,6 +78,24 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal MobileOrTablet MobileOrTablet { get; }
 
         internal Desktop Desktop { get; }
+
+        internal SolutionHostingTypes SolutionHostingTypes { get; }
+
+        internal PublicCloud PublicCloud { get; }
+
+        internal PrivateCloud PrivateCloud { get; }
+
+        internal Hybrid Hybrid { get; }
+
+        internal OnPremise OnPremise { get; }
+
+        internal ListPrice ListPrice { get; }
+
+        internal FlatPrice FlatPrice { get; }
+
+        internal TieredPrice TieredPrice { get; }
+
+        internal CapabilitiesAndEpics CapabilitiesAndEpics { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -107,6 +137,43 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             Desktop.AddDesktopApplication();
             Desktop.AdDesktopApplicationTypes();
             SolutionApplicationTypes.ManageCatalogueSolution();
+        }
+
+        public void AddSolutionHostingTypes()
+        {
+            var solutionId = GetSolutionID();
+            SolutionHostingTypes.AddHostingType(solutionId);
+            SolutionHostingTypes.HostingTypeDashboard();
+            PublicCloud.AddHostingTypePublicCloud();
+            SolutionHostingTypes.HostingTypeDashboard();
+            PrivateCloud.AddHostingTypePrivateCloud();
+            SolutionHostingTypes.HostingTypeDashboard();
+            Hybrid.AddHostingTypeHybrid();
+            SolutionHostingTypes.HostingTypeDashboard();
+            OnPremise.AddHostingTypeOnPremise();
+            SolutionHostingTypes.CatalogueSolutionDashboard();
+        }
+
+        public void AddSolutionListPrice(ListPriceTypes listPriceTypes)
+        {
+            var solutionId = GetSolutionID();
+            ListPrice.AddListPrice(solutionId);
+            if (listPriceTypes == ListPriceTypes.Flat_price)
+            {
+                FlatPrice.AddFlatPrice(listPriceTypes.ToString());
+            }
+            else
+            {
+                TieredPrice.AddTieredPrice(listPriceTypes.ToString());
+            }
+
+            ListPrice.ManageSolutions();
+        }
+
+        public void AddSolutionCapabilitiesAndEpics()
+        {
+            var solutionId = GetSolutionID();
+            CapabilitiesAndEpics.AddCapabilitiesAndEpics(solutionId);
         }
 
         private string GetSolutionID()

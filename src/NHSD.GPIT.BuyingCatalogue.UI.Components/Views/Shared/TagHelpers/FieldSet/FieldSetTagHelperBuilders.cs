@@ -54,6 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
 
             builder.AddCssClass(NhsFieldsetLegend);
             builder.AddCssClass(selectedLegendClass);
+            builder.AddCssClass(TagHelperConstants.BoldLabel);
 
             return builder;
         }

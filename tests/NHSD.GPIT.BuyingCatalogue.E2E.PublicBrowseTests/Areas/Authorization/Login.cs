@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
     {
         private const string EmailError = "Enter your email address";
         private const string PasswordError = "Enter your password";
-        private const string EmailPasswordNotRecognisedError = "The username or password were not recognised. Please try again.";
+        private const string EmailPasswordNotRecognisedError = "The username or password was not recognised. Try again or contact your administrator.";
         private const string DisabledError = "There is a problem accessing your account.";
 
         public Login(LocalWebApplicationFactory factory)
@@ -145,22 +145,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
         }
 
         [Fact]
-        public async Task Login_LockedUser_LockedOutPageDisplayed()
-        {
-            await using var context = GetUsersContext();
-            var user = GetAdmin();
-
-            user.LockoutEnabled = true;
-            user.LockoutEnd = DateTimeOffset.Now.AddMinutes(5);
-            context.Update(user);
-            context.SaveChanges();
-
-            AuthorizationPages.LoginActions.Login(user.Email, DefaultPassword);
-
-            IsLockedOut();
-        }
-
-        [Fact]
         public async Task Login_ThreeFailedLoginAttempts_LocksOutUser()
         {
             const string incorrectPassword = "Test";
@@ -179,7 +163,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             IsUnsuccessfulLogin();
 
             AuthorizationPages.LoginActions.ClickLogin();
-            IsLockedOut();
 
             user = GetAdmin();
             user.LockoutEnd.HasValue.Should().BeTrue();
@@ -229,17 +212,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Areas.Authorization
             CommonActions.PageLoadedCorrectGetIndex(
                     typeof(AccountController),
                     nameof(AccountController.Login))
-                .Should()
-                .BeTrue();
-
-            AuthorizationPages.CommonActions.LogoutLinkDisplayed().Should().BeFalse();
-        }
-
-        private void IsLockedOut()
-        {
-            CommonActions.PageLoadedCorrectGetIndex(
-                    typeof(AccountController),
-                    nameof(AccountController.LockedAccount))
                 .Should()
                 .BeTrue();
 

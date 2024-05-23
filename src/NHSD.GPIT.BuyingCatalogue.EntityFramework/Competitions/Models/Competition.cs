@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -44,6 +45,8 @@ public class Competition
 
     public bool? IncludesNonPrice { get; set; }
 
+    public string FrameworkId { get; set; }
+
     public bool IsShortlistAccepted => ShortlistAccepted.HasValue;
 
     public AspNetUser LastUpdatedByUser { get; set; }
@@ -55,6 +58,8 @@ public class Competition
     public Weightings Weightings { get; set; }
 
     public NonPriceElements NonPriceElements { get; set; }
+
+    public Framework Framework { get; set; }
 
     public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
 

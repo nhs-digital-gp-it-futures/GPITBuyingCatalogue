@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 For.ModelExplorer,
                 For.Name,
                 labelText,
-                new { @class = $"{TagHelperConstants.NhsLabel} {NhsCheckboxLabel}" });
+                new { @class = $"{TagHelperConstants.NhsLabel} {NhsCheckboxLabel} {TagHelperConstants.BoldLabel}" });
 
             if (!EmbedHtml) return tagBuilder;
 

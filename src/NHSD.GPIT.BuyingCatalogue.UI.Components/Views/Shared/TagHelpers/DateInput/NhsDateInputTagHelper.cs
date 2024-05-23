@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 modelExpression.ModelExplorer,
                 modelExpression.Name,
                 labelText,
-                new { @class = $"{TagHelperConstants.NhsLabel} {DateInputLabelClass}" });
+                new { @class = $"{TagHelperConstants.NhsLabel} {DateInputLabelClass} {TagHelperConstants.BoldLabel}" });
         }
 
         private TagBuilder BuildDateInput(ModelExpression modelExpression, string widthClass)

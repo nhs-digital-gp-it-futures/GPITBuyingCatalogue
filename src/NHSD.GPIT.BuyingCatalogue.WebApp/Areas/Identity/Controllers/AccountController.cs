@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
             IActionResult BadLogin()
             {
-                const string message = "The username or password were not recognised. Please try again.";
+                const string message = "The username or password was not recognised. Try again or contact your administrator.";
 
                 ModelState.AddModelError(nameof(LoginViewModel.EmailAddress), message);
                 ModelState.AddModelError(nameof(LoginViewModel.Password), message);
@@ -95,22 +95,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
 
             if (!signinResult.Succeeded)
-                return signinResult.IsLockedOut ? RedirectToAction(nameof(LockedAccount)) : BadLogin();
+                return BadLogin();
 
             await odsService.UpdateOrganisationDetails(user.PrimaryOrganisation.ExternalIdentifier);
             return Redirect(await GetLogonReturnUrl(viewModel.ReturnUrl, user));
-        }
-
-        [HttpGet("LockedAccount")]
-        public IActionResult LockedAccount()
-        {
-            var model = new LockedAccountViewModel()
-            {
-                LockoutTime = passwordSettings.LockOutTimeInMinutes,
-                BackLink = Url.Action(nameof(Login)),
-                BackLinkText = "Go back",
-            };
-            return View(model);
         }
 
         [HttpGet("Logout")]

@@ -1,23 +1,24 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.PageTitle.NhsPageTitleModel;
 @{
+    var headingClass = string.IsNullOrWhiteSpace(Model.Advice) ? "nhsuk-u-margin-bottom-5" : "nhsuk-u-margin-bottom-2";
 }
 @if (!string.IsNullOrWhiteSpace(Model.Title) && string.IsNullOrWhiteSpace(Model.Caption))
 {
-    <h1>@Model.Title</h1>
+    <h1 class="@headingClass">@Model.Title</h1>
 }
 @if (!string.IsNullOrWhiteSpace(Model.Title) && !string.IsNullOrWhiteSpace(Model.Caption))
 {
-    <h1>
-        @Model.Title
-        <span class="nhsuk-caption-xl nhsuk-caption--bottom">
-            <span class="nhsuk-u-visually-hidden"> - </span>
+    <h1 class="@headingClass">
+        <span class="nhsuk-caption-m nhsuk-caption--top">
             @Model.Caption
+            <span class="nhsuk-u-visually-hidden"> - </span>
         </span>
+        @Model.Title
     </h1>
 }
 @if (!string.IsNullOrWhiteSpace(Model.Advice))
 {
-    <p class="nhsuk-lede-text">@Model.Advice</p>
+    <div class="nhsuk-hint nhsuk-u-margin-bottom-5">@Model.Advice</div>
 }
 @if (!string.IsNullOrWhiteSpace(Model.AdditionalAdvice))
 {

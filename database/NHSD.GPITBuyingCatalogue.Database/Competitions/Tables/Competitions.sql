@@ -16,8 +16,10 @@ CREATE TABLE [competitions].[Competitions]
     [IncludesNonPrice] BIT NULL,
     [SysStartTime] DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,
     [SysEndTime] DATETIME2(0) GENERATED ALWAYS AS ROW END NOT NULL,
+    [FrameworkId] NVARCHAR(36) NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT FK_Competitions_Filter FOREIGN KEY (FilterId) REFERENCES filtering.Filters (Id),
     CONSTRAINT FK_Competitions_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES users.AspNetUsers (Id),
-    CONSTRAINT FK_Competitions_Organisation FOREIGN KEY (OrganisationId) REFERENCES organisations.Organisations (Id)
+    CONSTRAINT FK_Competitions_Organisation FOREIGN KEY (OrganisationId) REFERENCES organisations.Organisations (Id),
+    CONSTRAINT FK_Competitions_FrameworkId FOREIGN KEY (FrameworkId) REFERENCES catalogue.Frameworks (Id)
 ) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = [competitions].[Competitions_History]));

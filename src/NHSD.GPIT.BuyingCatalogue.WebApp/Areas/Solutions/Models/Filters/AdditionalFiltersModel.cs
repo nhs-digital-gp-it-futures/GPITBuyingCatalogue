@@ -36,8 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             EpicsCount = capabilities.Values.Sum(v => v.Count());
         }
 
-        public int? FilterId { get; set; }
-
         public string SelectedFrameworkId { get; set; }
 
         public string Selected { get; set; }

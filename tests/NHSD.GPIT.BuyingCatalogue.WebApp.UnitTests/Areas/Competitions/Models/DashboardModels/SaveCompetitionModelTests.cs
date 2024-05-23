@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
 using Xunit;
 
@@ -8,14 +8,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.D
 public static class SaveCompetitionModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsProperties(
         string internalOrgId,
-        string organisationName)
+        string organisationName,
+        string frameworkId)
     {
-        var model = new SaveCompetitionModel(internalOrgId, organisationName);
+        var model = new SaveCompetitionModel(internalOrgId, organisationName, frameworkId);
 
         model.InternalOrgId.Should().Be(internalOrgId);
         model.OrganisationName.Should().Be(organisationName);
+        model.FrameworkId.Should().Be(frameworkId);
     }
 }
