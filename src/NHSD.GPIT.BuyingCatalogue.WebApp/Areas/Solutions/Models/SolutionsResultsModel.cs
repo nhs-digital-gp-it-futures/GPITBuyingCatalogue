@@ -9,8 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {
         public PageOptions PageOptions { get; set; }
 
-        public bool FilterResultView { get; set; }
-
         public RequestedFilters Filters { get; set; }
 
         public IList<CatalogueItem> CatalogueItems { get; init; }

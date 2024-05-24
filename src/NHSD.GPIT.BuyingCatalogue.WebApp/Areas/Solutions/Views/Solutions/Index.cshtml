@@ -25,30 +25,21 @@
         }
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-one-third nshuk-card">
-                @if (Model.FilterResultView)
-                {
-                    <partial name="_AdditionalFiltersView" model="@(Model.AdditionalFilters)" />
-                }
-                else
-                {
-                    <partial name="_AdditionalFilters" model="@(Model.AdditionalFilters)" />
-                }
+                <partial name="_AdditionalFilters" model="@(Model.AdditionalFilters)" />
             </div>
 
-            @if (!Model.FilterResultView)
-            {
-                <div class="nhsuk-grid-column-two-thirds" id="search">
-                    <nhs-card title="Search Catalogue Solutions">
-                        <div id="search-by">
-                            <vc:nhs-suggestion-search id="marketing-suggestion-search"
-                                                      ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName())"
-                                                      title-text="Filter Catalogue Solutions"
-                                                      placeholder-text="Search by supplier or solution name"
-                                                      query-parameter-name="search" />
-                        </div>
-                    </nhs-card>
-                </div>
-            }
+            <div class="nhsuk-grid-column-two-thirds" id="search">
+                <nhs-card title="Search Catalogue Solutions">
+                    <div id="search-by">
+                        <vc:nhs-suggestion-search id="marketing-suggestion-search"
+                                                    ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName())"
+                                                    title-text="Filter Catalogue Solutions"
+                                                    placeholder-text="Search by supplier or solution name"
+                                                    query-parameter-name="search" />
+                    </div>
+                </nhs-card>
+            </div>
+
             <div class="nhsuk-grid-column-two-thirds" id="solutions-list">
                 <partial name="SearchResults" model="@Model.ResultsModel" />
             </div>
