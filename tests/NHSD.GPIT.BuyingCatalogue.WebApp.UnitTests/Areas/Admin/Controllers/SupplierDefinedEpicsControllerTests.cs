@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockEpicsService.VerifyAll();
 
             var actualResult = result.As<JsonResult>()
-                .Value.As<IEnumerable<SuggestionSearchResult>>()
+                .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
                 .ToList();
 
             foreach (var epic in epics)
@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockEpicsService.VerifyAll();
 
             var actualResult = result.As<JsonResult>()
-                .Value.As<IEnumerable<SuggestionSearchResult>>()
+                .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
                 .ToList();
 
             actualResult.Should().BeEmpty();

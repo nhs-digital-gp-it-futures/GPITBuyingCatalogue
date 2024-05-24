@@ -547,23 +547,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<ISuppliersService> mockSuppliersService,
             SuppliersController controller)
         {
-            controller.ControllerContext.HttpContext = new DefaultHttpContext()
-            {
-                Request =
-                {
-                    Headers =
-                    {
-                        Referer = "http://www.test.com",
-                    },
-                },
-            };
-            var requestUri = new UriBuilder(controller.HttpContext.Request.Headers.Referer.ToString());
-            var expected = searchResults.Select(r => new SuggestionSearchResult
-            {
-                Title = r.Name,
-                Category = r.Id.ToString(),
-                Url = "testUrl",
-            });
+            var expected = searchResults.Select(r => new HtmlEncodedSuggestionSearchResult(
+                r.Name,
+                r.Id.ToString(),
+                "testUrl"));
 
             var supplier = searchResults.First();
 
@@ -600,7 +587,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = (await controller.FilterSearchSuggestions(searchTerm)).As<JsonResult>();
 
             result.Should().NotBeNull();
-            result.Value.As<IEnumerable<SuggestionSearchResult>>().Should().BeEmpty();
+            result.Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>().Should().BeEmpty();
         }
     }
 }
