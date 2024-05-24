@@ -37,8 +37,8 @@
                 @foreach (var competition in Model.Items.OrderByDescending(x => x.Created).Take(Model.ItemsToIterate))
                 {
                     <nhs-table-row-container>
-                        <nhs-table-cell style="word-break:break-all">@competition.Name</nhs-table-cell>
-                        <nhs-table-cell style="word-break:break-all">@competition.Description</nhs-table-cell>
+                        <nhs-table-cell style="word-break:break-word">@competition.Name</nhs-table-cell>
+                        <nhs-table-cell style="word-break:break-word">@competition.Description</nhs-table-cell>
                         <nhs-table-cell>@competition.Created.ToString("d MMM yyyy")</nhs-table-cell>
                         <nhs-table-cell>
                             <nhs-tag status-enum="@competition.Progress" />
