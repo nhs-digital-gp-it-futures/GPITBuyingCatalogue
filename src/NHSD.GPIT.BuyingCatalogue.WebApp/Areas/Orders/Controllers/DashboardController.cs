@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Dashboard;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
@@ -94,12 +95,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var results = await orderService.GetOrdersBySearchTerm(organisation.Id, search);
 
             return Json(results.Select(r =>
-                new SuggestionSearchResult
-                {
-                    Title = r.Title,
-                    Category = r.Category,
-                    Url = currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Category).ToString(),
-                }));
+                new HtmlEncodedSuggestionSearchResult(
+                    r.Title,
+                    r.Category,
+                    currentPageUrl.AppendQueryParameterToUrl(nameof(search), r.Category).Uri.PathAndQuery)));
         }
     }
 }

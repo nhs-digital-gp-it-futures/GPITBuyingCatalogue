@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -15,14 +17,17 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageOrders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 using DeleteOrderModel = NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders.DeleteOrderModel;
 
@@ -55,6 +60,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [CommonAutoData]
+        public static async Task Get_FilterSearchSuggestions_ReturnsResults(
+            string searchTerm,
+            Uri uri,
+            List<SearchFilterModel> searchResults,
+            [Frozen] Mock<IOrderAdminService> orderAdminService,
+            ManageOrdersController controller)
+        {
+            controller.ControllerContext.HttpContext = new DefaultHttpContext()
+            {
+                Request =
+                {
+                    Headers = { Referer = uri.ToString(), },
+                },
+            };
+
+            var requestUri = new UriBuilder(uri.ToString());
+
+            var expected = searchResults.Select(
+                r => new HtmlEncodedSuggestionSearchResult(
+                    r.Title,
+                    r.Category,
+                    requestUri.AppendQueryParameterToUrl("search", r.Title).AppendQueryParameterToUrl("searchTermType", r.Category).Uri.PathAndQuery));
+
+            orderAdminService.Setup(s => s.GetOrdersBySearchTerm(searchTerm))
+                .ReturnsAsync(searchResults);
+
+            var result = (await controller.FilterSearchSuggestions(searchTerm)).As<JsonResult>();
+
+            result.Should().NotBeNull();
+            result.Value.Should().BeEquivalentTo(expected);
         }
 
         [Theory]

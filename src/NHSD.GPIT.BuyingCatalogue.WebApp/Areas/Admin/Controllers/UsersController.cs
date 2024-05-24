@@ -70,12 +70,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var users = await GetFilteredUsers(search);
 
-            return Json(users.Take(15).Select(x => new SuggestionSearchResult
-            {
-                Title = x.FullName,
-                Category = x.Email,
-                Url = Url.Action(nameof(Edit), new { userId = $"{x.Id}" }),
-            }));
+            return Json(users.Take(15).Select(x => new HtmlEncodedSuggestionSearchResult(
+                x.FullName,
+                x.Email,
+                Url.Action(nameof(Edit), new { userId = $"{x.Id}" }))));
         }
 
         [HttpGet("add")]

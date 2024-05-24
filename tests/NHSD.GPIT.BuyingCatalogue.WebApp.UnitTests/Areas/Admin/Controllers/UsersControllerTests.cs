@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockUsersService.VerifyAll();
 
             var actualResult = result.As<JsonResult>()
-                .Value.As<IEnumerable<SuggestionSearchResult>>()
+                .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
                 .ToList();
 
             foreach (var user in users)
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             mockUsersService.VerifyAll();
 
             var actualResult = result.As<JsonResult>()
-                .Value.As<IEnumerable<SuggestionSearchResult>>()
+                .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
                 .ToList();
 
             actualResult.Should().BeEmpty();
@@ -154,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var result = await controller.SearchResults(searchTerm);
 
             var actualResult = result.As<JsonResult>()
-                .Value.As<IEnumerable<SuggestionSearchResult>>()
+                .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
                 .ToList();
 
             actualResult.Should().BeEmpty();
