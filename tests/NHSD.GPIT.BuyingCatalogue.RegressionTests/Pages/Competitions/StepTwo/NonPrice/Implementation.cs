@@ -19,14 +19,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             CommonActions.ClickCheckboxByLabel("Implementation");
             CommonActions.ClickSave();
 
-            CommonActions.LedeText().Should().Be("Explain your requirements for when the winning solution is implemented.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Explain your requirements for when the winning solution is implemented.".FormatForComparison());
             TextGenerators.TextInputAddText(NonPriceObjects.ElementRequirements, 100);
             CommonActions.ClickSave();
         }
 
         public void AddImplementationForAllNonPriceElements()
         {
-            CommonActions.LedeText().Should().Be("Explain your requirements for when the winning solution is implemented.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Explain your requirements for when the winning solution is implemented.".FormatForComparison());
             TextGenerators.TextInputAddText(NonPriceObjects.ElementRequirements, 100);
             CommonActions.ClickSave();
         }

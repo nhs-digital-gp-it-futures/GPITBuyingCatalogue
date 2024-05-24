@@ -23,8 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
 
             CommonActions.ClickLinkElement(OrganisationDashboard.CreateNewOrderLink);
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderTriageController),
-                nameof(OrderTriageController.OrderItemType)).Should().BeTrue();
+                typeof(OrderController),
+                nameof(OrderController.ReadyToStart)).Should().BeTrue();
         }
     }
 }

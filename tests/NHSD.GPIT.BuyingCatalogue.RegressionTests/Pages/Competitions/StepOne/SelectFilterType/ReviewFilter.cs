@@ -14,17 +14,35 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCr
         {
         }
 
-        public void ReviewYourFilter()
+        public void ReviewYourFilterNoSolution()
         {
-            CommonActions.LedeText().Should().Be("These are the details for this filter.".FormatForComparison());
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(CompetitionsDashboardController),
+               nameof(CompetitionsDashboardController.ReviewFilter))
+           .Should()
+           .BeTrue();
+        }
 
+        public void ReviewYourFilterSingleSolution()
+        {
             CommonActions.PageLoadedCorrectGetIndex(
                typeof(CompetitionsDashboardController),
                nameof(CompetitionsDashboardController.ReviewFilter))
            .Should()
            .BeTrue();
 
-            CommonActions.ClickSave();
+            CommonActions.ClickCreateCompitition();
+        }
+
+        public void ReviewYourFilterMultipleSolutions()
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+               typeof(CompetitionsDashboardController),
+               nameof(CompetitionsDashboardController.ReviewFilter))
+           .Should()
+           .BeTrue();
+
+            CommonActions.ClickFirstCreateCompitition();
         }
     }
 }

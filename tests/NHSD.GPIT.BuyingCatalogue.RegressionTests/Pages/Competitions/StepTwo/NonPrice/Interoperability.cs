@@ -18,14 +18,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             CommonActions.ClickCheckboxByLabel("Interoperability");
             CommonActions.ClickSave();
 
-            CommonActions.LedeText().Should().Be("Select which integrations your winning solution needs to work with.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Select which integrations your winning solution needs to work with.".FormatForComparison());
             CommonActions.ClickAllCheckboxes();
             CommonActions.ClickSave();
         }
 
         public void AddInteroperabilityForAllNonPriceElements()
         {
-            CommonActions.LedeText().Should().Be("Select which integrations your winning solution needs to work with.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Select which integrations your winning solution needs to work with.".FormatForComparison());
             CommonActions.ClickAllCheckboxes();
             CommonActions.ClickSave();
         }

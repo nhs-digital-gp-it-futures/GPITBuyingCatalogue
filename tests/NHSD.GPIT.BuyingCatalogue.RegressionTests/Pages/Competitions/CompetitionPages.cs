@@ -111,31 +111,26 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             int selectedFilter = (int)filterType;
             SelectFilter.SelectFilterForNewCompetition(selectedFilter);
 
-            ReviewFilter.ReviewYourFilter();
-
-            StartCompetition.CreateCompetition(competitionName);
-            int competitionId = CompetitionId();
-
             if (filterType == FilterType.NoResults)
             {
+                ReviewFilter.ReviewYourFilterNoSolution();
                 NoSolutionsFound.NoSolutions();
             }
             else if (filterType == FilterType.SingleResult)
             {
+                ReviewFilter.ReviewYourFilterSingleSolution();
+                StartCompetition.CreateCompetition(competitionName);
                 SingleSolutionFound.SingleSolution();
             }
             else
             {
-                int filterId = GetFilterId(competitionId);
+                int solutions = NoOfSlutions();
 
-                if (filterId == 2)
-                {
-                    int solutions = NoOfSlutions();
-
-                    SelectSolutions.AddSolutions(solutions);
-                    SolutionShortlisted.SolutionNotIncludedInShortlisting();
-                    SolutionShortlisted.ConfirmSolutions();
-                }
+                ReviewFilter.ReviewYourFilterMultipleSolutions();
+                StartCompetition.CreateCompetition(competitionName);
+                SelectSolutions.AddSolutions(solutions);
+                SolutionShortlisted.SolutionNotIncludedInShortlisting();
+                SolutionShortlisted.ConfirmSolutions();
 
                 CompetitionTaskList.CompetitionServiceRecipientsTask();
                 CompetitionServiceRecipients.AddCompetitionServiceRecipient(recipients);

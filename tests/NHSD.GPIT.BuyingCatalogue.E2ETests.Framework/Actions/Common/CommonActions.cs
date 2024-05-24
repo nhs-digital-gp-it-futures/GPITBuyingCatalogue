@@ -25,8 +25,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public void ClickSelectAll() =>
                 Driver.FindElement(CommonSelectors.SelectAll).Click();
 
-        public void ClickStartNewSearch() =>
-            Driver.FindElement(By.LinkText("Start a new search")).Click();
+        public void ClickReturnToShortLists() =>
+            Driver.FindElement(By.LinkText("Return to shortlists")).Click();
+
+        public void ClickCreateCompitition() =>
+            Driver.FindElement(By.LinkText("Create competition")).Click();
+
+        public void ClickFirstCreateCompitition() =>
+            Driver.FindElements(By.LinkText("Create competition")).First().Click();
 
         public void ClickReturnToAdminHomePage() =>
             Driver.FindElement(By.LinkText("Return to admin homepage")).Click();

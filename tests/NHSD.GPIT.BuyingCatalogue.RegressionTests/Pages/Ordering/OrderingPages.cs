@@ -21,7 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             OrderingDashboard = new OrderingDashboard(driver, commonActions);
             OrderType = new OrderType.OrderType(driver, commonActions);
-            StartOrder = new StartOrder(driver, commonActions);
             TaskList = new TaskList(driver, commonActions);
             OrderingStepOne = new OrderingStepOne(driver, commonActions);
             PlannedDeliveryDates = new PlannedDeliveryDates(driver, commonActions, factory);
@@ -58,8 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         internal OrderingDashboard OrderingDashboard { get; }
 
         internal OrderType.OrderType OrderType { get; }
-
-        internal StartOrder StartOrder { get; }
 
         internal TaskList TaskList { get; }
 
@@ -255,25 +252,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             TaskList.SelectPlannedDeliveryDatesTask();
             PlannedDeliveryDates.PlannedDeliveryDate(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
 
-            var isMultiFramework = IsMultiFramework(orderId);
-
-            if (isMultiFramework)
+            var isLocalFundingOnly = IsLocalFundingOnly(orderId);
+            if (isLocalFundingOnly)
             {
-                TaskList.SelectFrameWork();
-                SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
+                    TaskList.SelectLocalFundingSourcesTask();
             }
             else
             {
-                var isLocalFundingOnly = IsLocalFundingOnly(orderId);
-                if (isLocalFundingOnly)
-                {
-                    TaskList.SelectLocalFundingSourcesTask();
-                }
-                else
-                {
                     TaskList.SelectFundingSourcesTask();
                     SelectFundingSources.AddFundingSources(solutionName, isAssociatedServiceOnlyOrder, associatedServices, additionalServices);
-                }
             }
         }
 
@@ -739,17 +726,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             return orderId;
         }
 
-        private bool IsMultiFramework(int orderId)
-        {
-            using var dbContext = Factory.DbContext;
+        //private bool IsMultiFramework(int orderId)
+        //{
+        //    using var dbContext = Factory.DbContext;
 
-            var frameworks = dbContext.OrderItems
-                .Where(oi => oi.OrderId == orderId)
-                .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))
-                .ToList();
+        //    var frameworks = dbContext.OrderItems
+        //        .Where(oi => oi.OrderId == orderId)
+        //        .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))
+        //        .ToList();
 
-            return frameworks.Count > 1;
-        }
+        //    return frameworks.Count > 1;
+        //}
 
         private bool IsLocalFundingOnly(int orderId)
         {

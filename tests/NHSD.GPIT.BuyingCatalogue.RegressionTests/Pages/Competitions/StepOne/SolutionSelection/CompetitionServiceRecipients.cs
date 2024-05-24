@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOne.S
 
         public void ConfirmServiceReceipientsChanges()
         {
-            CommonActions.LedeText().Should().Be("Review the organisations you’ve selected to receive the winning solution for this competition.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Review the organisations you’ve selected to receive the winning solution for this competition.".FormatForComparison());
 
             CommonActions.ClickSave();
         }

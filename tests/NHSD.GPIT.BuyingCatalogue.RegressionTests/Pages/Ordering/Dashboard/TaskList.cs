@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
         {
             CommonActions.ClickLinkElement(OrderDashboard.OrderDescriptionLink);
             CommonActions.ClearInputElement(OrderDescription.DescriptionInput);
-            CommonActions.LedeText().Should().Be("You can update the description of this order to help distinguish it from the previous version if required.".FormatForComparison());
+            CommonActions.HintText().Should().Be("You can update the description of this order to help distinguish it from the previous version if required.".FormatForComparison());
         }
 
         public void CallOffOrderingPartyContactDetailsTask()
@@ -73,13 +73,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
         public void SupplierInformationAndContactForSplitOrder()
         {
             CommonActions.ClickLinkElement(SupplierObjects.SupplierContactDetailsLink);
-            CommonActions.LedeText().Should().Be("There is only one supplier that provides an Associated Service supporting mergers and splits.".FormatForComparison());
+            CommonActions.HintText().Should().Be("There is only one supplier that provides an Associated Service supporting mergers and splits.".FormatForComparison());
         }
 
         public void SupplierInformationAndContactForMergerOrder()
         {
             CommonActions.ClickLinkElement(SupplierObjects.SupplierContactDetailsLink);
-            CommonActions.LedeText().Should().Be("You'll only be able to select suppliers that offer either mergers or splits as Additional Services with their solutions.".FormatForComparison());
+            CommonActions.HintText().Should().Be("You'll only be able to select suppliers that offer either mergers or splits as Additional Services with their solutions.".FormatForComparison());
             CommonActions.ClickLastRadio();
             CommonActions.ClickSave();
         }
@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
             typeof(TaskListController),
             nameof(TaskListController.TaskList)).Should().BeTrue();
 
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(OrderController),

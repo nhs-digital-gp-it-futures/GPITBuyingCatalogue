@@ -1,6 +1,7 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -14,6 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         private const string InternalOrgId = "IB-QWO";
         private const string FileName = "valid_service_recipients.csv";
         private const string SupplierName = "EMIS Health";
+        private const string FrameWorkTechInnovation = "Tech Innovation";
+        private const string FrameWorkDFOCVC = "DFOCVC";
         private const string SolutionName = "Anywhere Consult";
         private const string SolutionWithMultipleFrameworks = "Video Consult";
         private const string SolutionForLocalfundingonly = "Online and Video Consult";
@@ -45,9 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -66,34 +67,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.DFOCVC, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionForLocalfundingonly);
-
-            OrderingPages.StepThreeCompleteContract();
-
-            OrderingPages.StepFourReviewAndCompleteOrder();
-        }
-
-        [Fact]
-        [Trait("Framework", "Order")]
-        public void MultipleFrameworksOrderWithSolutionUnder40K()
-        {
-            string orderDescription = "MultipleFrameworksOrderWithSolutionUnder40K";
-
-            OrderingPages.OrderingDashboard.CreateNewOrder();
-
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
-
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
-
-            OrderingPages.StepTwoAddSolutionsAndServices(SolutionWithMultipleFrameworks);
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -108,9 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -129,9 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -150,9 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -171,9 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -194,9 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -217,9 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -242,9 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -267,9 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -295,9 +257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -320,9 +280,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -351,9 +309,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, true);
 
@@ -372,9 +328,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -393,9 +347,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -414,9 +366,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -435,9 +385,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -456,9 +404,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -477,9 +423,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -498,9 +442,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -519,9 +461,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -540,9 +480,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -561,9 +499,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -582,9 +518,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -603,9 +537,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceOther);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceOther);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -624,9 +556,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceSplit);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceSplit);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceSplit);
 
@@ -645,9 +575,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceMerger);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceMerger);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceMerger);
 
@@ -666,9 +594,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -689,9 +615,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -710,9 +634,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -733,9 +655,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -756,9 +676,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -779,9 +697,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -802,9 +718,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -825,9 +739,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -848,9 +760,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -871,9 +781,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -894,9 +802,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -917,9 +823,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -940,9 +844,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -963,9 +865,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -986,9 +886,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1009,9 +907,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1032,9 +928,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -1055,9 +949,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1078,9 +970,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1101,9 +991,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1124,9 +1012,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1147,9 +1033,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1170,9 +1054,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1193,9 +1075,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1216,9 +1096,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1239,9 +1117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1262,9 +1138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -1285,9 +1159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -1308,9 +1180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -1331,9 +1201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1358,9 +1226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1386,9 +1252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1410,9 +1274,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1434,9 +1296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1462,9 +1322,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -1486,9 +1344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1509,9 +1365,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1533,9 +1387,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1557,9 +1409,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1582,9 +1432,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -1607,9 +1455,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1631,9 +1477,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1656,9 +1500,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1681,9 +1523,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -1705,9 +1545,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -1728,9 +1566,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1751,9 +1587,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1774,9 +1608,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1797,9 +1629,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1820,9 +1650,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1843,9 +1671,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1866,9 +1692,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1889,9 +1713,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -1915,9 +1737,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1938,9 +1758,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1961,9 +1779,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -1984,9 +1800,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -2007,9 +1821,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -2030,9 +1842,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.AssociatedService);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
 
@@ -2314,9 +2124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 
@@ -2341,9 +2149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(CatalogueItemType.Solution);
-
-            OrderingPages.StartOrder.ReadyToStart();
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
 
             OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
 

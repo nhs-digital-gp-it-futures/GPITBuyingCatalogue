@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
             CommonActions.PageLoadedCorrectGetIndex(
             typeof(DeliveryDatesController),
             nameof(DeliveryDatesController.Review)).Should().BeTrue();
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
         }
 
         public void EditPlannedDeliveryDate(string solutionName, bool isAssociatedServiceOnly, IEnumerable<string>? associatedServices, IEnumerable<string>? additionalServices)
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
                 CommonActions.PageLoadedCorrectGetIndex(
                 typeof(DeliveryDatesController),
                 nameof(DeliveryDatesController.Review)).Should().BeTrue();
-                CommonActions.ClickContinue();
+                CommonActions.ClickSaveAndContinue();
             }
         }
 
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Deliv
                 typeof(DeliveryDatesController),
                 nameof(DeliveryDatesController.Review)).Should().BeTrue();
 
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
         }
 
         public void MatchDatesPlannedDeliveryDate()

@@ -107,8 +107,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void ReviewCompareAndScore()
         {
-            CommonActions.LedeText().Should().Be("Compare and score shortlisted solutions based on the non-price elements you’ve added.".FormatForComparison());
-            CommonActions.ClickContinue();
+            CommonActions.HintText().Should().Be("Compare and score shortlisted solutions based on the non-price elements you’ve added.".FormatForComparison());
+            CommonActions.ClickSaveAndContinue();
         }
     }
 }

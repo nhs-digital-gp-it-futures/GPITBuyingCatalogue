@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
              typeof(TaskListController),
              nameof(TaskListController.TaskList)).Should().BeTrue();
 
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
 
             CommonActions.PageLoadedCorrectGetIndex(
              typeof(OrderController),
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 
             AddQuantity();
 
-            CommonActions.ClickContinue();
+            CommonActions.ClickSaveAndContinue();
         }
 
         public void AddSolutionQuantity(string solutionid)
