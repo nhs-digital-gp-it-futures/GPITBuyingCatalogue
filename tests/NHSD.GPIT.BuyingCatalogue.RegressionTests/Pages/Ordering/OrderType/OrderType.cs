@@ -18,45 +18,44 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
         /// <summary>
         /// Choose the Order Type, Catalogue Solution or Associated Service.
         /// </summary>
-        /// <param name="type">Catalogue Order Type, Defaults to Catalogue Solution.</param>
-        public void ChooseOrderType(string frameworkType, CatalogueItemType type = CatalogueItemType.Solution, AssociatedServiceType associatedServiceType = AssociatedServiceType.AssociatedServiceOther)
+        /// <param name="type">Catalogue Order Type, Defaults to Catalogue Solution. </param>
+        /// <param name="frameworkType">Choose the desired framework. </param>
+        public void ChooseOrderType(FrameworkType frameworkType = FrameworkType.Tech_Innovation, CatalogueItemType type = CatalogueItemType.Solution, AssociatedServiceType associatedServiceType = AssociatedServiceType.AssociatedServiceOther)
         {
+            string frameWork = frameworkType.ToString().Replace("_", " ");
             CommonActions.ClickSave();
-            //CommonActions.ClickRadioButtonWithValue(type.ToString());
-
-            //CommonActions.ClickSave();
 
             switch (type)
             {
                 case CatalogueItemType.AssociatedService:
                     if (associatedServiceType == AssociatedServiceType.AssociatedServiceOther || associatedServiceType == AssociatedServiceType.AssociatedServiceSplit || associatedServiceType == AssociatedServiceType.AssociatedServiceMerger)
                     {
-                        AssociatedServiceCorrectPage(associatedServiceType, frameworkType);
+                        AssociatedServiceCorrectPage(associatedServiceType, frameWork);
                     }
 
                     break;
 
                 default:
-                    CatalogueSolutionCorrectPage(frameworkType);
+                    CatalogueSolutionCorrectPage(frameWork);
                     break;
             }
         }
 
-        public void ChooseFrameworkType(string frameworkType)
+        public void ChooseFrameworkType(string frameWork)
         {
             CommonActions.HintText().Should().Be("Select the procurement framework that the solution you want to order is available on.".FormatForComparison());
-            CommonActions.ClickRadioButtonWithText(frameworkType);
+            CommonActions.ClickRadioButtonWithText(frameWork);
             CommonActions.ClickSave();
         }
 
-        private void CatalogueSolutionCorrectPage(string frameWorkType)
+        private void CatalogueSolutionCorrectPage(string frameWork)
         {
             CommonActions.ClickFirstRadio();
             CommonActions.ClickSave();
-            ChooseFrameworkType(frameWorkType);
+            ChooseFrameworkType(frameWork);
         }
 
-        private void AssociatedServiceCorrectPage(AssociatedServiceType associatedServiceType, string frameWorkType)
+        private void AssociatedServiceCorrectPage(AssociatedServiceType associatedServiceType, string frameWork)
         {
             CommonActions.ClickLastRadio();
             CommonActions.ClickSave();
@@ -64,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
 
             CommonActions.ClickRadioButtonWithValue(associatedServiceType.ToString());
             CommonActions.ClickSave();
-            ChooseFrameworkType(frameWorkType);
+            ChooseFrameworkType(frameWork);
         }
     }
 }
