@@ -43,12 +43,12 @@
                 @foreach (var item in Model.Items.OrderByDescending(x => x.Created).Take(Model.ItemsToIterate))
                 {
                     <nhs-table-row-container>
-                        <nhs-table-cell>
+                        <nhs-table-cell style="word-break:break-word">
                             <span data-test-id="filter-name">
                                 @item.Name
                             </span>
                         </nhs-table-cell>
-                        <nhs-table-cell>
+                        <nhs-table-cell style="word-break:break-word">
                             <span data-test-id="filter-description">
                                 @item.Description
                             </span>

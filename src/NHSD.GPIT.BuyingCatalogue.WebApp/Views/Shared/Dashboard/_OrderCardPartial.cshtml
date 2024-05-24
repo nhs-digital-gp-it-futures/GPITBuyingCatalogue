@@ -20,7 +20,7 @@
                    asp-route-internalOrgId="@(Model.InternalOrgId)"
                    asp-route-area="@(typeof(OrderController).AreaName())">Create new order</a>
             </div>
-            <hr class="nhsuk-u-margin-bottom-4 nhsuk-u-margin-top-4"/>
+            <hr class="nhsuk-u-margin-bottom-4 nhsuk-u-margin-top-4" />
         }
 
         @if (Model.HasItems)
@@ -41,12 +41,14 @@
                                 @order.CallOffId
                             </span>
                         </nhs-table-cell>
-                        <nhs-table-cell>@order.Description</nhs-table-cell>
+                        <nhs-table-cell style="word-break:break-word">
+                            @order.Description
+                        </nhs-table-cell>
                         <nhs-table-cell>@order.Created.ToString("d MMM yyyy")</nhs-table-cell>
                         <nhs-table-cell>
                             <span style="white-space: nowrap">
                                 <nhs-tag colour="@TagColour(order.OrderStatus)"
-                                         text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)"/>
+                                         text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)" />
                             </span>
                         </nhs-table-cell>
                         <nhs-table-cell>
@@ -75,7 +77,7 @@
             {
                 <div id="pagination">
                     <govuk-pagination current-page-number="@Model.PageOptions.PageNumber"
-                                                total-number-of-pages="@Model.PageOptions.NumberOfPages"/>
+                                      total-number-of-pages="@Model.PageOptions.NumberOfPages" />
 
                 </div>
             }
@@ -97,10 +99,10 @@
             }
             else
             {
-                <img src="~/images/orders-splash-with-shadow.svg" alt="Order image" class="splash-intro-img nhsuk-u-margin-top-2"/>
+                <img src="~/images/orders-splash-with-shadow.svg" alt="Order image" class="splash-intro-img nhsuk-u-margin-top-2" />
                 <h3 class="nhsuk-heading-m">No orders created yet</h3>
                 <p class="nhsuk-body">
-                    Orders you create for your organisation will appear here.<br/>
+                    Orders you create for your organisation will appear here.<br />
 
                     Browse the
                     <a asp-action="@nameof(SolutionsController.Index)"
@@ -109,7 +111,7 @@
                 </p>
                 <vc:nhs-secondary-button text="Create new order"
                                          url="@Url.Action(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId = Model.InternalOrgId, area = typeof(OrderController).AreaName() })"
-                                         type="Primary"/>
+                                         type="Primary" />
             }
         }
     </nhs-card-content>
