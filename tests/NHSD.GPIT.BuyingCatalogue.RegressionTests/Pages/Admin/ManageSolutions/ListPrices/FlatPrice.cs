@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices
+namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.ListPrices
 {
     public class FlatPrice : PageBase
     {
@@ -18,14 +18,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices
 
         public void AddFlatPrice(string priceType)
         {
-            string type = priceType.Replace("_", " ");
+            var type = priceType.Replace("_", " ");
             CommonActions.ClickRadioButtonWithText(type);
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(CatalogueSolutionListPriceController),
-                nameof(CatalogueSolutionListPriceController.AddFlatListPrice))
-                .Should().BeTrue();
+              typeof(CatalogueSolutionListPriceController),
+              nameof(CatalogueSolutionListPriceController.AddFlatListPrice))
+              .Should().BeTrue();
 
             AddFlatPriceDetails();
         }
