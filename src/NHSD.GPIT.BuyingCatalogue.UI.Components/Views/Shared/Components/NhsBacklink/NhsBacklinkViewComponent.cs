@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsBacklink
@@ -7,6 +8,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsBac
     {
         public async Task<IViewComponentResult> InvokeAsync(string url, string text)
         {
+            if (!Url.IsLocalUrl(url))
+            {
+                throw new InvalidOperationException($"Url validation failed: {url}");
+            }
+
             var model = new NhsBacklinkModel
             {
                 Href = url,

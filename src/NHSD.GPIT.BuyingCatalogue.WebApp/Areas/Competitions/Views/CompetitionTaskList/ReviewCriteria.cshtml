@@ -4,7 +4,7 @@
 
 @{
     ViewBag.Title = "Review competition criteria";
-    var editRouteValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, returnUrl = Url.ActionLink() };
+    var editRouteValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, returnUrl = Url.Action() };
 
     var editPriceWeightings = Url.Action(nameof(CompetitionTaskListController.Weightings), typeof(CompetitionTaskListController).ControllerName(), editRouteValues);
     var editNonPriceElementWeightings = Url.Action(nameof(CompetitionNonPriceElementsController.Weights), typeof(CompetitionNonPriceElementsController).ControllerName(), editRouteValues);

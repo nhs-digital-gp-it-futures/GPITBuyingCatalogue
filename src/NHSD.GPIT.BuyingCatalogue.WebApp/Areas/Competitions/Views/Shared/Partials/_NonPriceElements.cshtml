@@ -3,11 +3,11 @@
 @if (Model.NonPriceElements.Features.Any())
 {
     <nhs-card title="Features" size="Large">
-        <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features, Model.HasReviewedCriteria) { ReturnUrl = Url.ActionLink(), IsAdding = false })"/>
+        <partial name="Partials/_FeaturesRequirements" model="@(new FeaturesRequirementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features, Model.HasReviewedCriteria) { ReturnUrl = Url.Action(), IsAdding = false })" />
 
         @if (!Model.IsReviewScreen && !Model.HasReviewedCriteria)
         {
-            <vc:nhs-action-link text="Add another features requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.FeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, returnUrl = Url.ActionLink() })"/>
+            <vc:nhs-action-link text="Add another features requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.FeatureRequirement), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, returnUrl = Url.Action() })" />
         }
     </nhs-card>
 }
