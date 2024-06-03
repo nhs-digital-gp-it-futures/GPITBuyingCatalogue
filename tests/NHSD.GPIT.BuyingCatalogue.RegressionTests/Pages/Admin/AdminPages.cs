@@ -6,6 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.Addi
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.HostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionAssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionCapabilitiesAndEpics;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionHostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
@@ -45,6 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             TieredPrice = new TieredPrice(driver, commonActions);
             CapabilitiesAndEpics = new CapabilitiesAndEpics(driver, commonActions, factory);
             SolutionAdditionalService = new SolutionAdditionalService(driver, commonActions, factory);
+            SolutionAssociatedService = new SolutionAssociatedService(driver, commonActions, factory);
             Factory = factory;
             Driver = driver;
         }
@@ -100,6 +102,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal CapabilitiesAndEpics CapabilitiesAndEpics { get; }
 
         internal SolutionAdditionalService SolutionAdditionalService { get; }
+
+        internal SolutionAssociatedService SolutionAssociatedService { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -184,6 +188,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         {
             var solutionId = GetSolutionID();
             SolutionAdditionalService.AddAdditionlService(solutionId, listPriceTypes.ToString());
+        }
+
+        public void AddAssociatedService(ListPriceTypes listPriceTypes)
+        {
+            var solutionId = GetSolutionID();
+            SolutionAssociatedService.AddAssociatedService(solutionId, listPriceTypes.ToString());
         }
 
         private string GetSolutionID()

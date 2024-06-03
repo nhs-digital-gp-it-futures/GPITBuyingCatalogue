@@ -90,6 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddSolutionCapabilitiesAndEpics();
 
             AdminPages.AddAdditionalService(ListPriceTypes.Flat_price);
+
+            AdminPages.AddAssociatedService(ListPriceTypes.Flat_price);
         }
 
         [Fact]
@@ -113,6 +115,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddSolutionCapabilitiesAndEpics();
 
             AdminPages.AddAdditionalService(ListPriceTypes.Tiered_price);
+
+            AdminPages.AddAssociatedService(ListPriceTypes.Tiered_price);
         }
 
         [Fact]
