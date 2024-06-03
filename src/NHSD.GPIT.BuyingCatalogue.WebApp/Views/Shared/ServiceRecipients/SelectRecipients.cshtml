@@ -38,10 +38,10 @@
                 </nhs-inset-text>
             }
             <div class="bc-u-max-width-full">
-                <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.All })"
+                <vc:nhs-secondary-button url="@Url.Action(null, values: new { selectionMode = SelectionMode.All })"
                                      text="Select all"
                                      type="Secondary" />
-                <vc:nhs-secondary-button url="@Url.PageLink(values: new { selectionMode = SelectionMode.None })"
+                <vc:nhs-secondary-button url="@Url.Action(null, values: new { selectionMode = SelectionMode.None })"
                                      text="Deselect all"
                                      type="Secondary" />
                 <button id="show-dialog" class="nhsuk-button nhsuk-button--secondary bc-u-float-right">
