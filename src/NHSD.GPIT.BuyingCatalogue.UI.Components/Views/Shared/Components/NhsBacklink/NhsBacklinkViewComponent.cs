@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsBac
     {
         public async Task<IViewComponentResult> InvokeAsync(string url, string text)
         {
-            if (!Url.IsLocalUrl(url))
+            if (!Url.IsLocalUrl(url) && url != "./")
             {
                 throw new InvalidOperationException($"Url validation failed: {url}");
             }
