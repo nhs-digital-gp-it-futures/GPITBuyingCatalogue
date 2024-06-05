@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
 
         public LocalWebApplicationFactory Factory { get; }
 
-        public void AddAdditionlService(string solutionId, string priceType)
+        public void AddAdditionalService(string solutionId, string priceType)
         {
             CommonActions.ClickLinkElement(AddSolutionObjects.AdditionalServiceLink(solutionId));
             CommonActions.PageLoadedCorrectGetIndex(
@@ -47,11 +47,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
                 .Should().BeTrue();
 
             AddAdditionalServiceDetails();
-            AddCapbilities();
+            AddCapabilities();
             AddListPrices(priceType, service);
         }
 
-        public void AddAdditionalServiceDetails()
+        private void AddAdditionalServiceDetails()
         {
             service = TextGenerators.TextInputAddText(CommonSelectors.Name, 50);
             TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
                 .BeTrue();
         }
 
-        public void AddCapbilities()
+        private void AddCapabilities()
         {
             var serviceId = GetAdditionalServiceID();
             CommonActions.ClickLinkElement(AdditionalServicesObjects.EditCapabilitiesLink(serviceId));
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
                 .BeTrue();
         }
 
-        public void AddListPrices(string priceType, string service)
+        private void AddListPrices(string priceType, string service)
         {
             var serviceId = GetAdditionalServiceID();
             CommonActions.ClickLinkElement(AdditionalServicesObjects.EditPriceLink(serviceId));
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
             }
         }
 
-        public void AdditionalServiceDashboard()
+        private void AdditionalServiceDashboard()
         {
             CommonActions.ClickLastRadio();
             CommonActions.ClickSave();

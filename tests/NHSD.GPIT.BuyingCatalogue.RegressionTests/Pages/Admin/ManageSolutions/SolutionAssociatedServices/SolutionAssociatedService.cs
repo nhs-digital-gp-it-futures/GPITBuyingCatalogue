@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
             AddListPrices(priceType, service);
         }
 
-        public void AddAssociatedServiceDetails()
+        private void AddAssociatedServiceDetails()
         {
             service = TextGenerators.TextInputAddText(CommonSelectors.Name, 50);
             TextGenerators.TextInputAddText(CommonSelectors.Description, 1000);
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
                 .BeTrue();
         }
 
-        public void AddListPrices(string priceType, string service)
+        private void AddListPrices(string priceType, string service)
         {
             var serviceId = GetAssociatedServiceID();
             CommonActions.ClickLinkElement(AssociatedServicesObjects.EditPriceLink(serviceId));
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
             }
         }
 
-        public void AssociatedServiceDashboard()
+        private void AssociatedServiceDashboard()
         {
             CommonActions.ClickLastRadio();
             CommonActions.ClickSave();
