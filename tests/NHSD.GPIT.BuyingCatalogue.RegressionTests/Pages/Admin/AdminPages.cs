@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         public void AddAdditionalService(ListPriceTypes listPriceTypes)
         {
             var solutionId = GetSolutionID();
-            SolutionAdditionalService.AddAdditionlService(solutionId, listPriceTypes.ToString());
+            SolutionAdditionalService.AddAdditionalService(solutionId, listPriceTypes.ToString());
         }
 
         public void AddAssociatedService(ListPriceTypes listPriceTypes)
