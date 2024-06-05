@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices
+namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.ListPrices
 {
     public class TieredPrice : PageBase
     {
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices
 
         public void AddTieredPrice(string priceType)
         {
-            string type = priceType.Replace("_", " ");
+            var type = priceType.Replace("_", " ");
             CommonActions.ClickRadioButtonWithText(type);
             CommonActions.ClickSave();
 

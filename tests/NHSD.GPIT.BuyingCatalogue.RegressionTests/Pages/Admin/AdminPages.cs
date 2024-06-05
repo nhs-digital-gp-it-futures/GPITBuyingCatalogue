@@ -1,14 +1,16 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.AdditionalService;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.HostingType;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionAssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionCapabilitiesAndEpics;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionHostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSupplier;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageUsers;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SolutionCapabilitiesAndEpics;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SupplierDefinedEpics;
 using OpenQA.Selenium;
 
@@ -43,6 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             FlatPrice = new FlatPrice(driver, commonActions);
             TieredPrice = new TieredPrice(driver, commonActions);
             CapabilitiesAndEpics = new CapabilitiesAndEpics(driver, commonActions, factory);
+            SolutionAdditionalService = new SolutionAdditionalService(driver, commonActions, factory);
+            SolutionAssociatedService = new SolutionAssociatedService(driver, commonActions, factory);
             Factory = factory;
             Driver = driver;
         }
@@ -96,6 +100,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal TieredPrice TieredPrice { get; }
 
         internal CapabilitiesAndEpics CapabilitiesAndEpics { get; }
+
+        internal SolutionAdditionalService SolutionAdditionalService { get; }
+
+        internal SolutionAssociatedService SolutionAssociatedService { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -174,6 +182,18 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         {
             var solutionId = GetSolutionID();
             CapabilitiesAndEpics.AddCapabilitiesAndEpics(solutionId);
+        }
+
+        public void AddAdditionalService(ListPriceTypes listPriceTypes)
+        {
+            var solutionId = GetSolutionID();
+            SolutionAdditionalService.AddAdditionalService(solutionId, listPriceTypes.ToString());
+        }
+
+        public void AddAssociatedService(ListPriceTypes listPriceTypes)
+        {
+            var solutionId = GetSolutionID();
+            SolutionAssociatedService.AddAssociatedService(solutionId, listPriceTypes.ToString());
         }
 
         private string GetSolutionID()

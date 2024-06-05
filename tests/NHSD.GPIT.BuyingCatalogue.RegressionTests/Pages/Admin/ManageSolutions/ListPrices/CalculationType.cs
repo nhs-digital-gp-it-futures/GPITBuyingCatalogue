@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using EnumsNET;
 
-namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices
+namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.ListPrices
 {
     public enum CalculationType
     {

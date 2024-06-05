@@ -1,5 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ListPrices;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using Xunit;
@@ -88,6 +88,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddSolutionListPrice(ListPriceTypes.Flat_price);
 
             AdminPages.AddSolutionCapabilitiesAndEpics();
+
+            AdminPages.AddAdditionalService(ListPriceTypes.Flat_price);
+
+            AdminPages.AddAssociatedService(ListPriceTypes.Flat_price);
         }
 
         [Fact]
@@ -109,6 +113,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddSolutionListPrice(ListPriceTypes.Tiered_price);
 
             AdminPages.AddSolutionCapabilitiesAndEpics();
+
+            AdminPages.AddAdditionalService(ListPriceTypes.Tiered_price);
+
+            AdminPages.AddAssociatedService(ListPriceTypes.Tiered_price);
         }
 
         [Fact]

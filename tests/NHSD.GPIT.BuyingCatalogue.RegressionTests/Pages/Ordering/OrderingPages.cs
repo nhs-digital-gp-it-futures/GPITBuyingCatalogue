@@ -726,18 +726,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             return orderId;
         }
 
-        //private bool IsMultiFramework(int orderId)
-        //{
-        //    using var dbContext = Factory.DbContext;
-
-        //    var frameworks = dbContext.OrderItems
-        //        .Where(oi => oi.OrderId == orderId)
-        //        .SelectMany(oi => oi.CatalogueItem.Solution.FrameworkSolutions.Select(fs => fs.Framework))
-        //        .ToList();
-
-        //    return frameworks.Count > 1;
-        //}
-
         private bool IsLocalFundingOnly(int orderId)
         {
             using var dbContext = Factory.DbContext;

@@ -9,6 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AssociatedS
 
         public static By AddAssociatedServiceContinueButton => By.LinkText("Continue");
 
+        public static By AddAssociatedServiceLink => By.LinkText("Add an Associated Service");
+
         public static By AssociatedServicesTable => ByExtensions.DataTestId("associated-services-table");
 
         public static By AssociatedServiceDashboardTable => ByExtensions.DataTestId("associated-service-dashboard-table");
@@ -18,5 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AssociatedS
         public static By AssociatedServiceRelatedSolutionsInset => ByExtensions.DataTestId("associated-service-related-inset");
 
         public static By PublicationStatusInputError => By.Id("edit-associated-service-error");
+
+        public static By EditPriceLink(string solutionId) => By.XPath($"//a[contains(@href, '/associated-services/" + solutionId + "/list-prices')]");
     }
 }

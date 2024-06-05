@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SolutionCapabilitiesAndEpics
+namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionCapabilitiesAndEpics
 {
     public class CapabilitiesAndEpics : PageBase
     {
@@ -37,9 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.SolutionCapabili
             var capabilities = dbContext.Capabilities.Include(c => c.Epics).Where(x => x.Status == CapabilityStatus.Effective).ToList().Take(5);
 
             foreach (var capability in capabilities)
-            {
                 CommonActions.ClickCheckboxByLabel($"({capability.CapabilityRef}) {capability.Name}");
-            }
 
             CommonActions.ClickSave();
 
