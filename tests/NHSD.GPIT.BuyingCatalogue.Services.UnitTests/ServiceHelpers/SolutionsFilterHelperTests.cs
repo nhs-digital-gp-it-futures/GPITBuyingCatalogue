@@ -287,11 +287,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         [Fact]
         public static void ParseInteropGpConnectIntegrationsIds_OneItemNotParseable_GeneratesResults()
         {
-            var input = "0.1.hello.2.3";
+            var input = "0.1.hello.2.3.4";
 
             var result = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(input);
 
-            var expected = new List<InteropGpConnectIntegrationType> { InteropGpConnectIntegrationType.HTML_View, InteropGpConnectIntegrationType.Appointment_Booking, InteropGpConnectIntegrationType.Structured_Record };
+            var expected = Enum.GetValues<InteropGpConnectIntegrationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -299,11 +299,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         [Fact]
         public static void ParseInteropGpConnectIntegrationsIds_OneItemNotInEnum_GeneratesResults()
         {
-            var input = "0.1.2.6.3";
+            var input = "0.1.2.99.3.4";
 
             var result = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(input);
 
-            var expected = new List<InteropGpConnectIntegrationType> { InteropGpConnectIntegrationType.HTML_View, InteropGpConnectIntegrationType.Appointment_Booking, InteropGpConnectIntegrationType.Structured_Record };
+            var expected = Enum.GetValues<InteropGpConnectIntegrationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -311,11 +311,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         [Fact]
         public static void ParseInteropGpConnectIntegrationsIds_EmptyAndWhiteSpace_GeneratesResults()
         {
-            var input = "0.1. .2..    .3";
+            var input = "0.1. .2..    .3.4";
 
             var result = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(input);
 
-            var expected = new List<InteropGpConnectIntegrationType> { InteropGpConnectIntegrationType.HTML_View, InteropGpConnectIntegrationType.Appointment_Booking, InteropGpConnectIntegrationType.Structured_Record };
+            var expected = Enum.GetValues<InteropGpConnectIntegrationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -347,11 +347,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         [Fact]
         public static void ParseInteropGpConnectIntegrationsIds_CorrectInput_GeneratesResults()
         {
-            var input = "0.1.2.3";
+            var input = "0.1.2.3.4";
 
             var result = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(input);
 
-            var expected = new List<InteropGpConnectIntegrationType> { InteropGpConnectIntegrationType.HTML_View, InteropGpConnectIntegrationType.Appointment_Booking, InteropGpConnectIntegrationType.Structured_Record };
+            var expected = Enum.GetValues<InteropGpConnectIntegrationType>();
 
             result.Should().BeEquivalentTo(expected);
         }
