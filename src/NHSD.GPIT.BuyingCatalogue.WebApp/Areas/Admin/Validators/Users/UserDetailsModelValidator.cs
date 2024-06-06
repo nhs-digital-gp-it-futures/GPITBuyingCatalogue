@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users
         public const string EmailDomainInvalid = "This email domain cannot be used to register a new user account as it is not on the allow list";
         public const string FirstNameMissingErrorMessage = "Enter a first name";
         public const string LastNameMissingErrorMessage = "Enter a last name";
-        public const string MustBelongToNhsDigitalErrorMessage = "Admins must be a member of NHS Digital";
+        public const string MustBelongToNhsDigitalErrorMessage = "Admins must be a member of the NHS";
         public const string MustNotExceedAccountManagerLimit = "There are already {0} active account managers for this organisation which is the maximum allowed";
         public const string OrganisationMissingErrorMessage = "Select an organisation";
 
