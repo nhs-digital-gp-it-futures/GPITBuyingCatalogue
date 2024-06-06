@@ -37,7 +37,7 @@ public class CompetitionWeightingsModelValidator : AbstractValidator<Competition
             .WithMessage(NonPriceWeightingRangeError)
             .MustBeDivisibleBy(5)
             .WithMessage(NonPriceWeightingMultiplesError)
-            .Must((model, price) => price + model.NonPrice == 100)
+            .Must((model, nonPrice) => model.Price + nonPrice == 100)
             .WithMessage(TotalsInvalidError);
     }
 }
