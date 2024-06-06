@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Newtonsoft.Json;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ScoringModels;
 using Xunit;
 
@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.S
 public static class InteroperabilitySolutionScoreModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Solution solution,
         int? score,
@@ -20,7 +20,7 @@ public static class InteroperabilitySolutionScoreModelTests
         var integrations = new List<Integration>
         {
             new() { IntegrationType = "IM1", Qualifier = "Bulk", },
-            new() { IntegrationType = "GP Connect", Qualifier = "Structured Record" },
+            new() { IntegrationType = "GP Connect", Qualifier = "Access Record Structured" },
         };
 
         solution.Integrations = JsonConvert.SerializeObject(integrations);

@@ -3,7 +3,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ScoringModels;
 using Xunit;
 
@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.S
 public static class InteroperabilityScoringModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Competition competition,
         Solution solution)
@@ -36,7 +36,7 @@ public static class InteroperabilityScoringModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetIm1Integrations_ReturnsExpected(
         Competition competition,
         Solution solution)
@@ -58,7 +58,7 @@ public static class InteroperabilityScoringModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetGpConnectIntegrations_ReturnsExpected(
         Competition competition,
         Solution solution)
@@ -70,7 +70,7 @@ public static class InteroperabilityScoringModelTests
             Interoperability = new List<InteroperabilityCriteria>
             {
                 new("Patient Facing", InteropIntegrationType.Im1),
-                new("Structured Record", InteropIntegrationType.GpConnect),
+                new("Access Record Structured", InteropIntegrationType.GpConnect),
             },
         };
 

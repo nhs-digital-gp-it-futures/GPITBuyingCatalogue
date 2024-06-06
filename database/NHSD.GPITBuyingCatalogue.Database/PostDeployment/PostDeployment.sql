@@ -77,3 +77,4 @@
 :r ./MigrateMergersAndSplits.sql
 :r ./MigrateOrderType.sql
 :r ./MigrateFrameworks.sql
+:r ./MigrateGpConnectIntegrations.sql

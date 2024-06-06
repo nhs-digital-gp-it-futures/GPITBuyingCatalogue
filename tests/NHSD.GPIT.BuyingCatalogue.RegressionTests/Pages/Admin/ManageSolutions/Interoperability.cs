@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using OpenQA.Selenium;
@@ -44,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
 
         public void AddIM1Integrations(ProviderOrConsumer providerOrConsumer)
         {
-            var interopIntegrationTypes = Getim1Integrations();
+            var interopIntegrationTypes = GetIm1Integrations();
 
             foreach (var type in interopIntegrationTypes)
             {
@@ -85,10 +86,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
             }
         }
 
-        public List<string> Getim1Integrations()
+        public List<string> GetIm1Integrations()
         {
-            var im1IntegrationTypes = Enum.GetValues(typeof(InteroperabilityIm1IntegrationType))
-            .Cast<InteroperabilityIm1IntegrationType>()
+            var im1IntegrationTypes = Enum.GetValues(typeof(InteropGpConnectIntegrationType))
+            .Cast<InteropGpConnectIntegrationType>()
             .Select(v => v.ToString())
             .ToList();
 
@@ -99,8 +100,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
 
         public List<string> GetGPConnectIntegrations()
         {
-            var gpConnectIntegrationTypes = Enum.GetValues(typeof(InteroperabilityGPConnectIntegrationType))
-            .Cast<InteroperabilityGPConnectIntegrationType>()
+            var gpConnectIntegrationTypes = Enum.GetValues(typeof(InteropGpConnectIntegrationType))
+            .Cast<InteropGpConnectIntegrationType>()
             .Select(v => v.ToString())
             .ToList();
 
