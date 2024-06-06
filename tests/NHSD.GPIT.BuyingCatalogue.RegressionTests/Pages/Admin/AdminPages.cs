@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using Microsoft.CodeAnalysis;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions;
@@ -47,6 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             CapabilitiesAndEpics = new CapabilitiesAndEpics(driver, commonActions, factory);
             SolutionAdditionalService = new SolutionAdditionalService(driver, commonActions, factory);
             SolutionAssociatedService = new SolutionAssociatedService(driver, commonActions, factory);
+            DevelopmentPlans = new DevelopmentPlans(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -104,6 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal SolutionAdditionalService SolutionAdditionalService { get; }
 
         internal SolutionAssociatedService SolutionAssociatedService { get; }
+
+        internal DevelopmentPlans DevelopmentPlans { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -194,6 +198,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         {
             var solutionId = GetSolutionID();
             SolutionAssociatedService.AddAssociatedService(solutionId, listPriceTypes.ToString());
+        }
+
+        public void AddWorkOffPlans()
+        {
+            var solutionId = GetSolutionID();
+            DevelopmentPlans.AddWorkOffPlan(solutionId);
         }
 
         private string GetSolutionID()
