@@ -22,10 +22,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Mana
             List<HostingType> hostingTypes,
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes,
             int organisationId)
         {
-            var model = new SaveFilterModel(capabilitiesAndEpics, framework, applicationTypes, hostingTypes, iM1IntegrationsTypes, gPConnectIntegrationsTypes, interoperabilityIntegrationTypes, organisationId);
+            var model = new SaveFilterModel(capabilitiesAndEpics, framework, applicationTypes, hostingTypes, iM1IntegrationsTypes, gPConnectIntegrationsTypes, nhsAppIntegrationsTypes, interoperabilityIntegrationTypes, organisationId);
 
             model.FrameworkId.Should().Be(framework.Id);
             model.FrameworkName.Should().Be(framework.ShortName);

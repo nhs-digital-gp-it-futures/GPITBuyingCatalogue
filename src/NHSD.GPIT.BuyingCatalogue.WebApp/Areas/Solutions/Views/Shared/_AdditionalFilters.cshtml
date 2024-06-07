@@ -103,6 +103,15 @@
                                                   hidden-input="@Model.GPConnectIntegrationsOptions[i].Value" />
                                 }
                             }
+                            @if (@Model.InteroperabilityOptions[j].Text == @Model.InteroperabilityOptions[2].Text)
+                            {
+                                @for (var i = 0; i < Model.NhsAppIntegrationsOptions.Count; i++)
+                                {
+                                    <nhs-checkbox asp-for="@Model.NhsAppIntegrationsOptions[i].Selected"
+                                                  label-text="@Model.NhsAppIntegrationsOptions[i].Text"
+                                                  hidden-input="@Model.NhsAppIntegrationsOptions[i].Value" />
+                                }
+                            }
                         </nhs-checkbox-container>
                     </nhs-checkbox>
                 }

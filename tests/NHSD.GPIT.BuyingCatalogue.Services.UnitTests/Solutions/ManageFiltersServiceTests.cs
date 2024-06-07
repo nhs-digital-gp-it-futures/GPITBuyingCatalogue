@@ -93,6 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<HostingType> hostingTypes,
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
@@ -108,6 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         hostingTypes,
                         iM1IntegrationsTypes,
                         gPConnectIntegrationsTypes,
+                        nhsAppIntegrationsTypes,
                         interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(name));
@@ -127,6 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<HostingType> hostingTypes,
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
@@ -142,6 +145,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         hostingTypes,
                         iM1IntegrationsTypes,
                         gPConnectIntegrationsTypes,
+                        nhsAppIntegrationsTypes,
                         interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(description));
@@ -159,6 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<HostingType> hostingTypes,
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
@@ -174,6 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         hostingTypes,
                         iM1IntegrationsTypes,
                         gPConnectIntegrationsTypes,
+                        nhsAppIntegrationsTypes,
                         interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentException>("organisationId");
@@ -205,6 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 null,
                 null,
                 null,
+                null, 
                 null);
             result.Should().NotBe(0);
             context.ChangeTracker.Clear();
@@ -251,6 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 null,
                 null,
                 null,
+                null,
                 null);
             result.Should().NotBe(0);
             context.ChangeTracker.Clear();
@@ -293,6 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 organisation.Id,
                 new Dictionary<int, string[]>() { { capability.Id, new string[] { capability.Epics.First().Id } } },
                 framework.Id,
+                null,
                 null,
                 null,
                 null,

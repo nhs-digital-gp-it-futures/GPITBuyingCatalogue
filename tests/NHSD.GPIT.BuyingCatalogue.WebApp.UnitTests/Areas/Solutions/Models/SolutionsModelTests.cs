@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
             {
                 ResultsModel = new SolutionsResultsModel()
                 {
-                    Filters = new RequestedFilters(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty),
+                    Filters = new RequestedFilters(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty),
                 },
             };
 

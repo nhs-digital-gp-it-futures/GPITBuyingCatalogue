@@ -26,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             SetHostingTypeOptions(filters.SelectedHostingTypeIds);
             SetIM1IntegrationsOptions(filters.SelectedIM1Integrations);
             SetGPConnectIntegrationsOptions(filters.SelectedGPConnectIntegrations);
+            SetNhsAppIntegrationsOptions(filters.SelectedNhsAppIntegrations);
             SetInteroperabilityOptions(filters.SelectedInteroperabilityOptions);
             Selected = filters.Selected;
             SelectedFrameworkId = filters.SelectedFrameworkId;
@@ -85,6 +86,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             .Select(f => f.Text)
             .ToArray();
 
+        public List<SelectOption<int>> NhsAppIntegrationsOptions { get; set; }
+
+        public string[] NhsAppIntegrationsFilters => (NhsAppIntegrationsOptions ?? Array.Empty<SelectOption<int>>().ToList())
+            .Where(f => f.Selected)
+            .Select(f => f.Text)
+            .ToArray();
+
         public string FoundationCapabilitiesFilterString => new FoundationCapabilitiesModel().ToFilterString();
 
         public string CombineSelectedOptions(List<SelectOption<int>> options)
@@ -104,6 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     CombineSelectedOptions(HostingTypeOptions),
                     selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? CombineSelectedOptions(IM1IntegrationsOptions) : null,
                     selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? CombineSelectedOptions(GPConnectIntegrationsOptions) : null,
+                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? CombineSelectedOptions(NhsAppIntegrationsOptions) : null,
                     selectedInteroperabilityOptions,
                     SortBy);
         }
@@ -200,6 +209,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                         Text = x.Name(),
                         Selected = !string.IsNullOrEmpty(selectedGPConnectIntegrations)
                             && selectedGPConnectIntegrations.Contains(((int)x).ToString()),
+                    }).ToList();
+        }
+
+        private void SetNhsAppIntegrationsOptions(string selectedNhsAppIntegrations)
+        {
+            NhsAppIntegrationsOptions = Enum.GetValues(typeof(InteropNhsAppIntegrationType))
+                .Cast<InteropNhsAppIntegrationType>()
+                .Select(
+                    x => new SelectOption<int>
+                    {
+                        Value = (int)x,
+                        Text = x.Name(),
+                        Selected = !string.IsNullOrEmpty(selectedNhsAppIntegrations)
+                            && selectedNhsAppIntegrations.Contains(((int)x).ToString()),
                     }).ToList();
         }
     }

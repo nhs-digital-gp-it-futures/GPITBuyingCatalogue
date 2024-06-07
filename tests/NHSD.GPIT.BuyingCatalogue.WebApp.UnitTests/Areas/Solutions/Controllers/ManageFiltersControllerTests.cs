@@ -333,7 +333,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             controller.Url = mockUrlHelper;
 
-            var result = await controller.ConfirmSaveFilter(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+            var result = await controller.ConfirmSaveFilter(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
 
             await organisationsService.Received().GetOrganisationByInternalIdentifier(primaryOrganisationInternalId);
             await manageFiltersService.Received().GetFilters(organisation.Id);
@@ -383,7 +383,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             controller.Url = mockUrlHelper;
 
-            var result = await controller.ConfirmSaveFilter(capabilityAndEpics.ToFilterString(), selectedFrameworkId, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+            var result = await controller.ConfirmSaveFilter(capabilityAndEpics.ToFilterString(), selectedFrameworkId, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
 
             await organisationsService.Received().GetOrganisationByInternalIdentifier(primaryOrganisationInternalId);
             await manageFiltersService.Received().GetFilters(organisation.Id);
@@ -394,7 +394,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var actualResultModel = actualResult.Model.Should().BeOfType<SaveFilterModel>().Subject;
 
-            var expected = new SaveFilterModel(groupedEpics, null, new List<ApplicationType>(), new List<HostingType>(), new List<InteropIm1IntegrationType>(), new List<InteropGpConnectIntegrationType>(), new List<InteropIntegrationType>(), organisation.Id);
+            var expected = new SaveFilterModel(groupedEpics, null, new List<ApplicationType>(), new List<HostingType>(), new List<InteropIm1IntegrationType>(), new List<InteropGpConnectIntegrationType>(), new List<InteropNhsAppIntegrationType>(), new List<InteropIntegrationType>(), organisation.Id);
             actualResultModel.Should()
                 .BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
         }
@@ -442,6 +442,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     model.HostingTypes,
                     model.IM1IntegrationsTypes,
                     model.GPConnectIntegrationsTypes,
+                    model.NhsAppIntegrationsTypes,
                     model.InteroperabilityIntegrationTypes).Returns(Task.FromResult(filterId));
 
             var result = await controller.ConfirmSaveFilter(model, capabilityAndEpics.ToFilterString());
@@ -456,6 +457,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     model.HostingTypes,
                     model.IM1IntegrationsTypes,
                     model.GPConnectIntegrationsTypes,
+                    model.NhsAppIntegrationsTypes,
                     model.InteroperabilityIntegrationTypes);
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;

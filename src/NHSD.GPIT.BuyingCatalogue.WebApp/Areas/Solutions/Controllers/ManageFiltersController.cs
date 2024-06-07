@@ -90,6 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             string selectedHostingTypeIds,
             string selectedIM1IntegrationsIds,
             string selectedGPConnectIntegrationsIds,
+            string selectedNhsAppIntegrationsIds,
             string selectedInteroperabilityIds)
         {
             var backLink =
@@ -101,6 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedHostingTypeIds,
                     selectedIM1IntegrationsIds,
                     selectedGPConnectIntegrationsIds,
+                    selectedNhsAppIntegrationsIds,
                     selectedInteroperabilityIds,
                 });
 
@@ -118,9 +120,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
             var iM1IntegrationsTypes = SolutionsFilterHelper.ParseInteropIm1IntegrationsIds(selectedIM1IntegrationsIds)?.ToList();
             var gPConnectIntegrationsTypes = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(selectedGPConnectIntegrationsIds)?.ToList();
+            var nhsAppIntegrationsTypes = SolutionsFilterHelper.ParseInteropNhsAppIntegrationsIds(selectedNhsAppIntegrationsIds)?.ToList();
             var interoperabilityIntegrationTypes = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(selectedInteroperabilityIds)?.ToList();
 
-            var model = new SaveFilterModel(capabilitiesAndEpics, framework, applicationTypes, hostingTypes, iM1IntegrationsTypes, gPConnectIntegrationsTypes, interoperabilityIntegrationTypes, organisationId)
+            var model = new SaveFilterModel(capabilitiesAndEpics, framework, applicationTypes, hostingTypes, iM1IntegrationsTypes, gPConnectIntegrationsTypes, nhsAppIntegrationsTypes, interoperabilityIntegrationTypes, organisationId)
             {
                 BackLink = backLink,
             };
@@ -151,6 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 model.HostingTypes,
                 model.IM1IntegrationsTypes,
                 model.GPConnectIntegrationsTypes,
+                model.NhsAppIntegrationsTypes,
                 model.InteroperabilityIntegrationTypes);
 
             return RedirectToAction(

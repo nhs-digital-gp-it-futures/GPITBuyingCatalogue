@@ -66,6 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedHostingTypeIds,
             [FromQuery] string selectedIM1Integrations,
             [FromQuery] string selectedGPConnectIntegrations,
+            [FromQuery] string selectedNhsAppIntegrations,
             [FromQuery] string selectedInteroperabilityOptions)
         {
             var filters = new RequestedFilters(
@@ -76,6 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 selectedHostingTypeIds,
                 selectedIM1Integrations,
                 selectedGPConnectIntegrations,
+                selectedNhsAppIntegrations,
                 selectedInteroperabilityOptions,
                 sortBy);
 
@@ -94,6 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedHostingTypeIds,
                     selectedIM1Integrations,
                     selectedGPConnectIntegrations,
+                    selectedNhsAppIntegrations,
                     selectedInteroperabilityOptions);
 
             var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();

@@ -8,4 +8,6 @@ public enum InteropIntegrationType
     Im1,
     [EnumMember(Value = "GP Connect")]
     GpConnect,
+    [EnumMember(Value = "NHS App")]
+    NhsApp,
 }

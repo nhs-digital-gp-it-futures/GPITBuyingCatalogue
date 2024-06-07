@@ -61,10 +61,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var itemsToReturn = new List<CatalogueItem>() { solution.CatalogueItem };
             var capabilitiesAndEpics = new Dictionary<int, string[]>();
 
-            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), capabilitiesAndEpics, null, null, null, null, null, null, null))
+            mockService.Setup(s => s.GetAllSolutionsFiltered(It.IsAny<PageOptions>(), capabilitiesAndEpics, null, null, null, null, null, null, null, null))
                 .ReturnsAsync((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
 
-            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, null, null);
+            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, null, null, null);
             result.Should().BeOfType<ViewResult>();
 
             mockService.VerifyAll();
@@ -259,6 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 filters.SelectedHostingTypeIds,
                 filters.SelectedIM1Integrations,
                 filters.SelectedGPConnectIntegrations,
+                filters.SelectedNhsAppIntegrations,
                 filters.SelectedInteroperabilityOptions))
                 .ReturnsAsync((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
             var result = await controller.SearchResults(filters);
