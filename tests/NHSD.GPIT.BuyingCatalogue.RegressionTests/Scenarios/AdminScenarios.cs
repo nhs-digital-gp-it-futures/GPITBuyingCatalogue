@@ -94,6 +94,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddAssociatedService(ListPriceTypes.Flat_price);
 
             AdminPages.AddWorkOffPlans();
+
+            AdminPages.AddSupplierDetails();
         }
 
         [Fact]
@@ -121,6 +123,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddAssociatedService(ListPriceTypes.Tiered_price);
 
             AdminPages.AddWorkOffPlans();
+
+            AdminPages.AddSupplierDetails();
         }
 
         [Fact]

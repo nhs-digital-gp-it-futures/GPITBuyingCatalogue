@@ -49,6 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             SolutionAdditionalService = new SolutionAdditionalService(driver, commonActions, factory);
             SolutionAssociatedService = new SolutionAssociatedService(driver, commonActions, factory);
             DevelopmentPlans = new DevelopmentPlans(driver, commonActions);
+            SupplierDetails = new SupplierDetails(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -108,6 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal SolutionAssociatedService SolutionAssociatedService { get; }
 
         internal DevelopmentPlans DevelopmentPlans { get; }
+
+        public SupplierDetails SupplierDetails { get; }
 
         public void AddSolutionDetailsAndDescription()
         {
@@ -204,6 +207,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         {
             var solutionId = GetSolutionID();
             DevelopmentPlans.AddWorkOffPlan(solutionId);
+        }
+
+        public void AddSupplierDetails()
+        {
+            var solutionId = GetSolutionID();
+            SupplierDetails.AddSupplierDetails(solutionId);
         }
 
         private string GetSolutionID()
