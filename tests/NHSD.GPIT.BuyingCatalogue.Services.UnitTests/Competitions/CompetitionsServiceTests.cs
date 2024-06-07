@@ -20,7 +20,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
-using NSubstitute.ExceptionExtensions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions;
@@ -152,9 +151,34 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        FluentActions.Invoking(async () => await service.AddCompetition(organisation.Id, filter.Id, frameworkId, name, description))
+        await service.Awaiting(s => s.AddCompetition(organisation.Id, filter.Id, frameworkId, name, description))
             .Should()
-            .Throws<InvalidOperationException>();
+            .ThrowAsync<ArgumentException>();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task AddCompetition_Requires_Existing_FrameworkId(
+        string frameworkId,
+        Organisation organisation,
+        Filter filter,
+        string name,
+        string description,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        filter.Organisation = null;
+        filter.OrganisationId = organisation.Id;
+
+        context.Organisations.Add(organisation);
+        context.Filters.Add(filter);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.Awaiting(s => s.AddCompetition(organisation.Id, filter.Id, frameworkId, name, description))
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
     }
 
     [Theory]
@@ -180,9 +204,9 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        FluentActions.Invoking(async () => await service.AddCompetition(organisation.Id, filter.Id, framework.Id, name, description))
+        await service.Awaiting(s => s.AddCompetition(organisation.Id, filter.Id, framework.Id, name, description))
             .Should()
-            .Throws<InvalidOperationException>();
+            .ThrowAsync<InvalidOperationException>();
     }
 
     [Theory]
