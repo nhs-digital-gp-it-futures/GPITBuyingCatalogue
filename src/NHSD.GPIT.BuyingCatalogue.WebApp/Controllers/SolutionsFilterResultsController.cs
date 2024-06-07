@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
             var selectedFrameworks = filterResults
                 .SelectMany(x => x.Solution.FrameworkSolutions)
-                .GroupBy(x => (x.Framework.ShortName, x.Framework.Id));
+                .GroupBy(x => (x.Framework.ShortName, x.Framework.Id, x.Framework.IsExpired));
 
             if (!string.IsNullOrWhiteSpace(filterIds.FrameworkId))
                 selectedFrameworks = selectedFrameworks.Where(x => string.Equals(x.Key.Id, filterIds.FrameworkId));
@@ -62,6 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                     filterDetails.Id,
                     x.Key.Id,
                     x.Key.ShortName,
+                    x.Key.IsExpired,
                     x.Select(y => y.Solution.CatalogueItem).ToList(),
                     false))
             .ToList();
