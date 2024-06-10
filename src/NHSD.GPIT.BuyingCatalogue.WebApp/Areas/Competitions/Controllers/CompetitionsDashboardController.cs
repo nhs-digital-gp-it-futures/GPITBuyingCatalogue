@@ -215,7 +215,9 @@ public class CompetitionsDashboardController : Controller
                 selectedGpConnectIntegrations: filter.GPConnectIntegrations.ToFilterString(),
                 selectedInteroperabilityOptions: filter.InteroperabilityOptions.ToFilterString());
 
-        var competitionSolutions = solutionsAndServices.Select(
+        var competitionSolutions = solutionsAndServices
+            .Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId))
+            .Select(
             x => new CompetitionSolution(competition.Id, x.Solution.CatalogueItemId)
             {
                 SolutionServices = x.Solution.AdditionalServices.Select(

@@ -21,7 +21,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full-width">
-        <nhs-page-title title="Results for this shortlist" caption=@Model.OrganisationName/>
+        <nhs-page-title title="Results for this shortlist" caption=@Model.OrganisationName />
         <nhs-card-v2>
             <nhs-card-content>
                 @if (Model.FilterDetails.Invalid)
@@ -40,11 +40,11 @@
                                                                     typeof(ManageFiltersController).ControllerName(),
                                                                     new { Area = typeof(ManageFiltersController).AreaName(), filterId = Model.FilterDetails.Id })"
                                                  type="Secondary"
-                                                 class="detail"/>
+                                                 class="detail" />
                     </span>
                     <p class="nhsuk-body">@Model.FilterDetails.Description</p>
                     <p class="nhsuk-body-s nhsuk-u-margin-top-1">Results updated: @DateTime.Now.ToString("dd MMMM yyyy")</p>
-                    
+
 
                     @if (!hasResults)
                     {
@@ -64,28 +64,27 @@
                                 </span>
                             }
                         </div>
-                        
+
                     }
                     else
                     {
                         foreach (var resultsForFrameworkModel in Model.ResultsForFrameworks)
                         {
-                            <partial name="Shortlists/_ResultsForFramework" model="resultsForFrameworkModel"/>
+                            <partial name="Shortlists/_ResultsForFramework" model="resultsForFrameworkModel" />
                         }
                     }
                 }
             </nhs-card-content>
         </nhs-card-v2>
 
-        
-
         <nhs-expander label-text="View filters used for this shortlist" open="false">
             <p>These are the filters used in this shortlist:</p>
 
             <partial name="Partials/_FilterDetailsPartial" model="Model" />
         </nhs-expander>
-            
-        @if(hasResults && !Model.InCompetition){
+
+        @if (hasResults && !Model.InCompetition)
+        {
             <vc:nhs-delete-button url="@Url.Action(nameof(ManageFiltersController.DeleteFilter),
                                                 typeof(ManageFiltersController).ControllerName(),
                                                 new { Area = typeof(ManageFiltersController).AreaName(), filterId = Model.FilterDetails.Id })"
