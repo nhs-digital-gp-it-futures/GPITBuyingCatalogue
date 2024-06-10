@@ -64,6 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 
         public static By SupplierDetailsLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/supplier-details')]");
 
+        public static By ServiceLevelAgreementLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/service-level-agreements')]");
+
         public static By AddApplicationTypeLink => By.LinkText("Add an application type");
 
         public static By AddHostingTypeLink => By.LinkText("Add a hosting type");

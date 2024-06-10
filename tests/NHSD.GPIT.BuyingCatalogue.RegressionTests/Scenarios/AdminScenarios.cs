@@ -96,6 +96,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddWorkOffPlans();
 
             AdminPages.AddSupplierDetails();
+
+            AdminPages.AddServiceLevelAgreement();
         }
 
         [Fact]
@@ -125,6 +127,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AddWorkOffPlans();
 
             AdminPages.AddSupplierDetails();
+
+            AdminPages.AddServiceLevelAgreement();
         }
 
         [Fact]
