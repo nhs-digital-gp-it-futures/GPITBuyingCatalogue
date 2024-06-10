@@ -28,7 +28,7 @@
     <div class="nhsuk-width-container nhsuk-u-padding-top-7 nhsuk-u-padding-bottom-4">
         <div class="nhsuk-grid-row nhsuk-u-padding-top-7">
             <ul class="nhsuk-grid-row nhs-grid-row__no-padding">
-                <partial name="_ActionCard" model="@(new ActionCardModel("Browse Catalogue Solutions", "All solutions have been assessed against a set of Capabilities defined by the NHS and a set of Standards defined by NHS Digital.", Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })))" />
+                <partial name="_ActionCard" model="@(new ActionCardModel("Browse Catalogue Solutions", "All solutions have been assessed against a set of Capabilities and Standards defined by the NHS", Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() })))" />
                 <partial name="_ActionCard" model="@(new ActionCardModel("Create or manage orders", "Place a new order or complete an order you've already started (log in required).", Url.Action(nameof(DashboardController.Index), typeof(DashboardController).ControllerName(), new { Area = typeof(DashboardController).AreaName() })))" />
                 @if (!User.Identity.IsAuthenticated)
                 {
@@ -44,7 +44,7 @@
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-two-thirds">
                 <h2>About the Buying Catalogue</h2>
-                <p class="nhsuk-body">The NHS Digital Buying Catalogue is an online marketplace where you can purchase clinical information systems that meet digital needs in healthcare.</p>
+                <p class="nhsuk-body">The NHS Buying Catalogue is an online marketplace where you can purchase clinical information systems that meet digital needs in healthcare.</p>
                 <p class="nhsuk-body">All the listed products – known as Catalogue Solutions – have been assessed against a set of Capabilities and Standards defined by the NHS.</p>
                 <p class="nhsuk-body">The functionality of the Buying Catalogue will be enhanced and the number of Catalogue Solutions available will increase over time.</p>
                 <p class="nhsuk-body"><a href="https://digital.nhs.uk/services/digital-care-services-catalogue/nhs-digital-buying-catalogue/feature-updates" target="_blank">Find out what features we’ve introduced (opens in a new tab)</a></p>
