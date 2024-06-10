@@ -130,11 +130,13 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [MockInMemoryDbAutoData]
-    public static async Task AddCompetition_AddsCompetition(
+    [MockInMemoryDbInlineAutoData(null)]
+    [MockInMemoryDbInlineAutoData("")]
+    [MockInMemoryDbInlineAutoData("  ")]
+    public static async Task AddCompetition_Requires_FrameworkId(
+        string frameworkId,
         Organisation organisation,
         Filter filter,
-        string frameworkId,
         string name,
         string description,
         [Frozen] BuyingCatalogueDbContext context,
@@ -149,12 +151,93 @@ public static class CompetitionsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.AddCompetition(organisation.Id, filter.Id, frameworkId, name, description);
+        await service.Awaiting(s => s.AddCompetition(organisation.Id, filter.Id, frameworkId, name, description))
+            .Should()
+            .ThrowAsync<ArgumentException>();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task AddCompetition_Requires_Existing_FrameworkId(
+        string frameworkId,
+        Organisation organisation,
+        Filter filter,
+        string name,
+        string description,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        filter.Organisation = null;
+        filter.OrganisationId = organisation.Id;
+
+        context.Organisations.Add(organisation);
+        context.Filters.Add(filter);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.Awaiting(s => s.AddCompetition(organisation.Id, filter.Id, frameworkId, name, description))
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task AddCompetition_Requires_Active_Framework(
+        Organisation organisation,
+        Filter filter,
+        EntityFramework.Catalogue.Models.Framework framework,
+        string name,
+        string description,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        framework.IsExpired = true;
+
+        filter.Organisation = null;
+        filter.OrganisationId = organisation.Id;
+
+        context.Frameworks.Add(framework);
+        context.Organisations.Add(organisation);
+        context.Filters.Add(filter);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.Awaiting(s => s.AddCompetition(organisation.Id, filter.Id, framework.Id, name, description))
+            .Should()
+            .ThrowAsync<InvalidOperationException>();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task AddCompetition_AddsCompetition(
+        Organisation organisation,
+        Filter filter,
+        EntityFramework.Catalogue.Models.Framework framework,
+        string name,
+        string description,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        framework.IsExpired = false;
+
+        filter.Organisation = null;
+        filter.OrganisationId = organisation.Id;
+
+        context.Frameworks.Add(framework);
+        context.Organisations.Add(organisation);
+        context.Filters.Add(filter);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        await service.AddCompetition(organisation.Id, filter.Id, framework.Id, name, description);
 
         context.Competitions.Should()
             .Contain(
                 x => x.Name == name && x.Description == description && x.OrganisationId == organisation.Id
-                    && x.FilterId == filter.Id && x.FrameworkId == frameworkId);
+                    && x.FilterId == filter.Id && x.FrameworkId == framework.Id);
     }
 
     [Theory]

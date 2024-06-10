@@ -611,6 +611,14 @@ public class CompetitionsService : ICompetitionsService
 
     public async Task<int> AddCompetition(int organisationId, int filterId, string frameworkId, string name, string description)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(frameworkId);
+
+        var framework = await dbContext.Frameworks.Where(f => f.Id == frameworkId).FirstOrDefaultAsync();
+        if (framework == null || framework.IsExpired)
+        {
+            throw new InvalidOperationException($"Cannot create a competition without a valid framework {frameworkId}");
+        }
+
         var competition = new Competition
         {
             OrganisationId = organisationId,

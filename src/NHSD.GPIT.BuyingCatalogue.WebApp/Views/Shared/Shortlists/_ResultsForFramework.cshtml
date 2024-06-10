@@ -13,6 +13,15 @@
         <p><b>All links open in a new tab.</b></p>
     </div>
 
+    @if (Model.IsExpired)
+    {
+        <nhs-warning-callout>
+            <strong>
+                The framework these solutions are available from has expired so you cannot create a competition.
+            </strong>
+        </nhs-warning-callout>
+    }
+
     @foreach (var solution in Model.CatalogueItems)
     {
         <nhs-card-v2 inverted="true">
@@ -32,12 +41,16 @@
             </nhs-card-content>
         </nhs-card-v2>
     }
-    <a class="nhsuk-button nhsuk-u-margin-bottom-3"
-       asp-action="@(nameof(CompetitionsDashboardController.SaveCompetition))"
-       asp-controller="@(typeof(CompetitionsDashboardController).ControllerName())"
-       asp-route-internalOrgId="@(Model.InternalOrgId)"
-       asp-route-filterId="@Model.FilterId"
-       asp-route-frameworkId="@Model.FrameworkId"
-       asp-route-fromFilter="@Model.FromFilter"
-       asp-route-area="@(typeof(CompetitionsDashboardController).AreaName())">Create competition</a>
+
+    @if (!Model.IsExpired)
+    {
+        <a class="nhsuk-button nhsuk-u-margin-bottom-3"
+           asp-action="@(nameof(CompetitionsDashboardController.SaveCompetition))"
+           asp-controller="@(typeof(CompetitionsDashboardController).ControllerName())"
+           asp-route-internalOrgId="@(Model.InternalOrgId)"
+           asp-route-filterId="@Model.FilterId"
+           asp-route-frameworkId="@Model.FrameworkId"
+           asp-route-fromFilter="@Model.FromFilter"
+           asp-route-area="@(typeof(CompetitionsDashboardController).AreaName())">Create competition</a>
+    }
 }
