@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models;
@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models;
 public static class CompetitionTaskListModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Competition competition)
     {
@@ -25,7 +25,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_NoRecipients_SetsStatuses(
         Competition competition)
     {
@@ -38,7 +38,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithRecipients_SetsStatuses(
         List<OdsOrganisation> odsOrganisations,
         Competition competition)
@@ -54,7 +54,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithContractLength_SetsStatuses(
         List<OdsOrganisation> odsOrganisations,
         Competition competition)
@@ -71,7 +71,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithoutNonPriceElementAwardCriteria_SetsStatuses(
         List<OdsOrganisation> odsOrganisations,
         Competition competition)
@@ -92,7 +92,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithNonPriceElementAwardCriteria_SetsStatuses(
         List<OdsOrganisation> odsOrganisations,
         Competition competition)
@@ -113,7 +113,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithAwardCriteriaWeightings_SetsStatuses(
         List<OdsOrganisation> odsOrganisations,
         Competition competition)
@@ -131,7 +131,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithNonPriceElements_SetsStatuses(
         List<OdsOrganisation> odsOrganisations,
         Competition competition)
@@ -150,7 +150,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithIncompleteNonPriceElementWeightings_SetsStatuses(
         List<OdsOrganisation> odsOrganisations,
         Competition competition)
@@ -175,7 +175,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithCompleteNonPriceElementWeightings_SetsStatuses(
         List<OdsOrganisation> odsOrganisations,
         Competition competition)
@@ -201,7 +201,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_ReviewedCriteria_SetsStatuses(
         List<OdsOrganisation> odsOrganisations,
         Competition competition)
@@ -227,7 +227,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithIncompleteSolutionScores_SetsStatuses(
         CatalogueItemId solutionId,
         List<OdsOrganisation> odsOrganisations,
@@ -261,7 +261,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithCompleteSolutionScores_SetsStatuses(
         CatalogueItemId solutionId,
         List<OdsOrganisation> odsOrganisations,
@@ -300,7 +300,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithIncompletePrices_SetsStatuses(
         CatalogueItemId solutionId,
         List<OdsOrganisation> odsOrganisations,
@@ -340,7 +340,7 @@ public static class CompetitionTaskListModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithCompletePrices_SetsStatuses(
         CatalogueItemId solutionId,
         List<OdsOrganisation> odsOrganisations,
