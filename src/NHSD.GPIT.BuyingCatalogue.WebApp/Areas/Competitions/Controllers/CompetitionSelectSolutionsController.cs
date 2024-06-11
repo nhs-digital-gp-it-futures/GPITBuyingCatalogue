@@ -24,15 +24,18 @@ public class CompetitionSelectSolutionsController : Controller
 {
     private readonly PublicationStatus[] allowedPublicationStatuses = [PublicationStatus.Published, PublicationStatus.InRemediation];
     private readonly ICompetitionsService competitionsService;
+    private readonly ICompetitionOrderService competitionOrderService;
     private readonly IFrameworkService frameworkService;
     private readonly IManageFiltersService filtersService;
 
     public CompetitionSelectSolutionsController(
         ICompetitionsService competitionsService,
+        ICompetitionOrderService competitionOrderService,
         IFrameworkService frameworkService,
         IManageFiltersService filtersService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+        this.competitionOrderService = competitionOrderService ?? throw new ArgumentNullException(nameof(competitionOrderService));
         this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
         this.filtersService = filtersService ?? throw new ArgumentNullException(nameof(filtersService));
     }
@@ -87,7 +90,7 @@ public class CompetitionSelectSolutionsController : Controller
         if (model.HasSingleSolution())
         {
             return model.IsDirectAward.GetValueOrDefault()
-                ? await HandleDirectAward(internalOrgId, competitionId)
+                ? await HandleDirectAward(internalOrgId, competitionId, model.Solutions.First().SolutionId)
                 : await HandleDeleteOrder(internalOrgId, competitionId);
         }
 
@@ -160,21 +163,15 @@ public class CompetitionSelectSolutionsController : Controller
         return RedirectToAction(nameof(CompetitionTaskListController.Index), typeof(CompetitionTaskListController).ControllerName(), new { internalOrgId, competitionId });
     }
 
-    private async Task<IActionResult> HandleDirectAward(string internalOrgId, int competitionId)
+    private async Task<IActionResult> HandleDirectAward(string internalOrgId, int competitionId, CatalogueItemId solutionId)
     {
-        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
         await competitionsService.CompleteCompetition(internalOrgId, competitionId, true);
+        var callOffId = await competitionOrderService.CreateDirectAwardOrder(internalOrgId, competitionId, solutionId);
 
         return RedirectToAction(
-            nameof(OrderDescriptionController.NewOrderDescription),
-            typeof(OrderDescriptionController).ControllerName(),
-            new
-            {
-                Area = typeof(OrderDescriptionController).AreaName(),
-                internalOrgId = internalOrgId,
-                orderType = OrderTypeEnum.Solution,
-                selectedFrameworkId = competition.FrameworkId,
-            });
+            nameof(OrderController.Order),
+            typeof(OrderController).ControllerName(),
+            new { internalOrgId, callOffId, area = typeof(OrderController).AreaName() });
     }
 
     private async Task<IActionResult> HandleDeleteOrder(string internalOrgId, int competitionId)

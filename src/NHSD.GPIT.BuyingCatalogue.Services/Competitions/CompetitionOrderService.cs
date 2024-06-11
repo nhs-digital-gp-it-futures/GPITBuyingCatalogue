@@ -21,6 +21,44 @@ public class CompetitionOrderService : ICompetitionOrderService
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
+    public async Task<CallOffId> CreateDirectAwardOrder(string internalOrgId, int competitionId, CatalogueItemId solutionId)
+    {
+        var competition = await dbContext.Competitions
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Solution)
+            .ThenInclude(x => x.CatalogueItem)
+            .ThenInclude(x => x.Supplier)
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        if (competition?.Completed is null)
+        {
+            throw new ArgumentException(
+                @"Competition either does not exist or is not yet completed",
+                nameof(competitionId));
+        }
+
+        var directAwardSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+
+        if (directAwardSolution is null)
+        {
+            throw new ArgumentException(
+                @"Solution does not exist on competition",
+                nameof(solutionId));
+        }
+
+        var nextOrderNumber = await dbContext.NextOrderNumber();
+
+        var order = CreateOrder(nextOrderNumber, competition, directAwardSolution);
+
+        dbContext.Orders.Add(order);
+        await dbContext.SaveChangesAsync();
+
+        return order.CallOffId;
+    }
+
     public async Task<CallOffId> CreateOrder(string internalOrgId, int competitionId, CatalogueItemId solutionId)
     {
         var competition = await dbContext.Competitions.Include(x => x.Recipients)
@@ -106,21 +144,27 @@ public class CompetitionOrderService : ICompetitionOrderService
             },
         };
 
-    private static Order CreateOrder(int orderNumber, Competition competition, CompetitionSolution winningSolution, IEnumerable<OrderItem> orderItems) => new Order
+    private static Order CreateOrder(int orderNumber, Competition competition, CompetitionSolution competitionSolution) => new Order
     {
         OrderNumber = orderNumber,
         OrderType = OrderTypeEnum.Solution,
         Revision = 1,
         Description = $"Order created from competition: {competition.Id}",
         Created = DateTime.UtcNow,
-        MaximumTerm = competition.ContractLength,
-        OrderRecipients = competition.Recipients.Select(x => new OrderRecipient(x.Id)).ToList(),
-        OrderItems = orderItems.ToList(),
         OrderingPartyId = competition.OrganisationId,
-        SupplierId = winningSolution.Solution.CatalogueItem.SupplierId,
+        SupplierId = competitionSolution.Solution.CatalogueItem.SupplierId,
         CompetitionId = competition.Id,
         SelectedFrameworkId = competition.FrameworkId,
     };
+
+    private static Order CreateOrder(int orderNumber, Competition competition, CompetitionSolution winningSolution, IEnumerable<OrderItem> orderItems)
+    {
+        var order = CreateOrder(orderNumber, competition, winningSolution);
+        order.MaximumTerm = competition.ContractLength;
+        order.OrderRecipients = competition.Recipients.Select(x => new OrderRecipient(x.Id)).ToList();
+        order.OrderItems = orderItems.ToList();
+        return order;
+    }
 
     private static void AssignRecipientQuantities(Order order, CompetitionSolution winningSolution)
     {

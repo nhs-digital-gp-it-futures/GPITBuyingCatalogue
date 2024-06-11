@@ -17,7 +17,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
@@ -168,11 +167,13 @@ public static class CompetitionSelectSolutionsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task Post_SelectSolutions_SingleDirectAward_RedirectsToOrderDescription(
+    public static async Task Post_SelectSolutions_SingleDirectAward_CreatesOrder_And_RedirectsToOrder(
+        CallOffId callOffId,
         Organisation organisation,
         Competition competition,
         SelectSolutionsModel model,
         SolutionModel solution,
+        [Frozen] ICompetitionOrderService competitionOrderService,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionSelectSolutionsController controller)
     {
@@ -183,6 +184,10 @@ public static class CompetitionSelectSolutionsControllerTests
             .GetCompetition(organisation.InternalIdentifier, competition.Id)
             .Returns(competition);
 
+        competitionOrderService
+            .CreateDirectAwardOrder(organisation.InternalIdentifier, competition.Id, solution.SolutionId)
+            .Returns(callOffId);
+
         var result = (await controller.SelectSolutions(organisation.InternalIdentifier, competition.Id, model)).As<RedirectToActionResult>();
 
         await competitionsService
@@ -190,15 +195,14 @@ public static class CompetitionSelectSolutionsControllerTests
             .CompleteCompetition(organisation.InternalIdentifier, competition.Id, true);
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(OrderDescriptionController.NewOrderDescription));
-        result.ControllerName.Should().Be(typeof(OrderDescriptionController).ControllerName());
+        result.ActionName.Should().Be(nameof(OrderController.Order));
+        result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
         result.RouteValues.Should().BeEquivalentTo(
             new Dictionary<string, object>()
             {
-                ["Area"] = typeof(OrderDescriptionController).AreaName(),
+                ["Area"] = typeof(OrderController).AreaName(),
                 ["InternalOrgId"] = organisation.InternalIdentifier,
-                ["orderType"] = CatalogueItemType.Solution,
-                ["selectedFrameworkId"] = competition.FrameworkId,
+                ["callOffId"] = callOffId,
             });
     }
 

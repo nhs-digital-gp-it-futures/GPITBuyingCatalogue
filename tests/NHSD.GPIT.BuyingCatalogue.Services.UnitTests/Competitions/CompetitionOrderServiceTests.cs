@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions;
@@ -24,7 +24,7 @@ public static class CompetitionOrderServiceTests
     [Fact]
     public static void Constructor_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(CompetitionOrderService).GetConstructors();
 
@@ -32,7 +32,104 @@ public static class CompetitionOrderServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
+    public static Task CreateDirectAwardOrder_InvalidCompetitionId_ThrowsArgumentException(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId catalogueItemId,
+        CompetitionOrderService service) => FluentActions
+        .Awaiting(() => service.CreateDirectAwardOrder(internalOrgId, competitionId, catalogueItemId))
+        .Should()
+        .ThrowAsync<ArgumentException>("Competition either does not exist or is not yet completed");
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task CreateDirectAwardOrder_InvalidCompetitionSolutionId_ThrowsArgumentException(
+        Organisation organisation,
+        Competition competition,
+        CatalogueItemId catalogueItemId,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        CompetitionOrderService service)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+
+        dbContext.Organisations.Add(organisation);
+        dbContext.Competitions.Add(competition);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        await FluentActions
+            .Awaiting(() => service.CreateDirectAwardOrder(organisation.InternalIdentifier, competition.Id, catalogueItemId))
+            .Should()
+            .ThrowAsync<ArgumentException>("Solution does not exist on competition");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task CreateDirectAwardOrder_Solution_CreatesOrder(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        CompetitionOrderService service)
+    {
+        competitionSolution.Solution = solution;
+
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competition.CompetitionSolutions = [competitionSolution];
+
+        dbContext.Organisations.Add(organisation);
+        dbContext.Competitions.Add(competition);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        var callOffId = await service.CreateDirectAwardOrder(organisation.InternalIdentifier, competition.Id, solution.CatalogueItemId);
+
+        callOffId.Should().NotBe(default);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task CreateDirectAwardOrder_Solution_SetsOrderDetailsAsExpected(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        CompetitionOrderService service)
+    {
+        competitionSolution.Solution = solution;
+
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competition.CompetitionSolutions = [competitionSolution];
+
+        dbContext.Organisations.Add(organisation);
+        dbContext.Competitions.Add(competition);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        var callOffId = await service.CreateDirectAwardOrder(organisation.InternalIdentifier, competition.Id, solution.CatalogueItemId);
+
+        var order = await dbContext.Order(callOffId);
+
+        order.Revision.Should().Be(1);
+        order.CompetitionId.Should().Be(competition.Id);
+        order.Description.Should().Be($"Order created from competition: {competition.Id}");
+        order.OrderingPartyId.Should().Be(competition.OrganisationId);
+        order.SupplierId.Should().Be(solution.CatalogueItem.SupplierId);
+        order.SelectedFrameworkId.Should().Be(competition.FrameworkId);
+        order.OrderType.Value.Should().Be(OrderTypeEnum.Solution);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static Task CreateOrder_InvalidCompetitionId_ThrowsArgumentException(
         string internalOrgId,
         int competitionId,
@@ -43,7 +140,7 @@ public static class CompetitionOrderServiceTests
         .ThrowAsync<ArgumentException>("Competition either does not exist or is not yet completed");
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task CreateOrder_InvalidCompetitionSolutionId_ThrowsArgumentException(
         Organisation organisation,
         Competition competition,
@@ -67,7 +164,7 @@ public static class CompetitionOrderServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task CreateOrder_NonWinningSolution_ThrowsArgumentException(
         Organisation organisation,
         Competition competition,
@@ -97,7 +194,7 @@ public static class CompetitionOrderServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task CreateOrder_WinningSolution_Successful(
         Organisation organisation,
         Competition competition,
@@ -132,7 +229,7 @@ public static class CompetitionOrderServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task CreateOrder_WinningSolution_CreatesOrder(
         Organisation organisation,
         Competition competition,
@@ -166,7 +263,7 @@ public static class CompetitionOrderServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task CreateOrder_WinningSolution_SetsOrderDetailsAsExpected(
         Organisation organisation,
         Competition competition,
@@ -211,10 +308,12 @@ public static class CompetitionOrderServiceTests
                 recipients.Select(x => new OrderRecipient(x.Id)),
                 opt => opt.Excluding(m => m.OrderId).Excluding(m => m.Order).Excluding(m => m.OdsOrganisation));
         order.OrderItems.Should().ContainSingle();
+        order.SelectedFrameworkId.Should().Be(competition.FrameworkId);
+        order.OrderType.Value.Should().Be(OrderTypeEnum.Solution);
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task CreateOrder_WinningSolution_SetsOrderItemServices(
         Organisation organisation,
         Competition competition,
@@ -262,7 +361,7 @@ public static class CompetitionOrderServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task CreateOrder_WinningSolution_SetsRecipientQuantities(
         Organisation organisation,
         Competition competition,
@@ -286,9 +385,11 @@ public static class CompetitionOrderServiceTests
         solutionService.Service = additionalService.CatalogueItem;
         solutionService.Quantities = recipients.Select(
                 x => new ServiceQuantity
-                    {
-                        OdsCode = x.Id, Quantity = 5, ServiceId = additionalService.CatalogueItemId,
-                    })
+                {
+                    OdsCode = x.Id,
+                    Quantity = 5,
+                    ServiceId = additionalService.CatalogueItemId,
+                })
             .ToList();
 
         competitionSolution.Price = price;
