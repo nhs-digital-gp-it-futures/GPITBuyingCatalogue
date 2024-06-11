@@ -67,7 +67,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
 
         public static UserManager<AspNetUser> MockUserManager(IUserStore<AspNetUser> store)
         {
-            //var store = new IUserStore<AspNetUser>();
             var mgr = new UserManager<AspNetUser>(store, null, null, null, null, null, null, null, null);
             mgr.UserValidators.Add(new UserValidator<AspNetUser>());
             mgr.PasswordValidators.Add(new PasswordValidator<AspNetUser>());
