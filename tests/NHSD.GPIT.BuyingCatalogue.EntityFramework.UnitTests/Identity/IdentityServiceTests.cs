@@ -1,13 +1,13 @@
 ﻿using System.Security.Claims;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Identity
@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Identity
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(IdentityService).GetConstructors();
 
@@ -25,21 +25,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Identity
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_NoContext_ReturnsNull(
-            [Frozen] Mock<IHttpContextAccessor> mockAccessor,
+            [Frozen] IHttpContextAccessor mockAccessor,
             IdentityService service)
         {
-            mockAccessor.Setup(a => a.HttpContext).Returns((HttpContext)null);
+            mockAccessor.HttpContext.Returns((HttpContext)null);
 
             Assert.Null(service.GetUserId());
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetUserInfo_GetsValue(
-            Mock<HttpContext> mockContext,
-            [Frozen] Mock<IHttpContextAccessor> mockAccessor,
+            HttpContext mockContext,
+            [Frozen] IHttpContextAccessor mockAccessor,
             IdentityService service)
         {
             const int testUserId = 67;
@@ -52,8 +52,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Identity
                 },
                 "mock");
 
-            mockContext.Setup(c => c.User).Returns(new ClaimsPrincipal(identity));
-            mockAccessor.Setup(a => a.HttpContext).Returns(mockContext.Object);
+            mockContext.User.Returns(new ClaimsPrincipal(identity));
+            mockAccessor.HttpContext.Returns(mockContext);
 
             var userId = service.GetUserId();
 

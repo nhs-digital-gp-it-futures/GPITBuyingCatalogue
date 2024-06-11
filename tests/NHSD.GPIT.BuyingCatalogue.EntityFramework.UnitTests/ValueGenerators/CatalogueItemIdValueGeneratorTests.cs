@@ -2,7 +2,7 @@
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
     public static class CatalogueItemIdValueGeneratorTests
     {
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GenerateId_Solution_ExpectedId(
             Supplier supplier,
             BuyingCatalogueDbContext context)
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GenerateId_SupplierWithExistingSolution_IncrementsAsExpected(
             Supplier supplier,
             BuyingCatalogueDbContext context)
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GenerateId_SolutionsAcrossSuppliers_ExpectedIds(
             Supplier firstSupplier,
             Supplier secondSupplier,
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GenerateId_AdditionalService_ExpectedId(
             Supplier supplier,
             BuyingCatalogueDbContext context)
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GenerateId_AdditionalServicesAcrossSuppliers_ExpectedIds(
             Supplier firstSupplier,
             Supplier secondSupplier,
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GenerateId_TwoSolutions_ExistingAdditionalService_ExpectedIds(
             Supplier supplier,
             BuyingCatalogueDbContext context)
@@ -111,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GenerateId_OneSolution_ExistingAdditionalService_ExpectedIds(
             Supplier supplier,
             BuyingCatalogueDbContext context)
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GenerateId_AssociatedService_ExpectedId(
             Supplier supplier,
             BuyingCatalogueDbContext context)
@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GenerateId_ExistingAssociatedService_ExpectedId(
             Supplier supplier,
             BuyingCatalogueDbContext context)

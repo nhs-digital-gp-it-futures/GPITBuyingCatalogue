@@ -1,8 +1,10 @@
 ﻿using System;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Serilog.Events;
 using Xunit;
 
@@ -24,33 +26,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Logging
                 .Should().Be(LogEventLevel.Error);
         }
 
-        [Fact]
-        public static void GetLevel_HttpContext_NonErrorCode_ReturnsInformation()
+        [Theory]
+        [MockAutoData]
+        public static void GetLevel_HttpContext_NonErrorCode_ReturnsInformation(
+            [Frozen] HttpResponse httpResponse,
+            [Frozen] HttpContext httpContext)
         {
-            var httpResponse = new Mock<HttpResponse>();
+            httpResponse.StatusCode.Returns(498);
+            httpContext.Response.Returns(httpResponse);
 
-            httpResponse.Setup(r => r.StatusCode).Returns(498);
-
-            var httpContext = new Mock<HttpContext>();
-
-            httpContext.Setup(c => c.Response).Returns(httpResponse.Object);
-
-            SerilogRequestLoggingOptions.GetLevel(httpContext.Object, 0, null)
+            SerilogRequestLoggingOptions.GetLevel(httpContext, 0, null)
                 .Should().Be(LogEventLevel.Information);
         }
 
-        [Fact]
-        public static void GetLevel_HttpContext_ErrorCode_ReturnsError()
+        [Theory]
+        [MockAutoData]
+        public static void GetLevel_HttpContext_ErrorCode_ReturnsError(
+            [Frozen] HttpResponse httpResponse,
+            [Frozen] HttpContext httpContext)
         {
-            var httpResponse = new Mock<HttpResponse>();
+            httpResponse.StatusCode.Returns(500);
+            httpContext.Response.Returns(httpResponse);
 
-            httpResponse.Setup(r => r.StatusCode).Returns(500);
-
-            var httpContext = new Mock<HttpContext>();
-
-            httpContext.Setup(c => c.Response).Returns(httpResponse.Object);
-
-            SerilogRequestLoggingOptions.GetLevel(httpContext.Object, 0, null)
+            SerilogRequestLoggingOptions.GetLevel(httpContext, 0, null)
                 .Should().Be(LogEventLevel.Error);
         }
     }
