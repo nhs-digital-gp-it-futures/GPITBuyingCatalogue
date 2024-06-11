@@ -3,7 +3,8 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatalogue
@@ -64,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void UpdateFrom_ValidContactInput_UpdatesProperties(MarketingContact marketingContact)
         {
             var newContact = new MarketingContact();
@@ -87,11 +88,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [Fact]
         public static void NewAndValid_DefaultIdAndNotEmptyContact_ReturnsTrue()
         {
-            var mockMarketingContact = new Mock<MarketingContact> { CallBase = true };
-            mockMarketingContact.Setup(c => c.IsEmpty()).Returns(false);
-            mockMarketingContact.Object.Id.Should().Be(default);
+            var marketingContact = new MarketingContact();
+            marketingContact.FirstName = marketingContact.LastName = marketingContact.Department = marketingContact.PhoneNumber = marketingContact.Email = "Test";
+            marketingContact.Id = default;
 
-            mockMarketingContact.Object.NewAndValid().Should().BeTrue();
+            marketingContact.NewAndValid().Should().BeTrue();
         }
 
         [Fact]

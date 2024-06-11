@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 using OrderRecipientCollection = NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 
@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
     public static class CollectionExtensionsTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ForCatalogueItem_Returns_Empty_Collection_When_Null(CatalogueItemId catalogueItemId)
         {
             OrderRecipientCollection.CollectionExtensions.ForCatalogueItem(null, catalogueItemId)
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ForCatalogueItem_Returns_Recipients_With_Link_To_CatalogueItemId(
             OrderRecipient recipient1,
             CatalogueItemId catalogueItemId1,
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AllDeliveryDatesEntered_Returns_False_When_Null(CatalogueItemId catalogueItemId)
         {
             OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(null, catalogueItemId)
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AllDeliveryDatesEntered_Returns_False_When_Recipients_No_Linked_To_CatalogueItemId(OrderRecipient[] recipients, CatalogueItemId catalogueItemId)
         {
             OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(recipients, catalogueItemId)
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NoDeliveryDatesEntered_Returns_False_When_Null(CatalogueItemId catalogueItemId)
         {
             OrderRecipientCollection.CollectionExtensions.NoDeliveryDatesEntered(null, catalogueItemId)
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AllQuantitiesEntered_Returns_False_When_OrderItem_Null(OrderRecipient[] recipients)
         {
             OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(recipients, null)
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AllQuantitiesEntered_Returns_False_When_Recipient_Null(OrderRecipient[] recipients, OrderItem orderItem)
         {
             OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(recipients, orderItem)
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AllQuantitiesEntered_Returns_False_When_OrderItemPrice_Null(OrderRecipient[] recipients, OrderItem orderItem)
         {
             orderItem.OrderItemPrice = null;
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void SomeButNotAllQuantitiesEntered_Returns_False_When_Recipient_Null(OrderItem orderItem)
         {
             OrderRecipientCollection.CollectionExtensions.SomeButNotAllNewQuantitiesEntered(null, orderItem)
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void SomeButNotAllQuantitiesEntered_Returns_False_When_OrderItemPrice_Null(OrderRecipient[] recipients, OrderItem orderItem)
         {
             orderItem.OrderItemPrice = null;
