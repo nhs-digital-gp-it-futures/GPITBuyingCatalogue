@@ -1,10 +1,8 @@
 ﻿using System;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
-using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatalogue
@@ -107,11 +105,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         [Fact]
         public static void NewAndValid_IdNotDefault_EmptyContact_ReturnsFalse()
         {
-            var mockMarketingContact = new Mock<MarketingContact> { CallBase = true };
-            mockMarketingContact.Setup(c => c.IsEmpty()).Returns(true);
-            mockMarketingContact.Object.Id = 77;
+            var marketingContact = new MarketingContact();
+            marketingContact.FirstName = marketingContact.LastName = marketingContact.Department = marketingContact.PhoneNumber = marketingContact.Email = null;
+            marketingContact.Id = 77;
 
-            mockMarketingContact.Object.NewAndValid().Should().BeFalse();
+            marketingContact.NewAndValid().Should().BeFalse();
         }
     }
 }
