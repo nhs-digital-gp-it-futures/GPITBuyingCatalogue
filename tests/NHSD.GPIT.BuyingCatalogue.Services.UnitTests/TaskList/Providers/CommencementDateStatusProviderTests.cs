@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     public static class CommencementDateStatusProviderTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
             CommencementDateStatusProvider service)
         {
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderIsNull_ReturnsCannotStart(
             CommencementDateStatusProvider service)
         {
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_StateIsNull_ReturnsCannotStart(
             Order order,
             CommencementDateStatusProvider service)
@@ -44,11 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.CannotStart)]
-        [CommonInlineAutoData(TaskProgress.InProgress)]
-        [CommonInlineAutoData(TaskProgress.NotApplicable)]
-        [CommonInlineAutoData(TaskProgress.NotStarted)]
-        [CommonInlineAutoData(TaskProgress.Optional)]
+        [MockInlineAutoData(TaskProgress.CannotStart)]
+        [MockInlineAutoData(TaskProgress.InProgress)]
+        [MockInlineAutoData(TaskProgress.NotApplicable)]
+        [MockInlineAutoData(TaskProgress.NotStarted)]
+        [MockInlineAutoData(TaskProgress.Optional)]
         public static void Get_SupplierStatusNotComplete_ReturnsCannotStart(
             TaskProgress supplierStatus,
             Order order,
@@ -65,8 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.Completed)]
-        [CommonInlineAutoData(TaskProgress.Amended)]
+        [MockInlineAutoData(TaskProgress.Completed)]
+        [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_TimescalesNotStarted_ReturnsNotStarted(
             TaskProgress supplierStatus,
             Order order,
@@ -87,8 +87,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.Completed)]
-        [CommonInlineAutoData(TaskProgress.Amended)]
+        [MockInlineAutoData(TaskProgress.Completed)]
+        [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_OnlyCommencementDateSpecified_ReturnsInProgress(
             TaskProgress supplierStatus,
             Order order,
@@ -109,10 +109,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.Completed, 10, null)]
-        [CommonInlineAutoData(TaskProgress.Amended, 10, null)]
-        [CommonInlineAutoData(TaskProgress.Completed, null, 6)]
-        [CommonInlineAutoData(TaskProgress.Amended, null, 6)]
+        [MockInlineAutoData(TaskProgress.Completed, 10, null)]
+        [MockInlineAutoData(TaskProgress.Amended, 10, null)]
+        [MockInlineAutoData(TaskProgress.Completed, null, 6)]
+        [MockInlineAutoData(TaskProgress.Amended, null, 6)]
         public static void Get_MaximumTermAndInitialPeriod_ReturnsInProgress(
             TaskProgress supplierStatus,
             int? maximumTerm,
@@ -135,8 +135,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.Completed)]
-        [CommonInlineAutoData(TaskProgress.Amended)]
+        [MockInlineAutoData(TaskProgress.Completed)]
+        [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_ReturnsCompleted(
             TaskProgress supplierStatus,
             Order order,

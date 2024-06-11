@@ -13,7 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task RelateAssociatedServicesToSolution_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task RemoveServiceFromSolution_Removes(
             Solution solution,
             AssociatedService associatedService,
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task RemoveServiceFromSolution_InvalidKeys_DoesNotRemove(
             Solution solution,
             Solution secondSolution,
@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task AddAssociatedService_NullCatalogueItem_ThrowsException(
         AssociatedServicesDetailsModel model,
         AssociatedServicesService service)
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task AddAssociatedService_NullModel_ThrowsException(
             CatalogueItem item,
             AssociatedServicesService service)
@@ -139,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddAssociatedService_UpdatesDatabase(
            [Frozen] BuyingCatalogueDbContext context,
            CatalogueItem solution,
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static Task EditDetails_NullModel_ThrowsException(
             CatalogueItemId additionalServiceId,
             AssociatedServicesService service)
@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EditDetails_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem solution,
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
         public static async Task GetSolutionsWithMergerAndSplitTypesForAssociatedService_WhenNone_Returns_Solutions_WithEmptyMergerAndSplitValues(
             PracticeReorganisationTypeEnum reorganisationType,
             List<Solution> solutions,
@@ -232,9 +232,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
         public static async Task GetSolutionsWithMergerAndSplitTypesForAssociatedService_Returns_Solutions_WithMergerAndSplitValues(
             PracticeReorganisationTypeEnum reorganisationType,
             List<Solution> solutions,
@@ -264,10 +264,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
         public static async Task GetSolutionsWithMergerAndSplitTypesForAssociatedService__ExlcudingOnlyService_Returns_Solutions_WithEmptyMergerAndSplitValues(
             PracticeReorganisationTypeEnum reorganisationType,
             List<Solution> solutions,
@@ -293,7 +293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetAllSolutionsForAssociatedService_Returns_RelatedSolutions(
             List<Solution> solutions,
             AssociatedService associatedService,
@@ -315,8 +315,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
-        [InMemoryDbInlineAutoData(null)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [MockInMemoryDbInlineAutoData(null)]
         public static async Task GetPublishedAssociatedServicesForSolution_NullCatalogueItemId_ReturnsEmptySet(
             PracticeReorganisationTypeEnum? practiceReorganisationType,
             AssociatedServicesService service)
@@ -328,10 +328,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.None)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
         public static async Task GetPublishedAssociatedServicesForSolution_WithNoPracticeReorganisationType_ReturnsAllServices(
             PracticeReorganisationTypeEnum reorganisationType,
             [Frozen] BuyingCatalogueDbContext context,
@@ -357,9 +357,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
         public static async Task GetPublishedAssociatedServicesForSolution_WithPracticeReorganisationTypeNone_ExcludesMergersAndSplits(
             PracticeReorganisationTypeEnum reorganisationType,
             [Frozen] BuyingCatalogueDbContext context,
@@ -385,9 +385,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
-        [InMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Merger)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split)]
+        [MockInMemoryDbInlineAutoData(PracticeReorganisationTypeEnum.Split | PracticeReorganisationTypeEnum.Merger)]
         public static async Task GetPublishedAssociatedServicesForSolution_WithPracticeReorganisationType_ReturnsMatchingServices(
             PracticeReorganisationTypeEnum reorganisationType,
             [Frozen] BuyingCatalogueDbContext context,
