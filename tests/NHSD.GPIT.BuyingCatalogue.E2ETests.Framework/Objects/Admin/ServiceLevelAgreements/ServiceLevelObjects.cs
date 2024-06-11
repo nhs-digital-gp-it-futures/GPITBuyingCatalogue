@@ -23,6 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ServiceLeve
 
         public static By DeleteLink => By.LinkText("Delete service level");
 
+        public static By AddServiceLevelLink => By.LinkText("Add service levels");
+
         public static By CancelLink => By.LinkText("Cancel");
     }
 }

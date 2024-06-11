@@ -25,5 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ServiceLeve
         public static By DeleteLink => By.LinkText("Delete contact");
 
         public static By CancelLink => By.LinkText("Cancel");
+
+        public static By AddContactLevelDetailsLink => By.LinkText("Add contact details");
     }
 }
