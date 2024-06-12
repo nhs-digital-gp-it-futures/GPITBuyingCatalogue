@@ -131,6 +131,40 @@ public static class CompetitionOrderServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
+    public static async Task CreateDirectAwardOrder_Solution_SetsOrderItemServices(
+        Organisation organisation,
+        Competition competition,
+        Solution solution,
+        CompetitionSolution competitionSolution,
+        AdditionalService additionalService,
+        SolutionService solutionService,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        CompetitionOrderService service)
+    {
+        solutionService.Service = additionalService.CatalogueItem;
+
+        competitionSolution.Solution = solution;
+        competitionSolution.SolutionServices = [solutionService];
+
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competition.CompetitionSolutions = [competitionSolution];
+
+        dbContext.Organisations.Add(organisation);
+        dbContext.Competitions.Add(competition);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        var callOffId = await service.CreateDirectAwardOrder(organisation.InternalIdentifier, competition.Id, solution.CatalogueItemId);
+
+        var order = await dbContext.Order(callOffId);
+
+        order.OrderItems.Should().HaveCount(2);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static Task CreateOrder_InvalidCompetitionId_ThrowsArgumentException(
         string internalOrgId,
         int competitionId,
