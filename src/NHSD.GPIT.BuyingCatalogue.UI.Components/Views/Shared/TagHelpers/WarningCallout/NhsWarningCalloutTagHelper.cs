@@ -11,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Warnin
         public const string TagHelperName = "nhs-warning-callout";
 
         private const string WarningCalloutClass = "nhsuk-warning-callout";
+        private const string WarningCalloutClassSmaller = "nhsuk-warning-callout--smaller";
         private const string WarningCalloutLabelClass = "nhsuk-warning-callout__label";
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
@@ -18,29 +19,37 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Warnin
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
+            var noLabelSmallerWarning = string.IsNullOrWhiteSpace(LabelText);
+
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, WarningCalloutClass));
-
-            var label = GetHeaderLabelBuilder();
-            var hiddenSpan = TagHelperBuilders.GetVisuallHiddenSpanClassBuilder();
-            var roleSpan = GetRoleSpanBuilder();
-            var contentContainer = GetContentContainer();
-
-            roleSpan.InnerHtml
-                .AppendHtml(hiddenSpan)
-                .Append(LabelText);
-
-            label.InnerHtml.AppendHtml(roleSpan);
+            var classToUse = noLabelSmallerWarning ? WarningCalloutClassSmaller : WarningCalloutClass;
+            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, classToUse));
 
             var children = await output.GetChildContentAsync();
 
-            contentContainer.InnerHtml.AppendHtml(children);
+            if (noLabelSmallerWarning)
+            {
+                output.Content.AppendHtml(children);
+            }
+            else
+            {
+                var label = GetHeaderLabelBuilder();
+                var hiddenSpan = TagHelperBuilders.GetVisuallHiddenSpanClassBuilder();
+                var roleSpan = GetRoleSpanBuilder();
+                var contentContainer = GetContentContainer();
 
-            output.Content
-                .AppendHtml(label)
-                .AppendHtml(contentContainer);
+                roleSpan.InnerHtml
+                    .AppendHtml(hiddenSpan)
+                    .Append(LabelText);
+                label.InnerHtml.AppendHtml(roleSpan);
+
+                contentContainer.InnerHtml.AppendHtml(children);
+                output.Content
+                    .AppendHtml(label)
+                    .AppendHtml(contentContainer);
+            }
         }
 
         private static TagBuilder GetHeaderLabelBuilder()

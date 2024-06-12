@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering;
@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering;
 public static class OrderItemPriceTierTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithOrderablePriceTier_SetsPropertiesAsExpected(
         IOrderablePriceTier priceTier)
     {
@@ -22,7 +22,7 @@ public static class OrderItemPriceTierTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetRangeDescription_NoUpperRangeWithRangeDescription_ReturnsExpected(
         string rangeDescription,
         OrderItemPrice price,
@@ -37,7 +37,7 @@ public static class OrderItemPriceTierTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetRangeDescription_WithUpperRangeWithRangeDescription_ReturnsExpected(
         string rangeDescription,
         int upperRange,
@@ -53,7 +53,7 @@ public static class OrderItemPriceTierTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetRangeDescription_NoUpperRangeNoRangeDescription_ReturnsExpected(
         OrderItemPrice price,
         OrderItemPriceTier tier)
@@ -67,7 +67,7 @@ public static class OrderItemPriceTierTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetRangeDescription_NoUpperRangeNoOrderItemPrice_ReturnsExpected(
         OrderItemPriceTier tier)
     {

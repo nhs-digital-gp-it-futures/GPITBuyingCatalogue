@@ -3,7 +3,7 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Settings
@@ -11,9 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Settings
     public static class OdsSettingsTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void GetOrganisationType_NullOrEmptyRole_ThrowsException(string primaryRoleId, OdsSettings settings)
         {
             Assert.Throws<ArgumentNullException>(() => settings.GetOrganisationType(primaryRoleId));

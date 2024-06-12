@@ -26,9 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Constants
 
         public static Dictionary<string, string> GpConnectIntegrations => new()
         {
-            { "HTML View", "GP Connect - HTML View" },
-            { "Appointment Booking", "GP Connect - Appointment Booking" },
-            { "Structured Record", "GP Connect - Structured Record" },
+            { "Access Record HTML", "GP Connect Access Record HTML" },
+            { "Appointment Management", "GP Connect Appointment Management" },
+            { "Access Record Structured", "GP Connect Access Record Structured" },
+            { "Send Document", "GP Connect Send Document" },
+            { "Update Record", "GP Connect Update Record" },
         };
 
         public static Dictionary<string, string> NhsAppIntegrationDescriptions => new()

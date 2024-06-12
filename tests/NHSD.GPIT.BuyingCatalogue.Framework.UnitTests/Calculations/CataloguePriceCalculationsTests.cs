@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
     public static class CataloguePriceCalculationsTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void CostForBillingPeriod_FlatPrice_SingleFixed_Ignores_Quantity(IFixture fixture)
         {
             var quantity = 3587;
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void CostPerTierForBillingPeriod_FlatPrice_SingleFixed_Ignores_Quantity(IFixture fixture)
         {
             var quantity = 3587;
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void CostForBillingPeriod_FlatPrice_Volume_Uses_Quantity(IFixture fixture)
         {
             var quantity = 3587;
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void CostPerTierForBillingPeriod_FlatPrice_Volume_Uses_Quantity(IFixture fixture)
         {
             var quantity = 3587;
@@ -95,9 +95,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(500, 3.14)]
-        [CommonInlineAutoData(3587, 2)]
-        [CommonInlineAutoData(7210, 1.5)]
+        [MockInlineAutoData(500, 3.14)]
+        [MockInlineAutoData(3587, 2)]
+        [MockInlineAutoData(7210, 1.5)]
         public static void CostForBillingPeriod_Tiered_SingleFixed_Ignores_Quantity(
             int quantity,
             decimal expected,
@@ -120,9 +120,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(500, 1, 3.14)]
-        [CommonInlineAutoData(3587, 2, 2)]
-        [CommonInlineAutoData(7210, 3, 1.5)]
+        [MockInlineAutoData(500, 1, 3.14)]
+        [MockInlineAutoData(3587, 2, 2)]
+        [MockInlineAutoData(7210, 3, 1.5)]
         public static void CostPerTierForBillingPeriod_Tiered_SingleFixed_Ignores_Quantity(
             int quantity,
             int tierId,
@@ -157,9 +157,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(500, 500 * 3.14)]
-        [CommonInlineAutoData(3587, 3587 * 2)]
-        [CommonInlineAutoData(7210, 7210 * 1.5)]
+        [MockInlineAutoData(500, 500 * 3.14)]
+        [MockInlineAutoData(3587, 3587 * 2)]
+        [MockInlineAutoData(7210, 7210 * 1.5)]
         public static void CostForBillingPeriod_Tiered_Volume_Uses_Quantity(
             int quantity,
             decimal expected,
@@ -182,9 +182,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(500, 1, 500 * 3.14)]
-        [CommonInlineAutoData(3587, 2, 3587 * 2)]
-        [CommonInlineAutoData(7210, 3, 7210 * 1.5)]
+        [MockInlineAutoData(500, 1, 500 * 3.14)]
+        [MockInlineAutoData(3587, 2, 3587 * 2)]
+        [MockInlineAutoData(7210, 3, 7210 * 1.5)]
         public static void CostPerTierForBillingPeriod_Tiered_Volume_Uses_Quantity(
             int quantity,
             int tierId,
@@ -219,12 +219,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(500, 500 * 3.14)]
-        [CommonInlineAutoData(1000, (999 * 3.14) + (1 * 2))]
-        [CommonInlineAutoData(3587, (999 * 3.14) + (2588 * 2))]
-        [CommonInlineAutoData(4999, (999 * 3.14) + (4000 * 2))]
-        [CommonInlineAutoData(7210, (999 * 3.14) + (4000 * 2) + (2211 * 1.5))]
-        [CommonInlineAutoData(10000, (999 * 3.14) + (4000 * 2) + (5001 * 1.5))]
+        [MockInlineAutoData(500, 500 * 3.14)]
+        [MockInlineAutoData(1000, (999 * 3.14) + (1 * 2))]
+        [MockInlineAutoData(3587, (999 * 3.14) + (2588 * 2))]
+        [MockInlineAutoData(4999, (999 * 3.14) + (4000 * 2))]
+        [MockInlineAutoData(7210, (999 * 3.14) + (4000 * 2) + (2211 * 1.5))]
+        [MockInlineAutoData(10000, (999 * 3.14) + (4000 * 2) + (5001 * 1.5))]
         public static void CostForBillingPeriod_Tiered_Cumulative_Splits_Quantity_By_Tiers(
             int quantity,
             decimal expected,
@@ -247,12 +247,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(500, new[] { 500 })]
-        [CommonInlineAutoData(1000, new[] { 999, 1 })]
-        [CommonInlineAutoData(3587, new[] { 999, 2588 })]
-        [CommonInlineAutoData(4999, new[] { 999, 4000 })]
-        [CommonInlineAutoData(7210, new[] { 999, 4000, 2211 })]
-        [CommonInlineAutoData(10000, new[] { 999, 4000, 5001 })]
+        [MockInlineAutoData(500, new[] { 500 })]
+        [MockInlineAutoData(1000, new[] { 999, 1 })]
+        [MockInlineAutoData(3587, new[] { 999, 2588 })]
+        [MockInlineAutoData(4999, new[] { 999, 4000 })]
+        [MockInlineAutoData(7210, new[] { 999, 4000, 2211 })]
+        [MockInlineAutoData(10000, new[] { 999, 4000, 5001 })]
         public static void CostPerTierForBillingPeriod_Tiered_Cumulative_Splits_Quantity_By_Tiers(
             int quantity,
             int[] quantitySplits,
@@ -290,11 +290,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(TimeUnit.PerMonth, 12, 0, 12, 12 * 12)]
-        [CommonInlineAutoData(TimeUnit.PerYear, 12, 0, 1, 12)]
-        [CommonInlineAutoData(TimeUnit.PerYear, 12.666, 0, 1.0555, 12.666)]
-        [CommonInlineAutoData(null, 12, 12, 0, 0)]
-        [CommonInlineAutoData(null, 12.666, 12.666, 0, 0)]
+        [MockInlineAutoData(TimeUnit.PerMonth, 12, 0, 12, 12 * 12)]
+        [MockInlineAutoData(TimeUnit.PerYear, 12, 0, 1, 12)]
+        [MockInlineAutoData(TimeUnit.PerYear, 12.666, 0, 1.0555, 12.666)]
+        [MockInlineAutoData(null, 12, 12, 0, 0)]
+        [MockInlineAutoData(null, 12.666, 12.666, 0, 0)]
         public static void Order_Totals_Using_BillingPeriod(TimeUnit? billingPeriod, decimal price, decimal oneOff, decimal monthly, decimal annual, IFixture fixture)
         {
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
@@ -319,11 +319,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(TimeUnit.PerMonth, 12, 12 * 24)]
-        [CommonInlineAutoData(TimeUnit.PerYear, 12, 1 * 24)]
-        [CommonInlineAutoData(TimeUnit.PerYear, 12.666, 25.332)]
-        [CommonInlineAutoData(null, 12, 12)]
-        [CommonInlineAutoData(null, 12.666, 12.666)]
+        [MockInlineAutoData(TimeUnit.PerMonth, 12, 12 * 24)]
+        [MockInlineAutoData(TimeUnit.PerYear, 12, 1 * 24)]
+        [MockInlineAutoData(TimeUnit.PerYear, 12.666, 25.332)]
+        [MockInlineAutoData(null, 12, 12)]
+        [MockInlineAutoData(null, 12.666, 12.666)]
         public static void OrderWrapper_TotalCost_PerMonth_And_PerYear_Use_MaximumTerm_But_OneOff_Costs_Dont(TimeUnit? billingPeriod, decimal price, decimal total, IFixture fixture)
         {
             var maximumTerm = 24;
@@ -350,7 +350,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OrderWrapper_TotalCost_Is_Sum_of_OrderItem_Costs(IFixture fixture)
         {
             var maximumTerm = 24;
@@ -380,8 +380,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(1, 12 * 24)]
-        [CommonInlineAutoData(2, 12 * 18)]
+        [MockInlineAutoData(1, 12 * 24)]
+        [MockInlineAutoData(2, 12 * 18)]
         public static void Order_TotalCostForOrderItem_Amended_Orders_Use_The_Planned_Delivery_date_Original_Orders_Dont(
             int revision,
             decimal total,
@@ -417,8 +417,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(1)]
-        [CommonInlineAutoData(2)]
+        [MockInlineAutoData(1)]
+        [MockInlineAutoData(2)]
         public static void Order_TotalCostForOrderItem_Returns_0_When_OrderItem_Not_Found(int revision, CatalogueItemId catalogueItemId, IFixture fixture)
         {
             var order = fixture.Build<Order>()
@@ -430,8 +430,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonInlineAutoData(1)]
-        [CommonInlineAutoData(2)]
+        [MockInlineAutoData(1)]
+        [MockInlineAutoData(2)]
         public static void Order_TotalCostForOrderItem_Returns_0_When_OrderItem_Has_No_Recipients(int revision, Order order)
         {
             order.Revision = revision;
@@ -442,7 +442,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OrderItem_TotalCost_Returns_0_When_No_Price(OrderItem orderItem)
         {
             orderItem.OrderItemPrice = null;
@@ -451,7 +451,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OrderItem_TotalCost_PerMonth_ReturnsExpected(
             OrderRecipient recpient,
             int quantity,
@@ -469,7 +469,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OrderItem_TotalCost_PerYear_ReturnsExpected(
             OrderRecipient recpient,
             int quantity,
@@ -487,7 +487,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OrderItem_TotalCost_OneOff_ReturnsExpected(
             OrderRecipient recpient,
             int quantity,
@@ -517,7 +517,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OrderWrapper_TotalCost_And_TotalPreviousCost_One_Amendment(IFixture fixture)
         {
             var maximumTerm = 12;
@@ -556,7 +556,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OrderWrapper_TotalCost_And_TotalPreviousCosts_Multiple_Amendments(IFixture fixture)
         {
             var maximumTerm = 12;
