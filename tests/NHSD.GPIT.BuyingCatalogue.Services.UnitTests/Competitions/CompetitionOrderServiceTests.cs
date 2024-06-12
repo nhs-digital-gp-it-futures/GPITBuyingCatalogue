@@ -124,6 +124,7 @@ public static class CompetitionOrderServiceTests
         order.Description.Should().Be($"Order created from competition: {competition.Id}");
         order.OrderingPartyId.Should().Be(competition.OrganisationId);
         order.SupplierId.Should().Be(solution.CatalogueItem.SupplierId);
+        order.OrderItems.Select(o => o.CatalogueItemId).Should().BeEquivalentTo([solution.CatalogueItemId]);
         order.SelectedFrameworkId.Should().Be(competition.FrameworkId);
         order.OrderType.Value.Should().Be(OrderTypeEnum.Solution);
     }
@@ -307,7 +308,7 @@ public static class CompetitionOrderServiceTests
             .BeEquivalentTo(
                 recipients.Select(x => new OrderRecipient(x.Id)),
                 opt => opt.Excluding(m => m.OrderId).Excluding(m => m.Order).Excluding(m => m.OdsOrganisation));
-        order.OrderItems.Should().ContainSingle();
+        order.OrderItems.Select(o => o.CatalogueItemId).Should().BeEquivalentTo([solution.CatalogueItemId]);
         order.SelectedFrameworkId.Should().Be(competition.FrameworkId);
         order.OrderType.Value.Should().Be(OrderTypeEnum.Solution);
     }

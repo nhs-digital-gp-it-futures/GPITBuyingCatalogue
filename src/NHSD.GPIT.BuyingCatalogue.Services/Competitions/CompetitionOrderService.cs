@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,8 @@ public class CompetitionOrderService : ICompetitionOrderService
             .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
             .ThenInclude(x => x.Supplier)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
             .IgnoreQueryFilters()
             .AsNoTracking()
             .AsSplitQuery()
@@ -49,9 +52,10 @@ public class CompetitionOrderService : ICompetitionOrderService
                 nameof(solutionId));
         }
 
+        var orderItems = CreateDirectAwardOrderItems(directAwardSolution);
         var nextOrderNumber = await dbContext.NextOrderNumber();
 
-        var order = CreateOrder(nextOrderNumber, competition, directAwardSolution);
+        var order = CreateOrder(nextOrderNumber, competition, directAwardSolution, orderItems);
 
         dbContext.Orders.Add(order);
         await dbContext.SaveChangesAsync();
@@ -111,6 +115,17 @@ public class CompetitionOrderService : ICompetitionOrderService
         return order.CallOffId;
     }
 
+    private static IEnumerable<OrderItem> CreateDirectAwardOrderItems(CompetitionSolution directAwardSolution)
+    {
+        var orderItems = directAwardSolution.SolutionServices.Select(
+                x => new OrderItem(x.ServiceId) { Created = DateTime.UtcNow })
+            .ToList();
+
+        orderItems.Add(new OrderItem(directAwardSolution.SolutionId) { Created = DateTime.UtcNow });
+
+        return orderItems;
+    }
+
     private static IEnumerable<OrderItem> CreateOrderItems(CompetitionSolution winningSolution)
     {
         var orderItems = winningSolution.SolutionServices.Select(
@@ -124,7 +139,7 @@ public class CompetitionOrderService : ICompetitionOrderService
                 winningSolution.Price,
                 winningSolution.Price.Tiers));
 
-        return orderItems.ToList();
+        return orderItems;
     }
 
     private static OrderItem CreateOrderItem(
@@ -144,27 +159,21 @@ public class CompetitionOrderService : ICompetitionOrderService
             },
         };
 
-    private static Order CreateOrder(int orderNumber, Competition competition, CompetitionSolution competitionSolution) => new Order
+    private static Order CreateOrder(int orderNumber, Competition competition, CompetitionSolution competitionSolution, IEnumerable<OrderItem> orderItems) => new Order
     {
         OrderNumber = orderNumber,
         OrderType = OrderTypeEnum.Solution,
         Revision = 1,
         Description = $"Order created from competition: {competition.Id}",
         Created = DateTime.UtcNow,
+        MaximumTerm = competition.ContractLength,
+        OrderRecipients = competition.Recipients.Select(x => new OrderRecipient(x.Id)).ToList(),
+        OrderItems = orderItems.ToList(),
         OrderingPartyId = competition.OrganisationId,
         SupplierId = competitionSolution.Solution.CatalogueItem.SupplierId,
         CompetitionId = competition.Id,
         SelectedFrameworkId = competition.FrameworkId,
     };
-
-    private static Order CreateOrder(int orderNumber, Competition competition, CompetitionSolution winningSolution, IEnumerable<OrderItem> orderItems)
-    {
-        var order = CreateOrder(orderNumber, competition, winningSolution);
-        order.MaximumTerm = competition.ContractLength;
-        order.OrderRecipients = competition.Recipients.Select(x => new OrderRecipient(x.Id)).ToList();
-        order.OrderItems = orderItems.ToList();
-        return order;
-    }
 
     private static void AssignRecipientQuantities(Order order, CompetitionSolution winningSolution)
     {
