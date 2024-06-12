@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetString_ValidArray_ReturnsCorrectString(string expected)
         {
             var bytes = Encoding.UTF8.GetBytes(expected);

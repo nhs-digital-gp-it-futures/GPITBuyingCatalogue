@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             List<FrameworkFilterInfo> frameworks,
             RequestedFilters filters)
         {
-            SetFrameworkOptions(frameworks, filters.SelectedFrameworkId);
+            SetFrameworkOptions(frameworks);
             SetApplicationTypeOptions(filters.SelectedApplicationTypeIds);
             SetHostingTypeOptions(filters.SelectedHostingTypeIds);
             SetIM1IntegrationsOptions(filters.SelectedIM1Integrations);
@@ -44,8 +44,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         public string SortBy { get; set; }
 
         public List<SelectOption<string>> FrameworkOptions { get; set; }
-
-        public string FrameworkFilter { get; set; }
 
         public List<SelectOption<int>> ApplicationTypeOptions { get; set; }
 
@@ -117,25 +115,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     SortBy);
         }
 
-        private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks, string selectedFrameworkId)
+        private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks)
         {
             FrameworkOptions = frameworks
-                .Where(f => !f.Expired)
                 .Select(
                     f => new SelectOption<string>
                     {
                         Value = f.Id,
-                        Text = $"{f.ShortName}",
+                        Text = $"{f.ShortName}{(f.Expired ? " (expired)" : string.Empty)}",
                         Selected = false,
                     })
                 .ToList();
-
-            var framework = frameworks
-                .FirstOrDefault(f => f.Id == selectedFrameworkId);
-
-            FrameworkFilter = framework != null
-                ? $"{framework.ShortName}"
-                : string.Empty;
         }
 
         private void SetApplicationTypeOptions(string selectedApplicationTypeIds)

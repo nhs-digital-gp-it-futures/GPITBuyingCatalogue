@@ -252,11 +252,17 @@ public static class CompetitionSelectSolutionsControllerTests
     public static async Task JustifySolutions_AllSolutionsShortlisted_RedirectsToConfirmation(
         Organisation organisation,
         Competition competition,
+        List<Solution> solutions,
         List<CompetitionSolution> competitionSolutions,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionSelectSolutionsController controller)
     {
-        competitionSolutions.ForEach(x => x.IsShortlisted = true);
+        foreach (var (x, i) in competitionSolutions.Select((x, i) => (x, i)))
+        {
+            x.Solution = solutions[i];
+            x.Solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            x.IsShortlisted = true;
+        }
 
         competition.CompetitionSolutions = competitionSolutions;
 

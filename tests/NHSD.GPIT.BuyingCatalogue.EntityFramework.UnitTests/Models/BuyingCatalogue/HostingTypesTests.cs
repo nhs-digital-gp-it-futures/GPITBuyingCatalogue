@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatalogue
@@ -50,28 +50,28 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void PublicCloud_IsValid_True(PublicCloud publicCloud)
         {
             publicCloud.IsValid().Should().BeTrue();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void PrivateCloud_IsValid_True(PrivateCloud privateCloud)
         {
             privateCloud.IsValid().Should().BeTrue();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Hybrid_IsValid_True(HybridHostingType hybrid)
         {
             hybrid.IsValid().Should().BeTrue();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OnPremise_IsValid_True(OnPremise onPremise)
         {
             onPremise.IsValid().Should().BeTrue();
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonMemberAutoData(nameof(HostingTestData))]
+        [MockMemberAutoData(nameof(HostingTestData))]
         public static void Hosting_IsValid_True(
             PublicCloud publicCloud,
             PrivateCloud privateCloud,

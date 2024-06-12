@@ -336,10 +336,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         i =>
                             i.CatalogueItemType == CatalogueItemType.Solution
                             && AllowedPublicationStatuses.Contains(i.PublishedStatus)
-                            && itemPredicate.Invoke(i)
-                            && i.Solution.FrameworkSolutions.Select(f => f.Framework)
-                                .Distinct()
-                                .Any(f => !f.IsExpired)),
+                            && i.Supplier.IsActive
+                            && itemPredicate.Invoke(i)),
                 capabilitiesAndCount);
         }
 

@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
@@ -18,37 +20,38 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
     public static class UserClaimsPrincipalFactoryExTests
     {
         [Theory]
-        [InlineData("Buyer")]
-        [InlineData("Authority")]
-        [InlineData("AccountManager")]
-        public static async Task GenerateClaimsAsync_ClaimsSetBasedOnAuthorityAndFirstLastName(string organisationFunction)
+        [MockInlineAutoData("Buyer")]
+        [MockInlineAutoData("Authority")]
+        [MockInlineAutoData("AccountManager")]
+        public static async Task GenerateClaimsAsync_ClaimsSetBasedOnAuthorityAndFirstLastName(
+            string organisationFunction,
+            [Frozen] IOrganisationsService orgService,
+            [Frozen] IOptions<IdentityOptions> options,
+            [Frozen] IUserRoleStore<AspNetUser> store)
         {
             var user = new AspNetUser { Id = 97, UserName = "Foo", FirstName = "Fred", LastName = "Smith" };
-            var userManager = MockUserManager();
-            userManager.Setup(m => m.GetUserIdAsync(user)).ReturnsAsync(user.Id.ToString());
-            userManager.Setup(m => m.GetUserNameAsync(user)).ReturnsAsync(user.UserName);
-            userManager.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string> { organisationFunction });
+            var userManager = MockUserManager(store);
 
-            var orgService = new Mock<IOrganisationsService>();
-            orgService.Setup(m => m.GetOrganisation(It.IsAny<int>())).ReturnsAsync(new Organisation { InternalIdentifier = "CG-123" });
+            userManager.GetRolesAsync(user).Returns(new List<string> { organisationFunction });
 
-            orgService.Setup(m => m.GetRelatedOrganisations(It.IsAny<int>())).ReturnsAsync(new List<Organisation>
+            orgService.GetOrganisation(Arg.Any<int>()).Returns(new Organisation { InternalIdentifier = "CG-123" });
+
+            orgService.GetRelatedOrganisations(Arg.Any<int>()).Returns(new List<Organisation>
             {
                 new() { InternalIdentifier = "CG-ABC" },
                 new() { InternalIdentifier = "CG-DEF" },
                 new() { InternalIdentifier = "CG-GHI" },
             });
 
-            var options = new Mock<IOptions<IdentityOptions>>();
             var identityOptions = new IdentityOptions();
-            options.Setup(a => a.Value).Returns(identityOptions);
+            options.Value.Returns(identityOptions);
 
-            userManager.Object.Options = identityOptions;
+            userManager.Options = identityOptions;
 
             var factory = new CatalogueUserClaimsPrincipalFactory(
-                userManager.Object,
-                options.Object,
-                orgService.Object);
+                userManager,
+                options,
+                orgService);
 
             var principal = await factory.CreateAsync(user);
 
@@ -62,12 +65,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Identity
             Assert.Contains(GetClaimValues(principal, "secondaryOrganisationInternalIdentifier"), s => s.EqualsIgnoreCase("CG-GHI"));
         }
 
-        public static Mock<UserManager<AspNetUser>> MockUserManager()
+        public static UserManager<AspNetUser> MockUserManager(IUserStore<AspNetUser> store)
         {
-            var store = new Mock<IUserStore<AspNetUser>>();
-            var mgr = new Mock<UserManager<AspNetUser>>(store.Object, null, null, null, null, null, null, null, null);
-            mgr.Object.UserValidators.Add(new UserValidator<AspNetUser>());
-            mgr.Object.PasswordValidators.Add(new PasswordValidator<AspNetUser>());
+            var mgr = new UserManager<AspNetUser>(store, null, null, null, null, null, null, null, null);
+            mgr.UserValidators.Add(new UserValidator<AspNetUser>());
+            mgr.PasswordValidators.Add(new PasswordValidator<AspNetUser>());
             return mgr;
         }
 

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -21,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 [CompetitionSolutionSelectionFilter]
 public class CompetitionSelectSolutionsController : Controller
 {
+    private readonly PublicationStatus[] allowedPublicationStatuses = [PublicationStatus.Published, PublicationStatus.InRemediation];
     private readonly ICompetitionsService competitionsService;
     private readonly IFrameworkService frameworkService;
     private readonly IManageFiltersService filtersService;
@@ -48,11 +50,15 @@ public class CompetitionSelectSolutionsController : Controller
                 new { internalOrgId });
         }
 
-        var availableSolutions = competition.CompetitionSolutions.Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId));
-        var frameworkName = (await frameworkService.GetFramework(competition.FrameworkId)).ShortName;
+        var framework = await frameworkService.GetFramework(competition.FrameworkId);
+        var availableSolutions = framework.IsExpired
+            ? []
+            : competition.CompetitionSolutions.Where(x =>
+                allowedPublicationStatuses.Contains(x.Solution.CatalogueItem.PublishedStatus)
+                && x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId));
         var filterDetails = await filtersService.GetFilterDetails(competition.OrganisationId, competition.FilterId);
 
-        var model = new SelectSolutionsModel(competition.Name, availableSolutions, frameworkName, filterDetails)
+        var model = new SelectSolutionsModel(competition.Name, availableSolutions, framework.ShortName, filterDetails)
         {
             BackLinkText = "Go back to manage competitions",
             BackLink = Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId }),
@@ -98,10 +104,13 @@ public class CompetitionSelectSolutionsController : Controller
     {
         var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
 
-        if (competition.CompetitionSolutions.All(x => x.IsShortlisted))
+        var availableSolutions = competition.CompetitionSolutions
+            .Where(x => allowedPublicationStatuses.Contains(x.Solution.CatalogueItem.PublishedStatus));
+
+        if (availableSolutions.All(x => x.IsShortlisted))
             return RedirectToAction(nameof(ConfirmSolutions), new { internalOrgId, competitionId });
 
-        var nonShortlistedSolutions = competition.CompetitionSolutions.Where(x => !x.IsShortlisted);
+        var nonShortlistedSolutions = availableSolutions.Where(x => !x.IsShortlisted);
 
         var model = new JustifySolutionsModel(competition.Name, nonShortlistedSolutions)
         {
