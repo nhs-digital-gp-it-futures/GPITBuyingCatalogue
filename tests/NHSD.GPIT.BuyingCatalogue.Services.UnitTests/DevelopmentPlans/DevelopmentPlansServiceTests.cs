@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -12,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.DevelopmentPlans;
 using NHSD.GPIT.BuyingCatalogue.Services.DevelopmentPlans;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(DevelopmentPlansService).GetConstructors();
 
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveDevelopmentPlans_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetWorkoffPlans_RetrievesFromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution1,
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetWorkoffPlan_RetrievesFromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static Task SaveWorkOffPlan_NullModel_ThrowsException(
             CatalogueItemId catalogueItemId,
             DevelopmentPlansService service)
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveWorkoffPlan_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static Task UpdateWorkOffPlan_NullModel_ThrowsException(
             int planId,
             DevelopmentPlansService service)
@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateWorkOffPlan_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.DevelopmentPlans
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteWorkOffPlan_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
