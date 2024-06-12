@@ -5,11 +5,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 public enum InteropNhsAppIntegrationType
 {
     [Display(Name = "Online Consultations")]
-    OnlineConsultations,
+    Online_Consultations,
     [Display(Name = "Personal Health Records")]
-    PersonalHealthRecords,
+    Personal_Health_Records,
     [Display(Name = "Primary Care Notifications")]
-    PrimaryCareNotifications,
+    Primary_Care_Notifications,
     [Display(Name = "Secondary Care Notifications")]
-    SecondaryCareNotifications,
+    Secondary_Care_Notifications,
 }

@@ -10,6 +10,7 @@ var filters = (function (): CapabilitiesAndEpics {
     const INTEROPERABILITY_OPTIONS_PARAM_NAME = 'selectedInteroperabilityOptions';
     const IM1_INTEGRATIONS_PARAM_NAME = 'selectedIM1Integrations';
     const GPCONNECT_INTEGRATIONS_PARAM_NAME = 'selectedGPConnectIntegrations';
+    const NHSAPP_INTEGRATIONS_PARAM_NAME = 'selectedNHSAppIntegrations';
     const SELECTED_PARAM_NAME = 'selected';
     const SORT_BY_PARAM_NAME = 'sortBy';
     const GROUP_DELIMITER = '|';
@@ -187,6 +188,7 @@ var filters = (function (): CapabilitiesAndEpics {
         searchResultsUrl.searchParams.set(INTEROPERABILITY_OPTIONS_PARAM_NAME, getInteroperabilityFilterString());
         searchResultsUrl.searchParams.set(IM1_INTEGRATIONS_PARAM_NAME, getIM1IntegrationsOptionsFilterString());
         searchResultsUrl.searchParams.set(GPCONNECT_INTEGRATIONS_PARAM_NAME, getGPConnectIntegrationsOptionsFilterString());
+        searchResultsUrl.searchParams.set(NHSAPP_INTEGRATIONS_PARAM_NAME, getNHSAppIntegrationsOptionsFilterString());
         searchResultsUrl.searchParams.set(SELECTED_PARAM_NAME, getSelectedFilterString());
         const currentSortBy = getSortBy();
 
@@ -242,6 +244,14 @@ var filters = (function (): CapabilitiesAndEpics {
         var selectedramework = document.getElementById(`${INTEROPERABILITY_FILTERS_ID}`);
         return Array.from<HTMLInputElement>(selectedramework.querySelectorAll('input[type="checkbox"]:checked'))
             .filter(e => e.id.startsWith('GPConnectIntegrationsOptions'))
+            .map(v => (document.getElementById((v as HTMLInputElement).id.replace("__Selected", "__Value")) as HTMLInputElement).value)
+            .reduce((r, i) => `${r}${i}${DELIMITER}`, "") ?? "";
+    }
+
+    function getNHSAppIntegrationsOptionsFilterString(): string {
+        var selectedInterop = document.getElementById(`${INTEROPERABILITY_FILTERS_ID}`);
+        return Array.from<HTMLInputElement>(selectedInterop.querySelectorAll('input[type="checkbox"]:checked'))
+            .filter(e => e.id.startsWith('NhsAppIntegrationsOptions'))
             .map(v => (document.getElementById((v as HTMLInputElement).id.replace("__Selected", "__Value")) as HTMLInputElement).value)
             .reduce((r, i) => `${r}${i}${DELIMITER}`, "") ?? "";
     }

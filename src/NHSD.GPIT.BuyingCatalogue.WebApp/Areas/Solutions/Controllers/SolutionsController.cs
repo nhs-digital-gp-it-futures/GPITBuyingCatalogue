@@ -180,6 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     filters.SelectedHostingTypeIds,
                     filters.SelectedIM1Integrations,
                     filters.SelectedGPConnectIntegrations,
+                    filters.SelectedNhsAppIntegrations,
                     filters.SelectedInteroperabilityOptions);
 
             var model = new SolutionsResultsModel()
