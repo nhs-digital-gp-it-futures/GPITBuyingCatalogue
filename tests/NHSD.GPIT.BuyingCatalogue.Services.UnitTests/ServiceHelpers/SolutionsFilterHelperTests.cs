@@ -363,7 +363,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -375,7 +375,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -387,7 +387,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -423,7 +423,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -435,7 +435,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -447,7 +447,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -459,7 +459,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -483,7 +483,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect };
+            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }

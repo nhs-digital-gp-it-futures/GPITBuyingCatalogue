@@ -77,6 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             model.InteroperabilityFilters.Should().NotBeNull().And.BeEmpty();
             model.IM1IntegrationsFilters.Should().NotBeNull().And.BeEmpty();
             model.GPConnectIntegrationsFilters.Should().NotBeNull().And.BeEmpty();
+            model.NhsAppIntegrationsFilters.Should().NotBeNull().And.BeEmpty();
             model.CapabilitiesCount.Should().Be(0);
             model.EpicsCount.Should().Be(0);
             model.FoundationCapabilitiesFilterString.Should().Be("5|11|12|13|14|15|");
@@ -274,7 +275,48 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         }
 
         [Theory]
-        [MockInlineAutoData(new[] { 0, 1 })]
+        [MockInlineAutoData(new[] { 0, 1, 2, 3 })]
+        public static void Constructor_With_SelectedNhsAppIntegrationsOptions_Creates_InteroperabilityCheckBoxItems_AllSelected(
+            int[] expectedSelectedValues,
+            RequestedFilters filters)
+        {
+            var expectedFilters = expectedSelectedValues.Select(i => ((InteropNhsAppIntegrationType)i).Name());
+
+            filters = filters with { SelectedNhsAppIntegrations = expectedSelectedValues.ToFilterString() };
+            var model = new AdditionalFiltersModel([], filters);
+
+            model.NhsAppIntegrationsOptions.Should().NotBeNull();
+            model.NhsAppIntegrationsOptions.Should().HaveCount(4);
+            model.NhsAppIntegrationsFilters.Should().BeEquivalentTo(expectedFilters);
+
+            foreach (var item in model.NhsAppIntegrationsOptions)
+            {
+                var isSelected = expectedSelectedValues.Contains(item.Value);
+                item.Selected.Should().Be(isSelected);
+            }
+        }
+
+        [Theory]
+        [MockInlineAutoData(null)]
+        public static void Constructor_WithNull_SelectedNHSAppIntegrationsOptions_Creates_NHSAppIntegrationsOption_NoneSelected(
+            string selectedNhsAppIntegrations,
+            RequestedFilters filters)
+        {
+            filters = filters with { SelectedNhsAppIntegrations = selectedNhsAppIntegrations };
+            var model = new AdditionalFiltersModel([], filters);
+
+            model.NhsAppIntegrationsOptions.Should().NotBeNull();
+            model.NhsAppIntegrationsOptions.Should().HaveCount(4);
+            model.NhsAppIntegrationsFilters.Should().BeEquivalentTo([]);
+
+            foreach (var item in model.NhsAppIntegrationsOptions)
+            {
+                item.Selected.Should().BeFalse();
+            }
+        }
+
+        [Theory]
+        [MockInlineAutoData(new[] { 0, 1, 2 })]
         public static void Constructor_With_SelectedIntegrationsOptions_Creates_InteroperabilityCheckBoxItems_AllSelected(
             int[] expectedSelectedValues,
             RequestedFilters filters)
@@ -285,7 +327,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             var model = new AdditionalFiltersModel([], filters);
 
             model.InteroperabilityOptions.Should().NotBeNull();
-            model.InteroperabilityOptions.Should().HaveCount(2);
+            model.InteroperabilityOptions.Should().HaveCount(3);
             model.InteroperabilityFilters.Should().BeEquivalentTo(expectedFilters);
 
             foreach (var item in model.InteroperabilityOptions)
@@ -305,41 +347,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             var model = new AdditionalFiltersModel([], filters);
 
             model.InteroperabilityOptions.Should().NotBeNull();
-            model.InteroperabilityOptions.Should().HaveCount(2);
+            model.InteroperabilityOptions.Should().HaveCount(3);
             model.InteroperabilityFilters.Should().BeEquivalentTo([]);
 
             foreach (var item in model.InteroperabilityOptions)
             {
                 item.Selected.Should().BeFalse();
             }
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void ToRequestedFilters_With_SelectedIM1Integrations(
-            RequestedFilters filters)
-        {
-            filters = filters with { SelectedInteroperabilityOptions = "0" };
-            var model = new AdditionalFiltersModel([], filters);
-
-            var requestedFilters = model.ToRequestedFilters();
-
-            requestedFilters.SelectedIM1Integrations.Should().NotBeNull();
-            requestedFilters.SelectedGPConnectIntegrations.Should().BeNull();
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void ToRequestedFilters_With_SelectedGPConnectIntegrations(
-            RequestedFilters filters)
-        {
-            filters = filters with { SelectedInteroperabilityOptions = "1" };
-            var model = new AdditionalFiltersModel([], filters);
-
-            var requestedFilters = model.ToRequestedFilters();
-
-            requestedFilters.SelectedIM1Integrations.Should().BeNull();
-            requestedFilters.SelectedGPConnectIntegrations.Should().NotBeNull();
         }
 
         [Theory]
