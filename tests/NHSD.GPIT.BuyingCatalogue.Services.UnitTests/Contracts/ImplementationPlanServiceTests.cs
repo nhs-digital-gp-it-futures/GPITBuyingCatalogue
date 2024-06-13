@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Contracts;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 using Contract = NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.Contract;
 
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ImplementationPlanService).GetConstructors();
 
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetDefaultImplementationPlan_NoPlanExists_ReturnsNull(
             ImplementationPlanService service)
         {
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetDefaultImplementationPlan_PlanExists_ReturnsPlan(
             [Frozen] BuyingCatalogueDbContext dbContext,
             ImplementationPlanService service)
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddImplementationPlan_ImplementationPlanExists_ReturnsExistingImplementationPlan(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddImplementationPlan_ImplementationPlanDoesNotExist_ReturnsNewImplementationPlan(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -102,9 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void AddBespokeMilestone_NullOrEmptyName_ThrowsException(
             string name,
             int orderId,
@@ -124,9 +124,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void AddBespokeMilestone_NullOrEmptyPaymentTrigger_ThrowsException(
             string paymentTrigger,
             int orderId,
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void AddBespokeMilestone_NullContract_ThrowsException(
             string paymentTrigger,
             int orderId,
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddBespokeMilestone_NullImplementationPlan_PlanAndMilestoneCreated(
             [Frozen] BuyingCatalogueDbContext context,
             string paymentTrigger,
@@ -201,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddBespokeMilestone_ExistingImplementationPlan_MilestoneAdded(
             [Frozen] BuyingCatalogueDbContext context,
             string paymentTrigger,
@@ -234,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetMilestone_NoMilestoneExists_ReturnsNull(
             int orderId,
             int milestoneId,
@@ -246,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetMilestone_MilestoneExists_ReturnsMilestone(
             [Frozen] BuyingCatalogueDbContext dbContext,
             ImplementationPlan plan,
@@ -272,9 +272,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void EditMilestone_NullOrEmptyName_ThrowsException(
            string name,
            int orderId,
@@ -294,9 +294,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void EditMilestone_NullOrEmptyPaymentTrigger_ThrowsException(
             string paymentTrigger,
             int orderId,
@@ -316,7 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EditMilestone_ExistingMilestone_MilestoneUpdated(
             [Frozen] BuyingCatalogueDbContext context,
             string paymentTrigger,
@@ -348,7 +348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteMilestone_ExistingMilestone_MilestoneDeleted(
             [Frozen] BuyingCatalogueDbContext context,
             ImplementationPlan plan,

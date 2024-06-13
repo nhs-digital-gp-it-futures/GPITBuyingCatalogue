@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -17,7 +16,8 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(OrderItemService).GetConstructors();
 
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void AddOrderItems_ItemIdsAreNull_ThrowsException(
             string internalOrgId,
             CallOffId callOffId,
@@ -47,26 +47,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddOrderItems_NoOrder_NoActionTaken(
             string internalOrgId,
             CallOffId callOffId,
             List<CatalogueItemId> itemIds,
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             OrderItemService service)
         {
             itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
             await context.SaveChangesAsync();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper());
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper());
 
             await service.AddOrderItems(internalOrgId, callOffId, itemIds);
 
-            mockOrderService.VerifyAll();
+            await mockOrderService.Received().GetOrderWithOrderItems(callOffId, internalOrgId);
 
             itemIds.ForEach(x =>
             {
@@ -77,26 +75,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddOrderItems_AddsOrderItemsToDatabase(
             string internalOrgId,
             CallOffId callOffId,
             List<CatalogueItemId> itemIds,
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             OrderItemService service)
         {
             itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
             await context.SaveChangesAsync();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             await service.AddOrderItems(internalOrgId, callOffId, itemIds);
 
-            mockOrderService.VerifyAll();
+            await mockOrderService.Received().GetOrderWithOrderItems(callOffId, internalOrgId);
 
             itemIds.ForEach(x =>
             {
@@ -107,14 +103,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddOrderItems_WithExistingItems_AddsOrderItemsToDatabase(
             string internalOrgId,
             CallOffId callOffId,
             List<CatalogueItemId> itemIds,
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             OrderItemService service)
         {
             itemIds.ForEach(x => context.CatalogueItems.Add(new CatalogueItem { Id = x, Name = $"{x}" }));
@@ -123,13 +119,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             order.OrderItems.First().CatalogueItem.Id = itemIds.First();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             await service.AddOrderItems(internalOrgId, callOffId, itemIds);
 
-            mockOrderService.VerifyAll();
+            await mockOrderService.Received().GetOrderWithOrderItems(callOffId, internalOrgId);
 
             itemIds.ForEach(x =>
             {
@@ -147,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void DeleteOrderItems_ItemIdsAreNull_ThrowsException(
             string internalOrgId,
             CallOffId callOffId,
@@ -159,28 +153,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteOrderItems_NoOrder_NoActionTaken(
             string internalOrgId,
             CallOffId callOffId,
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             OrderItemService service)
         {
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper());
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper());
 
             var itemIds = order.OrderItems.Select(x => x.CatalogueItemId).ToList();
 
             await service.DeleteOrderItems(internalOrgId, callOffId, itemIds);
 
-            mockOrderService.VerifyAll();
+            await mockOrderService.Received().GetOrderWithOrderItems(callOffId, internalOrgId);
 
             itemIds.ForEach(x =>
             {
@@ -191,27 +183,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteOrderItems_WithOrder_ItemIdsMissing_NoActionTaken(
             string internalOrgId,
             CallOffId callOffId,
             Order order,
             List<CatalogueItemId> itemIds,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             OrderItemService service)
         {
             context.Orders.Add(order);
 
             await context.SaveChangesAsync();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             await service.DeleteOrderItems(internalOrgId, callOffId, itemIds);
 
-            mockOrderService.VerifyAll();
+            await mockOrderService.Received().GetOrderWithOrderItems(callOffId, internalOrgId);
 
             order.OrderItems.Select(x => x.CatalogueItemId).ForEach(x =>
             {
@@ -222,12 +212,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DetectChangesInFundingAndDelete_NotReadyForReview_OrderItemFundingUnchanged(
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             OrderItemService orderItemService)
         {
             var item = order.OrderItems.First();
@@ -238,9 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
 
             await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
             var actual = context.OrderItems
@@ -251,15 +239,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(FundingType.LocalFunding)]
-        [InMemoryDbInlineAutoData(FundingType.Gpit)]
-        [InMemoryDbInlineAutoData(FundingType.Pcarp)]
+        [MockInMemoryDbInlineAutoData(FundingType.LocalFunding)]
+        [MockInMemoryDbInlineAutoData(FundingType.Gpit)]
+        [MockInMemoryDbInlineAutoData(FundingType.Pcarp)]
         public static async Task DetectChangesInFundingAndDelete_SingleFundingType_FrameworkSingleFundingType_OrderItemFundingUnchanged(
             FundingType fundingType,
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             OrderItemService orderItemService)
         {
             var item = order.OrderItems.First();
@@ -274,9 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
 
             await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
 
@@ -288,12 +274,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DetectChangesInFundingAndDelete_GPPRactice_OrderItemFundingUnchanged(
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             OrderItemService orderItemService)
         {
             var item = order.OrderItems.First();
@@ -308,9 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
 
             await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
 
@@ -322,18 +306,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.CentralFunding)]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.Gpit)]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.Pcarp)]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.MixedFunding)]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.NoFundingRequired)]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.None)]
+        [MockInMemoryDbInlineAutoData(OrderItemFundingType.CentralFunding)]
+        [MockInMemoryDbInlineAutoData(OrderItemFundingType.Gpit)]
+        [MockInMemoryDbInlineAutoData(OrderItemFundingType.Pcarp)]
+        [MockInMemoryDbInlineAutoData(OrderItemFundingType.MixedFunding)]
+        [MockInMemoryDbInlineAutoData(OrderItemFundingType.NoFundingRequired)]
+        [MockInMemoryDbInlineAutoData(OrderItemFundingType.None)]
         public static async Task DetectChangesInFundingAndDelete_FundingTypeChanged_SingleFundingTypeFramework_OrderItemFundingNull(
             OrderItemFundingType fundingType,
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             OrderItemService orderItemService)
         {
             var item = order.OrderItems.First();
@@ -346,9 +330,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
 
             await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
 
@@ -358,17 +340,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.CentralFunding)]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.LocalFunding)]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.MixedFunding)]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.NoFundingRequired)]
-        [InMemoryDbInlineAutoData(OrderItemFundingType.None)]
+        [MockInMemoryDbInlineAutoData(OrderItemFundingType.CentralFunding)]
+        [MockInMemoryDbInlineAutoData(OrderItemFundingType.LocalFunding)]
+        [MockInMemoryDbInlineAutoData(OrderItemFundingType.MixedFunding)]
+        [MockInMemoryDbInlineAutoData(OrderItemFundingType.NoFundingRequired)]
+        [MockInMemoryDbInlineAutoData(OrderItemFundingType.None)]
         public static async Task DetectChangesInFundingAndDelete_FundingTypeChanged_GPPractice_OrderItemFundingNull(
             OrderItemFundingType fundingType,
             Order order,
             OrderItemFunding funding,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             OrderItemService orderItemService)
         {
             var item = order.OrderItems.First();
@@ -383,9 +365,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(order.CallOffId, order.OrderingParty.InternalIdentifier).Returns(new OrderWrapper(order));
 
             await orderItemService.DetectChangesInFundingAndDelete(order.CallOffId, order.OrderingParty.InternalIdentifier, item.CatalogueItemId);
 
@@ -395,7 +375,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_Patient(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
@@ -421,7 +401,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_Declarative(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
@@ -447,7 +427,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetOrderItemEstimationPeriod_EstimationPeriodSetCorrectly_OnDemand(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,

@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders;
 using Xunit;
 
@@ -24,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 {
     public static class PasswordServiceTests
     {
-        private static Mock<IUserStore<AspNetUser>> MockUserStore => new();
+        private static IUserStore<AspNetUser> MockUserStore => new IUserStore<AspNetUser>();
 
         private static Mock<UserManager<AspNetUser>> MockUserManager => new(
         MockUserStore.Object,
