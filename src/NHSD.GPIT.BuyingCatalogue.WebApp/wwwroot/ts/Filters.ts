@@ -182,11 +182,11 @@ var filters = (function (): CapabilitiesAndEpics {
         searchResultsUrl.search = currentUrl.search;
         searchResultsUrl.searchParams.set("search", "");
         searchResultsUrl.searchParams.set(FRAMEWORK_ID_PARAM_NAME, getSelectedFamework());
-        searchResultsUrl.searchParams.set(APPLICATION_TYPES_PARAM_NAME, getApplicationTypeFilterString());
-        searchResultsUrl.searchParams.set(HOSTING_TYPES_PARAM_NAME, getHostingTypeFilterString());
-        searchResultsUrl.searchParams.set(INTEROPERABILITY_OPTIONS_PARAM_NAME, getInteroperabilityFilterString());
-        searchResultsUrl.searchParams.set(IM1_INTEGRATIONS_PARAM_NAME, getIM1IntegrationsOptionsFilterString());
-        searchResultsUrl.searchParams.set(GPCONNECT_INTEGRATIONS_PARAM_NAME, getGPConnectIntegrationsOptionsFilterString());
+        searchResultsUrl.searchParams.set(APPLICATION_TYPES_PARAM_NAME, getFilterString(APPLICATION_TYPE_FILTERS_ID));
+        searchResultsUrl.searchParams.set(HOSTING_TYPES_PARAM_NAME, getFilterString(HOSTING_TYPE_FILTERS_ID));
+        searchResultsUrl.searchParams.set(INTEROPERABILITY_OPTIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'InteroperabilityOptions'));
+        searchResultsUrl.searchParams.set(IM1_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'IM1IntegrationsOptions', true ));
+        searchResultsUrl.searchParams.set(GPCONNECT_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'GPConnectIntegrationsOptions', true));
         searchResultsUrl.searchParams.set(SELECTED_PARAM_NAME, getSelectedFilterString());
         const currentSortBy = getSortBy();
 
@@ -208,49 +208,21 @@ var filters = (function (): CapabilitiesAndEpics {
             .find(v => true) ?? "";
     }
 
-    function getApplicationTypeFilterString(): string {
-        var applicationTypeFilters = document.getElementById(`${APPLICATION_TYPE_FILTERS_ID}`);
-        return Array.from(applicationTypeFilters.querySelectorAll('input[type="checkbox"]:checked'),
-            v => (document.getElementById((v as HTMLInputElement).id.replace("__Selected", "__Value")) as HTMLInputElement).value)
-            .reduce((r, i) => `${r}${i}${DELIMITER}`, "") ?? "";
-    }
+    function getFilterString(parentElementId: string, checkboxIdStartsWith?: string, excludeHidden?: boolean): string {
+        var element = document.getElementById(parentElementId);
+        var array = Array.from<HTMLInputElement>(element.querySelectorAll('input[type="checkbox"]:checked'));
 
-    function getHostingTypeFilterString(): string {
-        var hostingTypeFilters = document.getElementById(`${HOSTING_TYPE_FILTERS_ID}`);
-        return Array.from<HTMLInputElement>(hostingTypeFilters.querySelectorAll('input[type="checkbox"]:checked'))
-            .map(v => (document.getElementById(v.id.replace("__Selected", "__Value")) as HTMLInputElement).value)
-            .reduce((r, i) => `${r}${i}${DELIMITER}`, "") ?? "";
-    }
+        if (checkboxIdStartsWith != null) {
+            if (excludeHidden ?? false) {
+                var hidden = Array.from<HTMLInputElement>(element.querySelectorAll('.nhsuk-checkboxes__conditional--hidden input[type="checkbox"]:checked'))
+                    .map(v => v.id);
+                array = array.filter(e => e.id.startsWith(checkboxIdStartsWith) && !hidden.includes(e.id));
+            } else {
+                array = array.filter(e => e.id.startsWith(checkboxIdStartsWith));
+            }
+        }
 
-    function getInteroperabilityFilterString(): string {
-        var interoperabilityFilters = document.getElementById(`${INTEROPERABILITY_FILTERS_ID}`);
-        return Array.from<HTMLInputElement>(interoperabilityFilters.querySelectorAll('input[type="checkbox"]:checked'))
-            .filter(e => e.id.startsWith('InteroperabilityOptions'))
-            .map(v => (document.getElementById((v as HTMLInputElement).id.replace("__Selected", "__Value")) as HTMLInputElement).value)
-            .reduce((r, i) => `${r}${i}${DELIMITER}`, "") ?? "";
-    }
-
-    function getIM1IntegrationsOptionsFilterString(): string {
-        var interoperabilityFilters = document.getElementById(`${INTEROPERABILITY_FILTERS_ID}`);
-
-        var hidden = Array.from<HTMLInputElement>(interoperabilityFilters.querySelectorAll('.nhsuk-checkboxes__conditional--hidden input[type="checkbox"]:checked'))
-            .map(v => v.id);
-
-        return Array.from<HTMLInputElement>(interoperabilityFilters.querySelectorAll('input[type="checkbox"]:checked'))
-            .filter(e => e.id.startsWith('IM1IntegrationsOptions') && !hidden.includes(e.id))
-            .map(v => (document.getElementById((v as HTMLInputElement).id.replace("__Selected", "__Value")) as HTMLInputElement).value)
-            .reduce((r, i) => `${r}${i}${DELIMITER}`, "") ?? "";
-    }
-
-    function getGPConnectIntegrationsOptionsFilterString(): string {
-        var interoperabilityFilters = document.getElementById(`${INTEROPERABILITY_FILTERS_ID}`);
-
-        var hidden = Array.from<HTMLInputElement>(interoperabilityFilters.querySelectorAll('.nhsuk-checkboxes__conditional--hidden input[type="checkbox"]:checked'))
-            .map(v => v.id);
-
-        return Array.from<HTMLInputElement>(interoperabilityFilters.querySelectorAll('input[type="checkbox"]:checked'))
-            .filter(e => e.id.startsWith('GPConnectIntegrationsOptions') && !hidden.includes(e.id))
-            .map(v => (document.getElementById((v as HTMLInputElement).id.replace("__Selected", "__Value")) as HTMLInputElement).value)
+        return array.map(v => (document.getElementById((v as HTMLInputElement).id.replace("__Selected", "__Value")) as HTMLInputElement).value)
             .reduce((r, i) => `${r}${i}${DELIMITER}`, "") ?? "";
     }
 
