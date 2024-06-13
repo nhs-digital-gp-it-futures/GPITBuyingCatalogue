@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email;
@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email;
 public class EmailDomainServiceTests
 {
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetAllowedDomains_ReturnsDomains(
         List<EmailDomain> domains,
         [Frozen] BuyingCatalogueDbContext context,
@@ -31,7 +31,7 @@ public class EmailDomainServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetAllowedDomain_ReturnsDomain(
         List<EmailDomain> domains,
         [Frozen] BuyingCatalogueDbContext context,
@@ -48,7 +48,7 @@ public class EmailDomainServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task AddAllowedDomain_AddsDomain(
         string domain,
         [Frozen] BuyingCatalogueDbContext context,
@@ -60,7 +60,7 @@ public class EmailDomainServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task DeleteAllowedDomain_DeletesDomain(
         EmailDomain domain,
         [Frozen] BuyingCatalogueDbContext context,
@@ -76,7 +76,7 @@ public class EmailDomainServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task DeleteAllowedDomain_InvalidDomain_Returns(
         EmailDomain domain,
         [Frozen] BuyingCatalogueDbContext context,
@@ -90,7 +90,7 @@ public class EmailDomainServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task Exists_ValidDomain(
         EmailDomain domain,
         [Frozen] BuyingCatalogueDbContext context,
@@ -105,7 +105,7 @@ public class EmailDomainServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task Exists_InvalidDomain(
         EmailDomain domain,
         EmailDomainService service)
@@ -116,7 +116,7 @@ public class EmailDomainServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static Task IsAllowed_Null_Throws(
         EmailDomainService service) =>
         FluentActions.Awaiting(() => service.IsAllowed(null))
@@ -124,7 +124,7 @@ public class EmailDomainServiceTests
             .ThrowAsync<ArgumentNullException>();
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task IsAllowed_NoAllowedDomains_False(
         string emailAddress,
         [Frozen] BuyingCatalogueDbContext context,
@@ -139,7 +139,7 @@ public class EmailDomainServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task IsAllowed_ExactMatch_True(
         [Frozen] BuyingCatalogueDbContext context,
         EmailDomainService service)
@@ -156,8 +156,8 @@ public class EmailDomainServiceTests
     }
 
     [Theory]
-    [InMemoryDbInlineAutoData("test@subdomain.nhs.net")]
-    [InMemoryDbInlineAutoData("test@another-subdomain.nhs.net")]
+    [MockInMemoryDbInlineAutoData("test@subdomain.nhs.net")]
+    [MockInMemoryDbInlineAutoData("test@another-subdomain.nhs.net")]
     public static async Task IsAllowed_WildcardSubDomain_True(
         string emailAddress,
         [Frozen] BuyingCatalogueDbContext context,
@@ -174,8 +174,8 @@ public class EmailDomainServiceTests
     }
 
     [Theory]
-    [InMemoryDbInlineAutoData("test@subdomain.nhs.net")]
-    [InMemoryDbInlineAutoData("test@another-subdomain.nhs.net")]
+    [MockInMemoryDbInlineAutoData("test@subdomain.nhs.net")]
+    [MockInMemoryDbInlineAutoData("test@another-subdomain.nhs.net")]
     public static async Task IsAllowed_SubDomainNotAllowed_True(
         string emailAddress,
         [Frozen] BuyingCatalogueDbContext context,
@@ -192,7 +192,7 @@ public class EmailDomainServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task IsAllowed_NoMatch_False(
         [Frozen] BuyingCatalogueDbContext context,
         EmailDomainService service)

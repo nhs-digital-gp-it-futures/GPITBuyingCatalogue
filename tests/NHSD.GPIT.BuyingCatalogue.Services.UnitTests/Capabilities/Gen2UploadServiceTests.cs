@@ -7,16 +7,14 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Distributed;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.CapabilitiesMappingModels;
 using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NSubstitute;
 using Xunit;
 
@@ -27,7 +25,7 @@ public static class Gen2UploadServiceTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(Gen2UploadService).GetConstructors();
 
