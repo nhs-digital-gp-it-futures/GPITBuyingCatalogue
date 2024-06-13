@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,47 @@ public class CompetitionOrderService : ICompetitionOrderService
         BuyingCatalogueDbContext dbContext)
     {
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+    }
+
+    public async Task<CallOffId> CreateDirectAwardOrder(string internalOrgId, int competitionId, CatalogueItemId solutionId)
+    {
+        var competition = await dbContext.Competitions
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Solution)
+            .ThenInclude(x => x.CatalogueItem)
+            .ThenInclude(x => x.Supplier)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+        if (competition?.Completed is null)
+        {
+            throw new ArgumentException(
+                @"Competition either does not exist or is not yet completed",
+                nameof(competitionId));
+        }
+
+        var directAwardSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+
+        if (directAwardSolution is null)
+        {
+            throw new ArgumentException(
+                @"Solution does not exist on competition",
+                nameof(solutionId));
+        }
+
+        var orderItems = CreateDirectAwardOrderItems(directAwardSolution);
+        var nextOrderNumber = await dbContext.NextOrderNumber();
+
+        var order = CreateOrder(nextOrderNumber, competition, directAwardSolution, orderItems);
+
+        dbContext.Orders.Add(order);
+        await dbContext.SaveChangesAsync();
+
+        return order.CallOffId;
     }
 
     public async Task<CallOffId> CreateOrder(string internalOrgId, int competitionId, CatalogueItemId solutionId)
@@ -73,6 +115,17 @@ public class CompetitionOrderService : ICompetitionOrderService
         return order.CallOffId;
     }
 
+    private static IEnumerable<OrderItem> CreateDirectAwardOrderItems(CompetitionSolution directAwardSolution)
+    {
+        var orderItems = directAwardSolution.SolutionServices.Select(
+                x => new OrderItem(x.ServiceId) { Created = DateTime.UtcNow })
+            .ToList();
+
+        orderItems.Add(new OrderItem(directAwardSolution.SolutionId) { Created = DateTime.UtcNow });
+
+        return orderItems;
+    }
+
     private static IEnumerable<OrderItem> CreateOrderItems(CompetitionSolution winningSolution)
     {
         var orderItems = winningSolution.SolutionServices.Select(
@@ -86,7 +139,7 @@ public class CompetitionOrderService : ICompetitionOrderService
                 winningSolution.Price,
                 winningSolution.Price.Tiers));
 
-        return orderItems.ToList();
+        return orderItems;
     }
 
     private static OrderItem CreateOrderItem(
@@ -106,7 +159,7 @@ public class CompetitionOrderService : ICompetitionOrderService
             },
         };
 
-    private static Order CreateOrder(int orderNumber, Competition competition, CompetitionSolution winningSolution, IEnumerable<OrderItem> orderItems) => new Order
+    private static Order CreateOrder(int orderNumber, Competition competition, CompetitionSolution competitionSolution, IEnumerable<OrderItem> orderItems) => new Order
     {
         OrderNumber = orderNumber,
         OrderType = OrderTypeEnum.Solution,
@@ -117,7 +170,7 @@ public class CompetitionOrderService : ICompetitionOrderService
         OrderRecipients = competition.Recipients.Select(x => new OrderRecipient(x.Id)).ToList(),
         OrderItems = orderItems.ToList(),
         OrderingPartyId = competition.OrganisationId,
-        SupplierId = winningSolution.Solution.CatalogueItem.SupplierId,
+        SupplierId = competitionSolution.Solution.CatalogueItem.SupplierId,
         CompetitionId = competition.Id,
         SelectedFrameworkId = competition.FrameworkId,
     };
