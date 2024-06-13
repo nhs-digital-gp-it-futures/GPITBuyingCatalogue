@@ -123,9 +123,9 @@
         <nhs-submit-button style="width:100%"
                            form="filters"
                            text="Select Capabilities"
-                           class="nhsuk-button--secondary non-js-only"
+                           class="nhsuk-button--secondary non-js-only nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3"
                            formaction="@Url.Action(nameof(SolutionsController.SelectCapabilities), typeof(SolutionsController).ControllerName())" />
-        <button id="select-capabilities-button" class="nhsuk-button nhsuk-button--secondary nhsuk-button--js-only" style="width:100%">
+        <button id="select-capabilities-button" class="nhsuk-button nhsuk-button--secondary nhsuk-button--js-only  nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3" style="width:100%">
             Select Capabilities
         </button>
         <br />
@@ -147,9 +147,9 @@
                            form="filters"
                            disabled="@(Model.CapabilitiesCount==0)"
                            text="Select Epics"
-                           class="nhsuk-button--secondary non-js-only"
+                           class="nhsuk-button--secondary non-js-only nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3"
                            formaction="@Url.Action(nameof(SolutionsController.SelectEpics), typeof(SolutionsController).ControllerName())" />
-        <button id="select-epics-button" disabled="@(Model.CapabilitiesCount==0)" class="nhsuk-button nhsuk-button--secondary nhsuk-button--js-only" style="width:100%">
+        <button id="select-epics-button" disabled="@(Model.CapabilitiesCount==0)" class="nhsuk-button nhsuk-button--secondary nhsuk-button--js-only  nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3" style="width:100%">
             Select Epics
         </button>
         <br />
