@@ -172,6 +172,7 @@ var filters = (function (): CapabilitiesAndEpics {
     }
 
     async function handleFilterChange(event: Event, expander: Element) {
+        clearHiddenCheckboxes(INTEROPERABILITY_FILTERS_ID);
         invalidateResults();
     }
 
@@ -185,8 +186,8 @@ var filters = (function (): CapabilitiesAndEpics {
         searchResultsUrl.searchParams.set(APPLICATION_TYPES_PARAM_NAME, getFilterString(APPLICATION_TYPE_FILTERS_ID));
         searchResultsUrl.searchParams.set(HOSTING_TYPES_PARAM_NAME, getFilterString(HOSTING_TYPE_FILTERS_ID));
         searchResultsUrl.searchParams.set(INTEROPERABILITY_OPTIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'InteroperabilityOptions'));
-        searchResultsUrl.searchParams.set(IM1_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'IM1IntegrationsOptions', true ));
-        searchResultsUrl.searchParams.set(GPCONNECT_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'GPConnectIntegrationsOptions', true));
+        searchResultsUrl.searchParams.set(IM1_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'IM1IntegrationsOptions'));
+        searchResultsUrl.searchParams.set(GPCONNECT_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'GPConnectIntegrationsOptions'));
         searchResultsUrl.searchParams.set(SELECTED_PARAM_NAME, getSelectedFilterString());
         const currentSortBy = getSortBy();
 
@@ -208,18 +209,17 @@ var filters = (function (): CapabilitiesAndEpics {
             .find(v => true) ?? "";
     }
 
-    function getFilterString(parentElementId: string, checkboxIdStartsWith?: string, excludeHidden?: boolean): string {
+    function clearHiddenCheckboxes(parentElementId: string) {
+        var element = document.getElementById(parentElementId);
+        Array.from<HTMLInputElement>(element.querySelectorAll('.nhsuk-checkboxes__conditional--hidden input[type="checkbox"]:checked'))
+            .forEach(c => c.checked = false);
+    }
+    function getFilterString(parentElementId: string, checkboxIdStartsWith?: string): string {
         var element = document.getElementById(parentElementId);
         var array = Array.from<HTMLInputElement>(element.querySelectorAll('input[type="checkbox"]:checked'));
 
         if (checkboxIdStartsWith != null) {
-            if (excludeHidden ?? false) {
-                var hidden = Array.from<HTMLInputElement>(element.querySelectorAll('.nhsuk-checkboxes__conditional--hidden input[type="checkbox"]:checked'))
-                    .map(v => v.id);
-                array = array.filter(e => e.id.startsWith(checkboxIdStartsWith) && !hidden.includes(e.id));
-            } else {
-                array = array.filter(e => e.id.startsWith(checkboxIdStartsWith));
-            }
+            array = array.filter(e => e.id.startsWith(checkboxIdStartsWith));
         }
 
         return array.map(v => (document.getElementById((v as HTMLInputElement).id.replace("__Selected", "__Value")) as HTMLInputElement).value)
