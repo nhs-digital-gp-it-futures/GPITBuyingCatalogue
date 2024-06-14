@@ -119,6 +119,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpPost]
         public IActionResult Index(AdditionalFiltersModel model)
         {
+            model.SetParentFilters();
+
             return RedirectToAction(
                 nameof(Index),
                 typeof(SolutionsController).ControllerName(),

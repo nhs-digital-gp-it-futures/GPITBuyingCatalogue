@@ -115,6 +115,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     SortBy);
         }
 
+        public void SetParentFilters()
+        {
+            if (InteroperabilityOptions == null)
+                return;
+
+            if (IM1IntegrationsFilters.Any())
+                InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.Im1).Selected = true;
+            if (GPConnectIntegrationsFilters.Any())
+                InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.GpConnect).Selected = true;
+            if (NhsAppIntegrationsFilters.Any())
+                InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.NhsApp).Selected = true;
+        }
+
         private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks)
         {
             FrameworkOptions = frameworks
