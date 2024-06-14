@@ -2,7 +2,7 @@
 using System.Text.Json;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatalogue
@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
     public static class CatalogueItemTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Features_NullSolution_ReturnsNull(CatalogueItem catalogueItem)
         {
             catalogueItem.Solution = null;
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Features_NullFeatures_ReturnsNull(Solution solution)
         {
             solution.Features = null;
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Features_EmptyFeatures_ReturnsNull(Solution solution)
         {
             solution.Features = string.Empty;
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Features_SolutionHasValidFeatures_ReturnsFeatures(
             Solution solution,
             string[] expected)
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FirstContact_ValidModel_ReturnsFirstContact(Solution solution)
         {
             var expected = solution.MarketingContacts.First();
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FirstContact_NoContactsInSolution_ReturnsEmptyObject(Solution solution)
         {
             solution.MarketingContacts = null;
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FirstContact_NullSolution_ReturnsEmptyObject(CatalogueItem catalogueItem)
         {
             catalogueItem.Solution = null;
@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void SecondContact_ValidModel_ReturnsSecondContact(Solution solution)
         {
             var expected = solution.MarketingContacts.Skip(1).First();
@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void SecondContact_NoContactsInSolution_ReturnsEmptyObject(Solution solution)
         {
             solution.MarketingContacts = null;
@@ -114,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void SecondContact_NullSolution_ReturnsEmptyObject(CatalogueItem catalogueItem)
         {
             catalogueItem.Solution = null;
@@ -126,11 +126,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.BuyingCatal
         }
 
         [Theory]
-        [CommonInlineAutoData(PublicationStatus.Published, true)]
-        [CommonInlineAutoData(PublicationStatus.InRemediation, true)]
-        [CommonInlineAutoData(PublicationStatus.Draft, false)]
-        [CommonInlineAutoData(PublicationStatus.Suspended, false)]
-        [CommonInlineAutoData(PublicationStatus.Unpublished, false)]
+        [MockInlineAutoData(PublicationStatus.Published, true)]
+        [MockInlineAutoData(PublicationStatus.InRemediation, true)]
+        [MockInlineAutoData(PublicationStatus.Draft, false)]
+        [MockInlineAutoData(PublicationStatus.Suspended, false)]
+        [MockInlineAutoData(PublicationStatus.Unpublished, false)]
         public static void IsBrowsable_WithPublicationStatus_ReturnsExpectedResult(
             PublicationStatus publicationStatus,
             bool expectedResult,

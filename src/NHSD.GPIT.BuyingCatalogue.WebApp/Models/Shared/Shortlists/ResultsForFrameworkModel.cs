@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
 {
@@ -16,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
             int filterId,
             string frameworkId,
             string frameworkName,
+            bool isExpired,
             List<CatalogueItem> catalogueItems,
             bool fromFilter)
         {
@@ -23,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
             FilterId = filterId;
             FrameworkId = frameworkId;
             FrameworkName = frameworkName;
+            IsExpired = isExpired;
             CatalogueItems = catalogueItems;
             FromFilter = fromFilter;
         }
@@ -34,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Shorlists
         public string FrameworkId { get; set; }
 
         public string FrameworkName { get; set; }
+
+        public bool IsExpired { get; set; }
 
         public List<CatalogueItem> CatalogueItems { get; init; }
 

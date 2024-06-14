@@ -3,7 +3,6 @@
     ViewBag.Title = "Nomination submitted";
 }
 
-<partial name="Partials/_BackLink" model="@Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
@@ -17,5 +16,8 @@
                 The Buying Catalogue Team aims to respond to nomination requests within 5 working days.
             </p>
         </div>
+        <vc:nhs-secondary-button text="Return to buyer dashboard"
+                                 url="@Model.BackLink"
+                                 type="Primary" />
     </div>
 </div>

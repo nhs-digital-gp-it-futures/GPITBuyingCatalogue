@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.OdsOrganisations;
@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.OdsOrganisa
 public static class OdsOrganisationTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void UpdateFrom_NullSource(
         string name,
         bool isActive,
@@ -47,7 +47,7 @@ public static class OdsOrganisationTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void UpdateFrom_Expected(
         OdsOrganisation existing,
         OdsOrganisation updated)

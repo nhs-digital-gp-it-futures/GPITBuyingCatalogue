@@ -59,10 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         {
             var model = new NavBaseModel
             {
-                BackLink = Url.Action(
-                    nameof(HomeController.Index),
-                    typeof(HomeController).ControllerName()),
-                BackLinkText = "Go back to homepage",
+                BackLink = Url.Action(nameof(BuyerDashboardController.Index), typeof(BuyerDashboardController).ControllerName(), new { Area = typeof(BuyerDashboardController).AreaName(), internalOrgId = User.GetPrimaryOrganisationInternalIdentifier() }),
             };
 
             return View(model);

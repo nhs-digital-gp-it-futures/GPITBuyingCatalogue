@@ -4,7 +4,7 @@ using System.Globalization;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.TypeConverters;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.TypeConverters
@@ -12,8 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.TypeConverters
     public static class CallOffIdTypeConverterTests
     {
         [Theory]
-        [CommonInlineAutoData(typeof(string), true)]
-        [CommonInlineAutoData(typeof(int), false)]
+        [MockInlineAutoData(typeof(string), true)]
+        [MockInlineAutoData(typeof(int), false)]
         public static void CanConvertFrom_ReturnsExpectedResult(
             Type sourceType,
             bool expectedResult,
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.TypeConverters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ConvertFrom_InvalidId_ReturnsExpectedResult(
             ITypeDescriptorContext context,
             CallOffIdTypeConverter typeConverter)
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.TypeConverters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ConvertFrom_ValidId_ReturnsExpectedResult(
             ITypeDescriptorContext context,
             CallOffIdTypeConverter typeConverter)
