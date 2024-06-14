@@ -131,6 +131,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public IActionResult SelectCapabilities(
             AdditionalFiltersModel model)
         {
+            model.SetParentFilters();
+
             return RedirectToAction(
                 nameof(FilterController.FilterCapabilities),
                 typeof(FilterController).ControllerName(),
@@ -141,6 +143,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public IActionResult SelectEpics(
             AdditionalFiltersModel model)
         {
+            model.SetParentFilters();
+
             return RedirectToAction(
                 nameof(FilterController.FilterEpics),
                 typeof(FilterController).ControllerName(),
