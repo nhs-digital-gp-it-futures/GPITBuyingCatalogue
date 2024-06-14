@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.AllowedEmailDomains;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Framework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.Gen2;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions;
@@ -51,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             DevelopmentPlans = new DevelopmentPlans(driver, commonActions);
             SupplierDetails = new SupplierDetails(driver, commonActions);
             SolutionServiceLevelAgreement = new SolutionServiceLevelAgreement(driver, commonActions);
+            ManageAllowedEmailDomains = new ManageAllowedEmailDomains(driver, commonActions);
             Factory = factory;
             Driver = driver;
         }
@@ -114,6 +116,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
         internal SupplierDetails SupplierDetails { get; }
 
         internal SolutionServiceLevelAgreement SolutionServiceLevelAgreement { get; }
+
+        internal ManageAllowedEmailDomains ManageAllowedEmailDomains { get; }
 
         public void AddSolutionDetailsAndDescription()
         {

@@ -156,6 +156,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("ManageEmailDomains", "EmailDomains")]
+        public void AddNewAllowedEmailDomain()
+        {
+            AdminPages.AdminDashboard.ManageAllowedEmailDomain();
+
+            AdminPages.ManageAllowedEmailDomains.AddNewAllowedEmailDomain();
+
+            //AdminPages.AddOrganisationUser.NewUserDetails(OrganisationName);
+        }
+
+        [Fact]
         [Trait("ManageSupplier", "Suppliers")]
         public void AddNewOranisatinSupplier()
         {

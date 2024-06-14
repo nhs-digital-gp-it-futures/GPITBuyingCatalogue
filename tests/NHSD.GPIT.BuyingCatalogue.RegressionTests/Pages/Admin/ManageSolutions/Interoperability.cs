@@ -100,8 +100,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
 
         public List<string> GetGPConnectIntegrations()
         {
-            var gpConnectIntegrationTypes = Enum.GetValues(typeof(InteropGpConnectIntegrationType))
-            .Cast<InteropGpConnectIntegrationType>()
+            var gpConnectIntegrationTypes = Enum.GetValues(typeof(InteroperabilityGpConnectIntegrationType))
+            .Cast<InteroperabilityGpConnectIntegrationType>()
             .Select(v => v.ToString())
             .ToList();
 

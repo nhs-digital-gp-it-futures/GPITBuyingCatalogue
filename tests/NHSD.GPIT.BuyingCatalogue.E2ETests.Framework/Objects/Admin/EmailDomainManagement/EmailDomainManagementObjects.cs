@@ -12,4 +12,8 @@ public class EmailDomainManagementObjects
     public static By DomainsTable => ByExtensions.DataTestId("domains-table");
 
     public static By EmailDomainInput => By.Id("EmailDomain");
+
+    public static By ManageAllowedEmailDomainLink => By.LinkText("Manage allowed email domains");
+
+    public static By AddNewEmailDomainLink => By.LinkText("Add an email domain");
 }
