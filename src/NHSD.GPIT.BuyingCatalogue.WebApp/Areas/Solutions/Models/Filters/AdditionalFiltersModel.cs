@@ -100,16 +100,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public RequestedFilters ToRequestedFilters()
         {
+            var selectedInteroperabilityOptions = CombineSelectedOptions(InteroperabilityOptions);
+
             return new RequestedFilters(
                     Selected,
                     null,
                     SelectedFrameworkId,
                     CombineSelectedOptions(ApplicationTypeOptions),
                     CombineSelectedOptions(HostingTypeOptions),
-                    CombineSelectedOptions(IM1IntegrationsOptions),
-                    CombineSelectedOptions(GPConnectIntegrationsOptions),
-                   CombineSelectedOptions(NhsAppIntegrationsOptions),
-                    CombineSelectedOptions(InteroperabilityOptions),
+                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? CombineSelectedOptions(IM1IntegrationsOptions) : null,
+                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? CombineSelectedOptions(GPConnectIntegrationsOptions) : null,
+                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? CombineSelectedOptions(NhsAppIntegrationsOptions) : null,
+                    selectedInteroperabilityOptions,
                     SortBy);
         }
 
