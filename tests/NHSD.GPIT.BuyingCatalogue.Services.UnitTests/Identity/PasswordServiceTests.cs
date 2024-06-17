@@ -14,16 +14,18 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders;
+using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 {
     public static class PasswordServiceTests
     {
-        private static IUserStore<AspNetUser> MockUserStore => new IUserStore<AspNetUser>();
+        private static IUserStore<AspNetUser> mockUserStore = Substitute.For<IUserStore<AspNetUser>>();
 
-        private static Mock<UserManager<AspNetUser>> MockUserManager => new(
-        MockUserStore.Object,
+        private static UserManager<AspNetUser> mockUserManager = Substitute.For<UserManager<AspNetUser>>(
+        mockUserStore,
         null,
         null,
         null,
@@ -36,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(PasswordService).GetConstructors();
 
@@ -52,9 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             Task GeneratePasswordResetTokenAsync()
             {
                 var service = new PasswordService(
-                    Mock.Of<IGovNotifyEmailService>(),
+                    Substitute.For<IGovNotifyEmailService>(),
                     new PasswordSettings(),
-                    MockUserManager.Object);
+                    mockUserManager);
 
                 return service.GeneratePasswordResetTokenAsync(emailAddress);
             }
@@ -65,10 +67,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         [Fact]
         public static async Task GeneratePasswordResetTokenAsync_UserNotFound_ReturnsNull()
         {
+            mockUserManager.FindByEmailAsync(Arg.Any<string>()).ReturnsNull();
             var service = new PasswordService(
-                Mock.Of<IGovNotifyEmailService>(),
+                Substitute.For<IGovNotifyEmailService>(),
                 new PasswordSettings(),
-                MockUserManager.Object);
+                mockUserManager);
 
             var token = await service.GeneratePasswordResetTokenAsync("a@b.com");
 
@@ -82,18 +85,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             const string expectedToken = "HereBeToken";
             var expectedUser = AspNetUserBuilder.Create().Build();
 
-            var mockUserManager = MockUserManager;
-            mockUserManager.Setup(m => m.FindByEmailAsync(It.Is<string>(e => e == emailAddress)))
-                .ReturnsAsync(expectedUser);
+            var mockUserManager = PasswordServiceTests.mockUserManager;
+            mockUserManager.FindByEmailAsync(Arg.Is<string>(e => e == emailAddress)).Returns(expectedUser);
 
-            mockUserManager
-                .Setup(m => m.GeneratePasswordResetTokenAsync(It.Is<AspNetUser>(u => u == expectedUser)))
-                .ReturnsAsync(expectedToken);
+            mockUserManager.GeneratePasswordResetTokenAsync(Arg.Is<AspNetUser>(u => u == expectedUser)).Returns(expectedToken);
 
             var service = new PasswordService(
-                Mock.Of<IGovNotifyEmailService>(),
+                Substitute.For<IGovNotifyEmailService>(),
                 new PasswordSettings(),
-                mockUserManager.Object);
+                mockUserManager);
 
             var token = await service.GeneratePasswordResetTokenAsync("a@b.com");
 
@@ -108,9 +108,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             static Task SendResetEmailAsync()
             {
                 var service = new PasswordService(
-                    Mock.Of<IGovNotifyEmailService>(),
+                    Substitute.For<IGovNotifyEmailService>(),
                     new PasswordSettings(),
-                    MockUserManager.Object);
+                    mockUserManager);
 
                 return service.SendResetEmailAsync(null, new Uri("https://www.google.co.uk/"));
             }
@@ -124,9 +124,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             static Task SendResetEmailAsync()
             {
                 var service = new PasswordService(
-                    Mock.Of<IGovNotifyEmailService>(),
+                    Substitute.For<IGovNotifyEmailService>(),
                     new PasswordSettings(),
-                    MockUserManager.Object);
+                    mockUserManager);
 
                 return service.SendResetEmailAsync(AspNetUserBuilder.Create().Build(), null);
             }
@@ -135,19 +135,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task SendResetEmailAsync_SendsEmail(
             [Frozen] PasswordSettings settings,
-            [Frozen] Mock<IGovNotifyEmailService> govNotifyEmailService,
+            [Frozen] IGovNotifyEmailService govNotifyEmailService,
             PasswordService passwordService)
         {
             var user = AspNetUserBuilder.Create().Build();
             await passwordService.SendResetEmailAsync(user, new Uri("https://duckduckgo.com/"));
 
-            govNotifyEmailService.Verify(e => e.SendEmailAsync(
+            await govNotifyEmailService.Received().SendEmailAsync(
                 user.Email,
                 settings.EmailTemplateId,
-                It.IsAny<Dictionary<string, dynamic>>()));
+                Arg.Any<Dictionary<string, dynamic>>());
         }
 
         [Fact]
@@ -159,14 +159,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 
             var expectedResult = new IdentityResult();
             var user = AspNetUserBuilder.Create().Build();
-            var mockUserManager = MockUserManager;
-            mockUserManager.Setup(m => m.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
-            mockUserManager.Setup(m => m.ResetPasswordAsync(user, token, password)).ReturnsAsync(() => expectedResult);
+            var mockUserManager = PasswordServiceTests.mockUserManager;
+            mockUserManager.FindByEmailAsync(Arg.Any<string>()).Returns(user);
+            mockUserManager.ResetPasswordAsync(user, token, password).Returns(expectedResult);
 
             var service = new PasswordService(
-                Mock.Of<IGovNotifyEmailService>(),
+                Substitute.For<IGovNotifyEmailService>(),
                 new PasswordSettings(),
-                mockUserManager.Object);
+                mockUserManager);
 
             var result = await service.ResetPasswordAsync(email, token, password);
             result.Should().Be(expectedResult);
@@ -183,9 +183,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         public static async Task IsValidPasswordResetToken_BadInput_ReturnsFalse(string emailAddress, string token)
         {
             var service = new PasswordService(
-                Mock.Of<IGovNotifyEmailService>(),
+                Substitute.For<IGovNotifyEmailService>(),
                 new PasswordSettings(),
-                MockUserManager.Object);
+                mockUserManager);
 
             var isValid = await service.IsValidPasswordResetTokenAsync(emailAddress, token);
 
@@ -200,23 +200,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 
             var expectedUser = AspNetUserBuilder.Create().Build();
 
-            var mockUserManager = MockUserManager;
-            mockUserManager.Setup(
-                    u => u.FindByEmailAsync(It.Is<string>(e => e.Equals(emailAddress, StringComparison.Ordinal))))
-                .ReturnsAsync(expectedUser);
+            var mockUserManager = PasswordServiceTests.mockUserManager;
+            mockUserManager.FindByEmailAsync(Arg.Is<string>(e => e.Equals(emailAddress, StringComparison.Ordinal))).Returns(expectedUser);
 
             var service = new PasswordService(
-                Mock.Of<IGovNotifyEmailService>(),
+                Substitute.For<IGovNotifyEmailService>(),
                 new PasswordSettings(),
-                mockUserManager.Object);
+                mockUserManager);
 
             await service.IsValidPasswordResetTokenAsync(emailAddress, token);
 
-            mockUserManager.Verify(m => m.VerifyUserTokenAsync(
-                It.Is<AspNetUser>(u => u == expectedUser),
-                It.Is<string>(p => p.Equals(new IdentityOptions().Tokens.PasswordResetTokenProvider, StringComparison.Ordinal)),
-                It.Is<string>(p => p.Equals(UserManager<AspNetUser>.ResetPasswordTokenPurpose, StringComparison.Ordinal)),
-                It.Is<string>(t => t.Equals(token, StringComparison.Ordinal))));
+            await mockUserManager.VerifyUserTokenAsync(
+                Arg.Is<AspNetUser>(u => u == expectedUser),
+                Arg.Is<string>(p => p.Equals(new IdentityOptions().Tokens.PasswordResetTokenProvider, StringComparison.Ordinal)),
+                Arg.Is<string>(p => p.Equals(UserManager<AspNetUser>.ResetPasswordTokenPurpose, StringComparison.Ordinal)),
+                Arg.Is<string>(t => t.Equals(token, StringComparison.Ordinal)));
         }
 
         [Fact]
@@ -228,38 +226,48 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
 
             var expectedResult = new IdentityResult();
             var user = AspNetUserBuilder.Create().Build();
-            var mockUserManager = MockUserManager;
-            mockUserManager.Setup(m => m.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
-            mockUserManager.Setup(m => m.ResetPasswordAsync(user, currentPassword, password)).ReturnsAsync(() => expectedResult);
+            var mockUserManager = PasswordServiceTests.mockUserManager;
+            mockUserManager.FindByEmailAsync(Arg.Any<string>()).Returns(user);
+            mockUserManager.ResetPasswordAsync(user, currentPassword, password).Returns(expectedResult);
 
             var service = new PasswordService(
-                Mock.Of<IGovNotifyEmailService>(),
+                Substitute.For<IGovNotifyEmailService>(),
                 new PasswordSettings(),
-                mockUserManager.Object);
+                mockUserManager);
 
             var result = await service.ResetPasswordAsync(email, currentPassword, password);
             result.Should().Be(expectedResult);
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdatePasswordChangedDate_WithUser_ReturnsIdentityResult(
             [Frozen] BuyingCatalogueDbContext context,
-            Mock<UserManager<AspNetUser>> mockUserManager,
+            //UserManager<AspNetUser> mockUserManager,
             AspNetUser user,
             string email)
         {
+            var mockUserStore = Substitute.For<IUserStore<AspNetUser>>();
+        var mockUserManager = Substitute.For<UserManager<AspNetUser>>(mockUserStore,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null);
             var expectedResult = IdentityResult.Success;
             user.Email = email;
             context.Users.Add(user);
             await context.SaveChangesAsync();
 
-            mockUserManager.Setup(m => m.UpdateAsync(It.IsAny<AspNetUser>())).ReturnsAsync(() => expectedResult);
+            mockUserManager.UpdateAsync(Arg.Any<AspNetUser>()).Returns(expectedResult);
 
             var service = new PasswordService(
-                Mock.Of<IGovNotifyEmailService>(),
+                Substitute.For<IGovNotifyEmailService>(),
                 new PasswordSettings(),
-                mockUserManager.Object);
+                mockUserManager);
 
             var result = await service.UpdatePasswordChangedDate(email);
             result.Should().Be(expectedResult);
