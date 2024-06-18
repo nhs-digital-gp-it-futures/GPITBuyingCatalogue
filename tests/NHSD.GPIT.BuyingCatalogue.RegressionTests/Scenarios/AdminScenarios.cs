@@ -132,6 +132,68 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
+        [Trait("Solutions", "AddNewSolutionsForProviderAndFlatPrice")]
+        public void AddNewSolutionsForConsumerAndFlatPrice()
+        {
+            AdminPages.AdminDashboard.ManageCatalogueSolutions();
+
+            AdminPages.AddSolutionDetailsAndDescription();
+
+            AdminPages.AddSolutionInteroperability(ProviderOrConsumer.Consumer);
+
+            AdminPages.AddSolutionImplementation();
+
+            AdminPages.AddSolutionApplicationTypes();
+
+            AdminPages.AddSolutionHostingTypes();
+
+            AdminPages.AddSolutionListPrice(ListPriceTypes.Flat_price);
+
+            AdminPages.AddSolutionCapabilitiesAndEpics();
+
+            AdminPages.AddAdditionalService(ListPriceTypes.Flat_price);
+
+            AdminPages.AddAssociatedService(ListPriceTypes.Flat_price);
+
+            AdminPages.AddWorkOffPlans();
+
+            AdminPages.AddSupplierDetails();
+
+            AdminPages.AddServiceLevelAgreement();
+        }
+
+        [Fact]
+        [Trait("Solutions", "AddNewSolutionsForProviderAndTieredPrice")]
+        public void AddNewSolutionsForConsumerAndTieredPrice()
+        {
+            AdminPages.AdminDashboard.ManageCatalogueSolutions();
+
+            AdminPages.AddSolutionDetailsAndDescription();
+
+            AdminPages.AddSolutionInteroperability(ProviderOrConsumer.Consumer);
+
+            AdminPages.AddSolutionImplementation();
+
+            AdminPages.AddSolutionApplicationTypes();
+
+            AdminPages.AddSolutionHostingTypes();
+
+            AdminPages.AddSolutionListPrice(ListPriceTypes.Tiered_price);
+
+            AdminPages.AddSolutionCapabilitiesAndEpics();
+
+            AdminPages.AddAdditionalService(ListPriceTypes.Tiered_price);
+
+            AdminPages.AddAssociatedService(ListPriceTypes.Tiered_price);
+
+            AdminPages.AddWorkOffPlans();
+
+            AdminPages.AddSupplierDetails();
+
+            AdminPages.AddServiceLevelAgreement();
+        }
+
+        [Fact]
         [Trait("SupplierDefindEpics", "AddNewSupplierDefindEpics")]
         public void AddNewSupplierDefindEpics()
         {
@@ -162,8 +224,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             AdminPages.AdminDashboard.ManageAllowedEmailDomain();
 
             AdminPages.ManageAllowedEmailDomains.AddNewAllowedEmailDomain();
-
-            //AdminPages.AddOrganisationUser.NewUserDetails(OrganisationName);
         }
 
         [Fact]
