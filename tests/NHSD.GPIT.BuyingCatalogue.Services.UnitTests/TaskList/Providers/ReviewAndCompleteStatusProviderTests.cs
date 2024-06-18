@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     public static class ReviewAndCompleteStatusProviderTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
             ReviewAndCompleteStatusProvider service)
         {
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderIsNull_ReturnsCannotStart(
             ReviewAndCompleteStatusProvider service)
         {
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_StateIsNull_ReturnsCannotStart(
             Order order,
             ReviewAndCompleteStatusProvider service)
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderIsCompleted_ReturnsCompleted(
             Order order,
             ReviewAndCompleteStatusProvider service)
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_DataProcessingCompleted_ReturnsNotStarted(
             Order order,
             ReviewAndCompleteStatusProvider service)
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_DataProcessingIncomplete_ReturnsCannotStart(
             Order order,
             ReviewAndCompleteStatusProvider service)

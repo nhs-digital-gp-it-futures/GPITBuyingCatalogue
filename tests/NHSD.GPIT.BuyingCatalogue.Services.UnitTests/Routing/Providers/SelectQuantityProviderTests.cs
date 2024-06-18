@@ -11,7 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NSubstitute;
 using Xunit;
 
