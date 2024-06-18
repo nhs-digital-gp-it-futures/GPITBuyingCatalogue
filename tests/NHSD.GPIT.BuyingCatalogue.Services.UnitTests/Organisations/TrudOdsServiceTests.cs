@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -13,7 +12,8 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 using MappedOdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations;
 public class TrudOdsServiceTests
 {
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetOrganisationByOdsCode_Null_ReturnsError(
         string odsCode,
         TrudOdsService service)
@@ -34,7 +34,7 @@ public class TrudOdsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetOrganisationByOdsCode_Inactive_ReturnsError(
         OdsOrganisation organisation,
         [Frozen] BuyingCatalogueDbContext context,
@@ -52,14 +52,14 @@ public class TrudOdsServiceTests
     }
 
     [Theory]
-    [InMemoryDbInlineAutoData(null, null)]
-    [InMemoryDbInlineAutoData(null, "DEF")]
-    [InMemoryDbInlineAutoData(null, "RO318")]
-    [InMemoryDbInlineAutoData("ABC", null)]
-    [InMemoryDbInlineAutoData("ABC", "DEF")]
-    [InMemoryDbInlineAutoData("ABC", "RO318")]
-    [InMemoryDbInlineAutoData("RO261", null)]
-    [InMemoryDbInlineAutoData("RO261", "DEF")]
+    [MockInMemoryDbInlineAutoData(null, null)]
+    [MockInMemoryDbInlineAutoData(null, "DEF")]
+    [MockInMemoryDbInlineAutoData(null, "RO318")]
+    [MockInMemoryDbInlineAutoData("ABC", null)]
+    [MockInMemoryDbInlineAutoData("ABC", "DEF")]
+    [MockInMemoryDbInlineAutoData("ABC", "RO318")]
+    [MockInMemoryDbInlineAutoData("RO261", null)]
+    [MockInMemoryDbInlineAutoData("RO261", "DEF")]
     public static async Task GetOrganisationByOdsCode_InvalidType_ReturnsError(
         string primaryRoleId,
         string secondaryRoleId,
@@ -83,9 +83,9 @@ public class TrudOdsServiceTests
     }
 
     [Theory]
-    [InMemoryDbInlineAutoData("RO213", null)]
-    [InMemoryDbInlineAutoData("RO261", "RO318")]
-    [InMemoryDbInlineAutoData("RO177", "RO76")]
+    [MockInMemoryDbInlineAutoData("RO213", null)]
+    [MockInMemoryDbInlineAutoData("RO261", "RO318")]
+    [MockInMemoryDbInlineAutoData("RO177", "RO76")]
     public static async Task GetOrganisationByOdsCode_Valid_ReturnsExpected(
         string primaryRoleId,
         string secondaryRoleId,
@@ -128,7 +128,7 @@ public class TrudOdsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static Task GetServiceRecipientsByParentInternalIdentifier_InvalidId_ThrowsException(
         string internalIdentifier,
         TrudOdsService service) =>
@@ -137,7 +137,7 @@ public class TrudOdsServiceTests
             .ThrowAsync<ArgumentException>(TrudOdsService.InvalidIdExceptionMessage);
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetServiceRecipientsByParentInternalIdentifier_GPPractice_ReturnsItself(
         Organisation organisation,
         [Frozen] BuyingCatalogueDbContext context,
@@ -162,7 +162,7 @@ public class TrudOdsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetServiceRecipientsByParentInternalIdentifier_WithRelationships_ReturnsRecipients(
         RelationshipType relationshipType,
         RoleType roleType,
@@ -217,22 +217,22 @@ public class TrudOdsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task UpdateOrganisationDetails_InvalidOdsOrganisation_Returns(
         string odsCode,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] IOrganisationsService organisationsService,
         TrudOdsService service)
     {
         await service.UpdateOrganisationDetails(odsCode);
 
-        organisationsService.Verify(x => x.UpdateOrganisation(It.IsAny<MappedOdsOrganisation>()), Times.Never());
+        await organisationsService.Received(0).UpdateOrganisation(Arg.Any<MappedOdsOrganisation>());
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task UpdateOrganisationDetails_InvalidTrudOrganisation_Returns(
         Organisation organisation,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] IOrganisationsService organisationsService,
         [Frozen] BuyingCatalogueDbContext context,
         TrudOdsService service)
     {
@@ -242,15 +242,15 @@ public class TrudOdsServiceTests
 
         await service.UpdateOrganisationDetails(organisation.InternalIdentifier);
 
-        organisationsService.Verify(x => x.UpdateOrganisation(It.IsAny<MappedOdsOrganisation>()), Times.Never());
+        await organisationsService.Received(0).UpdateOrganisation(Arg.Any<MappedOdsOrganisation>());
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task UpdateOrganisationDetails_ValidOrganisation_UpdatesOrganisationDetails(
         Organisation organisation,
         OdsOrganisation trudOrganisation,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
+        [Frozen] IOrganisationsService organisationsService,
         [Frozen] BuyingCatalogueDbContext context,
         TrudOdsService service)
     {
@@ -263,19 +263,17 @@ public class TrudOdsServiceTests
 
         MappedOdsOrganisation actual = null;
 
-        organisationsService
-            .Setup(x => x.UpdateOrganisation(It.IsAny<MappedOdsOrganisation>()))
-            .Callback<MappedOdsOrganisation>(x => actual = x);
+        await organisationsService.UpdateOrganisation(Arg.Do<MappedOdsOrganisation>(x => actual = x));
 
         await service.UpdateOrganisationDetails(organisation.ExternalIdentifier);
 
-        organisationsService.VerifyAll();
+        await organisationsService.Received().UpdateOrganisation(Arg.Do<MappedOdsOrganisation>(x => actual = x));
 
         actual.Should().BeEquivalentTo(TrudOdsService.MapOrganisation(trudOrganisation));
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetServiceRecipientsById_InvalidOrganisation_ReturnsEmpty(
         string internalOrgId,
         TrudOdsService service)
@@ -286,7 +284,7 @@ public class TrudOdsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task GetServiceRecipientsById_ReturnsExpected(
         RelationshipType relationshipType,
         RoleType roleType,

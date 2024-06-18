@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -11,9 +11,8 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
-using Xunit.Sdk;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 {
@@ -22,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(SolutionsFilterService).GetConstructors();
 
@@ -30,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task NoFiltering_NothingToFind(SolutionsFilterService service)
         {
             var result = await service.GetFilteredAndNonFilteredQueryResults(null);
@@ -39,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task NoFiltering(
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsFilterService service,
@@ -55,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Filtering_By_Capability_Finds_Solution(
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsFilterService service,
@@ -84,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Filtering_By_Capability_Does_Not_Find_Solution(
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsFilterService service,
@@ -114,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Filtering_By_Capability_And_Epic_Finds_Solution(
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsFilterService service,
@@ -149,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Filtering_By_Capability_And_Epic_Does_Not_Find_Solution(
             [Frozen] BuyingCatalogueDbContext context,
             SolutionsFilterService service,
