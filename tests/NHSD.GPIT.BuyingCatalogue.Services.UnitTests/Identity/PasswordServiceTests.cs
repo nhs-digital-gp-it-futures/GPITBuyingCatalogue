@@ -243,20 +243,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         [MockInMemoryDbAutoData]
         public static async Task UpdatePasswordChangedDate_WithUser_ReturnsIdentityResult(
             [Frozen] BuyingCatalogueDbContext context,
-            //UserManager<AspNetUser> mockUserManager,
             AspNetUser user,
             string email)
         {
             var mockUserStore = Substitute.For<IUserStore<AspNetUser>>();
-        var mockUserManager = Substitute.For<UserManager<AspNetUser>>(mockUserStore,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null);
+            var mockUserManager = Substitute.For<UserManager<AspNetUser>>(
+                mockUserStore,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
             var expectedResult = IdentityResult.Success;
             user.Email = email;
             context.Users.Add(user);
