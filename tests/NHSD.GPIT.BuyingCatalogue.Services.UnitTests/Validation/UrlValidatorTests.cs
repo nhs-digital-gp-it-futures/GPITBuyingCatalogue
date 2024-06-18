@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -46,11 +45,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Validation
             [Frozen] HttpMessageHandler handler,
             UrlValidator validator)
         {
-            /*handler
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", Arg.Any<HttpRequestMessage>(), Arg.Any<CancellationToken>())
-                .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound });*/
-
             var flags = BindingFlags.NonPublic | BindingFlags.Instance;
             handler.GetType().GetMethod("SendAsync", flags)!
                 .Invoke(handler, new object[] { Arg.Any<HttpRequestMessage>(), Arg.Any<CancellationToken>() })
@@ -68,10 +62,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Validation
             [Frozen] HttpMessageHandler handler,
             UrlValidator validator)
         {
-            /*handler
-                   .Protected()
-                   .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                   .ThrowsAsync(new TaskCanceledException());*/
             var flags = BindingFlags.NonPublic | BindingFlags.Instance;
             handler.GetType().GetMethod("SendAsync", flags)!
                 .Invoke(handler, new object[] { Arg.Any<HttpRequestMessage>(), Arg.Any<CancellationToken>() })
@@ -89,10 +79,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Validation
             [Frozen] HttpMessageHandler handler,
             UrlValidator validator)
         {
-            /*handler
-                   .Protected()
-                   .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                   .ThrowsAsync(new HttpRequestException());*/
             var flags = BindingFlags.NonPublic | BindingFlags.Instance;
             handler.GetType().GetMethod("SendAsync", flags)!
                 .Invoke(handler, new object[] { Arg.Any<HttpRequestMessage>(), Arg.Any<CancellationToken>() })
@@ -110,10 +96,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Validation
             [Frozen] HttpMessageHandler handler,
             UrlValidator validator)
         {
-            /*handler
-                .Protected()
-                .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
-                .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.OK });*/
             var flags = BindingFlags.NonPublic | BindingFlags.Instance;
             handler.GetType().GetMethod("SendAsync", flags)!
                 .Invoke(handler, new object[] { Arg.Any<HttpRequestMessage>(), Arg.Any<CancellationToken>() })
