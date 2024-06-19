@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -244,6 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         [MockInMemoryDbAutoData]
         public static async Task UpdatePasswordChangedDate_WithUser_ReturnsIdentityResult(
             [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] UserManager<AspNetUser> mockUserManager,
             AspNetUser user,
             string email)
         {
@@ -251,23 +251,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             user.Email = email;
             context.Users.Add(user);
             await context.SaveChangesAsync();
-
-            var mockUserStore = Substitute.For<IUserStore<AspNetUser>>();
-            var mockUserManager = Substitute.For<UserManager<AspNetUser>>(
-                mockUserStore,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-            mockUserManager.Users.Returns(Substitute.For<IQueryable<AspNetUser>>());
-            //var users = Substitute.For<IQueryable<AspNetUser>>(user);
-            //mockUserManager.Users.Returns(users);
-
-            mockUserManager.UpdateAsync(Arg.Any<AspNetUser>()).Returns(expectedResult);
 
             var service = new PasswordService(
                 Substitute.For<IGovNotifyEmailService>(),
