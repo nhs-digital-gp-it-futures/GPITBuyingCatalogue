@@ -7,32 +7,27 @@ using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
 {
-    public class Features : PageBase
+    public class SupplierDetails : PageBase
     {
-        public Features(IWebDriver driver, CommonActions commonActions)
+        public SupplierDetails(IWebDriver driver, CommonActions commonActions)
             : base(driver, commonActions)
         {
         }
 
-        public void AddSolutionFeature(string solutionId)
+        public void AddSupplierDetails(string solutionId)
         {
-            CommonActions.ClickLinkElement(AddSolutionObjects.SolutionFeatureLink(solutionId));
+            CommonActions.ClickLinkElement(AddSolutionObjects.SupplierDetailsLink(solutionId));
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
-                nameof(CatalogueSolutionsController.Features))
+                nameof(CatalogueSolutionsController.EditSupplierDetails))
                 .Should().BeTrue();
 
-            var textInput = TextGenerators.TextInput(100);
-            EnterFeature(textInput);
-
+            CommonActions.ClickFirstCheckbox();
             CommonActions.ClickSave();
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution))
                 .Should().BeTrue();
         }
-
-        public void EnterFeature(string x) =>
-            Driver.FindElements(By.XPath("//*[@class='nhsuk-input']")).ToList().ForEach(element => element.SendKeys(x));
     }
 }

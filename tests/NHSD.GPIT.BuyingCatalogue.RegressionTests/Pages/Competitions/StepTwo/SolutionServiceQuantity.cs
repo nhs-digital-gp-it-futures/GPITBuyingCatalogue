@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo
 
         private void AddPracticeListSize()
         {
-            CommonActions.HintText().Should().Be("We’ve included the latest practice list sizes published by NHS Digital.".FormatForComparison());
+            CommonActions.HintText().Should().Be("We’ve included the latest practice list sizes published by the NHS.".FormatForComparison());
 
             var count = CommonActions.NumberOfElementsDisplayed(QuantityObjects.InputQuantityPracticeListSize);
 

@@ -13,8 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AdditionalS
 
         public static By AddAdditionalServiceLink => By.LinkText("Add an Additional Service");
 
-        public static By EditCapabilitiesLink(string solutionId) => By.XPath($"//a[contains(@href, '/additional-services/" + solutionId + "/edit-capabilities')]");
+        public static By EditCapabilitiesLink(string solutionId) => By.XPath($"//a[contains(@href, '/additional-services/{solutionId}/edit-capabilities')]");
 
-        public static By EditPriceLink(string solutionId) => By.XPath($"//a[contains(@href, '/additional-services/" + solutionId + "/list-prices')]");
+        public static By EditPriceLink(string solutionId) => By.XPath($"//a[contains(@href, '/additional-services/{solutionId}/list-prices')]");
     }
 }
