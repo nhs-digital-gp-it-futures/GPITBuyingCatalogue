@@ -357,6 +357,78 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         }
 
         [Fact]
+        public static void ParseInteropNhsAppIntegrationsIds_OneItemNotParseable_GeneratesResults()
+        {
+            var input = "0.1.hello.2.3";
+
+            var result = SolutionsFilterHelper.ParseInteropNhsAppIntegrationsIds(input);
+
+            var expected = new List<InteropNhsAppIntegrationType> { InteropNhsAppIntegrationType.Online_Consultations, InteropNhsAppIntegrationType.Personal_Health_Records, InteropNhsAppIntegrationType.Primary_Care_Notifications, InteropNhsAppIntegrationType.Secondary_Care_Notifications };
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void ParseInteropNhsAppIntegrationsIds_OneItemNotInEnum_GeneratesResults()
+        {
+            var input = "0.1.2.6.3";
+
+            var result = SolutionsFilterHelper.ParseInteropNhsAppIntegrationsIds(input);
+
+            var expected = new List<InteropNhsAppIntegrationType> { InteropNhsAppIntegrationType.Online_Consultations, InteropNhsAppIntegrationType.Personal_Health_Records, InteropNhsAppIntegrationType.Primary_Care_Notifications, InteropNhsAppIntegrationType.Secondary_Care_Notifications };
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void ParseInteropNhsAppIntegrationsIds_EmptyAndWhiteSpace_GeneratesResults()
+        {
+            var input = "0.1. .2..    .3";
+
+            var result = SolutionsFilterHelper.ParseInteropNhsAppIntegrationsIds(input);
+
+            var expected = new List<InteropNhsAppIntegrationType> { InteropNhsAppIntegrationType.Online_Consultations, InteropNhsAppIntegrationType.Personal_Health_Records, InteropNhsAppIntegrationType.Primary_Care_Notifications, InteropNhsAppIntegrationType.Secondary_Care_Notifications };
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void ParseInteropNhsAppIntegrationsIds_RandomInput_GeneratesResults()
+        {
+            var input = "iogjhoiudfhjgouhouhagdf souihadsfgouihdsfg";
+
+            var result = SolutionsFilterHelper.ParseInteropNhsAppIntegrationsIds(input);
+
+            var expected = new List<InteropNhsAppIntegrationType>();
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void ParseInteropNhsAppIntegrationsIds_NullString_GeneratesResults()
+        {
+            var input = string.Empty;
+
+            var result = SolutionsFilterHelper.ParseInteropNhsAppIntegrationsIds(input);
+
+            var expected = new List<InteropNhsAppIntegrationType>();
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void ParseInteropNhsAppIntegrationsIds_CorrectInput_GeneratesResults()
+        {
+            var input = "0.1.2.3";
+
+            var result = SolutionsFilterHelper.ParseInteropNhsAppIntegrationsIds(input);
+
+            var expected = new List<InteropNhsAppIntegrationType> { InteropNhsAppIntegrationType.Online_Consultations, InteropNhsAppIntegrationType.Personal_Health_Records, InteropNhsAppIntegrationType.Primary_Care_Notifications, InteropNhsAppIntegrationType.Secondary_Care_Notifications };
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
         public static void ParseInteropIntegrationTypeIds_OneItemNotParseable_GeneratesResults()
         {
             var input = "0.1.hello.2.3";

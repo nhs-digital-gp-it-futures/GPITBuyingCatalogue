@@ -874,6 +874,73 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [MockInMemoryDbAutoData]
+        public static async Task AddFilterNhsAppIntegrationsTypes_EmptyNhsAppIntegrationsTypeIds_NoNhsAppIntegrationsTypesAdded(
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.FilterNhsAppIntegrationTypes.Clear();
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddNhsAppIntegrationsTypes(filter.Id, new List<InteropNhsAppIntegrationType>());
+            context.ChangeTracker.Clear();
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterNhsAppIntegrationTypes.Should().BeEmpty();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task AddFilterNhsAppIntegrationsTypes_NullFilter_NoNhsAppIntegrationsTypesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            List<InteropNhsAppIntegrationType> interopNhsAppIntegrations,
+            int invalidFilterId,
+            ManageFiltersService service)
+        {
+            await service.AddNhsAppIntegrationsTypes(invalidFilterId, interopNhsAppIntegrations);
+            context.ChangeTracker.Clear();
+
+            var filter = await context.Filters.FirstOrDefaultAsync(f => f.Id == invalidFilterId);
+            filter.Should().BeNull();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task AddFilterNhsAppIntegrationsTypes_ValidParameters_NhsAppIntegrationsTypesAdded(
+            List<InteropNhsAppIntegrationType> interopNhsAppIntegrations,
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.FilterNhsAppIntegrationTypes.Clear();
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddNhsAppIntegrationsTypes(filter.Id, interopNhsAppIntegrations);
+            context.ChangeTracker.Clear();
+
+            var result = await context.Filters.Include(f => f.FilterNhsAppIntegrationTypes).FirstOrDefaultAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterNhsAppIntegrationTypes.Should().NotBeNullOrEmpty();
+            result.FilterNhsAppIntegrationTypes.Count.Should().Be(interopNhsAppIntegrations.Count);
+
+            foreach (var x in result.FilterNhsAppIntegrationTypes)
+            {
+                x.FilterId.Should().Be(filter.Id);
+                interopNhsAppIntegrations.Should().Contain(x.NhsAppIntegrationsType);
+            }
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterInteroperabilityIntegrationTypes_EmptyInteroperabilityIntegrationTypeIds_NoInteroperabilityIntegrationTypeAdded(
             Organisation organisation,
             Filter filter,

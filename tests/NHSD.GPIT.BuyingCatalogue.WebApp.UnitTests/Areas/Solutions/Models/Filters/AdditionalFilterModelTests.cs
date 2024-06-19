@@ -367,5 +367,64 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
 
             model.Selected.Should().Be(selected);
         }
+
+        [Theory]
+        [MockAutoData]
+        public static void SetParentFilters_InteroperabilityOptionsNull_ReturnsWithoutUpdating(
+            AdditionalFiltersModel model)
+        {
+            model.InteroperabilityOptions = null;
+            model.SetParentFilters();
+            model.InteroperabilityOptions.Should().BeNull();
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void SetParentFilters_ChildFilterNotSet_ParentsNotSet(
+            AdditionalFiltersModel model)
+        {
+            model.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
+                .Cast<InteropIntegrationType>()
+                .Select(
+                    x => new SelectOption<int> { Value = (int)x, Selected = false })
+                .ToList();
+
+            model.IM1IntegrationsOptions = null;
+            model.GPConnectIntegrationsOptions = null;
+            model.NhsAppIntegrationsOptions = null;
+
+            model.SetParentFilters();
+
+            model.InteroperabilityFilters.Length.Should().Be(0);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void SetParentFilters_ChildFiltersSet_ParentsSetCorrectly(
+            AdditionalFiltersModel model)
+        {
+            model.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
+                .Cast<InteropIntegrationType>()
+                .Select(
+                    x => new SelectOption<int> { Value = (int)x, Selected = false })
+                .ToList();
+
+            model.IM1IntegrationsOptions =
+                new List<SelectOption<int>>() { new SelectOption<int>() { Value = 0, Selected = true } };
+            model.GPConnectIntegrationsOptions =
+                new List<SelectOption<int>>() { new SelectOption<int>() { Value = 0, Selected = true } };
+            model.NhsAppIntegrationsOptions =
+                new List<SelectOption<int>>() { new SelectOption<int>() { Value = 0, Selected = true } };
+
+            model.SetParentFilters();
+
+            model.InteroperabilityOptions.Should().NotBeNull();
+            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.Im1).Should().NotBeNull();
+            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.Im1).Selected.Should().Be(true);
+            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.GpConnect).Should().NotBeNull();
+            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.GpConnect).Selected.Should().Be(true);
+            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.NhsApp).Should().NotBeNull();
+            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.NhsApp).Selected.Should().Be(true);
+        }
     }
 }
