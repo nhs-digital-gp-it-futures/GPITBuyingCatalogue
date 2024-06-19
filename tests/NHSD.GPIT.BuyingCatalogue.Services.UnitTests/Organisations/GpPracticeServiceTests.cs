@@ -126,7 +126,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
 
             mockEmailService.SendEmailAsync(EmailAddress, settings.SuccessTemplateId, Arg.Do<Dictionary<string, dynamic>>(actualTokens => tokens = actualTokens)).Returns(Task.CompletedTask);
 
-
             await systemUnderTest.SendConfirmationEmail(result, EmailAddress);
 
             await mockEmailService.Received().SendEmailAsync(EmailAddress, settings.SuccessTemplateId, Arg.Any<Dictionary<string, dynamic>>());

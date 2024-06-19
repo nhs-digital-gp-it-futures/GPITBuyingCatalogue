@@ -110,7 +110,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                         Arg.Any<FragmentString>(),
                         Arg.Any<LinkOptions>())
                     .Returns(url);
-
             }
 
             internal PasswordResetCallback Callback => new(
