@@ -211,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 null,
                 null,
                 null,
-                null, 
+                null,
                 null);
             result.Should().NotBe(0);
             context.ChangeTracker.Clear();

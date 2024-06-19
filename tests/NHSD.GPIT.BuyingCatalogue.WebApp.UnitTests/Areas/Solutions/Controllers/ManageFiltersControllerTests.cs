@@ -114,6 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedHostingTypeIds", model.CombineSelectedOptions(model.HostingTypeOptions) },
                 { "selectedIM1IntegrationsIds", model.CombineSelectedOptions(model.IM1IntegrationsOptions) },
                 { "selectedGPConnectIntegrationsIds", model.CombineSelectedOptions(model.GPConnectIntegrationsOptions) },
+                { "selectedNhsAppIntegrationsIds", model.CombineSelectedOptions(model.NhsAppIntegrationsOptions) },
                 { "selectedInteroperabilityIds", model.CombineSelectedOptions(model.InteroperabilityOptions) },
             });
         }

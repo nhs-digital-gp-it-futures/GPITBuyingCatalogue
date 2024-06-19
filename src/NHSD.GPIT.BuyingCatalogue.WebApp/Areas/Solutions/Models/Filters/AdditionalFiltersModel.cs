@@ -121,11 +121,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 return;
 
             if (IM1IntegrationsFilters.Any())
-                InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.Im1).Selected = true;
+                SetSelectedFilter(InteropIntegrationType.Im1);
             if (GPConnectIntegrationsFilters.Any())
-                InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.GpConnect).Selected = true;
+                SetSelectedFilter(InteropIntegrationType.GpConnect);
             if (NhsAppIntegrationsFilters.Any())
-                InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.NhsApp).Selected = true;
+                SetSelectedFilter(InteropIntegrationType.NhsApp);
+        }
+
+        private void SetSelectedFilter(InteropIntegrationType type)
+        {
+            if (InteroperabilityOptions.FirstOrDefault(x => x.Value == (int)type) is not null)
+                InteroperabilityOptions.First(x => x.Value == (int)type).Selected = true;
         }
 
         private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks)

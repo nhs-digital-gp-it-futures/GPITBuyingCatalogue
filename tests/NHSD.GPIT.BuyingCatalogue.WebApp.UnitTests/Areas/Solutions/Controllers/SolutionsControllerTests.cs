@@ -12,9 +12,12 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
@@ -24,6 +27,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
@@ -71,11 +75,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Theory]
-        [MockAutoData]
+        [MockInlineAutoData(true)]
+        [MockInlineAutoData(false)]
         public static void Post_Index_Redirects(
+            bool validInteroperabilityOptions,
             AdditionalFiltersModel additionalFilters,
             SolutionsController controller)
         {
+            if (validInteroperabilityOptions)
+            {
+                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
+                    .Cast<InteropIntegrationType>()
+                    .Select(
+                        x => new SelectOption<int> { Value = (int)x, }).ToList();
+            }
+
             var result = controller.Index(additionalFilters);
 
             var selectedInteroperabilityOptions = additionalFilters.CombineSelectedOptions(
@@ -103,18 +117,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                         },
                         {
                             "selectedIM1Integrations",
-                            additionalFilters.CombineSelectedOptions(
-                                    additionalFilters.IM1IntegrationsOptions)
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
                         },
                         {
                             "selectedGPConnectIntegrations",
-                            additionalFilters.CombineSelectedOptions(
-                                    additionalFilters.GPConnectIntegrationsOptions)
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
                         },
                         {
                             "selectedNhsAppIntegrations",
-                            additionalFilters.CombineSelectedOptions(
-                                    additionalFilters.NhsAppIntegrationsOptions)
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
                         },
                         {
                             "selectedInteroperabilityOptions",
@@ -128,11 +139,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Theory]
-        [MockAutoData]
+        [MockInlineAutoData(true)]
+        [MockInlineAutoData(false)]
         public static void Post_SelectCapabilities_Redirects(
+            bool validInteroperabilityOptions,
             AdditionalFiltersModel additionalFilters,
             SolutionsController controller)
         {
+            if (validInteroperabilityOptions)
+            {
+                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
+                    .Cast<InteropIntegrationType>()
+                    .Select(
+                        x => new SelectOption<int> { Value = (int)x, }).ToList();
+            }
+
             var result = controller.SelectCapabilities(additionalFilters);
 
             var selectedInteroperabilityOptions = additionalFilters.CombineSelectedOptions(
@@ -160,18 +181,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                         },
                         {
                             "selectedIM1Integrations",
-                            additionalFilters.CombineSelectedOptions(
-                                additionalFilters.IM1IntegrationsOptions)
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
                         },
                         {
                             "selectedGPConnectIntegrations",
-                            additionalFilters.CombineSelectedOptions(
-                                additionalFilters.GPConnectIntegrationsOptions)
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
                         },
                         {
                             "selectedNhsAppIntegrations",
-                            additionalFilters.CombineSelectedOptions(
-                                additionalFilters.NhsAppIntegrationsOptions)
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
                         },
                         {
                             "selectedInteroperabilityOptions",
@@ -185,11 +203,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Theory]
-        [MockAutoData]
+        [MockInlineAutoData(true)]
+        [MockInlineAutoData(false)]
         public static void Post_SelectEpics_Redirects(
+            bool validInteroperabilityOptions,
             AdditionalFiltersModel additionalFilters,
             SolutionsController controller)
         {
+            if (validInteroperabilityOptions)
+            {
+                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
+                    .Cast<InteropIntegrationType>()
+                    .Select(
+                        x => new SelectOption<int> { Value = (int)x, }).ToList();
+            }
+
             var result = controller.SelectEpics(additionalFilters);
 
             var selectedInteroperabilityOptions = additionalFilters.CombineSelectedOptions(
@@ -217,18 +245,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                         },
                         {
                             "selectedIM1Integrations",
-                            additionalFilters.CombineSelectedOptions(
-                                additionalFilters.IM1IntegrationsOptions)
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
                         },
                         {
                             "selectedGPConnectIntegrations",
-                            additionalFilters.CombineSelectedOptions(
-                                additionalFilters.GPConnectIntegrationsOptions)
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
                         },
                         {
                             "selectedNhsAppIntegrations",
-                            additionalFilters.CombineSelectedOptions(
-                                additionalFilters.NhsAppIntegrationsOptions)
+                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
                         },
                         {
                             "selectedInteroperabilityOptions",
@@ -616,10 +641,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.Standards(solution.CatalogueItemId);
 
-            mockService.Received().GetSolutionWithBasicInformation(solution.CatalogueItemId);
-            mockService.Received().GetSolutionStandardsForMarketing(solution.CatalogueItemId);
-            mockService.Received().GetWorkOffPlans(solution.CatalogueItemId);
-            mockService.Received().GetContentStatusForCatalogueItem(solution.CatalogueItemId);
+            await mockService.Received().GetSolutionWithBasicInformation(solution.CatalogueItemId);
+            await mockService.Received().GetSolutionStandardsForMarketing(solution.CatalogueItemId);
+            await mockService.Received().GetWorkOffPlans(solution.CatalogueItemId);
+            await mockService.Received().GetContentStatusForCatalogueItem(solution.CatalogueItemId);
         }
 
         [Theory]
@@ -685,8 +710,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.ApplicationTypes(id);
 
-            mockService.Received().GetSolutionWithBasicInformation(id);
-            mockService.Received().GetContentStatusForCatalogueItem(id);
+            await mockService.Received().GetSolutionWithBasicInformation(id);
+            await mockService.Received().GetContentStatusForCatalogueItem(id);
         }
 
         [Theory]
@@ -872,8 +897,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.Description(solution.CatalogueItemId);
 
-            mockService.Received().GetSolutionWithBasicInformation(solution.CatalogueItemId);
-            mockService.Received().GetContentStatusForCatalogueItem(solution.CatalogueItemId);
+            await mockService.Received().GetSolutionWithBasicInformation(solution.CatalogueItemId);
+            await mockService.Received().GetContentStatusForCatalogueItem(solution.CatalogueItemId);
         }
 
         [Theory]
@@ -929,8 +954,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.Features(id);
 
-            mockService.Received().GetSolutionWithBasicInformation(id);
-            mockService.Received().GetContentStatusForCatalogueItem(id);
+            await mockService.Received().GetSolutionWithBasicInformation(id);
+            await mockService.Received().GetContentStatusForCatalogueItem(id);
         }
 
         [Theory]
@@ -984,8 +1009,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.HostingType(id);
 
-            mockService.Received().GetSolutionWithBasicInformation(id);
-            mockService.Received().GetContentStatusForCatalogueItem(id);
+            await mockService.Received().GetSolutionWithBasicInformation(id);
+            await mockService.Received().GetContentStatusForCatalogueItem(id);
         }
 
         [Theory]
@@ -1040,8 +1065,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.Implementation(id);
 
-            mockService.Received().GetSolutionWithBasicInformation(id);
-            mockService.Received().GetContentStatusForCatalogueItem(id);
+            await mockService.Received().GetSolutionWithBasicInformation(id);
+            await mockService.Received().GetContentStatusForCatalogueItem(id);
         }
 
         [Theory]
@@ -1303,8 +1328,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.Interoperability(id);
 
-            mockService.Received().GetSolutionWithBasicInformation(id);
-            mockService.Received().GetContentStatusForCatalogueItem(id);
+            await mockService.Received().GetSolutionWithBasicInformation(id);
+            await mockService.Received().GetContentStatusForCatalogueItem(id);
         }
 
         [Theory]
@@ -1363,8 +1388,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.SupplierDetails(id);
 
-            mockService.Received().GetSolutionWithSupplierDetails(id);
-            mockService.Received().GetContentStatusForCatalogueItem(id);
+            await mockService.Received().GetSolutionWithSupplierDetails(id);
+            await mockService.Received().GetContentStatusForCatalogueItem(id);
         }
 
         [Theory]
@@ -1437,9 +1462,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             await controller.AdditionalServices(id);
 
-            mockService.Received().GetSolutionWithBasicInformation(id);
-            mockService.Received().GetContentStatusForCatalogueItem(id);
-            mockService.Received().GetPublishedAdditionalServicesForSolution(id);
+            await mockService.Received().GetSolutionWithBasicInformation(id);
+            await mockService.Received().GetContentStatusForCatalogueItem(id);
+            await mockService.Received().GetPublishedAdditionalServicesForSolution(id);
         }
 
         [Theory]
