@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -246,6 +247,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
             AspNetUser user,
             string email)
         {
+            var expectedResult = IdentityResult.Success;
+            user.Email = email;
+            context.Users.Add(user);
+            await context.SaveChangesAsync();
+
             var mockUserStore = Substitute.For<IUserStore<AspNetUser>>();
             var mockUserManager = Substitute.For<UserManager<AspNetUser>>(
                 mockUserStore,
@@ -257,10 +263,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 null,
                 null,
                 null);
-            var expectedResult = IdentityResult.Success;
-            user.Email = email;
-            context.Users.Add(user);
-            await context.SaveChangesAsync();
+            mockUserManager.Users.Returns(Substitute.For<IQueryable<AspNetUser>>());
+            //var users = Substitute.For<IQueryable<AspNetUser>>(user);
+            //mockUserManager.Users.Returns(users);
 
             mockUserManager.UpdateAsync(Arg.Any<AspNetUser>()).Returns(expectedResult);
 

@@ -9,7 +9,6 @@ using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NSubstitute;
-using NSubstitute.Extensions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
@@ -103,25 +102,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 mockGenerator.GetUriByAddress(
                         Arg.Any<HttpContext>(),
                         Arg.Any<RouteValuesAddress>(),
-                        Arg.Any<RouteValueDictionary>(),
+                        Arg.Do<RouteValueDictionary>(x => RouteValues = x),
                         Arg.Any<RouteValueDictionary>(),
                         Arg.Any<string>(),
                         Arg.Any<HostString?>(),
                         Arg.Any<PathString?>(),
                         Arg.Any<FragmentString>(),
                         Arg.Any<LinkOptions>())
-                    .Returns(Callback<
-                        HttpContext,
-                        RouteValuesAddress,
-                        RouteValueDictionary,
-                        RouteValueDictionary,
-                        string,
-                        HostString?,
-                        PathString?,
-                        FragmentString,
-                        LinkOptions>(GetUriByAddressCallback)
                     .Returns(url);
-                //.Do(x => GetUriByAddressCallback(x.Configure))
 
             }
 
@@ -131,20 +119,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
                 domainNameSettings);
 
             internal RouteValueDictionary RouteValues { get; private set; }
-
-            private void GetUriByAddressCallback(
-                HttpContext httpContext,
-                RouteValuesAddress address,
-                RouteValueDictionary values,
-                RouteValueDictionary ambientValues,
-                string scheme,
-                HostString? host,
-                PathString? pathBase,
-                FragmentString fragment,
-                LinkOptions options)
-            {
-                RouteValues = values;
-            }
         }
     }
 }
