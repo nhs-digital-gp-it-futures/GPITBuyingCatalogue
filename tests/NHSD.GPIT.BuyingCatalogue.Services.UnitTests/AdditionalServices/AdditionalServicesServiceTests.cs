@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -11,7 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(AdditionalServicesService).GetConstructors();
 
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static Task AddAdditionalService_NullSolution_ThrowsException(
             AdditionalServicesDetailsModel model,
             AdditionalServicesService service)
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static Task AddAdditionalService_NullModel_ThrowsException(
             CatalogueItem catalogueItem,
             AdditionalServicesService service)
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddAdditionalService_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem solution,
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static Task EditAdditionalService_NullModel_ThrowsException(
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EditAdditionalService_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem solution,
@@ -105,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task GetAdditionalServicesByServiceId_NullCatalogueItemId_ReturnsEmptySet(
             AdditionalServicesService service)
         {
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AdditionalServices
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetAdditionalServicesByServiceId_ExpectedResult(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem solution,

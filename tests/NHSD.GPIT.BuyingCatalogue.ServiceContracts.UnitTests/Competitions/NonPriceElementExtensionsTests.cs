@@ -4,7 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Competitions;
@@ -112,14 +112,14 @@ public static class NonPriceElementExtensionsTests
     };
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void HasNonPriceElement_InvalidValue_ThrowsException(NonPriceElements nonPriceElements) => FluentActions
         .Invoking(() => nonPriceElements.HasNonPriceElement((NonPriceElement)100))
         .Should()
         .Throw<ArgumentOutOfRangeException>();
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetNonPriceWeight_InvalidValue_ThrowsException(NonPriceElements nonPriceElements)
     {
         nonPriceElements.NonPriceWeights = new();
@@ -131,27 +131,27 @@ public static class NonPriceElementExtensionsTests
     }
 
     [Theory]
-    [CommonMemberAutoData(nameof(HasNonPriceElementTestData))]
+    [MockMemberAutoData(nameof(HasNonPriceElementTestData))]
     public static void HasNonPriceElement_ReturnsExpected(
         NonPriceElement nonPriceElement,
         NonPriceElements nonPriceElements,
         bool expected) => nonPriceElements.HasNonPriceElement(nonPriceElement).Should().Be(expected);
 
     [Theory]
-    [CommonMemberAutoData(nameof(GetNonPriceWeightTestData))]
+    [MockMemberAutoData(nameof(GetNonPriceWeightTestData))]
     public static void GetNonPriceWeight_ReturnsExpected(
         NonPriceElement nonPriceElement,
         NonPriceElements nonPriceElements,
         int? expected) => nonPriceElements.GetNonPriceWeight(nonPriceElement).Should().Be(expected);
 
     [Theory]
-    [CommonMemberAutoData(nameof(HasIncompleteWeightingTestData))]
+    [MockMemberAutoData(nameof(HasIncompleteWeightingTestData))]
     public static void HasIncompleteWeighting_ReturnsExpected(
         NonPriceElements nonPriceElements,
         bool expected) => nonPriceElements.HasIncompleteWeighting().Should().Be(expected);
 
     [Theory]
-    [CommonMemberAutoData(nameof(GetNonPriceElementsTestData))]
+    [MockMemberAutoData(nameof(GetNonPriceElementsTestData))]
     public static void GetNonPriceElements_ReturnsExpected(
         NonPriceElements nonPriceElements,
         IEnumerable<NonPriceElement> expected) => nonPriceElements.GetNonPriceElements().Should().BeEquivalentTo(expected);

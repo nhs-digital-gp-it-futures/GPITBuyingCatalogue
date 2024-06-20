@@ -3,7 +3,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.PublishStatus;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.PublishStatus
@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.PublishStatus
     public static class PublicationStatusServiceTests
     {
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async void SetPublicationStatus_SameStatus_DoesNotUpdatePublicationStatus(
             CatalogueItem catalogueItem,
             [Frozen] BuyingCatalogueDbContext context,
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.PublishStatus
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async void SetPublicationStatus_InRemediationStatus_DoesNotSetPublishedDate(
             CatalogueItem catalogueItem,
             [Frozen] BuyingCatalogueDbContext context,
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.PublishStatus
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async void SetPublicationStatus_DraftToPublished_SetsPublishedDate(
             CatalogueItem catalogueItem,
             [Frozen] BuyingCatalogueDbContext context,
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.PublishStatus
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async void SetPublicationStatus_PublishedToPublished_DoesNotSetPublishedDate(
             CatalogueItem catalogueItem,
             [Frozen] BuyingCatalogueDbContext context,

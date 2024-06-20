@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Streaming;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(GpPracticeProvider).GetConstructors();
 
@@ -40,14 +40,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetGpPractices_StreamingServiceReturnsNull_ReturnsNull(
-            [Frozen] Mock<IStreamingService> mockStreamingService,
+            [Frozen] IStreamingService mockStreamingService,
             GpPracticeProvider systemUnderTest)
         {
-            mockStreamingService
-                .Setup(x => x.StreamContents(Uri))
-                .ReturnsAsync((Stream)null);
+            mockStreamingService.StreamContents(Uri).Returns((Stream)null);
 
             var result = await systemUnderTest.GetGpPractices(Uri);
 
@@ -55,14 +53,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetGpPractices_StreamingServiceReturnsValidRecord_ReturnsRecord(
-            [Frozen] Mock<IStreamingService> mockStreamingService,
+            [Frozen] IStreamingService mockStreamingService,
             GpPracticeProvider systemUnderTest)
         {
-            mockStreamingService
-                .Setup(x => x.StreamContents(Uri))
-                .ReturnsAsync(new MemoryStream(Encoding.UTF8.GetBytes(CsvContents)));
+            mockStreamingService.StreamContents(Uri).Returns(new MemoryStream(Encoding.UTF8.GetBytes(CsvContents)));
 
             var result = (await systemUnderTest.GetGpPractices(Uri)).ToList();
 
@@ -76,16 +72,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GetGpPractices_StreamingServiceReturnsUnrecognisedFormat_ThrowsException(
-            [Frozen] Mock<IStreamingService> mockStreamingService,
+            [Frozen] IStreamingService mockStreamingService,
             GpPracticeProvider systemUnderTest)
         {
             var csvContents = "UNRECOGNISED_HEADER" + Environment.NewLine + "value";
 
-            mockStreamingService
-                .Setup(x => x.StreamContents(Uri))
-                .ReturnsAsync(new MemoryStream(Encoding.UTF8.GetBytes(csvContents)));
+            mockStreamingService.StreamContents(Uri).Returns(new MemoryStream(Encoding.UTF8.GetBytes(csvContents)));
 
             FluentActions
                 .Awaiting(() => systemUnderTest.GetGpPractices(Uri))

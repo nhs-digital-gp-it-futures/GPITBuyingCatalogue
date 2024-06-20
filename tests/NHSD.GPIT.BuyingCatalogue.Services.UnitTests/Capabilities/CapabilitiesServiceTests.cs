@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -13,7 +13,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(CapabilitiesService).GetConstructors();
 
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetCapabilitiesByIds_ReturnsExpectedResult(
             List<Capability> capabilities,
             [Frozen] BuyingCatalogueDbContext context,
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetCapabilitiesByCategory_ReturnsCapabilityCategories(
             [Frozen] BuyingCatalogueDbContext context,
             CapabilityCategory capabilityCategory,
@@ -96,13 +96,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task AddCapabilitiesToCatalogueItem_NullModel_ThrowsArgumentNullException(
             CatalogueItemId catalogueItemId,
             CapabilitiesService capabilitiesService) => Assert.ThrowsAsync<ArgumentNullException>(() => capabilitiesService.AddCapabilitiesToCatalogueItem(catalogueItemId, null));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddCapabilitiesToCatalogueItem_AddsCapabilitiesAndEpics(
             int userId,
             CatalogueItem catalogueItem,
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddCapabilitiesToCatalogueItem_AddsCapabilitiesAndSharedEpic(
             int userId,
             CatalogueItem catalogueItem,
@@ -176,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddCapabilitiesToCatalogueItem_AddsCapabilitiesAndSharedEpic_When_Epic_Exists(
             int userId,
             CatalogueItem catalogueItem,
@@ -231,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddCapabilitiesToCatalogueItem_RemovesStaleCapabilities(
             int userId,
             CatalogueItem catalogueItem,
@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddCapabilitiesToCatalogueItem_RemovesStaleEpics(
             int userId,
             CatalogueItem catalogueItem,
@@ -292,7 +292,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddCapabilitiesToCatalogueItem_WithDuplicateCapability_DoesNotAdd(
             int userId,
             CatalogueItem catalogueItem,
@@ -316,7 +316,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddCapabilitiesToCatalogueItem_WithDuplicateEpicId_DoesNotAdd(
             int userId,
             CatalogueItem catalogueItem,
@@ -345,7 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetReferencedCapabilities_NoItemsReferencingCapabilities_ReturnsEmpty(
             List<Capability> capabilities,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -361,7 +361,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetReferencedCapabilities_WithItemsReferencingCapabilities_ReturnsCapabilities(
             List<Capability> capabilities,
             List<CatalogueItem> catalogueItems,
@@ -391,7 +391,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task
             GetReferencedCapabilities_WithUnpublishedItems_ReturnsReferencedCapabilitiesByPublishedItems(
                 List<Capability> capabilities,
@@ -425,7 +425,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetGroupedCapabilitiesAndEpics_Returns_Expected(
                 List<Capability> capabilities,
                 [Frozen] BuyingCatalogueDbContext dbContext,

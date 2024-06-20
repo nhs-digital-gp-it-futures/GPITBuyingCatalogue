@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
     public class SelectAdditionalServicesProviderTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_OrderWrapperIsNull_ThrowsException(
             RouteValues routeValues,
             SelectAdditionalServicesProvider provider)
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_RouteValuesIsNull_ThrowsException(
             Order order,
             SelectAdditionalServicesProvider provider)
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,

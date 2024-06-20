@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Suppliers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(SuppliersService).GetConstructors();
 
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task AddSupplier_ValidatesSupplier_NotNull(
             SuppliersService service)
         {
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetAllSuppliers_RetrievesAllSuppliers(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier supplier1,
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetAllSupplier_WithSearchTerm_ReturnsSupplier(
             List<Supplier> suppliers,
             [Frozen] BuyingCatalogueDbContext context,
@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetAllActiveSuppliers_RetrievesAllActiveSuppliers(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier supplier1,
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSupplierByName_RetrievesCorrectSupplier(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier supplier1,
@@ -123,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSupplierByLegalName_RetrievesCorrectSupplier(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier supplier1,
@@ -144,7 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetAllSolutionsForSupplier_RetrievesCorrectSolutions(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItem item1,
@@ -164,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddSupplier_AddsSupplier(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier latestSupplier,
@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateSupplierActiveStatus_UpdatesStatus(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier supplier,
@@ -206,7 +206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EditSupplier_UpdatesSupplier(
            [Frozen] BuyingCatalogueDbContext context,
            Supplier supplier,
@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EditSupplierAddress_SavesAddress(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier supplier,
@@ -246,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddSupplierContact_AddsContact(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier supplier,
@@ -272,7 +272,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EditSupplierContact_UpdatesContact(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier supplier,
@@ -296,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteSupplierContact_DeletesContact(
             [Frozen] BuyingCatalogueDbContext context,
             Supplier supplier,
@@ -315,7 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Suppliers
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSuppliersBySearchTerm_ReturnsSupplier(
             List<Supplier> suppliers,
             [Frozen] BuyingCatalogueDbContext context,
