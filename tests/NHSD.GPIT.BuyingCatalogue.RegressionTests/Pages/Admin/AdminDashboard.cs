@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.EmailDomainManagement;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -64,6 +65,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             CommonActions.HintText()
             .Should()
             .Be("Add a new solution or edit one that's already been created.".FormatForComparison());
+        }
+
+        public void ManageAllowedEmailDomain()
+        {
+            CommonActions.ClickLinkElement(EmailDomainManagementObjects.ManageAllowedEmailDomainLink);
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(EmailDomainManagementController),
+                nameof(EmailDomainManagementController.Index))
+                .Should().BeTrue();
         }
     }
 }

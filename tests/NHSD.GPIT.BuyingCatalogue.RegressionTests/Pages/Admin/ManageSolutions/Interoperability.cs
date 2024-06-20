@@ -88,8 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
 
         public List<string> GetIm1Integrations()
         {
-            var im1IntegrationTypes = Enum.GetValues(typeof(InteropGpConnectIntegrationType))
-            .Cast<InteropGpConnectIntegrationType>()
+            var im1IntegrationTypes = Enum.GetValues(typeof(InteroperabilityIm1IntegrationType))
+            .Cast<InteroperabilityIm1IntegrationType>()
             .Select(v => v.ToString())
             .ToList();
 
