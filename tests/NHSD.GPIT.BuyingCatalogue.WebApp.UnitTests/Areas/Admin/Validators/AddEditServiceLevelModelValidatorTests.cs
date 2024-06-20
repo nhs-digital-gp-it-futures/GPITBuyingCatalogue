@@ -1,11 +1,16 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
+using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
+using NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAgreementValidators;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
@@ -13,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class AddEditServiceLevelModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_WithNoServiceType_SetsModelError(
             AddEditServiceLevelModelValidator validator)
         {
@@ -31,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_WithNoServiceLevel_SetsModelError(
             AddEditServiceLevelModelValidator validator)
         {
@@ -49,9 +54,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_WithNoHowMeasured_SetsModelError(
-            AddEditServiceLevelModelValidator validator)
+            AddEditServiceLevelModelValidator validator,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
+            ServiceLevelAgreements serviceLevelAgreements,
+            EntityFramework.Catalogue.Models.Solution solution)
         {
             var model = new AddEditServiceLevelModel
             {
@@ -59,6 +67,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 ServiceLevel = "Service Level",
                 CreditsApplied = true,
             };
+            var test1 = Task.FromResult(serviceLevelAgreements);
+            //var serviceLevelAgreementsService = Substitute.For<ServiceLevelAgreementsService>();
+            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(Arg.Any<CatalogueItemId>()).Returns(Task.FromResult(Substitute.For<ServiceLevelAgreements>()));
+            //serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(Arg.Any<CatalogueItemId>()).Returns(solution.ServiceLevelAgreement);
 
             var result = validator.TestValidate(model);
 
@@ -67,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_WithNoCreditsSelection_SetsModelError(
             AddEditServiceLevelModelValidator validator)
         {
@@ -85,18 +97,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Duplicate_SetsModelError(
-            Solution solution,
+            EntityFramework.Catalogue.Models.Solution solution,
             ServiceLevelAgreements serviceLevelAgreement,
             SlaServiceLevel serviceLevel,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             AddEditServiceLevelModelValidator validator)
         {
             serviceLevelAgreement.ServiceLevels.Add(serviceLevel);
 
-            serviceLevelAgreementsService.Setup(s => s.GetServiceLevelAgreementForSolution(solution.CatalogueItemId))
-                .ReturnsAsync(serviceLevelAgreement);
+            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(solution.CatalogueItemId).Returns(serviceLevelAgreement);
 
             var model = new AddEditServiceLevelModel(solution.CatalogueItem)
             {

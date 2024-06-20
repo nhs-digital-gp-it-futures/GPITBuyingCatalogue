@@ -1,6 +1,5 @@
-﻿using FluentAssertions;
-using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+﻿using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
 using Xunit;
@@ -10,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
 public static class AddImplementationCriteriaModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_EmptyRequirements_SetsModelError(
         AddImplementationCriteriaModel model,
         AddImplementationCriteriaModelValidator validator)
@@ -24,7 +23,7 @@ public static class AddImplementationCriteriaModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_Valid_NoModelErrors(
         string requirements,
         AddImplementationCriteriaModel model,
