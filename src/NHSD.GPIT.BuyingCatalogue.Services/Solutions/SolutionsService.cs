@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     Features = !string.IsNullOrWhiteSpace(ci.Solution.Features)
                         ? TaskProgress.Completed
                         : TaskProgress.Optional,
-                    Interoperability = !string.IsNullOrWhiteSpace(ci.Solution.Integrations)
+                    Interoperability = ci.Solution.Integrations.Count > 0
                         ? TaskProgress.Completed
                         : TaskProgress.Optional,
                     Implementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail)
@@ -235,7 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         add.CatalogueItem.PublishedStatus == PublicationStatus.Published),
                     ShowAssociatedServices = ci.SupplierServiceAssociations.Any(ssa =>
                         ssa.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published),
-                    ShowInteroperability = !string.IsNullOrWhiteSpace(ci.Solution.Integrations) || !string.IsNullOrWhiteSpace(ci.Solution.IntegrationsUrl),
+                    ShowInteroperability = ci.Solution.Integrations.Count > 0 || !string.IsNullOrWhiteSpace(ci.Solution.IntegrationsUrl),
                     ShowImplementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail),
                     ShowHosting = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid(),
                 }).FirstOrDefaultAsync();

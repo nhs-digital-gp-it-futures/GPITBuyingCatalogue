@@ -13,6 +13,7 @@
 :r ./CreateCommissioningSupportUnits.sql
 :r ./CreateTestUsers.sql
 
+:r ./Seed/InsertSeedIntegrations.sql
 :r ./InsertAllowedEmailDomains.sql
 :r ./InsertCapabilityStatuses.sql
 :r ./TestData/InsertCapabilityCategories.sql
@@ -78,3 +79,4 @@
 :r ./MigrateOrderType.sql
 :r ./MigrateFrameworks.sql
 :r ./MigrateGpConnectIntegrations.sql
+:r ./MigrateSolutionIntegrations.sql
