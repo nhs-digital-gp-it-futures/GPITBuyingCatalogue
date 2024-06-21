@@ -32,7 +32,7 @@
     </div>
 
     <div class="nhsuk-grid-column-full">
-        @if((Model.Orders.Count == 0 && Context.Request.Query["search"].Count > 0) || Model.Orders.Count > 0)
+        @if ((Model.Orders.Count == 0 && (Context.Request.Query["search"].Count > 0 || Model.FilterCount > 0)) || Model.Orders.Count > 0)
         {
             <vc:nhs-suggestion-search id="orders-suggestion-search"
                                       ajax-url="@Url.Action(
@@ -109,17 +109,15 @@
         }
         else
         {
-            @if(Context.Request.Query["search"].Count > 0)
+            @if (Context.Request.Query["search"].Count > 0 || Model.FilterCount > 0)
             {
-                <h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
-                <p style="white-space:nowrap;">
-                    Try entering a different search term, or <a
-                    data-test-id="clear-results-link"
-                    asp-action="@nameof(ManageOrdersController.Index)"
-                    asp-controller="@typeof(ManageOrdersController).ControllerName()"
-                    >select an order from the complete list</a>.
-                    </p>
-            } else
+                <nhs-card-v2 >
+                    <nhs-card-content title="0 orders found">
+                        <p>There were no orders found. Try changing any search terms or filters you've used.</p>
+                    </nhs-card-content>
+                </nhs-card-v2>
+            } 
+            else
             {
                 <p id="no-orders">There are currently no orders available.</p>
             }
