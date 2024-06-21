@@ -106,7 +106,8 @@
     <None Include="PostDeployment\MigrateSolutionIntegrations.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="**/*.sql" />
+    <Build Include="**/*.sql"/>
+    <None Include="PostDeployment\CreateCommissioningSupportUnits.sql"/>
     <None Include="PostDeployment\CreateExecutiveAgency.sql" />
     <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />
     <None Include="PostDeployment\CreateIntegratedCareBoards.sql" />
