@@ -66,6 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedHostingTypeIds,
             [FromQuery] string selectedIM1Integrations,
             [FromQuery] string selectedGPConnectIntegrations,
+            [FromQuery] string selectedNhsAppIntegrations,
             [FromQuery] string selectedInteroperabilityOptions)
         {
             var filters = new RequestedFilters(
@@ -76,6 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 selectedHostingTypeIds,
                 selectedIM1Integrations,
                 selectedGPConnectIntegrations,
+                selectedNhsAppIntegrations,
                 selectedInteroperabilityOptions,
                 sortBy);
 
@@ -94,6 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedHostingTypeIds,
                     selectedIM1Integrations,
                     selectedGPConnectIntegrations,
+                    selectedNhsAppIntegrations,
                     selectedInteroperabilityOptions);
 
             var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
@@ -116,6 +119,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpPost]
         public IActionResult Index(AdditionalFiltersModel model)
         {
+            model.SetParentFilters();
+
             return RedirectToAction(
                 nameof(Index),
                 typeof(SolutionsController).ControllerName(),
@@ -126,6 +131,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public IActionResult SelectCapabilities(
             AdditionalFiltersModel model)
         {
+            model.SetParentFilters();
+
             return RedirectToAction(
                 nameof(FilterController.FilterCapabilities),
                 typeof(FilterController).ControllerName(),
@@ -136,6 +143,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public IActionResult SelectEpics(
             AdditionalFiltersModel model)
         {
+            model.SetParentFilters();
+
             return RedirectToAction(
                 nameof(FilterController.FilterEpics),
                 typeof(FilterController).ControllerName(),
@@ -177,6 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     filters.SelectedHostingTypeIds,
                     filters.SelectedIM1Integrations,
                     filters.SelectedGPConnectIntegrations,
+                    filters.SelectedNhsAppIntegrations,
                     filters.SelectedInteroperabilityOptions);
 
             var model = new SolutionsResultsModel()
