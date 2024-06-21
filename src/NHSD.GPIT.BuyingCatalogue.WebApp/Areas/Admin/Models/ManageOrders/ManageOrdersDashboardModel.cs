@@ -17,18 +17,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
         {
         }
 
-        public ManageOrdersDashboardModel(IList<AdminManageOrder> orders, IEnumerable<FrameworkFilterInfo> frameworks, PageOptions options)
+        public ManageOrdersDashboardModel(IList<AdminManageOrder> orders, IEnumerable<FrameworkFilterInfo> frameworks, PageOptions options, string status, string framework)
         {
             Orders = orders?.OrderByDescending(o => o.Created).ToList();
             Options = options;
             SetAvailableFrameworks(frameworks);
+            SelectedStatus = !string.IsNullOrWhiteSpace(status) && Enum.TryParse(status, out OrderStatus orderStatus)
+                ? orderStatus
+                : null;
+            SelectedFramework = framework;
+            SetFilterCount();
         }
 
         public IList<AdminManageOrder> Orders { get; set; }
 
         public PageOptions Options { get; set; }
 
-        public OrderStatus? SelectedFramework { get; set; }
+        public int FilterCount { get; set; }
+
+        public string SelectedFramework { get; set; }
 
         public List<FrameworkFilterInfo> Frameworks { get; set; }
 
@@ -56,6 +63,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
                         Text = $"{f.ShortName}{(f.Expired ? " (expired)" : string.Empty)}",
                     })
                 .ToList();
+        }
+
+        private void SetFilterCount()
+        {
+            FilterCount = 0;
+            if (!string.IsNullOrEmpty(SelectedFramework))
+                FilterCount++;
+            if (SelectedStatus is not null)
+                FilterCount++;
         }
     }
 }

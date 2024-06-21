@@ -2,6 +2,11 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders.ManageOrdersDashboardModel;
 @{
     ViewBag.Title = "Manage orders";
+
+    var filterCount = Model.FilterCount;
+    var suffix = filterCount == 1
+            ? "filter selected"
+            : "filters selected";
 }
 
 @section Breadcrumbs {
@@ -37,24 +42,30 @@
                                       query-parameter-name="search"/>
 
             <form method="post">
-                <nhs-expander label-text="Filter orders">
-                    <nhs-fieldset-form-label asp-for="@Model"
-                                             label-hint="Filter by framework">
-                        <nhs-radio-buttons asp-for="SelectedFramework" 
-                                           values="@Model.AvailableFrameworks"
-                                           value-name="Value"
-                                           display-name="Text"/>
-                    </nhs-fieldset-form-label>
-
-                    <nhs-fieldset-form-label asp-for="@Model"
-                                             label-hint="Filter by status">
-                        <nhs-radio-buttons asp-for="SelectedStatus"
-                                           values="@Model.AvailableStatus"
-                                           value-name="Value"
-                                           display-name="Text" />
-                    </nhs-fieldset-form-label>
-                    <nhs-submit-button text="Apply filters" />
-                    <br />
+                <nhs-expander label-text="Filter orders" secondary-text-title="@(Model.FilterCount) " secondary-text="@suffix" bold-title="true" open="false">
+                    <div class="nhsuk-grid-row">
+                        <div class="nhsuk-grid-column-one-half">
+                            <nhs-fieldset-form-label asp-for="@Model"
+                                                     label-hint="Filter by framework">
+                                <nhs-radio-buttons asp-for="SelectedFramework"
+                                                   values="@Model.AvailableFrameworks"
+                                                   value-name="Value"
+                                                   display-name="Text"/>
+                            </nhs-fieldset-form-label>
+                        </div>
+                        <div class="nhsuk-grid-column-one-half">
+                            <nhs-fieldset-form-label asp-for="@Model"
+                                                     label-hint="Filter by status">
+                                <nhs-radio-buttons asp-for="SelectedStatus"
+                                                   values="@Model.AvailableStatus"
+                                                   value-name="Value"
+                                                   display-name="Text"/>
+                            </nhs-fieldset-form-label>
+                        </div>
+                    </div>
+                    <hr class="nhsuk-section-break--s"/>
+                    <nhs-submit-button text="Apply filters"/>
+                    <br/>
                     <a asp-action="@nameof(ManageOrdersController.Index)"
                        asp-controller="@typeof(ManageOrdersController).ControllerName()">
                         Clear filters

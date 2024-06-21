@@ -88,9 +88,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 {
                     orderList = orderList.Where(y => y.OrderStatus == orderStatus).ToList();
                 }
-
             }
-            
+
             options.TotalNumberOfItems = orderList.Count;
 
             if (options.PageNumber != 0)

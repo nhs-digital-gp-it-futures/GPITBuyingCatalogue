@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -64,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var orders = await orderAdminService.GetPagedOrders(pageOptions, search, searchTermType, framework, status);
             var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
 
-            var model = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options)
+            var model = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options, status, framework)
             {
                 BackLink = Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName()),
             };

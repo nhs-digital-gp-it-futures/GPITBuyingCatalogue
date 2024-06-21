@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] Mock<IOrderAdminService> orderAdminService,
             ManageOrdersController controller)
         {
-            var expectedModel = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options);
+            var expectedModel = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options, string.Empty, string.Empty);
             orderAdminService.Setup(s => s.GetPagedOrders(It.IsAny<PageOptions>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(orders);
 
