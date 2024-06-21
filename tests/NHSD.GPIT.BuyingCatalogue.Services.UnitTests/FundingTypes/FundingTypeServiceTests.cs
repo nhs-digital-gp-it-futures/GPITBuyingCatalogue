@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.FundingTypes;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(FundingTypeService).GetConstructors();
 
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetFundingType_Central_AllOrderItemsCentral_ReturnsCentral(
             FundingTypeService service)
         {
@@ -38,8 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFundingOnly)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFunding)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFundingOnly)]
         public static void GetFundingType_Local_AllOrderItemsLocal_ReturnsLocal(
             OrderItemFundingType fundingType,
             FundingTypeService service)
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetFundingType_Mixed_AllOrderItemsMixed_ReturnsCentral(
             FundingTypeService service)
         {
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetFundingType_GPIT_AllOrderItemsGPIT_ReturnsGPIT(
             FundingTypeService service)
         {
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetFundingType_GPIT_ReturnsGPIT(
             FundingTypeService service)
         {
@@ -104,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetFundingType_PCARP_AllOrderItemsPCARP_ReturnsPCARP(
             FundingTypeService service)
         {
@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetFundingType_PCARP_ReturnsPCARP(
             FundingTypeService service)
         {
@@ -137,8 +137,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderItemFundingType.CentralFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.MixedFunding)]
+        [MockInlineAutoData(OrderItemFundingType.CentralFunding)]
+        [MockInlineAutoData(OrderItemFundingType.MixedFunding)]
         public static void GetFundingType_MixtureOfCentralAndMixedOrderItems_ReturnsCentral(
             OrderItemFundingType fundingType,
             FundingTypeService service)
@@ -155,9 +155,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFundingOnly)]
-        [CommonInlineAutoData(OrderItemFundingType.MixedFunding)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFunding)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFundingOnly)]
+        [MockInlineAutoData(OrderItemFundingType.MixedFunding)]
         public static void GetFundingType_MixtureOfLocalAndMixedOrderItems_ReturnsLocal(
             OrderItemFundingType fundingType,
             FundingTypeService service)
@@ -175,9 +175,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderItemFundingType.CentralFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.NoFundingRequired)]
-        [CommonInlineAutoData(OrderItemFundingType.None)]
+        [MockInlineAutoData(OrderItemFundingType.CentralFunding)]
+        [MockInlineAutoData(OrderItemFundingType.NoFundingRequired)]
+        [MockInlineAutoData(OrderItemFundingType.None)]
         public static void GetFundingType_MixtureOfCentralAndNotFundedOrderItems_ReturnsCentral(
             OrderItemFundingType fundingType,
             FundingTypeService service)
@@ -195,8 +195,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFundingOnly)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFunding)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFundingOnly)]
         public static void GetFundingType_MixtureOfLocalAndNotFundedOrderItems_ReturnsLocal(
             OrderItemFundingType fundingType,
             FundingTypeService service)
@@ -215,11 +215,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderItemFundingType.CentralFunding, OrderItemFundingType.CentralFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFunding, OrderItemFundingType.LocalFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFundingOnly, OrderItemFundingType.LocalFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.NoFundingRequired, OrderItemFundingType.CentralFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.None, OrderItemFundingType.CentralFunding)]
+        [MockInlineAutoData(OrderItemFundingType.CentralFunding, OrderItemFundingType.CentralFunding)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFunding, OrderItemFundingType.LocalFunding)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFundingOnly, OrderItemFundingType.LocalFunding)]
+        [MockInlineAutoData(OrderItemFundingType.NoFundingRequired, OrderItemFundingType.CentralFunding)]
+        [MockInlineAutoData(OrderItemFundingType.None, OrderItemFundingType.CentralFunding)]
         public static void GetFundingType_MixtureOfCentralAndLocalAndNotFundedOrderItems_ReturnsExpectedResult(
             OrderItemFundingType input,
             OrderItemFundingType output,
@@ -240,8 +240,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderItemFundingType.NoFundingRequired)]
-        [CommonInlineAutoData(OrderItemFundingType.None)]
+        [MockInlineAutoData(OrderItemFundingType.NoFundingRequired)]
+        [MockInlineAutoData(OrderItemFundingType.None)]
         public static void GetFundingType_NoFundingRequiredOnly_ReturnsNone(
             OrderItemFundingType fundingType,
             FundingTypeService service)
@@ -258,8 +258,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderItemFundingType.NoFundingRequired)]
-        [CommonInlineAutoData(OrderItemFundingType.None)]
+        [MockInlineAutoData(OrderItemFundingType.NoFundingRequired)]
+        [MockInlineAutoData(OrderItemFundingType.None)]
         public static void GetFundingType_MixtureOfNewAndExistingFundingTypes_NoFunding_ReturnsNone(
             OrderItemFundingType fundingType,
             FundingTypeService service)
@@ -278,9 +278,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderItemFundingType.CentralFunding, OrderItemFundingType.CentralFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFunding, OrderItemFundingType.LocalFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFundingOnly, OrderItemFundingType.LocalFunding)]
+        [MockInlineAutoData(OrderItemFundingType.CentralFunding, OrderItemFundingType.CentralFunding)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFunding, OrderItemFundingType.LocalFunding)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFundingOnly, OrderItemFundingType.LocalFunding)]
         public static void GetFundingType_MixtureOfCentralAndLocalOrderItems_ReturnsExpectedResult(
             OrderItemFundingType input,
             OrderItemFundingType output,
@@ -299,10 +299,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderItemFundingType.CentralFunding, OrderItemFundingType.CentralFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFunding, OrderItemFundingType.LocalFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.LocalFundingOnly, OrderItemFundingType.LocalFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.MixedFunding, OrderItemFundingType.CentralFunding)]
+        [MockInlineAutoData(OrderItemFundingType.CentralFunding, OrderItemFundingType.CentralFunding)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFunding, OrderItemFundingType.LocalFunding)]
+        [MockInlineAutoData(OrderItemFundingType.LocalFundingOnly, OrderItemFundingType.LocalFunding)]
+        [MockInlineAutoData(OrderItemFundingType.MixedFunding, OrderItemFundingType.CentralFunding)]
         public static void GetFundingType_MixtureOfCentralAndLocalAndMixedOrderItems_ReturnsExpectedResult(
             OrderItemFundingType input,
             OrderItemFundingType output,
@@ -322,9 +322,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.FundingTypes
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderItemFundingType.MixedFunding)]
-        [CommonInlineAutoData(OrderItemFundingType.NoFundingRequired)]
-        [CommonInlineAutoData(OrderItemFundingType.None)]
+        [MockInlineAutoData(OrderItemFundingType.MixedFunding)]
+        [MockInlineAutoData(OrderItemFundingType.NoFundingRequired)]
+        [MockInlineAutoData(OrderItemFundingType.None)]
         public static void GetFundingType_MixtureOfMixedAndNotFundedOrderItems_ReturnsCentral(
             OrderItemFundingType fundingType,
             FundingTypeService service)

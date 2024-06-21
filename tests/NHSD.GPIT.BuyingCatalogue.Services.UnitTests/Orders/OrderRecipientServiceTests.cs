@@ -1,17 +1,17 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(OrderRecipientService).GetConstructors();
 
@@ -29,14 +29,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
-        [InMemoryDbInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.Solution)]
         public static async Task SetOrderRecipients_WhenOrderDeliveryDate_Null_AddsRecipient(
            OrderTypeEnum orderType,
            Order order,
            string odsCode,
            [Frozen] BuyingCatalogueDbContext context,
-           [Frozen] Mock<IOrderService> mockOrderService,
+           [Frozen] IOrderService mockOrderService,
            OrderRecipientService service)
         {
             order.DeliveryDate = null;
@@ -44,9 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
-            mockOrderService
-                .Setup(s => s.GetOrderWithOrderItems(It.IsAny<CallOffId>(), It.IsAny<string>()))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(Arg.Any<CallOffId>(), Arg.Any<string>()).Returns(new OrderWrapper(order));
 
             await service.SetOrderRecipients(order.OrderingParty.InternalIdentifier, order.CallOffId, new[] { odsCode });
             context.ChangeTracker.Clear();
@@ -64,14 +62,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [InMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
         public static async Task SetOrderRecipients_WhenOrderMergerSplit_AddsRecipientWithQuantity1(
            OrderTypeEnum orderType,
            Order order,
            string odsCode,
            [Frozen] BuyingCatalogueDbContext context,
-           [Frozen] Mock<IOrderService> mockOrderService,
+           [Frozen] IOrderService mockOrderService,
            OrderRecipientService service)
         {
             order.DeliveryDate = null;
@@ -79,9 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
-            mockOrderService
-                .Setup(s => s.GetOrderWithOrderItems(It.IsAny<CallOffId>(), It.IsAny<string>()))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(Arg.Any<CallOffId>(), Arg.Any<string>()).Returns(new OrderWrapper(order));
 
             await service.SetOrderRecipients(order.OrderingParty.InternalIdentifier, order.CallOffId, new[] { odsCode });
             context.ChangeTracker.Clear();
@@ -101,17 +97,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceOther, null)]
-        [InMemoryDbInlineAutoData(OrderTypeEnum.Solution, null)]
-        [InMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, 1)]
-        [InMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, 1)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceOther, null)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.Solution, null)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, 1)]
+        [MockInMemoryDbInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, 1)]
         public static async Task SetOrderRecipients_WhenOrderHasDelvieryDate_AddsRecipientWithDates(
            OrderTypeEnum orderType,
            int? expectedQty,
            Order order,
            string odsCode,
            [Frozen] BuyingCatalogueDbContext context,
-           [Frozen] Mock<IOrderService> mockOrderService,
+           [Frozen] IOrderService mockOrderService,
            OrderRecipientService service)
         {
             order.OrderType = orderType;
@@ -119,9 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
-            mockOrderService
-                .Setup(s => s.GetOrderWithOrderItems(It.IsAny<CallOffId>(), It.IsAny<string>()))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(Arg.Any<CallOffId>(), Arg.Any<string>()).Returns(new OrderWrapper(order));
 
             await service.SetOrderRecipients(order.OrderingParty.InternalIdentifier, order.CallOffId, new[] { odsCode });
             context.ChangeTracker.Clear();

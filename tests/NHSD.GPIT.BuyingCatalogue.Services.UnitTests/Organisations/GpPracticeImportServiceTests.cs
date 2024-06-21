@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(GpPracticeImportService).GetConstructors();
 
@@ -44,14 +44,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task ImportGpPracticeData_ProviderReturnsNull_ReturnsError(
-            [Frozen] Mock<IGpPracticeProvider> mockProvider,
+            [Frozen] IGpPracticeProvider mockProvider,
             GpPracticeImportService systemUnderTest)
         {
-            mockProvider
-                .Setup(x => x.GetGpPractices(Uri))
-                .ReturnsAsync((IEnumerable<GpPractice>)null);
+            mockProvider.GetGpPractices(Uri).Returns((IEnumerable<GpPractice>)null);
 
             var result = await systemUnderTest.PerformImport(Uri);
 
@@ -62,14 +60,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task ImportGpPracticeData_ProviderThrowsError_ReturnsError(
-            [Frozen] Mock<IGpPracticeProvider> mockProvider,
+            [Frozen] IGpPracticeProvider mockProvider,
             GpPracticeImportService systemUnderTest)
         {
-            mockProvider
-                .Setup(x => x.GetGpPractices(Uri))
-                .Throws<FormatException>();
+            await mockProvider.GetGpPractices(Arg.Do<Uri>(x => throw new FormatException()));
 
             var result = await systemUnderTest.PerformImport(Uri);
 
@@ -80,14 +76,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task ImportGpPracticeData_EmptyDb_ImportsRecordFromProvider(
-            [Frozen] Mock<IGpPracticeProvider> mockProvider,
+            [Frozen] IGpPracticeProvider mockProvider,
             GpPracticeImportService systemUnderTest)
         {
-            mockProvider
-                .Setup(x => x.GetGpPractices(Uri))
-                .ReturnsAsync(new[] { CsvData });
+            mockProvider.GetGpPractices(Uri).Returns(new[] { CsvData });
 
             var result = await systemUnderTest.PerformImport(Uri);
 
@@ -98,15 +92,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task ImportGpPracticeData_ProviderReturnsNewerRecordThanInDb_ImportsRecordFromProvider(
             [Frozen] BuyingCatalogueDbContext dbContext,
-            [Frozen] Mock<IGpPracticeProvider> mockProvider,
+            [Frozen] IGpPracticeProvider mockProvider,
             GpPracticeImportService systemUnderTest)
         {
-            mockProvider
-                .Setup(x => x.GetGpPractices(Uri))
-                .ReturnsAsync(new[] { CsvData });
+            mockProvider.GetGpPractices(Uri).Returns(new[] { CsvData });
 
             dbContext.GpPracticeSizes.Add(new GpPracticeSize
             {
@@ -126,15 +118,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task ImportGpPracticeData_ProviderReturnsRecordWithSameExtractDateAsRecordInDb_DoesNotImportRecordFromProvider(
             [Frozen] BuyingCatalogueDbContext dbContext,
-            [Frozen] Mock<IGpPracticeProvider> mockProvider,
+            [Frozen] IGpPracticeProvider mockProvider,
             GpPracticeImportService systemUnderTest)
         {
-            mockProvider
-                .Setup(x => x.GetGpPractices(Uri))
-                .ReturnsAsync(new[] { CsvData });
+            mockProvider.GetGpPractices(Uri).Returns(new[] { CsvData });
 
             dbContext.GpPracticeSizes.Add(new GpPracticeSize
             {
@@ -160,15 +150,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task ImportGpPracticeData_ProviderReturnsOlderRecordThanInDb_DoesNotImportRecordFromProvider(
             [Frozen] BuyingCatalogueDbContext dbContext,
-            [Frozen] Mock<IGpPracticeProvider> mockProvider,
+            [Frozen] IGpPracticeProvider mockProvider,
             GpPracticeImportService systemUnderTest)
         {
-            mockProvider
-                .Setup(x => x.GetGpPractices(Uri))
-                .ReturnsAsync(new[] { CsvData });
+            mockProvider.GetGpPractices(Uri).Returns(new[] { CsvData });
 
             dbContext.GpPracticeSizes.Add(new GpPracticeSize
             {

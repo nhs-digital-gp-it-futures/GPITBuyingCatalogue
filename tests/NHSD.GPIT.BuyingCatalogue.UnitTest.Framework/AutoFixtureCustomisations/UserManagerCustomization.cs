@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoFixture;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 
@@ -21,22 +22,22 @@ public class UserManagerCustomization : ICustomization
         var store = new UserStore<AspNetUser, AspNetRole, BuyingCatalogueDbContext, int, AspNetUserClaim,
             AspNetUserRole, AspNetUserLogin, AspNetUserToken, AspNetRoleClaim>(context);
 
-        var lookupNormalizer = new Mock<ILookupNormalizer>();
-        lookupNormalizer.Setup(s => s.NormalizeEmail(It.IsAny<string>()))
-            .Returns<string>(e => e.ToUpperInvariant());
-        lookupNormalizer.Setup(s => s.NormalizeName(It.IsAny<string>()))
-            .Returns<string>(n => n.ToUpperInvariant());
+        var lookupNormalizer = Substitute.For<ILookupNormalizer>();
+        lookupNormalizer.NormalizeEmail(Arg.Any<string>())
+            .Returns(e => e.Arg<string>().ToUpperInvariant());
+        lookupNormalizer.NormalizeName(Arg.Any<string>())
+            .Returns(n => n.Arg<string>().ToUpperInvariant());
 
         fixture.Register<IUserStore<AspNetUser>>(() => store);
-        fixture.Register(() => lookupNormalizer.Object);
+        fixture.Register(() => lookupNormalizer);
         fixture.Register(
             () => new UserManager<AspNetUser>(
                 store,
                 fixture.Freeze<IOptions<IdentityOptions>>(),
                 fixture.Freeze<IPasswordHasher<AspNetUser>>(),
-                fixture.Freeze<IEnumerable<IUserValidator<AspNetUser>>>(),
-                fixture.Freeze<IEnumerable<IPasswordValidator<AspNetUser>>>(),
-                lookupNormalizer.Object,
+                Enumerable.Empty<IUserValidator<AspNetUser>>(),
+                Enumerable.Empty<IPasswordValidator<AspNetUser>>(),
+                lookupNormalizer,
                 fixture.Freeze<IdentityErrorDescriber>(),
                 fixture.Freeze<IServiceProvider>(),
                 fixture.Freeze<ILogger<UserManager<AspNetUser>>>()));

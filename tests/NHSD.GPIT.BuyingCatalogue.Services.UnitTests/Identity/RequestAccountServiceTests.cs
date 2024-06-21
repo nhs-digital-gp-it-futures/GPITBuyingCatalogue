@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Identity;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(RequestAccountService).GetConstructors();
 
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NominateOrganisation_RequestIsNull_ThrowsError(
             RequestAccountService systemUnderTest)
         {
@@ -38,33 +38,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         }
 
         [Theory]
-        [CommonInlineAutoData(true, "Yes")]
-        [CommonInlineAutoData(false, "No")]
+        [MockInlineAutoData(true, "Yes")]
+        [MockInlineAutoData(false, "No")]
         public static async Task NominateOrganisation_RequestIsValid_SendsEmails(
             bool hasGivenUserResearchConsent,
             string userResearchConsentToken,
             NewAccountDetails request,
             RequestAccountMessageSettings settings,
-            Mock<IGovNotifyEmailService> mockEmailService)
+            IGovNotifyEmailService mockEmailService)
         {
             Dictionary<string, dynamic> tokens = null;
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(request.EmailAddress, settings.UserTemplateId, null))
-                .Returns(Task.CompletedTask);
+            mockEmailService.SendEmailAsync(request.EmailAddress, settings.UserTemplateId, null).Returns(Task.CompletedTask);
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => tokens = x)
-                .Returns(Task.CompletedTask);
+            mockEmailService.SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, Arg.Do<Dictionary<string, dynamic>>(x => tokens = x)).Returns(Task.CompletedTask);
 
-            var systemUnderTest = new RequestAccountService(mockEmailService.Object, settings);
+            var systemUnderTest = new RequestAccountService(mockEmailService, settings);
 
             request.HasGivenUserResearchConsent = hasGivenUserResearchConsent;
 
             await systemUnderTest.RequestAccount(request);
 
-            mockEmailService.VerifyAll();
+            await mockEmailService.Received().SendEmailAsync(request.EmailAddress, settings.UserTemplateId, null);
+            await mockEmailService.Received().SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, Arg.Any<Dictionary<string, dynamic>>());
 
             tokens.Should().NotBeNull();
 
@@ -82,33 +78,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Identity
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static async Task NominateOrganisation_NoOdsCode_SendsEmails(
             string odsCodeValue,
             NewAccountDetails request,
             RequestAccountMessageSettings settings,
-            Mock<IGovNotifyEmailService> mockEmailService)
+            IGovNotifyEmailService mockEmailService)
         {
             Dictionary<string, dynamic> tokens = null;
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(request.EmailAddress, settings.UserTemplateId, null))
-                .Returns(Task.CompletedTask);
+            mockEmailService.SendEmailAsync(request.EmailAddress, settings.UserTemplateId, null).Returns(Task.CompletedTask);
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => tokens = x)
-                .Returns(Task.CompletedTask);
+            mockEmailService.SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, Arg.Do<Dictionary<string, dynamic>>(x => tokens = x)).Returns(Task.CompletedTask);
 
-            var systemUnderTest = new RequestAccountService(mockEmailService.Object, settings);
+            var systemUnderTest = new RequestAccountService(mockEmailService, settings);
 
             request.OdsCode = odsCodeValue;
 
             await systemUnderTest.RequestAccount(request);
 
-            mockEmailService.VerifyAll();
+            await mockEmailService.Received().SendEmailAsync(request.EmailAddress, settings.UserTemplateId, null);
+            await mockEmailService.Received().SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, Arg.Any<Dictionary<string, dynamic>>());
 
             tokens.Should().NotBeNull();
 

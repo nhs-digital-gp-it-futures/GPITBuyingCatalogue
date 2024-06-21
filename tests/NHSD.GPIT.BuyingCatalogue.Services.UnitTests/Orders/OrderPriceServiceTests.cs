@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -15,7 +14,8 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(OrderPriceService).GetConstructors();
 
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void UpsertPrice_RecipientIsNull_ThrowsException(OrderPriceService service)
         {
             FluentActions
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void UpsertPrice_AgreedPricesIsNull_ThrowsException(CataloguePrice price, OrderPriceService service)
         {
             FluentActions
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpsertPrice_OrderItemNotInDatabase_NoActionTaken(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpsertPrice_OrderItemInDatabase_AddsPrice(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
@@ -116,13 +116,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpsertPrice_OrderItemInDatabase_WithExistingPrice_RemovesExistingPriceAndTiers(
             CatalogueItem existingCatalogueItem,
             CataloguePrice existingCataloguePrice,
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] Mock<IOrderQuantityService> mockOrderQuantityService,
+            [Frozen] IOrderQuantityService mockOrderQuantityService,
             OrderPriceService service)
         {
             existingCataloguePrice.CatalogueItemId = existingCatalogueItem.Id;
@@ -145,13 +145,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var price = orderItem.CatalogueItem.CataloguePrices.First();
 
-            mockOrderQuantityService
-                .Setup(x => x.ResetItemQuantities(order.Id, orderItem.CatalogueItemId))
-                .Verifiable();
-
             await service.UpsertPrice(order.Id, price, new List<PricingTierDto>());
 
-            mockOrderQuantityService.VerifyAll();
+            await mockOrderQuantityService.Received().ResetItemQuantities(order.Id, orderItem.CatalogueItemId);
 
             var actual = context.OrderItemPrices
                 .FirstOrDefault(x => x.OrderId == order.Id
@@ -181,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpsertPrice_WithAgreedPrices_OrderItemInDatabase_AddsPrice(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
@@ -233,7 +229,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void UpdatePrice_AgreedPricesIsNull_ThrowsException(
             CatalogueItemId catalogueItemId,
             OrderPriceService service)
@@ -244,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdatePrice_OrderItemPriceNotInDatabase_NoActionTaken(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
@@ -274,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdatePrice_OrderItemPriceInDatabase_NoPricingTiers_NoActionTaken(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
@@ -303,7 +299,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdatePrice_OrderItemPriceInDatabase_PricingTierSupplied_UpdatesPrices(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,

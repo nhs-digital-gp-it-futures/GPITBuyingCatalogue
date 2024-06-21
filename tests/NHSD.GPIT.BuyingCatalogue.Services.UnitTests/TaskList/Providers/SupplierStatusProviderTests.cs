@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     public static class SupplierStatusProviderTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
             SupplierStatusProvider service)
         {
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderIsNull_ReturnsCannotStart(
             SupplierStatusProvider service)
         {
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_StateIsNull_ReturnsCannotStart(
             Order order,
             SupplierStatusProvider service)
@@ -45,11 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.CannotStart)]
-        [CommonInlineAutoData(TaskProgress.InProgress)]
-        [CommonInlineAutoData(TaskProgress.NotApplicable)]
-        [CommonInlineAutoData(TaskProgress.NotStarted)]
-        [CommonInlineAutoData(TaskProgress.Optional)]
+        [MockInlineAutoData(TaskProgress.CannotStart)]
+        [MockInlineAutoData(TaskProgress.InProgress)]
+        [MockInlineAutoData(TaskProgress.NotApplicable)]
+        [MockInlineAutoData(TaskProgress.NotStarted)]
+        [MockInlineAutoData(TaskProgress.Optional)]
         public static void Get_OrderingPartyStatusNotComplete_ReturnsCannotStart(
             TaskProgress orderingPartyStatus,
             Order order,
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderHasNoSupplier_ReturnsNotStarted(
             Order order,
             SupplierStatusProvider service)
@@ -84,8 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.Completed)]
-        [CommonInlineAutoData(TaskProgress.Amended)]
+        [MockInlineAutoData(TaskProgress.Completed)]
+        [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_OrderHasNoSupplierContact_ReturnsInProgress(
             TaskProgress orderingPartyStatus,
             Supplier supplier,
@@ -106,8 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.Completed)]
-        [CommonInlineAutoData(TaskProgress.Amended)]
+        [MockInlineAutoData(TaskProgress.Completed)]
+        [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_OrderHasSupplierAndSupplierContact_ReturnsCompleted(
             TaskProgress orderingPartyStatus,
             Supplier supplier,
@@ -129,8 +129,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.Completed)]
-        [CommonInlineAutoData(TaskProgress.Amended)]
+        [MockInlineAutoData(TaskProgress.Completed)]
+        [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_OrderIsAnAmendment_SupplierContactTheSame_ReturnsCompleted(
             TaskProgress orderingPartyStatus,
             List<Order> orders,
@@ -153,8 +153,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.Completed)]
-        [CommonInlineAutoData(TaskProgress.Amended)]
+        [MockInlineAutoData(TaskProgress.Completed)]
+        [MockInlineAutoData(TaskProgress.Amended)]
         public static void Get_OrderIsAnAmendment_SupplierContactDifferent_ReturnsAmended(
             TaskProgress orderingPartyStatus,
             List<Order> orders,

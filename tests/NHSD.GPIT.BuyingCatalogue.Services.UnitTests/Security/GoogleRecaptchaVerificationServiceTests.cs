@@ -1,20 +1,20 @@
 ﻿using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moq;
-using Moq.Protected;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Security.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Security;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Security;
@@ -24,7 +24,7 @@ public static class GoogleRecaptchaVerificationServiceTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(GoogleRecaptchaVerificationService).GetConstructors();
 
@@ -32,8 +32,8 @@ public static class GoogleRecaptchaVerificationServiceTests
     }
 
     [Theory]
-    [CommonInlineAutoData(null)]
-    [CommonInlineAutoData("")]
+    [MockInlineAutoData(null)]
+    [MockInlineAutoData("")]
     public static async Task Validate_NullOrEmptyRecaptchaResponse_ReturnsFalse(
         string recaptchaResponse,
         GoogleRecaptchaVerificationService service)
@@ -44,22 +44,20 @@ public static class GoogleRecaptchaVerificationServiceTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static Task Validate_UnsuccessfulHttpResponse_ThrowsException(
         string recaptchaResponse,
         RecaptchaSettings settings,
-        [Frozen] Mock<HttpMessageHandler> handler,
-        [Frozen] Mock<ILogger<GoogleRecaptchaVerificationService>> logger)
+        [Frozen] HttpMessageHandler handler,
+        [Frozen] ILogger<GoogleRecaptchaVerificationService> logger)
     {
-        handler.Protected()
-            .Setup<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NotFound));
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        handler.GetType().GetMethod("SendAsync", flags)!
+            .Invoke(handler, new object[] { Arg.Any<HttpRequestMessage>(), Arg.Any<CancellationToken>() })
+            .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)));
 
-        var httpClient = new HttpClient(handler.Object) { BaseAddress = new("https://www.google.com") };
-        var service = new GoogleRecaptchaVerificationService(httpClient, Options.Create(settings), logger.Object);
+        var httpClient = new HttpClient(handler) { BaseAddress = new("https://www.google.com") };
+        var service = new GoogleRecaptchaVerificationService(httpClient, Options.Create(settings), logger);
 
         return FluentActions.Awaiting(() => service.Validate(recaptchaResponse))
             .Should()
@@ -67,30 +65,27 @@ public static class GoogleRecaptchaVerificationServiceTests
     }
 
     [Theory]
-    [CommonInlineAutoData(true)]
-    [CommonInlineAutoData(false)]
+    [MockInlineAutoData(true)]
+    [MockInlineAutoData(false)]
     public static async Task Validate_SuccessfulHttpResponse_ReturnsExpected(
         string recaptchaResponse,
         bool expected,
         RecaptchaSettings settings,
-        [Frozen] Mock<HttpMessageHandler> handler,
-        [Frozen] Mock<ILogger<GoogleRecaptchaVerificationService>> logger)
+        [Frozen] HttpMessageHandler handler,
+        [Frozen] ILogger<GoogleRecaptchaVerificationService> logger)
     {
         var response = new GoogleRecaptchaVerificationService.GoogleRecaptchaResponse { Success = expected, };
 
-        handler.Protected()
-            .Setup<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(
-                new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StringContent(JsonSerializer.Serialize(response)),
-                });
+        var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+        handler.GetType().GetMethod("SendAsync", flags)!
+            .Invoke(handler, new object[] { Arg.Any<HttpRequestMessage>(), Arg.Any<CancellationToken>() })
+            .Returns(Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(response)),
+            }));
 
-        var httpClient = new HttpClient(handler.Object) { BaseAddress = new("https://www.google.com") };
-        var service = new GoogleRecaptchaVerificationService(httpClient, Options.Create(settings), logger.Object);
+        var httpClient = new HttpClient(handler) { BaseAddress = new("https://www.google.com") };
+        var service = new GoogleRecaptchaVerificationService(httpClient, Options.Create(settings), logger);
 
         var result = await service.Validate(recaptchaResponse);
 
