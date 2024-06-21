@@ -1,16 +1,22 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.Services.Framework;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
@@ -25,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ICsvService csvService;
         private readonly IOrderService orderService;
         private readonly IOrderPdfService pdfService;
+        private readonly IFrameworkService frameworkService;
         private readonly PdfSettings pdfSettings;
 
         public ManageOrdersController(
@@ -32,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             ICsvService csvService,
             IOrderService orderService,
             IOrderPdfService pdfService,
+            IFrameworkService frameworkService,
             PdfSettings pdfSettings)
         {
             this.orderAdminService = orderAdminService ?? throw new ArgumentNullException(nameof(orderAdminService));
@@ -39,25 +47,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
             this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
+            this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(
             [FromQuery] string page = "",
             [FromQuery] string search = "",
-            [FromQuery] string searchTermType = "")
+            [FromQuery] string searchTermType = "",
+            [FromQuery] string framework = "",
+            [FromQuery] string status = "")
         {
             const int pageSize = 10;
             var pageOptions = new PageOptions(page, pageSize);
 
-            var orders = await orderAdminService.GetPagedOrders(pageOptions, search, searchTermType);
+            var orders = await orderAdminService.GetPagedOrders(pageOptions, search, searchTermType, framework, status);
+            var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
 
-            var model = new ManageOrdersDashboardModel(orders.Items, orders.Options)
+            var model = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options)
             {
                 BackLink = Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName()),
             };
 
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Index(ManageOrdersDashboardModel model)
+        {
+            return RedirectToAction(
+                nameof(Index),
+                typeof(ManageOrdersController).ControllerName(),
+                new
+                {
+                    framework = model.SelectedFramework,
+                    status = model.SelectedStatus,
+                });
         }
 
         [HttpGet("search-suggestions")]

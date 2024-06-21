@@ -35,6 +35,32 @@
                                                     typeof(ManageOrdersController).ControllerName())"
                                       title-text="Search by Call-off ID, organisation name, supplier or solution"
                                       query-parameter-name="search"/>
+
+            <form method="post">
+                <nhs-expander label-text="Filter orders">
+                    <nhs-fieldset-form-label asp-for="@Model"
+                                             label-hint="Filter by framework">
+                        <nhs-radio-buttons asp-for="SelectedFramework" 
+                                           values="@Model.AvailableFrameworks"
+                                           value-name="Value"
+                                           display-name="Text"/>
+                    </nhs-fieldset-form-label>
+
+                    <nhs-fieldset-form-label asp-for="@Model"
+                                             label-hint="Filter by status">
+                        <nhs-radio-buttons asp-for="SelectedStatus"
+                                           values="@Model.AvailableStatus"
+                                           value-name="Value"
+                                           display-name="Text" />
+                    </nhs-fieldset-form-label>
+                    <nhs-submit-button text="Apply filters" />
+                    <br />
+                    <a asp-action="@nameof(ManageOrdersController.Index)"
+                       asp-controller="@typeof(ManageOrdersController).ControllerName()">
+                        Clear filters
+                    </a>
+                </nhs-expander>
+            </form>
         }
         @if (Model.Orders is not null && Model.Orders.Count > 0)
         {
