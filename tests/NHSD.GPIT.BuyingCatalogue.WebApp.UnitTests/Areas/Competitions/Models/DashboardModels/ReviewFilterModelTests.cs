@@ -37,8 +37,8 @@ public static class ReviewFilterModelTests
 
     public static IEnumerable<object[]> HasHasInteroperabilityIntegrationTypesTestData => new[]
     {
-        new object[] { new List<InteropIntegrationType> { InteropIntegrationType.Im1 }, true, },
-        new object[] { Enumerable.Empty<InteropIntegrationType>().ToList(), false, },
+        new object[] { new List<SupportedIntegrations> { SupportedIntegrations.Im1 }, true, },
+        new object[] { Enumerable.Empty<SupportedIntegrations>().ToList(), false, },
     };
 
     public static IEnumerable<object[]> HasAdditionalFiltersTestData => new[]
@@ -176,7 +176,7 @@ public static class ReviewFilterModelTests
     [Theory]
     [MockMemberAutoData(nameof(HasHasInteroperabilityIntegrationTypesTestData))]
     public static void HasInteroperabilityIntegrationTypes_ReturnsExpected(
-        List<InteropIntegrationType> interopIntegrationTypes,
+        List<SupportedIntegrations> interopIntegrationTypes,
         bool expected,
         FilterDetailsModel filterDetailsModel)
     {

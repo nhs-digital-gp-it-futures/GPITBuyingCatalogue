@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -16,19 +13,20 @@ public class AddEditNhsAppIntegrationModel : NavBaseModel
     {
     }
 
-    public AddEditNhsAppIntegrationModel(CatalogueItem solution)
+    public AddEditNhsAppIntegrationModel(
+        CatalogueItem solution,
+        IEnumerable<IntegrationType> integrationTypes)
     {
         SolutionName = solution.Name;
         SolutionId = solution.Id;
 
-        var solutionInteroperability = solution.Solution.GetIntegrations();
-        NhsAppIntegrations = Interoperability.NhsAppIntegrations.Select(
-                x => new SelectOption<string>(
-                    x,
-                    x,
+        var solutionInteroperability = solution.Solution.Integrations;
+        NhsAppIntegrations = integrationTypes.Select(
+                x => new SelectOption<int>(
+                    x.Name,
+                    x.Id,
                     solutionInteroperability.Any(
-                        y => string.Equals(y.IntegrationType, Interoperability.NhsAppIntegrationType)
-                            && string.Equals(y.Qualifier, x))))
+                        y => x.Id == y.IntegrationTypeId)))
             .ToList();
     }
 
@@ -36,5 +34,5 @@ public class AddEditNhsAppIntegrationModel : NavBaseModel
 
     public string SolutionName { get; }
 
-    public List<SelectOption<string>> NhsAppIntegrations { get; set; }
+    public List<SelectOption<int>> NhsAppIntegrations { get; set; }
 }

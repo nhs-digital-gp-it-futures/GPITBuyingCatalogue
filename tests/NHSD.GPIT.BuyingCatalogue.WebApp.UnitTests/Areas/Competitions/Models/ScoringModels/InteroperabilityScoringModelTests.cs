@@ -23,8 +23,8 @@ public static class InteroperabilityScoringModelTests
         {
             Interoperability = new List<InteroperabilityCriteria>
             {
-                new("Patient Facing", InteropIntegrationType.Im1),
-                new("Structured Record", InteropIntegrationType.GpConnect),
+                new("Patient Facing", SupportedIntegrations.Im1),
+                new("Structured Record", SupportedIntegrations.GpConnect),
             },
         };
 
@@ -47,8 +47,8 @@ public static class InteroperabilityScoringModelTests
         {
             Interoperability = new List<InteroperabilityCriteria>
             {
-                new("Patient Facing", InteropIntegrationType.Im1),
-                new("Structured Record", InteropIntegrationType.GpConnect),
+                new("Patient Facing", SupportedIntegrations.Im1),
+                new("Structured Record", SupportedIntegrations.GpConnect),
             },
         };
 
@@ -69,8 +69,8 @@ public static class InteroperabilityScoringModelTests
         {
             Interoperability = new List<InteroperabilityCriteria>
             {
-                new("Patient Facing", InteropIntegrationType.Im1),
-                new("Access Record Structured", InteropIntegrationType.GpConnect),
+                new("Patient Facing", SupportedIntegrations.Im1),
+                new("Access Record Structured", SupportedIntegrations.GpConnect),
             },
         };
 

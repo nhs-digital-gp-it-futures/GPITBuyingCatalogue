@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             }
             else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions)
                      && selectedInteroperabilityOptions.Contains(
-                         ((int)InteropIntegrationType.Im1).ToString(CultureInfo.InvariantCulture),
+                         ((int)SupportedIntegrations.Im1).ToString(CultureInfo.InvariantCulture),
                          StringComparison.OrdinalIgnoreCase))
             {
                 InteropIm1IntegrationType[] enumValues =
@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             }
             else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions)
                      && selectedInteroperabilityOptions.Contains(
-                         ((int)InteropIntegrationType.GpConnect).ToString(CultureInfo.InvariantCulture),
+                         ((int)SupportedIntegrations.GpConnect).ToString(CultureInfo.InvariantCulture),
                          StringComparison.OrdinalIgnoreCase))
             {
                 InteropGpConnectIntegrationType[] enumValues =
@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             }
             else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions)
                      && selectedInteroperabilityOptions.Contains(
-                         ((int)InteropIntegrationType.NhsApp).ToString(CultureInfo.InvariantCulture),
+                         ((int)SupportedIntegrations.NhsApp).ToString(CultureInfo.InvariantCulture),
                          StringComparison.OrdinalIgnoreCase))
             {
                 InteropNhsAppIntegrationType[] enumValues =

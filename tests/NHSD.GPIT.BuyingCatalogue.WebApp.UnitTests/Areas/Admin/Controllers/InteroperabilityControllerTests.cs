@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 IntegratesWith = model.IntegratesWith,
                 Description = model.Description,
                 Qualifier = model.SelectedIntegrationType,
-                IsConsumer = model.SelectedProviderOrConsumer == "Consumer",
+                IsConsumer = model.IsConsumer == "Consumer",
             };
 
             Integration savedIntegration = null;

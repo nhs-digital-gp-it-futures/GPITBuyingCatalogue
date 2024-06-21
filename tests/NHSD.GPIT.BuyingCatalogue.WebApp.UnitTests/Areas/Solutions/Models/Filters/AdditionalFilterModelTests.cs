@@ -321,7 +321,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             int[] expectedSelectedValues,
             RequestedFilters filters)
         {
-            var expectedFilters = expectedSelectedValues.Select(i => ((InteropIntegrationType)i).EnumMemberName());
+            var expectedFilters = expectedSelectedValues.Select(i => ((SupportedIntegrations)i).EnumMemberName());
 
             filters = filters with { SelectedInteroperabilityOptions = expectedSelectedValues.ToFilterString() };
             var model = new AdditionalFiltersModel([], filters);
@@ -383,8 +383,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void SetParentFilters_ChildFilterNotSet_ParentsNotSet(
             AdditionalFiltersModel model)
         {
-            model.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
-                .Cast<InteropIntegrationType>()
+            model.InteroperabilityOptions = Enum.GetValues(typeof(SupportedIntegrations))
+                .Cast<SupportedIntegrations>()
                 .Select(
                     x => new SelectOption<int> { Value = (int)x, Selected = false })
                 .ToList();
@@ -403,8 +403,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         public static void SetParentFilters_ChildFiltersSet_ParentsSetCorrectly(
             AdditionalFiltersModel model)
         {
-            model.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
-                .Cast<InteropIntegrationType>()
+            model.InteroperabilityOptions = Enum.GetValues(typeof(SupportedIntegrations))
+                .Cast<SupportedIntegrations>()
                 .Select(
                     x => new SelectOption<int> { Value = (int)x, Selected = false })
                 .ToList();
@@ -419,12 +419,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             model.SetParentFilters();
 
             model.InteroperabilityOptions.Should().NotBeNull();
-            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.Im1).Should().NotBeNull();
-            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.Im1).Selected.Should().Be(true);
-            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.GpConnect).Should().NotBeNull();
-            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.GpConnect).Selected.Should().Be(true);
-            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.NhsApp).Should().NotBeNull();
-            model.InteroperabilityOptions.First(x => x.Value == (int)InteropIntegrationType.NhsApp).Selected.Should().Be(true);
+            model.InteroperabilityOptions.First(x => x.Value == (int)SupportedIntegrations.Im1).Should().NotBeNull();
+            model.InteroperabilityOptions.First(x => x.Value == (int)SupportedIntegrations.Im1).Selected.Should().Be(true);
+            model.InteroperabilityOptions.First(x => x.Value == (int)SupportedIntegrations.GpConnect).Should().NotBeNull();
+            model.InteroperabilityOptions.First(x => x.Value == (int)SupportedIntegrations.GpConnect).Selected.Should().Be(true);
+            model.InteroperabilityOptions.First(x => x.Value == (int)SupportedIntegrations.NhsApp).Should().NotBeNull();
+            model.InteroperabilityOptions.First(x => x.Value == (int)SupportedIntegrations.NhsApp).Selected.Should().Be(true);
         }
     }
 }

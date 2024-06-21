@@ -108,9 +108,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                     SelectedFrameworkId,
                     CombineSelectedOptions(ApplicationTypeOptions),
                     CombineSelectedOptions(HostingTypeOptions),
-                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? CombineSelectedOptions(IM1IntegrationsOptions) : null,
-                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? CombineSelectedOptions(GPConnectIntegrationsOptions) : null,
-                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? CombineSelectedOptions(NhsAppIntegrationsOptions) : null,
+                    selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.Im1).ToString()) ? CombineSelectedOptions(IM1IntegrationsOptions) : null,
+                    selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.GpConnect).ToString()) ? CombineSelectedOptions(GPConnectIntegrationsOptions) : null,
+                    selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.NhsApp).ToString()) ? CombineSelectedOptions(NhsAppIntegrationsOptions) : null,
                     selectedInteroperabilityOptions,
                     SortBy);
         }
@@ -121,14 +121,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 return;
 
             if (IM1IntegrationsFilters.Any())
-                SetSelectedFilter(InteropIntegrationType.Im1);
+                SetSelectedFilter(SupportedIntegrations.Im1);
             if (GPConnectIntegrationsFilters.Any())
-                SetSelectedFilter(InteropIntegrationType.GpConnect);
+                SetSelectedFilter(SupportedIntegrations.GpConnect);
             if (NhsAppIntegrationsFilters.Any())
-                SetSelectedFilter(InteropIntegrationType.NhsApp);
+                SetSelectedFilter(SupportedIntegrations.NhsApp);
         }
 
-        private void SetSelectedFilter(InteropIntegrationType type)
+        private void SetSelectedFilter(SupportedIntegrations type)
         {
             if (InteroperabilityOptions.FirstOrDefault(x => x.Value == (int)type) is not null)
                 InteroperabilityOptions.First(x => x.Value == (int)type).Selected = true;
@@ -181,8 +181,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         private void SetInteroperabilityOptions(string selectedInteroperabilityOptions)
         {
-            InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
-                .Cast<InteropIntegrationType>()
+            InteroperabilityOptions = Enum.GetValues(typeof(SupportedIntegrations))
+                .Cast<SupportedIntegrations>()
                 .Select(
                     x => new SelectOption<int>
                     {

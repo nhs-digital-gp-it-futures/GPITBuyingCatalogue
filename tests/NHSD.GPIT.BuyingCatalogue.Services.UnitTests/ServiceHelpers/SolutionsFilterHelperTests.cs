@@ -435,7 +435,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
+            var expected = new List<SupportedIntegrations> { SupportedIntegrations.Im1, SupportedIntegrations.GpConnect, SupportedIntegrations.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -447,7 +447,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
+            var expected = new List<SupportedIntegrations> { SupportedIntegrations.Im1, SupportedIntegrations.GpConnect, SupportedIntegrations.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -459,7 +459,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
+            var expected = new List<SupportedIntegrations> { SupportedIntegrations.Im1, SupportedIntegrations.GpConnect, SupportedIntegrations.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -471,7 +471,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(input);
 
-            var expected = new List<InteropIntegrationType>();
+            var expected = new List<SupportedIntegrations>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -483,7 +483,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(input);
 
-            var expected = new List<InteropIntegrationType>();
+            var expected = new List<SupportedIntegrations>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -495,7 +495,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
 
             var result = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
+            var expected = new List<SupportedIntegrations> { SupportedIntegrations.Im1, SupportedIntegrations.GpConnect, SupportedIntegrations.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -505,9 +505,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = "0.1.hello.2.3";
 
-            var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+            var result = SolutionsFilterHelper.ParseSelectedFilterIds<SupportedIntegrations>(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
+            var expected = new List<SupportedIntegrations> { SupportedIntegrations.Im1, SupportedIntegrations.GpConnect, SupportedIntegrations.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -517,9 +517,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = "0.1.2.6.3";
 
-            var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+            var result = SolutionsFilterHelper.ParseSelectedFilterIds<SupportedIntegrations>(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
+            var expected = new List<SupportedIntegrations> { SupportedIntegrations.Im1, SupportedIntegrations.GpConnect, SupportedIntegrations.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -529,9 +529,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = "0.1. .2..    .3";
 
-            var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+            var result = SolutionsFilterHelper.ParseSelectedFilterIds<SupportedIntegrations>(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
+            var expected = new List<SupportedIntegrations> { SupportedIntegrations.Im1, SupportedIntegrations.GpConnect, SupportedIntegrations.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -541,9 +541,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = string.Empty;
 
-            var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+            var result = SolutionsFilterHelper.ParseSelectedFilterIds<SupportedIntegrations>(input);
 
-            var expected = new List<InteropIntegrationType>();
+            var expected = new List<SupportedIntegrations>();
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -553,9 +553,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = "0.1.2.3";
 
-            var result = SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+            var result = SolutionsFilterHelper.ParseSelectedFilterIds<SupportedIntegrations>(input);
 
-            var expected = new List<InteropIntegrationType> { InteropIntegrationType.Im1, InteropIntegrationType.GpConnect, InteropIntegrationType.NhsApp };
+            var expected = new List<SupportedIntegrations> { SupportedIntegrations.Im1, SupportedIntegrations.GpConnect, SupportedIntegrations.NhsApp };
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -565,7 +565,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         {
             var input = "invalid.enum.value";
 
-            Action action = () => SolutionsFilterHelper.ParseSelectedFilterIds<InteropIntegrationType>(input);
+            Action action = () => SolutionsFilterHelper.ParseSelectedFilterIds<SupportedIntegrations>(input);
 
             action.Should().Throw<ArgumentException>().WithMessage("Invalid filter format*");
         }

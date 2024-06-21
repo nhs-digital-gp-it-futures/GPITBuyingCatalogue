@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
             List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
-            List<InteropIntegrationType> interoperabilityIntegrationTypes,
+            List<SupportedIntegrations> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
             FluentActions
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
             List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
-            List<InteropIntegrationType> interoperabilityIntegrationTypes,
+            List<SupportedIntegrations> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
             FluentActions
@@ -164,7 +164,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
             List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
-            List<InteropIntegrationType> interoperabilityIntegrationTypes,
+            List<SupportedIntegrations> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
             FluentActions
@@ -952,7 +952,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.Filters.Add(filter);
             await context.SaveChangesAsync();
 
-            await service.AddInteroperabilityIntegrationTypes(filter.Id, new List<InteropIntegrationType>());
+            await service.AddInteroperabilityIntegrationTypes(filter.Id, new List<SupportedIntegrations>());
             context.ChangeTracker.Clear();
 
             var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
@@ -965,7 +965,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [MockInMemoryDbAutoData]
         public static async Task AddFilterInteroperabilityIntegrationTypes_NullFilter_NoInteroperabilityIntegrationTypesAdded(
             [Frozen] BuyingCatalogueDbContext context,
-            List<InteropIntegrationType> interopIntegrationType,
+            List<SupportedIntegrations> interopIntegrationType,
             int invalidFilterId,
             ManageFiltersService service)
         {
@@ -979,7 +979,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task AddFilterInteroperabilityIntegrationTypes_ValidParameters_InteroperabilityIntegrationTypesAdded(
-            List<InteropIntegrationType> interopIntegrationType,
+            List<SupportedIntegrations> interopIntegrationType,
             Organisation organisation,
             Filter filter,
             [Frozen] BuyingCatalogueDbContext context,

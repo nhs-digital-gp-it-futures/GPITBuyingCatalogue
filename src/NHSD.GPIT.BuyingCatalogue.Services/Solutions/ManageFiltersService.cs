@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
             List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
-            List<InteropIntegrationType> interoperabilityIntegrationTypes)
+            List<SupportedIntegrations> interoperabilityIntegrationTypes)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
@@ -256,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        internal async Task AddInteroperabilityIntegrationTypes(int filterId, List<InteropIntegrationType> interopIntegrationTypes)
+        internal async Task AddInteroperabilityIntegrationTypes(int filterId, List<SupportedIntegrations> interopIntegrationTypes)
         {
             if (interopIntegrationTypes is null || interopIntegrationTypes.Count == 0) return;
 

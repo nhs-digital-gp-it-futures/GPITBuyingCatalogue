@@ -54,7 +54,7 @@ public static class NonPriceElementsPartialModelTests
         object routeValues)
     {
         var im1Integrations = Interoperability.Im1Integrations
-            .Select(x => new InteroperabilityCriteria(x.Key, InteropIntegrationType.Im1))
+            .Select(x => new InteroperabilityCriteria(x.Key, Integrations.Im1))
             .ToList();
 
         nonPriceElements.Interoperability = im1Integrations;
@@ -78,7 +78,7 @@ public static class NonPriceElementsPartialModelTests
         object routeValues)
     {
         var gpConnectIntegrations = Interoperability.GpConnectIntegrations
-            .Select(x => new InteroperabilityCriteria(x.Key, InteropIntegrationType.GpConnect))
+            .Select(x => new InteroperabilityCriteria(x.Key, Integrations.GpConnect))
             .ToList();
 
         nonPriceElements.Interoperability = gpConnectIntegrations;

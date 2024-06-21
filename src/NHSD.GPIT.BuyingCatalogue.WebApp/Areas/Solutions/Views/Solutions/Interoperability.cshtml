@@ -29,10 +29,10 @@
             {
                 <h3 class="nhsuk-heading-s">IM1 integrations</h3>
 
-                @foreach (var qualifier in Model.IM1IntegrationQualifiers)
+                @foreach (var integrations in Model.IM1Integrations.GroupBy(x => x.IntegrationType.Name))
                 {
-                    <nhs-expander label-text="@($"IM1 {qualifier}")" open="false">
-                        <nhs-table data-test-id="table-integrations-@qualifier.ToLowerInvariant().Replace(' ', '-')">
+                    <nhs-expander label-text="@($"IM1 {integrations.Key}")" open="false">
+                        <nhs-table data-test-id="table-integrations-@integrations.Key.ToLowerInvariant().Replace(' ', '-')">
                             <nhs-table-column>
                                 Provider or<br>consumer
                             </nhs-table-column>
@@ -43,7 +43,7 @@
                                 Description
                             </nhs-table-column>
                             <nhs-table-column></nhs-table-column>
-                            @foreach (var integration in Model.IM1Integrations.Where(i => i.Qualifier == qualifier))
+                            @foreach (var integration in integrations)
                             {
                                 <nhs-table-row-container>
                                     <nhs-table-cell>
@@ -70,10 +70,10 @@
             {
                 <h3 class="nhsuk-heading-s">GP Connect integrations</h3>
 
-                @foreach (var qualifier in Model.GpConnectIntegrationQualifiers)
+                @foreach (var integrations in Model.GpConnectIntegrations.GroupBy(x => x.IntegrationType.Name))
                 {
-                    <nhs-expander label-text="@($"GP Connect {qualifier}")" open="false">
-                        <nhs-table data-test-id="table-gpconnect-@qualifier.ToLowerInvariant().Replace(' ', '-')">
+                    <nhs-expander label-text="@($"GP Connect {integrations.Key}")" open="false">
+                        <nhs-table data-test-id="table-gpconnect-@integrations.Key.ToLowerInvariant().Replace(' ', '-')">
                             <nhs-table-column>
                                 Provider or<br>consumer
                             </nhs-table-column>
@@ -81,7 +81,7 @@
                                 Additional information about the integration
                             </nhs-table-column>
                             <nhs-table-column></nhs-table-column>
-                            @foreach (var integration in Model.GpConnectIntegrations.Where(i => i.Qualifier == qualifier))
+                            @foreach (var integration in integrations)
                             {
                                 <nhs-table-row-container>
                                     <nhs-table-cell>
@@ -89,7 +89,7 @@
                                     </nhs-table-cell>
                                     <nhs-table-cell>
                                         <p class="nhsuk-u-margin-0">
-                                            @integration.AdditionalInformation
+                                            @integration.Description
                                         </p>
                                     </nhs-table-cell>
                                 </nhs-table-row-container>
@@ -100,17 +100,17 @@
                 <hr>
             }
 
-            @if (Model.NhsAppIntegrationTypes.Any())
+            @if (Model.NhsAppIntegrations.Any())
             {
                 <nhs-card title="NHS App integrations">
                     <nhs-table>
                         <nhs-table-column>Integration</nhs-table-column>
                         <nhs-table-column>Description</nhs-table-column>
-                        @foreach (var integration in Model.NhsAppIntegrationTypes)
+                        @foreach (var integration in Model.NhsAppIntegrations)
                         {
                             <nhs-table-row-container>
-                                <nhs-table-cell>@integration</nhs-table-cell>
-                                <nhs-table-cell>@Interoperability.NhsAppIntegrationDescriptions[integration]</nhs-table-cell>
+                                <nhs-table-cell>@integration.IntegrationType.Name</nhs-table-cell>
+                                <nhs-table-cell>@integration.IntegrationType.Description</nhs-table-cell>
                             </nhs-table-row-container>
                         }
                     </nhs-table>

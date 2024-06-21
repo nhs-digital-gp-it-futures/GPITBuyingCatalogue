@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
             List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
-            List<InteropIntegrationType> interoperabilityIntegrationTypes,
+            List<SupportedIntegrations> interoperabilityIntegrationTypes,
             int organisationId)
         {
             if (framework != null)
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public List<InteropNhsAppIntegrationType> NhsAppIntegrationsTypes { get; set; }
 
-        public List<InteropIntegrationType> InteroperabilityIntegrationTypes { get; set; }
+        public List<SupportedIntegrations> InteroperabilityIntegrationTypes { get; set; }
 
         public Dictionary<string, IOrderedEnumerable<Epic>> GroupedCapabilities { get; set; } = new();
     }

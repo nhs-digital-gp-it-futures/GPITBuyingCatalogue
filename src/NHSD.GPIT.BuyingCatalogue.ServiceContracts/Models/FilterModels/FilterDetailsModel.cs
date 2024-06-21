@@ -22,7 +22,7 @@ public class FilterDetailsModel
 
     public List<ApplicationType> ApplicationTypes { get; set; } = Enumerable.Empty<ApplicationType>().ToList();
 
-    public List<InteropIntegrationType> InteropIntegrationTypes { get; set; } = Enumerable.Empty<InteropIntegrationType>().ToList();
+    public List<Integrations> InteropIntegrationTypes { get; set; } = Enumerable.Empty<Integrations>().ToList();
 
     public List<InteropIm1IntegrationType> InteropIm1IntegrationsTypes { get; set; } = Enumerable.Empty<InteropIm1IntegrationType>().ToList();
 

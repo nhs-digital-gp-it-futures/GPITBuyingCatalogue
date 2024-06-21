@@ -1380,7 +1380,7 @@ public static class CompetitionsServiceTests
         {
             Interoperability = new List<InteroperabilityCriteria>()
             {
-                new() { IntegrationType = InteropIntegrationType.Im1, Qualifier = staleIntegration },
+                new() { IntegrationType = SupportedIntegrations.Im1, Qualifier = staleIntegration },
             },
         };
 
@@ -1430,7 +1430,7 @@ public static class CompetitionsServiceTests
         {
             Interoperability = new List<InteroperabilityCriteria>()
             {
-                new() { IntegrationType = InteropIntegrationType.Im1, Qualifier = staleIntegration },
+                new() { IntegrationType = SupportedIntegrations.Im1, Qualifier = staleIntegration },
             },
         };
 
@@ -1987,7 +1987,7 @@ public static class CompetitionsServiceTests
             Implementation = new() { Requirements = "Test" },
             Interoperability = new List<InteroperabilityCriteria>
             {
-                new() { IntegrationType = InteropIntegrationType.Im1, Qualifier = "Test" },
+                new() { IntegrationType = SupportedIntegrations.Im1, Qualifier = "Test" },
             },
         };
 

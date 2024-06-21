@@ -46,7 +46,7 @@ public static class CompetitionNonPriceElementsServiceTests
             Interoperability =
                 new List<InteroperabilityCriteria>
                 {
-                    new() { IntegrationType = InteropIntegrationType.Im1, Qualifier = "Test" },
+                    new() { IntegrationType = SupportedIntegrations.Im1, Qualifier = "Test" },
                 },
             ServiceLevel =
                 new()

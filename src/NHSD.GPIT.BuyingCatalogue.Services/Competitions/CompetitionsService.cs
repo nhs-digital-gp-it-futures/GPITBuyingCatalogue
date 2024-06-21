@@ -325,9 +325,9 @@ public class CompetitionsService : ICompetitionsService
         if (staleEntities.Count != 0) staleEntities.ForEach(x => interopEntities.Remove(x));
 
         var newInteropEntities = im1Integrations
-            .Select(x => new InteroperabilityCriteria(x, InteropIntegrationType.Im1))
+            .Select(x => new InteroperabilityCriteria(x, SupportedIntegrations.Im1))
             .Union(
-                gpConnectIntegrations.Select(x => new InteroperabilityCriteria(x, InteropIntegrationType.GpConnect)))
+                gpConnectIntegrations.Select(x => new InteroperabilityCriteria(x, SupportedIntegrations.GpConnect)))
             .Where(x => interopEntities.All(y => x.Qualifier != y.Qualifier))
             .ToList();
 

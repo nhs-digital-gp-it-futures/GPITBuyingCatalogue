@@ -59,11 +59,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
                 .Select(t => (InteropNhsAppIntegrationType)Enum.Parse(typeof(InteropNhsAppIntegrationType), t))
                 .ToList() ?? new List<InteropNhsAppIntegrationType>();
 
-        public static ICollection<InteropIntegrationType> ParseInteropIntegrationTypeIds(string selectedInteroperabilityIds) =>
+        public static ICollection<SupportedIntegrations> ParseInteropIntegrationTypeIds(string selectedInteroperabilityIds) =>
             selectedInteroperabilityIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
-                .Where(x => Enum.TryParse(typeof(InteropIntegrationType), x, out var hostingValue) && Enum.IsDefined(typeof(InteropIntegrationType), hostingValue))
-                .Select(t => (InteropIntegrationType)Enum.Parse(typeof(InteropIntegrationType), t))
-                .ToList() ?? new List<InteropIntegrationType>();
+                .Where(x => Enum.TryParse(typeof(SupportedIntegrations), x, out var hostingValue) && Enum.IsDefined(typeof(SupportedIntegrations), hostingValue))
+                .Select(t => (SupportedIntegrations)Enum.Parse(typeof(SupportedIntegrations), t))
+                .ToList() ?? new List<SupportedIntegrations>();
 
         public static ICollection<T> ParseSelectedFilterIds<T>(string selectedFilterIds)
         where T : struct, Enum

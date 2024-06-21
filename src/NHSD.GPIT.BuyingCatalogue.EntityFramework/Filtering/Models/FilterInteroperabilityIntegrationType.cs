@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 {
@@ -8,6 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 
         public int Id { get; set; }
 
-        public InteropIntegrationType InteroperabilityIntegrationType { get; set; }
+        public SupportedIntegrations InteroperabilityIntegrationType { get; set; }
     }
 }

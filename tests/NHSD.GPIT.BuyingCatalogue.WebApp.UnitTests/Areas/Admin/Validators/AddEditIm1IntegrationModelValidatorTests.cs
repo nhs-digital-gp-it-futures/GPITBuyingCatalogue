@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var model = new AddEditIm1IntegrationModel
             {
                 Description = "Description Text",
-                SelectedProviderOrConsumer = "Provider",
+                IsConsumer = "Provider",
                 SelectedIntegrationType = "Bulk",
                 IntegratesWith = "Integrates With Text",
             };
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 Description = "Description Text",
                 IntegratesWith = "Integrates With Text",
-                SelectedProviderOrConsumer = "Provider",
+                IsConsumer = "Provider",
             };
 
             var result = validator.TestValidate(model);
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.SelectedProviderOrConsumer)
+            result.ShouldHaveValidationErrorFor(m => m.IsConsumer)
                 .WithErrorMessage("Select if your system is a provider or consumer");
         }
 
@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             {
                 SelectedIntegrationType = "Bulk",
                 IntegratesWith = "Integrates With Text",
-                SelectedProviderOrConsumer = "Provider",
+                IsConsumer = "Provider",
             };
 
             var result = validator.TestValidate(model);
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var model = new AddEditIm1IntegrationModel
             {
                 Description = "Description Text",
-                SelectedProviderOrConsumer = "Provider",
+                IsConsumer = "Provider",
                 SelectedIntegrationType = "Bulk",
             };
 

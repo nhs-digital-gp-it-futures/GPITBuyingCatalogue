@@ -84,8 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             if (validInteroperabilityOptions)
             {
-                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
-                    .Cast<InteropIntegrationType>()
+                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(SupportedIntegrations))
+                    .Cast<SupportedIntegrations>()
                     .Select(
                         x => new SelectOption<int> { Value = (int)x, }).ToList();
             }
@@ -117,15 +117,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                         },
                         {
                             "selectedIM1Integrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
+                            selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
                         },
                         {
                             "selectedGPConnectIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
+                            selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
                         },
                         {
                             "selectedNhsAppIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
+                            selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
                         },
                         {
                             "selectedInteroperabilityOptions",
@@ -148,8 +148,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             if (validInteroperabilityOptions)
             {
-                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
-                    .Cast<InteropIntegrationType>()
+                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(SupportedIntegrations))
+                    .Cast<SupportedIntegrations>()
                     .Select(
                         x => new SelectOption<int> { Value = (int)x, }).ToList();
             }
@@ -181,15 +181,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                         },
                         {
                             "selectedIM1Integrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
+                            selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
                         },
                         {
                             "selectedGPConnectIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
+                            selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
                         },
                         {
                             "selectedNhsAppIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
+                            selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
                         },
                         {
                             "selectedInteroperabilityOptions",
@@ -212,8 +212,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         {
             if (validInteroperabilityOptions)
             {
-                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
-                    .Cast<InteropIntegrationType>()
+                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(SupportedIntegrations))
+                    .Cast<SupportedIntegrations>()
                     .Select(
                         x => new SelectOption<int> { Value = (int)x, }).ToList();
             }
@@ -245,15 +245,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                         },
                         {
                             "selectedIM1Integrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
+                            selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
                         },
                         {
                             "selectedGPConnectIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
+                            selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
                         },
                         {
                             "selectedNhsAppIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
+                            selectedInteroperabilityOptions.Contains(((int)SupportedIntegrations.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
                         },
                         {
                             "selectedInteroperabilityOptions",

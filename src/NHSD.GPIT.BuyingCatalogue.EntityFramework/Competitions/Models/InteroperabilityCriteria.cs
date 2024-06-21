@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
@@ -10,7 +11,7 @@ public class InteroperabilityCriteria
 
     public InteroperabilityCriteria(
         string qualifier,
-        InteropIntegrationType integrationType)
+        SupportedIntegrations integrationType)
     {
         Qualifier = qualifier;
         IntegrationType = integrationType;
@@ -22,5 +23,5 @@ public class InteroperabilityCriteria
 
     public string Qualifier { get; set; }
 
-    public InteropIntegrationType IntegrationType { get; set; }
+    public SupportedIntegrations IntegrationType { get; set; }
 }
