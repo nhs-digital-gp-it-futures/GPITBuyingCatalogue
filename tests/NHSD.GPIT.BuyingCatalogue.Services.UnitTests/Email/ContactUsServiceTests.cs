@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ContactUsService).GetConstructors();
 
@@ -27,8 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static Task SubmitQuery_NullOrEmptyFullName_ThrowsException(
             string fullName,
             string emailAddress,
@@ -36,8 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             ContactUsService service) => Assert.ThrowsAsync<ArgumentNullException>(() => service.SubmitQuery(fullName, emailAddress, message));
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static Task SubmitQuery_NullOrEmptyEmailAddress_ThrowsException(
             string emailAddress,
             string fullName,
@@ -45,8 +45,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             ContactUsService service) => Assert.ThrowsAsync<ArgumentNullException>(() => service.SubmitQuery(fullName, emailAddress, message));
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static Task SubmitQuery_NullOrEmptyMessage_ThrowsException(
             string message,
             string fullName,
@@ -54,19 +54,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
             ContactUsService service) => Assert.ThrowsAsync<ArgumentNullException>(() => service.SubmitQuery(fullName, emailAddress, message));
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task SubmitQuery_GeneralEnquiry_UsesCorrectEmail(
             string fullName,
             string emailAddress,
             string message,
             [Frozen] ContactUsSettings settings,
-            [Frozen] Mock<IGovNotifyEmailService> govNotifyEmailService,
+            [Frozen] IGovNotifyEmailService govNotifyEmailService,
             ContactUsService service)
         {
             await service.SubmitQuery(fullName, emailAddress, message);
 
-            govNotifyEmailService.Verify(s => s.SendEmailAsync(settings.GeneralQueriesRecipient.Address, It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()));
-            govNotifyEmailService.Verify(s => s.SendEmailAsync(emailAddress, It.IsAny<string>(), null));
+            await govNotifyEmailService.Received().SendEmailAsync(settings.GeneralQueriesRecipient.Address, Arg.Any<string>(), Arg.Any<Dictionary<string, dynamic>>());
+            await govNotifyEmailService.Received().SendEmailAsync(emailAddress, Arg.Any<string>(), null);
         }
     }
 }

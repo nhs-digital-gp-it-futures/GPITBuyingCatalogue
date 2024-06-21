@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -14,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Contracts;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 using Contract = NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.Contract;
 
@@ -25,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(RequirementsService).GetConstructors();
 
@@ -33,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetRequirementComplete_ContractBillingExists_SetsFlagTrue(
             Order order,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -62,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetRequirementComplete_ContractBillingDoesNotExist_SetsFlagTrue(
             Order order,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -89,9 +87,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void AddRequirement_NullOrEmptyDetails_ThrowsException(
             string details,
             int orderId,
@@ -111,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddRequirement_ExistingContractBilling_ItemAdded(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItemId catalogueItemId,
@@ -149,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetRequirement_NoRequirementExists_ReturnsNull(
             int orderId,
             int itemId,
@@ -161,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetRequirement_ItemExists_ReturnsItem(
             [Frozen] BuyingCatalogueDbContext dbContext,
             Requirement requirement,
@@ -190,9 +188,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void EditRequirement_NullOrEmptyDetails_ThrowsException(
            string details,
            int orderId,
@@ -212,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EditRequirement_ExistingRequirement_RequirementUpdated(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItemId catalogueItemId,
@@ -257,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteRequirement_ExistingRequirement_RequirementDeleted(
             [Frozen] BuyingCatalogueDbContext context,
             OrderItem orderItem,
@@ -290,7 +288,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteRequirements_ExistingRequirement_RequirementDeleted(
             [Frozen] BuyingCatalogueDbContext context,
             OrderItem orderItem,

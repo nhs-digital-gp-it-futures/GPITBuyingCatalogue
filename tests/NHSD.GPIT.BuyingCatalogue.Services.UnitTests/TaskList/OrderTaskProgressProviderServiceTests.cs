@@ -3,7 +3,7 @@ using FluentAssertions;
 using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList
     public static class OrderTaskProgressProviderServiceTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructors_VerifyGuardClauses(OrderTaskProgressProviderService service)
         {
             var values = Enum.GetValues<OrderTaskListStatus>();

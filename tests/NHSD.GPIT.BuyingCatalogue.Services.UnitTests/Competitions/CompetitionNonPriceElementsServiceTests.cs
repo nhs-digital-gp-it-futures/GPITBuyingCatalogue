@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -15,7 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions;
@@ -25,7 +25,7 @@ public static class CompetitionNonPriceElementsServiceTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(CompetitionNonPriceElementsService).GetConstructors();
 
@@ -33,7 +33,7 @@ public static class CompetitionNonPriceElementsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task DeleteNonPriceElement_RemovesNonPriceElement(
         Organisation organisation,
         Competition competition,
@@ -93,7 +93,7 @@ public static class CompetitionNonPriceElementsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task DeleteNonPriceElement_SingleNonPriceElement_DeletesNonPriceElements(
         Organisation organisation,
         Competition competition,
@@ -129,7 +129,7 @@ public static class CompetitionNonPriceElementsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task AddFeatureRequirement_AddsRequirement(
         Organisation organisation,
         Competition competition,
@@ -156,7 +156,7 @@ public static class CompetitionNonPriceElementsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task EditFeatureRequirement_EditsRequirement(
         Organisation organisation,
         Competition competition,
@@ -196,7 +196,7 @@ public static class CompetitionNonPriceElementsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task DeleteFeatureRequirement_LastNonPriceElement_DeletesNonPriceElements(
         Organisation organisation,
         Competition competition,
@@ -224,7 +224,7 @@ public static class CompetitionNonPriceElementsServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task DeleteFeatureRequirement_LastNonPriceElement_DeletesFeature(
         Organisation organisation,
         Competition competition,

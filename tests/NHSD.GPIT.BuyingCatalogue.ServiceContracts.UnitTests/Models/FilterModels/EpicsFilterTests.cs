@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models.FilterModels
@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Models.FilterMode
     public static class EpicsFilterTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void EpicsFilter_DisplayText_ExpectedResult(EpicsFilter model)
         {
             model.DisplayText.Should().Be($"{model.Name} ({model.Count})");

@@ -1,7 +1,7 @@
 ﻿using EnumsNET;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
@@ -9,9 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
     public static class ApplicationTypeTests
     {
         [Theory]
-        [CommonInlineAutoData(ApplicationType.BrowserBased)]
-        [CommonInlineAutoData(ApplicationType.MobileTablet)]
-        [CommonInlineAutoData(ApplicationType.Desktop)]
+        [MockInlineAutoData(ApplicationType.BrowserBased)]
+        [MockInlineAutoData(ApplicationType.MobileTablet)]
+        [MockInlineAutoData(ApplicationType.Desktop)]
         public static void ApplicationTypes_IsUpdatedCorrectly(
             ApplicationType applicationType,
             ApplicationTypeDetail applicationTypeDetail)
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasApplicationType_True(
             ApplicationTypeDetail application)
         {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions;
@@ -24,7 +24,7 @@ public static class CompetitionsQuantityServiceTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(CompetitionsQuantityService).GetConstructors();
 
@@ -32,7 +32,7 @@ public static class CompetitionsQuantityServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionGlobalQuantity_SetsQuantity(
         Organisation organisation,
         Competition competition,
@@ -68,7 +68,7 @@ public static class CompetitionsQuantityServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionRecipientQuantity_SetsQuantity(
         Organisation organisation,
         Competition competition,
@@ -106,7 +106,7 @@ public static class CompetitionsQuantityServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetServiceGlobalQuantity_SetsQuantity(
         Organisation organisation,
         Competition competition,
@@ -156,7 +156,7 @@ public static class CompetitionsQuantityServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetServiceRecipientQuantity_SetsQuantity(
         Organisation organisation,
         Competition competition,
@@ -208,7 +208,7 @@ public static class CompetitionsQuantityServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task ResetSolutionQuantities_Resets(
         Organisation organisation,
         Competition competition,
@@ -259,7 +259,7 @@ public static class CompetitionsQuantityServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task ResetServiceQuantities_Resets(
         Organisation organisation,
         Competition competition,

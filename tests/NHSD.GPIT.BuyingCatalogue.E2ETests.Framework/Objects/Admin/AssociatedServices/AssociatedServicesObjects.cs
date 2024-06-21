@@ -21,6 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AssociatedS
 
         public static By PublicationStatusInputError => By.Id("edit-associated-service-error");
 
-        public static By EditPriceLink(string solutionId) => By.XPath($"//a[contains(@href, '/associated-services/" + solutionId + "/list-prices')]");
+        public static By EditPriceLink(string solutionId) => By.XPath($"//a[contains(@href, '/associated-services/{solutionId}/list-prices')]");
     }
 }

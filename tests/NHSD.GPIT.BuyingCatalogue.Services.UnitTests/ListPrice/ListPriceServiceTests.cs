@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.ListPrice;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ListPriceService).GetConstructors();
 
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task HasDuplicateTieredPrice_Unique_ReturnsFalse(
             Solution solution,
             CataloguePrice price,
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task HasDuplicateTieredPrice_Self_ReturnsFalse(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task HasDuplicateTieredPrice_Duplicate_ReturnsTrue(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task HasDuplicatePriceTier_Unique_ReturnsFalse(
             Solution solution,
             CataloguePriceTier priceTier,
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task HasDuplicatePriceTier_Duplicate_ReturnsTrue(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task HasDuplicateFlatPrice_Duplicate_ReturnsTrue(
             Solution solution,
             CataloguePrice price,
@@ -252,7 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task HasDuplicateFlatPrice_Self_ReturnsFalse(
             Solution solution,
             CataloguePrice price,
@@ -281,7 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task HasDuplicateFlatPrice_Unique_ReturnsFalse(
             Solution solution,
             CataloguePrice price,
@@ -312,7 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionWithListPrice_Valid_Returns(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -327,7 +327,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionWithListPrice_Invalid_ReturnsNull(
             Solution solution,
             ListPriceService service)
@@ -338,14 +338,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task AddListPrice_NullCataloguePrice_ThrowsArgumentNullException(
             Solution solution,
             ListPriceService service)
             => Assert.ThrowsAsync<ArgumentNullException>(() => service.AddListPrice(solution.CatalogueItemId, null));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddListPrice_Valid_AddsPrice(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -376,7 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task UpdateListPrice_NullPricingUnit_ThrowsArgumentNullException(
             Solution solution,
             CataloguePrice price,
@@ -391,7 +391,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 price.CataloguePriceQuantityCalculationType));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateListPrice_Valid_Updates(
             Solution solution,
             CataloguePrice priceUpdates,
@@ -439,7 +439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task UpdateFlatListPrice_NullPricingUnit_ThrowsArgumentNullException(
             Solution solution,
             CataloguePrice cataloguePrice,
@@ -456,7 +456,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
                 price));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateFlatListPrice_Valid_Updates(
             Solution solution,
             CataloguePrice priceUpdates,
@@ -517,7 +517,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetPublicationStatus_UpdatesStatus(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -552,7 +552,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task AddListPriceTier_NullTier_ThrowsArgumentNullException(
             Solution solution,
             int cataloguePriceId,
@@ -560,7 +560,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
             => Assert.ThrowsAsync<ArgumentNullException>(() => service.AddListPriceTier(solution.CatalogueItemId, cataloguePriceId, null));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddListPriceTier_Valid_AddsTier(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -603,7 +603,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateListPriceTier_Valid_Updates(
             Solution solution,
             CataloguePrice price,
@@ -635,7 +635,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateTierPrice_Valid_Updates(
             Solution solution,
             CataloguePrice price,
@@ -663,7 +663,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteListPrice_Valid_Deletes(
             Solution solution,
             CataloguePrice price,
@@ -688,7 +688,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ListPrice
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeletePriceTier_Valid_Deletes(
             Solution solution,
             CataloguePrice price,

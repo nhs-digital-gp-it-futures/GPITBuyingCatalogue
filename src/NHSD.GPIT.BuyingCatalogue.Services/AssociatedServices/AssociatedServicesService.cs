@@ -163,11 +163,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             CatalogueItem solution,
             AssociatedServicesDetailsModel model)
         {
-            if (solution is null)
-                throw new ArgumentNullException(nameof(solution));
+            ArgumentNullException.ThrowIfNull(solution);
 
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var associatedService = new CatalogueItem
             {
@@ -193,8 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             CatalogueItemId associatedServiceId,
             AssociatedServicesDetailsModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             var associatedService = await dbContext.CatalogueItems
                 .Include(i => i.AssociatedService)

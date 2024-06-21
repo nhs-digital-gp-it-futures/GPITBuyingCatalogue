@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.View_Components
@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.UnitTests.View_Components
     public static class ActionLinkComponentTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task ActionLink_ExpectedResult(string url, string text)
         {
             var viewComponent = new NhsActionLinkViewComponent

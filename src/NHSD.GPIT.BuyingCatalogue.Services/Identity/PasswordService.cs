@@ -72,10 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Identity
         /// <exception cref="ArgumentNullException"><paramref name="callback"/> is <see langref="null"/>.</exception>
         public async Task SendResetEmailAsync(AspNetUser user, Uri callback)
         {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
-            if (callback is null)
-                throw new ArgumentNullException(nameof(callback));
+            ArgumentNullException.ThrowIfNull(user);
+            ArgumentNullException.ThrowIfNull(callback);
 
             var personalisation = new Dictionary<string, dynamic>
             {
