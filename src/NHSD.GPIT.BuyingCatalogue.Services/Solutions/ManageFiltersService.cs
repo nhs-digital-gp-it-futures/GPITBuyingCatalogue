@@ -32,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             List<HostingType> hostingTypes,
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes)
         {
             if (string.IsNullOrEmpty(name))
@@ -68,6 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await AddInteroperabilityIntegrationTypes(filter.Id, interoperabilityIntegrationTypes);
             await AddIM1IntegrationsTypes(filter.Id, iM1IntegrationsTypes);
             await AddGPConnectIntegrationsTypes(filter.Id, gPConnectIntegrationsTypes);
+            await AddNhsAppIntegrationsTypes(filter.Id, nhsAppIntegrationsTypes);
 
             return filter.Id;
         }
@@ -115,6 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         HostingTypeIds = x.FilterHostingTypes.Select(fc => (int)fc.HostingType),
                         IM1Integrations = x.FilterIM1IntegrationTypes.Select(fc => (int)fc.IM1IntegrationsType),
                         GPConnectIntegrations = x.FilterGPConnectIntegrationTypes.Select(fc => (int)fc.GPConnectIntegrationsType),
+                        NhsAppIntegrations = x.FilterNhsAppIntegrationTypes.Select(fc => (int)fc.NhsAppIntegrationsType),
                         InteroperabilityOptions = x.FilterInteropIntegrationTypes.Select(fc => (int)fc.InteroperabilityIntegrationType),
                     })
                 .AsNoTracking()
@@ -137,6 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         InteropIntegrationTypes = x.FilterInteropIntegrationTypes.Select(y => y.InteroperabilityIntegrationType).ToList(),
                         InteropIm1IntegrationsTypes = x.FilterIM1IntegrationTypes.Select(y => y.IM1IntegrationsType).ToList(),
                         InteropGpConnectIntegrationsTypes = x.FilterGPConnectIntegrationTypes.Select(y => y.GPConnectIntegrationsType).ToList(),
+                        InteropNhsAppIntegrationsTypes = x.FilterNhsAppIntegrationTypes.Select(y => y.NhsAppIntegrationsType).ToList(),
                         Invalid = x.FilterCapabilityEpics.Any(e => e.CapabilityId == null)
                             || x.Capabilities.Any(c => c.Status == CapabilityStatus.Expired)
                             || x.FilterCapabilityEpics.Any(e => e.Epic.IsActive == false)
@@ -315,6 +319,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 {
                     FilterId = filterId,
                     GPConnectIntegrationsType = type,
+                });
+            }
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        internal async Task AddNhsAppIntegrationsTypes(int filterId, List<InteropNhsAppIntegrationType> interopNhsAppIntegrationsTypes)
+        {
+            if (interopNhsAppIntegrationsTypes is null || interopNhsAppIntegrationsTypes.Count == 0) return;
+
+            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
+
+            if (filter is null)
+            {
+                return;
+            }
+
+            foreach (var type in interopNhsAppIntegrationsTypes)
+            {
+                filter.FilterNhsAppIntegrationTypes.Add(new FilterNhsAppIntegrationsType()
+                {
+                    FilterId = filterId,
+                    NhsAppIntegrationsType = type,
                 });
             }
 
