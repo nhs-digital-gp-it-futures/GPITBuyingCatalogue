@@ -24,7 +24,7 @@
     </nhs-card>
 }
 
-@if (Model.NonPriceElements.Interoperability.Any())
+@if (Model.NonPriceElements.IntegrationTypes.Any())
 {
     var interopUrl = Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
 

@@ -77,8 +77,7 @@ public interface ICompetitionsService
     Task SetInteroperabilityCriteria(
         string internalOrgId,
         int competitionId,
-        IEnumerable<string> im1Integrations,
-        IEnumerable<string> gpConnectIntegrations);
+        IEnumerable<int> integrations);
 
     Task SetNonPriceWeights(
         string internalOrgId,

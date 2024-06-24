@@ -29,16 +29,27 @@ public sealed class NonPriceElementsEntityTypeConfiguration : IEntityTypeConfigu
             .HasConstraintName("FK_NonPriceElements_ServiceLevelCriteria")
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(x => x.Interoperability)
-            .WithOne()
-            .HasForeignKey(x => x.NonPriceElementsId)
-            .HasConstraintName("FK_InteroperabilityCriteria_NonPriceElements")
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasOne(x => x.NonPriceWeights)
             .WithOne()
             .HasForeignKey<NonPriceWeights>(x => x.NonPriceElementsId)
             .HasConstraintName("FK_Weightings_NonPriceElements")
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.IntegrationTypes)
+            .WithMany()
+            .UsingEntity<IntegrationsCriteria>(
+                right => right.HasOne(x => x.IntegrationType)
+                    .WithMany()
+                    .HasForeignKey(x => x.IntegrationTypeId)
+                    .HasConstraintName("FK_IntegrationsCriteria_IntegrationType"),
+                left => left.HasOne(x => x.NonPriceElements)
+                    .WithMany()
+                    .HasForeignKey(x => x.NonPriceElementsId)
+                    .HasConstraintName("FK_IntegrationsCriteria_NonPriceElements"),
+                j =>
+                {
+                    j.ToTable("IntegrationsCriteria", Schemas.Competitions);
+                    j.HasKey(x => new { x.NonPriceElementsId, x.IntegrationTypeId });
+                });
     }
 }

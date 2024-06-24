@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -19,30 +20,16 @@ public class InteroperabilityScoringModel : NavBaseModel
         CompetitionName = competition.Name;
 
         WithSolutions(competition.CompetitionSolutions)
-            .WithInteroperability(competition.NonPriceElements.Interoperability);
+            .WithIntegrationTypes(competition.NonPriceElements.IntegrationTypes);
     }
 
     public string CompetitionName { get; set; }
 
     public List<InteroperabilitySolutionScoreModel> SolutionScores { get; set; }
 
-    public List<InteroperabilityCriteria> InteroperabilityCriteria { get; set; }
+    public List<IntegrationType> IntegrationTypes { get; set; }
 
     public string PdfUrl { get; set; }
-
-    public List<string> GetIm1Integrations() =>
-        InteroperabilityCriteria.Where(
-                x => x.IntegrationType == Integrations.Im1
-                    && Interoperability.Im1Integrations.ContainsKey(x.Qualifier))
-            .Select(x => Interoperability.Im1Integrations[x.Qualifier])
-            .ToList();
-
-    public List<string> GetGpConnectIntegrations() =>
-        InteroperabilityCriteria.Where(
-                x => x.IntegrationType == Integrations.GpConnect
-                    && Interoperability.GpConnectIntegrations.ContainsKey(x.Qualifier))
-            .Select(x => Interoperability.GpConnectIntegrations[x.Qualifier])
-            .ToList();
 
     public InteroperabilityScoringModel WithSolutions(IEnumerable<CompetitionSolution> solutions, bool setScores = true)
     {
@@ -62,10 +49,16 @@ public class InteroperabilityScoringModel : NavBaseModel
         return this;
     }
 
-    public InteroperabilityScoringModel WithInteroperability(IEnumerable<InteroperabilityCriteria> interoperability)
+    public InteroperabilityScoringModel WithIntegrationTypes(IEnumerable<IntegrationType> integrationTypes)
     {
-        InteroperabilityCriteria = interoperability.ToList();
+        IntegrationTypes = integrationTypes.ToList();
 
         return this;
     }
+
+    public ICollection<IntegrationType> GetIm1Integrations() =>
+        IntegrationTypes.Where(x => x.IntegrationId == SupportedIntegrations.Im1).ToList();
+
+    public ICollection<IntegrationType> GetGpConnectIntegrations() =>
+        IntegrationTypes.Where(x => x.IntegrationId == SupportedIntegrations.GpConnect).ToList();
 }

@@ -22,33 +22,23 @@
             <input type="hidden" asp-for="CompetitionName"/>
             <input type="hidden" asp-for="BackLink"/>
 
-            <nhs-fieldset-form-label asp-for="@Model.Im1Integrations"
-                                     label-text="IM1 integrations"
+            @for (var i = 0; i < Model.Integrations.Count; i++)
+            {
+            <input type="hidden" asp-for="@Model.Integrations[i].Name"/>
+            <nhs-fieldset-form-label asp-for="@Model.Integrations[i]"
+                                     label-text="@Model.Integrations[i].Name integrations"
                                      label-hint="Select all options that are relevant to you.">
                 <nhs-checkbox-container>
-                    @for (var i = 0; i < Model.Im1Integrations.Count; i++)
+                    @for (var j = 0; j < Model.Integrations[i].IntegrationTypes.Count; j++)
                     {
-                        <input type="hidden" asp-for="@Model.Im1Integrations[i].Text"/>
-                        <nhs-checkbox asp-for="@Model.Im1Integrations[i].Selected"
-                                      label-text="@Model.Im1Integrations[i].Text"
-                                      hidden-input="@Model.Im1Integrations[i].Value"/>
+                    <input type="hidden" asp-for="@Model.Integrations[i].IntegrationTypes[j].Text"/>
+                    <nhs-checkbox asp-for="@Model.Integrations[i].IntegrationTypes[j].Selected"
+                                  label-text="@Model.Integrations[i].IntegrationTypes[j].Text"
+                                  hidden-input="@Model.Integrations[i].IntegrationTypes[j].Value"/>
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>
-
-            <nhs-fieldset-form-label asp-for="@Model.GpConnectIntegrations"
-                                     label-text="GP Connect integrations"
-                                     label-hint="Select all options that are relevant to you.">
-                <nhs-checkbox-container>
-                    @for (var i = 0; i < Model.GpConnectIntegrations.Count; i++)
-                    {
-                        <input type="hidden" asp-for="@Model.GpConnectIntegrations[i].Text"/>
-                        <nhs-checkbox asp-for="@Model.GpConnectIntegrations[i].Selected"
-                                      label-text="@Model.GpConnectIntegrations[i].Text"
-                                      hidden-input="@Model.GpConnectIntegrations[i].Value"/>
-                    }
-                </nhs-checkbox-container>
-            </nhs-fieldset-form-label>
+            }
 
             <br/>
             <div>

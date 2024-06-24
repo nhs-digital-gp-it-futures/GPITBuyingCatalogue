@@ -12,7 +12,7 @@ public class SelectInteroperabilityCriteriaModelValidator : AbstractValidator<Se
     public SelectInteroperabilityCriteriaModelValidator()
     {
         RuleFor(x => x)
-            .Must(x => x.Im1Integrations.Any(y => y.Selected) || x.GpConnectIntegrations.Any(y => y.Selected))
+            .Must(x => x.Integrations.SelectMany(y => y.IntegrationTypes).Any(y => y.Selected))
             .WithMessage(MissingSelectionError)
             .OverridePropertyName(PropertyName);
     }

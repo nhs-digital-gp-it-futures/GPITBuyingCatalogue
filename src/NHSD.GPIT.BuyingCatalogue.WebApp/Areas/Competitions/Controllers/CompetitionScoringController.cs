@@ -72,7 +72,7 @@ public class CompetitionScoringController : Controller
             var competition =
                 await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
 
-            model.WithInteroperability(competition.NonPriceElements.Interoperability)
+            model.WithIntegrationTypes(competition.NonPriceElements.IntegrationTypes)
                 .WithSolutions(competition.CompetitionSolutions, false);
 
             return View(model);

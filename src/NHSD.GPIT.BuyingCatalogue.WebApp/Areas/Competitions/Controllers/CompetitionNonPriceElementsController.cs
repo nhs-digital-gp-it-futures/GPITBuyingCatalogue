@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
@@ -15,19 +16,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 [Authorize("Buyer")]
 [Area("Competitions")]
 [Route("organisation/{internalOrgId}/competitions/{competitionId:int}/non-price-elements")]
-public class CompetitionNonPriceElementsController : Controller
+public class CompetitionNonPriceElementsController(
+    ICompetitionsService competitionsService,
+    ICompetitionNonPriceElementsService competitionNonPriceElementsService,
+    IIntegrationsService integrationsService)
+    : Controller
 {
-    private readonly ICompetitionsService competitionsService;
-    private readonly ICompetitionNonPriceElementsService competitionNonPriceElementsService;
-
-    public CompetitionNonPriceElementsController(
-        ICompetitionsService competitionsService,
-        ICompetitionNonPriceElementsService competitionNonPriceElementsService)
-    {
-        this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
-        this.competitionNonPriceElementsService = competitionNonPriceElementsService
-            ?? throw new ArgumentNullException(nameof(competitionNonPriceElementsService));
-    }
+    private readonly ICompetitionsService competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+    private readonly ICompetitionNonPriceElementsService competitionNonPriceElementsService = competitionNonPriceElementsService
+        ?? throw new ArgumentNullException(nameof(competitionNonPriceElementsService));
+    private readonly IIntegrationsService integrationsService = integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
 
     [HttpGet("dashboard")]
     public async Task<IActionResult> Index(
@@ -106,8 +104,9 @@ public class CompetitionNonPriceElementsController : Controller
         _ = selectedNonPriceElements;
 
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
+        var integrations = await integrationsService.GetIntegrationsWithTypes();
 
-        var model = new SelectInteroperabilityCriteriaModel(competition)
+        var model = new SelectInteroperabilityCriteriaModel(competition, integrations)
         {
             BackLink = returnUrl ?? Url.Action(
                 nameof(Index),
@@ -131,14 +130,12 @@ public class CompetitionNonPriceElementsController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var im1Integrations = model.Im1Integrations.Where(x => x.Selected).Select(x => x.Value);
-        var gpConnectIntegrations = model.GpConnectIntegrations.Where(x => x.Selected).Select(x => x.Value);
+        var im1Integrations = model.Integrations.SelectMany(x => x.IntegrationTypes).Where(x => x.Selected).Select(x => x.Value);
 
         await competitionsService.SetInteroperabilityCriteria(
             internalOrgId,
             competitionId,
-            im1Integrations,
-            gpConnectIntegrations);
+            im1Integrations);
 
         return GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements);
     }

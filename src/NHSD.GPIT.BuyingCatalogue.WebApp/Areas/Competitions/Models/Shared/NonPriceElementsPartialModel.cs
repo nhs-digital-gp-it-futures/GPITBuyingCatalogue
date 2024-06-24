@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 
@@ -51,16 +52,14 @@ public class NonPriceElementsPartialModel
     public bool HasReviewedCriteria { get; set; }
 
     public List<string> GetIm1Integrations() =>
-        NonPriceElements.Interoperability.Where(
-                x => x.IntegrationType == Integrations.Im1
-                    && Interoperability.Im1Integrations.ContainsKey(x.Qualifier))
-            .Select(x => Interoperability.Im1Integrations[x.Qualifier])
+        NonPriceElements.IntegrationTypes.Where(
+                x => x.IntegrationId == SupportedIntegrations.Im1)
+            .Select(x => x.Name)
             .ToList();
 
     public List<string> GetGpConnectIntegrations() =>
-        NonPriceElements.Interoperability.Where(
-                x => x.IntegrationType == Integrations.GpConnect
-                    && Interoperability.GpConnectIntegrations.ContainsKey(x.Qualifier))
-            .Select(x => Interoperability.GpConnectIntegrations[x.Qualifier])
+        NonPriceElements.IntegrationTypes.Where(
+                x => x.IntegrationId == SupportedIntegrations.GpConnect)
+            .Select(x => x.Name)
             .ToList();
 }

@@ -12,7 +12,7 @@ public class SolutionIntegration
 
     public string Description { get; set; }
 
-    public bool IsConsumer { get; set; }
+    public bool? IsConsumer { get; set; }
 
     public string IntegratesWith { get; set; }
 

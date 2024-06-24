@@ -177,6 +177,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<IntegrationType> IntegrationTypes { get; set; }
 
+        public DbSet<Integration> Integrations { get; set; }
+
         public async Task<Order> Order(CallOffId callOffId)
         {
             return await Orders

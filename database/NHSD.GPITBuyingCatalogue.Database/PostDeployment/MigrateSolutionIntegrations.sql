@@ -17,3 +17,12 @@ BEGIN
     ) AS IntegrationData
     INNER JOIN catalogue.IntegrationTypes IT ON IntegrationData.Qualifier = IT.[Name]
 END;
+
+IF NOT EXISTS(SELECT 1 FROM competitions.IntegrationsCriteria)
+BEGIN
+    INSERT INTO competitions.IntegrationsCriteria ([NonPriceElementsId], [IntegrationTypeId])
+    SELECT  NonPriceElementsId,
+            IT.[Id]
+    FROM competitions.InteroperabilityCriteria
+    INNER JOIN catalogue.IntegrationTypes IT ON Qualifier = IT.[Name]
+END;
