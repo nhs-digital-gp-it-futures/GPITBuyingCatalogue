@@ -98,7 +98,7 @@
                                 @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
                                 {
                                     <nhs-table-row-container>
-                                        <nhs-table-cell>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</nhs-table-cell>
+                                        <nhs-table-cell>@(specificIntegration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")</nhs-table-cell>
                                         <nhs-table-cell>@specificIntegration.IntegratesWith</nhs-table-cell>
                                         <nhs-table-cell>@specificIntegration.Description</nhs-table-cell>
                                     </nhs-table-row-container>
@@ -124,7 +124,7 @@
                                 @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
                                 {
                                     <nhs-table-row-container>
-                                        <nhs-table-cell>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</nhs-table-cell>
+                                        <nhs-table-cell>@(specificIntegration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")</nhs-table-cell>
                                         <nhs-table-cell>@specificIntegration.Description</nhs-table-cell>
                                     </nhs-table-row-container>
                                 }

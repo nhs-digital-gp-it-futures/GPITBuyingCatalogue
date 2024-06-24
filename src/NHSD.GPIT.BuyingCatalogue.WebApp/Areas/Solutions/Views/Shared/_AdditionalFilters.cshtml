@@ -55,7 +55,7 @@
         <hr class="nhsuk-section-break--s" />
         <nhs-fieldset-form-label asp-for="@Model.ApplicationTypeFilters" label-text="Application type" size="ExtraSmall">
             <nhs-checkbox-container size="Small">
-                @for (int clientAppTypeIndex = 0; clientAppTypeIndex < Model.ApplicationTypeOptions.Count; clientAppTypeIndex++)
+                @for (var clientAppTypeIndex = 0; clientAppTypeIndex < Model.ApplicationTypeOptions.Count; clientAppTypeIndex++)
                 {
                     <nhs-checkbox asp-for="@Model.ApplicationTypeOptions[clientAppTypeIndex].Selected"
                                   hidden-input="@Model.ApplicationTypeOptions[clientAppTypeIndex].Value"
@@ -75,42 +75,19 @@
             </nhs-checkbox-container>
         </nhs-fieldset-form-label>
         <hr class="nhsuk-section-break--s" />
-        <nhs-fieldset-form-label asp-for="@Model.InteroperabilityFilters" label-text="Interoperability" size="ExtraSmall">
+        <nhs-fieldset-form-label asp-for="@Model.IntegrationOptions" label-text="Interoperability" size="ExtraSmall">
             <nhs-checkbox-container size="Small">
-                @for (int j = 0; j < @Model.InteroperabilityOptions.Count(); j++)
+                @for (var i = 0; i < Model.IntegrationOptions.Count(); i++)
                 {
-
-                    <nhs-checkbox asp-for="@Model.InteroperabilityOptions[j].Selected"
-                                  label-text="@Model.InteroperabilityOptions[j].Text integrations"
-                                  hidden-input="@Model.InteroperabilityOptions[j].Value">
+                    <nhs-checkbox asp-for="@Model.IntegrationOptions[i].Selected"
+                                  label-text="@Model.IntegrationOptions[i].Name integrations"
+                                  hidden-input="@Model.IntegrationOptions[i].Id">
                         <nhs-checkbox-container size="Small">
-                            @if (@Model.InteroperabilityOptions[j].Text == @Model.InteroperabilityOptions[0].Text)
+                            @for (var j = 0; j < Model.IntegrationOptions[i].IntegrationTypes.Count; j++)
                             {
-                                @for (var i = 0; i < Model.IM1IntegrationsOptions.Count; i++)
-                                {
-                                    <nhs-checkbox asp-for="@Model.IM1IntegrationsOptions[i].Selected"
-                                                  label-text="@Model.IM1IntegrationsOptions[i].Text"
-                                                  hidden-input="@Model.IM1IntegrationsOptions[i].Value" />
-                                }
-
-                            }
-                            @if (@Model.InteroperabilityOptions[j].Text == @Model.InteroperabilityOptions[1].Text)
-                            {
-                                @for (var i = 0; i < Model.GPConnectIntegrationsOptions.Count; i++)
-                                {
-                                    <nhs-checkbox asp-for="@Model.GPConnectIntegrationsOptions[i].Selected"
-                                                  label-text="@Model.GPConnectIntegrationsOptions[i].Text"
-                                                  hidden-input="@Model.GPConnectIntegrationsOptions[i].Value" />
-                                }
-                            }
-                            @if (@Model.InteroperabilityOptions[j].Text == @Model.InteroperabilityOptions[2].Text)
-                            {
-                                @for (var i = 0; i < Model.NhsAppIntegrationsOptions.Count; i++)
-                                {
-                                    <nhs-checkbox asp-for="@Model.NhsAppIntegrationsOptions[i].Selected"
-                                                  label-text="@Model.NhsAppIntegrationsOptions[i].Text"
-                                                  hidden-input="@Model.NhsAppIntegrationsOptions[i].Value" />
-                                }
+                                <nhs-checkbox asp-for="@Model.IntegrationOptions[i].IntegrationTypes[j].Selected"
+                                              label-text="@Model.IntegrationOptions[i].IntegrationTypes[j].Text"
+                                              hidden-input="@Model.IntegrationOptions[i].IntegrationTypes[j].Value"/>
                             }
                         </nhs-checkbox-container>
                     </nhs-checkbox>

@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
 {
@@ -20,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
         public static Dictionary<int, string[]> ParseCapabilityAndEpicIds(string capabilityAndEpicsFilterString)
         {
             var capabilityAndEpics = capabilityAndEpicsFilterString?
-                .Split(FilterConstants.GroupDelimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
+                    .Split(FilterConstants.GroupDelimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
                 ?? Array.Empty<string>();
 
             return new Dictionary<int, string[]>(capabilityAndEpics
@@ -29,41 +27,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
                 .Select(x => new KeyValuePair<int, string[]>(int.Parse(x[0], CultureInfo.InvariantCulture), x.Skip(1).ToArray())));
         }
 
-        public static ICollection<ApplicationType> ParseApplicationTypeIds(string applicationTypeIds) =>
-            applicationTypeIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
-                .Where(x => Enum.TryParse(typeof(ApplicationType), x, out var catValue) && Enum.IsDefined(typeof(ApplicationType), catValue))
-                .Select(t => (ApplicationType)Enum.Parse(typeof(ApplicationType), t))
-                .ToList() ?? new List<ApplicationType>();
+        public static Dictionary<SupportedIntegrations, int[]>
+            ParseIntegrationAndTypeIds(string selectedIntegrations)
+        {
+            var integrations = selectedIntegrations?
+                    .Split(FilterConstants.GroupDelimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
+                ?? Array.Empty<string>();
 
-        public static ICollection<HostingType> ParseHostingTypeIds(string hostingTypeIds) =>
+            return new Dictionary<SupportedIntegrations, int[]>(integrations
+                .Select(x => x.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries))
+                .Where(x => Enum.TryParse(typeof(SupportedIntegrations), x[0], out var parsed) && Enum.IsDefined(typeof(SupportedIntegrations), parsed))
+                .Select(x => new KeyValuePair<SupportedIntegrations, int[]>(Enum.Parse<SupportedIntegrations>(x[0]), x.Skip(1).Where(y => int.TryParse(y, out _)).Select(int.Parse).ToArray())));
+        }
+
+        public static ICollection<T> ParseEnumFilter<T>(string hostingTypeIds)
+            where T : struct, Enum
+            =>
             hostingTypeIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
-                .Where(x => Enum.TryParse(typeof(HostingType), x, out var hostingValue) && Enum.IsDefined(typeof(HostingType), hostingValue))
-                .Select(t => (HostingType)Enum.Parse(typeof(HostingType), t))
-                .ToList() ?? new List<HostingType>();
-
-        public static ICollection<InteropIm1IntegrationType> ParseInteropIm1IntegrationsIds(string interopIm1IntegrationsIds) =>
-            interopIm1IntegrationsIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
-                .Where(x => Enum.TryParse(typeof(InteropIm1IntegrationType), x, out var hostingValue) && Enum.IsDefined(typeof(InteropIm1IntegrationType), hostingValue))
-                .Select(t => (InteropIm1IntegrationType)Enum.Parse(typeof(InteropIm1IntegrationType), t))
-                .ToList() ?? new List<InteropIm1IntegrationType>();
-
-        public static ICollection<InteropGpConnectIntegrationType> ParseInteropGpConnectIntegrationsIds(string selectedGPConnectIntegrationsIds) =>
-            selectedGPConnectIntegrationsIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
-                .Where(x => Enum.TryParse(typeof(InteropGpConnectIntegrationType), x, out var hostingValue) && Enum.IsDefined(typeof(InteropGpConnectIntegrationType), hostingValue))
-                .Select(t => (InteropGpConnectIntegrationType)Enum.Parse(typeof(InteropGpConnectIntegrationType), t))
-                .ToList() ?? new List<InteropGpConnectIntegrationType>();
-
-        public static ICollection<InteropNhsAppIntegrationType> ParseInteropNhsAppIntegrationsIds(string selectedNhsAppIntegrationsIds) =>
-            selectedNhsAppIntegrationsIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
-                .Where(x => Enum.TryParse(typeof(InteropNhsAppIntegrationType), x, out var hostingValue) && Enum.IsDefined(typeof(InteropNhsAppIntegrationType), hostingValue))
-                .Select(t => (InteropNhsAppIntegrationType)Enum.Parse(typeof(InteropNhsAppIntegrationType), t))
-                .ToList() ?? new List<InteropNhsAppIntegrationType>();
-
-        public static ICollection<SupportedIntegrations> ParseInteropIntegrationTypeIds(string selectedInteroperabilityIds) =>
-            selectedInteroperabilityIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
-                .Where(x => Enum.TryParse(typeof(SupportedIntegrations), x, out var hostingValue) && Enum.IsDefined(typeof(SupportedIntegrations), hostingValue))
-                .Select(t => (SupportedIntegrations)Enum.Parse(typeof(SupportedIntegrations), t))
-                .ToList() ?? new List<SupportedIntegrations>();
+                .Where(x => Enum.TryParse(typeof(T), x, out var hostingValue) && Enum.IsDefined(typeof(T), hostingValue))
+                .Select(t => (T)Enum.Parse(typeof(T), t))
+                .ToList() ?? new List<T>();
 
         public static ICollection<T> ParseSelectedFilterIds<T>(string selectedFilterIds)
         where T : struct, Enum

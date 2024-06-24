@@ -191,7 +191,7 @@
                                         @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
                                         {
                                             <tr class="alternating">
-                                                <td>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</td>
+                                                <td>@(specificIntegration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")</td>
                                                 <td>@specificIntegration.IntegratesWith</td>
                                                 <td>@specificIntegration.Description</td>
                                             </tr>
@@ -224,7 +224,7 @@
                                         @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
                                         {
                                             <tr class="alternating">
-                                                <td>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</td>
+                                                <td>@(specificIntegration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")</td>
                                                 <td>@specificIntegration.Description</td>
                                             </tr>
                                         }

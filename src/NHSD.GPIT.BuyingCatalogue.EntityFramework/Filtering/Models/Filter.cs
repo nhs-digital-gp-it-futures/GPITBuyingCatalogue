@@ -15,10 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
             FilterHostingTypes = new HashSet<FilterHostingType>();
             FilterApplicationTypes = new HashSet<FilterApplicationType>();
             FilterCapabilityEpics = new HashSet<FilterCapabilityEpic>();
-            FilterInteropIntegrationTypes = new HashSet<FilterInteroperabilityIntegrationType>();
-            FilterIM1IntegrationTypes = new HashSet<FilterIM1IntegrationsType>();
-            FilterGPConnectIntegrationTypes = new HashSet<FilterGPConnectIntegrationsType>();
-            FilterNhsAppIntegrationTypes = new HashSet<FilterNhsAppIntegrationsType>();
         }
 
         public int Id { get; set; }
@@ -53,12 +49,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
 
         public ICollection<FilterApplicationType> FilterApplicationTypes { get; set; }
 
-        public ICollection<FilterInteroperabilityIntegrationType> FilterInteropIntegrationTypes { get; set; }
-
-        public ICollection<FilterIM1IntegrationsType> FilterIM1IntegrationTypes { get; set; }
-
-        public ICollection<FilterGPConnectIntegrationsType> FilterGPConnectIntegrationTypes { get; set; }
-
-        public ICollection<FilterNhsAppIntegrationsType> FilterNhsAppIntegrationTypes { get; set; }
+        public ICollection<FilterIntegration> Integrations { get; set; } = new HashSet<FilterIntegration>();
     }
 }

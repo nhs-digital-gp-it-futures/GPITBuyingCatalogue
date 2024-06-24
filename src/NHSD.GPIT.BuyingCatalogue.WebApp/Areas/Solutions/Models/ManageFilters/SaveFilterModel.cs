@@ -20,10 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
             EntityFramework.Catalogue.Models.Framework framework,
             List<ApplicationType> applicationTypes,
             List<HostingType> hostingTypes,
-            List<InteropIm1IntegrationType> iM1IntegrationsTypes,
-            List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
-            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
-            List<SupportedIntegrations> interoperabilityIntegrationTypes,
+            Dictionary<string, IOrderedEnumerable<string>> integrations,
             int organisationId)
         {
             if (framework != null)
@@ -34,12 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
             ApplicationTypes = applicationTypes;
             HostingTypes = hostingTypes;
-            IM1IntegrationsTypes = iM1IntegrationsTypes;
-            GPConnectIntegrationsTypes = gPConnectIntegrationsTypes;
-            NhsAppIntegrationsTypes = nhsAppIntegrationsTypes;
-            InteroperabilityIntegrationTypes = interoperabilityIntegrationTypes;
             OrganisationId = organisationId;
             GroupedCapabilities = groupedCapabilities;
+            Integrations = integrations;
         }
 
         [StringLength(100)]
@@ -54,17 +48,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
 
         public int OrganisationId { get; init; }
 
-        public List<ApplicationType> ApplicationTypes { get; init; }
+        public List<ApplicationType> ApplicationTypes { get; init; } = [];
 
-        public List<HostingType> HostingTypes { get; init; }
+        public List<HostingType> HostingTypes { get; init; } = [];
 
-        public List<InteropIm1IntegrationType> IM1IntegrationsTypes { get; set; }
-
-        public List<InteropGpConnectIntegrationType> GPConnectIntegrationsTypes { get; set; }
-
-        public List<InteropNhsAppIntegrationType> NhsAppIntegrationsTypes { get; set; }
-
-        public List<SupportedIntegrations> InteroperabilityIntegrationTypes { get; set; }
+        public Dictionary<string, IOrderedEnumerable<string>> Integrations { get; set; } = new();
 
         public Dictionary<string, IOrderedEnumerable<Epic>> GroupedCapabilities { get; set; } = new();
     }

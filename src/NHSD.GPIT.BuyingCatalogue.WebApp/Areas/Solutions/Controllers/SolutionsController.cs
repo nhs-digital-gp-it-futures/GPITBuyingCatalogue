@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -23,37 +24,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 {
     [Area("Solutions")]
     [Route("catalogue-solutions")]
-    public sealed class SolutionsController : Controller
+    public sealed class SolutionsController(
+        ISolutionsService solutionsService,
+        IListPriceService listPriceService,
+        IAdditionalServicesService additionalServicesService,
+        ISolutionsFilterService solutionsFilterService,
+        IFrameworkService frameworkService,
+        IIntegrationsService integrationsService)
+        : Controller
     {
-        private readonly ISolutionsService solutionsService;
-        private readonly IListPriceService listPriceService;
-        private readonly IAdditionalServicesService additionalServicesService;
-        private readonly ISolutionsFilterService solutionsFilterService;
-        private readonly IFrameworkService frameworkService;
-        private readonly IOrganisationsService organisationsService;
-        private readonly IManageFiltersService manageFiltersService;
-
-        public SolutionsController(
-            ISolutionsService solutionsService,
-            IListPriceService listPriceService,
-            IAdditionalServicesService additionalServicesService,
-            ISolutionsFilterService solutionsFilterService,
-            IFrameworkService frameworkService,
-            IOrganisationsService organisationsService,
-            IManageFiltersService manageFiltersService)
-        {
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
-            this.additionalServicesService = additionalServicesService
-                ?? throw new ArgumentNullException(nameof(additionalServicesService));
-            this.solutionsFilterService = solutionsFilterService
-                ?? throw new ArgumentNullException(nameof(solutionsFilterService));
-            this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
-            this.organisationsService =
-                organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
-            this.manageFiltersService =
-                manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
-        }
+        private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+        private readonly IListPriceService listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
+        private readonly IAdditionalServicesService additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
+        private readonly ISolutionsFilterService solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
+        private readonly IFrameworkService frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
+        private readonly IIntegrationsService integrationsService = integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
 
         [HttpGet]
         public async Task<IActionResult> Index(
@@ -64,10 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             [FromQuery] string selectedFrameworkId,
             [FromQuery] string selectedApplicationTypeIds,
             [FromQuery] string selectedHostingTypeIds,
-            [FromQuery] string selectedIM1Integrations,
-            [FromQuery] string selectedGPConnectIntegrations,
-            [FromQuery] string selectedNhsAppIntegrations,
-            [FromQuery] string selectedInteroperabilityOptions)
+            [FromQuery] string selectedIntegrations)
         {
             var filters = new RequestedFilters(
                 selected,
@@ -75,10 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 selectedFrameworkId,
                 selectedApplicationTypeIds,
                 selectedHostingTypeIds,
-                selectedIM1Integrations,
-                selectedGPConnectIntegrations,
-                selectedNhsAppIntegrations,
-                selectedInteroperabilityOptions,
+                selectedIntegrations,
                 sortBy);
 
             var inputOptions = new PageOptions(page, sortBy)
@@ -94,20 +73,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedFrameworkId,
                     selectedApplicationTypeIds,
                     selectedHostingTypeIds,
-                    selectedIM1Integrations,
-                    selectedGPConnectIntegrations,
-                    selectedNhsAppIntegrations,
-                    selectedInteroperabilityOptions);
+                    filters.GetIntegrationsAndTypes());
 
             var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
+            var integrations = await integrationsService.GetIntegrationsWithTypes();
 
-            var additionalFilters = new AdditionalFiltersModel(frameworks, filters);
+            var additionalFilters = new AdditionalFiltersModel(frameworks, filters, integrations);
 
             return View(
                 new SolutionsModel
                 {
                     AdditionalFilters = additionalFilters,
-                    ResultsModel = new SolutionsResultsModel()
+                    ResultsModel = new SolutionsResultsModel
                     {
                         PageOptions = options,
                         CatalogueItems = catalogueItems,
@@ -119,8 +96,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpPost]
         public IActionResult Index(AdditionalFiltersModel model)
         {
-            model.SetParentFilters();
-
             return RedirectToAction(
                 nameof(Index),
                 typeof(SolutionsController).ControllerName(),
@@ -131,8 +106,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public IActionResult SelectCapabilities(
             AdditionalFiltersModel model)
         {
-            model.SetParentFilters();
-
             return RedirectToAction(
                 nameof(FilterController.FilterCapabilities),
                 typeof(FilterController).ControllerName(),
@@ -143,8 +116,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         public IActionResult SelectEpics(
             AdditionalFiltersModel model)
         {
-            model.SetParentFilters();
-
             return RedirectToAction(
                 nameof(FilterController.FilterEpics),
                 typeof(FilterController).ControllerName(),
@@ -184,10 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     filters.SelectedFrameworkId,
                     filters.SelectedApplicationTypeIds,
                     filters.SelectedHostingTypeIds,
-                    filters.SelectedIM1Integrations,
-                    filters.SelectedGPConnectIntegrations,
-                    filters.SelectedNhsAppIntegrations,
-                    filters.SelectedInteroperabilityOptions);
+                    filters.GetIntegrationsAndTypes());
 
             var model = new SolutionsResultsModel()
             {

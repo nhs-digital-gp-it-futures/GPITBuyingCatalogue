@@ -22,13 +22,7 @@ public class FilterDetailsModel
 
     public List<ApplicationType> ApplicationTypes { get; set; } = Enumerable.Empty<ApplicationType>().ToList();
 
-    public List<Integrations> InteropIntegrationTypes { get; set; } = Enumerable.Empty<Integrations>().ToList();
-
-    public List<InteropIm1IntegrationType> InteropIm1IntegrationsTypes { get; set; } = Enumerable.Empty<InteropIm1IntegrationType>().ToList();
-
-    public List<InteropGpConnectIntegrationType> InteropGpConnectIntegrationsTypes { get; set; } = Enumerable.Empty<InteropGpConnectIntegrationType>().ToList();
-
-    public List<InteropNhsAppIntegrationType> InteropNhsAppIntegrationsTypes { get; set; } = Enumerable.Empty<InteropNhsAppIntegrationType>().ToList();
+    public List<KeyValuePair<string, string[]>> Integrations { get; set; }
 
     public List<KeyValuePair<string, List<string>>> Capabilities { get; set; }
 }

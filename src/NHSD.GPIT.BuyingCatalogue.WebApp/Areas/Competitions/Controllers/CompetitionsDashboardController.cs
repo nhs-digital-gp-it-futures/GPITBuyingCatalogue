@@ -147,7 +147,7 @@ public class CompetitionsDashboardController : Controller
         _ = filterId;
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        var backlink = fromFilter == true ?
+        var backlink = fromFilter ?
                 Url.Action(
                     nameof(ManageFiltersController.FilterDetails),
                     typeof(ManageFiltersController).ControllerName(),
@@ -211,10 +211,7 @@ public class CompetitionsDashboardController : Controller
                 selectedFrameworkId: filter.FrameworkId,
                 selectedApplicationTypeIds: filter.ApplicationTypeIds.ToFilterString(),
                 selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString(),
-                selectedIm1Integrations: filter.IM1Integrations.ToFilterString(),
-                selectedGpConnectIntegrations: filter.GPConnectIntegrations.ToFilterString(),
-                selectedNhsAppIntegrations: filter.NhsAppIntegrations.ToFilterString(),
-                selectedInteroperabilityOptions: filter.InteroperabilityOptions.ToFilterString());
+                selectedIntegrationsAndTypes: filter.IntegrationsIds);
 
         var competitionSolutions = solutionsAndServices
             .Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId))

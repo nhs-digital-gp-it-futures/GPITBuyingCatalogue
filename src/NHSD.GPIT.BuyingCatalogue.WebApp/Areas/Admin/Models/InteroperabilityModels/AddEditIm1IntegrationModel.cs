@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
         {
             IntegrationTypeId = solutionIntegration.IntegrationTypeId;
             SelectedIntegrationType = solutionIntegration.IntegrationTypeId;
-            IsConsumer = solutionIntegration.IsConsumer;
+            IsConsumer = solutionIntegration.IsConsumer.GetValueOrDefault();
             Description = solutionIntegration.Description;
             IntegratesWith = solutionIntegration.IntegratesWith;
         }

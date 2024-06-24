@@ -52,7 +52,7 @@
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>
-                                    @(integration.IsConsumer ? "Consumer" : "Provider")
+                                    @(integration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     @integration.IntegratesWith
@@ -102,7 +102,7 @@
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>
-                                    @(integration.IsConsumer ? "Consumer" : "Provider")
+                                    @(integration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     <p class="nhsuk-u-margin-0">
