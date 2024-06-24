@@ -1,11 +1,11 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.ListPrices
@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
     public static class AddTieredPriceTierModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MissingPrice_SetsModelError(
             AddEditTieredPriceTierModel model,
             AddEditTieredPriceTierModelValidator validator)
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NegativePrice_SetsModelError(
             AddEditTieredPriceTierModel model,
             AddEditTieredPriceTierModelValidator validator)
@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PriceGreaterThan4DecimalPlaces_SetsModelError(
                 AddEditTieredPriceTierModel model,
                 AddEditTieredPriceTierModelValidator validator)
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MissingLowerRange_SetsModelError(
             AddEditTieredPriceTierModel model,
             AddEditTieredPriceTierModelValidator validator)
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_UpperRangeMissing_SetsModelError(
             AddEditTieredPriceTierModel model,
             AddEditTieredPriceTierModelValidator validator)
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_UpperRangeMissing_InfiniteRange_NoModelError(
             AddEditTieredPriceTierModel model,
             AddEditTieredPriceTierModelValidator validator)
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_RangeTypeMissing_SetsModelError(
             AddEditTieredPriceTierModel model,
             AddEditTieredPriceTierModelValidator validator)
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PriceNotNumeric_SetsModelError(
             AddEditTieredPriceTierModel model,
             AddEditTieredPriceTierModelValidator validator)
@@ -130,10 +130,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Duplicate_InfiniteRange_SetsModelError(
             AddEditTieredPriceTierModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             AddEditTieredPriceTierModelValidator validator)
         {
             model.IsInfiniteRange = true;
@@ -141,12 +141,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.LowerRange = 1;
             model.UpperRange = null;
 
-            service.Setup(s => s.HasDuplicatePriceTier(
+            service.HasDuplicatePriceTier(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.TierId,
                 model.LowerRange!.Value,
-                model.UpperRange)).ReturnsAsync(true);
+                model.UpperRange).Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -155,10 +155,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Duplicate_UpperRange_SetsModelError(
             AddEditTieredPriceTierModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             AddEditTieredPriceTierModelValidator validator)
         {
             model.IsInfiniteRange = false;
@@ -166,12 +166,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.LowerRange = 1;
             model.UpperRange = 9;
 
-            service.Setup(s => s.HasDuplicatePriceTier(
+            service.HasDuplicatePriceTier(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.TierId,
                 model.LowerRange!.Value,
-                model.UpperRange)).ReturnsAsync(true);
+                model.UpperRange).Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -180,10 +180,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelErrors(
             AddEditTieredPriceTierModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             AddEditTieredPriceTierModelValidator validator)
         {
             model.IsInfiniteRange = false;
@@ -191,12 +191,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.LowerRange = 1;
             model.UpperRange = 9;
 
-            service.Setup(s => s.HasDuplicatePriceTier(
+            service.HasDuplicatePriceTier(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.TierId,
                 model.LowerRange!.Value,
-                model.UpperRange)).ReturnsAsync(false);
+                model.UpperRange).Returns(false);
 
             var result = validator.TestValidate(model);
 
