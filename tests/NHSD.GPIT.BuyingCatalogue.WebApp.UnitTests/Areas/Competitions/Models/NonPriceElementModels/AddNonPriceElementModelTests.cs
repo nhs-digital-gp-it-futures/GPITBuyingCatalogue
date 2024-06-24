@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 using Xunit;
 
@@ -80,7 +80,7 @@ public static class AddNonPriceElementModelTests
     };
 
     [Theory]
-    [CommonMemberAutoData(nameof(AddNonPriceElementsTestData))]
+    [MockMemberAutoData(nameof(AddNonPriceElementsTestData))]
     public static void Construct_SetsPropertiesAsExpected(
         NonPriceElements elements,
         IEnumerable<SelectOption<NonPriceElement>> expected,
