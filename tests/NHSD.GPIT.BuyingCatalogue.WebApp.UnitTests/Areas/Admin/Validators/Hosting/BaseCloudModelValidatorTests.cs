@@ -1,10 +1,10 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Hosting;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Hosting
@@ -12,8 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Host
     public static class BaseCloudModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_SummaryNullOrEmpty_SetsModelError(
             string summary,
             BaseCloudModel model,
@@ -28,17 +28,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Host
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelError(
             string summary,
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             BaseCloudModel model,
             BaseCloudModelValidator validator)
         {
             model.Summary = summary;
 
-            urlValidator.Setup(v => v.IsValidUrl(It.IsAny<string>()))
-                .Returns(true);
+            urlValidator.IsValidUrl(Arg.Any<string>()).Returns(true);
 
             var result = validator.TestValidate(model);
 
