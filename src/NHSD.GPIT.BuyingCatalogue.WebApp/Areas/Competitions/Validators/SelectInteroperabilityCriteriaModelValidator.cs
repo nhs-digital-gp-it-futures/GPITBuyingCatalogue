@@ -6,12 +6,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
 
 public class SelectInteroperabilityCriteriaModelValidator : AbstractValidator<SelectInteroperabilityCriteriaModel>
 {
+    internal const string InputName = "integrations";
     internal const string MissingSelectionError = "Select an integration";
 
     public SelectInteroperabilityCriteriaModelValidator()
     {
-        RuleFor(x => x)
-            .Must(x => x.Integrations.SelectMany(y => y.Value).Any(y => y.Selected))
-            .WithMessage(MissingSelectionError);
+        RuleFor(x => x.Integrations)
+            .Must(x => x.SelectMany(y => y.Value).Any(y => y.Selected))
+            .WithMessage(MissingSelectionError)
+            .OverridePropertyName(InputName);
     }
 }
