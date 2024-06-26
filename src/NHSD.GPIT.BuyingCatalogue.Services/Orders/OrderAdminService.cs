@@ -69,7 +69,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (options is null)
                 throw new ArgumentNullException(nameof(options));
 
-            var baseQuery = dbContext.Orders.Include(x => x.OrderingParty).IgnoreQueryFilters().AsNoTracking().AsQueryable();
+            var baseQuery = dbContext.Orders.Include(x => x.OrderingParty)
+                .OrderByDescending(o => o.Created)
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
                 baseQuery = GetSearchTermBySearchType(baseQuery, search, searchTermType);

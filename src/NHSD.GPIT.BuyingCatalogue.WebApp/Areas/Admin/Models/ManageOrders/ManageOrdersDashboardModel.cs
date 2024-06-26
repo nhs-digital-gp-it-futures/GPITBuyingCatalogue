@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
 
         public ManageOrdersDashboardModel(IList<AdminManageOrder> orders, IEnumerable<FrameworkFilterInfo> frameworks, PageOptions options, string status, string framework)
         {
-            Orders = orders?.OrderByDescending(o => o.Created).ToList();
+            Orders = orders.ToList();
             Options = options;
             SetAvailableFrameworks(frameworks);
             SelectedStatus = !string.IsNullOrWhiteSpace(status) && Enum.TryParse(status, out OrderStatus orderStatus)
