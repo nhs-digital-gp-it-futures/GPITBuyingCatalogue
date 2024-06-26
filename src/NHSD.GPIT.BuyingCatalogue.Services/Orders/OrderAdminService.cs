@@ -194,7 +194,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private static string ParseCallOffId(string search) => search
             .Replace("C0", string.Empty, StringComparison.OrdinalIgnoreCase)
-            .Replace("-01", string.Empty, StringComparison.OrdinalIgnoreCase);
+            .Replace("-01", string.Empty, StringComparison.OrdinalIgnoreCase)
+            .TrimStart('0');
 
         private static class OrderSearchTerms
         {

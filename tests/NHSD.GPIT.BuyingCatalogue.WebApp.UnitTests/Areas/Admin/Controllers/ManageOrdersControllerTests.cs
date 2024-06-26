@@ -12,7 +12,9 @@ using FluentAssertions;
 using Flurl.Http.Content;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -30,6 +32,7 @@ using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using NSubstitute;
 using Xunit;
@@ -66,6 +69,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Post_Index_ReturnsRedirectToActionResult(
+            ManageOrdersDashboardModel model,
+            ManageOrdersController controller)
+        {
+            var result = controller.Index(model);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(ManageOrdersController.Index));
+            actualResult.ControllerName.Should().Be(typeof(ManageOrdersController).ControllerName());
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary
+                    {
+                        { "framework", model.SelectedFramework },
+                        { "status", model.SelectedStatus },
+                    });
         }
 
         [Theory]
