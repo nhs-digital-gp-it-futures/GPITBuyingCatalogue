@@ -19,24 +19,17 @@ public class NonPriceElementsPartialModel
         string internalOrgId,
         int competitionId,
         NonPriceElements nonPriceElements,
-        object routeValues)
+        object routeValues,
+        bool hasReviewedCriteria,
+        Dictionary<SupportedIntegrations, string> availableIntegrations)
     {
         InternalOrgId = internalOrgId;
         CompetitionId = competitionId;
 
         NonPriceElements = nonPriceElements;
         RouteValues = routeValues;
-    }
-
-    public NonPriceElementsPartialModel(
-        string internalOrgId,
-        int competitionId,
-        NonPriceElements nonPriceElements,
-        object routeValues,
-        bool hasReviewedCriteria)
-        : this(internalOrgId, competitionId, nonPriceElements, routeValues)
-    {
         HasReviewedCriteria = hasReviewedCriteria;
+        AvailableIntegrations = availableIntegrations;
     }
 
     public string InternalOrgId { get; set; }
@@ -51,15 +44,5 @@ public class NonPriceElementsPartialModel
 
     public bool HasReviewedCriteria { get; set; }
 
-    public List<string> GetIm1Integrations() =>
-        NonPriceElements.IntegrationTypes.Where(
-                x => x.IntegrationId == SupportedIntegrations.Im1)
-            .Select(x => x.Name)
-            .ToList();
-
-    public List<string> GetGpConnectIntegrations() =>
-        NonPriceElements.IntegrationTypes.Where(
-                x => x.IntegrationId == SupportedIntegrations.GpConnect)
-            .Select(x => x.Name)
-            .ToList();
+    public Dictionary<SupportedIntegrations, string> AvailableIntegrations { get; set; }
 }

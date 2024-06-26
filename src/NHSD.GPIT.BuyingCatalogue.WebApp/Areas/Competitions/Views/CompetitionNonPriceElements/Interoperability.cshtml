@@ -24,20 +24,20 @@
 
             @for (var i = 0; i < Model.Integrations.Count; i++)
             {
-            <input type="hidden" asp-for="@Model.Integrations[i].Name"/>
-            <nhs-fieldset-form-label asp-for="@Model.Integrations[i]"
-                                     label-text="@Model.Integrations[i].Name integrations"
-                                     label-hint="Select all options that are relevant to you.">
-                <nhs-checkbox-container>
-                    @for (var j = 0; j < Model.Integrations[i].IntegrationTypes.Count; j++)
-                    {
-                    <input type="hidden" asp-for="@Model.Integrations[i].IntegrationTypes[j].Text"/>
-                    <nhs-checkbox asp-for="@Model.Integrations[i].IntegrationTypes[j].Selected"
-                                  label-text="@Model.Integrations[i].IntegrationTypes[j].Text"
-                                  hidden-input="@Model.Integrations[i].IntegrationTypes[j].Value"/>
-                    }
-                </nhs-checkbox-container>
-            </nhs-fieldset-form-label>
+                <input type="hidden" asp-for="@Model.Integrations[i].Key"/>
+                <nhs-fieldset-form-label asp-for="@Model.Integrations[i]"
+                                         label-text="@Model.Integrations[i].Key integrations"
+                                         label-hint="Select all options that are relevant to you.">
+                    <nhs-checkbox-container>
+                        @for (var j = 0; j < Model.Integrations[i].Value.Count; j++)
+                        {
+                            <input type="hidden" asp-for="@Model.Integrations[i].Value[j].Text"/>
+                            <nhs-checkbox asp-for="@Model.Integrations[i].Value[j].Selected"
+                                          label-text="@Model.Integrations[i].Value[j].Text"
+                                          hidden-input="@Model.Integrations[i].Value[j].Value"/>
+                        }
+                    </nhs-checkbox-container>
+                </nhs-fieldset-form-label>
             }
 
             <br/>

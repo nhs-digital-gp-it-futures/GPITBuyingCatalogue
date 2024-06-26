@@ -159,6 +159,11 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(x => x.Solution.ServiceLevelAgreement.ServiceHours)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Scores)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Solution)
+            .ThenInclude(x => x.Integrations)
+            .ThenInclude(x => x.IntegrationType)
+            .ThenInclude(x => x.Integration)
             .Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.ServiceLevel)
@@ -326,7 +331,7 @@ public class CompetitionsService : ICompetitionsService
         if (staleEntities.Count != 0) staleEntities.ForEach(x => interopEntities.Remove(x));
 
         var newInteropEntities = integrationTypes
-            .Where(x => interopEntities.All(y => x.Id != y.Id))
+            .Where(x => integrations.Contains(x.Id) && interopEntities.All(y => x.Id != y.Id))
             .ToList();
 
         interopEntities.AddRange(newInteropEntities);
@@ -579,6 +584,9 @@ public class CompetitionsService : ICompetitionsService
         var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.SolutionServices)
             .ThenInclude(x => x.Service)
+            .Include(competition => competition.CompetitionSolutions)
+            .ThenInclude(competitionSolution => competitionSolution.SolutionServices)
+            .ThenInclude(solutionService => solutionService.Price)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);

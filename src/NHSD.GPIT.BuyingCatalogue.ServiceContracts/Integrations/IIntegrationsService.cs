@@ -7,6 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 
 public interface IIntegrationsService
 {
+    Task<IEnumerable<Integration>> GetIntegrations();
+
     Task<IEnumerable<Integration>> GetIntegrationsWithTypes();
 
     Task<Dictionary<string, IOrderedEnumerable<string>>> GetIntegrationAndTypeNames(

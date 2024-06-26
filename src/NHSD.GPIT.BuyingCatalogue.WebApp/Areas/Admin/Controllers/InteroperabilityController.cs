@@ -140,20 +140,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var im1Integration = solution
+            var integration = solution
                 .Solution
                 .Integrations
                 .FirstOrDefault(i => i.Id == integrationId);
 
-            if (im1Integration is null)
+            if (integration is null)
                 return BadRequest($"No integration found for Id: {integrationId}");
 
-            im1Integration.IntegrationTypeId = model.SelectedIntegrationType.GetValueOrDefault();
-            im1Integration.IntegratesWith = model.IntegratesWith;
-            im1Integration.Description = model.Description;
-            im1Integration.IsConsumer = model.IsConsumer;
+            integration.IntegrationTypeId = model.SelectedIntegrationType.GetValueOrDefault();
+            integration.IntegratesWith = model.IntegratesWith;
+            integration.Description = model.Description;
+            integration.IsConsumer = model.IsConsumer;
 
-            await interoperabilityService.EditIntegration(solutionId, integrationId, im1Integration);
+            await interoperabilityService.EditIntegration(solutionId, integrationId, integration);
 
             return RedirectToAction(nameof(Interoperability), new { solutionId });
         }

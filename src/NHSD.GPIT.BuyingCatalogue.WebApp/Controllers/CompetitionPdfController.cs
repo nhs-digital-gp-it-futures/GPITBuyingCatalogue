@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionPdfModels;
 
@@ -12,15 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 
 [Route("organisation/{internalOrgId}/competitions/{competitionId:int}/pdf")]
 [RestrictToLocalhostActionFilter]
-public class CompetitionPdfController : Controller
+public class CompetitionPdfController(ICompetitionsService competitionsService, IIntegrationsService integrationsService) : Controller
 {
-    private readonly ICompetitionsService competitionsService;
+    private readonly ICompetitionsService competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
 
-    public CompetitionPdfController(
-        ICompetitionsService competitionsService)
-    {
-        this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
-    }
+    private readonly IIntegrationsService integrationsService =
+        integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
 
     [HttpGet("confirm-results-pdf")]
     public async Task<IActionResult> ConfirmResults(
@@ -42,9 +40,14 @@ public class CompetitionPdfController : Controller
         int competitionId) => GetScoringView(internalOrgId, competitionId, c => new PdfScoringImplementationModel(c));
 
     [HttpGet("interop-scoring-pdf")]
-    public Task<IActionResult> InteropScoring(
+    public async Task<IActionResult> InteropScoring(
         string internalOrgId,
-        int competitionId) => GetScoringView(internalOrgId, competitionId, c => new PdfScoringInteropModel(c));
+        int competitionId)
+    {
+        var integrations = await integrationsService.GetIntegrations();
+
+        return await GetScoringView(internalOrgId, competitionId, c => new PdfScoringInteropModel(c, integrations));
+    }
 
     [HttpGet("service-level-scoring-pdf")]
     public Task<IActionResult> ServiceLevelScoring(

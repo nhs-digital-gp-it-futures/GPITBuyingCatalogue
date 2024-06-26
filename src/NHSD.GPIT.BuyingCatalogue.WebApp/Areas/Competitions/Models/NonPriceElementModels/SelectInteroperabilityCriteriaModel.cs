@@ -22,19 +22,20 @@ public class SelectInteroperabilityCriteriaModel : NonPriceElementBase
 
         CanDelete = competition.NonPriceElements?.IntegrationTypes?.Count == 0;
 
-        Integrations = integrations.Where(x => x.Id is SupportedIntegrations.Im1 or SupportedIntegrations.GpConnect) // CM TODO: Make generic when introducing NHS App Integration Types to Competition journey
+        Integrations = integrations
             .Select(
-                x => (x.Name,
+                x => new KeyValuePair<string, List<SelectOption<int>>>(
+                    x.Name,
                     x.IntegrationTypes.Select(
                             y => new SelectOption<int>(
                                 y.Name,
                                 y.Id,
-                                competition.NonPriceElements?.IntegrationTypes?.Any(z => z.Id == y.Id) ?? false))
+                                competition.NonPriceElements?.IntegrationTypes?.Any(z => z.Id == y.Id && z.IntegrationId == y.IntegrationId) ?? false))
                         .ToList()))
             .ToList();
     }
 
     public string CompetitionName { get; set; }
 
-    public List<(string Name, List<SelectOption<int>> IntegrationTypes)> Integrations { get; set; }
+    public List<KeyValuePair<string, List<SelectOption<int>>>> Integrations { get; set; }
 }

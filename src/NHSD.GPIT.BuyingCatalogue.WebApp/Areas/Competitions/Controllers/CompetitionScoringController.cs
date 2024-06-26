@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ScoringModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -17,13 +18,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 public class CompetitionScoringController : Controller
 {
     private readonly ICompetitionsService competitionsService;
+    private readonly IIntegrationsService integrationsService;
     private readonly IPdfService pdfService;
 
     public CompetitionScoringController(
         ICompetitionsService competitionsService,
+        IIntegrationsService integrationsService,
         IPdfService pdfService)
     {
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+        this.integrationsService = integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
         this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
     }
 
@@ -51,8 +55,9 @@ public class CompetitionScoringController : Controller
         int competitionId)
     {
         var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
+        var integrations = await integrationsService.GetIntegrations();
 
-        var model = new InteroperabilityScoringModel(competition)
+        var model = new InteroperabilityScoringModel(competition, integrations)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
             PdfUrl = Url.Action(nameof(InteropPdf), new { internalOrgId, competitionId }),
@@ -72,8 +77,11 @@ public class CompetitionScoringController : Controller
             var competition =
                 await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
 
+            var integrations = await integrationsService.GetIntegrations();
+
             model.WithIntegrationTypes(competition.NonPriceElements.IntegrationTypes)
-                .WithSolutions(competition.CompetitionSolutions, false);
+                .WithSolutions(competition.CompetitionSolutions, false)
+                .WithIntegrations(integrations);
 
             return View(model);
         }

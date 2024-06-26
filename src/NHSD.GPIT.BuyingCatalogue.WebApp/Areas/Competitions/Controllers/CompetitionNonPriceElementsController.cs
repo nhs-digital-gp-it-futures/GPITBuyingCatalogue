@@ -23,8 +23,7 @@ public class CompetitionNonPriceElementsController(
     : Controller
 {
     private readonly ICompetitionsService competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
-    private readonly ICompetitionNonPriceElementsService competitionNonPriceElementsService = competitionNonPriceElementsService
-        ?? throw new ArgumentNullException(nameof(competitionNonPriceElementsService));
+    private readonly ICompetitionNonPriceElementsService competitionNonPriceElementsService = competitionNonPriceElementsService ?? throw new ArgumentNullException(nameof(competitionNonPriceElementsService));
     private readonly IIntegrationsService integrationsService = integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
 
     [HttpGet("dashboard")]
@@ -33,8 +32,9 @@ public class CompetitionNonPriceElementsController(
         int competitionId)
     {
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
+        var integrations = await integrationsService.GetIntegrations();
 
-        var model = new NonPriceElementsModel(competition)
+        var model = new NonPriceElementsModel(competition, integrations)
         {
             BackLink = Url.Action(
                 nameof(CompetitionTaskListController.Index),
@@ -130,12 +130,12 @@ public class CompetitionNonPriceElementsController(
         if (!ModelState.IsValid)
             return View(model);
 
-        var im1Integrations = model.Integrations.SelectMany(x => x.IntegrationTypes).Where(x => x.Selected).Select(x => x.Value);
+        var integrations = model.Integrations.SelectMany(x => x.Value).Where(x => x.Selected).Select(x => x.Value);
 
         await competitionsService.SetInteroperabilityCriteria(
             internalOrgId,
             competitionId,
-            im1Integrations);
+            integrations);
 
         return GetRedirect(internalOrgId, competitionId, returnUrl, selectedNonPriceElements);
     }

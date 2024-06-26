@@ -29,45 +29,28 @@
     var interopUrl = Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), Model.RouteValues);
 
     <nhs-card title="Interoperability" size="Large">
-        @{
-            var im1Integrations = Model.GetIm1Integrations();
-            var gpConnectIntegrations = Model.GetGpConnectIntegrations();
-        }
-        <nhs-summary-list>
-            <nhs-summary-list-row label-text="IM1 integrations" action="@CreateAction(interopUrl)">
-                @if (!im1Integrations.Any())
-                {
-                    <span>None selected</span>
-                }
-                else
-                {
-                    <ul>
-                        @foreach (var integration in im1Integrations.Order())
-                        {
-                            <li>@integration</li>
-                        }
-                    </ul>
-                }
-            </nhs-summary-list-row>
-        </nhs-summary-list>
+        @foreach (var integration in Model.AvailableIntegrations.OrderBy(x => x.Key))
+        {
+            var selectedIntegrationTypes = Model.NonPriceElements.IntegrationTypes.Where(x => x.IntegrationId == integration.Key).OrderBy(x => x.Name).ToList();
 
-        <nhs-summary-list>
-            <nhs-summary-list-row label-text="GP Connect integrations" action="@CreateAction(interopUrl)">
-                @if (!gpConnectIntegrations.Any())
-                {
-                    <span>None selected</span>
-                }
-                else
-                {
-                    <ul>
-                        @foreach (var integration in gpConnectIntegrations.Order())
-                        {
-                            <li>@integration</li>
-                        }
-                    </ul>
-                }
-            </nhs-summary-list-row>
-        </nhs-summary-list>
+            <nhs-summary-list>
+                <nhs-summary-list-row label-text="@(integration.Value) integrations" action="@CreateAction(interopUrl)">
+                    @if (!selectedIntegrationTypes.Any())
+                    {
+                        <span>None selected</span>
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (var selectedIntegration in selectedIntegrationTypes.OrderBy(x => x.Name))
+                            {
+                                <li>@selectedIntegration.Name</li>
+                            }
+                        </ul>
+                    }
+                </nhs-summary-list-row>
+            </nhs-summary-list>
+        }
     </nhs-card>
 }
 

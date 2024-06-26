@@ -14,6 +14,9 @@ public sealed class IntegrationsService(BuyingCatalogueDbContext dbContext) : II
     private readonly BuyingCatalogueDbContext dbContext =
         dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
+    public async Task<IEnumerable<Integration>> GetIntegrations()
+        => await dbContext.Integrations.ToListAsync();
+
     public async Task<IEnumerable<Integration>> GetIntegrationsWithTypes()
         => await dbContext.Integrations.Include(x => x.IntegrationTypes).ToListAsync();
 
