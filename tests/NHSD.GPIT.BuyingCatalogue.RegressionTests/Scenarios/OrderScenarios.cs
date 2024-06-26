@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering;
@@ -2164,6 +2165,40 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             OrderingPages.AmendOrderDescription(amendOrderDescription);
 
             OrderingPages.AmendSolutionsAndServices(NewSolutionName);
+        }
+
+        [Fact]
+        [Trait("Shortlist", "Create shortlist")]
+        public void CreateNewShortlistForFoundationCapabilities()
+        {
+            string shortlistName = "Filter by Foundation Capabilities";
+
+            ShortlistPages.CreateNewShortlist();
+
+            ShortlistPages.CreateShortListForFoundationCapabilities(shortlistName);
+        }
+
+        [Fact]
+        [Trait("Shortlist", "Create shortlist")]
+        public void CreateNewShortlistForFramework()
+        {
+            string shortlistName = "Filter by Framework";
+
+            ShortlistPages.CreateNewShortlist();
+
+            ShortlistPages.CreateShortListForFramework(shortlistName);
+        }
+
+        [Fact]
+        [Trait("Shortlist", "Create shortlist")]
+        public void CreateNewShortlistForApplicationTypes()
+        {
+            string shortlistName = "Filter by Application type";
+
+            ShortlistPages.CreateNewShortlist();
+
+            ShortlistPages.CreateShortListForApplicationType(shortlistName, ApplicationTypes.Desktop);
+
         }
     }
 }
