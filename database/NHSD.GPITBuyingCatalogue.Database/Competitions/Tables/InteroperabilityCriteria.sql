@@ -1,4 +1,4 @@
-﻿CREATE TABLE [competitions].[InteroperabilityCriteria]
+﻿CREATE TABLE [competitions].[InteroperabilityCriteria] -- TODO: Remove in next release
 (
     [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     [NonPriceElementsId] INT NOT NULL,

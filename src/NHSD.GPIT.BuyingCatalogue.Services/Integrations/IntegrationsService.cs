@@ -24,7 +24,7 @@ public sealed class IntegrationsService(BuyingCatalogueDbContext dbContext) : II
         Dictionary<SupportedIntegrations, int[]> integrationAndTypeIds)
         => await dbContext.Integrations.Include(x => x.IntegrationTypes)
             .Where(x => integrationAndTypeIds.Keys.Contains(x.Id))
-            .OrderBy(x => x.Name)
+            .OrderBy(x => x.Id)
             .ToDictionaryAsync(
                 x => x.Name,
                 x => x.IntegrationTypes.Where(y => integrationAndTypeIds[x.Id].Contains(y.Id))
