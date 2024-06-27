@@ -283,7 +283,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             AssociatedService associatedService,
             AddTieredListPriceModel model,
-            [Frozen] IListPriceService listPriceService,
             AssociatedServiceListPriceController controller)
         {
             var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, model)).As<RedirectToActionResult>();
@@ -407,7 +406,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             AssociatedService associatedService,
             CataloguePrice price,
             TieredPriceTiersModel model,
-            [Frozen] IListPriceService listPriceService,
             AssociatedServiceListPriceController controller)
         {
             var result = (await controller.TieredPriceTiers(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
@@ -539,7 +537,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             AssociatedService associatedService,
             CataloguePrice price,
             AddEditTieredPriceTierModel model,
-            [Frozen] IListPriceService listPriceService,
             AssociatedServiceListPriceController controller)
         {
             model.InputPrice = "3.14";
