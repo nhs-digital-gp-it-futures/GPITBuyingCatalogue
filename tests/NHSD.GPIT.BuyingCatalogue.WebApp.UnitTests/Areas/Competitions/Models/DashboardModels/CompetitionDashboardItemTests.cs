@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
 using Xunit;
 
@@ -15,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.D
 public static class CompetitionDashboardItemTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsValues(
         Competition competition)
     {
@@ -28,7 +25,7 @@ public static class CompetitionDashboardItemTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_NullCompletedDate_SetsProgressStatus(
         Competition competition)
     {
@@ -40,7 +37,7 @@ public static class CompetitionDashboardItemTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_ValidCompletedDate_SetsProgressStatus(
         Competition competition)
     {
@@ -52,7 +49,7 @@ public static class CompetitionDashboardItemTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SingleItem_IsDirectAward(
         Competition competition,
         CompetitionSolution competitionSolution)
@@ -65,7 +62,7 @@ public static class CompetitionDashboardItemTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_MultipleItems_IsNotDirectAward(
         Competition competition,
         Collection<CompetitionSolution> competitionSolutions)

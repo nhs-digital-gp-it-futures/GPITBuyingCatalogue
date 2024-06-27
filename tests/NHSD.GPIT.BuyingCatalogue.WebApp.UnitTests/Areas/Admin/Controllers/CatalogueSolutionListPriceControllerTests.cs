@@ -224,7 +224,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Post_AddTieredListPrice_Redirects(
             Solution solution,
             AddTieredListPriceModel model,
-            [Frozen] IListPriceService listPriceService,
             CatalogueSolutionListPriceController controller)
         {
             var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, model)).As<RedirectToActionResult>();
@@ -318,7 +317,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             TieredPriceTiersModel model,
-            [Frozen] IListPriceService listPriceService,
             CatalogueSolutionListPriceController controller)
         {
             var result = (await controller.TieredPriceTiers(solution.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
@@ -442,7 +440,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             CataloguePrice price,
             AddEditTieredPriceTierModel model,
-            [Frozen] IListPriceService listPriceService,
             CatalogueSolutionListPriceController controller)
         {
             model.InputPrice = "3.14";

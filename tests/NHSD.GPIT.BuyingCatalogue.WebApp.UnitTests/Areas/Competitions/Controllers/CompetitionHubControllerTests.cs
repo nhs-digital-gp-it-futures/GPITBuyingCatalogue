@@ -2,13 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Moq;
 using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -20,13 +19,17 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
+using NSubstitute;
 using Xunit;
+using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controllers;
 
@@ -35,7 +38,7 @@ public static class CompetitionHubControllerTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(CompetitionScoringController).GetConstructors();
 
@@ -43,17 +46,16 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Index_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
         competition.CompetitionSolutions = new List<CompetitionSolution>();
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
         var expectedModel = new PricingDashboardModel(competition);
 
@@ -65,27 +67,24 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Hub_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
         Solution solution,
         List<AssociatedService> associatedServices,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
         competitionSolution.Solution = solution;
         competitionSolution.SolutionId = solution.CatalogueItemId;
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.Setup(
-            x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None))
-            .ReturnsAsync(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
         {
@@ -102,7 +101,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectPrice_NullServiceId_ReturnsExpectedPriceId(
         string internalOrgId,
         Competition competition,
@@ -110,8 +109,8 @@ public static class CompetitionHubControllerTests
         CompetitionCatalogueItemPrice competitionPrice,
         CatalogueItem catalogueItem,
         CataloguePrice cataloguePrice,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IListPriceService> listPriceService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
         competitionSolution.SolutionId = catalogueItem.Id;
@@ -120,11 +119,9 @@ public static class CompetitionHubControllerTests
         catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        listPriceService.Setup(x => x.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id))
-            .ReturnsAsync(catalogueItem);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id).Returns(catalogueItem);
 
         var result = (await controller.SelectPrice(internalOrgId, competition.Id, catalogueItem.Id))
             .As<ViewResult>();
@@ -138,7 +135,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectPrice_WithServiceId_ReturnsExpectedPriceId(
         string internalOrgId,
         Competition competition,
@@ -149,8 +146,8 @@ public static class CompetitionHubControllerTests
         Solution solution,
         AssociatedService service,
         CataloguePrice cataloguePrice,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IListPriceService> listPriceService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
         solutionService.SolutionId = solution.CatalogueItemId;
@@ -164,11 +161,9 @@ public static class CompetitionHubControllerTests
         solution.CatalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        listPriceService.Setup(x => x.GetCatalogueItemWithPublishedListPrices(service.CatalogueItemId))
-            .ReturnsAsync(service.CatalogueItem);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(service.CatalogueItemId).Returns(service.CatalogueItem);
 
         var result = (await controller.SelectPrice(internalOrgId, competition.Id, solution.CatalogueItemId, service.CatalogueItemId))
             .As<ViewResult>();
@@ -182,7 +177,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectPrice_WithSelectedPriceId_ReturnsExpectedPriceId(
         string internalOrgId,
         Competition competition,
@@ -191,8 +186,8 @@ public static class CompetitionHubControllerTests
         CatalogueItem catalogueItem,
         CataloguePrice cataloguePrice,
         int selectedPriceId,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IListPriceService> listPriceService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
         competitionSolution.SolutionId = catalogueItem.Id;
@@ -201,11 +196,9 @@ public static class CompetitionHubControllerTests
         catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        listPriceService.Setup(x => x.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id))
-            .ReturnsAsync(catalogueItem);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id).Returns(catalogueItem);
 
         var result = (await controller.SelectPrice(internalOrgId, competition.Id, catalogueItem.Id, selectedPriceId: selectedPriceId))
             .As<ViewResult>();
@@ -219,7 +212,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectPrice_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
@@ -227,8 +220,8 @@ public static class CompetitionHubControllerTests
         CompetitionCatalogueItemPrice competitionPrice,
         CatalogueItem catalogueItem,
         CataloguePrice cataloguePrice,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IListPriceService> listPriceService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
         competitionSolution.SolutionId = catalogueItem.Id;
@@ -237,11 +230,9 @@ public static class CompetitionHubControllerTests
         catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        listPriceService.Setup(x => x.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id))
-            .ReturnsAsync(catalogueItem);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id).Returns(catalogueItem);
 
         var expectedModel = new SelectPriceModel(catalogueItem);
 
@@ -254,22 +245,21 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectPrice_InvalidModel_ReturnsViewWithModel(
         string internalOrgId,
         int competitionId,
         SelectPriceModel model,
         Solution solution,
         List<CataloguePrice> prices,
-        [Frozen] Mock<IListPriceService> listPriceService,
+        [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
         solution.CatalogueItem.CataloguePrices = prices;
 
-        listPriceService.Setup(x => x.GetCatalogueItemWithPublishedListPrices(solution.CatalogueItemId))
-            .ReturnsAsync(solution.CatalogueItem);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
         var result = (await controller.SelectPrice(internalOrgId, competitionId, solution.CatalogueItemId, model))
             .As<ViewResult>();
@@ -282,7 +272,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectPrice_InvalidModelWithServiceId_ReturnsViewWithModel(
         string internalOrgId,
         int competitionId,
@@ -290,15 +280,14 @@ public static class CompetitionHubControllerTests
         Solution solution,
         AdditionalService additionalService,
         List<CataloguePrice> prices,
-        [Frozen] Mock<IListPriceService> listPriceService,
+        [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
         additionalService.CatalogueItem.CataloguePrices = prices;
 
-        listPriceService.Setup(x => x.GetCatalogueItemWithPublishedListPrices(additionalService.CatalogueItemId))
-            .ReturnsAsync(additionalService.CatalogueItem);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
 
         var result = (await controller.SelectPrice(internalOrgId, competitionId, solution.CatalogueItemId, model, additionalService.CatalogueItemId))
             .As<ViewResult>();
@@ -311,7 +300,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectPrice_Valid_Redirects(
         string internalOrgId,
         int competitionId,
@@ -336,7 +325,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectPrice_ValidWithServiceId_Redirects(
         string internalOrgId,
         int competitionId,
@@ -362,7 +351,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ConfirmPrice_NullServiceId_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
@@ -370,8 +359,8 @@ public static class CompetitionHubControllerTests
         CompetitionCatalogueItemPrice competitionPrice,
         CatalogueItem catalogueItem,
         CataloguePrice cataloguePrice,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IListPriceService> listPriceService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
         competitionSolution.SolutionId = catalogueItem.Id;
@@ -380,11 +369,9 @@ public static class CompetitionHubControllerTests
         catalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        listPriceService.Setup(x => x.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id))
-            .ReturnsAsync(catalogueItem);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id).Returns(catalogueItem);
 
         var expectedModel = new ConfirmPriceModel(catalogueItem, cataloguePrice, competitionPrice);
 
@@ -399,7 +386,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ConfirmPrice_WithServiceId_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
@@ -411,8 +398,8 @@ public static class CompetitionHubControllerTests
         AssociatedService service,
         CataloguePrice cataloguePrice,
         CataloguePrice additionalServicePrice,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IListPriceService> listPriceService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
         solutionService.SolutionId = solution.CatalogueItemId;
@@ -427,11 +414,9 @@ public static class CompetitionHubControllerTests
         solution.CatalogueItem.CataloguePrices = new List<CataloguePrice> { cataloguePrice };
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        listPriceService.Setup(x => x.GetCatalogueItemWithPublishedListPrices(service.CatalogueItemId))
-            .ReturnsAsync(service.CatalogueItem);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(service.CatalogueItemId).Returns(service.CatalogueItem);
 
         var expectedModel = new ConfirmPriceModel(service.CatalogueItem, additionalServicePrice, competitionPrice);
 
@@ -447,7 +432,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ConfirmPrice_InvalidModel_ReturnsViewWithModel(
         string internalOrgId,
         int competitionId,
@@ -466,23 +451,22 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ConfirmPrice_NullServiceId_SetsSolutionPrice(
         string internalOrgId,
         int competitionId,
         CatalogueItem catalogueItem,
         List<CataloguePrice> prices,
         ConfirmPriceModel model,
-        [Frozen] Mock<IListPriceService> listPriceService,
-        [Frozen] Mock<ICompetitionsPriceService> competitionsPriceService,
+        [Frozen] IListPriceService listPriceService,
+        [Frozen] ICompetitionsPriceService competitionsPriceService,
         CompetitionHubController controller)
     {
         var price = prices.First();
 
         catalogueItem.CataloguePrices = prices;
 
-        listPriceService.Setup(x => x.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id))
-            .ReturnsAsync(catalogueItem);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id).Returns(catalogueItem);
 
         _ = await controller.ConfirmPrice(
             internalOrgId,
@@ -491,11 +475,11 @@ public static class CompetitionHubControllerTests
             price.CataloguePriceId,
             model);
 
-        competitionsPriceService.Verify(x => x.SetSolutionPrice(internalOrgId, competitionId, catalogueItem.Id, price, It.IsAny<List<PricingTierDto>>()));
+        await competitionsPriceService.Received().SetSolutionPrice(internalOrgId, competitionId, catalogueItem.Id, price, Arg.Any<List<PricingTierDto>>());
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ConfirmPrice_WithServiceId_SetsSolutionPrice(
         string internalOrgId,
         int competitionId,
@@ -503,16 +487,15 @@ public static class CompetitionHubControllerTests
         CatalogueItem additionalService,
         List<CataloguePrice> prices,
         ConfirmPriceModel model,
-        [Frozen] Mock<IListPriceService> listPriceService,
-        [Frozen] Mock<ICompetitionsPriceService> competitionsPriceService,
+        [Frozen] IListPriceService listPriceService,
+        [Frozen] ICompetitionsPriceService competitionsPriceService,
         CompetitionHubController controller)
     {
         var price = prices.First();
 
         additionalService.CataloguePrices = prices;
 
-        listPriceService.Setup(x => x.GetCatalogueItemWithPublishedListPrices(additionalService.Id))
-            .ReturnsAsync(additionalService);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(additionalService.Id).Returns(additionalService);
 
         _ = await controller.ConfirmPrice(
             internalOrgId,
@@ -522,26 +505,25 @@ public static class CompetitionHubControllerTests
             model,
             additionalService.Id);
 
-        competitionsPriceService.Verify(x => x.SetServicePrice(internalOrgId, competitionId, catalogueItem.Id, additionalService.Id, price, It.IsAny<List<PricingTierDto>>()));
+        await competitionsPriceService.Received().SetServicePrice(internalOrgId, competitionId, catalogueItem.Id, additionalService.Id, price, Arg.Any<List<PricingTierDto>>());
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ConfirmPrice_Redirects(
         string internalOrgId,
         int competitionId,
         CatalogueItem catalogueItem,
         List<CataloguePrice> prices,
         ConfirmPriceModel model,
-        [Frozen] Mock<IListPriceService> listPriceService,
+        [Frozen] IListPriceService listPriceService,
         CompetitionHubController controller)
     {
         var price = prices.First();
 
         catalogueItem.CataloguePrices = prices;
 
-        listPriceService.Setup(x => x.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id))
-            .ReturnsAsync(catalogueItem);
+        listPriceService.GetCatalogueItemWithPublishedListPrices(catalogueItem.Id).Returns(catalogueItem);
 
         var result = (await controller.ConfirmPrice(
             internalOrgId,
@@ -555,14 +537,14 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectQuantity_NullServiceIdWithPerRecipientPrice_Redirects(
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
         CompetitionCatalogueItemPrice competitionPrice,
         Solution solution,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
         competitionPrice.CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient;
@@ -573,8 +555,7 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
         var result = (await controller.SelectQuantity(internalOrgId, competition.Id, solution.CatalogueItemId))
             .As<RedirectToActionResult>();
@@ -593,7 +574,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectQuantity_WithServiceIdWithPerRecipientPrice_Redirects(
         string internalOrgId,
         Competition competition,
@@ -602,7 +583,7 @@ public static class CompetitionHubControllerTests
         CompetitionCatalogueItemPrice competitionPrice,
         Solution solution,
         AdditionalService service,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
         competitionPrice.CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient;
@@ -617,8 +598,7 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
         var result = (await controller.SelectQuantity(internalOrgId, competition.Id, solution.CatalogueItemId, service.CatalogueItemId))
             .As<RedirectToActionResult>();
@@ -637,14 +617,14 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectQuantity_NullServiceId_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
         CompetitionCatalogueItemPrice competitionPrice,
         Solution solution,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
         competitionPrice.ProvisioningType = ProvisioningType.Declarative;
@@ -655,8 +635,7 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
         var expectedModel = new SelectOrderItemQuantityModel(
             solution.CatalogueItem,
@@ -671,7 +650,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectQuantity_WithServiceId_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
@@ -680,7 +659,7 @@ public static class CompetitionHubControllerTests
         CompetitionCatalogueItemPrice competitionPrice,
         Solution solution,
         AdditionalService service,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
         competitionPrice.ProvisioningType = ProvisioningType.Declarative;
@@ -695,8 +674,7 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
         var expectedModel = new SelectOrderItemQuantityModel(
             service.CatalogueItem,
@@ -711,7 +689,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectQuantity_InvalidModel_ReturnsViewWithModel(
         string internalOrgId,
         int competitionId,
@@ -729,26 +707,25 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectQuantity_NullServiceId_SetsSolutionQuantity(
         string internalOrgId,
         int competitionId,
         int quantity,
         CatalogueItemId solutionId,
         SelectOrderItemQuantityModel model,
-        [Frozen] Mock<ICompetitionsQuantityService> competitionsQuantityService,
+        [Frozen] ICompetitionsQuantityService competitionsQuantityService,
         CompetitionHubController controller)
     {
         model.Quantity = quantity.ToString();
 
         _ = await controller.SelectQuantity(internalOrgId, competitionId, solutionId, model);
 
-        competitionsQuantityService.Verify(
-            x => x.SetSolutionGlobalQuantity(internalOrgId, competitionId, solutionId, quantity));
+        await competitionsQuantityService.Received().SetSolutionGlobalQuantity(internalOrgId, competitionId, solutionId, quantity);
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectQuantity_WithServiceId_SetsServiceQuantity(
         string internalOrgId,
         int competitionId,
@@ -756,19 +733,18 @@ public static class CompetitionHubControllerTests
         CatalogueItemId solutionId,
         CatalogueItemId serviceId,
         SelectOrderItemQuantityModel model,
-        [Frozen] Mock<ICompetitionsQuantityService> competitionsQuantityService,
+        [Frozen] ICompetitionsQuantityService competitionsQuantityService,
         CompetitionHubController controller)
     {
         model.Quantity = quantity.ToString();
 
         _ = await controller.SelectQuantity(internalOrgId, competitionId, solutionId, model, serviceId);
 
-        competitionsQuantityService.Verify(
-            x => x.SetServiceGlobalQuantity(internalOrgId, competitionId, solutionId, serviceId, quantity));
+        await competitionsQuantityService.Received().SetServiceGlobalQuantity(internalOrgId, competitionId, solutionId, serviceId, quantity);
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectServiceRecipientQuantity_NullServiceId_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
@@ -777,7 +753,7 @@ public static class CompetitionHubControllerTests
         List<SolutionQuantity> solutionQuantities,
         List<ServiceRecipientDto> recipientQuantities,
         Solution solution,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
         competitionPrice.ProvisioningType = ProvisioningType.Declarative;
@@ -789,8 +765,7 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
         var expectedModel = new SelectServiceRecipientQuantityModel(
             solution.CatalogueItem,
@@ -807,7 +782,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectServiceRecipientQuantity_WithServiceId_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
@@ -818,7 +793,7 @@ public static class CompetitionHubControllerTests
         List<ServiceRecipientDto> recipientQuantities,
         Solution solution,
         AdditionalService service,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
         competitionPrice.ProvisioningType = ProvisioningType.Declarative;
@@ -834,8 +809,7 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
         var expectedModel = new SelectServiceRecipientQuantityModel(
             service.CatalogueItem,
@@ -852,7 +826,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectServiceRecipientQuantity_InvalidModel_SetsModelError(
         string internalOrgId,
         int competitionId,
@@ -870,14 +844,14 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectServiceRecipientQuantity_NullServiceId_SetsSolutionRecipientQuantity(
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
         SelectServiceRecipientQuantityModel model,
         ServiceRecipientQuantityModel[] serviceRecipients,
-        [Frozen] Mock<ICompetitionsQuantityService> competitionsQuantityService,
+        [Frozen] ICompetitionsQuantityService competitionsQuantityService,
         CompetitionHubController controller)
     {
         serviceRecipients.ForEach(x => x.InputQuantity = x.Quantity.ToString());
@@ -886,16 +860,15 @@ public static class CompetitionHubControllerTests
 
         _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, solutionId, model);
 
-        competitionsQuantityService.Verify(
-            x => x.SetSolutionRecipientQuantity(
+        await competitionsQuantityService.Received().SetSolutionRecipientQuantity(
                 internalOrgId,
                 competitionId,
                 solutionId,
-                It.IsAny<IEnumerable<ServiceRecipientDto>>()));
+                Arg.Any<IEnumerable<ServiceRecipientDto>>());
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectServiceRecipientQuantity_WithServiceId_SetsSolutionRecipientQuantity(
         string internalOrgId,
         int competitionId,
@@ -903,7 +876,7 @@ public static class CompetitionHubControllerTests
         CatalogueItemId serviceId,
         SelectServiceRecipientQuantityModel model,
         ServiceRecipientQuantityModel[] serviceRecipients,
-        [Frozen] Mock<ICompetitionsQuantityService> competitionsQuantityService,
+        [Frozen] ICompetitionsQuantityService competitionsQuantityService,
         CompetitionHubController controller)
     {
         serviceRecipients.ForEach(x => x.InputQuantity = x.Quantity.ToString());
@@ -912,17 +885,16 @@ public static class CompetitionHubControllerTests
 
         _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, solutionId, model, serviceId);
 
-        competitionsQuantityService.Verify(
-            x => x.SetServiceRecipientQuantity(
+        await competitionsQuantityService.Received().SetServiceRecipientQuantity(
                 internalOrgId,
                 competitionId,
                 solutionId,
                 serviceId,
-                It.IsAny<IEnumerable<ServiceRecipientDto>>()));
+                Arg.Any<IEnumerable<ServiceRecipientDto>>());
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectServiceRecipientQuantity_NullServiceId_Redirects(
         string internalOrgId,
         int competitionId,
@@ -943,7 +915,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectAssociatedServices_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
@@ -951,8 +923,8 @@ public static class CompetitionHubControllerTests
         List<SolutionService> solutionServices,
         Solution solution,
         List<AssociatedService> associatedServices,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
         solutionServices.ForEach(x => x.Service = associatedServices.First().CatalogueItem);
@@ -963,12 +935,9 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None))
-            .ReturnsAsync(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new SelectServicesModel(
             solutionServices.Select(x => x.Service).ToList(),
@@ -990,7 +959,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectAssociatedServices_InvalidModel_SetsModelError(
         string internalOrgId,
         Competition competition,
@@ -998,8 +967,8 @@ public static class CompetitionHubControllerTests
         List<SolutionService> solutionServices,
         Solution solution,
         List<AssociatedService> associatedServices,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
@@ -1017,12 +986,10 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None))
-            .ReturnsAsync(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None)
+            .Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var model = new SelectServicesModel(
             solutionServices.Select(x => x.Service).ToList(),
@@ -1042,7 +1009,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectAssociatedServices_ExistingServicesNotSelected_Redirects(
         string internalOrgId,
         Competition competition,
@@ -1051,8 +1018,8 @@ public static class CompetitionHubControllerTests
         Solution solution,
         List<AssociatedService> associatedServices,
         AssociatedService existingService,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
         solutionServices.ForEach(
@@ -1068,12 +1035,11 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id)
+            .Returns(competition);
 
-        associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None))
-            .ReturnsAsync(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None)
+            .Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var model = new SelectServicesModel(
             solutionServices.Select(x => x.Service).ToList(),
@@ -1092,7 +1058,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SelectAssociatedServices_Valid_Redirects(
         string internalOrgId,
         Competition competition,
@@ -1100,8 +1066,8 @@ public static class CompetitionHubControllerTests
         List<SolutionService> solutionServices,
         Solution solution,
         List<AssociatedService> associatedServices,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
         solutionServices.ForEach(
@@ -1118,12 +1084,11 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id)
+            .Returns(competition);
 
-        associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None))
-            .ReturnsAsync(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None)
+            .Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var model = new SelectServicesModel(
             solutionServices.Select(x => x.Service).ToList(),
@@ -1142,17 +1107,16 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ConfirmAssociatedServiceChanges_InvalidSolution_ReturnsBadRequest(
         string internalOrgId,
         Competition competition,
         CatalogueItemId solutionId,
         string serviceIds,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
         var result =
             (await controller.ConfirmAssociatedServiceChanges(internalOrgId, competition.Id, solutionId, serviceIds))
@@ -1162,7 +1126,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ConfirmAssociatedServiceChanges_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
@@ -1171,8 +1135,8 @@ public static class CompetitionHubControllerTests
         Solution solution,
         List<AssociatedService> associatedServices,
         AssociatedService existingService,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
         solutionServices.ForEach(
@@ -1189,12 +1153,10 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None))
-            .ReturnsAsync(associatedServices.Concat(new[] { existingService }).Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None)
+            .Returns(associatedServices.Concat(new[] { existingService }).Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.AssociatedService)
         {
@@ -1219,7 +1181,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ConfirmAssociatedServiceChanges_InvalidModel_ReturnsViewWithModel(
         string internalOrgId,
         int competitionId,
@@ -1237,7 +1199,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ConfirmAssociatedServiceChanges_ConfirmChangesFalse_Redirects(
         string internalOrgId,
         int competitionId,
@@ -1255,19 +1217,19 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Post_ConfirmAssociatedServiceChanges_InvalidSolution_ReturnsBadRequest(
         string internalOrgId,
         Competition competition,
         CatalogueItemId solutionId,
         ConfirmServiceChangesModel model,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
         model.ConfirmChanges = true;
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id)
+            .Returns(competition);
 
         var result =
             (await controller.ConfirmAssociatedServiceChanges(internalOrgId, competition.Id, solutionId, model))
@@ -1277,7 +1239,7 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ConfirmAssociatedServiceChanges_Valid_Redirects(
         string internalOrgId,
         Competition competition,
@@ -1287,8 +1249,8 @@ public static class CompetitionHubControllerTests
         List<AssociatedService> associatedServices,
         AssociatedService existingService,
         ConfirmServiceChangesModel model,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
         model.ConfirmChanges = true;
@@ -1307,12 +1269,10 @@ public static class CompetitionHubControllerTests
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.Setup(
-                x => x.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None))
-            .ReturnsAsync(associatedServices.Concat(new[] { existingService }).Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None)
+            .Returns(associatedServices.Concat(new[] { existingService }).Select(x => x.CatalogueItem).ToList());
 
         var result = (await controller.ConfirmAssociatedServiceChanges(
             internalOrgId,
@@ -1325,12 +1285,14 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task GetRecipientQuantities_QuantityNotNull_ReturnsCorrectResult(
         OdsOrganisation competitionRecipient,
         RecipientQuantityBase recipientQuantity,
         ServiceRecipient serviceRecipient,
-        [Frozen] Mock<ServiceContracts.Organisations.IOdsService> odsService,
+        GpPracticeSize gpPracticeSize,
+        [Frozen] IOdsService odsService,
+        [Frozen] IGpPracticeService gpPracticeService,
         string internalOrgId,
         string odsCode,
         CompetitionHubController controller)
@@ -1339,8 +1301,9 @@ public static class CompetitionHubControllerTests
         var odsCodes = new List<string> { recipientQuantity.OdsCode };
         List<OdsOrganisation> competitionRecipients = new List<OdsOrganisation>() { competitionRecipient };
         List<RecipientQuantityBase> recipientQuantities = new List<RecipientQuantityBase>() { recipientQuantity };
-        odsService.Setup(x => x.GetServiceRecipientsById(internalOrgId, odsCodes))
-            .ReturnsAsync(new List<ServiceRecipient> { serviceRecipient });
+
+        odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(new List<ServiceRecipient>() { serviceRecipient });
+        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns(new List<GpPracticeSize>() { gpPracticeSize });
 
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
 
@@ -1352,12 +1315,12 @@ public static class CompetitionHubControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task GetRecipientQuantities_QuantityNull_ReturnsCorrectResult(
         OdsOrganisation competitionRecipient,
         ServiceRecipient serviceRecipient,
-        [Frozen] Mock<ServiceContracts.Organisations.IOdsService> odsService,
-        [Frozen] Mock<ServiceContracts.Organisations.IGpPracticeService> gpPracticeService,
+        [Frozen] IOdsService odsService,
+        [Frozen] IGpPracticeService gpPracticeService,
         string internalOrgId,
         string odsCode,
         CompetitionHubController controller,
@@ -1368,10 +1331,9 @@ public static class CompetitionHubControllerTests
         var competitionRecipientIds = new List<string>() { competitionRecipient.Id };
         List<OdsOrganisation> competitionRecipients = new List<OdsOrganisation>() { competitionRecipient };
         List<RecipientQuantityBase> recipientQuantities = null;
-        odsService.Setup(x => x.GetServiceRecipientsById(internalOrgId, odsCodes))
-            .ReturnsAsync(new List<ServiceRecipient> { serviceRecipient });
-        gpPracticeService.Setup(x => x.GetNumberOfPatients(competitionRecipientIds))
-            .ReturnsAsync(new List<GpPracticeSize> { gpPractice });
+
+        odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(new List<ServiceRecipient>() { serviceRecipient });
+        gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns(new List<GpPracticeSize>() { new GpPracticeSize() { OdsCode = gpPractice.OdsCode, NumberOfPatients = gpPractice.NumberOfPatients } });
 
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
 
