@@ -2176,7 +2176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             ShortlistPages.CreateNewShortlist();
 
-            ShortlistPages.CreateShortListForFoundationCapabilities(shortlistName);
+            ShortlistPages.CreateShortlistForFoundationCapabilities(shortlistName);
         }
 
         [Fact]
@@ -2187,7 +2187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             ShortlistPages.CreateNewShortlist();
 
-            ShortlistPages.CreateShortListForFramework(shortlistName);
+            ShortlistPages.CreateShortlistForFramework(shortlistName);
         }
 
         [Fact]
@@ -2198,7 +2198,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             ShortlistPages.CreateNewShortlist();
 
-            ShortlistPages.CreateShortListForApplicationType(shortlistName, ApplicationTypes.Desktop);
+            ShortlistPages.CreateShortlistForApplicationType(shortlistName, ApplicationTypes.Desktop);
         }
 
         [Fact]
@@ -2209,7 +2209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             ShortlistPages.CreateNewShortlist();
 
-            ShortlistPages.CreateShortListForHostingType(shortlistName, HostingTypes.Public_cloud);
+            ShortlistPages.CreateShortlistForHostingType(shortlistName, HostingTypes.Public_cloud);
         }
     }
 }
