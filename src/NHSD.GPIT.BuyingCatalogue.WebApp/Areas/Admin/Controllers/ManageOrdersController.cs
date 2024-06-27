@@ -2,7 +2,9 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -90,8 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> FilterSearchSuggestions(
             [FromQuery] string search = "")
         {
-            var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
-
+            var currentPageUrl = StripExistingFilters();
             var results = await orderAdminService.GetOrdersBySearchTerm(search);
 
             return Json(results.Select(r =>
@@ -191,6 +192,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return callOffId.IsAmendment
                 ? $"Amendment_{callOffId}_"
                 : $"{callOffId}_";
+        }
+
+        private UriBuilder StripExistingFilters()
+        {
+            var builder = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
+            var path = builder.Uri.GetLeftPart(UriPartial.Path);
+            return new UriBuilder(path);
         }
     }
 }
