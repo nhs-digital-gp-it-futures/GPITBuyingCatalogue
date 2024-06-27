@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionHostingType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering;
@@ -2198,7 +2199,17 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             ShortlistPages.CreateNewShortlist();
 
             ShortlistPages.CreateShortListForApplicationType(shortlistName, ApplicationTypes.Desktop);
+        }
 
+        [Fact]
+        [Trait("Shortlist", "Create shortlist")]
+        public void CreateNewShortlistForHostingTypes()
+        {
+            string shortlistName = "Filter by Hosting type";
+
+            ShortlistPages.CreateNewShortlist();
+
+            ShortlistPages.CreateShortListForHostingType(shortlistName, HostingTypes.Public_cloud);
         }
     }
 }

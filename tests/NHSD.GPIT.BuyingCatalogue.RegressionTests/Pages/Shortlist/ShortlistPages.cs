@@ -1,5 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionHostingType;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Shortlist
@@ -37,21 +38,27 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Shortlist
             }
         }
 
-        public void CreateShortListForFoundationCapabilities(string shortlistName)
+        public void CreateShortlistForFoundationCapabilities(string shortlistName)
         {
             ShortlistDashboard.FilterByFoundationCapabilities();
             ShortlistDashboard.SaveFilter(shortlistName);
         }
 
-        public void CreateShortListForFramework(string shortlistName)
+        public void CreateShortlistForFramework(string shortlistName)
         {
             ShortlistDashboard.FilterByFramework();
             ShortlistDashboard.SaveFilter(shortlistName);
         }
 
-        public void CreateShortListForApplicationType(string shortlistName, ApplicationTypes applicationType)
+        public void CreateShortlistForApplicationType(string shortlistName, ApplicationTypes applicationType)
         {
             ShortlistDashboard.FilterByApplicationType(applicationType);
+            ShortlistDashboard.SaveFilter(shortlistName);
+        }
+
+        public void CreateShortlistForHostingType(string shortlistName, HostingTypes hostingType)
+        {
+            ShortlistDashboard.FilterByHostingType(hostingType);
             ShortlistDashboard.SaveFilter(shortlistName);
         }
 
