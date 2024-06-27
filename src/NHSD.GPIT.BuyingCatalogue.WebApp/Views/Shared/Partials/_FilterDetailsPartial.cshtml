@@ -184,6 +184,18 @@ else
                             }
                         </ul>
                     }
+                    @if (Model.FilterDetails.InteropIntegrationTypes[j].EnumMemberName() == "NHS App")
+                    {
+                        <p> @(Model.FilterDetails.InteropIntegrationTypes[j].EnumMemberName()) integrations</p>
+                        <ul>
+                            @foreach (var item in Model.FilterDetails.InteropNhsAppIntegrationsTypes)
+                            {
+                                <li>
+                                    @item.Name()
+                                </li>
+                            }
+                        </ul>
+                    }
                 }
             }
             else

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(OrderQuantityService).GetConstructors();
 
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task ResetItemQuantities_OrderItemInDatabase_ExpectedResult(
             Order order,
             [Frozen] BuyingCatalogueDbContext context,
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetOrderItemQuantity_OrderItemInDatabase_UpdatesQuantity(
             [Frozen] BuyingCatalogueDbContext context,
             Order order,
@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void SetServiceRecipientQuantities_QuantitiesIsNull_ThrowsException(
             int orderId,
             CatalogueItemId catalogueItemId,
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetServiceRecipientQuantities_OrderItemInDatabase_UpdatesQuantities(
             IFixture fixture,
             [Frozen] BuyingCatalogueDbContext context,
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetServiceRecipientQuantitiesToSameValue_OrderItemInDatabase_UpdatesQuantities(
             int quantity,
             [Frozen] BuyingCatalogueDbContext context,

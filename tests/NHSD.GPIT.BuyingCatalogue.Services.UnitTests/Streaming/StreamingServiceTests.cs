@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.Services.Streaming;
@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Streaming
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(StreamingService).GetConstructors();
 

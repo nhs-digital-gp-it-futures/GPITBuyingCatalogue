@@ -1,15 +1,14 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Contracts;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
@@ -19,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ContractsService).GetConstructors();
 
@@ -27,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContract_ContractExists_ReturnsContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -46,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContract_ContractDoesNotExist_ReturnsNewContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -63,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContractWithImplementationPlan_ContractExists_ReturnsContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -86,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContractWithImplementationPlan_ContractDoesNotExist_ReturnsNewContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -103,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContractWithContractBilling_ContractExists_ReturnsContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -126,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContractWithContractBilling_ContractDoesNotExist_ReturnsNewContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -143,7 +142,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContractWithRequirements_ContractExists_ReturnsContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -166,7 +165,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContractWithRequirements_ContractDoesNotExist_ReturnsNewContract(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -183,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task RemoveContract_ContractExists_RemovesContractAndDataProcessing(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -211,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task RemoveContract_ContractDoesNotExist_Returns(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -232,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContractFlags_ContractFlagExists_ReturnsContractFlag(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -251,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContractFlags_ContractFlagDoesNotExist_CreatesNewContractFlag(
             int orderId,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -271,8 +270,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData(true)]
-        [InMemoryDbInlineAutoData(false)]
+        [MockInMemoryDbInlineAutoData(true)]
+        [MockInMemoryDbInlineAutoData(false)]
         public static async Task UseDefaultDataProcessing_UpdatesValue(
             bool value,
             int orderId,

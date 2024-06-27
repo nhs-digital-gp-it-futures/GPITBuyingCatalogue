@@ -1,12 +1,13 @@
 ﻿using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using Azure.Storage.Blobs;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.Services.Storage;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Storage;
@@ -18,8 +19,8 @@ public static class AzureBlobContainerClientFactoryTests
     {
         var fixture = new Fixture().Customize(
             new CompositeCustomization(
-                new AutoMoqCustomization(),
-                new BlobServiceClientMoqCustomization()));
+                new AutoNSubstituteCustomization(),
+                new BlobServiceClientSubstituteCustomization()));
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(AzureBlobContainerClientFactory).GetConstructors();
 
@@ -27,15 +28,15 @@ public static class AzureBlobContainerClientFactoryTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetBlobContainerClient_ReturnsClient(
         string containerName,
-        Mock<BlobContainerClient> blobContainerClient,
-        [Frozen] Mock<BlobServiceClient> blobServiceClient,
+        [Frozen] BlobServiceClient blobServiceClient,
         AzureBlobContainerClientFactory factory)
     {
-        blobServiceClient.Setup(x => x.GetBlobContainerClient(containerName))
-            .Returns(blobContainerClient.Object);
+        var blobContainerClient = Substitute.For<BlobContainerClient>();
+        blobServiceClient.GetBlobContainerClient(containerName)
+            .Returns(blobContainerClient);
 
         var client = factory.GetBlobContainerClient(containerName);
 

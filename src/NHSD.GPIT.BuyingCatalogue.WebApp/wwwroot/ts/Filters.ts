@@ -10,6 +10,7 @@ var filters = (function (): CapabilitiesAndEpics {
     const INTEROPERABILITY_OPTIONS_PARAM_NAME = 'selectedInteroperabilityOptions';
     const IM1_INTEGRATIONS_PARAM_NAME = 'selectedIM1Integrations';
     const GPCONNECT_INTEGRATIONS_PARAM_NAME = 'selectedGPConnectIntegrations';
+    const NHSAPP_INTEGRATIONS_PARAM_NAME = 'selectedNHSAppIntegrations';
     const SELECTED_PARAM_NAME = 'selected';
     const SORT_BY_PARAM_NAME = 'sortBy';
     const GROUP_DELIMITER = '|';
@@ -188,6 +189,7 @@ var filters = (function (): CapabilitiesAndEpics {
         searchResultsUrl.searchParams.set(INTEROPERABILITY_OPTIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'InteroperabilityOptions'));
         searchResultsUrl.searchParams.set(IM1_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'IM1IntegrationsOptions'));
         searchResultsUrl.searchParams.set(GPCONNECT_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'GPConnectIntegrationsOptions'));
+        searchResultsUrl.searchParams.set(NHSAPP_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'NhsAppIntegrationsOptions'));
         searchResultsUrl.searchParams.set(SELECTED_PARAM_NAME, getSelectedFilterString());
         const currentSortBy = getSortBy();
 

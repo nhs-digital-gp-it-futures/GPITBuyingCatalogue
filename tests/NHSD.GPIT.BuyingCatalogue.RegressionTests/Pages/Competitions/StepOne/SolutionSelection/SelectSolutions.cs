@@ -16,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCr
 
         public void AddSolutions(int numberofSolutions)
         {
-            //CommonActions.HintText().Should().Be("These are the results from your chosen filter. You must provide a reason if any of the solutions listed are not taken through to your competition shortlist.".FormatForComparison());
 
             CommonActions.PageLoadedCorrectGetIndex(
                typeof(CompetitionSelectSolutionsController),

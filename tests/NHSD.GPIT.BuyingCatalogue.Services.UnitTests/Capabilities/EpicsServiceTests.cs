@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(EpicsService).GetConstructors();
 
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GetActiveEpicsByCapabilityIds_NullCapabilityIds_ThrowsException(
             EpicsService service)
         {
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetActiveEpicsByCapabilityIds_ExpectedResult(
             CatalogueItem catalogueItem,
             CapabilityCategory category,
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void GetEpicsByIds_NullEpicIds_ThrowsException(
             EpicsService service)
         {
@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetEpicsByIds_ExpectedResult(
             List<Epic> epics,
             [Frozen] BuyingCatalogueDbContext dbContext,

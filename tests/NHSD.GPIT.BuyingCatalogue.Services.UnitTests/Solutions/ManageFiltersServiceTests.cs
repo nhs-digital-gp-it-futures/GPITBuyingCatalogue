@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -16,7 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ManageFiltersService).GetConstructors();
 
@@ -34,9 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static Task FilterExists_NullOrEmptyFilterName_ThrowsException(
             string name,
             ManageFiltersService service,
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task FilterExists_NameAlreadyExists_DifferentOrganisation_ReturnsFalse(
             [Frozen] BuyingCatalogueDbContext context,
             Filter filter,
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task FilterExists_NameAlreadyExists_ReturnsTrue(
             Organisation organisation,
             Filter filter,
@@ -80,9 +80,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void AddFilter_NullOrEmptyName_ThrowsException(
             string name,
             string description,
@@ -93,6 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<HostingType> hostingTypes,
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
@@ -108,15 +109,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         hostingTypes,
                         iM1IntegrationsTypes,
                         gPConnectIntegrationsTypes,
+                        nhsAppIntegrationsTypes,
                         interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(name));
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void AddFilter_NullOrEmptyDescription_ThrowsException(
             string description,
             string name,
@@ -127,6 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<HostingType> hostingTypes,
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
@@ -142,13 +145,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         hostingTypes,
                         iM1IntegrationsTypes,
                         gPConnectIntegrationsTypes,
+                        nhsAppIntegrationsTypes,
                         interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentNullException>(nameof(description));
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void AddFilter_NullOrganisation_ThrowsException(
             string description,
             string name,
@@ -159,6 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             List<HostingType> hostingTypes,
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes,
             ManageFiltersService service)
         {
@@ -174,13 +179,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                         hostingTypes,
                         iM1IntegrationsTypes,
                         gPConnectIntegrationsTypes,
+                        nhsAppIntegrationsTypes,
                         interoperabilityIntegrationTypes))
                 .Should()
                 .ThrowAsync<ArgumentException>("organisationId");
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilter_ValidParameters_FilterCreated(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
@@ -205,6 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 null,
                 null,
                 null,
+                null,
                 null);
             result.Should().NotBe(0);
             context.ChangeTracker.Clear();
@@ -224,7 +231,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilter_ValidParameters_With_Capability_FilterCreated(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
@@ -251,6 +258,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 null,
                 null,
                 null,
+                null,
                 null);
             result.Should().NotBe(0);
             context.ChangeTracker.Clear();
@@ -270,7 +278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilter_ValidParameters_With_Capability_And_Epic_FilterCreated(
             [Frozen] BuyingCatalogueDbContext context,
             string description,
@@ -297,6 +305,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
                 null,
                 null,
                 null,
+                null,
                 null);
             result.Should().NotBe(0);
             context.ChangeTracker.Clear();
@@ -316,7 +325,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterCapabilities_NullCapabilityIds_NoCapabilitiesAdded(
             Organisation organisation,
             Filter filter,
@@ -339,7 +348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterCapabilities_EmptyCapabilityIds_NoCapabilitiesAdded(
             Organisation organisation,
             Filter filter,
@@ -362,7 +371,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterCapabilities_NullFilter_NoCapabilitiesAdded(
             [Frozen] BuyingCatalogueDbContext context,
             Dictionary<int, string[]> capabilityEpicIds,
@@ -377,7 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterCapabilities_ValidParameters_CapabilitiesAdded(
             Organisation organisation,
             Capability capability,
@@ -403,7 +412,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterCapabilityEpics_NullCapabilityIds_NoCapabilitiesAdded(
             Organisation organisation,
             Filter filter,
@@ -426,7 +435,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterCapabilityEpics_EmptyCapabilityIds_NoCapabilitiesAdded(
             Organisation organisation,
             Filter filter,
@@ -449,7 +458,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterCapabilityEpics_NullFilter_NoCapabilitiesAdded(
             [Frozen] BuyingCatalogueDbContext context,
             Dictionary<int, string[]> capabilityEpicIds,
@@ -464,7 +473,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterCapabilityEpics_ValidParameters_CapabilityEpics_JustCapabilities_Added(
             Organisation organisation,
             Filter filter,
@@ -490,7 +499,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterCapabilityEpics_ValidParameters_CapabilityEpicsAdded(
             List<Epic> epics,
             Organisation organisation,
@@ -521,7 +530,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterCapabilityEpics_ValidParameters_SameEpics_DifferentCapabilities_Added(
             List<Epic> epics,
             Organisation organisation,
@@ -552,7 +561,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterApplicationTypes_NullCatIds_NoCatsAdded(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
@@ -574,7 +583,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterApplicationTypes_EmptyCatIds_NoCatsAdded(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
@@ -596,7 +605,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterApplicationTypes_NullFilter_NoCatsAdded(
             [Frozen] BuyingCatalogueDbContext context,
             List<ApplicationType> cats,
@@ -611,7 +620,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterApplicationTypes_ValidParameters_CatsAdded(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
@@ -641,7 +650,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterHostingTypes_NullHostingTypeIds_NoHostingTypesAdded(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
@@ -663,7 +672,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterHostingTypes_EmptyHostingTypeIds_NoHostingTypesAdded(
             Organisation organisation,
             Filter filter,
@@ -685,7 +694,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterHostingTypes_NullFilter_NoHostingTypesAdded(
             [Frozen] BuyingCatalogueDbContext context,
             List<HostingType> hostingTypes,
@@ -700,7 +709,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterHostingTypes_ValidParameters_HostingTypesAdded(
             List<HostingType> hostingTypes,
             Organisation organisation,
@@ -730,7 +739,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterIM1IntegrationsTypes_EmptyIM1IntegrationsTypeIds_NoIM1IntegrationsTypesAdded(
             Organisation organisation,
             Filter filter,
@@ -752,7 +761,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterIM1IntegrationsTypes_NullFilter_NoIM1IntegrationsTypesAdded(
             [Frozen] BuyingCatalogueDbContext context,
             List<InteropIm1IntegrationType> interopIm1Integrations,
@@ -767,7 +776,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterIM1IntegrationsTypes_ValidParameters_IM1IntegrationsTypesAdded(
             List<InteropIm1IntegrationType> interopIm1Integrations,
             Organisation organisation,
@@ -797,7 +806,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterGPConnectIntegrationsTypes_EmptyGPConnectIntegrationsTypeIds_NoGPConnectIntegrationsTypesAdded(
             Organisation organisation,
             Filter filter,
@@ -819,7 +828,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterGPConnectIntegrationsTypes_NullFilter_NoGPConnectIntegrationsTypesAdded(
             [Frozen] BuyingCatalogueDbContext context,
             List<InteropGpConnectIntegrationType> interopGpConnectIntegrations,
@@ -834,7 +843,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterGPConnectIntegrationsTypes_ValidParameters_GPConnectIntegrationsTypesAdded(
             List<InteropGpConnectIntegrationType> interopGpConnectIntegrations,
             Organisation organisation,
@@ -864,7 +873,74 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
+        public static async Task AddFilterNhsAppIntegrationsTypes_EmptyNhsAppIntegrationsTypeIds_NoNhsAppIntegrationsTypesAdded(
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.FilterNhsAppIntegrationTypes.Clear();
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddNhsAppIntegrationsTypes(filter.Id, new List<InteropNhsAppIntegrationType>());
+            context.ChangeTracker.Clear();
+
+            var result = await context.Filters.FirstAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterNhsAppIntegrationTypes.Should().BeEmpty();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task AddFilterNhsAppIntegrationsTypes_NullFilter_NoNhsAppIntegrationsTypesAdded(
+            [Frozen] BuyingCatalogueDbContext context,
+            List<InteropNhsAppIntegrationType> interopNhsAppIntegrations,
+            int invalidFilterId,
+            ManageFiltersService service)
+        {
+            await service.AddNhsAppIntegrationsTypes(invalidFilterId, interopNhsAppIntegrations);
+            context.ChangeTracker.Clear();
+
+            var filter = await context.Filters.FirstOrDefaultAsync(f => f.Id == invalidFilterId);
+            filter.Should().BeNull();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task AddFilterNhsAppIntegrationsTypes_ValidParameters_NhsAppIntegrationsTypesAdded(
+            List<InteropNhsAppIntegrationType> interopNhsAppIntegrations,
+            Organisation organisation,
+            Filter filter,
+            [Frozen] BuyingCatalogueDbContext context,
+            ManageFiltersService service)
+        {
+            filter.FilterNhsAppIntegrationTypes.Clear();
+            context.Organisations.Add(organisation);
+            context.Filters.Add(filter);
+            await context.SaveChangesAsync();
+
+            await service.AddNhsAppIntegrationsTypes(filter.Id, interopNhsAppIntegrations);
+            context.ChangeTracker.Clear();
+
+            var result = await context.Filters.Include(f => f.FilterNhsAppIntegrationTypes).FirstOrDefaultAsync(f => f.Id == filter.Id);
+            result.Should().NotBeNull();
+
+            result.FilterNhsAppIntegrationTypes.Should().NotBeNullOrEmpty();
+            result.FilterNhsAppIntegrationTypes.Count.Should().Be(interopNhsAppIntegrations.Count);
+
+            foreach (var x in result.FilterNhsAppIntegrationTypes)
+            {
+                x.FilterId.Should().Be(filter.Id);
+                interopNhsAppIntegrations.Should().Contain(x.NhsAppIntegrationsType);
+            }
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterInteroperabilityIntegrationTypes_EmptyInteroperabilityIntegrationTypeIds_NoInteroperabilityIntegrationTypeAdded(
             Organisation organisation,
             Filter filter,
@@ -886,7 +962,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterInteroperabilityIntegrationTypes_NullFilter_NoInteroperabilityIntegrationTypesAdded(
             [Frozen] BuyingCatalogueDbContext context,
             List<InteropIntegrationType> interopIntegrationType,
@@ -901,7 +977,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddFilterInteroperabilityIntegrationTypes_ValidParameters_InteroperabilityIntegrationTypesAdded(
             List<InteropIntegrationType> interopIntegrationType,
             Organisation organisation,
@@ -931,7 +1007,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetFilters_ReturnsExpectedResults(
             Organisation organisation,
             Filter filter,
@@ -965,7 +1041,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetFilterDetails_ReturnsExpected(
             EntityFramework.Catalogue.Models.Framework framework,
             Filter filter,
@@ -1007,7 +1083,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetFilterDetails_With_Epics_With_No_Capability_Context_Is_Invalid(
             EntityFramework.Catalogue.Models.Framework framework,
             Filter filter,
@@ -1037,7 +1113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetFilterDetails_With_Expired_Capabilities_Is_Invalid(
             EntityFramework.Catalogue.Models.Framework framework,
             Filter filter,
@@ -1062,7 +1138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetFilterDetails_With_IsActive_False_Epics_Is_Invalid(
             EntityFramework.Catalogue.Models.Framework framework,
             Filter filter,
@@ -1087,7 +1163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetFilterDetails_With_Epics_No_Longer_Linked_To_Capability_Is_Invalid(
             EntityFramework.Catalogue.Models.Framework framework,
             Filter filter,
@@ -1123,7 +1199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetFilterIds_ReturnsExpected(
             EntityFramework.Catalogue.Models.Framework framework,
             Filter filter,
@@ -1168,7 +1244,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteFilter_SoftDeleteFilter_ValidateDeletion(
             Organisation organisation,
             Filter filter,

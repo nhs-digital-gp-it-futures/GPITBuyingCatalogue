@@ -21,6 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.ServiceLeve
 
         public static By DeleteLink => By.LinkText("Delete service availability times");
 
+        public static By AddAvailabilityTimesLink => By.LinkText("Add availability times");
+
         public static By CancelLink => By.LinkText("Cancel");
     }
 }

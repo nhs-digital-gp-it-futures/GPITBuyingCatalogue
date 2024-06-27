@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 order.GetSolutionId(),
                 PracticeReorganisationTypeEnum.None).Result;
 
-            if (associatedServices.Any() && !order.IsAmendment)
+            if (associatedServices.Count != 0 && !order.IsAmendment)
             {
                 return new RoutingResult
                 {

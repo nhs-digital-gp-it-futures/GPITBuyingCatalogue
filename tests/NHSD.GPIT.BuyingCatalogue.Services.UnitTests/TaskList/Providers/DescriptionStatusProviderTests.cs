@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     public static class DescriptionStatusProviderTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
             DescriptionStatusProvider service)
         {
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderIsNull_ReturnsCannotStart(
             DescriptionStatusProvider service)
         {
@@ -35,8 +35,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData("", TaskProgress.NotStarted)]
-        [CommonInlineAutoData("description", TaskProgress.Completed)]
+        [MockInlineAutoData("", TaskProgress.NotStarted)]
+        [MockInlineAutoData("description", TaskProgress.Completed)]
         public static void Get_WithDescription_ReturnsExpectedResult(
             string description,
             TaskProgress expected,
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_AmendedOrder_DescriptionUnchanged_ReturnsExpectedResult(
             List<Order> orders,
             DescriptionStatusProvider service)
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_AmendedOrder_DescriptionChanged_ReturnsExpectedResult(
             List<Order> orders,
             DescriptionStatusProvider service)

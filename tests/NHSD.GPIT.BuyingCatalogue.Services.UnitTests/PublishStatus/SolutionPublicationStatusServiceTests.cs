@@ -2,17 +2,18 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
+using NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.Services.PublishStatus;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.PublishStatus;
@@ -22,7 +23,7 @@ public static class SolutionPublicationStatusServiceTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(SolutionPublicationStatusService).GetConstructors();
 
@@ -30,95 +31,90 @@ public static class SolutionPublicationStatusServiceTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SetPublicationStatus_CallsPublicationStatusService(
         CatalogueItemId catalogueItemId,
         PublicationStatus publicationStatus,
-        [Frozen] Mock<IPublicationStatusService> publicationStatusService,
+        [Frozen] IPublicationStatusService publicationStatusService,
         SolutionPublicationStatusService service)
     {
         await service.SetPublicationStatus(catalogueItemId, publicationStatus);
 
-        publicationStatusService.Verify(x => x.SetPublicationStatus(catalogueItemId, publicationStatus));
+        await publicationStatusService.Received().SetPublicationStatus(catalogueItemId, publicationStatus);
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SetPublicationStatus_Unpublish_UnpublishesAdditionalServices(
         CatalogueItemId catalogueItemId,
         List<CatalogueItem> additionalServices,
-        [Frozen] Mock<IPublicationStatusService> publicationStatusService,
-        [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+        [Frozen] IPublicationStatusService publicationStatusService,
+        [Frozen] IAdditionalServicesService additionalServicesService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
         SolutionPublicationStatusService service)
     {
-        additionalServicesService
-            .Setup(x => x.GetAdditionalServicesBySolutionId(catalogueItemId, true))
-            .ReturnsAsync(additionalServices);
+        additionalServicesService.GetAdditionalServicesBySolutionId(catalogueItemId, true).Returns(additionalServices);
+
+        associatedServicesService.GetPublishedAssociatedServicesForSolution(catalogueItemId, null).Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
         await service.SetPublicationStatus(catalogueItemId, PublicationStatus.Unpublished);
 
         additionalServices.ForEach(
-            x => publicationStatusService.Verify(y => y.SetPublicationStatus(x.Id, PublicationStatus.Unpublished)));
+            x => publicationStatusService.Received().SetPublicationStatus(x.Id, PublicationStatus.Unpublished));
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SetPublicationStatus_Unpublish_UnpublishesStaleAssociatedServices(
         CatalogueItemId catalogueItemId,
         List<CatalogueItem> associatedServices,
-        [Frozen] Mock<IPublicationStatusService> publicationStatusService,
-        [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+        [Frozen] IPublicationStatusService publicationStatusService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        [Frozen] IAdditionalServicesService additionalServicesService,
         SolutionPublicationStatusService service)
     {
-        associatedServicesService
-            .Setup(x => x.GetPublishedAssociatedServicesForSolution(catalogueItemId, null))
-            .ReturnsAsync(associatedServices);
+        associatedServicesService.GetPublishedAssociatedServicesForSolution(catalogueItemId, null).Returns(associatedServices);
 
-        associatedServicesService
-            .Setup(x => x.GetAllSolutionsForAssociatedService(It.IsAny<CatalogueItemId>()))
-            .ReturnsAsync(Enumerable.Empty<CatalogueItem>().ToList());
+        associatedServicesService.GetAllSolutionsForAssociatedService(Arg.Any<CatalogueItemId>()).Returns(Enumerable.Empty<CatalogueItem>().ToList());
+
+        additionalServicesService.GetAdditionalServicesBySolutionId(catalogueItemId, true).Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
         await service.SetPublicationStatus(catalogueItemId, PublicationStatus.Unpublished);
 
         associatedServices.ForEach(
-            x => publicationStatusService.Verify(y => y.SetPublicationStatus(x.Id, PublicationStatus.Unpublished)));
+            x => publicationStatusService.Received().SetPublicationStatus(x.Id, PublicationStatus.Unpublished));
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task SetPublicationStatus_Unpublish_DoesNotUnpublishReferencedAssociatedServices(
         CatalogueItemId catalogueItemId,
         CatalogueItem referencedSolution,
         List<CatalogueItem> associatedServices,
-        [Frozen] Mock<IPublicationStatusService> publicationStatusService,
-        [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+        [Frozen] IPublicationStatusService publicationStatusService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        [Frozen] IAdditionalServicesService additionalServicesService,
         SolutionPublicationStatusService service)
     {
         var associatedService = associatedServices.First();
 
         referencedSolution.PublishedStatus = PublicationStatus.Published;
 
-        associatedServicesService
-            .Setup(x => x.GetPublishedAssociatedServicesForSolution(catalogueItemId, null))
-            .ReturnsAsync(associatedServices);
+        associatedServicesService.GetPublishedAssociatedServicesForSolution(catalogueItemId, null).Returns(associatedServices);
 
-        associatedServicesService
-            .Setup(x => x.GetAllSolutionsForAssociatedService(associatedService.Id))
-            .ReturnsAsync(new List<CatalogueItem> { referencedSolution });
+        associatedServicesService.GetAllSolutionsForAssociatedService(associatedService.Id).Returns(new List<CatalogueItem> { referencedSolution });
 
-        associatedServicesService
-            .Setup(x => x.GetAllSolutionsForAssociatedService(It.Is<CatalogueItemId>(y => y != associatedService.Id)))
-            .ReturnsAsync(Enumerable.Empty<CatalogueItem>().ToList());
+        associatedServicesService.GetAllSolutionsForAssociatedService(Arg.Is<CatalogueItemId>(y => y != associatedService.Id)).Returns(Enumerable.Empty<CatalogueItem>().ToList());
+
+        additionalServicesService.GetAdditionalServicesBySolutionId(catalogueItemId, true).Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
         await service.SetPublicationStatus(catalogueItemId, PublicationStatus.Unpublished);
 
-        publicationStatusService.Verify(
-            x => x.SetPublicationStatus(associatedService.Id, It.IsAny<PublicationStatus>()),
-            Times.Never());
+        await publicationStatusService.Received(0).SetPublicationStatus(associatedService.Id, Arg.Any<PublicationStatus>());
 
         associatedServices.Skip(1)
             .ToList()
             .ForEach(
-                x => publicationStatusService.Verify(y => y.SetPublicationStatus(x.Id, PublicationStatus.Unpublished)));
+                x => publicationStatusService.Received().SetPublicationStatus(x.Id, PublicationStatus.Unpublished));
     }
 }

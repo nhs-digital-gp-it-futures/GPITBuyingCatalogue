@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Builders;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(CreateUserService).GetConstructors();
 
@@ -34,9 +34,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("\t")]
         public static Task Create_NullOrEmptyEmailAddress_ThrowsException(
             string emailAddress,
             CreateUserService service)
@@ -51,21 +51,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Create_SuccessfulApplicationUserValidation_ReturnsSuccess(
             string expectedToken,
-            [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
-            [Frozen] Mock<IPasswordService> mockPasswordService,
+            [Frozen] IPasswordResetCallback mockPasswordResetCallback,
+            [Frozen] IPasswordService mockPasswordService,
             CreateUserService service)
         {
             var expectedUser = CreateAspNetUser();
 
-            mockPasswordResetCallback.Setup(p => p.GetPasswordResetCallback(It.IsAny<PasswordResetToken>()))
-                .Returns(new Uri("http://www.test.com"));
+            mockPasswordResetCallback.GetPasswordResetCallback(Arg.Any<PasswordResetToken>()).Returns(new Uri("http://www.test.com"));
 
-            mockPasswordService.Setup(
-                p => p.GeneratePasswordResetTokenAsync(It.Is<string>(e => e == expectedUser.Email)))
-                .ReturnsAsync(new PasswordResetToken(expectedToken, expectedUser));
+            mockPasswordService.GeneratePasswordResetTokenAsync(Arg.Is<string>(e => e == expectedUser.Email))
+                .Returns(new PasswordResetToken(expectedToken, expectedUser));
 
             var actual = await service.Create(
                 1,
@@ -78,25 +76,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbInlineAutoData("Authority")]
-        [InMemoryDbInlineAutoData("Buyer")]
-        [InMemoryDbInlineAutoData("AccountManager")]
+        [MockInMemoryDbInlineAutoData("Authority")]
+        [MockInMemoryDbInlineAutoData("Buyer")]
+        [MockInMemoryDbInlineAutoData("AccountManager")]
         public static async Task Create_SuccessfulApplicationUserValidation_UserAddedToDbContext(
             string role,
             string expectedToken,
-            [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
-            [Frozen] Mock<IPasswordService> mockPasswordService,
+            [Frozen] IPasswordResetCallback mockPasswordResetCallback,
+            [Frozen] IPasswordService mockPasswordService,
             [Frozen] UserManager<AspNetUser> userManager,
             CreateUserService service)
         {
             var expectedUser = CreateAspNetUser();
 
-            mockPasswordResetCallback.Setup(p => p.GetPasswordResetCallback(It.IsAny<PasswordResetToken>()))
-                .Returns(new Uri("http://www.test.com"));
+            mockPasswordResetCallback.GetPasswordResetCallback(Arg.Any<PasswordResetToken>()).Returns(new Uri("http://www.test.com"));
 
-            mockPasswordService.Setup(
-                p => p.GeneratePasswordResetTokenAsync(It.Is<string>(e => e == expectedUser.Email)))
-                .ReturnsAsync(new PasswordResetToken(expectedToken, expectedUser));
+            mockPasswordService.GeneratePasswordResetTokenAsync(Arg.Is<string>(e => e == expectedUser.Email))
+                .Returns(new PasswordResetToken(expectedToken, expectedUser));
 
             var result = await service.Create(
                 expectedUser.PrimaryOrganisationId,
@@ -115,23 +111,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Create_NewApplicationUser_SendsEmail(
             string expectedToken,
             [Frozen] RegistrationSettings settings,
-            [Frozen] Mock<IPasswordResetCallback> mockPasswordResetCallback,
-            [Frozen] Mock<IPasswordService> mockPasswordService,
-            [Frozen] Mock<IGovNotifyEmailService> mockEmailService,
+            [Frozen] IPasswordResetCallback mockPasswordResetCallback,
+            [Frozen] IPasswordService mockPasswordService,
+            [Frozen] IGovNotifyEmailService mockEmailService,
             CreateUserService service)
         {
             var expectedUser = CreateAspNetUser();
 
-            mockPasswordResetCallback.Setup(p => p.GetPasswordResetCallback(It.IsAny<PasswordResetToken>()))
+            mockPasswordResetCallback.GetPasswordResetCallback(Arg.Any<PasswordResetToken>())
                 .Returns(new Uri("http://www.test.com"));
 
-            mockPasswordService.Setup(
-                p => p.GeneratePasswordResetTokenAsync(It.Is<string>(e => e == expectedUser.Email)))
-                .ReturnsAsync(new PasswordResetToken(expectedToken, expectedUser));
+            mockPasswordService.GeneratePasswordResetTokenAsync(Arg.Is<string>(e => e == expectedUser.Email))
+                .Returns(new PasswordResetToken(expectedToken, expectedUser));
 
             await service.Create(
                 expectedUser.PrimaryOrganisationId,
@@ -140,10 +135,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
                 expectedUser.Email,
                 OrganisationFunction.Buyer.Name);
 
-            mockEmailService.Verify(e => e.SendEmailAsync(
-                expectedUser.Email,
-                settings.EmailTemplateId,
-                It.IsAny<Dictionary<string, dynamic>>()));
+            await mockEmailService.Received()
+                .SendEmailAsync(
+                    expectedUser.Email,
+                    settings.EmailTemplateId,
+                    Arg.Any<Dictionary<string, dynamic>>());
         }
 
         private static AspNetUser CreateAspNetUser() => AspNetUserBuilder

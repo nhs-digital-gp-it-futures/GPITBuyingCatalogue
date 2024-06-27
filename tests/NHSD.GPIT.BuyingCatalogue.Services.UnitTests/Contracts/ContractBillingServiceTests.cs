@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -14,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Contracts;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 using Contract = NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.Contract;
 
@@ -25,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ContractBillingService).GetConstructors();
 
@@ -33,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddContractBilling_ContractBillingExists_ReturnsExistingContract(
             Order order,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -61,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddContractBilling_ContractBillingDoesNotExist_ReturnsContract(
             Order order,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -87,9 +85,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void AddBespokeContractBillingItem_NullOrEmptyName_ThrowsException(
             string name,
             int orderId,
@@ -113,9 +111,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void AddBespokeContractBillingItem_NullOrEmptyPaymentTrigger_ThrowsException(
             string paymentTrigger,
             int orderId,
@@ -139,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddBespokeContractBillingItem_NullContractBilling_ContractBillingAndItemCreated(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItemId catalogueItemId,
@@ -185,7 +183,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddBespokeContractBillingItem_ExistingContractBilling_ItemAdded(
             [Frozen] BuyingCatalogueDbContext context,
             CatalogueItemId catalogueItemId,
@@ -227,7 +225,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContractBillingItem_NoMilestoneExists_ReturnsNull(
             int orderId,
             int itemId,
@@ -239,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetContractBillingItem_ItemExists_ReturnsItem(
             [Frozen] BuyingCatalogueDbContext dbContext,
             ContractBillingItem contractBillingItem,
@@ -270,9 +268,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void EditContractBillingItem_NullOrEmptyName_ThrowsException(
            string name,
            int orderId,
@@ -296,9 +294,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void EditContractBillingItem_NullOrEmptyPaymentTrigger_ThrowsException(
             string paymentTrigger,
             int orderId,
@@ -322,7 +320,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EditMilestone_ExistingMilestone_MilestoneUpdated(
             [Frozen] BuyingCatalogueDbContext context,
             string paymentTrigger,
@@ -375,7 +373,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteContractBillingItem_ExistingMilestone_MilestoneDeleted(
             [Frozen] BuyingCatalogueDbContext context,
             OrderItem orderItem,
@@ -408,7 +406,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteContractBillingItems_ExistingMilestone_MilestoneDeleted(
             [Frozen] BuyingCatalogueDbContext context,
             OrderItem orderItem,

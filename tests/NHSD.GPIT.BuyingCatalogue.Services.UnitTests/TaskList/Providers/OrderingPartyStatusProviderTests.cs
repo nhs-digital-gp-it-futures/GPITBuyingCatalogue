@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     public static class OrderingPartyStatusProviderTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
             OrderingPartyStatusProvider service)
         {
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderIsNull_ReturnsCannotStart(
             OrderingPartyStatusProvider service)
         {
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderingPartyContactIsNull_ReturnsNotStarted(
             Order order,
             OrderingPartyStatusProvider service)
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderingPartyContactIsNotNull_ReturnsCompleted(
             Contact contact,
             Order order,
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_IsAmendment_ContactEdited_ReturnsAmended(
             Contact originalContact,
             Contact editedContact,
@@ -81,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_IsAmendment_ContactUnchanged_ReturnsCompleted(
             Contact originalContact,
             List<Order> orders,

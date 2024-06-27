@@ -97,6 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
                 nameof(AssociatedServicesController.AssociatedServices))
                 .Should().BeTrue();
 
+            CommonActions.ClickAllCheckboxes();
             CommonActions.ClickSave();
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(CatalogueSolutionsController),

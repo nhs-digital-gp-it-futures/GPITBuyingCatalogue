@@ -4,7 +4,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NativeDesktopMemoryAndStorageStatus_NativeDesktopMemoryAndStorageValid_ReturnsCompleted(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -112,10 +112,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeDesktopMemoryAndStorageStatus_MinimumCpu_Invalid_ReturnsNotStarted(
             string minimumCpuValue,
             [Frozen] NativeDesktopMemoryAndStorage storage,
@@ -128,10 +128,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeDesktopMemoryAndStorageStatus_MinimumMemoryRequirement_Invalid_ReturnsNotStarted(
             string value,
             [Frozen] NativeDesktopMemoryAndStorage storage,
@@ -144,10 +144,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeDesktopMemoryAndStorageStatus_StorageRequirementsDescription_Invalid_ReturnsNotStarted(
             string value,
             [Frozen] NativeDesktopMemoryAndStorage storage,
@@ -172,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NativeDesktopThirdPartyStatus_Valid_ReturnsCompleted(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -181,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NativeDesktopThirdPartyStatus_Null_ReturnsNotStarted(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -191,10 +191,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeDesktopThirdPartyStatus_DeviceCapabilities_Invalid_With_Valid_ThirdPartyComponents_ReturnsCompleted(
             string value,
             ApplicationTypeDetail applicationTypeDetail)
@@ -206,10 +206,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeDesktopThirdPartyStatus_ThirdPartyComponents_Invalid_With_Valid_DeviceCapabilities_ReturnsCompleted(
             string value,
             ApplicationTypeDetail applicationTypeDetail)
@@ -221,10 +221,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeDesktopThirdPartyStatus_Both_ThirdPartyComponents_And_DeviceCapabilities_Invalid_ReturnsNotStarted(
             string value,
             ApplicationTypeDetail applicationTypeDetail)
@@ -237,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NativeMobileConnectivityStatus_Valid_ReturnsCompleted(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -246,7 +246,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NativeMobileConnectivityStatus_Null_ReturnsNotStarted(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -256,10 +256,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeMobileConnectivityStatus_DescriptionHasValidValue_ReturnsCompleted(
             string invalid,
             ApplicationTypeDetail applicationTypeDetail)
@@ -272,10 +272,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeMobileConnectivityStatus_MinimumConnectionSpeedHasValidValue_ReturnsCompleted(
             string invalid,
             ApplicationTypeDetail applicationTypeDetail)
@@ -288,10 +288,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeMobileConnectivityStatus_ConnectionTypeHasValidValue_ReturnsCompleted(
             string invalid,
             ApplicationTypeDetail applicationTypeDetail)
@@ -304,10 +304,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeMobileConnectivityStatus_AllPropertiesInvalid_ConnectionTypeNull_ReturnsNotStarted(
             string invalid,
             ApplicationTypeDetail applicationTypeDetail)
@@ -321,10 +321,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeMobileConnectivityStatus_AllPropertiesInvalid_ConnectionTypeEmpty_ReturnsNotStarted(
             string invalid,
             ApplicationTypeDetail applicationTypeDetail)
@@ -338,7 +338,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NativeMobileMemoryAndStorageStatus_MobileMemoryAndStorageValid_ReturnsCompleted(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -347,10 +347,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeMobileMemoryAndStorageStatus_Description_Invalid_ReturnsNotStarted(
             string value,
             [Frozen] MobileMemoryAndStorage storage,
@@ -363,10 +363,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData("    ")]
-        [CommonInlineAutoData("\t")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("    ")]
+        [MockInlineAutoData("\t")]
         public static void NativeMobileMemoryAndStorageStatus_MinimumMemoryRequirement_Invalid_ReturnsNotStarted(
             string value,
             [Frozen] MobileMemoryAndStorage storage,
@@ -572,7 +572,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NativeMobileThirdPartyStatus_MobileThirdPartyValid_ReturnsCompleted(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -581,7 +581,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void TNativeMobileThirdPartyStatus_MobileThirdPartyInvalid_ReturnsNotStarted(
             [Frozen] MobileThirdParty thirdParty,
             ApplicationTypeDetail applicationTypeDetail)
@@ -606,9 +606,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData(ApplicationType.BrowserBased)]
-        [CommonInlineAutoData(ApplicationType.MobileTablet)]
-        [CommonInlineAutoData(ApplicationType.Desktop)]
+        [MockInlineAutoData(ApplicationType.BrowserBased)]
+        [MockInlineAutoData(ApplicationType.MobileTablet)]
+        [MockInlineAutoData(ApplicationType.Desktop)]
         public static void ApplicationTypeStatus_ReturnsComplete(
             ApplicationType applicationType,
             ApplicationTypeDetail applicationTypeDetail)
@@ -618,7 +618,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData]
+        [MockInlineAutoData]
         public static void ApplicationTypeStatus_BrowserBased_NoPlugins_ReturnsInProgress(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -629,7 +629,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData]
+        [MockInlineAutoData]
         public static void ApplicationTypeStatus_BrowserBased_NoSupportedBrowsers_ReturnsInProgress(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -649,7 +649,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData]
+        [MockInlineAutoData]
         public static void ApplicationTypeStatus_DesktopBased_NoOperatingSystemDescription_ReturnsInProgress(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -660,7 +660,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData]
+        [MockInlineAutoData]
         public static void ApplicationTypeStatus_DesktopBased_NoNativeDesktopMinimumConnectionSpeed_ReturnsInProgress(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -671,7 +671,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData]
+        [MockInlineAutoData]
         public static void ApplicationTypeStatus_DesktopBased_NoNativeDesktopMemoryAndStorage_ReturnsInProgress(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -691,7 +691,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData]
+        [MockInlineAutoData]
         public static void ApplicationTypeStatus_MobileTablet_NoMobileOperatingSystems_ReturnsInProgress(
             ApplicationTypeDetail applicationTypeDetail)
         {
@@ -702,7 +702,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData]
+        [MockInlineAutoData]
         public static void ApplicationTypeStatus_MobileTablet_NoMobileMemoryAndStorage_ReturnsInProgress(
             ApplicationTypeDetail applicationTypeDetail)
         {

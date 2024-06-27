@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
@@ -11,10 +11,10 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
     public static class HostingTests
     {
         [Theory]
-        [CommonInlineAutoData(HostingType.Hybrid)]
-        [CommonInlineAutoData(HostingType.OnPremise)]
-        [CommonInlineAutoData(HostingType.PrivateCloud)]
-        [CommonInlineAutoData(HostingType.PublicCloud)]
+        [MockInlineAutoData(HostingType.Hybrid)]
+        [MockInlineAutoData(HostingType.OnPremise)]
+        [MockInlineAutoData(HostingType.PrivateCloud)]
+        [MockInlineAutoData(HostingType.PublicCloud)]
         public static void HostingTypeStatus_ReturnsComplete(
             HostingType hostingType,
             Hosting hosting)
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData]
+        [MockInlineAutoData]
         public static void HostingTypeStatus_HybridNotStarted_ReturnsNotStarted(
             Hosting hosting)
         {
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData]
+        [MockInlineAutoData]
         public static void HostingTypeStatus_OnPremiseNotStarted_ReturnsNotStarted(
             Hosting hosting)
         {
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData]
+        [MockInlineAutoData]
         public static void HostingTypeStatus_PrivateCloudNotStarted_ReturnsNotStarted(
             Hosting hosting)
         {
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonInlineAutoData]
+        [MockInlineAutoData]
         public static void HostingTypeStatus_PublicCloudNotStarted_ReturnsNotStarted(
             Hosting hosting)
         {

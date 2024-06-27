@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     public static class FundingSourceStatusProviderTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
             FundingSourceStatusProvider service)
         {
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderIsNull_ReturnsCannotStart(
             FundingSourceStatusProvider service)
         {
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_StateIsNull_ReturnsCannotStart(
             Order order,
             FundingSourceStatusProvider service)
@@ -45,11 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.CannotStart)]
-        [CommonInlineAutoData(TaskProgress.InProgress)]
-        [CommonInlineAutoData(TaskProgress.NotApplicable)]
-        [CommonInlineAutoData(TaskProgress.NotStarted)]
-        [CommonInlineAutoData(TaskProgress.Optional)]
+        [MockInlineAutoData(TaskProgress.CannotStart)]
+        [MockInlineAutoData(TaskProgress.InProgress)]
+        [MockInlineAutoData(TaskProgress.NotApplicable)]
+        [MockInlineAutoData(TaskProgress.NotStarted)]
+        [MockInlineAutoData(TaskProgress.Optional)]
         public static void Get_DeliveryDatesNotComplete_ReturnsCannotStart(
             TaskProgress status,
             Order order,
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_NoFundingSourceInfoEntered_ReturnsNotStarted(
             Order order,
             FundingSourceStatusProvider service)
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_SomeFundingSourceInfoEntered_ReturnsInProgress(
             OrderItemFunding funding,
             Order order,
@@ -106,8 +106,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(1, TaskProgress.Completed)]
-        [CommonInlineAutoData(2, TaskProgress.Amended)]
+        [MockInlineAutoData(1, TaskProgress.Completed)]
+        [MockInlineAutoData(2, TaskProgress.Amended)]
         public static void Get_AllFundingSourceInfoEntered_ReturnsCompleted(
             int revision,
             TaskProgress expectedTaskProgress,

@@ -40,25 +40,31 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 
         public static By ResolutionDropdown => By.Id("SelectedScreenResolution");
 
-        public static By SolutionDescriptionLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/description')]");
+        public static By SolutionDescriptionLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/description')]");
 
-        public static By SolutionFeatureLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/features')]");
+        public static By SolutionFeatureLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/features')]");
 
-        public static By ListPriceLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/list-prices')]");
+        public static By ListPriceLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/list-prices')]");
 
-        public static By SolutionInteroperabilityLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/interoperability')]");
+        public static By SolutionInteroperabilityLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/interoperability')]");
 
-        public static By SolutionImplementationLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/implementation')]");
+        public static By SolutionImplementationLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/implementation')]");
 
-        public static By SolutionApplicationTypeLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/application-type')]");
+        public static By SolutionApplicationTypeLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/application-type')]");
 
-        public static By SolutionHostingTypeLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/hosting-type')]");
+        public static By SolutionHostingTypeLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/hosting-type')]");
 
-        public static By CapabilitiesAndEpicsLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/edit-capabilities')]");
+        public static By CapabilitiesAndEpicsLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/edit-capabilities')]");
 
-        public static By AdditionalServiceLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/additional-services')]");
+        public static By AdditionalServiceLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/additional-services')]");
 
-        public static By AssociatedServiceLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/" + solutionId + "/associated-services')]");
+        public static By AssociatedServiceLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/associated-services')]");
+
+        public static By DevelopmentPlansLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/development-plans')]");
+
+        public static By SupplierDetailsLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/supplier-details')]");
+
+        public static By ServiceLevelAgreementLink(string solutionId) => By.XPath($"//a[contains(@href, '/manage/{solutionId}/service-level-agreements')]");
 
         public static By AddApplicationTypeLink => By.LinkText("Add an application type");
 

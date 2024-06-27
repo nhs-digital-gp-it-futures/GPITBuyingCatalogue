@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             string SelectedHostingTypeIds,
             string SelectedIM1Integrations,
             string SelectedGPConnectIntegrations,
+            string SelectedNhsAppIntegrations,
             string SelectedInteroperabilityOptions,
             string SortBy)
     {
@@ -31,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             selectedHostingTypeIds = SelectedHostingTypeIds,
             selectedIM1Integrations = SelectedIM1Integrations,
             selectedGPConnectIntegrations = SelectedGPConnectIntegrations,
+            selectedNhsAppIntegrations = SelectedNhsAppIntegrations,
             selectedInteroperabilityOptions = SelectedInteroperabilityOptions,
             sortBy = SortBy,
             page = page ?? 1,
@@ -44,6 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 SelectedHostingTypeIds,
                 SelectedIM1Integrations,
                 SelectedGPConnectIntegrations,
+                SelectedNhsAppIntegrations,
                 SelectedInteroperabilityOptions];
     }
 }

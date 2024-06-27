@@ -213,6 +213,7 @@ public class CompetitionsDashboardController : Controller
                 selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString(),
                 selectedIm1Integrations: filter.IM1Integrations.ToFilterString(),
                 selectedGpConnectIntegrations: filter.GPConnectIntegrations.ToFilterString(),
+                selectedNhsAppIntegrations: filter.NhsAppIntegrations.ToFilterString(),
                 selectedInteroperabilityOptions: filter.InteroperabilityOptions.ToFilterString());
 
         var competitionSolutions = solutionsAndServices
