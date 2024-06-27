@@ -6,7 +6,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     public static class AssociatedServicesBillingStatusProviderTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
             AssociatedServicesBillingStatusProvider service)
         {
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderIsNull_ReturnsCannotStart(
             AssociatedServicesBillingStatusProvider service)
         {
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_StateIsNull_ReturnsCannotStart(
             Order order,
             AssociatedServicesBillingStatusProvider service)
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_NoAssociatedServices_ReturnsNotApplicable(
             Order order,
             AssociatedServicesBillingStatusProvider service)
@@ -59,11 +59,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.CannotStart)]
-        [CommonInlineAutoData(TaskProgress.InProgress)]
-        [CommonInlineAutoData(TaskProgress.NotApplicable)]
-        [CommonInlineAutoData(TaskProgress.NotStarted)]
-        [CommonInlineAutoData(TaskProgress.Optional)]
+        [MockInlineAutoData(TaskProgress.CannotStart)]
+        [MockInlineAutoData(TaskProgress.InProgress)]
+        [MockInlineAutoData(TaskProgress.NotApplicable)]
+        [MockInlineAutoData(TaskProgress.NotStarted)]
+        [MockInlineAutoData(TaskProgress.Optional)]
         public static void Get_FundingSourceIncomplete_ContractBillingEntered_ReturnsInProgress(
             TaskProgress status,
             Order order,
@@ -83,10 +83,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.CannotStart)]
-        [CommonInlineAutoData(TaskProgress.InProgress)]
-        [CommonInlineAutoData(TaskProgress.NotStarted)]
-        [CommonInlineAutoData(TaskProgress.Optional)]
+        [MockInlineAutoData(TaskProgress.CannotStart)]
+        [MockInlineAutoData(TaskProgress.InProgress)]
+        [MockInlineAutoData(TaskProgress.NotStarted)]
+        [MockInlineAutoData(TaskProgress.Optional)]
         public static void Get_ImplementationPlanIncomplete_ContractBillingEntered_ReturnsInProgress(
             TaskProgress status,
             Order order,
@@ -106,11 +106,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.CannotStart)]
-        [CommonInlineAutoData(TaskProgress.InProgress)]
-        [CommonInlineAutoData(TaskProgress.NotApplicable)]
-        [CommonInlineAutoData(TaskProgress.NotStarted)]
-        [CommonInlineAutoData(TaskProgress.Optional)]
+        [MockInlineAutoData(TaskProgress.CannotStart)]
+        [MockInlineAutoData(TaskProgress.InProgress)]
+        [MockInlineAutoData(TaskProgress.NotApplicable)]
+        [MockInlineAutoData(TaskProgress.NotStarted)]
+        [MockInlineAutoData(TaskProgress.Optional)]
         public static void Get_FundingSourceIncomplete_ImplementationPlanNotApplicable_ReturnsCannotStart(
             TaskProgress status,
             Order order,
@@ -131,10 +131,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.CannotStart)]
-        [CommonInlineAutoData(TaskProgress.InProgress)]
-        [CommonInlineAutoData(TaskProgress.NotStarted)]
-        [CommonInlineAutoData(TaskProgress.Optional)]
+        [MockInlineAutoData(TaskProgress.CannotStart)]
+        [MockInlineAutoData(TaskProgress.InProgress)]
+        [MockInlineAutoData(TaskProgress.NotStarted)]
+        [MockInlineAutoData(TaskProgress.Optional)]
         public static void Get_ImplementationPlanIncomplete_ReturnsCannotStart(
             TaskProgress status,
             Order order,
@@ -155,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_NoContractInfoEntered_ReturnsNotStarted(
             Order order,
             AssociatedServicesBillingStatusProvider service)
@@ -174,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_PartialContractInfoEntered_ReturnsNotStarted(
             Order order,
             AssociatedServicesBillingStatusProvider service)
@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_ContractInfoEntered_RequirementsNotCompleted_ReturnsInProgress(
             Order order,
             AssociatedServicesBillingStatusProvider service)
@@ -213,7 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_ContractInfoEntered_RequirementsCompleted_ReturnsInCompleted(
             Order order,
             AssociatedServicesBillingStatusProvider service)

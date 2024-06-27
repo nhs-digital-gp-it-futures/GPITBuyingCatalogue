@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -12,7 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.Services.Capabilities;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(SupplierDefinedEpicsService).GetConstructors();
 
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSupplierDefinedEpics_ReturnsExpectedResult(
             [Frozen] BuyingCatalogueDbContext context,
             SupplierDefinedEpicsService service)
@@ -47,9 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void GetSupplierDefinedEpicsBySearchTerm_SearchTermNull_ThrowsException(
             string searchTerm,
             SupplierDefinedEpicsService service)
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetSupplierDefinedEpicsBySearchTerm_ReturnsExpectedResult(
             string searchTerm,
             [Frozen] BuyingCatalogueDbContext context,
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EpicExistsWithName_ReturnsTrue(
             string epicId,
             Epic epic,
@@ -125,7 +125,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EpicExistsWithName_ReturnsFalse(
             Epic epic,
             SupplierDefinedEpicsService service)
@@ -136,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EpicExists_NullId_DuplicateContent_ReturnsTrue(
             Epic epic,
             [Frozen] BuyingCatalogueDbContext context,
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EpicExists_ValidId_DuplicateContent_ReturnsFalse(
             Epic epic,
             [Frozen] BuyingCatalogueDbContext context,
@@ -174,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EpicExists_NullId_ReturnsFalse(
             Epic epic,
             SupplierDefinedEpicsService service)
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EpicExists_ValidId_ReturnsFalse(
             Epic epic,
             SupplierDefinedEpicsService service)
@@ -200,13 +200,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task AddSupplierDefinedEpic_NullModel_ThrowsArgumentNullException(
             SupplierDefinedEpicsService service)
             => Assert.ThrowsAsync<ArgumentNullException>(() => service.AddSupplierDefinedEpic(null));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddSupplierDefinedEpic_ValidModel_AddsEpic(
             Capability capability,
             AddEditSupplierDefinedEpic addEpicModel,
@@ -240,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddSupplierDefinedEpic_GeneratesIncrementedIds(
             Capability capability,
             AddEditSupplierDefinedEpic addFirstEpicModel,
@@ -269,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddSupplierDefinedEpic_ExistingEpicInDb_IncrementsId(
             Capability capability,
             Epic epic,
@@ -295,7 +295,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddSupplierDefinedEpic_LegacyEpicInDb_IncrementsId(
             Capability capability,
             Epic epic,
@@ -321,7 +321,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddSupplierDefinedEpic_LegacyAndNewEpicInDb_IncrementsId(
             Capability capability,
             Epic legacyEpic,
@@ -353,7 +353,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetEpic_EpicIdNullOrEmpty_ThrowsArgumentException(
             SupplierDefinedEpicsService service)
         {
@@ -362,7 +362,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetEpic_ValidEpicId_ReturnsEpic(
             Epic epic,
             [Frozen] BuyingCatalogueDbContext context,
@@ -381,7 +381,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetEpic_ValidEpicId_NotSupplierDefined_ReturnsNull(
             Epic epic,
             [Frozen] BuyingCatalogueDbContext context,
@@ -398,7 +398,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetItemsReferencingEpic_EpicIdNullOrEmpty_ThrowsArgumentException(
             SupplierDefinedEpicsService service)
         {
@@ -407,7 +407,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetItemsReferencingEpic_ValidEpicId_ReturnsItems(
             Epic epic,
             Capability capability,
@@ -436,7 +436,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetItemsReferencingEpic_ValidEpicId_NotSupplierDefined_ReturnsEmpty(
             Epic epic,
             Capability capability,
@@ -464,13 +464,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task EditSupplierDefinedEpic_NullModel_ThrowsArgumentNullException(
             SupplierDefinedEpicsService service)
             => Assert.ThrowsAsync<ArgumentNullException>(() => service.EditSupplierDefinedEpic(null));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task EditSupplierDefinedEpic_InvalidEpicId_ThrowsKeyNotFoundException(
             AddEditSupplierDefinedEpic editEpicModel,
             SupplierDefinedEpicsService service)
@@ -481,7 +481,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EditSupplierDefinedEpic_ValidRequest_UpdatesEpic(
             Capability capability,
             Epic epic,

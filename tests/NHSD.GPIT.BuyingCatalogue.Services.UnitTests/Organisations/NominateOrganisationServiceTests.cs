@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -14,7 +13,8 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(NominateOrganisationService).GetConstructors();
 
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NominateOrganisation_RequestIsNull_ThrowsError(
             NominateOrganisationService systemUnderTest)
         {
@@ -46,31 +46,27 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NominateOrganisation_UsersServiceReturnsNull_ThrowsError(
-            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] IUsersService mockUsersService,
             NominateOrganisationService systemUnderTest)
         {
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync((AspNetUser)null);
+            mockUsersService.GetUser(UserId).Returns((AspNetUser)null);
 
             FluentActions
                 .Awaiting(() => systemUnderTest.NominateOrganisation(UserId, new NominateOrganisationRequest()))
                 .Should().ThrowAsync<ArgumentOutOfRangeException>();
 
-            mockUsersService.VerifyAll();
+            mockUsersService.Received().GetUser(UserId);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NominateOrganisation_UsersServiceReturnsUserWithoutEmailAddress_ThrowsError(
-            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] IUsersService mockUsersService,
             NominateOrganisationService systemUnderTest)
         {
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(new AspNetUser
+            mockUsersService.GetUser(UserId).Returns(new AspNetUser
                 {
                     Email = string.Empty,
                 });
@@ -79,79 +75,67 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
                 .Awaiting(() => systemUnderTest.NominateOrganisation(UserId, new NominateOrganisationRequest()))
                 .Should().ThrowAsync<ArgumentException>();
 
-            mockUsersService.VerifyAll();
+            mockUsersService.Received().GetUser(UserId);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NominateOrganisation_OrganisationsServiceReturnsNull_ThrowsError(
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            [Frozen] IUsersService mockUsersService,
+            [Frozen] IOrganisationsService mockOrganisationsService,
             NominateOrganisationService systemUnderTest)
         {
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(new AspNetUser
+            mockUsersService.GetUser(UserId).Returns(new AspNetUser
                 {
                     Email = EmailAddress,
                     PrimaryOrganisationId = OrganisationId,
                 });
 
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(OrganisationId))
-                .ReturnsAsync((Organisation)null);
+            mockOrganisationsService.GetOrganisation(OrganisationId).Returns((Organisation)null);
 
             FluentActions
                 .Awaiting(() => systemUnderTest.NominateOrganisation(UserId, new NominateOrganisationRequest()))
                 .Should().ThrowAsync<ArgumentException>();
 
-            mockUsersService.VerifyAll();
-            mockOrganisationsService.VerifyAll();
+            mockUsersService.Received().GetUser(UserId);
+            mockOrganisationsService.Received().GetOrganisation(OrganisationId);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task NominateOrganisation_RequestIsValid_SendsEmails(
             AspNetUser user,
             Organisation organisation,
             NominateOrganisationRequest request,
             NominateOrganisationMessageSettings settings,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IGovNotifyEmailService> mockEmailService)
+            [Frozen] IUsersService mockUsersService,
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            [Frozen] IGovNotifyEmailService mockEmailService)
         {
             Dictionary<string, dynamic> tokens = null;
 
             user.PrimaryOrganisationId = OrganisationId;
 
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(user);
+            mockUsersService.GetUser(UserId).Returns(user);
 
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(OrganisationId))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(OrganisationId).Returns(organisation);
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(user.Email, settings.UserTemplateId, null))
-                .Returns(Task.CompletedTask);
+            mockEmailService.SendEmailAsync(user.Email, settings.UserTemplateId, null).Returns(Task.CompletedTask);
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => tokens = x)
-                .Returns(Task.CompletedTask);
+            mockEmailService.SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, Arg.Do<Dictionary<string, dynamic>>(x => tokens = x)).Returns(Task.CompletedTask);
 
             var systemUnderTest = new NominateOrganisationService(
                 settings,
-                mockEmailService.Object,
-                mockOrganisationsService.Object,
-                mockUsersService.Object);
+                mockEmailService,
+                mockOrganisationsService,
+                mockUsersService);
 
             await systemUnderTest.NominateOrganisation(UserId, request);
 
-            mockUsersService.VerifyAll();
-            mockOrganisationsService.VerifyAll();
-            mockEmailService.VerifyAll();
+            await mockUsersService.Received().GetUser(UserId);
+            await mockOrganisationsService.Received().GetOrganisation(OrganisationId);
+            await mockEmailService.Received().SendEmailAsync(user.Email, settings.UserTemplateId, null);
+            await mockEmailService.Received().SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, Arg.Any<Dictionary<string, dynamic>>());
 
             tokens.Should().NotBeNull();
 
@@ -173,53 +157,45 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static async Task NominateOrganisation_RequestIsValid_NoOdsCode_SendsEmails(
             string odsCodeValue,
             AspNetUser user,
             Organisation organisation,
             NominateOrganisationRequest request,
             NominateOrganisationMessageSettings settings,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IGovNotifyEmailService> mockEmailService)
+            [Frozen] IUsersService mockUsersService,
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            [Frozen] IGovNotifyEmailService mockEmailService)
         {
             Dictionary<string, dynamic> tokens = null;
 
             user.PrimaryOrganisationId = OrganisationId;
 
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(user);
+            mockUsersService.GetUser(UserId).Returns(user);
 
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(OrganisationId))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(OrganisationId).Returns(organisation);
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(user.Email, settings.UserTemplateId, null))
-                .Returns(Task.CompletedTask);
+            mockEmailService.SendEmailAsync(user.Email, settings.UserTemplateId, null).Returns(Task.CompletedTask);
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => tokens = x)
-                .Returns(Task.CompletedTask);
+            mockEmailService.SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, Arg.Do<Dictionary<string, dynamic>>(x => tokens = x)).Returns(Task.CompletedTask);
 
             var systemUnderTest = new NominateOrganisationService(
                 settings,
-                mockEmailService.Object,
-                mockOrganisationsService.Object,
-                mockUsersService.Object);
+                mockEmailService,
+                mockOrganisationsService,
+                mockUsersService);
 
             request.OdsCode = odsCodeValue;
 
             await systemUnderTest.NominateOrganisation(UserId, request);
 
-            mockUsersService.VerifyAll();
-            mockOrganisationsService.VerifyAll();
-            mockEmailService.VerifyAll();
+            await mockUsersService.Received().GetUser(UserId);
+            await mockOrganisationsService.Received().GetOrganisation(OrganisationId);
+            await mockEmailService.Received().SendEmailAsync(user.Email, settings.UserTemplateId, null);
+            await mockEmailService.Received().SendEmailAsync(settings.AdminRecipient.Address, settings.AdminTemplateId, Arg.Any<Dictionary<string, dynamic>>());
 
             tokens.Should().NotBeNull();
 
@@ -229,49 +205,45 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void IsGpPractice_UsersServiceReturnsNull_ThrowsError(
             int userId,
-            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] IUsersService mockUsersService,
             NominateOrganisationService systemUnderTest)
         {
-            mockUsersService
-                .Setup(x => x.GetUser(userId))
-                .ReturnsAsync((AspNetUser)null);
+            mockUsersService.GetUser(userId).Returns((AspNetUser)null);
 
             FluentActions
                 .Awaiting(() => systemUnderTest.IsGpPractice(userId))
                 .Should().ThrowAsync<ArgumentOutOfRangeException>();
 
-            mockUsersService.VerifyAll();
+            mockUsersService.Received().GetUser(userId);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void IsGpPractice_UserPrimaryOrganisationNull_ThrowsError(
             int userId,
-            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] IUsersService mockUsersService,
             AspNetUser user,
             NominateOrganisationService systemUnderTest)
         {
             user.PrimaryOrganisation = null;
 
-            mockUsersService
-                .Setup(x => x.GetUser(userId))
-                .ReturnsAsync(user);
+            mockUsersService.GetUser(userId).Returns(user);
 
             FluentActions
                 .Awaiting(() => systemUnderTest.IsGpPractice(userId))
                 .Should().ThrowAsync<ArgumentException>();
 
-            mockUsersService.VerifyAll();
+            mockUsersService.Received().GetUser(userId);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task IsGpPractice_ValidGPUser_ReturnsExpectedValue(
             int userId,
-            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] IUsersService mockUsersService,
             AspNetUser user,
             Organisation primaryOrganisation,
             NominateOrganisationService systemUnderTest)
@@ -279,20 +251,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             primaryOrganisation.OrganisationType = OrganisationType.GP;
             user.PrimaryOrganisation = primaryOrganisation;
 
-            mockUsersService
-                .Setup(x => x.GetUser(userId))
-                .ReturnsAsync(user);
+            mockUsersService.GetUser(userId).Returns(user);
 
             var result = await systemUnderTest.IsGpPractice(userId);
-            mockUsersService.VerifyAll();
+            await mockUsersService.Received().GetUser(userId);
             result.Should().BeTrue();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task IsGpPractice_ValidNonGPUser_ReturnsExpectedValue(
             int userId,
-            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] IUsersService mockUsersService,
             AspNetUser user,
             Organisation primaryOrganisation,
             NominateOrganisationService systemUnderTest)
@@ -300,12 +270,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             primaryOrganisation.OrganisationType = OrganisationType.CCG;
             user.PrimaryOrganisation = primaryOrganisation;
 
-            mockUsersService
-                .Setup(x => x.GetUser(userId))
-                .ReturnsAsync(user);
+            mockUsersService.GetUser(userId).Returns(user);
 
             var result = await systemUnderTest.IsGpPractice(userId);
-            mockUsersService.VerifyAll();
+            await mockUsersService.Received().GetUser(userId);
             result.Should().BeFalse();
         }
     }

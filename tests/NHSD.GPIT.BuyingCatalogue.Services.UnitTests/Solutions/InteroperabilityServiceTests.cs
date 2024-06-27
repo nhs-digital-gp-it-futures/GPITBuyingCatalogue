@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -15,7 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(InteroperabilityService).GetConstructors();
 
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveIntegrationLink_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -50,14 +50,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task AddIntegration_NullIntegration_ThrowsException(InteroperabilityService service)
         {
             return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddIntegration(default, null));
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddIntegration_UpdatesDatabase(
            [Frozen] BuyingCatalogueDbContext context,
            Solution solution,
@@ -77,7 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EditIntegration_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -97,14 +97,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task EditIntegration_NullIntegrationThrowsException(InteroperabilityService service)
         {
             return Assert.ThrowsAsync<ArgumentNullException>(() => service.EditIntegration(default, default, null));
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetIntegrationById_ReturnsIntegration(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteIntegration_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -141,7 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteIntegration_NullIntegrationDoesNotUpdateDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static Task SetNhsAppIntegrations_NullIntegrations_ThrowsArgumentNullException(
             CatalogueItemId solutionId,
             InteroperabilityService service) => FluentActions
@@ -168,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             .ThrowAsync<ArgumentNullException>();
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetNhsAppIntegrations_WithNewIntegrations_AddsIntegrations(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext context,
@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SetNhsAppIntegrations_WithStaleIntegrations_RemovesStaleIntegrations(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext context,

@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
             FilterInteropIntegrationTypes = new HashSet<FilterInteroperabilityIntegrationType>();
             FilterIM1IntegrationTypes = new HashSet<FilterIM1IntegrationsType>();
             FilterGPConnectIntegrationTypes = new HashSet<FilterGPConnectIntegrationsType>();
+            FilterNhsAppIntegrationTypes = new HashSet<FilterNhsAppIntegrationsType>();
         }
 
         public int Id { get; set; }
@@ -57,5 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models
         public ICollection<FilterIM1IntegrationsType> FilterIM1IntegrationTypes { get; set; }
 
         public ICollection<FilterGPConnectIntegrationsType> FilterGPConnectIntegrationTypes { get; set; }
+
+        public ICollection<FilterNhsAppIntegrationsType> FilterNhsAppIntegrationTypes { get; set; }
     }
 }

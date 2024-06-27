@@ -22,6 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
             List<HostingType> hostingTypes,
             List<InteropIm1IntegrationType> iM1IntegrationsTypes,
             List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
+            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
             List<InteropIntegrationType> interoperabilityIntegrationTypes,
             int organisationId)
         {
@@ -35,6 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
             HostingTypes = hostingTypes;
             IM1IntegrationsTypes = iM1IntegrationsTypes;
             GPConnectIntegrationsTypes = gPConnectIntegrationsTypes;
+            NhsAppIntegrationsTypes = nhsAppIntegrationsTypes;
             InteroperabilityIntegrationTypes = interoperabilityIntegrationTypes;
             OrganisationId = organisationId;
             GroupedCapabilities = groupedCapabilities;
@@ -59,6 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters
         public List<InteropIm1IntegrationType> IM1IntegrationsTypes { get; set; }
 
         public List<InteropGpConnectIntegrationType> GPConnectIntegrationsTypes { get; set; }
+
+        public List<InteropNhsAppIntegrationType> NhsAppIntegrationsTypes { get; set; }
 
         public List<InteropIntegrationType> InteroperabilityIntegrationTypes { get; set; }
 

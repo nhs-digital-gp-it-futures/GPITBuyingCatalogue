@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
 using NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
     public static class SolutionOrServiceStatusProviderTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
             SolutionOrServiceStatusProvider service)
         {
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_OrderIsNull_ReturnsCannotStart(
             SolutionOrServiceStatusProvider service)
         {
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_StateIsNull_ReturnsCannotStart(
             Order order,
             SolutionOrServiceStatusProvider service)
@@ -46,11 +46,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(TaskProgress.CannotStart)]
-        [CommonInlineAutoData(TaskProgress.InProgress)]
-        [CommonInlineAutoData(TaskProgress.NotApplicable)]
-        [CommonInlineAutoData(TaskProgress.NotStarted)]
-        [CommonInlineAutoData(TaskProgress.Optional)]
+        [MockInlineAutoData(TaskProgress.CannotStart)]
+        [MockInlineAutoData(TaskProgress.InProgress)]
+        [MockInlineAutoData(TaskProgress.NotApplicable)]
+        [MockInlineAutoData(TaskProgress.NotStarted)]
+        [MockInlineAutoData(TaskProgress.Optional)]
         public static void Get_SupplierStatusNotComplete_ReturnsCannotStart(
             TaskProgress status,
             Order order,
@@ -67,8 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(CatalogueItemType.AdditionalService)]
-        [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
+        [MockInlineAutoData(CatalogueItemType.AdditionalService)]
+        [MockInlineAutoData(CatalogueItemType.AssociatedService)]
         public static void Get_NoSolutionSelected_ReturnsNotStarted(
             CatalogueItemType itemType,
             Order order,
@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Amended_Order_With_Nothing_Added_ReturnsNotStarted(
             Order order,
             SolutionOrServiceStatusProvider service)
@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Amended_NewRecipient_ReturnsInProgress(
             Order order,
             OrderRecipient orderRecipient,
@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Amended_NewOrderItem_ReturnsInProgress(
             OrderItem orderItemToAdd,
             Order order,
@@ -166,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_NoSolutionSelected_AssociatedServicesOnly_ReturnsNotStarted(
             Order order,
             SolutionOrServiceStatusProvider service)
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_SolutionSelected_NoOrderItems_AssociatedServicesOnly_ReturnsInProgress(
             CatalogueItemId solutionId,
             Order order,
@@ -206,8 +206,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(1, TaskProgress.Completed)]
-        [CommonInlineAutoData(2, TaskProgress.Amended)]
+        [MockInlineAutoData(1, TaskProgress.Completed)]
+        [MockInlineAutoData(2, TaskProgress.Amended)]
         public static void Get_SolutionSelected_EverythingPopulated_ReturnsCompleted(
             int revision,
             TaskProgress expectedTaskProgress,
@@ -230,8 +230,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(1, TaskProgress.Completed)]
-        [CommonInlineAutoData(2, TaskProgress.Amended)]
+        [MockInlineAutoData(1, TaskProgress.Completed)]
+        [MockInlineAutoData(2, TaskProgress.Amended)]
         public static void Get_SolutionSelected_With_Everything_But_DeliveryDates_Returns_InProgress_For_An_Amendment(
             int revision,
             TaskProgress expectedTaskProgress,

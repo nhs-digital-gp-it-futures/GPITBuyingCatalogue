@@ -16,6 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels
 
         public IEnumerable<int> GPConnectIntegrations { get; set; }
 
+        public IEnumerable<int> NhsAppIntegrations { get; set; }
+
         public IEnumerable<int> InteroperabilityOptions { get; set; }
     }
 }

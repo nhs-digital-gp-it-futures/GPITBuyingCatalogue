@@ -187,6 +187,19 @@
                                     </li>
                                 }
                             }
+                            @if (@Model.InteroperabilityIntegrationTypes[j].EnumMemberName() == "NHS App")
+                            {
+                                <p>
+                                    @Model.InteroperabilityIntegrationTypes[j].EnumMemberName() integrations
+                                </p>
+                                @for (var i = 0; i < Model.NhsAppIntegrationsTypes.Count; i++)
+                                {
+                                    <input type="hidden" asp-for="NhsAppIntegrationsTypes[i]" />
+                                    <li>
+                                        @Model.NhsAppIntegrationsTypes[i].Name()
+                                    </li>
+                                }
+                            }
                         }
                     }
                 </nhs-summary-list-row>

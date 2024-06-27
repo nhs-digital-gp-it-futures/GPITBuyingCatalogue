@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -15,7 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions;
@@ -25,7 +25,7 @@ public static class CompetitionsPriceServiceTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(CompetitionsPriceService).GetConstructors();
 
@@ -33,7 +33,7 @@ public static class CompetitionsPriceServiceTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static Task SetSolutionPrice_NullAgreedPrices_ThrowsException(
         string internalOrgId,
         int competitionId,
@@ -45,7 +45,7 @@ public static class CompetitionsPriceServiceTests
         .ThrowAsync<ArgumentNullException>();
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static Task SetServicePrice_NullAgreedPrices_ThrowsException(
         string internalOrgId,
         int competitionId,
@@ -58,7 +58,7 @@ public static class CompetitionsPriceServiceTests
         .ThrowAsync<ArgumentNullException>();
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionPrice_NoExistingPrice_SetsPrice(
         Organisation organisation,
         Competition competition,
@@ -107,7 +107,7 @@ public static class CompetitionsPriceServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionPrice_ExistingPrice_SetsPrice(
         Organisation organisation,
         Competition competition,
@@ -167,7 +167,7 @@ public static class CompetitionsPriceServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetServicePrice_NoExistingPrice_SetsPrice(
         Organisation organisation,
         Competition competition,
@@ -232,7 +232,7 @@ public static class CompetitionsPriceServiceTests
     }
 
     [Theory]
-    [InMemoryDbAutoData]
+    [MockInMemoryDbAutoData]
     public static async Task SetServicePrice_ExistingPrice_SetsPrice(
         Organisation organisation,
         Competition competition,

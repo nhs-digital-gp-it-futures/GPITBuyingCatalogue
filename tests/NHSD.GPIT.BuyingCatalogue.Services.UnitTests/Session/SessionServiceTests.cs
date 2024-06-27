@@ -1,14 +1,14 @@
 ﻿using System;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Session;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.SharedMocks;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(SessionService).GetConstructors();
 
@@ -26,29 +26,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_NullHttpContext_ThrowsException(
-            Mock<IHttpContextAccessor> httpContextAccessorMock)
+            IHttpContextAccessor httpContextAccessorMock)
         {
-            httpContextAccessorMock.Setup(a => a.HttpContext).Returns((HttpContext)null);
+            httpContextAccessorMock.HttpContext.Returns((HttpContext)null);
 
-            Assert.Throws<InvalidOperationException>(() => _ = new SessionService(httpContextAccessorMock.Object));
+            Assert.Throws<InvalidOperationException>(() => _ = new SessionService(httpContextAccessorMock));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_NullSession_ThrowsException(
-            Mock<HttpContext> httpContextMock,
-            Mock<IHttpContextAccessor> httpContextAccessorMock)
+            HttpContext httpContextMock,
+            IHttpContextAccessor httpContextAccessorMock)
         {
-            httpContextMock.Setup(c => c.Session).Returns((ISession)null);
-            httpContextAccessorMock.Setup(a => a.HttpContext).Returns(httpContextMock.Object);
+            httpContextMock.Session.Returns((ISession)null);
+            httpContextAccessorMock.HttpContext.Returns(httpContextMock);
 
-            Assert.Throws<InvalidOperationException>(() => _ = new SessionService(httpContextAccessorMock.Object));
+            Assert.Throws<InvalidOperationException>(() => _ = new SessionService(httpContextAccessorMock));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Strings_StoredAndRetrieved_FromSession(
             string key,
             string expected)
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Clear_Removes_FromSession(
             string key,
             string expected)
@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Objects_StoredAndRetrieved_FromSession(
             string key,
             CatalogueItem catalogueItem)
@@ -97,13 +97,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Session
 
         private static IHttpContextAccessor GetAccessor()
         {
-            var mockHttpContext = new Mock<HttpContext>();
-            mockHttpContext.Setup(c => c.Session).Returns(new MockHttpSession());
+            var mockHttpContext = Substitute.For<HttpContext>();
+            mockHttpContext.Session.Returns(new MockHttpSession());
 
-            var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
-            mockHttpContextAccessor.Setup(ca => ca.HttpContext).Returns(mockHttpContext.Object);
+            var mockHttpContextAccessor = Substitute.For<IHttpContextAccessor>();
+            mockHttpContextAccessor.HttpContext.Returns(mockHttpContext);
 
-            return mockHttpContextAccessor.Object;
+            return mockHttpContextAccessor;
         }
     }
 }

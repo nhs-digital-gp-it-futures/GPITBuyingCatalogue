@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -15,7 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Users;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(UsersService).GetConstructors();
 
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetUser_GetsUserFromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             AspNetUser user,
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetUser_NoMatchingRecord_ReturnsNull(
             UsersService service)
         {
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetAllUsers_GetsCorrectUsersFromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetAllUsers_GetsCorrectUsers_OrderedByStatus_FromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
@@ -117,7 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetAllUsersForOrganisation_GetsCorrectUsers_OrderedByStatus_FromDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Organisation organisation,
@@ -144,9 +144,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void GetAllUsersBySearchTerm_NullSearchTerm_GetsCorrectUsersFromDatabase(
             string searchTerm,
             UsersService service)
@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetAllUsersBySearchTerm_GetsCorrectUsersFromDatabase(
             string searchTerm,
             [Frozen] BuyingCatalogueDbContext context,
@@ -185,7 +185,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EnableOrDisableUser_DisableUser_UpdatesDatabaseCorrectly(
             [Frozen] BuyingCatalogueDbContext context,
             [Frozen] UserManager<AspNetUser> userManager,
@@ -207,7 +207,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EnableOrDisableUser_EnableUser_UpdatesDatabaseCorrectly(
             [Frozen] BuyingCatalogueDbContext context,
             [Frozen] UserManager<AspNetUser> userManager,
@@ -229,7 +229,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateUserAccountType_UpdatesDatabaseCorrectly(
             string accountType,
             [Frozen] BuyingCatalogueDbContext context,
@@ -251,7 +251,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateUserDetails_UpdatesDatabaseCorrectly(
             string firstName,
             string lastName,
@@ -275,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateUserOrganisation_UpdatesDatabaseCorrectly(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
@@ -294,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateUser_UpdatesDatabaseCorrectly(
             string firstName,
             string lastName,
@@ -328,7 +328,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EmailAddressExists_ReturnsCorrectResult(
             string emailAddress,
             [Frozen] BuyingCatalogueDbContext context,
@@ -345,7 +345,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task EmailAddressExists_ForCurrentUser_ReturnsCorrectResult(
             string emailAddress,
             [Frozen] BuyingCatalogueDbContext context,
@@ -362,7 +362,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task IsAccountManagerLimit_LessThanLimit_ReturnsFalse(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
@@ -380,7 +380,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task IsAccountManagerLimit_EqualsLimit_ReturnsTrue(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
@@ -399,7 +399,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task IsAccountManagerLimit_OverLimit_ReturnsTrue(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
@@ -420,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task IsAccountManagerLimit_InactiveLimit_ReturnsFalse(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
@@ -439,7 +439,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task IsAccountManagerLimit_ForCurrentUser_ReturnsFalse(
             int organisationId,
             [Frozen] BuyingCatalogueDbContext context,
@@ -458,7 +458,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Users
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task IsAccountManagerLimit_EqualsLimit_DifferentOrg_ReturnsFalse(
             int accountManagerOrgId,
             int testOrgId,

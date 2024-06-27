@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
     public class TaskListBackLinkProviderTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_OrderWrapperIsNull_ThrowsException(
             RouteValues routeValues,
             TaskListBackLinkProvider provider)
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_RouteValuesIsNull_ThrowsException(
             Order order,
             TaskListBackLinkProvider provider)
@@ -39,8 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.Solution)]
         public void Process_ExpectedResult(
             OrderTypeEnum associatedServicesOnly,
             string internalOrgId,
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_IncompleteSolution_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -101,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_IncompleteQuantity_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -135,7 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_IncompleteServices_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -162,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_FromDashboard_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_AssociatedServicesOnly_WithIncompleteServices_MissingPrice_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -213,7 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_AssociatedServicesOnly_WithIncompleteServices_MissingRecipientValues_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -239,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_AssociatedServicesOnly_WithCompleteServices_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,

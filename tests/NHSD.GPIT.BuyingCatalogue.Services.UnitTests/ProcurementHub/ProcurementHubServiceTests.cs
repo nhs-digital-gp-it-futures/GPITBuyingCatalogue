@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ProcurementHub;
 using NHSD.GPIT.BuyingCatalogue.Services.ProcurementHub;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ProcurementHub
@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ProcurementHub
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ProcurementHubService).GetConstructors();
 
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ProcurementHub
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ContactProcurementHub_RequestIsNull_ThrowsError(
             ProcurementHubService systemUnderTest)
         {
@@ -38,24 +38,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ProcurementHub
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task ContactProcurementHub_RequestIsValid_SendsEmail(
             ProcurementHubRequest request,
             ProcurementHubMessageSettings settings,
-            Mock<IGovNotifyEmailService> mockEmailService)
+            IGovNotifyEmailService mockEmailService)
         {
             Dictionary<string, dynamic> tokens = null;
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(settings.Recipient.Address, settings.TemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => tokens = x)
-                .Returns(Task.CompletedTask);
+            mockEmailService.SendEmailAsync(settings.Recipient.Address, settings.TemplateId, Arg.Do<Dictionary<string, dynamic>>(x => tokens = x)).Returns(Task.CompletedTask);
 
-            var systemUnderTest = new ProcurementHubService(settings, mockEmailService.Object);
+            var systemUnderTest = new ProcurementHubService(settings, mockEmailService);
 
             await systemUnderTest.ContactProcurementHub(request);
 
-            mockEmailService.VerifyAll();
+            await mockEmailService.Received().SendEmailAsync(settings.Recipient.Address, settings.TemplateId, Arg.Any<Dictionary<string, dynamic>>());
 
             tokens.Should().NotBeNull();
 
@@ -73,29 +70,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ProcurementHub
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static async Task ContactProcurementHub_NoOdsCode_SendsEmail(
             string odsCodeValue,
             ProcurementHubRequest request,
             ProcurementHubMessageSettings settings,
-            Mock<IGovNotifyEmailService> mockEmailService)
+            IGovNotifyEmailService mockEmailService)
         {
             Dictionary<string, dynamic> tokens = null;
 
-            mockEmailService
-                .Setup(x => x.SendEmailAsync(settings.Recipient.Address, settings.TemplateId, It.IsAny<Dictionary<string, dynamic>>()))
-                .Callback<string, string, Dictionary<string, dynamic>>((_, _, x) => tokens = x)
-                .Returns(Task.CompletedTask);
+            mockEmailService.SendEmailAsync(settings.Recipient.Address, settings.TemplateId, Arg.Do<Dictionary<string, dynamic>>(x => tokens = x)).Returns(Task.CompletedTask);
 
-            var systemUnderTest = new ProcurementHubService(settings, mockEmailService.Object);
+            var systemUnderTest = new ProcurementHubService(settings, mockEmailService);
 
             request.OdsCode = odsCodeValue;
 
             await systemUnderTest.ContactProcurementHub(request);
 
-            mockEmailService.VerifyAll();
+            await mockEmailService.Received().SendEmailAsync(settings.Recipient.Address, settings.TemplateId, Arg.Any<Dictionary<string, dynamic>>());
 
             tokens.Should().NotBeNull();
 

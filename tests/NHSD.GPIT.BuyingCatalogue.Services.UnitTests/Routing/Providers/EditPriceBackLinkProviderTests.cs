@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
     public class EditPriceBackLinkProviderTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_OrderWrapperIsNull_ThrowsException(
             string internalOrgId,
             CallOffId callOffId,
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_RouteValuesIsNull_ThrowsException(
             Order order,
             EditPriceBackLinkProvider provider)
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_MultiplePrices_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void Process_SinglePrice_FromTaskList_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,

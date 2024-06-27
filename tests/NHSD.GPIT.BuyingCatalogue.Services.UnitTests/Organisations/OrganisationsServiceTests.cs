@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
-using Castle.Core.Logging;
 using EnumsNET;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
@@ -33,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(OrganisationsService).GetConstructors();
 
@@ -41,14 +40,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task OrganisationExists_NullOdsOrganisation_ThrowsException(OrganisationsService service)
         {
             return Assert.ThrowsAsync<ArgumentNullException>(() => service.OrganisationExists(null));
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task OrganisationExists_OrganisationOdsAlreadyExists_ReturnsTrue(
             [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,
@@ -65,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task OrganisationExists_OrganisationNameAlreadyExists_ReturnsTrue(
             [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,
@@ -82,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task OrganisationExists_OrganisationDoesNotExist_ReturnsFalse(
             OdsOrganisation odsOrganisation,
             OrganisationsService service)
@@ -93,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddOrganisation_OrganisationAlreadyExists_ReturnsError(
             [Frozen] BuyingCatalogueDbContext context,
             OdsOrganisation odsOrganisation,
@@ -111,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddOrganisation_OrganisationCreated(
             [Frozen] BuyingCatalogueDbContext context,
             ILogger<OrganisationsService> logger,
@@ -140,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static void UpdateOrganisation_OrganisationIsNull_ThrowsException(
             OrganisationsService service)
         {
@@ -150,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateOrganisation_OrganisationNotInDatabase_NoActionTaken(
             OdsOrganisation organisation,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -170,7 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateOrganisation_OrganisationInDatabase_ValuesUpdated(
             Organisation organisation,
             OdsOrganisation newOrganisation,
@@ -201,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetOrganisationsBySearchTerm_CorrectResultsReturned(
             [Frozen] BuyingCatalogueDbContext context,
             string searchTerm,
@@ -223,7 +222,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetNominatedOrganisations_NoRelationshipsExist_EmptySetReturned(
             [Frozen] BuyingCatalogueDbContext context,
             OrganisationsService service)
@@ -244,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetNominatedOrganisations_RelationshipsExist_CorrectResultsReturned(
             Organisation organisation,
             [Frozen] BuyingCatalogueDbContext context,
@@ -270,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddNominatedOrganisation_RelationshipAlreadyExists_NoActionTaken(
             [Frozen] BuyingCatalogueDbContext context,
             OrganisationsService service)
@@ -297,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddNominatedOrganisation_RelationshipDoesNotExist_CreatesNewRelationship(
             [Frozen] BuyingCatalogueDbContext context,
             OrganisationsService service)
@@ -324,7 +323,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task RemoveNominatedOrganisation_RelationshipAlreadyExists_RemovesRelationship(
             [Frozen] BuyingCatalogueDbContext context,
             OrganisationsService service)
@@ -349,7 +348,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task RemoveNominatedOrganisation_RelationshipDoesNotExist_NoActionTaken(
             [Frozen] BuyingCatalogueDbContext context,
             OrganisationsService service)

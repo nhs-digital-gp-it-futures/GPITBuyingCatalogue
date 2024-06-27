@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -14,7 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ServiceLevelAgreementsService).GetConstructors();
 
@@ -32,13 +32,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task AddServiceLevel_NullModel(
             ServiceLevelAgreementsService service)
                 => Assert.ThrowsAsync<ArgumentNullException>("model", () => service.AddServiceLevelAgreement(null));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddServiceLevel_Valid_Type1(
             [Frozen] BuyingCatalogueDbContext context,
             ServiceLevelAgreementsService service,
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task AddServiceLevel_Valid_Type2(
             [Frozen] BuyingCatalogueDbContext context,
             ServiceLevelAgreementsService service,
@@ -94,7 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetServiceLevelAgreementForSolution_Valid(
             [Frozen] BuyingCatalogueDbContext context,
             ServiceLevelAgreementsService service,
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetServiceLevelAgreementForSolution_InvalidSolutionId(
             ServiceLevelAgreementsService service,
             CatalogueItemId itemId)
@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateServiceLevelTypeAsync_NoChange_LevelsAndHours_Unchanged(
             [Frozen] BuyingCatalogueDbContext context,
             ServiceLevelAgreementsService service,
@@ -148,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateServiceLevelTypeAsync_Type1ToType2_LevelsAndHours_Cleared(
             [Frozen] BuyingCatalogueDbContext context,
             ServiceLevelAgreementsService service,
@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateServiceLevelTypeAsync_Type2ToType1_LevelsAndHours_Defaulted(
             [Frozen] BuyingCatalogueDbContext context,
             ServiceLevelAgreementsService service,
@@ -204,7 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetServiceAvailabilityTimes(
             Solution solution,
             ServiceAvailabilityTimes serviceAvailabilityTimes,
@@ -221,21 +221,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task SaveServiceAvailabilityTimes_NullSolution(
             ServiceAvailabilityTimesModel model,
             ServiceLevelAgreementsService service)
                 => Assert.ThrowsAsync<ArgumentNullException>("solution", () => service.SaveServiceAvailabilityTimes(null, model));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task SaveServiceAvailabilityTimes_NullServiceAvailabilityTimesModel(
             Solution solution,
             ServiceLevelAgreementsService service)
                 => Assert.ThrowsAsync<ArgumentNullException>("model", () => service.SaveServiceAvailabilityTimes(solution.CatalogueItem, null));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task SaveServiceAvailabilityTimes_ValidRequest(
             Solution solution,
             ServiceAvailabilityTimesModel model,
@@ -254,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task UpdateServiceAvailabilityTimes_NullSolution(
             ServiceAvailabilityTimesModel model,
             int serviceAvailabilityTimesId,
@@ -262,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
                 => Assert.ThrowsAsync<ArgumentNullException>("solution", () => service.UpdateServiceAvailabilityTimes(null, serviceAvailabilityTimesId, model));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static Task UpdateServiceAvailabilityTimes_NullServiceAvailabilityTimesModel(
             Solution solution,
             int serviceAvailabilityTimesId,
@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
                 => Assert.ThrowsAsync<ArgumentNullException>("model", () => service.UpdateServiceAvailabilityTimes(solution.CatalogueItem, serviceAvailabilityTimesId, null));
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task UpdateServiceAvailabilityTimes_ValidRequest(
             Solution solution,
             ServiceAvailabilityTimesModel model,
@@ -296,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task DeleteServiceAvailabilityTimes_Valid(
             Solution solution,
             ServiceAvailabilityTimes serviceAvailabilityTimes,
@@ -315,7 +315,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task GetCountOfServiceAvailabilityTimes_WithExcludedIds(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,

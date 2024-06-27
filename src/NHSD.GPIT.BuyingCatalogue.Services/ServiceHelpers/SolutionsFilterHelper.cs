@@ -53,6 +53,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
                 .Select(t => (InteropGpConnectIntegrationType)Enum.Parse(typeof(InteropGpConnectIntegrationType), t))
                 .ToList() ?? new List<InteropGpConnectIntegrationType>();
 
+        public static ICollection<InteropNhsAppIntegrationType> ParseInteropNhsAppIntegrationsIds(string selectedNhsAppIntegrationsIds) =>
+            selectedNhsAppIntegrationsIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
+                .Where(x => Enum.TryParse(typeof(InteropNhsAppIntegrationType), x, out var hostingValue) && Enum.IsDefined(typeof(InteropNhsAppIntegrationType), hostingValue))
+                .Select(t => (InteropNhsAppIntegrationType)Enum.Parse(typeof(InteropNhsAppIntegrationType), t))
+                .ToList() ?? new List<InteropNhsAppIntegrationType>();
+
         public static ICollection<InteropIntegrationType> ParseInteropIntegrationTypeIds(string selectedInteroperabilityIds) =>
             selectedInteroperabilityIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
                 .Where(x => Enum.TryParse(typeof(InteropIntegrationType), x, out var hostingValue) && Enum.IsDefined(typeof(InteropIntegrationType), hostingValue))

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Notify.Interfaces;
+using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(GovNotifyEmailService).GetConstructors();
 
@@ -25,17 +25,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Email
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task SendEmailAsync_ValidRequest_CallsNotificationClient(
             string emailAddress,
             string templateId,
             Dictionary<string, dynamic> personalisations,
-            [Frozen] Mock<IAsyncNotificationClient> notificationClient,
+            [Frozen] IAsyncNotificationClient notificationClient,
             GovNotifyEmailService emailService)
         {
             await emailService.SendEmailAsync(emailAddress, templateId, personalisations);
 
-            notificationClient.Verify(_ => _.SendEmailAsync(emailAddress, templateId, personalisations, null, null));
+            await notificationClient.Received().SendEmailAsync(emailAddress, templateId, personalisations, null, null);
         }
     }
 }
