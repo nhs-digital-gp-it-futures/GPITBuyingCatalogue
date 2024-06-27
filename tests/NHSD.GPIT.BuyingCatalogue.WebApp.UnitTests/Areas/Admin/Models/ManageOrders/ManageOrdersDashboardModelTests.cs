@@ -34,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
                     Text = $"{item.ShortName}{(item.Expired ? " (expired)" : string.Empty)}",
                 });
             }
+
             model.SelectedStatus.Should().Be(status);
             model.SelectedFramework.Should().Be(framework);
         }

@@ -91,6 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 orders[i].SelectedFramework = framework;
                 orders[i].SelectedFrameworkId = framework.Id;
             }
+
             organisation.Orders = orders;
 
             context.Frameworks.Add(framework);
@@ -117,6 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             {
                 orders[i].IsTerminated = true;
             }
+
             organisation.Orders = orders;
 
             context.Orders.AddRange(orders);
@@ -142,6 +144,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             {
                 orders[i].IsDeleted = true;
             }
+
             organisation.Orders = orders;
 
             context.Orders.AddRange(orders);
@@ -169,6 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             {
                 orders[i].Completed = null;
             }
+
             organisation.Orders = orders;
 
             context.Orders.AddRange(orders);
@@ -196,6 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             {
                 orders[i].Completed = completedDate;
             }
+
             organisation.Orders = orders;
 
             context.Orders.AddRange(orders);
