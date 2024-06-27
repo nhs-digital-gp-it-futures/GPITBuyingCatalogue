@@ -61,8 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             [Frozen] IOrderAdminService orderAdminService,
             ManageOrdersController controller)
         {
-            var expectedModel = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options, string.Empty, string.Empty);
-            orderAdminService.GetPagedOrders(Arg.Any<PageOptions>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns(orders);
+            var expectedModel = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options, null, string.Empty);
+            orderAdminService.GetPagedOrders(Arg.Any<PageOptions>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<OrderStatus?>()).Returns(orders);
             frameworkService.GetFrameworksWithPublishedCatalogueItems().Returns(frameworks.ToList());
 
             var result = (await controller.Index()).As<ViewResult>();

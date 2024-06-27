@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
             OrderStatus status,
             string framework)
         {
-            var model = new ManageOrdersDashboardModel(orders, frameworks, options, status.ToString(), framework);
+            var model = new ManageOrdersDashboardModel(orders, frameworks, options, status, framework);
 
             model.Orders.Should().BeEquivalentTo(orders);
             model.Options.Should().BeEquivalentTo(options);
@@ -40,27 +40,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
         }
 
         [Theory]
-        [MockInlineAutoData(null)]
-        [MockInlineAutoData("")]
+        [MockAutoData]
         public static void SelectedStatus_Empty_SetsCorrectly(
-            string status,
             List<AdminManageOrder> orders,
             List<FrameworkFilterInfo> frameworks,
             PageOptions options,
             string framework)
         {
-            var model = new ManageOrdersDashboardModel(orders, frameworks, options, status, framework);
+            var model = new ManageOrdersDashboardModel(orders, frameworks, options, null, framework);
             model.SelectedStatus.Should().BeNull();
         }
 
         [Theory]
         [MockInlineAutoData(null, null, 0)]
-        [MockInlineAutoData(null, "Completed", 1)]
+        [MockInlineAutoData(null, OrderStatus.Completed, 1)]
         [MockInlineAutoData("test", null, 1)]
-        [MockInlineAutoData("test", "Completed", 2)]
+        [MockInlineAutoData("test", OrderStatus.Completed, 2)]
         public static void FilterCount_SetsCorrectly(
             string framework,
-            string status,
+            OrderStatus? status,
             int count,
             List<AdminManageOrder> orders,
             List<FrameworkFilterInfo> frameworks,

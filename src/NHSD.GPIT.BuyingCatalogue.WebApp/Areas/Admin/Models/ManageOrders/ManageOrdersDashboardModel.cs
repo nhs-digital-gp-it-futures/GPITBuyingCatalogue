@@ -17,14 +17,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
         {
         }
 
-        public ManageOrdersDashboardModel(IList<AdminManageOrder> orders, IEnumerable<FrameworkFilterInfo> frameworks, PageOptions options, string status, string framework)
+        public ManageOrdersDashboardModel(IList<AdminManageOrder> orders, IEnumerable<FrameworkFilterInfo> frameworks, PageOptions options, OrderStatus? status, string framework)
         {
             Orders = orders.ToList();
             Options = options;
             SetAvailableFrameworks(frameworks);
-            SelectedStatus = !string.IsNullOrWhiteSpace(status) && Enum.TryParse(status, out OrderStatus orderStatus)
-                ? orderStatus
-                : null;
+            SelectedStatus = status;
             SelectedFramework = framework;
             SetFilterCount();
         }
@@ -37,15 +35,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
 
         public string SelectedFramework { get; set; }
 
-        public List<FrameworkFilterInfo> Frameworks { get; set; }
-
         public IEnumerable<SelectOption<string>> AvailableFrameworks { get; set; }
 
         public OrderStatus? SelectedStatus { get; set; }
 
         public IEnumerable<SelectOption<OrderStatus>> AvailableStatus =>
-            Enum.GetValues(typeof(OrderStatus))
-                .Cast<OrderStatus>()
+            Enum.GetValues<OrderStatus>()
                 .Select(
                     x => new SelectOption<OrderStatus>
                     {

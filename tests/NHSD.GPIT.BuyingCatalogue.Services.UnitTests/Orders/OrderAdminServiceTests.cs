@@ -30,8 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [MockInMemoryDbAutoData]
+        [MockInMemoryDbInlineAutoData("0")]
+        [MockInMemoryDbInlineAutoData("1")]
         public static async Task GetPagedOrders_ReturnsExpectedPageSize(
+            string page,
             Organisation organisation,
             List<Order> orders,
             [Frozen] BuyingCatalogueDbContext context,
@@ -44,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.SaveChanges();
 
-            var pagedOrders = await service.GetPagedOrders(new PageOptions("0", 2));
+            var pagedOrders = await service.GetPagedOrders(new PageOptions(page, 2));
 
             pagedOrders.Items.Count.Should().Be(2);
             pagedOrders.Options.TotalNumberOfItems.Should().Be(orders.Count);
@@ -126,7 +128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.SaveChanges();
 
-            var result = await service.GetPagedOrders(new PageOptions("0", 2), status: OrderStatus.Terminated.ToString());
+            var result = await service.GetPagedOrders(new PageOptions("0", 2), status: OrderStatus.Terminated);
 
             result.Items.Should().NotBeNull();
             result.Items.Count.Should().Be(orders.Count - 1);
@@ -152,7 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.SaveChanges();
 
-            var result = await service.GetPagedOrders(new PageOptions("0", 2), status: OrderStatus.Deleted.ToString());
+            var result = await service.GetPagedOrders(new PageOptions("0", 2), status: OrderStatus.Deleted);
 
             result.Items.Should().NotBeNull();
             result.Items.Count.Should().Be(orders.Count - 1);
@@ -180,7 +182,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.SaveChanges();
 
-            var result = await service.GetPagedOrders(new PageOptions("0", 2), status: OrderStatus.InProgress.ToString());
+            var result = await service.GetPagedOrders(new PageOptions("0", 2), status: OrderStatus.InProgress);
 
             result.Items.Should().NotBeNull();
             result.Items.Count.Should().Be(orders.Count - 1);
@@ -208,7 +210,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.SaveChanges();
 
-            var result = await service.GetPagedOrders(new PageOptions("0", 2), status: OrderStatus.Completed.ToString());
+            var result = await service.GetPagedOrders(new PageOptions("0", 2), status: OrderStatus.Completed);
 
             result.Items.Should().NotBeNull();
             result.Items.Count.Should().Be(orders.Count - 1);

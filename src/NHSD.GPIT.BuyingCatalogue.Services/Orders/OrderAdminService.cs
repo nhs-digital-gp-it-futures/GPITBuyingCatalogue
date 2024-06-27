@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -13,7 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageOrders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
@@ -64,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             string search = null,
             string searchTermType = null,
             string framework = null,
-            string status = null)
+            OrderStatus? status = null)
         {
             if (options is null)
                 throw new ArgumentNullException(nameof(options));
@@ -85,13 +82,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             }
 
             var orderList = await baseQuery.ToListAsync();
-            if (!string.IsNullOrWhiteSpace(status))
+            if (status is not null)
             {
-                if (Enum.TryParse(status, true, out OrderStatus orderStatus)
-                    && Enum.IsDefined(typeof(OrderStatus), orderStatus))
-                {
-                    orderList = orderList.Where(y => y.OrderStatus == orderStatus).ToList();
-                }
+                orderList = orderList.Where(y => y.OrderStatus == status).ToList();
             }
 
             options.TotalNumberOfItems = orderList.Count;
