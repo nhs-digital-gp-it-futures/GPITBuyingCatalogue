@@ -7,6 +7,10 @@
     var suffix = filterCount == 1
             ? "filter selected"
             : "filters selected";
+    var orderCount = Model.Options?.TotalNumberOfItems ?? Model.Orders.Count;
+    var orderTitle = orderCount == 1
+        ? "1 order found"
+        : $"{orderCount} orders found";
 }
 
 @section Breadcrumbs {
@@ -76,15 +80,12 @@
         @if (Model.Orders is not null && Model.Orders.Count > 0)
         {
             <nhs-card-v2>
-                @{
-                    var orderCount = Model.Options?.TotalNumberOfItems ?? Model.Orders.Count;
-                }
-                <nhs-card-content title="Total number of orders (@orderCount)">
+                <nhs-card-content title="@orderTitle">
                     <nhs-table data-test-id="orders-table">
                         <nhs-table-column>Call-off ID</nhs-table-column>
                         <nhs-table-column>Organisation</nhs-table-column>
                         <nhs-table-column>Date created</nhs-table-column>
-                        <nhs-table-column>Status</nhs-table-column>
+                        <nhs-table-column><div style="min-width:110px">Status</div></nhs-table-column>
                         <nhs-table-column>Action</nhs-table-column>
                         @foreach (var order in Model.Orders)
                         {

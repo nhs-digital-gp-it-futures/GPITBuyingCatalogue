@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
         [MockAutoData]
         public static void Construct_MapsCorrectly(
             List<AdminManageOrder> orders,
-            List<FrameworkFilterInfo> frameworks,
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
             PageOptions options,
             OrderStatus status,
             string framework)
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
                 model.AvailableFrameworks.Should().ContainEquivalentOf(new SelectOption<string>
                 {
                     Value = item.Id,
-                    Text = $"{item.ShortName}{(item.Expired ? " (expired)" : string.Empty)}",
+                    Text = $"{item.ShortName}{(item.IsExpired ? " (expired)" : string.Empty)}",
                 });
             }
 
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
         [MockAutoData]
         public static void SelectedStatus_Empty_SetsCorrectly(
             List<AdminManageOrder> orders,
-            List<FrameworkFilterInfo> frameworks,
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
             PageOptions options,
             string framework)
         {
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
             OrderStatus? status,
             int count,
             List<AdminManageOrder> orders,
-            List<FrameworkFilterInfo> frameworks,
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
             PageOptions options)
         {
             var model = new ManageOrdersDashboardModel(orders, frameworks, options, status, framework);

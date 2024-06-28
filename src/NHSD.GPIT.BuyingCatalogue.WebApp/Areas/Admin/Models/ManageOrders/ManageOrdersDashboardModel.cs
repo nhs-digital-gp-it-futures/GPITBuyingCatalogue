@@ -6,7 +6,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageOrders;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
@@ -17,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
         {
         }
 
-        public ManageOrdersDashboardModel(IList<AdminManageOrder> orders, IEnumerable<FrameworkFilterInfo> frameworks, PageOptions options, OrderStatus? status, string framework)
+        public ManageOrdersDashboardModel(IList<AdminManageOrder> orders, IEnumerable<EntityFramework.Catalogue.Models.Framework> frameworks, PageOptions options, OrderStatus? status, string framework)
         {
             Orders = orders.ToList();
             Options = options;
@@ -48,14 +47,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders
                         Text = x.EnumMemberName(),
                     }).ToList();
 
-        private void SetAvailableFrameworks(IEnumerable<FrameworkFilterInfo> frameworks)
+        private void SetAvailableFrameworks(IEnumerable<EntityFramework.Catalogue.Models.Framework> frameworks)
         {
             AvailableFrameworks = frameworks
+                .OrderBy(f => f.ShortName)
                 .Select(
                     f => new SelectOption<string>
                     {
                         Value = f.Id,
-                        Text = $"{f.ShortName}{(f.Expired ? " (expired)" : string.Empty)}",
+                        Text = $"{f.ShortName}{(f.IsExpired ? " (expired)" : string.Empty)}",
                     })
                 .ToList();
         }

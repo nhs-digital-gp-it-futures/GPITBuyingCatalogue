@@ -56,14 +56,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [MockAutoData]
         public static async Task Get_Index_ReturnsViewWithModel(
             PagedList<AdminManageOrder> orders,
-            IEnumerable<FrameworkFilterInfo> frameworks,
+            IEnumerable<EntityFramework.Catalogue.Models.Framework> frameworks,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IOrderAdminService orderAdminService,
             ManageOrdersController controller)
         {
             var expectedModel = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options, null, string.Empty);
             orderAdminService.GetPagedOrders(Arg.Any<PageOptions>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<OrderStatus?>()).Returns(orders);
-            frameworkService.GetFrameworksWithPublishedCatalogueItems().Returns(frameworks.ToList());
+            frameworkService.GetFrameworks().Returns(frameworks.ToList());
 
             var result = (await controller.Index()).As<ViewResult>();
 
