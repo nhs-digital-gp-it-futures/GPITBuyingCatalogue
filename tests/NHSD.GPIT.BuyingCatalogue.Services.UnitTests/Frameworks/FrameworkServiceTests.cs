@@ -200,25 +200,6 @@ public static class FrameworkServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task GetAllFrameworks_ReturnsExpected(
-        List<EntityFramework.Catalogue.Models.Framework> frameworks,
-        [Frozen] BuyingCatalogueDbContext dbContext,
-        FrameworkService service)
-    {
-        dbContext.Frameworks.RemoveRange(dbContext.Frameworks);
-        dbContext.Frameworks.AddRange(frameworks);
-        await dbContext.SaveChangesAsync();
-
-        var expected = frameworks.Select(
-            x => new FrameworkFilterInfo { Id = x.Id, ShortName = x.ShortName, Expired = x.IsExpired, });
-
-        var result = await service.GetAllFrameworks();
-
-        result.Should().BeEquivalentTo(expected);
-    }
-
-    [Theory]
-    [MockInMemoryDbAutoData]
     public static Task AddFramework_NullName_ThrowsException(FrameworkService service) => FluentActions
         .Invoking(() => service.AddFramework(null, Enumerable.Empty<FundingType>(), 0))
         .Should()
