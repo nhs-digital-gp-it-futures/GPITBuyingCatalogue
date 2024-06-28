@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             var expectedModel = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options, null, string.Empty);
             orderAdminService.GetPagedOrders(Arg.Any<PageOptions>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<OrderStatus?>()).Returns(orders);
-            frameworkService.GetFrameworksWithPublishedCatalogueItems().Returns(frameworks.ToList());
+            frameworkService.GetAllFrameworks().Returns(frameworks.ToList());
 
             var result = (await controller.Index()).As<ViewResult>();
 

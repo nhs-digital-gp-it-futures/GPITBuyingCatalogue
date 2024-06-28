@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var pageOptions = new PageOptions(page, pageSize);
 
             var orders = await orderAdminService.GetPagedOrders(pageOptions, search, searchTermType, framework, status);
-            var frameworks = await frameworkService.GetFrameworksWithPublishedCatalogueItems();
+            var frameworks = await frameworkService.GetAllFrameworks();
 
             var model = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options, status, framework)
             {

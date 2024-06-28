@@ -33,6 +33,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
                     })
                 .ToListAsync();
 
+        public async Task<List<FrameworkFilterInfo>> GetAllFrameworks() => 
+            await dbContext.Frameworks.Select(
+                x=> new FrameworkFilterInfo
+                {
+                    Id = x.Id, 
+                    ShortName = x.ShortName, 
+                    Expired = x.IsExpired,
+                })
+                .ToListAsync();
+
         public async Task<EntityFramework.Catalogue.Models.Framework> GetFramework(string frameworkId) =>
             await dbContext.Frameworks.FirstOrDefaultAsync(f => f.Id == frameworkId);
 
