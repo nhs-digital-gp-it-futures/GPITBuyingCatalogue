@@ -56,6 +56,9 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public void ClickSave() =>
             Driver.FindElement(CommonSelectors.SubmitButton).Click();
 
+        public void ClickSaveFilters() => 
+            Driver.FindElement(By.XPath("//button[contains(@class, 'nhsuk-button') and contains(@class, 'nhsuk-button--reverse') and contains(@Id, 'Submit')]")).Click();
+
         public void ClickFirstCheckbox() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox][value=true]")).First().Click();
 

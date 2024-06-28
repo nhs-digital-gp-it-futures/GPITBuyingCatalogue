@@ -13,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By ViewOrders => By.LinkText("View orders");
 
+        public static By ViewShorlist => By.LinkText("View shortlists");
+
         public static By CreateNewOrderLink => By.LinkText("Create new order");
 
         public static By SearchBar => By.Id("orders-suggestion-search");
