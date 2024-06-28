@@ -8,10 +8,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -25,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ICsvService csvService;
         private readonly IOrderService orderService;
         private readonly IOrderPdfService pdfService;
+        private readonly IFrameworkService frameworkService;
         private readonly PdfSettings pdfSettings;
 
         public ManageOrdersController(
@@ -32,6 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             ICsvService csvService,
             IOrderService orderService,
             IOrderPdfService pdfService,
+            IFrameworkService frameworkService,
             PdfSettings pdfSettings)
         {
             this.orderAdminService = orderAdminService ?? throw new ArgumentNullException(nameof(orderAdminService));
@@ -39,20 +41,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
             this.pdfSettings = pdfSettings ?? throw new ArgumentNullException(nameof(pdfSettings));
+            this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
         }
 
         [HttpGet]
         public async Task<IActionResult> Index(
             [FromQuery] string page = "",
             [FromQuery] string search = "",
-            [FromQuery] string searchTermType = "")
+            [FromQuery] string searchTermType = "",
+            [FromQuery] string framework = "",
+            [FromQuery] OrderStatus? status = null)
         {
             const int pageSize = 10;
             var pageOptions = new PageOptions(page, pageSize);
 
-            var orders = await orderAdminService.GetPagedOrders(pageOptions, search, searchTermType);
+            var orders = await orderAdminService.GetPagedOrders(pageOptions, search, searchTermType, framework, status);
+            var frameworks = await frameworkService.GetFrameworks();
 
-            var model = new ManageOrdersDashboardModel(orders.Items, orders.Options)
+            var model = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options, status, framework)
             {
                 BackLink = Url.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName()),
             };
@@ -60,12 +66,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public IActionResult Index(ManageOrdersDashboardModel model)
+        {
+            return RedirectToAction(
+                nameof(Index),
+                typeof(ManageOrdersController).ControllerName(),
+                new
+                {
+                    framework = model.SelectedFramework,
+                    status = model.SelectedStatus,
+                });
+        }
+
         [HttpGet("search-suggestions")]
         public async Task<IActionResult> FilterSearchSuggestions(
             [FromQuery] string search = "")
         {
-            var currentPageUrl = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
-
+            var currentPageUrl = StripExistingFilters();
             var results = await orderAdminService.GetOrdersBySearchTerm(search);
 
             return Json(results.Select(r =>
@@ -165,6 +183,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             return callOffId.IsAmendment
                 ? $"Amendment_{callOffId}_"
                 : $"{callOffId}_";
+        }
+
+        private UriBuilder StripExistingFilters()
+        {
+            var builder = new UriBuilder(HttpContext.Request.Headers.Referer.ToString());
+            var path = builder.Uri.GetLeftPart(UriPartial.Path);
+            return new UriBuilder(path);
         }
     }
 }
