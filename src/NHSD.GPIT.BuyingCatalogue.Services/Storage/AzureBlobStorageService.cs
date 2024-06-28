@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 using Azure;
-using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
 

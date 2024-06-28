@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.YourAccount
 {

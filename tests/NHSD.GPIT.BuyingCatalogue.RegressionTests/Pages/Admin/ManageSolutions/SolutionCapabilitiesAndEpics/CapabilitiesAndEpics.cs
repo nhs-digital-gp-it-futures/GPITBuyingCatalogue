@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin;

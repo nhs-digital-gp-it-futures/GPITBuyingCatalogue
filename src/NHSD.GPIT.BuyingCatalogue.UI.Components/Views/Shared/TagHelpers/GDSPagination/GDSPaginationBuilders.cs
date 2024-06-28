@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Formats.Asn1;
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Newtonsoft.Json.Linq;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.GDSPagination

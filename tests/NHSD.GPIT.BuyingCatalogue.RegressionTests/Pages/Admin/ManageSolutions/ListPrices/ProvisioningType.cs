@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using EnumsNET;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.ListPrices
 {

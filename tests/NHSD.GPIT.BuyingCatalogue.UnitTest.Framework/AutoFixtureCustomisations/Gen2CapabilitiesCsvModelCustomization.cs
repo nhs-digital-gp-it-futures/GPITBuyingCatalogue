@@ -1,5 +1,4 @@
-﻿using System;
-using AutoFixture;
+﻿using AutoFixture;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;

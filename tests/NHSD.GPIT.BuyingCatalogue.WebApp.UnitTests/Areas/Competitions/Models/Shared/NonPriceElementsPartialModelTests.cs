@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
+﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;

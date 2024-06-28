@@ -1,5 +1,4 @@
-﻿using FluentAssertions.Common;
-using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
+﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using OpenQA.Selenium;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin

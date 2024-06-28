@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
@@ -17,7 +18,7 @@ public static class NonPriceElementExtensionsTests
         new object[]
         {
             NonPriceElement.Interoperability,
-            new NonPriceElements { Interoperability = new List<InteroperabilityCriteria>() },
+            new NonPriceElements { IntegrationTypes = new List<IntegrationType>() },
             false,
         },
         new object[] { NonPriceElement.Implementation, new NonPriceElements { Implementation = null }, false, },
@@ -25,7 +26,7 @@ public static class NonPriceElementExtensionsTests
         new object[]
         {
             NonPriceElement.Interoperability,
-            new NonPriceElements { Interoperability = new List<InteroperabilityCriteria> { new() } },
+            new NonPriceElements { IntegrationTypes = new List<IntegrationType>() { new() } },
             true,
         },
         new object[] { NonPriceElement.Implementation, new NonPriceElements { Implementation = new() }, true, },
@@ -65,7 +66,7 @@ public static class NonPriceElementExtensionsTests
         {
             new NonPriceElements
             {
-                Interoperability = new List<InteroperabilityCriteria> { new() }, NonPriceWeights = new(),
+                IntegrationTypes = new List<IntegrationType>() { new() }, NonPriceWeights = new(),
             },
             true,
         },
@@ -75,7 +76,7 @@ public static class NonPriceElementExtensionsTests
         {
             new NonPriceElements
             {
-                Interoperability = new List<InteroperabilityCriteria> { new() },
+                IntegrationTypes = new List<IntegrationType>() { new() },
                 NonPriceWeights = new() { Interoperability = 5 },
             },
             false,
@@ -96,7 +97,7 @@ public static class NonPriceElementExtensionsTests
         new object[] { new NonPriceElements(), Enumerable.Empty<NonPriceElement>(), },
         new object[]
         {
-            new NonPriceElements { Interoperability = new List<InteroperabilityCriteria> { new() } },
+            new NonPriceElements { IntegrationTypes = new List<IntegrationType>() { new() } },
             new List<NonPriceElement> { NonPriceElement.Interoperability },
         },
         new object[]

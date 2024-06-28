@@ -10,7 +10,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
-using NHSD.GPIT.BuyingCatalogue.Services.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.Services.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NSubstitute;

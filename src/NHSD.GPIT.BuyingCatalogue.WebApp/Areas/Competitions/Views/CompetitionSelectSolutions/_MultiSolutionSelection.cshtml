@@ -1,5 +1,4 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
 @model SelectSolutionsModel
 
 <form method="post">
@@ -12,7 +11,7 @@
                              label-text="Which solutions would you like to add to your competition shortlist?"
                              label-hint="Select at least 2 solutions and a maximum of 8 to take through to your competition. A justification must be provided for any solutions that are not added.">
         <p><b>All links open in a new tab.</b></p>
-        
+
         @for (var i = 0; i < Model.Solutions.Count; i++)
         {
             var content = Model.Solutions[i].RequiredServices.Any()
@@ -63,9 +62,9 @@
                 </nhs-card-content>
             </nhs-card-v2>
         }
-        
+
     </nhs-fieldset-form-label>
-    
+
     <nhs-submit-button/>
 </form>
 

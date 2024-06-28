@@ -1,8 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
-@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ListPriceModel;
 @{
@@ -64,7 +60,7 @@
                 <hr />
             }
             <h2>Flat prices for this @Model.PriceFor</h2>
-              
+
             @foreach (var price in Model.FlatListPrices)
             {
                 <nhs-card title="Flat price @price.PricingUnit.Description">
@@ -79,7 +75,7 @@
                                     <nhs-table-cell>
                                 @price.ProvisioningType.Name().ToLower()
                                     </nhs-table-cell>
-                                </nhs-table-row-container>  
+                                </nhs-table-row-container>
                     </nhs-table>
                     @{
                         UnitDefinition = price.PricingUnit.Definition?.ToString();

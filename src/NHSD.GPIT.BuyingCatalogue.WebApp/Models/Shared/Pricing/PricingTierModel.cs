@@ -1,5 +1,4 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing
 {

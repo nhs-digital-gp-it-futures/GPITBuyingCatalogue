@@ -1,6 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList.TaskListOrderItemModel;
 @{
@@ -20,7 +19,7 @@
 
 <div style="display:block; align-items:center;">
     <h3 class="header-with-detail">
-        @Model.Name  
+        @Model.Name
     </h3>
     @if(!Model.IsAmendment)
     {
