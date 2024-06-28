@@ -14,14 +14,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
             Value = value;
             Advice = null;
             Selected = false;
+            Disabled = false;
         }
 
-        public SelectOption(string text, TValue value, bool selected)
+        public SelectOption(string text, TValue value, bool selected = false, bool disabled = false)
         {
             Text = text;
             Value = value;
             Advice = null;
             Selected = selected;
+            Disabled = disabled;
         }
 
         public SelectOption(string text, string advice, TValue value)
@@ -39,6 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
         public TValue Value { get; set; }
 
         public bool Selected { get; set; }
+
+        public bool Disabled { get; set; }
 
         public static bool operator ==(SelectOption<TValue> left, SelectOption<TValue> right)
         {
@@ -69,7 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
 
             return (Text ?? string.Empty).Equals(other.Text ?? string.Empty, StringComparison.Ordinal)
                 && (Advice ?? string.Empty).Equals(other.Advice ?? string.Empty, StringComparison.Ordinal)
-                && (Value?.ToString() ?? string.Empty).Equals(other.Value?.ToString() ?? string.Empty, StringComparison.Ordinal);
+                && (Value?.ToString() ?? string.Empty).Equals(other.Value?.ToString() ?? string.Empty, StringComparison.Ordinal)
+                && Disabled.Equals(other.Disabled);
         }
     }
 }

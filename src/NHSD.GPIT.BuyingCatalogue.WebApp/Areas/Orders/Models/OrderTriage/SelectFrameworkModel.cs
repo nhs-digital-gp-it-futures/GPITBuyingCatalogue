@@ -3,6 +3,7 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage
 {
@@ -20,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage
             SelectedFrameworkId = selectedFrameworkId;
 
             Frameworks = frameworks
-                .Select(f => new SelectOption<string>(f.ShortName, f.Id))
+                .Select(f => new SelectOption<string>($"{f.ShortName}{(f.IsExpired ? " (Expired)" : string.Empty)}", f.Id, disabled: f.IsExpired))
                 .ToList();
         }
 
