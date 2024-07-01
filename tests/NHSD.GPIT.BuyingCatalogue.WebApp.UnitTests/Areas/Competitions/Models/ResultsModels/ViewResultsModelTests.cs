@@ -26,7 +26,7 @@ public static class ViewResultsModelTests
         competition.NonPriceElements = new()
         {
             Implementation = new(),
-            Interoperability = new List<InteroperabilityCriteria> { new() },
+            IntegrationTypes = new List<IntegrationType> { new() },
             ServiceLevel = new(),
             NonPriceWeights = nonPriceWeights,
         };
@@ -89,7 +89,7 @@ public static class ViewResultsModelTests
         competition.NonPriceElements = new()
         {
             Implementation = new(),
-            Interoperability = new List<InteroperabilityCriteria> { new() },
+            IntegrationTypes = new List<IntegrationType> { new() },
             ServiceLevel = new(),
         };
 

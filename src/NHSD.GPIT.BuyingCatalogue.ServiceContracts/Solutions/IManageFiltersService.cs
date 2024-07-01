@@ -14,8 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             int organisationId,
             Dictionary<int, string[]> capabilityAndEpicIds,
             string frameworkId,
-            List<ApplicationType> applicationTypes,
-            List<HostingType> hostingTypes,
+            IEnumerable<ApplicationType> applicationTypes,
+            IEnumerable<HostingType> hostingTypes,
             Dictionary<SupportedIntegrations, int[]> integrations);
 
         Task<bool> FilterExists(string filterName, int organisationId);

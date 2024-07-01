@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public int? SelectedIntegrationType { get; set; }
 
-        public bool IsConsumer { get; set; }
+        public bool? IsConsumer { get; set; }
 
         public List<SelectOption<string>> ProviderConsumerTypes => new()
         {

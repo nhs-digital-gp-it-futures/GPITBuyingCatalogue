@@ -152,10 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedFrameworkId", filters.SelectedFrameworkId },
                 { "selectedApplicationTypeIds", filters.SelectedApplicationTypeIds },
                 { "selectedHostingTypeIds", filters.SelectedHostingTypeIds },
-                { "selectedIM1Integrations", filters.SelectedIM1Integrations },
-                { "selectedGPConnectIntegrations", filters.SelectedGPConnectIntegrations },
-                { "selectedNhsAppIntegrations", filters.SelectedNhsAppIntegrations },
-                { "selectedInteroperabilityOptions", filters.SelectedInteroperabilityOptions },
+                { "selectedIntegrations", filters.SelectedIntegrations },
                 { "sortBy", filters.SortBy },
                 { "page", 1 },
             });
@@ -347,10 +344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedFrameworkId", filters.SelectedFrameworkId },
                 { "selectedApplicationTypeIds", filters.SelectedApplicationTypeIds },
                 { "selectedHostingTypeIds", filters.SelectedHostingTypeIds },
-                { "selectedIM1Integrations", filters.SelectedIM1Integrations },
-                { "selectedGPConnectIntegrations", filters.SelectedGPConnectIntegrations },
-                { "selectedNhsAppIntegrations", filters.SelectedNhsAppIntegrations },
-                { "selectedInteroperabilityOptions", filters.SelectedInteroperabilityOptions },
+                { "selectedIntegrations", filters.SelectedIntegrations },
                 { "sortBy", filters.SortBy },
                 { "page", 1 },
             });

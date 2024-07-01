@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 {
     public class AdditionalFiltersModel
     {
+        [ExcludeFromCodeCoverage]
         public AdditionalFiltersModel()
         {
         }
 
         public AdditionalFiltersModel(
-            List<FrameworkFilterInfo> frameworks,
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
             RequestedFilters filters,
             IEnumerable<Integration> integrations)
         {
@@ -96,7 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         }
 
         public string GetIntegrationIds() => IntegrationOptions.Where(x => x.Selected)
-            .ToDictionary(x => (int)x.Id, x => x.IntegrationTypes.Where(y => y.Selected).Select(y => y.Value).ToArray())
+            .ToDictionary(x => x.Id, x => x.IntegrationTypes.Where(y => y.Selected).Select(y => y.Value).ToArray())
             .ToFilterString();
 
         private static List<SelectOption<int>> SetEnumOptions<T>(string selection)
@@ -113,14 +114,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 .OrderBy(x => x.Text)
                 .ToList();
 
-        private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks)
+        private void SetFrameworkOptions(List<EntityFramework.Catalogue.Models.Framework> frameworks)
         {
             FrameworkOptions = frameworks
                 .Select(
                     f => new SelectOption<string>
                     {
                         Value = f.Id,
-                        Text = $"{f.ShortName}{(f.Expired ? " (expired)" : string.Empty)}",
+                        Text = $"{f.ShortName}{(f.IsExpired ? " (expired)" : string.Empty)}",
                         Selected = false,
                     })
                 .ToList();

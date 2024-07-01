@@ -14,67 +14,21 @@ public static class InteroperabilityScoringModelTests
     [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Competition competition,
-        Solution solution)
+        Solution solution,
+        List<Integration> integrations)
     {
         competition.CompetitionSolutions =
             new List<CompetitionSolution> { new(competition.Id, solution.CatalogueItemId) { Solution = solution } };
         competition.NonPriceElements = new()
         {
-            Interoperability = new List<InteroperabilityCriteria>
+            IntegrationTypes = new List<IntegrationType>
             {
-                new("Patient Facing", SupportedIntegrations.Im1),
-                new("Structured Record", SupportedIntegrations.GpConnect),
             },
         };
 
-        var model = new InteroperabilityScoringModel(competition);
+        var model = new InteroperabilityScoringModel(competition, integrations);
 
         model.CompetitionName.Should().Be(competition.Name);
-        model.InteroperabilityCriteria.Should().BeEquivalentTo(competition.NonPriceElements.Interoperability);
         model.SolutionScores.Should().ContainSingle();
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static void GetIm1Integrations_ReturnsExpected(
-        Competition competition,
-        Solution solution)
-    {
-        competition.CompetitionSolutions =
-            new List<CompetitionSolution> { new(competition.Id, solution.CatalogueItemId) { Solution = solution } };
-        competition.NonPriceElements = new()
-        {
-            Interoperability = new List<InteroperabilityCriteria>
-            {
-                new("Patient Facing", SupportedIntegrations.Im1),
-                new("Structured Record", SupportedIntegrations.GpConnect),
-            },
-        };
-
-        var model = new InteroperabilityScoringModel(competition);
-
-        model.GetIm1Integrations().Should().ContainSingle();
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static void GetGpConnectIntegrations_ReturnsExpected(
-        Competition competition,
-        Solution solution)
-    {
-        competition.CompetitionSolutions =
-            new List<CompetitionSolution> { new(competition.Id, solution.CatalogueItemId) { Solution = solution } };
-        competition.NonPriceElements = new()
-        {
-            Interoperability = new List<InteroperabilityCriteria>
-            {
-                new("Patient Facing", SupportedIntegrations.Im1),
-                new("Access Record Structured", SupportedIntegrations.GpConnect),
-            },
-        };
-
-        var model = new InteroperabilityScoringModel(competition);
-
-        model.GetGpConnectIntegrations().Should().ContainSingle();
     }
 }

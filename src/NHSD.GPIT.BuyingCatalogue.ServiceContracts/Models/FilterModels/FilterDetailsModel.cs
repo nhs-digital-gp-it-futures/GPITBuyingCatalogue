@@ -21,7 +21,8 @@ public class FilterDetailsModel
 
     public List<ApplicationType> ApplicationTypes { get; set; } = Enumerable.Empty<ApplicationType>().ToList();
 
-    public List<KeyValuePair<string, string[]>> Integrations { get; set; }
+    public List<KeyValuePair<string, string[]>> Integrations { get; set; } =
+        Enumerable.Empty<KeyValuePair<string, string[]>>().ToList();
 
     public List<KeyValuePair<string, List<string>>> Capabilities { get; set; }
 }

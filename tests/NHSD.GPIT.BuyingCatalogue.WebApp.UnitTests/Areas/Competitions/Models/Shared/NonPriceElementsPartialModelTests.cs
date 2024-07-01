@@ -1,6 +1,7 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared;
 using Xunit;
@@ -15,9 +16,11 @@ public static class NonPriceElementsPartialModelTests
         string internalOrgId,
         int competitionId,
         NonPriceElements nonPriceElements,
-        object routeValues)
+        object routeValues,
+        bool hasReviewedCriteria,
+        Dictionary<SupportedIntegrations, string> integrations)
     {
-        var model = new NonPriceElementsPartialModel(internalOrgId, competitionId, nonPriceElements, routeValues);
+        var model = new NonPriceElementsPartialModel(internalOrgId, competitionId, nonPriceElements, routeValues, hasReviewedCriteria, integrations);
 
         model.InternalOrgId.Should().Be(internalOrgId);
         model.CompetitionId.Should().Be(competitionId);
@@ -33,61 +36,14 @@ public static class NonPriceElementsPartialModelTests
         int competitionId,
         NonPriceElements nonPriceElements,
         object routeValues,
-        bool hasReviewedCriteria)
+        bool hasReviewedCriteria,
+        Dictionary<SupportedIntegrations, string> integrations)
     {
-        var model = new NonPriceElementsPartialModel(internalOrgId, competitionId, nonPriceElements, routeValues, hasReviewedCriteria);
+        var model = new NonPriceElementsPartialModel(internalOrgId, competitionId, nonPriceElements, routeValues, hasReviewedCriteria, integrations);
 
         model.InternalOrgId.Should().Be(internalOrgId);
         model.CompetitionId.Should().Be(competitionId);
         model.NonPriceElements.Should().Be(nonPriceElements);
         model.RouteValues.Should().Be(routeValues);
-    }
-
-    [Theory]
-    [CommonAutoData]
-    public static void GetIm1Integrations_Returns(
-        string internalOrgId,
-        int competitionId,
-        NonPriceElements nonPriceElements,
-        object routeValues)
-    {
-        var im1Integrations = Interoperability.Im1Integrations
-            .Select(x => new InteroperabilityCriteria(x.Key, Integrations.Im1))
-            .ToList();
-
-        nonPriceElements.Interoperability = im1Integrations;
-
-        var model = new NonPriceElementsPartialModel(internalOrgId, competitionId, nonPriceElements, routeValues);
-
-        var actualIntegrations = model.GetIm1Integrations();
-
-        actualIntegrations.Should().HaveCount(im1Integrations.Count);
-        actualIntegrations
-            .Should()
-            .BeEquivalentTo(im1Integrations.Select(x => Interoperability.Im1Integrations[x.Qualifier]));
-    }
-
-    [Theory]
-    [CommonAutoData]
-    public static void GetGpConnectIntegrations_Returns(
-        string internalOrgId,
-        int competitionId,
-        NonPriceElements nonPriceElements,
-        object routeValues)
-    {
-        var gpConnectIntegrations = Interoperability.GpConnectIntegrations
-            .Select(x => new InteroperabilityCriteria(x.Key, Integrations.GpConnect))
-            .ToList();
-
-        nonPriceElements.Interoperability = gpConnectIntegrations;
-
-        var model = new NonPriceElementsPartialModel(internalOrgId, competitionId, nonPriceElements, routeValues);
-
-        var actualIntegrations = model.GetGpConnectIntegrations();
-
-        actualIntegrations.Should().HaveCount(gpConnectIntegrations.Count);
-        actualIntegrations
-            .Should()
-            .BeEquivalentTo(gpConnectIntegrations.Select(x => Interoperability.GpConnectIntegrations[x.Qualifier]));
     }
 }

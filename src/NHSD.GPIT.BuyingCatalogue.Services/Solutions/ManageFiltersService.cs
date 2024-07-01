@@ -27,8 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             int organisationId,
             Dictionary<int, string[]> capabilityAndEpicIds,
             string frameworkId,
-            List<ApplicationType> applicationTypes,
-            List<HostingType> hostingTypes,
+            IEnumerable<ApplicationType> applicationTypes,
+            IEnumerable<HostingType> hostingTypes,
             Dictionary<SupportedIntegrations, int[]> integrations)
         {
             if (string.IsNullOrEmpty(name))
@@ -154,35 +154,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         internal async Task AddFilterCapabilities(Filter filter, Dictionary<int, string[]> capabilitiesAndEpics)
         {
-            if (capabilitiesAndEpics is { Count: 0 }) return;
+            ArgumentNullException.ThrowIfNull(filter);
+
+            if (capabilitiesAndEpics is null or { Count: 0 }) return;
 
             var capabilities = await dbContext.Capabilities.Where(x => capabilitiesAndEpics.Keys.Contains(x.Id)).ToListAsync();
 
             filter.Capabilities.AddRange(capabilities);
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        internal async Task AddIntegrations(Filter filter, Dictionary<SupportedIntegrations, int[]> integrations)
-        {
-            if (integrations is { Count: 0 }) return;
-
-            var integrationTypes = await dbContext.IntegrationTypes.ToListAsync();
-
-            filter.Integrations = integrations.Select(
-                    x => new FilterIntegration(x.Key)
-                    {
-                        IntegrationTypes = x.Value
-                            .Where(y => integrationTypes.Any(z => z.Id == y && z.IntegrationId == x.Key))
-                            .Select(y => new FilterIntegrationType(y))
-                            .ToList(),
-                    })
-                .ToList();
         }
 
         internal void AddFilterCapabilityEpics(Filter filter, Dictionary<int, string[]> capabilitiesAndEpics)
         {
-            if (capabilitiesAndEpics is { Count: 0 }) return;
+            ArgumentNullException.ThrowIfNull(filter);
+
+            if (capabilitiesAndEpics is null or { Count: 0 }) return;
 
             var filterCapabilityEpics = capabilitiesAndEpics
                 .Where(kv => kv.Value is { Length: > 0 })
@@ -199,6 +184,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToList();
 
             filter.FilterCapabilityEpics.AddRange(filterCapabilityEpics);
+        }
+
+        private async Task AddIntegrations(Filter filter, Dictionary<SupportedIntegrations, int[]> integrations)
+        {
+            if (integrations is null or { Count: 0 }) return;
+
+            var integrationTypes = await dbContext.IntegrationTypes.ToListAsync();
+
+            filter.Integrations = integrations.Select(
+                    x => new FilterIntegration(x.Key)
+                    {
+                        IntegrationTypes = x.Value
+                            .Where(y => integrationTypes.Any(z => z.Id == y && z.IntegrationId == x.Key))
+                            .Select(y => new FilterIntegrationType(y))
+                            .ToList(),
+                    })
+                .ToList();
         }
     }
 }

@@ -151,7 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             integration.IntegrationTypeId = model.SelectedIntegrationType.GetValueOrDefault();
             integration.IntegratesWith = model.IntegratesWith;
             integration.Description = model.Description;
-            integration.IsConsumer = model.IsConsumer;
+            integration.IsConsumer = model.IsConsumer.GetValueOrDefault();
 
             await interoperabilityService.EditIntegration(solutionId, integrationId, integration);
 
@@ -290,7 +290,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             integration.IntegrationTypeId = model.SelectedIntegrationType.GetValueOrDefault();
             integration.Description = model.AdditionalInformation;
-            integration.IsConsumer = model.IsConsumer;
+            integration.IsConsumer = model.IsConsumer.GetValueOrDefault();
 
             await interoperabilityService.EditIntegration(solutionId, integrationId, integration);
 

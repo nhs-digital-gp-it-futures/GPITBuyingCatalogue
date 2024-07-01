@@ -54,10 +54,10 @@ BEGIN
     SELECT FilterId, IT.[IntegrationId], IT.[Id]
     FROM filtering.FilterGPConnectIntegrationTypes
     INNER JOIN catalogue.IntegrationTypes IT ON IT.[Name] = CASE
-        WHEN IM1IntegrationsTypeId = 0 THEN 'Access Record HTML'
-        WHEN IM1IntegrationsTypeId = 1 THEN 'Appointment Management'
-        WHEN IM1IntegrationsTypeId = 2 THEN 'Access Record Structured'
-        WHEN IM1IntegrationsTypeId = 3 THEN 'Send Document'
+        WHEN GPConnectIntegrationsTypeId = 0 THEN 'Access Record HTML'
+        WHEN GPConnectIntegrationsTypeId = 1 THEN 'Appointment Management'
+        WHEN GPConnectIntegrationsTypeId = 2 THEN 'Access Record Structured'
+        WHEN GPConnectIntegrationsTypeId = 3 THEN 'Send Document'
         ELSE 'Update Record'
     END
 
@@ -65,9 +65,9 @@ BEGIN
     SELECT FilterId, IT.[IntegrationId], IT.[Id]
     FROM filtering.FilterNhsAppIntegrationTypes
     INNER JOIN catalogue.IntegrationTypes IT ON IT.[Name] = CASE
-        WHEN IM1IntegrationsTypeId = 0 THEN 'Online Consultations'
-        WHEN IM1IntegrationsTypeId = 1 THEN 'Personal Health Records'
-        WHEN IM1IntegrationsTypeId = 2 THEN 'Primary Care Notifications'
+        WHEN NhsAppIntegrationsTypeId = 0 THEN 'Online Consultations'
+        WHEN NhsAppIntegrationsTypeId = 1 THEN 'Personal Health Records'
+        WHEN NhsAppIntegrationsTypeId = 2 THEN 'Primary Care Notifications'
         ELSE 'Secondary Care Notifications'
     END
 
