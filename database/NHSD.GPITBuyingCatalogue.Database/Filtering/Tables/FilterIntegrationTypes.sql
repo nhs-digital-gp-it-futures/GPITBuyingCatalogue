@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [filtering].[FilterIntegrationTypes]
 (
-	[FilterId] INT NOT NULL,
+    [FilterId] INT NOT NULL,
     [IntegrationId] INT NOT NULL,
     [IntegrationTypeId] INT NOT NULL,
     CONSTRAINT PK_FilterIntegrationTypes PRIMARY KEY ([FilterId], [IntegrationId], [IntegrationTypeId]),

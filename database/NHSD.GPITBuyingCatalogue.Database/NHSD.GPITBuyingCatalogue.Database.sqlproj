@@ -102,89 +102,10 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
-    <None Include="PostDeployment\Seed\InsertSeedIntegrations.sql" />
-    <None Include="PostDeployment\MigrateSolutionIntegrations.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="**/*.sql"/>
-    <None Include="PostDeployment\CreateCommissioningSupportUnits.sql"/>
-    <None Include="PostDeployment\CreateExecutiveAgency.sql" />
-    <None Include="PostDeployment\CreateExecutiveAgencyUser.sql" />
-    <None Include="PostDeployment\CreateIntegratedCareBoards.sql" />
-    <None Include="PostDeployment\CreateTestUsers.sql" />
-    <None Include="PostDeployment\DropImport.sql" />
-    <None Include="PostDeployment\DropPublish.sql" />
-    <None Include="PostDeployment\InsertAdditionalServices.sql" />
-    <None Include="PostDeployment\InsertAllowedEmailDomains.sql" />
-    <None Include="PostDeployment\InsertAssociatedServices.sql" />
-    <None Include="PostDeployment\InsertCapabilityStatuses.sql" />
-    <None Include="PostDeployment\InsertCatalogueItemTypes.sql" />
-    <None Include="PostDeployment\InsertCataloguePriceCalculationTypes.sql" />
-    <None Include="PostDeployment\InsertCataloguePriceQuantityCalculationTypes.sql" />
-    <None Include="PostDeployment\InsertCataloguePriceTypes.sql" />
-    <None Include="PostDeployment\InsertCompliancyLevels.sql" />
-    <None Include="PostDeployment\InsertDefaultImplementationPlan.sql" />
-    <None Include="PostDeployment\InsertEmailNotificationType.sql" />
-    <None Include="PostDeployment\InsertEmailPreferenceRoleTypes.sql" />
-    <None Include="PostDeployment\InsertEmailPreferenceTypes.sql" />
-    <None Include="PostDeployment\InsertEventTypes.sql" />
-    <None Include="PostDeployment\InsertOrderItemFundingTypes.sql" />
-    <None Include="PostDeployment\InsertOrderStatuses.sql" />
-    <None Include="PostDeployment\InsertOrderTriageValues.sql" />
-    <None Include="PostDeployment\InsertOrganisationTypes.sql" />
-    <None Include="PostDeployment\InsertPricingUnits.sql" />
-    <None Include="PostDeployment\InsertProvisioningTypes.sql" />
-    <None Include="PostDeployment\InsertPublicationStatuses.sql" />
-    <None Include="PostDeployment\InsertRelatedOrganisations.sql" />
-    <None Include="PostDeployment\InsertRoles.sql" />
-    <None Include="PostDeployment\InsertSolutionCapabilityStatuses.sql" />
-    <None Include="PostDeployment\InsertSolutionEpicStatuses.sql" />
-    <None Include="PostDeployment\InsertSolutions.sql" />
-    <None Include="PostDeployment\InsertStandardTypes.sql" />
-    <None Include="PostDeployment\InsertSuppliers.sql" />
-    <None Include="PostDeployment\InsertSupplierServiceAssociations.sql" />
-    <None Include="PostDeployment\InsertTimeUnits.sql" />
-    <None Include="PostDeployment\IntegrationTests\ClearData.sql" />
-    <None Include="PostDeployment\IntegrationTests\DropRole.sql" />
-    <None Include="PostDeployment\IntegrationTests\DropUserAndLogin.sql" />
-    <None Include="PostDeployment\IntegrationTests\PostDeployment.sql" />
-    <None Include="PostDeployment\IntegrationTests\RestoreUserAndLogin.sql" />
-    <None Include="PostDeployment\MigrateContracts.sql" />
-    <None Include="PostDeployment\MigrateEpicCompliancyLevel.sql" />
-    <None Include="PostDeployment\MigrateEpics.sql" />
-    <None Include="PostDeployment\MigrateFrameworks.sql" />
-    <None Include="PostDeployment\MigrateGpConnectIntegrations.sql" />
-    <None Include="PostDeployment\MigrateMergersAndSplits.sql" />
-    <None Include="PostDeployment\MigrateOrderItemRecipients.sql" />
-    <None Include="PostDeployment\MigrateOrderType.sql" />
-    <None Include="PostDeployment\OdsOrganisationsSeedData\InsertOdsOrganisations.sql" />
-    <None Include="PostDeployment\OdsOrganisationsSeedData\InsertOrganisationRelationships.sql" />
-    <None Include="PostDeployment\OdsOrganisationsSeedData\InsertOrganisationRoles.sql" />
-    <None Include="PostDeployment\OdsOrganisationsSeedData\InsertRelationshipTypes.sql" />
-    <None Include="PostDeployment\OdsOrganisationsSeedData\InsertRoleTypes.sql" />
-    <None Include="PostDeployment\OrderSeedData\InsertTestOrderSeedData.sql" />
-    <None Include="PostDeployment\PostDeployment.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeAdditionalServices.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeAssociatedServices.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeCatalogueItemCapabilities.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeCatalogueItemEpics.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeCatalogueItems.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeCataloguePrices.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeFrameworkSolutions.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeMarketingContacts.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeSolutions.sql" />
-    <None Include="PostDeployment\ProdLikeData\MergeSuppliers.sql" />
-    <None Include="PostDeployment\RollbackContracts.sql" />
-    <None Include="PostDeployment\Seed\InsertSeedIntegrations.sql" />
-    <None Include="PostDeployment\TestData\Competitions\InsertCompetitions.sql" />
-    <None Include="PostDeployment\TestData\InsertCapabilities.sql" />
-    <None Include="PostDeployment\TestData\InsertCapabilityCategories.sql" />
-    <None Include="PostDeployment\TestData\InsertEpics.sql" />
-    <None Include="PostDeployment\TestData\InsertFilters.sql" />
-    <None Include="PostDeployment\TestData\InsertFrameworks.sql" />
-    <None Include="PostDeployment\TestData\InsertStandards.sql" />
-    <None Include="PostDeployment\TestData\InsertStandardsCapabilities.sql" />
-    <None Include="PostDeployment\TestData\Solutions\InsertServiceLevels.sql" />
+    <None Include="PostDeployment/**/*.sql" />
     <Build Remove="obj/**/*.sql" />
     <Build Remove="bin/**/*.sql" />
   </ItemGroup>
@@ -233,10 +154,10 @@
     <Folder Include="PostDeployment\TestData\" />
     <Folder Include="PostDeployment\TestData\Competitions\" />
     <Folder Include="PostDeployment\TestData\Solutions\" />
+    <Folder Include="PostDeployment\Seed" />
     <Folder Include="Notifications\" />
     <Folder Include="Notifications\Tables\" />
     <Folder Include="Notifications\TemporalTables\" />
-    <Folder Include="PostDeployment\Seed" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.Dacpacs.Azure.Master" Version="160.0.0">
