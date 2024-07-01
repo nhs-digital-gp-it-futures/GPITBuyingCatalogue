@@ -162,4 +162,73 @@ public static class NonPriceElementExtensionsTests
         .Invoking(() => ((NonPriceElement)int.MaxValue).AsScoreType())
         .Should()
         .Throw<ArgumentOutOfRangeException>();
+
+    [Theory]
+    [MockInlineAutoData(NonPriceElement.Features, ScoreType.Features)]
+    [MockInlineAutoData(NonPriceElement.Implementation, ScoreType.Implementation)]
+    [MockInlineAutoData(NonPriceElement.Interoperability, ScoreType.Interoperability)]
+    [MockInlineAutoData(NonPriceElement.ServiceLevel, ScoreType.ServiceLevel)]
+    public static void AsScoreType_ReturnsExpectedScoreType(
+        NonPriceElement nonPriceElement,
+        ScoreType expectedScoreType) => nonPriceElement.AsScoreType().Should().Be(expectedScoreType);
+
+    [Theory]
+    [MockAutoData]
+    public static void RemoveNonPriceElement_Features_ClearsFeatures(
+        List<FeaturesCriteria> featuresCriteria,
+        NonPriceElements nonPriceElements)
+    {
+        nonPriceElements.Features = featuresCriteria;
+
+        nonPriceElements.Features.Should().NotBeEmpty();
+
+        nonPriceElements.RemoveNonPriceElement(NonPriceElement.Features);
+
+        nonPriceElements.Features.Should().BeEmpty();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void RemoveNonPriceElement_Implementation_ClearsImplementation(
+        ImplementationCriteria implementationCriteria,
+        NonPriceElements nonPriceElements)
+    {
+        nonPriceElements.Implementation = implementationCriteria;
+
+        nonPriceElements.Implementation.Should().NotBeNull();
+
+        nonPriceElements.RemoveNonPriceElement(NonPriceElement.Implementation);
+
+        nonPriceElements.Implementation.Should().BeNull();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void RemoveNonPriceElement_Interoperability_ClearsIntegrations(
+        List<IntegrationType> integrationTypes,
+        NonPriceElements nonPriceElements)
+    {
+        nonPriceElements.IntegrationTypes = integrationTypes;
+
+        nonPriceElements.IntegrationTypes.Should().NotBeEmpty();
+
+        nonPriceElements.RemoveNonPriceElement(NonPriceElement.Interoperability);
+
+        nonPriceElements.IntegrationTypes.Should().BeEmpty();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void RemoveNonPriceElement_ServiceLevels_ClearsServiceLevels(
+        ServiceLevelCriteria serviceLevelCriteria,
+        NonPriceElements nonPriceElements)
+    {
+        nonPriceElements.ServiceLevel = serviceLevelCriteria;
+
+        nonPriceElements.ServiceLevel.Should().NotBeNull();
+
+        nonPriceElements.RemoveNonPriceElement(NonPriceElement.ServiceLevel);
+
+        nonPriceElements.ServiceLevel.Should().BeNull();
+    }
 }

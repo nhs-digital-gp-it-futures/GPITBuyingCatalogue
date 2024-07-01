@@ -1,7 +1,9 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
+[ExcludeFromCodeCoverage]
 public class IntegrationsCriteria
 {
     public int NonPriceElementsId { get; set; }

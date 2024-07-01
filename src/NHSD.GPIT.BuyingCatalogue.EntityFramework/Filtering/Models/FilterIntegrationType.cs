@@ -1,7 +1,9 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 
+[ExcludeFromCodeCoverage]
 public class FilterIntegrationType
 {
     public FilterIntegrationType()
