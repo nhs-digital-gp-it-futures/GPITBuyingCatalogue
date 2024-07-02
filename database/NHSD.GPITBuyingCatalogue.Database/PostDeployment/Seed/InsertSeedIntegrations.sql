@@ -1,7 +1,18 @@
-﻿IF NOT EXISTS(SELECT 1 FROM catalogue.Integrations)
-BEGIN
-    INSERT INTO catalogue.Integrations([Id], [Name]) VALUES (0, 'IM1'), (1, 'GP Connect'), (2, 'NHS App');
-END;
+﻿MERGE INTO catalogue.Integrations AS TARGET
+USING (
+    VALUES (0, 'IM1'), (1, 'GP Connect'), (2, 'NHS App')
+)
+AS SOURCE ([Id], [Name])
+ON TARGET.[Id] = SOURCE.[Id]
+
+WHEN MATCHED AND TARGET.[Name] <> SOURCE.[Name]
+THEN UPDATE SET TARGET.[Name] = SOURCE.[Name]
+
+WHEN NOT MATCHED BY TARGET THEN
+INSERT ([Id], [Name])
+VALUES (SOURCE.[Id], SOURCE.[Name]);
+
+GO
 
 IF NOT EXISTS(SELECT 1 FROM catalogue.IntegrationTypes)
 BEGIN
