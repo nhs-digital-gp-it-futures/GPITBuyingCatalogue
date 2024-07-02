@@ -116,7 +116,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             TagBuilder hintBuilder = null,
             bool? isDisabled = null)
         {
-
             var htmlAttributesDictionary = new Dictionary<string, object>
             {
                 { "class", TagHelperConstants.RadioItemInputClass },
@@ -124,7 +123,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
 
             if (isDisabled.HasValue && isDisabled.Value)
                 htmlAttributesDictionary.Add("disabled", "disabled");
-            
+
             var builder = htmlGenerator.GenerateRadioButton(
                             viewContext,
                             aspFor.ModelExplorer,
