@@ -40,13 +40,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers
                 .Select(x => new KeyValuePair<SupportedIntegrations, int[]>(Enum.Parse<SupportedIntegrations>(x[0]), x.Skip(1).Where(y => int.TryParse(y, out _)).Select(int.Parse).ToArray())));
         }
 
-        public static ICollection<T> ParseEnumFilter<T>(string hostingTypeIds)
+        public static ICollection<T> ParseEnumFilter<T>(string enumDelimitedValues)
             where T : struct, Enum
             =>
-            hostingTypeIds?.Split(FilterConstants.Delimiter, StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
-                .Where(x => Enum.TryParse(typeof(T), x, out var hostingValue) && Enum.IsDefined(typeof(T), hostingValue))
-                .Select(t => (T)Enum.Parse(typeof(T), t))
-                .ToList() ?? new List<T>();
+                enumDelimitedValues?.Split(
+                        FilterConstants.Delimiter,
+                        StringSplitOptions.RemoveEmptyEntries & StringSplitOptions.TrimEntries)
+                    .Where(x => Enum.TryParse(typeof(T), x, out var value) && Enum.IsDefined(typeof(T), value))
+                    .Select(t => (T)Enum.Parse(typeof(T), t))
+                    .ToList() ?? new List<T>();
 
         public static ICollection<T> ParseSelectedFilterIds<T>(string selectedFilterIds)
         where T : struct, Enum
