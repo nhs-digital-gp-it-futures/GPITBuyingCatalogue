@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public List<SelectOption<int>> ApplicationTypeOptions { get; set; }
 
-        public List<IntegrationFilterModel> IntegrationOptions { get; set; }
+        public List<IntegrationFilterModel> IntegrationOptions { get; set; } = [];
 
         public int CapabilitiesCount { get; set; }
 
