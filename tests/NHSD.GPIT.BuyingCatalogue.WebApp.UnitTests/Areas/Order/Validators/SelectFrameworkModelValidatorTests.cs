@@ -1,6 +1,6 @@
-﻿using AutoFixture.AutoNSubstitute;
+﻿using AutoFixture;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
-using AutoFixture;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
