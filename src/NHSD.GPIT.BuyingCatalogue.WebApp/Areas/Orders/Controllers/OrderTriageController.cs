@@ -120,8 +120,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var availableFrameworks = (await frameworkService
                 .GetFrameworks())
-                    .Where(f => f.IsExpired == false)
-                    .OrderBy(f => f.Name)
+                    .OrderBy(f => f.IsExpired)
+                    .ThenBy(f => f.Name)
                     .ToList();
 
             var model = new SelectFrameworkModel(
