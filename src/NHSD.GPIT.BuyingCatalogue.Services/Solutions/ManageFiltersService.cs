@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -28,48 +27,37 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             int organisationId,
             Dictionary<int, string[]> capabilityAndEpicIds,
             string frameworkId,
-            List<ApplicationType> applicationTypes,
-            List<HostingType> hostingTypes,
-            List<InteropIm1IntegrationType> iM1IntegrationsTypes,
-            List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
-            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
-            List<InteropIntegrationType> interoperabilityIntegrationTypes)
+            IEnumerable<ApplicationType> applicationTypes,
+            IEnumerable<HostingType> hostingTypes,
+            Dictionary<SupportedIntegrations, int[]> integrations)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
             if (string.IsNullOrEmpty(description))
                 throw new ArgumentNullException(nameof(description));
 
-            var organisation = await dbContext.Organisations.FirstOrDefaultAsync(o => o.Id == organisationId);
-
-            if (organisation == null)
-                throw new ArgumentException("Invalid organisation", nameof(organisationId));
-
-            var framework = !string.IsNullOrEmpty(frameworkId)
-                ? await dbContext.Frameworks.FirstAsync(o => o.Id == frameworkId)
-                : null;
+            var useFramework = !string.IsNullOrEmpty(frameworkId) && await dbContext.Frameworks.AnyAsync(x => x.Id == frameworkId);
 
             var filter =
-                new Filter()
+                new Filter
                 {
                     Name = name,
                     Description = description,
-                    Organisation = organisation,
-                    Framework = framework,
+                    OrganisationId = organisationId,
+                    FrameworkId = useFramework ? frameworkId : null,
+                    FilterHostingTypes = hostingTypes.Select(x => new FilterHostingType { HostingType = x }).ToList(),
+                    FilterApplicationTypes = applicationTypes
+                        .Select(x => new FilterApplicationType { ApplicationTypeID = x })
+                        .ToList(),
                 };
 
             dbContext.Filters.Add(filter);
 
-            await dbContext.SaveChangesAsync();
+            await AddIntegrations(filter, integrations);
+            await AddFilterCapabilities(filter, capabilityAndEpicIds);
+            AddFilterCapabilityEpics(filter, capabilityAndEpicIds);
 
-            await AddFilterCapabilities(filter.Id, capabilityAndEpicIds);
-            await AddFilterCapabilityEpics(filter.Id, capabilityAndEpicIds);
-            await AddFilterApplicationTypes(filter.Id, applicationTypes);
-            await AddFilterHostingTypes(filter.Id, hostingTypes);
-            await AddInteroperabilityIntegrationTypes(filter.Id, interoperabilityIntegrationTypes);
-            await AddIM1IntegrationsTypes(filter.Id, iM1IntegrationsTypes);
-            await AddGPConnectIntegrationsTypes(filter.Id, gPConnectIntegrationsTypes);
-            await AddNhsAppIntegrationsTypes(filter.Id, nhsAppIntegrationsTypes);
+            await dbContext.SaveChangesAsync();
 
             return filter.Id;
         }
@@ -104,21 +92,26 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Select(
                     x => new FilterIdsModel()
                     {
-                        CapabilityAndEpicIds = new Dictionary<int, string[]>(x.Capabilities
-                            .Select(
-                                y => new KeyValuePair<int, string[]>(
-                                    y.Id,
-                                    x.FilterCapabilityEpics.Where(z => z.CapabilityId == y.Id)
-                                        .Select(z => z.Epic.Id)
-                                        .ToArray()))
-                            .ToList()),
+                        CapabilityAndEpicIds = new Dictionary<int, string[]>(
+                            x.Capabilities
+                                .Select(
+                                    y => new KeyValuePair<int, string[]>(
+                                        y.Id,
+                                        x.FilterCapabilityEpics.Where(z => z.CapabilityId == y.Id)
+                                            .Select(z => z.Epic.Id)
+                                            .ToArray()))
+                                .ToList()),
                         FrameworkId = x.FrameworkId,
                         ApplicationTypeIds = x.FilterApplicationTypes.Select(fc => (int)fc.ApplicationTypeID),
                         HostingTypeIds = x.FilterHostingTypes.Select(fc => (int)fc.HostingType),
-                        IM1Integrations = x.FilterIM1IntegrationTypes.Select(fc => (int)fc.IM1IntegrationsType),
-                        GPConnectIntegrations = x.FilterGPConnectIntegrationTypes.Select(fc => (int)fc.GPConnectIntegrationsType),
-                        NhsAppIntegrations = x.FilterNhsAppIntegrationTypes.Select(fc => (int)fc.NhsAppIntegrationsType),
-                        InteroperabilityOptions = x.FilterInteropIntegrationTypes.Select(fc => (int)fc.InteroperabilityIntegrationType),
+                        IntegrationsIds = new Dictionary<SupportedIntegrations, int[]>(
+                            x.Integrations.Select(
+                                y =>
+                                    new KeyValuePair<SupportedIntegrations, int[]>(
+                                        y.IntegrationId,
+                                        y.IntegrationTypes.Select(
+                                                z => z.IntegrationTypeId)
+                                            .ToArray()))),
                     })
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
@@ -137,14 +130,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         HostingTypes = x.FilterHostingTypes.Select(y => y.HostingType).ToList(),
                         ApplicationTypes =
                             x.FilterApplicationTypes.Select(y => y.ApplicationTypeID).ToList(),
-                        InteropIntegrationTypes = x.FilterInteropIntegrationTypes.Select(y => y.InteroperabilityIntegrationType).ToList(),
-                        InteropIm1IntegrationsTypes = x.FilterIM1IntegrationTypes.Select(y => y.IM1IntegrationsType).ToList(),
-                        InteropGpConnectIntegrationsTypes = x.FilterGPConnectIntegrationTypes.Select(y => y.GPConnectIntegrationsType).ToList(),
-                        InteropNhsAppIntegrationsTypes = x.FilterNhsAppIntegrationTypes.Select(y => y.NhsAppIntegrationsType).ToList(),
+                        Integrations =
+                            x.Integrations.Select(
+                                y => new KeyValuePair<string, string[]>(y.Integration.Name, y.IntegrationTypes.Select(z => z.IntegrationType.Name).ToArray())).ToList(),
                         Invalid = x.FilterCapabilityEpics.Any(e => e.CapabilityId == null)
                             || x.Capabilities.Any(c => c.Status == CapabilityStatus.Expired)
                             || x.FilterCapabilityEpics.Any(e => e.Epic.IsActive == false)
-                            || !x.FilterCapabilityEpics.All(ce => ce.Capability.CapabilityEpics.Any(c => c.CapabilityId == ce.CapabilityId && c.EpicId == ce.EpicId)),
+                            || !x.FilterCapabilityEpics.All(
+                                ce => ce.Capability.CapabilityEpics.Any(
+                                    c => c.CapabilityId == ce.CapabilityId && c.EpicId == ce.EpicId)),
                         Capabilities = x.Capabilities
                             .Select(
                                 y => new KeyValuePair<string, List<string>>(
@@ -158,41 +152,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .FirstOrDefaultAsync();
         }
 
-        internal async Task AddFilterCapabilities(int filterId, Dictionary<int, string[]> capabilitiesAndEpics)
+        internal async Task AddFilterCapabilities(Filter filter, Dictionary<int, string[]> capabilitiesAndEpics)
         {
-            if (capabilitiesAndEpics is null || capabilitiesAndEpics.Count == 0) return;
+            ArgumentNullException.ThrowIfNull(filter);
 
-            var filter = await dbContext.Filters
-                .Include(x => x.Capabilities)
-                .FirstOrDefaultAsync(o => o.Id == filterId);
-
-            if (filter is null)
-            {
-                return;
-            }
+            if (capabilitiesAndEpics is null or { Count: 0 }) return;
 
             var capabilities = await dbContext.Capabilities.Where(x => capabilitiesAndEpics.Keys.Contains(x.Id)).ToListAsync();
 
             filter.Capabilities.AddRange(capabilities);
-
-            await dbContext.SaveChangesAsync();
         }
 
-        internal async Task AddFilterCapabilityEpics(int filterId, Dictionary<int, string[]> capabilitiesAndEpics)
+        internal void AddFilterCapabilityEpics(Filter filter, Dictionary<int, string[]> capabilitiesAndEpics)
         {
-            if (capabilitiesAndEpics is null || capabilitiesAndEpics.Count == 0) return;
+            ArgumentNullException.ThrowIfNull(filter);
 
-            var filter = await dbContext.Filters
-                .Include(x => x.FilterCapabilityEpics)
-                .FirstOrDefaultAsync(o => o.Id == filterId);
-
-            if (filter is null)
-            {
-                return;
-            }
+            if (capabilitiesAndEpics is null or { Count: 0 }) return;
 
             var filterCapabilityEpics = capabilitiesAndEpics
-                .Where(kv => kv.Value != null && kv.Value.Length > 0)
+                .Where(kv => kv.Value is { Length: > 0 })
                 .SelectMany(kv => kv.Value.Select(e => new
                 {
                     CapabilityId = kv.Key,
@@ -206,146 +184,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .ToList();
 
             filter.FilterCapabilityEpics.AddRange(filterCapabilityEpics);
-
-            await dbContext.SaveChangesAsync();
         }
 
-        internal async Task AddFilterApplicationTypes(int filterId, List<ApplicationType> applicationTypes)
+        private async Task AddIntegrations(Filter filter, Dictionary<SupportedIntegrations, int[]> integrations)
         {
-            if (applicationTypes is null || applicationTypes.Count == 0) return;
+            if (integrations is null or { Count: 0 }) return;
 
-            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
+            var integrationTypes = await dbContext.IntegrationTypes.ToListAsync();
 
-            if (filter is null)
-            {
-                return;
-            }
-
-            foreach (var type in applicationTypes.Where(type => filter.FilterApplicationTypes.All(x => x.ApplicationTypeID != type)))
-            {
-                filter.FilterApplicationTypes.Add(new FilterApplicationType()
-                {
-                    FilterId = filterId,
-                    ApplicationTypeID = type,
-                });
-            }
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        internal async Task AddFilterHostingTypes(int filterId, List<HostingType> hostingTypes)
-        {
-            if (hostingTypes is null || hostingTypes.Count == 0) return;
-
-            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
-
-            if (filter is null)
-            {
-                return;
-            }
-
-            foreach (var type in hostingTypes)
-            {
-                filter.FilterHostingTypes.Add(new FilterHostingType()
-                {
-                    FilterId = filterId,
-                    HostingType = type,
-                });
-            }
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        internal async Task AddInteroperabilityIntegrationTypes(int filterId, List<InteropIntegrationType> interopIntegrationTypes)
-        {
-            if (interopIntegrationTypes is null || interopIntegrationTypes.Count == 0) return;
-
-            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
-
-            if (filter is null)
-            {
-                return;
-            }
-
-            foreach (var type in interopIntegrationTypes)
-            {
-                filter.FilterInteropIntegrationTypes.Add(new FilterInteroperabilityIntegrationType()
-                {
-                    FilterId = filterId,
-                    InteroperabilityIntegrationType = type,
-                });
-            }
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        internal async Task AddIM1IntegrationsTypes(int filterId, List<InteropIm1IntegrationType> interopIm1IntegrationsTypes)
-        {
-            if (interopIm1IntegrationsTypes is null || interopIm1IntegrationsTypes.Count == 0) return;
-
-            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
-
-            if (filter is null)
-            {
-                return;
-            }
-
-            foreach (var type in interopIm1IntegrationsTypes)
-            {
-                filter.FilterIM1IntegrationTypes.Add(new FilterIM1IntegrationsType()
-                {
-                    FilterId = filterId,
-                    IM1IntegrationsType = type,
-                });
-            }
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        internal async Task AddGPConnectIntegrationsTypes(int filterId, List<InteropGpConnectIntegrationType> interopGpConnectIntegrationsTypes)
-        {
-            if (interopGpConnectIntegrationsTypes is null || interopGpConnectIntegrationsTypes.Count == 0) return;
-
-            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
-
-            if (filter is null)
-            {
-                return;
-            }
-
-            foreach (var type in interopGpConnectIntegrationsTypes)
-            {
-                filter.FilterGPConnectIntegrationTypes.Add(new FilterGPConnectIntegrationsType()
-                {
-                    FilterId = filterId,
-                    GPConnectIntegrationsType = type,
-                });
-            }
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        internal async Task AddNhsAppIntegrationsTypes(int filterId, List<InteropNhsAppIntegrationType> interopNhsAppIntegrationsTypes)
-        {
-            if (interopNhsAppIntegrationsTypes is null || interopNhsAppIntegrationsTypes.Count == 0) return;
-
-            var filter = await dbContext.Filters.FirstOrDefaultAsync(o => o.Id == filterId);
-
-            if (filter is null)
-            {
-                return;
-            }
-
-            foreach (var type in interopNhsAppIntegrationsTypes)
-            {
-                filter.FilterNhsAppIntegrationTypes.Add(new FilterNhsAppIntegrationsType()
-                {
-                    FilterId = filterId,
-                    NhsAppIntegrationsType = type,
-                });
-            }
-
-            await dbContext.SaveChangesAsync();
+            filter.Integrations = integrations.Select(
+                    x => new FilterIntegration(x.Key)
+                    {
+                        IntegrationTypes = x.Value
+                            .Where(y => integrationTypes.Any(z => z.Id == y && z.IntegrationId == x.Key))
+                            .Select(y => new FilterIntegrationType(y))
+                            .ToList(),
+                    })
+                .ToList();
         }
     }
 }

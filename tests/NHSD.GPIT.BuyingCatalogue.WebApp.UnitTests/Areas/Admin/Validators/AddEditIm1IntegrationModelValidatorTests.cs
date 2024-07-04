@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.InteroperabilityValidators;
 using Xunit;
@@ -9,14 +9,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class AddEditIm1IntegrationModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidModel_NoModelError(AddEditIm1IntegrationValidator validator)
         {
             var model = new AddEditIm1IntegrationModel
             {
                 Description = "Description Text",
-                SelectedProviderOrConsumer = "Provider",
-                SelectedIntegrationType = "Bulk",
+                IsConsumer = false,
+                SelectedIntegrationType = 0,
                 IntegratesWith = "Integrates With Text",
             };
 
@@ -26,14 +26,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoIntegrationType_SetsModelError(AddEditIm1IntegrationValidator validator)
         {
             var model = new AddEditIm1IntegrationModel
             {
                 Description = "Description Text",
                 IntegratesWith = "Integrates With Text",
-                SelectedProviderOrConsumer = "Provider",
+                IsConsumer = false,
             };
 
             var result = validator.TestValidate(model);
@@ -43,31 +43,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoProviderOrConsumer_SetsModelError(AddEditIm1IntegrationValidator validator)
         {
             var model = new AddEditIm1IntegrationModel
             {
                 Description = "Description Text",
                 IntegratesWith = "Integrates With Text",
-                SelectedIntegrationType = "Bulk",
+                SelectedIntegrationType = 0,
             };
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.SelectedProviderOrConsumer)
+            result.ShouldHaveValidationErrorFor(m => m.IsConsumer)
                 .WithErrorMessage("Select if your system is a provider or consumer");
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoDescription_SetsModelError(AddEditIm1IntegrationValidator validator)
         {
             var model = new AddEditIm1IntegrationModel
             {
-                SelectedIntegrationType = "Bulk",
                 IntegratesWith = "Integrates With Text",
-                SelectedProviderOrConsumer = "Provider",
+                IsConsumer = false,
+                SelectedIntegrationType = 0,
             };
 
             var result = validator.TestValidate(model);
@@ -77,14 +77,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoIntegratesWith_SetsModelError(AddEditIm1IntegrationValidator validator)
         {
             var model = new AddEditIm1IntegrationModel
             {
                 Description = "Description Text",
-                SelectedProviderOrConsumer = "Provider",
-                SelectedIntegrationType = "Bulk",
+                IsConsumer = false,
+                SelectedIntegrationType = 0,
             };
 
             var result = validator.TestValidate(model);

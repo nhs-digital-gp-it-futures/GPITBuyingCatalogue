@@ -8,14 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
     [Serializable]
     public sealed partial class Solution : IAudited
     {
-        public Solution()
-        {
-            AdditionalServices = new HashSet<AdditionalService>();
-            FrameworkSolutions = new HashSet<FrameworkSolution>();
-            MarketingContacts = new HashSet<MarketingContact>();
-            WorkOffPlans = new HashSet<WorkOffPlan>();
-        }
-
         public CatalogueItemId CatalogueItemId { get; set; }
 
         public string Summary { get; set; }
@@ -32,8 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string RoadMap { get; set; }
 
-        public string Integrations { get; set; }
-
         public string IntegrationsUrl { get; set; }
 
         public string AboutUrl { get; set; }
@@ -48,14 +38,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public CatalogueItem CatalogueItem { get; set; }
 
-        public ICollection<AdditionalService> AdditionalServices { get; set; }
-
-        public ICollection<FrameworkSolution> FrameworkSolutions { get; set; }
-
-        public ICollection<MarketingContact> MarketingContacts { get; set; }
-
         public ServiceLevelAgreements ServiceLevelAgreement { get; set; }
 
-        public ICollection<WorkOffPlan> WorkOffPlans { get; set; }
+        public ICollection<AdditionalService> AdditionalServices { get; set; } = new HashSet<AdditionalService>();
+
+        public ICollection<FrameworkSolution> FrameworkSolutions { get; set; } = new HashSet<FrameworkSolution>();
+
+        public ICollection<MarketingContact> MarketingContacts { get; set; } = new HashSet<MarketingContact>();
+
+        public ICollection<SolutionIntegration> Integrations { get; set; } = new HashSet<SolutionIntegration>();
+
+        public ICollection<WorkOffPlan> WorkOffPlans { get; set; } = new HashSet<WorkOffPlan>();
     }
 }

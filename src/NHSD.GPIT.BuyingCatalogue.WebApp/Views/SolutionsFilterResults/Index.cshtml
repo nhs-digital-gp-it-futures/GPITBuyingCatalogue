@@ -1,5 +1,4 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.SolutionsFilterResultsModel
 @{
     Layout = "";
@@ -243,7 +242,7 @@
                                 @(Model.ReviewFilter.HasFramework() ? Model.ReviewFilter.FilterDetails.FrameworkName : "None selected")
                             </span>
                         </pdf-summary-list-row>
-                        
+
                         <pdf-summary-list-row label-text="Hosting type">
                             @if (!Model.ReviewFilter.HasHostingTypes())
                             {
@@ -319,7 +318,7 @@
                         {
                             <div style="page-break-after: always"></div>
                         }
-                    }      
+                    }
                 }
             </div>
         </div>

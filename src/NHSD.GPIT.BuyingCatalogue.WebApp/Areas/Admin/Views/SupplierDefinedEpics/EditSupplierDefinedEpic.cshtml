@@ -1,5 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics.EditSupplierDefinedEpicModel
 @{
     ViewBag.Title = "Supplier defined Epic information";
@@ -60,7 +59,7 @@
                                  url="@Model.BackLink"/>
     </div>
 </div>
-@{  
+@{
     NhsTagsTagHelper.TagColour GetTagColour(bool status) =>
         status ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Grey;
 

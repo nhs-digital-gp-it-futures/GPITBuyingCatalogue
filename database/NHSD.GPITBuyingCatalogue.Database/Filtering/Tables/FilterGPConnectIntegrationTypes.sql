@@ -1,4 +1,4 @@
-﻿CREATE TABLE filtering.FilterGPConnectIntegrationTypes
+﻿CREATE TABLE filtering.FilterGPConnectIntegrationTypes -- TODO: Remove in next release
 (
 	Id int IDENTITY(1, 1) NOT NULL,
     FilterId int NOT NULL,

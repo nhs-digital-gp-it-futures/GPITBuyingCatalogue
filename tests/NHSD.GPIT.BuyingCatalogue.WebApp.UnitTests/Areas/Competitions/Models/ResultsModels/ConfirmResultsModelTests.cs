@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -21,7 +22,7 @@ public static class ConfirmResultsModelTests
         {
             Features = new List<FeaturesCriteria> { new() },
             Implementation = new(),
-            Interoperability = new List<InteroperabilityCriteria> { new() },
+            IntegrationTypes = new List<IntegrationType> { new() },
             ServiceLevel = new(),
         };
 

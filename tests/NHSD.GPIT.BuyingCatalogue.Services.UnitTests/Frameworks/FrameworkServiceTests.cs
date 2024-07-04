@@ -10,7 +10,6 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.Services.Framework;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
@@ -57,10 +56,7 @@ public static class FrameworkServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        var expectedFrameworks = new List<FrameworkFilterInfo>
-        {
-            new() { Id = framework.Id, ShortName = framework.ShortName },
-        };
+        var expectedFrameworks = new List<EntityFramework.Catalogue.Models.Framework> { framework, };
 
         var result = await service.GetFrameworksWithPublishedCatalogueItems();
 
@@ -99,7 +95,7 @@ public static class FrameworkServiceTests
         var result = await service.GetFrameworksWithPublishedCatalogueItems();
 
         result.Should().HaveCount(1);
-        result.All(f => f.Expired);
+        result.All(f => f.IsExpired).Should().BeTrue();
     }
 
     [Theory]
@@ -124,10 +120,7 @@ public static class FrameworkServiceTests
 
         await dbContext.SaveChangesAsync();
 
-        var expectedFrameworks = new List<FrameworkFilterInfo>
-        {
-            new() { Id = framework.Id, ShortName = framework.ShortName },
-        };
+        var expectedFrameworks = new List<EntityFramework.Catalogue.Models.Framework> { framework, };
 
         var result = await service.GetFrameworksWithPublishedCatalogueItems();
 

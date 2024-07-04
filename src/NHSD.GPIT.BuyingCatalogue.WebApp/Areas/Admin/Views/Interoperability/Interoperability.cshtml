@@ -34,9 +34,9 @@
 
             @if (Model.IM1Integrations.Any())
             {
-                @foreach (var qualifier in Model.IM1IntegrationQualifiers)
+                @foreach (var integrations in Model.IM1Integrations.GroupBy(x => x.IntegrationType.Name))
                 {
-                    <nhs-expander label-text="@($"IM1 {qualifier}")" open="false">
+                    <nhs-expander label-text="@($"IM1 {integrations.Key}")" open="false">
                     <nhs-table>
                         <nhs-table-column>
                             Provider or<br>consumer
@@ -48,11 +48,11 @@
                             Description
                         </nhs-table-column>
                         <nhs-table-column>Action</nhs-table-column>
-                        @foreach (var integration in Model.IM1Integrations.Where(i => i.Qualifier == qualifier))
+                        @foreach (var integration in integrations)
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>
-                                    @(integration.IsConsumer ? "Consumer" : "Provider")
+                                    @(integration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     @integration.IntegratesWith
@@ -87,9 +87,9 @@
 
             @if (Model.GpConnectIntegrations.Any())
             {
-                @foreach (var qualifier in Model.GpConnectIntegrationQualifiers)
+                @foreach (var integrations in Model.GpConnectIntegrations.GroupBy(x => x.IntegrationType.Name))
                 {
-                    <nhs-expander label-text="@($"GP Connect {qualifier}")" open="false">
+                    <nhs-expander label-text="@($"GP Connect {integrations.Key}")" open="false">
                     <nhs-table>
                         <nhs-table-column>
                             Provider or consumer
@@ -98,15 +98,15 @@
                             Additional information
                         </nhs-table-column>
                         <nhs-table-column>Action</nhs-table-column>
-                        @foreach (var integration in Model.GpConnectIntegrations.Where(i => i.Qualifier == qualifier))
+                        @foreach (var integration in integrations)
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>
-                                    @(integration.IsConsumer ? "Consumer" : "Provider")
+                                    @(integration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     <p class="nhsuk-u-margin-0">
-                                        @integration.AdditionalInformation
+                                        @integration.Description
                                     </p>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
@@ -131,7 +131,7 @@
             <p>
                 Use the link to add all the NHS App integrations your Catalogue Solution works with.
             </p>
-            @if (Model.NhsAppIntegrationTypes.Any())
+            @if (Model.NhsAppIntegrations.Any())
             {
                 <nhs-card title="Selected NHS App integrations">
                     <nhs-table>
@@ -140,10 +140,10 @@
                                 <strong>Integrations</strong>
                             </nhs-table-cell>
                             <nhs-table-cell class="no-bottom-border">
-                                @foreach (var integration in Model.NhsAppIntegrationTypes)
+                                @foreach (var integration in Model.NhsAppIntegrations)
                                 {
                                     <p>
-                                        @integration
+                                        @integration.IntegrationType.Name
                                     </p>
                                 }
                             </nhs-table-cell>

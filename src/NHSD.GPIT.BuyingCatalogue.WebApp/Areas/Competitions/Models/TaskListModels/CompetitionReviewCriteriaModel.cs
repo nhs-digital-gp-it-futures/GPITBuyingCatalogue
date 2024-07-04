@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -12,7 +13,9 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
     {
     }
 
-    public CompetitionReviewCriteriaModel(Competition competition)
+    public CompetitionReviewCriteriaModel(
+        Competition competition,
+        IEnumerable<Integration> availableIntegrations)
     {
         InternalOrgId = competition.Organisation.InternalIdentifier;
         CompetitionId = competition.Id;
@@ -25,6 +28,8 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
         NonPriceWeights = competition.NonPriceElements.GetNonPriceElements()
             .OrderBy(x => x.ToString())
             .ToDictionary(x => x, x => competition.NonPriceElements.GetNonPriceWeight(x));
+
+        AvailableIntegrations = availableIntegrations.ToDictionary(x => x.Id, x => x.Name);
     }
 
     public string InternalOrgId { get; set; }
@@ -38,6 +43,8 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
     public string ContinueButton => HasReviewedCriteria
         ? "Continue"
         : "Confirm competition criteria";
+
+    public Dictionary<SupportedIntegrations, string> AvailableIntegrations { get; set; }
 
     public Weightings CompetitionWeights { get; set; }
 

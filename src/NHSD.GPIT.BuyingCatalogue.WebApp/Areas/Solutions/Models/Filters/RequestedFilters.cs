@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
@@ -11,10 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             string SelectedFrameworkId,
             string SelectedApplicationTypeIds,
             string SelectedHostingTypeIds,
-            string SelectedIM1Integrations,
-            string SelectedGPConnectIntegrations,
-            string SelectedNhsAppIntegrations,
-            string SelectedInteroperabilityOptions,
+            string SelectedIntegrations,
             string SortBy)
     {
         public bool SearchCriteriaApplied => GetFiltersArray().Any(f => !string.IsNullOrWhiteSpace(f));
@@ -23,6 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public Dictionary<int, string[]> GetCapabilityAndEpicIds() => SolutionsFilterHelper.ParseCapabilityAndEpicIds(Selected);
 
+        public Dictionary<SupportedIntegrations, int[]> GetIntegrationsAndTypes() =>
+            SolutionsFilterHelper.ParseIntegrationAndTypeIds(SelectedIntegrations);
+
         public object ToRouteValues(int? page = null) => new
         {
             selected = Selected,
@@ -30,10 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             selectedFrameworkId = SelectedFrameworkId,
             selectedApplicationTypeIds = SelectedApplicationTypeIds,
             selectedHostingTypeIds = SelectedHostingTypeIds,
-            selectedIM1Integrations = SelectedIM1Integrations,
-            selectedGPConnectIntegrations = SelectedGPConnectIntegrations,
-            selectedNhsAppIntegrations = SelectedNhsAppIntegrations,
-            selectedInteroperabilityOptions = SelectedInteroperabilityOptions,
+            selectedIntegrations = SelectedIntegrations,
             sortBy = SortBy,
             page = page ?? 1,
         };
@@ -44,9 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 SelectedFrameworkId,
                 SelectedApplicationTypeIds,
                 SelectedHostingTypeIds,
-                SelectedIM1Integrations,
-                SelectedGPConnectIntegrations,
-                SelectedNhsAppIntegrations,
-                SelectedInteroperabilityOptions];
+                SelectedIntegrations];
     }
 }

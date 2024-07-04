@@ -99,7 +99,7 @@ public static class CompetitionSolutionResultTests
         competition.NonPriceElements = new()
         {
             Implementation = new(),
-            Interoperability = new List<InteroperabilityCriteria> { new() },
+            IntegrationTypes = new List<IntegrationType> { new() },
             ServiceLevel = new(),
         };
 

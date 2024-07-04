@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -23,35 +24,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
     [Authorize(Policy = "Buyer")]
     [Area("Solutions")]
     [Route("manage-filters")]
-    public class ManageFiltersController : Controller
+    public class ManageFiltersController(
+        IOrganisationsService organisationsService,
+        ICapabilitiesService capabilitiesService,
+        IFrameworkService frameworkService,
+        IManageFiltersService manageFiltersService,
+        ISolutionsFilterService solutionsFilterService,
+        IPdfService pdfService,
+        IIntegrationsService integrationsService)
+        : Controller
     {
         private const int MaxNumberOfFilters = 10;
 
-        private readonly IOrganisationsService organisationsService;
-        private readonly IManageFiltersService manageFiltersService;
-        private readonly ICapabilitiesService capabilitiesService;
-        private readonly ISolutionsFilterService solutionsFilterService;
-        private readonly IEpicsService epicsService;
-        private readonly IFrameworkService frameworkService;
-        private readonly IPdfService pdfService;
-
-        public ManageFiltersController(
-            IOrganisationsService organisationsService,
-            ICapabilitiesService capabilitiesService,
-            IEpicsService epicsService,
-            IFrameworkService frameworkService,
-            IManageFiltersService manageFiltersService,
-            ISolutionsFilterService solutionsFilterService,
-            IPdfService pdfService)
-        {
-            this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
-            this.manageFiltersService = manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
-            this.solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
-            this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
-            this.epicsService = epicsService ?? throw new ArgumentNullException(nameof(epicsService));
-            this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
-            this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
-        }
+        private readonly IOrganisationsService organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+        private readonly IManageFiltersService manageFiltersService = manageFiltersService ?? throw new ArgumentNullException(nameof(manageFiltersService));
+        private readonly ICapabilitiesService capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
+        private readonly ISolutionsFilterService solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
+        private readonly IFrameworkService frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
+        private readonly IPdfService pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
+        private readonly IIntegrationsService integrationsService = integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -76,10 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     model.SelectedFrameworkId,
                     selectedApplicationTypeIds = model.CombineSelectedOptions(model.ApplicationTypeOptions),
                     selectedHostingTypeIds = model.CombineSelectedOptions(model.HostingTypeOptions),
-                    selectedIM1IntegrationsIds = model.CombineSelectedOptions(model.IM1IntegrationsOptions),
-                    selectedGPConnectIntegrationsIds = model.CombineSelectedOptions(model.GPConnectIntegrationsOptions),
-                    selectedNHSAppIntegrationsIds = model.CombineSelectedOptions(model.NhsAppIntegrationsOptions),
-                    selectedInteroperabilityIds = model.CombineSelectedOptions(model.InteroperabilityOptions),
+                    selectedIntegrations = model.GetIntegrationIds(),
                 });
         }
 
@@ -89,10 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             string selectedFrameworkId,
             string selectedApplicationTypeIds,
             string selectedHostingTypeIds,
-            string selectedIM1IntegrationsIds,
-            string selectedGPConnectIntegrationsIds,
-            string selectedNhsAppIntegrationsIds,
-            string selectedInteroperabilityIds)
+            string selectedIntegrations)
         {
             var backLink =
                 Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new
@@ -101,10 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                     selectedFrameworkId,
                     selectedApplicationTypeIds,
                     selectedHostingTypeIds,
-                    selectedIM1IntegrationsIds,
-                    selectedGPConnectIntegrationsIds,
-                    selectedNhsAppIntegrationsIds,
-                    selectedInteroperabilityIds,
+                    selectedIntegrations,
                 });
 
             var organisationId = (await GetUserOrganisation()).Id;
@@ -115,33 +97,39 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             var capabilityAndEpicIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
             var capabilitiesAndEpics = await capabilitiesService.GetGroupedCapabilitiesAndEpics(capabilityAndEpicIds);
 
+            var integrationsAndTypeIds = SolutionsFilterHelper.ParseIntegrationAndTypeIds(selectedIntegrations);
+            var integrationsAndTypes = await integrationsService.GetIntegrationAndTypeNames(integrationsAndTypeIds);
+
             var framework = await frameworkService.GetFramework(selectedFrameworkId);
 
-            var applicationTypes = SolutionsFilterHelper.ParseApplicationTypeIds(selectedApplicationTypeIds)?.ToList();
-            var hostingTypes = SolutionsFilterHelper.ParseHostingTypeIds(selectedHostingTypeIds)?.ToList();
-            var iM1IntegrationsTypes = SolutionsFilterHelper.ParseInteropIm1IntegrationsIds(selectedIM1IntegrationsIds)?.ToList();
-            var gPConnectIntegrationsTypes = SolutionsFilterHelper.ParseInteropGpConnectIntegrationsIds(selectedGPConnectIntegrationsIds)?.ToList();
-            var nhsAppIntegrationsTypes = SolutionsFilterHelper.ParseInteropNhsAppIntegrationsIds(selectedNhsAppIntegrationsIds)?.ToList();
-            var interoperabilityIntegrationTypes = SolutionsFilterHelper.ParseInteropIntegrationTypeIds(selectedInteroperabilityIds)?.ToList();
+            var applicationTypes = SolutionsFilterHelper.ParseEnumFilter<ApplicationType>(selectedApplicationTypeIds)?.ToList();
+            var hostingTypes = SolutionsFilterHelper.ParseEnumFilter<HostingType>(selectedHostingTypeIds)?.ToList();
 
-            var model = new SaveFilterModel(capabilitiesAndEpics, framework, applicationTypes, hostingTypes, iM1IntegrationsTypes, gPConnectIntegrationsTypes, nhsAppIntegrationsTypes, interoperabilityIntegrationTypes, organisationId)
+            var model = new SaveFilterModel(capabilitiesAndEpics, framework, applicationTypes, hostingTypes, integrationsAndTypes, organisationId)
             {
                 BackLink = backLink,
             };
+
             return View(model);
         }
 
         [HttpPost("save-filter-confirm")]
         public async Task<IActionResult> ConfirmSaveFilter(
             SaveFilterModel model,
-            string selected)
+            string selected,
+            string selectedIntegrations)
         {
             var capabilityAndEpicIds = SolutionsFilterHelper.ParseCapabilityAndEpicIds(selected);
-            var capabilitiesAndEpics = await capabilitiesService.GetGroupedCapabilitiesAndEpics(capabilityAndEpicIds);
-            model.GroupedCapabilities = capabilitiesAndEpics;
+            var integrationIds = SolutionsFilterHelper.ParseIntegrationAndTypeIds(selectedIntegrations);
 
             if (!ModelState.IsValid)
             {
+                var capabilitiesAndEpics = await capabilitiesService.GetGroupedCapabilitiesAndEpics(capabilityAndEpicIds);
+                var integrationAndTypeNames = await integrationsService.GetIntegrationAndTypeNames(integrationIds);
+
+                model.GroupedCapabilities = capabilitiesAndEpics;
+                model.Integrations = integrationAndTypeNames;
+
                 return View(model);
             }
 
@@ -153,10 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
                 model.FrameworkId,
                 model.ApplicationTypes,
                 model.HostingTypes,
-                model.IM1IntegrationsTypes,
-                model.GPConnectIntegrationsTypes,
-                model.NhsAppIntegrationsTypes,
-                model.InteroperabilityIntegrationTypes);
+                integrationIds);
 
             return RedirectToAction(
                 nameof(FilterDetails),
@@ -188,7 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         [HttpGet("save-failed")]
         public IActionResult CannotSaveFilter(string backLink)
         {
-            var model = new NavBaseModel()
+            var model = new NavBaseModel
             {
                 BackLink = backLink,
             };

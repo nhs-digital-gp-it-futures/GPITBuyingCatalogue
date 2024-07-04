@@ -8,7 +8,7 @@
      Hosting nvarchar(max) NULL,
      ImplementationDetail nvarchar(1100) NULL,
      RoadMap nvarchar(1000) NULL,
-     Integrations nvarchar(max) NULL,
+     Integrations nvarchar(max) NULL, -- TODO: Remove in next release
      IntegrationsUrl nvarchar(1000) NULL,
      AboutUrl nvarchar(1000) NULL,
      IsPilotSolution bit DEFAULT 0 NOT NULL,

@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
 

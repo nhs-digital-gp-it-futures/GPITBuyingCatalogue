@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels
 {
@@ -12,12 +13,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels
 
         public IEnumerable<int> HostingTypeIds { get; set; }
 
-        public IEnumerable<int> IM1Integrations { get; set; }
-
-        public IEnumerable<int> GPConnectIntegrations { get; set; }
-
-        public IEnumerable<int> NhsAppIntegrations { get; set; }
-
-        public IEnumerable<int> InteroperabilityOptions { get; set; }
+        public Dictionary<SupportedIntegrations, int[]> IntegrationsIds { get; set; }
     }
 }

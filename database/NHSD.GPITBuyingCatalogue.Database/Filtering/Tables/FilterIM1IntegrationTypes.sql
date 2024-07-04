@@ -1,4 +1,4 @@
-﻿CREATE TABLE filtering.FilterIM1IntegrationTypes
+﻿CREATE TABLE filtering.FilterIM1IntegrationTypes -- TODO: Remove in next release
 (
 	Id int IDENTITY(1, 1) NOT NULL,
     FilterId int NOT NULL,

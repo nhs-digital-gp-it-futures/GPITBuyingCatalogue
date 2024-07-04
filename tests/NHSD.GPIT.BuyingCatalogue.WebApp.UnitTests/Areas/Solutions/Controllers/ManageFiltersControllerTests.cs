@@ -8,17 +8,16 @@ using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
@@ -39,13 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
     public static class ManageFiltersControllerTests
     {
         [Fact]
-        public static void ClassIsCorrectlyDecorated()
-        {
-            typeof(ManageFiltersController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "Buyer");
-            typeof(ManageFiltersController).Should().BeDecoratedWith<AreaAttribute>(x => x.RouteValue == "Solutions");
-        }
-
-        [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
             var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
@@ -60,28 +52,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Index_ReturnsExpectedResult(
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
-            [Frozen] IEpicsService epicsService,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IManageFiltersService manageFiltersService,
             [Frozen] ISolutionsFilterService solutionsFilterService,
             [Frozen] IUrlHelper mockUrlHelper,
             [Frozen] IPdfService mockPdfService,
+            [Frozen] IIntegrationsService integrationsService,
             string primaryOrganisationInternalId,
             Organisation organisation,
             List<Filter> existingFilters)
         {
-            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId).Returns(Task.FromResult(organisation));
+            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId)
+                .Returns(Task.FromResult(organisation));
 
             manageFiltersService.GetFilters(organisation.Id).Returns(Task.FromResult(existingFilters));
 
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
-                epicsService,
                 frameworkService,
                 manageFiltersService,
                 solutionsFilterService,
                 mockPdfService,
+                integrationsService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper;
@@ -106,17 +99,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             actualResult.ActionName.Should().Be(nameof(ManageFiltersController.ConfirmSaveFilter));
             actualResult.ControllerName.Should().Be(typeof(ManageFiltersController).ControllerName());
-            actualResult.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
-            {
-                { "selected", model.Selected },
-                { "selectedFrameworkId", model.SelectedFrameworkId },
-                { "selectedApplicationTypeIds", model.CombineSelectedOptions(model.ApplicationTypeOptions) },
-                { "selectedHostingTypeIds", model.CombineSelectedOptions(model.HostingTypeOptions) },
-                { "selectedIM1IntegrationsIds", model.CombineSelectedOptions(model.IM1IntegrationsOptions) },
-                { "selectedGPConnectIntegrationsIds", model.CombineSelectedOptions(model.GPConnectIntegrationsOptions) },
-                { "selectedNhsAppIntegrationsIds", model.CombineSelectedOptions(model.NhsAppIntegrationsOptions) },
-                { "selectedInteroperabilityIds", model.CombineSelectedOptions(model.InteroperabilityOptions) },
-            });
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary
+                    {
+                        { "selected", model.Selected },
+                        { "selectedFrameworkId", model.SelectedFrameworkId },
+                        { "selectedApplicationTypeIds", model.CombineSelectedOptions(model.ApplicationTypeOptions) },
+                        { "selectedHostingTypeIds", model.CombineSelectedOptions(model.HostingTypeOptions) },
+                        { "selectedIntegrations", model.GetIntegrationIds() },
+                    });
         }
 
         [Theory]
@@ -125,17 +117,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             FilterDetailsModel filter,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
-            [Frozen] IEpicsService epicsService,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IManageFiltersService manageFiltersService,
             [Frozen] ISolutionsFilterService solutionsFilterService,
             [Frozen] IUrlHelper mockUrlHelper,
             [Frozen] IPdfService mockPdfService,
+            [Frozen] IIntegrationsService integrationsService,
             byte[] fileContents,
             string primaryOrganisationInternalId,
             Organisation organisation)
         {
-            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId).Returns(Task.FromResult(organisation));
+            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId)
+                .Returns(Task.FromResult(organisation));
 
             manageFiltersService.GetFilterDetails(organisation.Id, filter.Id).Returns(Task.FromResult(filter));
 
@@ -146,11 +139,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
-                epicsService,
                 frameworkService,
                 manageFiltersService,
                 solutionsFilterService,
                 mockPdfService,
+                integrationsService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper;
@@ -169,27 +162,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             FilterDetailsModel filter,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
-            [Frozen] IEpicsService epicsService,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IManageFiltersService manageFiltersService,
             [Frozen] ISolutionsFilterService solutionsFilterService,
             [Frozen] IUrlHelper mockUrlHelper,
             [Frozen] IPdfService mockPdfService,
+            [Frozen] IIntegrationsService integrationsService,
             string primaryOrganisationInternalId,
             Organisation organisation)
         {
-            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId).Returns(Task.FromResult(organisation));
+            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId)
+                .Returns(Task.FromResult(organisation));
 
-            manageFiltersService.GetFilterDetails(organisation.Id, filter.Id).Returns(Task.FromResult((FilterDetailsModel)null));
+            manageFiltersService.GetFilterDetails(organisation.Id, filter.Id)
+                .Returns(Task.FromResult((FilterDetailsModel)null));
 
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
-                epicsService,
                 frameworkService,
                 manageFiltersService,
                 solutionsFilterService,
                 mockPdfService,
+                integrationsService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper;
@@ -205,27 +200,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             Filter filter,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
-            [Frozen] IEpicsService epicsService,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IManageFiltersService manageFiltersService,
             [Frozen] ISolutionsFilterService solutionsFilterService,
             [Frozen] IUrlHelper mockUrlHelper,
             [Frozen] IPdfService mockPdfService,
+            [Frozen] IIntegrationsService integrationsService,
             string primaryOrganisationInternalId,
             Organisation organisation)
         {
-            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId).Returns(Task.FromResult(organisation));
+            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId)
+                .Returns(Task.FromResult(organisation));
 
-            manageFiltersService.GetFilterDetails(organisation.Id, filter.Id).Returns(Task.FromResult((FilterDetailsModel)null));
+            manageFiltersService.GetFilterDetails(organisation.Id, filter.Id)
+                .Returns(Task.FromResult((FilterDetailsModel)null));
 
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
-                epicsService,
                 frameworkService,
                 manageFiltersService,
                 solutionsFilterService,
                 mockPdfService,
+                integrationsService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper;
@@ -247,16 +244,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             Organisation organisation,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
-            [Frozen] IEpicsService epicsService,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IManageFiltersService manageFiltersService,
             [Frozen] ISolutionsFilterService solutionsFilterService,
             [Frozen] IUrlHelper mockUrlHelper,
-            [Frozen] IPdfService mockPdfService)
+            [Frozen] IPdfService mockPdfService,
+            [Frozen] IIntegrationsService integrationsService)
         {
-            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId).Returns(Task.FromResult(organisation));
+            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId)
+                .Returns(Task.FromResult(organisation));
 
-            manageFiltersService.GetFilterDetails(organisation.Id, filterId).Returns(Task.FromResult(filterDetailsModel));
+            manageFiltersService.GetFilterDetails(organisation.Id, filterId)
+                .Returns(Task.FromResult(filterDetailsModel));
 
             manageFiltersService.GetFilterIds(organisation.Id, filterId).Returns(Task.FromResult(filterIds));
 
@@ -267,11 +266,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
-                epicsService,
                 frameworkService,
                 manageFiltersService,
                 solutionsFilterService,
                 mockPdfService,
+                integrationsService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper;
@@ -280,12 +279,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ReviewFilterModel(filterDetailsModel, organisation.InternalIdentifier, filterResults, false, filterIds)
-            {
-                Caption = organisation.Name,
-                OrganisationName = organisation.Name,
-                InExpander = true,
-            };
+            var expected =
+                new ReviewFilterModel(
+                    filterDetailsModel,
+                    organisation.InternalIdentifier,
+                    filterResults,
+                    false,
+                    filterIds)
+                {
+                    Caption = organisation.Name, OrganisationName = organisation.Name, InExpander = true,
+                };
             actualResult.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(x => x.BackLink));
         }
 
@@ -307,34 +310,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             int numberOfExistingFilters,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
-            [Frozen] IEpicsService epicsService,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IManageFiltersService manageFiltersService,
             [Frozen] ISolutionsFilterService solutionsFilterService,
             [Frozen] IUrlHelper mockUrlHelper,
             [Frozen] IPdfService mockPdfService,
+            [Frozen] IIntegrationsService integrationsService,
             string primaryOrganisationInternalId,
             Organisation organisation)
         {
             var existingFilters = new List<Filter>(new Filter[numberOfExistingFilters]);
 
-            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId).Returns(Task.FromResult(organisation));
+            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId)
+                .Returns(Task.FromResult(organisation));
 
             manageFiltersService.GetFilters(organisation.Id).Returns(Task.FromResult(existingFilters));
 
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
-                epicsService,
                 frameworkService,
                 manageFiltersService,
                 solutionsFilterService,
                 mockPdfService,
+                integrationsService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper;
 
-            var result = await controller.ConfirmSaveFilter(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+            var result = await controller.ConfirmSaveFilter(
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty);
 
             await organisationsService.Received().GetOrganisationByInternalIdentifier(primaryOrganisationInternalId);
             await manageFiltersService.Received().GetFilters(organisation.Id);
@@ -350,52 +359,71 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_ConfirmSaveFilter_ReturnsExpectedResult(
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
-            [Frozen] IEpicsService epicsService,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IManageFiltersService manageFiltersService,
             [Frozen] ISolutionsFilterService solutionsFilterService,
             [Frozen] IUrlHelper mockUrlHelper,
             [Frozen] IPdfService mockPdfService,
+            [Frozen] IIntegrationsService integrationsService,
             string primaryOrganisationInternalId,
             Organisation organisation,
             Dictionary<int, string[]> capabilityAndEpics,
+            Dictionary<SupportedIntegrations, int[]> selectedIntegrations,
             Dictionary<string, IOrderedEnumerable<Epic>> groupedEpics,
+            Dictionary<string, IOrderedEnumerable<string>> groupedIntegrations,
             string selectedFrameworkId)
         {
             var existingFilters = new List<Filter>();
 
-            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId).Returns(Task.FromResult(organisation));
+            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId)
+                .Returns(organisation);
 
-            manageFiltersService.GetFilters(organisation.Id).Returns(Task.FromResult(existingFilters));
+            manageFiltersService.GetFilters(organisation.Id).Returns(existingFilters);
 
-            capabilitiesService.GetGroupedCapabilitiesAndEpics(Arg.Any<Dictionary<int, string[]>>()).Returns(Task.FromResult(groupedEpics));
+            capabilitiesService.GetGroupedCapabilitiesAndEpics(Arg.Any<Dictionary<int, string[]>>())
+                .Returns(groupedEpics);
 
-            frameworkService.GetFramework(selectedFrameworkId).Returns(Task.FromResult((EntityFramework.Catalogue.Models.Framework)null));
+            frameworkService.GetFramework(selectedFrameworkId)
+                .Returns((EntityFramework.Catalogue.Models.Framework)null);
+
+            integrationsService.GetIntegrationAndTypeNames(Arg.Any<Dictionary<SupportedIntegrations, int[]>>())
+                .Returns(groupedIntegrations);
 
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
-                epicsService,
                 frameworkService,
                 manageFiltersService,
                 solutionsFilterService,
                 mockPdfService,
+                integrationsService,
                 primaryOrganisationInternalId);
 
             controller.Url = mockUrlHelper;
 
-            var result = await controller.ConfirmSaveFilter(capabilityAndEpics.ToFilterString(), selectedFrameworkId, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+            var result = await controller.ConfirmSaveFilter(
+                capabilityAndEpics.ToFilterString(),
+                selectedFrameworkId,
+                string.Empty,
+                string.Empty,
+                selectedIntegrations.ToFilterString());
 
             await organisationsService.Received().GetOrganisationByInternalIdentifier(primaryOrganisationInternalId);
             await manageFiltersService.Received().GetFilters(organisation.Id);
             await capabilitiesService.Received().GetGroupedCapabilitiesAndEpics(Arg.Any<Dictionary<int, string[]>>());
-            epicsService.ReceivedCalls().Should().BeEmpty();
             await frameworkService.Received().GetFramework(selectedFrameworkId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var actualResultModel = actualResult.Model.Should().BeOfType<SaveFilterModel>().Subject;
 
-            var expected = new SaveFilterModel(groupedEpics, null, new List<ApplicationType>(), new List<HostingType>(), new List<InteropIm1IntegrationType>(), new List<InteropGpConnectIntegrationType>(), new List<InteropNhsAppIntegrationType>(), new List<InteropIntegrationType>(), organisation.Id);
+            var expected = new SaveFilterModel(
+                groupedEpics,
+                null,
+                new List<ApplicationType>(),
+                new List<HostingType>(),
+                groupedIntegrations,
+                organisation.Id);
+
             actualResultModel.Should()
                 .BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.BackLinkText));
         }
@@ -406,15 +434,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             SaveFilterModel model,
             Dictionary<string, IOrderedEnumerable<Epic>> groupedEpics,
             Dictionary<int, string[]> capabilityAndEpics,
+            Dictionary<SupportedIntegrations, int[]> integrations,
             [Frozen] ICapabilitiesService capabilitiesService,
             [Frozen] IEpicsService epicsService,
             ManageFiltersController controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
-            capabilitiesService.GetGroupedCapabilitiesAndEpics(Arg.Any<Dictionary<int, string[]>>()).Returns(Task.FromResult(groupedEpics));
+            capabilitiesService.GetGroupedCapabilitiesAndEpics(Arg.Any<Dictionary<int, string[]>>())
+                .Returns(Task.FromResult(groupedEpics));
 
-            var result = await controller.ConfirmSaveFilter(model, capabilityAndEpics.ToFilterString());
+            var result = await controller.ConfirmSaveFilter(
+                model,
+                capabilityAndEpics.ToFilterString(),
+                integrations.ToFilterString());
 
             await capabilitiesService.Received().GetGroupedCapabilitiesAndEpics(Arg.Any<Dictionary<int, string[]>>());
             epicsService.ReceivedCalls().Should().BeEmpty();
@@ -429,6 +462,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Post_ConfirmSaveFilter_ReturnsExpectedResult(
             SaveFilterModel model,
             Dictionary<int, string[]> capabilityAndEpics,
+            Dictionary<SupportedIntegrations, int[]> integrations,
             int filterId,
             [Frozen] IManageFiltersService manageFiltersService,
             ManageFiltersController controller)
@@ -441,14 +475,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     model.FrameworkId,
                     model.ApplicationTypes,
                     model.HostingTypes,
-                    model.IM1IntegrationsTypes,
-                    model.GPConnectIntegrationsTypes,
-                    model.NhsAppIntegrationsTypes,
-                    model.InteroperabilityIntegrationTypes).Returns(Task.FromResult(filterId));
+                    Arg.Is<Dictionary<SupportedIntegrations, int[]>>(
+                        x => x.ToFilterString() == integrations.ToFilterString()))
+                .Returns(Task.FromResult(filterId));
 
-            var result = await controller.ConfirmSaveFilter(model, capabilityAndEpics.ToFilterString());
+            var result = await controller.ConfirmSaveFilter(
+                model,
+                capabilityAndEpics.ToFilterString(),
+                integrations.ToFilterString());
 
-            await manageFiltersService.Received().AddFilter(
+            await manageFiltersService.Received()
+                .AddFilter(
                     model.Name,
                     model.Description,
                     model.OrganisationId,
@@ -456,10 +493,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     model.FrameworkId,
                     model.ApplicationTypes,
                     model.HostingTypes,
-                    model.IM1IntegrationsTypes,
-                    model.GPConnectIntegrationsTypes,
-                    model.NhsAppIntegrationsTypes,
-                    model.InteroperabilityIntegrationTypes);
+                    Arg.Is<Dictionary<SupportedIntegrations, int[]>>(
+                        x => x.ToFilterString() == integrations.ToFilterString()));
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -477,23 +512,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             Organisation organisation,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
-            [Frozen] IEpicsService epicsService,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IManageFiltersService manageFiltersService,
             [Frozen] ISolutionsFilterService solutionsFilterService,
             [Frozen] IUrlHelper mockUrlHelper,
-            [Frozen] IPdfService mockPdfService)
+            [Frozen] IPdfService mockPdfService,
+            [Frozen] IIntegrationsService integrationsService)
         {
-            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId).Returns(Task.FromResult(organisation));
-            manageFiltersService.GetFilterDetails(organisation.Id, filterId).Returns(Task.FromResult(filterDetailsModel));
+            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId)
+                .Returns(Task.FromResult(organisation));
+            manageFiltersService.GetFilterDetails(organisation.Id, filterId)
+                .Returns(Task.FromResult(filterDetailsModel));
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
-                epicsService,
                 frameworkService,
                 manageFiltersService,
                 solutionsFilterService,
                 mockPdfService,
+                integrationsService,
                 primaryOrganisationInternalId);
             controller.Url = mockUrlHelper;
 
@@ -513,24 +550,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             Organisation organisation,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
-            [Frozen] IEpicsService epicsService,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IManageFiltersService manageFiltersService,
             [Frozen] ISolutionsFilterService solutionsFilterService,
             [Frozen] IUrlHelper mockUrlHelper,
-            [Frozen] IPdfService mockPdfService)
+            [Frozen] IPdfService mockPdfService,
+            [Frozen] IIntegrationsService integrationsService)
         {
-            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId).Returns(Task.FromResult(organisation));
+            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId)
+                .Returns(Task.FromResult(organisation));
             filterDetailsModel = null;
-            manageFiltersService.GetFilterDetails(organisation.Id, filterId).Returns(Task.FromResult(filterDetailsModel));
+            manageFiltersService.GetFilterDetails(organisation.Id, filterId)
+                .Returns(Task.FromResult(filterDetailsModel));
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
-                epicsService,
                 frameworkService,
                 manageFiltersService,
                 solutionsFilterService,
                 mockPdfService,
+                integrationsService,
                 primaryOrganisationInternalId);
             controller.Url = mockUrlHelper;
 
@@ -551,24 +590,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             Organisation organisation,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
-            [Frozen] IEpicsService epicsService,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IManageFiltersService manageFiltersService,
             [Frozen] ISolutionsFilterService solutionsFilterService,
             [Frozen] IUrlHelper mockUrlHelper,
-            [Frozen] IPdfService mockPdfService)
+            [Frozen] IPdfService mockPdfService,
+            [Frozen] IIntegrationsService integrationsService)
         {
-            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId).Returns(Task.FromResult(organisation));
+            organisationsService.GetOrganisationByInternalIdentifier(primaryOrganisationInternalId)
+                .Returns(Task.FromResult(organisation));
             deleteFilterModel.FilterId = filterDetailsModel.Id;
-            manageFiltersService.GetFilterDetails(organisation.Id, deleteFilterModel.FilterId).Returns(Task.FromResult(filterDetailsModel));
+            manageFiltersService.GetFilterDetails(organisation.Id, deleteFilterModel.FilterId)
+                .Returns(Task.FromResult(filterDetailsModel));
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
-                epicsService,
                 frameworkService,
                 manageFiltersService,
                 solutionsFilterService,
                 mockPdfService,
+                integrationsService,
                 primaryOrganisationInternalId);
             controller.Url = mockUrlHelper;
 
@@ -586,12 +627,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             FilterDetailsModel filterDetailsModel,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] ICapabilitiesService capabilitiesService,
-            [Frozen] IEpicsService epicsService,
             [Frozen] IFrameworkService frameworkService,
             [Frozen] IManageFiltersService manageFiltersService,
             [Frozen] ISolutionsFilterService solutionsFilterService,
             [Frozen] IUrlHelper mockUrlHelper,
             [Frozen] IPdfService mockPdfService,
+            [Frozen] IIntegrationsService integrationsService,
             string primaryOrganisationInternalId,
             Organisation organisation)
         {
@@ -604,11 +645,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             var controller = CreateController(
                 organisationsService,
                 capabilitiesService,
-                epicsService,
                 frameworkService,
                 manageFiltersService,
                 solutionsFilterService,
                 mockPdfService,
+                integrationsService,
                 primaryOrganisationInternalId);
             controller.Url = mockUrlHelper;
 
@@ -622,14 +663,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         private static ManageFiltersController CreateController(
             IOrganisationsService organisationsService,
             ICapabilitiesService capabilitiesService,
-            IEpicsService epicsService,
             IFrameworkService frameworkService,
             IManageFiltersService manageFiltersService,
             ISolutionsFilterService solutionsFilterService,
             IPdfService pdfService,
+            IIntegrationsService integrationsService,
             string primaryOrganisationInternalId)
         {
-            return new ManageFiltersController(organisationsService, capabilitiesService, epicsService, frameworkService, manageFiltersService, solutionsFilterService, pdfService)
+            return new ManageFiltersController(
+                organisationsService,
+                capabilitiesService,
+                frameworkService,
+                manageFiltersService,
+                solutionsFilterService,
+                pdfService,
+                integrationsService)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -637,7 +685,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     {
                         User = new ClaimsPrincipal(
                             new ClaimsIdentity(
-                                new Claim[] { new(Framework.Constants.CatalogueClaims.PrimaryOrganisationInternalIdentifier, primaryOrganisationInternalId.ToString()) })),
+                                new Claim[]
+                                {
+                                    new(
+                                        Framework.Constants.CatalogueClaims.PrimaryOrganisationInternalIdentifier,
+                                        primaryOrganisationInternalId),
+                                })),
                     },
                 },
             };

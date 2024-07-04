@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
@@ -16,8 +17,8 @@ public class NonPriceElements
 
     public NonPriceWeights NonPriceWeights { get; set; }
 
-    public ICollection<InteroperabilityCriteria> Interoperability { get; set; } =
-        new HashSet<InteroperabilityCriteria>();
+    public ICollection<IntegrationType> IntegrationTypes { get; set; } =
+        new HashSet<IntegrationType>();
 
     public ICollection<FeaturesCriteria> Features { get; set; } =
         new HashSet<FeaturesCriteria>();

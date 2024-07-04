@@ -9,7 +9,6 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -37,16 +36,17 @@ public static class CompetitionNonPriceElementsServiceTests
     public static async Task DeleteNonPriceElement_RemovesNonPriceElement(
         Organisation organisation,
         Competition competition,
+        IntegrationType integrationType,
         [Frozen] BuyingCatalogueDbContext dbContext,
         CompetitionNonPriceElementsService service)
     {
         competition.NonPriceElements = new()
         {
             Implementation = new() { Requirements = "Requirements" },
-            Interoperability =
-                new List<InteroperabilityCriteria>
+            IntegrationTypes =
+                new List<IntegrationType>
                 {
-                    new() { IntegrationType = InteropIntegrationType.Im1, Qualifier = "Test" },
+                    integrationType,
                 },
             ServiceLevel =
                 new()
@@ -84,7 +84,7 @@ public static class CompetitionNonPriceElementsServiceTests
         var updatedCompetition = await dbContext.Competitions
             .Include(x => x.NonPriceElements.NonPriceWeights)
             .Include(x => x.NonPriceElements.Implementation)
-            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.NonPriceElements.ServiceLevel)
             .FirstOrDefaultAsync(x => x.OrganisationId == organisation.Id && x.Id == competition.Id);
 
@@ -250,7 +250,7 @@ public static class CompetitionNonPriceElementsServiceTests
         var updatedCompetition = await dbContext.Competitions.Include(x => x.NonPriceElements.Features)
             .Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.Implementation)
-            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.IntegrationTypes)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == competition.Id);
 

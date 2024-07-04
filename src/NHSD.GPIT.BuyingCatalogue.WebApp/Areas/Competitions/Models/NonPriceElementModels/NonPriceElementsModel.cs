@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -13,7 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceEle
 public class NonPriceElementsModel : NavBaseModel
 {
     public NonPriceElementsModel(
-        Competition competition)
+        Competition competition,
+        IEnumerable<Integration> availableIntegrations)
     {
         InternalOrgId = competition.Organisation.InternalIdentifier;
         CompetitionId = competition.Id;
@@ -21,6 +19,7 @@ public class NonPriceElementsModel : NavBaseModel
         CompetitionName = competition.Name;
         HasReviewedCriteria = competition.HasReviewedCriteria;
         NonPriceElements = competition.NonPriceElements;
+        AvailableIntegrations = availableIntegrations.ToDictionary(x => x.Id, x => x.Name);
     }
 
     public string InternalOrgId { get; set; }
@@ -32,6 +31,8 @@ public class NonPriceElementsModel : NavBaseModel
     public bool HasReviewedCriteria { get; set; }
 
     public NonPriceElements NonPriceElements { get; set; }
+
+    public Dictionary<SupportedIntegrations, string> AvailableIntegrations { get; set; }
 
     public override string Advice => HasReviewedCriteria
         ? "These are the non-price elements you added to help you score your shortlisted solutions."

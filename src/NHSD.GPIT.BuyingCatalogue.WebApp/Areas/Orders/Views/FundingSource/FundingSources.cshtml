@@ -3,7 +3,6 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSource
@@ -46,9 +45,9 @@
 
                         <span class="detail">
                             <strong>@Model.OrderItemsSelectable.Where(x => x.FundingType != OrderItemFundingType.None).Count()</strong> of <strong>@Model.OrderItemsSelectable.Count()</strong> started
-                        </span> 
+                        </span>
                     </div>
-                
+
                     <nhs-table data-test-id="funding-sources-items-editable">
                         <nhs-table-column>Solution or service</nhs-table-column>
                         <nhs-table-column>Total cost</nhs-table-column>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -161,7 +162,7 @@ public static class CompetitionTaskListModelTests
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
         competition.NonPriceElements = new()
         {
-            Interoperability = new List<InteroperabilityCriteria>(),
+            IntegrationTypes = new List<IntegrationType>(),
             Implementation = new(),
             ServiceLevel = new(),
             NonPriceWeights = new() { Implementation = 50, Interoperability = 25, },
@@ -187,7 +188,7 @@ public static class CompetitionTaskListModelTests
         competition.HasReviewedCriteria = false;
         competition.NonPriceElements = new()
         {
-            Interoperability = new List<InteroperabilityCriteria>(),
+            IntegrationTypes = new List<IntegrationType>(),
             Implementation = new(),
             ServiceLevel = new(),
             NonPriceWeights = new() { Implementation = 50, Interoperability = 25, ServiceLevel = 25 },
@@ -213,7 +214,7 @@ public static class CompetitionTaskListModelTests
         competition.HasReviewedCriteria = true;
         competition.NonPriceElements = new()
         {
-            Interoperability = new List<InteroperabilityCriteria>(),
+            IntegrationTypes = new List<IntegrationType>(),
             Implementation = new(),
             ServiceLevel = new(),
             NonPriceWeights = new() { Implementation = 50, Interoperability = 25, ServiceLevel = 25 },
@@ -240,7 +241,7 @@ public static class CompetitionTaskListModelTests
         competition.HasReviewedCriteria = true;
         competition.NonPriceElements = new()
         {
-            Interoperability = new List<InteroperabilityCriteria>(),
+            IntegrationTypes = new List<IntegrationType>(),
             Implementation = new(),
             ServiceLevel = new(),
             NonPriceWeights = new() { Implementation = 50, Interoperability = 25, ServiceLevel = 25 },
@@ -274,7 +275,7 @@ public static class CompetitionTaskListModelTests
         competition.HasReviewedCriteria = true;
         competition.NonPriceElements = new()
         {
-            Interoperability = new List<InteroperabilityCriteria>(),
+            IntegrationTypes = new List<IntegrationType>(),
             Implementation = new(),
             ServiceLevel = new(),
             NonPriceWeights = new() { Implementation = 50, Interoperability = 25, ServiceLevel = 25 },
@@ -313,7 +314,7 @@ public static class CompetitionTaskListModelTests
         competition.HasReviewedCriteria = true;
         competition.NonPriceElements = new()
         {
-            Interoperability = new List<InteroperabilityCriteria>(),
+            IntegrationTypes = new List<IntegrationType>(),
             Implementation = new(),
             ServiceLevel = new(),
             NonPriceWeights = new() { Implementation = 50, Interoperability = 25, ServiceLevel = 25 },
@@ -353,7 +354,7 @@ public static class CompetitionTaskListModelTests
         competition.HasReviewedCriteria = true;
         competition.NonPriceElements = new()
         {
-            Interoperability = new List<InteroperabilityCriteria>(),
+            IntegrationTypes = new List<IntegrationType>(),
             Implementation = new(),
             ServiceLevel = new(),
             NonPriceWeights = new() { Implementation = 50, Interoperability = 25, ServiceLevel = 25 },

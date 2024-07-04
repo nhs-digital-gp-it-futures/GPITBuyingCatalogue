@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -12,8 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
@@ -42,6 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         {
             context.Solutions.Add(solution);
             context.SaveChanges();
+            context.ChangeTracker.Clear();
 
             await service.SaveIntegrationLink(solution.CatalogueItemId, integrationLink);
 
@@ -59,41 +57,60 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task AddIntegration_UpdatesDatabase(
-           [Frozen] BuyingCatalogueDbContext context,
-           Solution solution,
-           List<Integration> currentIntegrations,
-           Integration newIntegration,
-           InteroperabilityService service)
+            Integration integration,
+            IntegrationType integrationType,
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext context,
+            InteroperabilityService service)
         {
-            solution.Integrations = JsonSerializer.Serialize(currentIntegrations);
-            solution.AdditionalServices.Clear();
+            integration.IntegrationTypes = [integrationType];
+            integrationType.IntegrationId = integration.Id;
 
-            context.Solutions.Add(solution);
+            solution.Integrations = [];
+
+            context.Add(integration);
+            context.Add(solution);
+
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
-            await service.AddIntegration(solution.CatalogueItemId, newIntegration);
-            var updatedSolution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
-            updatedSolution.GetIntegrations().Should().Contain(i => i.Description == newIntegration.Description);
+            await service.AddIntegration(
+                solution.CatalogueItemId,
+                new SolutionIntegration { IntegrationTypeId = integrationType.Id });
+
+            var updatedSolution = await context.Solutions.Include(x => x.Integrations)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
+
+            updatedSolution.Integrations.Should().HaveCount(1);
+            updatedSolution.Integrations.Should().Contain(x => x.IntegrationTypeId == integrationType.Id);
         }
 
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task EditIntegration_UpdatesDatabase(
+            string integrationDescription,
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
-            List<Integration> integrations,
-            Integration updatedIntegration,
+            List<SolutionIntegration> integrations,
             InteroperabilityService service)
         {
-            solution.Integrations = JsonSerializer.Serialize(integrations);
-            updatedIntegration.Id = integrations[0].Id;
+            solution.Integrations = integrations;
 
             context.Solutions.Add(solution);
             await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
 
-            await service.EditIntegration(solution.CatalogueItemId, updatedIntegration.Id, updatedIntegration);
-            var updatedSolution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
-            updatedSolution.GetIntegrations().Should().ContainEquivalentOf(updatedIntegration);
+            var integration = integrations.First();
+            integration.Description = integrationDescription;
+
+            await service.EditIntegration(solution.CatalogueItemId, integration.Id, integration);
+
+            var updatedSolution =
+                await context.Solutions.Include(x => x.Integrations)
+                    .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+
+            updatedSolution.Integrations.Should().Contain(x => x.Description == integration.Description);
         }
 
         [Theory]
@@ -105,39 +122,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async Task GetIntegrationById_ReturnsIntegration(
-            [Frozen] BuyingCatalogueDbContext context,
-            Solution solution,
-            List<Integration> integrations,
-            InteroperabilityService service)
-        {
-            solution.Integrations = JsonSerializer.Serialize(integrations);
-            context.Solutions.Add(solution);
-
-            await context.SaveChangesAsync();
-
-            var integration = await service.GetIntegrationById(solution.CatalogueItemId, integrations[0].Id);
-
-            integration.Should().BeEquivalentTo(integrations[0]);
-        }
-
-        [Theory]
-        [MockInMemoryDbAutoData]
         public static async Task DeleteIntegration_UpdatesDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
-            List<Integration> integrations,
+            List<SolutionIntegration> integrations,
             InteroperabilityService service)
         {
-            solution.Integrations = JsonSerializer.Serialize(integrations);
+            solution.Integrations = integrations;
             var deletedIntegration = integrations[0];
 
             context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
             await service.DeleteIntegration(solution.CatalogueItemId, deletedIntegration.Id);
-            var updatedSolution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
-            updatedSolution.GetIntegrations().Should().NotContainEquivalentOf(deletedIntegration);
+            var updatedSolution =
+                await context.Solutions.Include(x => x.Integrations)
+                    .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+
+            updatedSolution.Integrations.Should().NotContain(x => x.Id == deletedIntegration.Id);
         }
 
         [Theory]
@@ -145,17 +147,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         public static async Task DeleteIntegration_NullIntegrationDoesNotUpdateDatabase(
             [Frozen] BuyingCatalogueDbContext context,
             Solution solution,
-            List<Integration> integrations,
+            List<SolutionIntegration> integrations,
             InteroperabilityService service,
-            Guid invalidIntegrationId)
+            int invalidIntegrationId)
         {
-            solution.Integrations = JsonSerializer.Serialize(integrations);
+            solution.Integrations = integrations;
             context.Solutions.Add(solution);
             await context.SaveChangesAsync();
 
             await service.DeleteIntegration(solution.CatalogueItemId, invalidIntegrationId);
-            var updatedSolution = await context.Solutions.FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
-            updatedSolution.GetIntegrations().Should().BeEquivalentTo(integrations);
+            var updatedSolution =
+                await context.Solutions.Include(x => x.Integrations)
+                    .FirstAsync(s => s.CatalogueItemId == solution.CatalogueItemId);
+            updatedSolution.Integrations.Should().BeEquivalentTo(integrations);
         }
 
         [Theory]
@@ -171,59 +175,67 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [MockInMemoryDbAutoData]
         public static async Task SetNhsAppIntegrations_WithNewIntegrations_AddsIntegrations(
             Solution solution,
+            Integration integration,
+            List<IntegrationType> integrationTypes,
             [Frozen] BuyingCatalogueDbContext context,
             InteroperabilityService service)
         {
-            var expectedIntegrations = Interoperability.NhsAppIntegrations
-                .Select(x => new Integration(Interoperability.NhsAppIntegrationType, x))
-                .ToList();
-
-            solution.Integrations = JsonSerializer.Serialize(new List<Integration>());
+            integration.Id = SupportedIntegrations.NhsApp;
+            integrationTypes.ForEach(x => x.IntegrationId = integration.Id);
+            solution.Integrations = new List<SolutionIntegration>();
 
             context.Solutions.Add(solution);
+            context.IntegrationTypes.AddRange(integrationTypes);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            await service.SetNhsAppIntegrations(solution.CatalogueItemId, expectedIntegrations.Select(x => x.Qualifier));
+            await service.SetNhsAppIntegrations(
+                solution.CatalogueItemId,
+                integrationTypes.Select(x => x.Id));
 
-            var updatedSolution = await context.Solutions.AsNoTracking()
+            var updatedSolution = await context.Solutions.Include(x => x.Integrations).AsNoTracking()
                 .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-            var updatedIntegrations = updatedSolution.GetIntegrations();
+            var updatedIntegrations = updatedSolution.Integrations;
 
-            updatedIntegrations.Should().BeEquivalentTo(expectedIntegrations, opt => opt.Excluding(m => m.Id));
+            updatedIntegrations.Should().HaveCount(integrationTypes.Count);
         }
 
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task SetNhsAppIntegrations_WithStaleIntegrations_RemovesStaleIntegrations(
             Solution solution,
+            Integration integration,
+            List<IntegrationType> integrationTypes,
             [Frozen] BuyingCatalogueDbContext context,
             InteroperabilityService service)
         {
-            var integrations = Interoperability.NhsAppIntegrations
-                .Select(x => new Integration(Interoperability.NhsAppIntegrationType, x))
-                .ToList();
+            integration.Id = SupportedIntegrations.NhsApp;
+            integrationTypes.ForEach(x => x.IntegrationId = integration.Id);
+            solution.Integrations = new List<SolutionIntegration>();
 
-            var staleIntegration = integrations.First();
+            context.Solutions.Add(solution);
+            context.IntegrationTypes.AddRange(integrationTypes);
 
-            solution.Integrations = JsonSerializer.Serialize(integrations);
+            var staleIntegration = integrationTypes.First();
 
             context.Solutions.Add(solution);
 
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            await service.SetNhsAppIntegrations(solution.CatalogueItemId, integrations.Skip(1).Select(x => x.Qualifier));
+            await service.SetNhsAppIntegrations(
+                solution.CatalogueItemId,
+                integrationTypes.Skip(1).Select(x => x.Id));
 
             var updatedSolution = await context.Solutions.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
+                .Include(x => x.Integrations).FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
 
-            var updatedIntegrations = updatedSolution.GetIntegrations();
+            var updatedIntegrations = updatedSolution.Integrations;
 
-            updatedIntegrations.Should().NotContain(x => x.Qualifier == staleIntegration.Qualifier);
-            updatedIntegrations.Should().BeEquivalentTo(integrations.Skip(1), opt => opt.Excluding(m => m.Id));
+            updatedIntegrations.Should().NotContain(x => x.Id == staleIntegration.Id);
+            updatedIntegrations.Should().HaveCount(integrationTypes.Skip(1).Count());
         }
     }
 }

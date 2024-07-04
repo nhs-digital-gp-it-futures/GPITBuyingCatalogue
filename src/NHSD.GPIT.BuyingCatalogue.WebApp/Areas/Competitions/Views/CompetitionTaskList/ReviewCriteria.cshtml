@@ -1,5 +1,4 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared
-@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
 @model CompetitionReviewCriteriaModel
 
 @{
@@ -36,7 +35,7 @@
         </nhs-card>
 
         <h2 class="nhsuk-heading-l">Non-price elements</h2>
-        <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues, Model.HasReviewedCriteria) { IsReviewScreen = true })"/>
+        <partial name="Partials/_NonPriceElements" model="@(new NonPriceElementsPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements, editRouteValues, Model.HasReviewedCriteria, Model.AvailableIntegrations) { IsReviewScreen = true })"/>
         <br/>
 
         @if (!Model.HasReviewedCriteria)

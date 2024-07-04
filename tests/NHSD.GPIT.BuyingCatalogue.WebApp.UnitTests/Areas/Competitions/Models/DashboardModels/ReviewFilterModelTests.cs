@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
@@ -35,10 +34,17 @@ public static class ReviewFilterModelTests
         new object[] { Enumerable.Empty<ApplicationType>().ToList(), false, },
     };
 
-    public static IEnumerable<object[]> HasHasInteroperabilityIntegrationTypesTestData => new[]
+    public static IEnumerable<object[]> HasInteroperabilityIntegrationTypesTestData => new[]
     {
-        new object[] { new List<InteropIntegrationType> { InteropIntegrationType.Im1 }, true, },
-        new object[] { Enumerable.Empty<InteropIntegrationType>().ToList(), false, },
+        new object[]
+        {
+            new List<KeyValuePair<string, string[]>>
+            {
+                new(SupportedIntegrations.Im1.ToString(), ["Bulk"]),
+            },
+            true,
+        },
+        new object[] { Enumerable.Empty<KeyValuePair<string, string[]>>().ToList(), false, },
     };
 
     public static IEnumerable<object[]> HasAdditionalFiltersTestData => new[]
@@ -174,13 +180,13 @@ public static class ReviewFilterModelTests
     }
 
     [Theory]
-    [MockMemberAutoData(nameof(HasHasInteroperabilityIntegrationTypesTestData))]
+    [MockMemberAutoData(nameof(HasInteroperabilityIntegrationTypesTestData))]
     public static void HasInteroperabilityIntegrationTypes_ReturnsExpected(
-        List<InteropIntegrationType> interopIntegrationTypes,
+        List<KeyValuePair<string, string[]>> integrations,
         bool expected,
         FilterDetailsModel filterDetailsModel)
     {
-        filterDetailsModel.InteropIntegrationTypes = interopIntegrationTypes;
+        filterDetailsModel.Integrations = integrations;
 
         var model = new ReviewFilterModel(filterDetailsModel);
 

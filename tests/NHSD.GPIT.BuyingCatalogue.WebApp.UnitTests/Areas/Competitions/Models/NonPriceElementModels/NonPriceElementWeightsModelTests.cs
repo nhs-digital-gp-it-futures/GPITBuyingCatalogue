@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
@@ -18,7 +19,7 @@ public static class NonPriceElementWeightsModelTests
         competition.NonPriceElements = new()
         {
             Features = new List<FeaturesCriteria> { new() },
-            Interoperability = new List<InteroperabilityCriteria> { new() },
+            IntegrationTypes = new List<IntegrationType> { new() },
             Implementation = new(),
             ServiceLevel = new(),
             NonPriceWeights = nonPriceWeights,

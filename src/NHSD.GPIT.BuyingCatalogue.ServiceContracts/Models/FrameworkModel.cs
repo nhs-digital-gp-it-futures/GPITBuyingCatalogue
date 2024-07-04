@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
+﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models
 {
     public class FrameworkModel
     {

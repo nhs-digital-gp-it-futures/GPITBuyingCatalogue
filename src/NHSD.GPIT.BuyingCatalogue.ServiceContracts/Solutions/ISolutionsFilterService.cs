@@ -20,10 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
              string selectedFrameworkId = null,
              string selectedApplicationTypeIds = null,
              string selectedHostingTypeIds = null,
-             string selectedIm1Integrations = null,
-             string selectedGpConnectIntegrations = null,
-             string selectedNhsAppIntegrations = null,
-             string selectedInteroperabilityOptions = null);
+             Dictionary<SupportedIntegrations, int[]> selectedIntegrationsAndTypes = null);
 
         Task<IList<CatalogueItem>> GetAllSolutionsFilteredFromFilterIds(
             FilterIdsModel filterIds);
