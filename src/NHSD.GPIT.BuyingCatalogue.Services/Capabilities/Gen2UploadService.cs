@@ -6,7 +6,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.Caching.Distributed;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;

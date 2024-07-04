@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.TaskListModels;
@@ -14,20 +15,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 [Authorize("Buyer")]
 [Area("Competitions")]
 [Route("organisation/{internalOrgId}/competitions/{competitionId:int}")]
-public class CompetitionTaskListController : Controller
+public class CompetitionTaskListController(
+    IOrganisationsService organisationsService,
+    ICompetitionsService competitionsService,
+    IIntegrationsService integrationsService)
+    : Controller
 {
-    private readonly IOrganisationsService organisationsService;
-    private readonly ICompetitionsService competitionsService;
-
-    public CompetitionTaskListController(
-        IOrganisationsService organisationsService,
-        ICompetitionsService competitionsService)
-    {
-        this.organisationsService =
-            organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
-        this.competitionsService =
-            competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
-    }
+    private readonly IOrganisationsService organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
+    private readonly ICompetitionsService competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+    private readonly IIntegrationsService integrationsService = integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
 
     [HttpGet]
     public async Task<IActionResult> Index(string internalOrgId, int competitionId)
@@ -193,8 +189,9 @@ public class CompetitionTaskListController : Controller
     public async Task<IActionResult> ReviewCriteria(string internalOrgId, int competitionId)
     {
         var competition = await competitionsService.GetCompetitionCriteriaReview(internalOrgId, competitionId);
+        var integrations = await integrationsService.GetIntegrations();
 
-        var model = new CompetitionReviewCriteriaModel(competition)
+        var model = new CompetitionReviewCriteriaModel(competition, integrations)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
         };

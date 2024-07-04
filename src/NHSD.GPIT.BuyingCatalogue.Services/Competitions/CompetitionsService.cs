@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -32,7 +31,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements)
             .Include(x => x.NonPriceElements.NonPriceWeights)
             .Include(x => x.NonPriceElements.Implementation)
-            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.Features)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
@@ -71,7 +70,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements)
             .Include(x => x.NonPriceElements.NonPriceWeights)
             .Include(x => x.NonPriceElements.Implementation)
-            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.Features)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
@@ -89,7 +88,7 @@ public class CompetitionsService : ICompetitionsService
         => await dbContext.Competitions
             .Include(x => x.Organisation)
             .Include(x => x.NonPriceElements.Implementation)
-            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.Features)
             .Include(x => x.NonPriceElements.NonPriceWeights)
@@ -159,7 +158,12 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(x => x.Solution.ServiceLevelAgreement.ServiceHours)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Scores)
-            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Solution)
+            .ThenInclude(x => x.Integrations)
+            .ThenInclude(x => x.IntegrationType)
+            .ThenInclude(x => x.Integration)
+            .Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.Features)
@@ -309,26 +313,24 @@ public class CompetitionsService : ICompetitionsService
     public async Task SetInteroperabilityCriteria(
         string internalOrgId,
         int competitionId,
-        IEnumerable<string> im1Integrations,
-        IEnumerable<string> gpConnectIntegrations)
+        IEnumerable<int> integrations)
     {
-        var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.Interoperability)
+        var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-        var interopEntities = (competition.NonPriceElements ??= new NonPriceElements()).Interoperability;
+        var integrationTypes = await dbContext.IntegrationTypes.ToListAsync();
+
+        var interopEntities = (competition.NonPriceElements ??= new NonPriceElements()).IntegrationTypes;
 
         var staleEntities = interopEntities.Where(
-            x => !im1Integrations.Contains(x.Qualifier) && !gpConnectIntegrations.Contains(x.Qualifier))
+            x => !integrations.Contains(x.Id))
             .ToList();
 
         if (staleEntities.Count != 0) staleEntities.ForEach(x => interopEntities.Remove(x));
 
-        var newInteropEntities = im1Integrations
-            .Select(x => new InteroperabilityCriteria(x, InteropIntegrationType.Im1))
-            .Union(
-                gpConnectIntegrations.Select(x => new InteroperabilityCriteria(x, InteropIntegrationType.GpConnect)))
-            .Where(x => interopEntities.All(y => x.Qualifier != y.Qualifier))
+        var newInteropEntities = integrationTypes
+            .Where(x => integrations.Contains(x.Id) && interopEntities.All(y => x.Id != y.Id))
             .ToList();
 
         interopEntities.AddRange(newInteropEntities);
@@ -500,7 +502,7 @@ public class CompetitionsService : ICompetitionsService
             await dbContext.Competitions
                 .Include(x => x.Weightings)
                 .Include(x => x.NonPriceElements.NonPriceWeights)
-                .Include(x => x.NonPriceElements.Interoperability)
+                .Include(x => x.NonPriceElements.IntegrationTypes)
                 .Include(x => x.NonPriceElements.Implementation)
                 .Include(x => x.NonPriceElements.ServiceLevel)
                 .Include(x => x.NonPriceElements.Features)
@@ -581,6 +583,9 @@ public class CompetitionsService : ICompetitionsService
         var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.SolutionServices)
             .ThenInclude(x => x.Service)
+            .Include(competition => competition.CompetitionSolutions)
+            .ThenInclude(competitionSolution => competitionSolution.SolutionServices)
+            .ThenInclude(solutionService => solutionService.Price)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
         var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
@@ -664,7 +669,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements)
             .Include(x => x.NonPriceElements.NonPriceWeights)
             .Include(x => x.NonPriceElements.Implementation)
-            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.Features)
             .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)

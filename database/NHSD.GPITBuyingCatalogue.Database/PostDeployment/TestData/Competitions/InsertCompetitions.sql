@@ -728,7 +728,6 @@ BEGIN
     INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (3, 3, N'Patient Facing', 0)
     INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (4, 3, N'Appointment Booking', 1)
     INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (5, 3, N'Structured Record', 1)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (6, 3, N'Patient Facing', 0)
     SET IDENTITY_INSERT [competitions].[InteroperabilityCriteria] OFF
 
 END

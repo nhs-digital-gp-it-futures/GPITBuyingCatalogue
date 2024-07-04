@@ -1,8 +1,6 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionPdfModels.PdfScoringInteropModel
 @{
     Layout = "";
-    var im1Integrations = Model.GetIm1Integrations();
-    var gpConnectIntegrations = Model.GetGpConnectIntegrations();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -121,39 +119,30 @@
                 <div class="nhsuk-grid-column-full">
                     <nhs-page-title title="Compare and score interoperability" caption="@Model.Competition.Name" />
                     <h2>Your interoperability criteria</h2>
-                    <h3>IM1 integrations</h3>
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Integration type">
-                            @if (!im1Integrations.Any())
-                            {
-                                <span>None selected</span>
-                            }
-                            else
-                            {
-                                @foreach (var integration in im1Integrations.Order())
-                                {
-                                    <p>@integration</p>
-                                }
-                            }
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
+                    @foreach (var integration in Model.AvailableIntegrations.OrderBy(x => x.Key))
+                    {
+                        var selectedIntegrationTypes = Model.IntegrationTypes.Where(x => x.IntegrationId == integration.Key).OrderBy(x => x.Name).ToList();
 
-                    <h3>GP Connect integrations</h3>
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Integration type">
-                            @if (!gpConnectIntegrations.Any())
-                            {
-                                <span>None selected</span>
-                            }
-                            else
-                            {
-                                @foreach (var integration in gpConnectIntegrations.Order())
+                        <h3>@(integration.Value) integrations</h3>
+                        <nhs-summary-list>
+                            <nhs-summary-list-row label-text="Integration type">
+                                @if (!selectedIntegrationTypes.Any())
                                 {
-                                    <p>@integration</p>
+                                    <span>None selected</span>
                                 }
-                            }
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
+                                else
+                                {
+                                    <ul>
+                                        @foreach (var selectedIntegration in selectedIntegrationTypes.OrderBy(x => x.Name))
+                                        {
+                                            <li>@selectedIntegration.Name</li>
+                                        }
+                                    </ul>
+                                }
+                            </nhs-summary-list-row>
+                        </nhs-summary-list>
+                    }
+
                     <div style="page-break-after: always"></div>
 
                     @for (var i = 0; i < Model.SolutionScores.Count; i++)
@@ -167,69 +156,60 @@
                         <br />
                         <br />
 
-                        <h3>IM1 integrations</h3>
+                        foreach (var integration in Model.AvailableIntegrations.OrderBy(x => x.Key))
+                        {
+                            var solutionIntegrations = solutionScoreModel.Solution.Integrations
+                                .Where(x => x.IntegrationType.IntegrationId == integration.Key)
+                                .GroupBy(x => x.IntegrationType.Name)
+                                .OrderBy(x => x.Key).ToList();
 
-                        @if (solutionScoreModel.Im1Integrations.Count == 0)
-                        {
-                            <p>This solution has no IM1 integrations listed</p>
-                        }
-                        else
-                        {
-                            foreach (var integration in solutionScoreModel.Im1Integrations)
+                            <h3>@(integration.Value) integrations</h3>
+
+                            if (solutionIntegrations.Count == 0)
                             {
-                                <h4>@integration.Qualifier</h4>
-                                <table>
-                                    <thead>
-                                        <tr class="alternating">
-                                            <th>Provider or<br/>consumer</th>
-                                            <th>System<br/>integrating with</th>
-                                            <th>Description</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
-                                        {
-                                            <tr class="alternating">
-                                                <td>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</td>
-                                                <td>@specificIntegration.IntegratesWith</td>
-                                                <td>@specificIntegration.Description</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                <p>This solution has no @integration.Value integrations listed</p>
                             }
-                        }
-
-                        <h3>GP Connect integrations</h3>
-
-                        @if (solutionScoreModel.GpConnectIntegrations.Count == 0)
-                        {
-                            <p>This solution has no GP Connect integrations listed</p>
-                        }
-                        else
-                        {
-                            foreach (var integration in solutionScoreModel.GpConnectIntegrations)
+                            else
                             {
-                                <h4>@integration.Qualifier</h4>
-                                <table>
-                                    <thead>
+                                foreach (var solutionIntegration in solutionIntegrations)
+                                {
+                                    var supportsProviderOrConsumer = solutionIntegration.Any(x => x.IsConsumer.HasValue);
+                                    var hasSystemIntegration = solutionIntegration.Any(x => !string.IsNullOrWhiteSpace(x.IntegratesWith));
+
+                                    <h4>@solutionIntegration.Key</h4>
+                                    <table>
+                                        <thead>
                                         <tr class="alternating">
-                                            <th>Provider or consumer</th>
+                                            @if (supportsProviderOrConsumer)
+                                            {
+                                                <th>Provider or<br/>consumer</th>
+                                            }
+                                            @if (hasSystemIntegration)
+                                            {
+                                                <th>System<br/>integrating with</th>
+                                            }
                                             <th>Description</th>
                                         </tr>
-                                    </thead>
+                                        </thead>
 
-                                    <tbody>
-                                        @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
+                                        <tbody>
+                                        @foreach (var specificIntegration in solutionIntegration.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
                                         {
                                             <tr class="alternating">
-                                                <td>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</td>
-                                                <td>@specificIntegration.Description</td>
+                                                @if (supportsProviderOrConsumer)
+                                                {
+                                                    <td>@(specificIntegration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")</td>
+                                                }
+                                                @if (hasSystemIntegration)
+                                                {
+                                                    <td>@specificIntegration.IntegratesWith</td>
+                                                }
+                                                <td>@(specificIntegration.Description ?? specificIntegration.IntegrationType.Description)</td>
                                             </tr>
                                         }
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                }
                             }
                         }
 

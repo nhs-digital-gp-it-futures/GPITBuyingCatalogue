@@ -20,7 +20,7 @@ public static class NonPriceElementExtensions
         return nonPriceElement switch
         {
             NonPriceElement.Features => nonPriceElements.Features.Any(),
-            NonPriceElement.Interoperability => nonPriceElements.Interoperability.Any(),
+            NonPriceElement.Interoperability => nonPriceElements.IntegrationTypes.Any(),
             NonPriceElement.Implementation => nonPriceElements.Implementation is not null,
             NonPriceElement.ServiceLevel => nonPriceElements.ServiceLevel is not null,
             _ => throw new ArgumentOutOfRangeException(
@@ -58,7 +58,7 @@ public static class NonPriceElementExtensions
                 nonPriceElements.Implementation = null;
                 break;
             case NonPriceElement.Interoperability:
-                nonPriceElements.Interoperability.Clear();
+                nonPriceElements.IntegrationTypes.Clear();
                 break;
             case NonPriceElement.ServiceLevel:
                 nonPriceElements.ServiceLevel = null;

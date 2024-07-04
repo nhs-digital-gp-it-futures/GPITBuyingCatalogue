@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Interoperabili
                 .NotNull()
                 .WithMessage("Select integration type");
 
-            RuleFor(i => i.SelectedProviderOrConsumer)
+            RuleFor(i => i.IsConsumer)
                 .NotNull()
                 .WithMessage("Select if your system is a provider or consumer");
 

@@ -1,8 +1,5 @@
-﻿using System;
-using AutoFixture;
-using AutoFixture.Kernel;
+﻿using AutoFixture;
 using Azure.Storage.Queues;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations

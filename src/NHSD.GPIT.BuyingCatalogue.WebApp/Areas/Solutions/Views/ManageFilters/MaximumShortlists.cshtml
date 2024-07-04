@@ -1,9 +1,6 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ManageFilters.MaximumShortlistsModel
 
@@ -16,7 +13,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        
+
         <span class="nhsuk-caption-l nhsuk-caption--top">@Model.OrganisationName</span>
         <nhs-page-title title="@ViewBag.Title" advice="You can save a maximum of 10 shortlists for use by your organisation. You must delete an existing shortlist before you can create a new one." />
 

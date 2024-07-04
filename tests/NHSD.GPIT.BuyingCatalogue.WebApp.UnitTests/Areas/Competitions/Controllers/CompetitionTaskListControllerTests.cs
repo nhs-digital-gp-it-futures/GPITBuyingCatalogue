@@ -1,13 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
@@ -282,7 +285,9 @@ public static class CompetitionTaskListControllerTests
     public static async Task ReviewCriteria_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
+        List<Integration> integrations,
         [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IIntegrationsService integrationsService,
         CompetitionTaskListController controller)
     {
         competition.Organisation = organisation;
@@ -290,7 +295,9 @@ public static class CompetitionTaskListControllerTests
         competitionsService.GetCompetitionCriteriaReview(organisation.InternalIdentifier, competition.Id)
             .Returns(competition);
 
-        var expectedModel = new CompetitionReviewCriteriaModel(competition);
+        integrationsService.GetIntegrations().Returns(integrations);
+
+        var expectedModel = new CompetitionReviewCriteriaModel(competition, integrations);
 
         var result = (await controller.ReviewCriteria(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
 

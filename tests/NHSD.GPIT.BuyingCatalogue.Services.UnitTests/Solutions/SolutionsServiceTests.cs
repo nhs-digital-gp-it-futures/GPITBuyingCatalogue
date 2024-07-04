@@ -16,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.TestData;
@@ -38,6 +39,141 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             var constructors = typeof(SolutionsService).GetConstructors();
 
             assertion.Verify(constructors);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetSolutionWithBasicInformation_Valid_Returns(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionsService service)
+        {
+            dbContext.Solutions.Add(solution);
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            var result = await service.GetSolutionWithBasicInformation(solution.CatalogueItemId);
+
+            result.Should().NotBeNull();
+            result.Id.Should().Be(solution.CatalogueItemId);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetContentStatusForCatalogueItem_WithAllOptionals_ReturnsExpected(
+            string features,
+            string implementationDetail,
+            string integrationsUrl,
+            List<AdditionalService> additionalServices,
+            List<SupplierServiceAssociation> serviceAssociations,
+            List<SolutionIntegration> solutionIntegrations,
+            Hosting hosting,
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionsService service)
+        {
+            additionalServices.ForEach(x => x.CatalogueItem.PublishedStatus = PublicationStatus.Published);
+            serviceAssociations.ForEach(x => x.CatalogueItem.PublishedStatus = PublicationStatus.Published);
+
+            solution.Features = features;
+            solution.ImplementationDetail = implementationDetail;
+            solution.IntegrationsUrl = integrationsUrl;
+            solution.AdditionalServices = additionalServices;
+            solution.CatalogueItem.SupplierServiceAssociations = serviceAssociations;
+            solution.Integrations = solutionIntegrations;
+            solution.Hosting = hosting;
+
+            var expected = new CatalogueItemContentStatus
+            {
+                ShowFeatures = true,
+                ShowAdditionalServices = true,
+                ShowAssociatedServices = true,
+                ShowInteroperability = true,
+                ShowImplementation = true,
+                ShowHosting = true,
+            };
+
+            dbContext.Solutions.Add(solution);
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            var result = await service.GetContentStatusForCatalogueItem(solution.CatalogueItemId);
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetContentStatusForCatalogueItem_WithNoOptionals_ReturnsExpected(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionsService service)
+        {
+            solution.Features = null;
+            solution.ImplementationDetail = null;
+            solution.IntegrationsUrl = null;
+            solution.AdditionalServices = new List<AdditionalService>();
+            solution.CatalogueItem.SupplierServiceAssociations = null;
+            solution.Integrations = null;
+            solution.Hosting = null;
+
+            var expected = new CatalogueItemContentStatus
+            {
+                ShowFeatures = false,
+                ShowAdditionalServices = false,
+                ShowAssociatedServices = false,
+                ShowInteroperability = false,
+                ShowImplementation = false,
+                ShowHosting = false,
+            };
+
+            dbContext.Solutions.Add(solution);
+            await dbContext.SaveChangesAsync();
+            dbContext.AdditionalServices.RemoveRange(dbContext.AdditionalServices);
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            var result = await service.GetContentStatusForCatalogueItem(solution.CatalogueItemId);
+
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetContentStatusForCatalogueItem_WithUnpublishedAdditionalServices_ReturnsExpected(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionsService service)
+        {
+            solution.AdditionalServices.ForEach(x => x.CatalogueItem.PublishedStatus = PublicationStatus.Unpublished);
+
+            dbContext.Solutions.Add(solution);
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            var result = await service.GetContentStatusForCatalogueItem(solution.CatalogueItemId);
+
+            result.ShowAdditionalServices.Should().BeFalse();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetContentStatusForCatalogueItem_WithIntegrationsUrlNoIntegrations_ReturnsExpected(
+            string integrationsUrl,
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionsService service)
+        {
+            solution.IntegrationsUrl = integrationsUrl;
+            solution.Integrations = new List<SolutionIntegration>();
+
+            dbContext.Solutions.Add(solution);
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            var result = await service.GetContentStatusForCatalogueItem(solution.CatalogueItemId);
+
+            result.ShowInteroperability.Should().BeTrue();
         }
 
         [Theory]

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
+﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
 {
     public class ContactUsConfirmationModel : NavBaseModel
     {

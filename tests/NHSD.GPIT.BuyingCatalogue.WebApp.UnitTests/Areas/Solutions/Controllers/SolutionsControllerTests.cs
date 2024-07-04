@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
-using Castle.Components.DictionaryAdapter;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
@@ -27,7 +22,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SolutionsFilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
@@ -35,7 +29,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using NSubstitute;
 using Xunit;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 {
@@ -56,44 +49,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_Index_NoSearch_GetsSolutionFromService(
             Solution solution,
             PageOptions options,
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
             [Frozen] ISolutionsFilterService mockService,
             [Frozen] IFrameworkService mockFrameworkService,
-            FrameworkFilterInfo filterInfo,
             SolutionsController controller)
         {
             var itemsToReturn = new List<CatalogueItem>() { solution.CatalogueItem };
             var capabilitiesAndEpics = new Dictionary<int, string[]>();
 
             mockFrameworkService.GetFrameworksWithPublishedCatalogueItems()
-                .Returns(new List<FrameworkFilterInfo>() { filterInfo });
-            mockService.GetAllSolutionsFiltered(Arg.Any<PageOptions>(), capabilitiesAndEpics, null, null, null, null, null, null, null, null).Returns((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
+                .Returns(frameworks);
 
-            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null, null, null, null);
+            mockService.GetAllSolutionsFiltered(
+                    Arg.Any<PageOptions>(),
+                    capabilitiesAndEpics)
+                .Returns((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
+
+            var result = await controller.Index(options.PageNumber.ToString(), options.Sort.ToString(), null, null, null, null, null, null);
             result.Should().BeOfType<ViewResult>();
 
-            await mockService.Received().GetAllSolutionsFiltered(Arg.Any<PageOptions>(), Arg.Any<Dictionary<int, string[]>>(), null, null, null, null, null, null, null, null);
+            await mockService.Received()
+                .GetAllSolutionsFiltered(
+                    Arg.Any<PageOptions>(),
+                    Arg.Any<Dictionary<int, string[]>>(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    Arg.Any<Dictionary<SupportedIntegrations, int[]>>());
         }
 
         [Theory]
-        [MockInlineAutoData(true)]
-        [MockInlineAutoData(false)]
+        [MockAutoData]
         public static void Post_Index_Redirects(
-            bool validInteroperabilityOptions,
             AdditionalFiltersModel additionalFilters,
             SolutionsController controller)
         {
-            if (validInteroperabilityOptions)
-            {
-                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
-                    .Cast<InteropIntegrationType>()
-                    .Select(
-                        x => new SelectOption<int> { Value = (int)x, }).ToList();
-            }
-
             var result = controller.Index(additionalFilters);
 
-            var selectedInteroperabilityOptions = additionalFilters.CombineSelectedOptions(
-                additionalFilters.InteroperabilityOptions);
+            var selectedInteroperabilityOptions = additionalFilters.GetIntegrationIds();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -116,19 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                             additionalFilters.CombineSelectedOptions(additionalFilters.HostingTypeOptions)
                         },
                         {
-                            "selectedIM1Integrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
-                        },
-                        {
-                            "selectedGPConnectIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
-                        },
-                        {
-                            "selectedNhsAppIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
-                        },
-                        {
-                            "selectedInteroperabilityOptions",
+                            "selectedIntegrations",
                             selectedInteroperabilityOptions
                         },
                         {
@@ -139,25 +121,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Theory]
-        [MockInlineAutoData(true)]
-        [MockInlineAutoData(false)]
+        [MockAutoData]
         public static void Post_SelectCapabilities_Redirects(
-            bool validInteroperabilityOptions,
             AdditionalFiltersModel additionalFilters,
             SolutionsController controller)
         {
-            if (validInteroperabilityOptions)
-            {
-                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
-                    .Cast<InteropIntegrationType>()
-                    .Select(
-                        x => new SelectOption<int> { Value = (int)x, }).ToList();
-            }
-
             var result = controller.SelectCapabilities(additionalFilters);
 
-            var selectedInteroperabilityOptions = additionalFilters.CombineSelectedOptions(
-                additionalFilters.InteroperabilityOptions);
+            var selectedInteroperabilityOptions = additionalFilters.GetIntegrationIds();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -180,19 +151,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                             additionalFilters.CombineSelectedOptions(additionalFilters.HostingTypeOptions)
                         },
                         {
-                            "selectedIM1Integrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
-                        },
-                        {
-                            "selectedGPConnectIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
-                        },
-                        {
-                            "selectedNhsAppIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
-                        },
-                        {
-                            "selectedInteroperabilityOptions",
+                            "selectedIntegrations",
                             selectedInteroperabilityOptions
                         },
                         {
@@ -203,25 +162,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         }
 
         [Theory]
-        [MockInlineAutoData(true)]
-        [MockInlineAutoData(false)]
+        [MockAutoData]
         public static void Post_SelectEpics_Redirects(
-            bool validInteroperabilityOptions,
             AdditionalFiltersModel additionalFilters,
             SolutionsController controller)
         {
-            if (validInteroperabilityOptions)
-            {
-                additionalFilters.InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
-                    .Cast<InteropIntegrationType>()
-                    .Select(
-                        x => new SelectOption<int> { Value = (int)x, }).ToList();
-            }
-
             var result = controller.SelectEpics(additionalFilters);
 
-            var selectedInteroperabilityOptions = additionalFilters.CombineSelectedOptions(
-                additionalFilters.InteroperabilityOptions);
+            var selectedInteroperabilityOptions = additionalFilters.GetIntegrationIds();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -244,19 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                             additionalFilters.CombineSelectedOptions(additionalFilters.HostingTypeOptions)
                         },
                         {
-                            "selectedIM1Integrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.IM1IntegrationsOptions) : null
-                        },
-                        {
-                            "selectedGPConnectIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.GPConnectIntegrationsOptions) : null
-                        },
-                        {
-                            "selectedNhsAppIntegrations",
-                            selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? additionalFilters.CombineSelectedOptions(additionalFilters.NhsAppIntegrationsOptions) : null
-                        },
-                        {
-                            "selectedInteroperabilityOptions",
+                            "selectedIntegrations",
                             selectedInteroperabilityOptions
                         },
                         {
@@ -279,18 +215,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             filters = filters with { Selected = string.Empty };
 
             mockService.GetAllSolutionsFiltered(
-                Arg.Any<PageOptions>(),
-                filters.GetCapabilityAndEpicIds(),
-                filters.Search,
-                filters.SelectedFrameworkId,
-                filters.SelectedApplicationTypeIds,
-                filters.SelectedHostingTypeIds,
-                filters.SelectedIM1Integrations,
-                filters.SelectedGPConnectIntegrations,
-                filters.SelectedNhsAppIntegrations,
-                filters.SelectedInteroperabilityOptions)
+                    Arg.Any<PageOptions>(),
+                    filters.GetCapabilityAndEpicIds(),
+                    filters.Search,
+                    filters.SelectedFrameworkId,
+                    filters.SelectedApplicationTypeIds,
+                    filters.SelectedHostingTypeIds,
+                    filters.GetIntegrationsAndTypes())
                 .Returns((itemsToReturn, options, new List<CapabilitiesAndCountModel>()));
+
             var result = await controller.SearchResults(filters);
+
             result.Should().BeOfType<PartialViewResult>();
 
             await mockService.Received().GetAllSolutionsFiltered(
@@ -300,10 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 filters.SelectedFrameworkId,
                 filters.SelectedApplicationTypeIds,
                 filters.SelectedHostingTypeIds,
-                filters.SelectedIM1Integrations,
-                filters.SelectedGPConnectIntegrations,
-                filters.SelectedNhsAppIntegrations,
-                filters.SelectedInteroperabilityOptions);
+                Arg.Any<Dictionary<SupportedIntegrations, int[]>>());
         }
 
         [Theory]
@@ -409,13 +341,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_AssociatedServices_SuspendedStatus_ReturnsRedirect(
             [Frozen] ISolutionsService solutionsServiceMock,
             Solution solution,
-            SolutionsController controller,
-            CatalogueItemContentStatus contentStatus)
+            SolutionsController controller)
         {
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Suspended;
             var catalogueItem = solution.CatalogueItem;
-            var associatedServices = solution.CatalogueItem.SupplierServiceAssociations.Select(ssa => ssa.CatalogueItem).ToList();
-            var associatedServicesModel = new AssociatedServicesModel(catalogueItem, associatedServices, contentStatus);
 
             solutionsServiceMock.GetSolutionWithBasicInformation(catalogueItem.Id).Returns(catalogueItem);
 
@@ -792,16 +721,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 .Be($"No Catalogue Item found for Id: {catalogueItemId} with Capability Id: {capabilityId}");
         }
 
-        [Fact]
-        public static void Get_CheckEpics_RouteAttribute_ExpectedTemplate()
-        {
-            typeof(SolutionsController)
-                .GetMethod(nameof(SolutionsController.CheckEpics))
-                .GetCustomAttribute<HttpGetAttribute>()
-                .Template.Should()
-                .Be("{solutionId}/capability/{capabilityId}");
-        }
-
         [Theory]
         [MockAutoData]
         public static async Task Get_CheckEpicsAdditionalServices_ValidIds_ResultAsExpected(
@@ -870,17 +789,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             actual.Should().NotBeNull();
             actual.Value.Should().Be($"No Catalogue Item found for Id: {catalogueItemId}");
-        }
-
-        [Fact]
-        public static void Get_CheckEpicsAdditionalServices_RouteAttribute_ExpectedTemplate()
-        {
-            typeof(SolutionsController)
-                .GetMethod(nameof(SolutionsController.CheckEpicsAdditionalServices))
-                .GetCustomAttribute<HttpGetAttribute>()
-                .Template.Should()
-                .Be(
-                    "{solutionId}/additional-services/{additionalServiceId}/capability/{capabilityId}");
         }
 
         [Theory]
@@ -1201,14 +1109,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             SolutionsController controller,
             Solution solution,
             AdditionalService additionalService,
-            CatalogueItemContentStatus contentStatus,
             CatalogueItem service)
         {
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Suspended;
             catalogueItem.AdditionalService = additionalService;
             service = catalogueItem.AdditionalService.CatalogueItem;
-            var mockSolutionListPriceModel = new ListPriceModel(catalogueItem, service, contentStatus) { IndexValue = 4, };
 
             mockListPriceService.GetCatalogueItemWithListPrices(service.Id).Returns(service);
 
@@ -1350,14 +1256,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_Interoperability_ValidSolutionForId_ReturnsExpectedViewResult(
-            [Frozen] ISolutionsService mockSolutionService,
-            SolutionsController controller,
             CatalogueItemContentStatus contentStatus,
-            Solution solution)
+            List<SolutionIntegration> solutionIntegrations,
+            List<IntegrationType> integrationTypes,
+            Solution solution,
+            [Frozen] ISolutionsService mockSolutionService,
+            SolutionsController controller)
         {
+            solutionIntegrations.Zip(integrationTypes).ToList().ForEach(x => x.First.IntegrationType = x.Second);
             var catalogueItem = solution.CatalogueItem;
             catalogueItem.PublishedStatus = PublicationStatus.Published;
-            solution.Integrations = GetIntegrationsJson();
+            solution.Integrations = solutionIntegrations;
 
             var expectedViewData = new InteroperabilityModel(catalogueItem, contentStatus);
 
@@ -1430,16 +1339,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             actual.ViewName.Should().BeNullOrEmpty();
 
             actual.Model.Should().BeEquivalentTo(expectedSolutionSupplierDetailsModel);
-        }
-
-        [Fact]
-        public static void Get_AdditionalServices_RouteAttribute_ExpectedTemplate()
-        {
-            typeof(SolutionsController)
-                .GetMethod(nameof(SolutionsController.AdditionalServices))
-                .GetCustomAttribute<HttpGetAttribute>()
-                .Template.Should()
-                .Be("{solutionId}/additional-services");
         }
 
         [Theory]
@@ -1515,14 +1414,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         public static async Task Get_AdditionalServices_SuspendedStatus_ReturnsRedirect(
             [Frozen] ISolutionsService mockService,
             SolutionsController controller,
-            Solution solution,
-            CatalogueItemContentStatus contentStatus)
+            Solution solution)
         {
             var id = solution.CatalogueItemId;
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Suspended;
-            var additionalServices = solution.AdditionalServices.Select(add => add.CatalogueItem).ToList();
-            var expectedAdditionalServicesModel =
-                new AdditionalServicesModel(solution.CatalogueItem, additionalServices, contentStatus);
 
             mockService.GetSolutionWithBasicInformation(id).Returns(solution.CatalogueItem);
 
@@ -1632,30 +1527,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             result.Should().NotBeNull();
             result.Model.Should().BeOfType<SolutionSortModel>();
-        }
-
-        private static string GetIntegrationsJson()
-        {
-            var integrations = new List<Integration>
-            {
-                new Integration
-                {
-                    Id = Guid.NewGuid(),
-                    IntegrationType = "IM1",
-                    Qualifier = "Bulk",
-                    IntegratesWith = "Audit+",
-                    Description = "Audit+ utilises a bulk extraction of full clinical records (including confidential and deceased patients) from EMIS Web to provide General Practices with a crossplatform clinical decision support and management tool; supporting QOF performance management, improvement and NHS Health Checks.",
-                },
-                new Integration
-                {
-                    Id = Guid.NewGuid(),
-                    IntegrationType = "GP Connect",
-                    Qualifier = "Access Record HTML",
-                    AdditionalInformation = "EMIS Web received Full Roll Out Approval from NHS Digital for GP Connect HTML View Provision on 20/06/19",
-                },
-            };
-
-            return JsonSerializer.Serialize(integrations);
         }
     }
 }

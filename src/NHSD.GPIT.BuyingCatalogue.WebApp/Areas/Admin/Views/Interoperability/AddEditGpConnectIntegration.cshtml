@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels.AddEditGpConnectIntegrationModel;
 @{
-    ViewBag.Title = $"{(Model.SelectedIntegrationType is null ? "Add" : "Edit")} a GP Connect integration";
+    ViewBag.Title = $"{(Model.IntegrationTypeId is null ? "Add" : "Edit")} a GP Connect integration";
 }
 
 <div class="nhsuk-width-container">
@@ -20,7 +20,7 @@
                             asp-items="@Model.IntegrationTypes"
                             label-text="Integration type" />
 
-                <nhs-select asp-for="SelectedProviderOrConsumer"
+                <nhs-select asp-for="IsConsumer"
                             asp-items="@Model.ProviderConsumerTypes"
                             label-text="Provider or consumer" />
 
@@ -30,12 +30,12 @@
 
                 <nhs-submit-button />
             </form>
-            @if (Model.SelectedIntegrationType is not null)
+            @if (Model.IntegrationTypeId is not null)
             {
                 <vc:nhs-delete-button url="@Url.Action(
                                                nameof(InteroperabilityController.DeleteGpConnectIntegration),
                                                typeof(InteroperabilityController).ControllerName(),
-                                               new { Model.SolutionId, Model.IntegrationId })"
+                                               new { Model.SolutionId, integrationId = Model.IntegrationTypeId })"
                                       text="Delete integration" />
             }
         </div>

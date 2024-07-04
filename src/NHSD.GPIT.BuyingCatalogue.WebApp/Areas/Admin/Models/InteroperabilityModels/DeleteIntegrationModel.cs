@@ -1,5 +1,4 @@
-﻿using System;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityModels
@@ -18,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public string SolutionName { get; }
 
-        public Guid IntegrationId { get; init; }
+        public int IntegrationId { get; init; }
 
         public string IntegrationType { get; init; }
     }

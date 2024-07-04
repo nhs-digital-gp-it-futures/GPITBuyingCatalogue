@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
 {
@@ -20,17 +19,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Framework
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task<List<FrameworkFilterInfo>> GetFrameworksWithPublishedCatalogueItems() =>
+        public async Task<List<EntityFramework.Catalogue.Models.Framework>> GetFrameworksWithPublishedCatalogueItems() =>
             await dbContext.FrameworkSolutions.AsNoTracking()
                 .Where(x => x.Solution.CatalogueItem.PublishedStatus == PublicationStatus.Published)
-                .GroupBy(x => new { x.FrameworkId, x.Framework.ShortName, x.Framework.IsExpired })
-                .Select(
-                    x => new FrameworkFilterInfo
-                    {
-                        Id = x.Key.FrameworkId,
-                        ShortName = x.Key.ShortName,
-                        Expired = x.Key.IsExpired,
-                    })
+                .Select(x => x.Framework)
+                .Distinct()
                 .ToListAsync();
 
         public async Task<EntityFramework.Catalogue.Models.Framework> GetFramework(string frameworkId) =>

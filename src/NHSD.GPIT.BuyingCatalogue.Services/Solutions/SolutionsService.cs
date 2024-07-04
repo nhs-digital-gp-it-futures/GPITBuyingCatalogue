@@ -30,6 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             dbContext.CatalogueItems.AsNoTracking()
             .Include(ci => ci.Supplier)
             .Include(ci => ci.Solution)
+            .ThenInclude(x => x.Integrations)
+            .ThenInclude(x => x.IntegrationType)
+            .ThenInclude(x => x.Integration)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
         public async Task<CatalogueItem> GetSolutionWithBasicInformation(CatalogueItemId solutionId) =>
@@ -37,6 +41,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(ci => ci.Solution)
                     .ThenInclude(s => s.FrameworkSolutions)
                     .ThenInclude(s => s.Framework)
+                .Include(ci => ci.Solution)
+                .ThenInclude(x => x.Integrations)
+                .ThenInclude(x => x.IntegrationType)
+                .ThenInclude(x => x.Integration)
                 .Include(ci => ci.Supplier)
                 .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
@@ -121,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     Features = !string.IsNullOrWhiteSpace(ci.Solution.Features)
                         ? TaskProgress.Completed
                         : TaskProgress.Optional,
-                    Interoperability = !string.IsNullOrWhiteSpace(ci.Solution.Integrations)
+                    Interoperability = ci.Solution.Integrations.Count > 0
                         ? TaskProgress.Completed
                         : TaskProgress.Optional,
                     Implementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail)
@@ -235,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         add.CatalogueItem.PublishedStatus == PublicationStatus.Published),
                     ShowAssociatedServices = ci.SupplierServiceAssociations.Any(ssa =>
                         ssa.AssociatedService.CatalogueItem.PublishedStatus == PublicationStatus.Published),
-                    ShowInteroperability = !string.IsNullOrWhiteSpace(ci.Solution.Integrations) || !string.IsNullOrWhiteSpace(ci.Solution.IntegrationsUrl),
+                    ShowInteroperability = ci.Solution.Integrations.Count > 0 || !string.IsNullOrWhiteSpace(ci.Solution.IntegrationsUrl),
                     ShowImplementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail),
                     ShowHosting = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid(),
                 }).FirstOrDefaultAsync();

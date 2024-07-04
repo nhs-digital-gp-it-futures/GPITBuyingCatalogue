@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice
+﻿namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.NonPrice
 {
     public enum NonPriceElementType
     {

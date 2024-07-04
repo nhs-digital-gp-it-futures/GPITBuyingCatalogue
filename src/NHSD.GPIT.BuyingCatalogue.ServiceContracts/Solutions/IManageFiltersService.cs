@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
@@ -15,12 +14,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
             int organisationId,
             Dictionary<int, string[]> capabilityAndEpicIds,
             string frameworkId,
-            List<ApplicationType> applicationTypes,
-            List<HostingType> hostingTypes,
-            List<InteropIm1IntegrationType> iM1IntegrationsTypes,
-            List<InteropGpConnectIntegrationType> gPConnectIntegrationsTypes,
-            List<InteropNhsAppIntegrationType> nhsAppIntegrationsTypes,
-            List<InteropIntegrationType> interoperabilityIntegrationTypes);
+            IEnumerable<ApplicationType> applicationTypes,
+            IEnumerable<HostingType> hostingTypes,
+            Dictionary<SupportedIntegrations, int[]> integrations);
 
         Task<bool> FilterExists(string filterName, int organisationId);
 

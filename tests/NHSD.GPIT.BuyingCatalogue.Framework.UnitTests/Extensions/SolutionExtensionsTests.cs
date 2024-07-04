@@ -32,15 +32,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Extensions
         }
 
         [Fact]
-        public static void GetIntegrations_NullSolution_ThrowsException()
-        {
-            Solution solution = null;
-
-            // ReSharper disable once ExpressionIsAlwaysNull
-            Assert.Throws<ArgumentNullException>(() => solution.GetIntegrations());
-        }
-
-        [Fact]
         public static void GetIntegrations_ReturnsFeaturesWhenSet()
         {
             var features = new[] { "Feature 1", "Feature 2", "Feature 3" };

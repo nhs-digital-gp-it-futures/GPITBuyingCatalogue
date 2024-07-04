@@ -1,40 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 {
     public class AdditionalFiltersModel
     {
+        [ExcludeFromCodeCoverage]
         public AdditionalFiltersModel()
         {
         }
 
         public AdditionalFiltersModel(
-            List<FrameworkFilterInfo> frameworks,
-            RequestedFilters filters)
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
+            RequestedFilters filters,
+            IEnumerable<Integration> integrations)
         {
             SetFrameworkOptions(frameworks);
-            SetApplicationTypeOptions(filters.SelectedApplicationTypeIds);
-            SetHostingTypeOptions(filters.SelectedHostingTypeIds);
-            SetIM1IntegrationsOptions(filters.SelectedIM1Integrations);
-            SetGPConnectIntegrationsOptions(filters.SelectedGPConnectIntegrations);
-            SetNhsAppIntegrationsOptions(filters.SelectedNhsAppIntegrations);
-            SetInteroperabilityOptions(filters.SelectedInteroperabilityOptions);
+            ApplicationTypeOptions = SetEnumOptions<ApplicationType>(filters.SelectedApplicationTypeIds);
+            HostingTypeOptions = SetEnumOptions<HostingType>(filters.SelectedHostingTypeIds);
+
             Selected = filters.Selected;
             SelectedFrameworkId = filters.SelectedFrameworkId;
             SortBy = filters.SortBy;
 
+            var selectedIntegrations = filters.GetIntegrationsAndTypes();
+            IntegrationOptions = integrations.Select(
+                    x => new IntegrationFilterModel(
+                        x.Name,
+                        x.Id,
+                        selectedIntegrations.ContainsKey(x.Id),
+                        x.IntegrationTypes.Select(
+                            y => new SelectOption<int>(
+                                y.Name,
+                                y.Id,
+                                selectedIntegrations.TryGetValue(x.Id, out var values) && values.Contains(y.Id)))))
+                .ToList();
+
             var capabilities = filters.GetCapabilityAndEpicIds();
             CapabilitiesCount = capabilities.Keys.Count;
-            EpicsCount = capabilities.Values.Sum(v => v.Count());
+            EpicsCount = capabilities.Values.Sum(v => v.Length);
         }
 
         public string SelectedFrameworkId { get; set; }
@@ -46,6 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
         public List<SelectOption<string>> FrameworkOptions { get; set; }
 
         public List<SelectOption<int>> ApplicationTypeOptions { get; set; }
+
+        public List<IntegrationFilterModel> IntegrationOptions { get; set; } = [];
 
         public int CapabilitiesCount { get; set; }
 
@@ -63,34 +77,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
             .Select(f => f.Text)
             .ToArray();
 
-        public List<SelectOption<int>> InteroperabilityOptions { get; set; }
-
-        public string[] InteroperabilityFilters => (InteroperabilityOptions ?? Array.Empty<SelectOption<int>>().ToList())
-            .Where(f => f.Selected)
-            .Select(f => f.Text)
-            .ToArray();
-
-        public List<SelectOption<int>> IM1IntegrationsOptions { get; set; }
-
-        public string[] IM1IntegrationsFilters => (IM1IntegrationsOptions ?? Array.Empty<SelectOption<int>>().ToList())
-            .Where(f => f.Selected)
-            .Select(f => f.Text)
-            .ToArray();
-
-        public List<SelectOption<int>> GPConnectIntegrationsOptions { get; set; }
-
-        public string[] GPConnectIntegrationsFilters => (GPConnectIntegrationsOptions ?? Array.Empty<SelectOption<int>>().ToList())
-            .Where(f => f.Selected)
-            .Select(f => f.Text)
-            .ToArray();
-
-        public List<SelectOption<int>> NhsAppIntegrationsOptions { get; set; }
-
-        public string[] NhsAppIntegrationsFilters => (NhsAppIntegrationsOptions ?? Array.Empty<SelectOption<int>>().ToList())
-            .Where(f => f.Selected)
-            .Select(f => f.Text)
-            .ToArray();
-
         public string FoundationCapabilitiesFilterString => new FoundationCapabilitiesModel().ToFilterString();
 
         public string CombineSelectedOptions(List<SelectOption<int>> options)
@@ -100,139 +86,45 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
 
         public RequestedFilters ToRequestedFilters()
         {
-            var selectedInteroperabilityOptions = CombineSelectedOptions(InteroperabilityOptions);
-
             return new RequestedFilters(
-                    Selected,
-                    null,
-                    SelectedFrameworkId,
-                    CombineSelectedOptions(ApplicationTypeOptions),
-                    CombineSelectedOptions(HostingTypeOptions),
-                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.Im1).ToString()) ? CombineSelectedOptions(IM1IntegrationsOptions) : null,
-                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.GpConnect).ToString()) ? CombineSelectedOptions(GPConnectIntegrationsOptions) : null,
-                    selectedInteroperabilityOptions.Contains(((int)InteropIntegrationType.NhsApp).ToString()) ? CombineSelectedOptions(NhsAppIntegrationsOptions) : null,
-                    selectedInteroperabilityOptions,
-                    SortBy);
+                Selected,
+                null,
+                SelectedFrameworkId,
+                CombineSelectedOptions(ApplicationTypeOptions),
+                CombineSelectedOptions(HostingTypeOptions),
+                GetIntegrationIds(),
+                SortBy);
         }
 
-        public void SetParentFilters()
-        {
-            if (InteroperabilityOptions == null)
-                return;
+        public string GetIntegrationIds() => IntegrationOptions.Where(x => x.Selected)
+            .ToDictionary(x => x.Id, x => x.IntegrationTypes.Where(y => y.Selected).Select(y => y.Value).ToArray())
+            .ToFilterString();
 
-            if (IM1IntegrationsFilters.Any())
-                SetSelectedFilter(InteropIntegrationType.Im1);
-            if (GPConnectIntegrationsFilters.Any())
-                SetSelectedFilter(InteropIntegrationType.GpConnect);
-            if (NhsAppIntegrationsFilters.Any())
-                SetSelectedFilter(InteropIntegrationType.NhsApp);
-        }
+        private static List<SelectOption<int>> SetEnumOptions<T>(string selection)
+            where T : struct, Enum, IConvertible
+            => Enum.GetValues<T>()
+                .Select(
+                    x => new SelectOption<int>
+                    {
+                        Value = x.ToInt32(CultureInfo.InvariantCulture.NumberFormat),
+                        Text = x.Name(),
+                        Selected = !string.IsNullOrEmpty(selection)
+                            && selection.Contains(x.ToInt32(CultureInfo.InvariantCulture.NumberFormat).ToString()),
+                    })
+                .OrderBy(x => x.Text)
+                .ToList();
 
-        private void SetSelectedFilter(InteropIntegrationType type)
-        {
-            if (InteroperabilityOptions.FirstOrDefault(x => x.Value == (int)type) is not null)
-                InteroperabilityOptions.First(x => x.Value == (int)type).Selected = true;
-        }
-
-        private void SetFrameworkOptions(List<FrameworkFilterInfo> frameworks)
+        private void SetFrameworkOptions(List<EntityFramework.Catalogue.Models.Framework> frameworks)
         {
             FrameworkOptions = frameworks
                 .Select(
                     f => new SelectOption<string>
                     {
                         Value = f.Id,
-                        Text = $"{f.ShortName}{(f.Expired ? " (expired)" : string.Empty)}",
+                        Text = $"{f.ShortName}{(f.IsExpired ? " (expired)" : string.Empty)}",
                         Selected = false,
                     })
                 .ToList();
-        }
-
-        private void SetApplicationTypeOptions(string selectedApplicationTypeIds)
-        {
-            ApplicationTypeOptions = Enum.GetValues(typeof(ApplicationType))
-                .Cast<ApplicationType>()
-                .Select(
-                    x => new SelectOption<int>
-                    {
-                        Value = (int)x,
-                        Text = x.Name(),
-                        Selected = !string.IsNullOrEmpty(selectedApplicationTypeIds)
-                            && selectedApplicationTypeIds.Contains(((int)x).ToString()),
-                    })
-                .OrderBy(x => x.Text)
-                .ToList();
-        }
-
-        private void SetHostingTypeOptions(string selectedHostingTypeIds)
-        {
-            HostingTypeOptions = Enum.GetValues(typeof(HostingType))
-                .Cast<HostingType>()
-                .Select(
-                    x => new SelectOption<int>
-                    {
-                        Value = (int)x,
-                        Text = x.Name(),
-                        Selected = !string.IsNullOrEmpty(selectedHostingTypeIds)
-                            && selectedHostingTypeIds.Contains(((int)x).ToString()),
-                    })
-                .OrderBy(x => x.Text)
-                .ToList();
-        }
-
-        private void SetInteroperabilityOptions(string selectedInteroperabilityOptions)
-        {
-            InteroperabilityOptions = Enum.GetValues(typeof(InteropIntegrationType))
-                .Cast<InteropIntegrationType>()
-                .Select(
-                    x => new SelectOption<int>
-                    {
-                        Value = (int)x,
-                        Text = x.EnumMemberName(),
-                        Selected = !string.IsNullOrEmpty(selectedInteroperabilityOptions)
-                            && selectedInteroperabilityOptions.Contains(((int)x).ToString()),
-                    }).ToList();
-        }
-
-        private void SetIM1IntegrationsOptions(string selectedIM1Integrations)
-        {
-            IM1IntegrationsOptions = Enum.GetValues(typeof(InteropIm1IntegrationType))
-                .Cast<InteropIm1IntegrationType>()
-                .Select(
-                    x => new SelectOption<int>
-                    {
-                        Value = (int)x,
-                        Text = x.Name(),
-                        Selected = !string.IsNullOrEmpty(selectedIM1Integrations)
-                            && selectedIM1Integrations.Contains(((int)x).ToString()),
-                    }).ToList();
-        }
-
-        private void SetGPConnectIntegrationsOptions(string selectedGPConnectIntegrations)
-        {
-            GPConnectIntegrationsOptions = Enum.GetValues(typeof(InteropGpConnectIntegrationType))
-                .Cast<InteropGpConnectIntegrationType>()
-                .Select(
-                    x => new SelectOption<int>
-                    {
-                        Value = (int)x,
-                        Text = x.Name(),
-                        Selected = !string.IsNullOrEmpty(selectedGPConnectIntegrations)
-                            && selectedGPConnectIntegrations.Contains(((int)x).ToString()),
-                    }).ToList();
-        }
-
-        private void SetNhsAppIntegrationsOptions(string selectedNhsAppIntegrations)
-        {
-            NhsAppIntegrationsOptions = Enum.GetValues(typeof(InteropNhsAppIntegrationType))
-                .Cast<InteropNhsAppIntegrationType>()
-                .Select(
-                    x => new SelectOption<int>
-                    {
-                        Value = (int)x,
-                        Text = x.Name(),
-                        Selected = !string.IsNullOrEmpty(selectedNhsAppIntegrations)
-                            && selectedNhsAppIntegrations.Contains(((int)x).ToString()),
-                    }).ToList();
         }
     }
 }

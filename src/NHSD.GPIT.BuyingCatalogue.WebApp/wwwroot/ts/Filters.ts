@@ -4,13 +4,11 @@ interface CapabilitiesAndEpics {
 }
 
 var filters = (function (): CapabilitiesAndEpics {
+    const CHECKBOX_CHECKED_SELECTOR = 'input[type="checkbox"]:checked';
     const FRAMEWORK_ID_PARAM_NAME = 'selectedFrameworkId';
     const APPLICATION_TYPES_PARAM_NAME = 'selectedApplicationTypeIds';
     const HOSTING_TYPES_PARAM_NAME = 'selectedHostingTypeIds';
-    const INTEROPERABILITY_OPTIONS_PARAM_NAME = 'selectedInteroperabilityOptions';
-    const IM1_INTEGRATIONS_PARAM_NAME = 'selectedIM1Integrations';
-    const GPCONNECT_INTEGRATIONS_PARAM_NAME = 'selectedGPConnectIntegrations';
-    const NHSAPP_INTEGRATIONS_PARAM_NAME = 'selectedNHSAppIntegrations';
+    const INTEROPERABILITY_OPTIONS_PARAM_NAME = 'selectedIntegrations';
     const SELECTED_PARAM_NAME = 'selected';
     const SORT_BY_PARAM_NAME = 'sortBy';
     const GROUP_DELIMITER = '|';
@@ -18,7 +16,7 @@ var filters = (function (): CapabilitiesAndEpics {
     const FRAMEWORK_FILTERS_ID = 'selected-framework-id';
     const APPLICATION_TYPE_FILTERS_ID = 'application-type-filters';
     const HOSTING_TYPE_FILTERS_ID = 'hosting-type-filters';
-    const INTEROPERABILITY_FILTERS_ID = 'interoperability-filters';
+    const INTEROPERABILITY_FILTERS_ID = 'integration-options';
 
 
     class capabilitiesAndEpics implements CapabilitiesAndEpics {
@@ -80,7 +78,7 @@ var filters = (function (): CapabilitiesAndEpics {
             const currentUrl = new URL(window.location.href);
             const requestUrl = new URL('/catalogue-solutions/filter-capabilities-modal', currentUrl);
             requestUrl.searchParams.set(SELECTED_PARAM_NAME, getSelectedFilterString());
-            const result: Response = await fetch(requestUrl, { method: 'GET' });
+            const result: Response = await fetch(requestUrl, {method: 'GET'});
             if (result.ok) {
                 return await result.text();
             } else {
@@ -92,7 +90,7 @@ var filters = (function (): CapabilitiesAndEpics {
             const currentUrl = new URL(window.location.href);
             const requestUrl = new URL('/catalogue-solutions/filter-epics-modal', currentUrl);
             requestUrl.searchParams.set(SELECTED_PARAM_NAME, getSelectedFilterString());
-            const result: Response = await fetch(requestUrl, { method: 'GET' });
+            const result: Response = await fetch(requestUrl, {method: 'GET'});
             if (result.ok) {
                 return await result.text();
             } else {
@@ -115,7 +113,7 @@ var filters = (function (): CapabilitiesAndEpics {
         const currentUrl = new URL(window.location.href);
 
         const solutionsSortUrl = new URL('/catalogue-solutions/solution-sort', currentUrl);
-        const result: Response = await fetch(solutionsSortUrl, { method: 'GET' });
+        const result: Response = await fetch(solutionsSortUrl, {method: 'GET'});
         if (result.ok) {
             return await result.text();
         } else {
@@ -124,7 +122,7 @@ var filters = (function (): CapabilitiesAndEpics {
     }
 
     async function getResultsContent(searchResultsUrl: URL): Promise<string> {
-        const result: Response = await fetch(searchResultsUrl, { method: 'GET' })
+        const result: Response = await fetch(searchResultsUrl, {method: 'GET'})
 
         if (result.ok) {
             return await result.text();
@@ -183,16 +181,13 @@ var filters = (function (): CapabilitiesAndEpics {
         const searchResultsUrl = new URL('/catalogue-solutions/search-results', currentUrl);
         searchResultsUrl.search = currentUrl.search;
         searchResultsUrl.searchParams.set("search", "");
-        searchResultsUrl.searchParams.set(FRAMEWORK_ID_PARAM_NAME, getSelectedFamework());
+        searchResultsUrl.searchParams.set(FRAMEWORK_ID_PARAM_NAME, getSelectedFramework());
         searchResultsUrl.searchParams.set(APPLICATION_TYPES_PARAM_NAME, getFilterString(APPLICATION_TYPE_FILTERS_ID));
         searchResultsUrl.searchParams.set(HOSTING_TYPES_PARAM_NAME, getFilterString(HOSTING_TYPE_FILTERS_ID));
-        searchResultsUrl.searchParams.set(INTEROPERABILITY_OPTIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'InteroperabilityOptions'));
-        searchResultsUrl.searchParams.set(IM1_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'IM1IntegrationsOptions'));
-        searchResultsUrl.searchParams.set(GPCONNECT_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'GPConnectIntegrationsOptions'));
-        searchResultsUrl.searchParams.set(NHSAPP_INTEGRATIONS_PARAM_NAME, getFilterString(INTEROPERABILITY_FILTERS_ID, 'NhsAppIntegrationsOptions'));
+        searchResultsUrl.searchParams.set(INTEROPERABILITY_OPTIONS_PARAM_NAME, getIntegrations(INTEROPERABILITY_FILTERS_ID));
         searchResultsUrl.searchParams.set(SELECTED_PARAM_NAME, getSelectedFilterString());
-        const currentSortBy = getSortBy();
 
+        const currentSortBy = getSortBy();
         if (currentSortBy)
             searchResultsUrl.searchParams.set(SORT_BY_PARAM_NAME, currentSortBy);
 
@@ -204,33 +199,59 @@ var filters = (function (): CapabilitiesAndEpics {
         return sortOptions ? sortOptions.value : null;
     }
 
-    function getSelectedFamework(): string {
-        var frameworkFilter = document.getElementById(`${FRAMEWORK_FILTERS_ID}`);
+    function getSelectedFramework(): string {
+        const frameworkFilter = document.getElementById(`${FRAMEWORK_FILTERS_ID}`);
+
         return Array.from<HTMLInputElement>(frameworkFilter.querySelectorAll('input[type="radio"]:checked'))
             .map(v => v.value)
             .find(v => true) ?? "";
     }
 
     function clearHiddenCheckboxes(parentElementId: string) {
-        var element = document.getElementById(parentElementId);
-        Array.from<HTMLInputElement>(element.querySelectorAll('.nhsuk-checkboxes__conditional--hidden input[type="checkbox"]:checked'))
+        const element = document.getElementById(parentElementId);
+
+        Array.from<HTMLInputElement>(element.querySelectorAll(`.nhsuk-checkboxes__conditional--hidden ${CHECKBOX_CHECKED_SELECTOR}`))
             .forEach(c => c.checked = false);
     }
-    function getFilterString(parentElementId: string, checkboxIdStartsWith?: string): string {
-        var element = document.getElementById(parentElementId);
-        var array = Array.from<HTMLInputElement>(element.querySelectorAll('input[type="checkbox"]:checked'));
 
-        if (checkboxIdStartsWith != null) {
-            array = array.filter(e => e.id.startsWith(checkboxIdStartsWith));
-        }
+    function getFilterString(parentElementId: string): string {
+        const element = document.getElementById(parentElementId);
+        let array = Array.from<HTMLInputElement>(element.querySelectorAll(CHECKBOX_CHECKED_SELECTOR));
 
         return array.map(v => (document.getElementById((v as HTMLInputElement).id.replace("__Selected", "__Value")) as HTMLInputElement).value)
             .reduce((r, i) => `${r}${i}${DELIMITER}`, "") ?? "";
     }
 
+    function getIntegrations(parentElementId: string): string {
+        const element = document.getElementById(parentElementId);
+        if (!element || element.children.length < 2) throw new Error(`Could not find ${parentElementId} or had no children`);
+
+        const checkboxContainer = element.children.item(1);
+        if (!checkboxContainer || checkboxContainer.children.length === 0) throw new Error(`Could not find ${parentElementId} or had no children`);
+        const checkboxes = Array.from(checkboxContainer.children);
+
+        const checkboxPairs = checkboxes
+            .slice(checkboxes.length / 2)
+            .map((_, index) => checkboxes.slice(index *= 2, index + 2))
+            .filter(item => item.length === 2);
+
+        return checkboxPairs
+            .filter(items => items[0].querySelector(CHECKBOX_CHECKED_SELECTOR))
+            .map(items => {
+                const parent = items[0].querySelector(CHECKBOX_CHECKED_SELECTOR);
+                const nested = Array.from(items[1].querySelectorAll(CHECKBOX_CHECKED_SELECTOR));
+
+                const parentId = items[0].querySelector(`input[id=${parent.id.replace('__Selected', '__Id')}]`) as HTMLInputElement;
+                const nestedIds = Array.from<string>(nested.map(element => items[1].querySelector(`#${element.id.replace('__Selected', '__Value')}`)).map(element => (element as HTMLInputElement).value));
+
+                return [parentId.value, ...nestedIds].join(DELIMITER);
+            })
+            .join(GROUP_DELIMITER);
+    }
+
     function getSelectedFilterString(): string {
         return Array.from(capabilitiesAndEpicsInstance.capabilities.entries())
-            .reduce((capabilties, c) => `${capabilties}${c[0]}${epicsFilterString(c[1])}${GROUP_DELIMITER}`, "");
+            .reduce((capabilities, c) => `${capabilities}${c[0]}${epicsFilterString(c[1])}${GROUP_DELIMITER}`, "");
 
         function epicsFilterString(c: string[]) {
             return c.length > 0
