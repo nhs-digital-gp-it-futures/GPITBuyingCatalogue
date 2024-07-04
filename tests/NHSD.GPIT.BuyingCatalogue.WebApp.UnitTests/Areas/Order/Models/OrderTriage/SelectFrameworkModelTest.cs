@@ -17,10 +17,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.OrderTri
         [Theory]
         [MockAutoData]
         public static void PropertiesCorrectlySet(
-            string organisationName, 
-            IList<EntityFramework.Catalogue.Models.Framework> frameworks, 
-            string selectedFrameworkId
-            )
+            string organisationName,
+            IList<EntityFramework.Catalogue.Models.Framework> frameworks,
+            string selectedFrameworkId)
         {
             var expectedFrameworks = frameworks.Select(
                     f => new SelectOption<string>(
