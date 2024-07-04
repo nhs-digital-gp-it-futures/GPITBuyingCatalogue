@@ -1,4 +1,7 @@
-﻿using AutoFixture.Xunit2;
+﻿using AutoFixture.AutoNSubstitute;
+using AutoFixture.Idioms;
+using AutoFixture;
+using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
@@ -11,6 +14,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
 {
     public static class SelectFrameworkModelValidatorTests
     {
+        [Fact]
+        public static void Constructors_VerifyGuardClauses()
+        {
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
+            var assertion = new GuardClauseAssertion(fixture);
+            var constructors = typeof(SelectFrameworkModelValidator).GetConstructors();
+
+            assertion.Verify(constructors);
+        }
+
         [Theory]
         [MockAutoData]
         public static void Validate_NoSelectedFramework_SetsModelError(
@@ -35,6 +48,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         {
             framework.IsExpired = true;
             frameworkService.GetFramework(model.SelectedFrameworkId).Returns(framework);
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.SelectedFrameworkId)
+                .WithErrorMessage(SelectFrameworkModelValidator.FrameworkExpiredErrorMessage);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Validate_InvalidFramework_SetsModelError(
+            SelectFrameworkModel model,
+            [Frozen] IFrameworkService frameworkService,
+            SelectFrameworkModelValidator validator)
+        {
+            frameworkService.GetFramework(model.SelectedFrameworkId).Returns((EntityFramework.Catalogue.Models.Framework)null);
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SelectedFrameworkId)
