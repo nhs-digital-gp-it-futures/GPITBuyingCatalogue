@@ -59,6 +59,7 @@
         internal const string ComboboxOptions = "combobox-options";
         internal const string ValueName = "value-name";
         internal const string DisplayName = "display-name";
+        internal const string DisabledName = "disabled-name";
         internal const string HintName = "hint-name";
         internal const string Size = "size";
         internal const string HintTextName = "hint-text";
