@@ -21,6 +21,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models
 
         public string DisabledError { get; set; }
 
+#pragma warning disable SA1300
+        // Required to force recaptcha errors to appear in the correct order
+        public string recaptcha { get; set; }
+#pragma warning restore SA1300
+
         public static class ErrorMessages
         {
             public const string EmailAddressRequired = "Enter your email address";
