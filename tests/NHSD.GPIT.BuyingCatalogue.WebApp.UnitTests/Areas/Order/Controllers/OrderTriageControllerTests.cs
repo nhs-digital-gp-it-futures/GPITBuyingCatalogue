@@ -197,16 +197,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             Organisation organisation,
             [Frozen] IOrganisationsService service,
             [Frozen] IFrameworkService frameworkService,
-            EntityFramework.Catalogue.Models.Framework framework,
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
             OrderTriageController controller)
         {
-            framework.IsExpired = false;
-            var frameworks = new List<EntityFramework.Catalogue.Models.Framework>()
-            {
-                framework,
-            };
-
-            var expectedModel = new SelectFrameworkModel(organisation.Name, frameworks, null);
+            var expectedModel = new SelectFrameworkModel(organisation.Name, frameworks.OrderBy(f => f.IsExpired).ThenBy(f => f.Name).ToList(), null);
 
             service
                 .GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
