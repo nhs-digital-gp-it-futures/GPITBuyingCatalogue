@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.YourAccount;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Models

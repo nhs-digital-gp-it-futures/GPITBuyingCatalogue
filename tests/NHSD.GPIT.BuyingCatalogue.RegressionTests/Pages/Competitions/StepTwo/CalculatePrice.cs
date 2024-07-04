@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Microsoft.CodeAnalysis;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;

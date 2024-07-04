@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -16,26 +15,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
         {
         }
 
-        public AddEditIm1IntegrationModel(CatalogueItem solution)
+        public AddEditIm1IntegrationModel(
+            CatalogueItem solution,
+            IEnumerable<IntegrationType> integrationTypes)
         {
             SolutionName = solution.Name;
             SolutionId = solution.Id;
+
+            IntegrationTypes = integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList();
+        }
+
+        public AddEditIm1IntegrationModel(
+            CatalogueItem solution,
+            IEnumerable<IntegrationType> integrationTypes,
+            SolutionIntegration solutionIntegration)
+        : this(solution, integrationTypes)
+        {
+            IntegrationTypeId = solutionIntegration.IntegrationTypeId;
+            SelectedIntegrationType = solutionIntegration.IntegrationTypeId;
+            IsConsumer = solutionIntegration.IsConsumer.GetValueOrDefault();
+            Description = solutionIntegration.Description;
+            IntegratesWith = solutionIntegration.IntegratesWith;
         }
 
         public string SolutionName { get; }
 
-        public List<SelectOption<string>> IntegrationTypes => Interoperability.Im1Integrations
-            .Select(x => new SelectOption<string>(x.Value, x.Key))
-            .ToList();
+        public List<SelectOption<string>> IntegrationTypes { get; set; }
 
-        public string SelectedIntegrationType { get; set; }
+        public int? SelectedIntegrationType { get; set; }
 
-        public string SelectedProviderOrConsumer { get; set; }
+        public bool? IsConsumer { get; set; }
 
         public List<SelectOption<string>> ProviderConsumerTypes => new()
         {
-            new(Interoperability.Provider, Interoperability.Provider),
-            new(Interoperability.Consumer, Interoperability.Consumer),
+            new(Interoperability.Provider, false.ToString()),
+            new(Interoperability.Consumer, true.ToString()),
         };
 
         [StringLength(100)]
@@ -46,6 +60,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
 
         public CatalogueItemId SolutionId { get; }
 
-        public Guid IntegrationId { get; set; }
+        public int? IntegrationTypeId { get; set; }
     }
 }

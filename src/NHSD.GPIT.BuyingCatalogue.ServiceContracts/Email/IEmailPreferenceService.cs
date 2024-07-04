@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;

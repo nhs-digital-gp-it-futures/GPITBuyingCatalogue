@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+﻿using System.Collections.Generic;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {

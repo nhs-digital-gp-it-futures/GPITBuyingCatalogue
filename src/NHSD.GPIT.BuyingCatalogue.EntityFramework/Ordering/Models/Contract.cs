@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-
-namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+﻿namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public class Contract
     {

@@ -8,7 +8,6 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -153,10 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedFrameworkId", filters.SelectedFrameworkId },
                 { "selectedApplicationTypeIds", filters.SelectedApplicationTypeIds },
                 { "selectedHostingTypeIds", filters.SelectedHostingTypeIds },
-                { "selectedIM1Integrations", filters.SelectedIM1Integrations },
-                { "selectedGPConnectIntegrations", filters.SelectedGPConnectIntegrations },
-                { "selectedNhsAppIntegrations", filters.SelectedNhsAppIntegrations },
-                { "selectedInteroperabilityOptions", filters.SelectedInteroperabilityOptions },
+                { "selectedIntegrations", filters.SelectedIntegrations },
                 { "sortBy", filters.SortBy },
                 { "page", 1 },
             });
@@ -348,10 +344,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                 { "selectedFrameworkId", filters.SelectedFrameworkId },
                 { "selectedApplicationTypeIds", filters.SelectedApplicationTypeIds },
                 { "selectedHostingTypeIds", filters.SelectedHostingTypeIds },
-                { "selectedIM1Integrations", filters.SelectedIM1Integrations },
-                { "selectedGPConnectIntegrations", filters.SelectedGPConnectIntegrations },
-                { "selectedNhsAppIntegrations", filters.SelectedNhsAppIntegrations },
-                { "selectedInteroperabilityOptions", filters.SelectedInteroperabilityOptions },
+                { "selectedIntegrations", filters.SelectedIntegrations },
                 { "sortBy", filters.SortBy },
                 { "page", 1 },
             });

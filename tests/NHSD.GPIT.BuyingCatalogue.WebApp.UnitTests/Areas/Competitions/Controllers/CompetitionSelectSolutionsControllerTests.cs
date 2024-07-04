@@ -56,6 +56,8 @@ public static class CompetitionSelectSolutionsControllerTests
     {
         const bool shouldTrack = false;
 
+        framework.IsExpired = false;
+
         frameworkService.GetFramework(competition.FrameworkId).Returns(framework);
         solution.FrameworkSolutions = new List<FrameworkSolution> { new FrameworkSolution() { FrameworkId = competition.FrameworkId, Solution = solution } };
         competitionSolutions.ForEach(

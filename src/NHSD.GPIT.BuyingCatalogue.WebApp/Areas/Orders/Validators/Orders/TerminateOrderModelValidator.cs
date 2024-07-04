@@ -1,8 +1,6 @@
 ﻿using System;
 using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.DeleteOrder;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.DeleteOrder
 {

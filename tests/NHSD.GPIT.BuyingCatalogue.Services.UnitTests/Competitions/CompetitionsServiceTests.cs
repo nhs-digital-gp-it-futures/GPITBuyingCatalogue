@@ -9,7 +9,6 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
@@ -1339,29 +1338,29 @@ public static class CompetitionsServiceTests
     public static async Task SetInteroperabilityCriteria_AddsIntegrations(
         Organisation organisation,
         Competition competition,
-        List<string> im1Integrations,
-        List<string> gpConnectIntegrations,
+        Integration integration,
+        List<IntegrationType> integrationTypes,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
+        integration.IntegrationTypes = integrationTypes;
         competition.OrganisationId = organisation.Id;
 
         context.Organisations.Add(organisation);
         context.Competitions.Add(competition);
+        context.Integrations.Add(integration);
 
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.SetInteroperabilityCriteria(organisation.InternalIdentifier, competition.Id, im1Integrations, gpConnectIntegrations);
+        await service.SetInteroperabilityCriteria(organisation.InternalIdentifier, competition.Id, integrationTypes.Select(x => x.Id));
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
             competition.Id);
 
-        var integrations = im1Integrations.Concat(gpConnectIntegrations).ToList();
-
-        integrations.ForEach(
-            x => updatedCompetition.NonPriceElements.Interoperability.Should().Contain(y => x == y.Qualifier));
+        integrationTypes.ForEach(
+            x => updatedCompetition.NonPriceElements.IntegrationTypes.Should().Contain(y => x.Id == y.Id));
     }
 
     [Theory]
@@ -1369,40 +1368,32 @@ public static class CompetitionsServiceTests
     public static async Task SetInteroperabilityCriteria_StaleIntegrations_RemovesStaleIntegrations(
         Organisation organisation,
         Competition competition,
-        List<string> im1Integrations,
-        List<string> gpConnectIntegrations,
+        List<IntegrationType> integrationTypes,
+        IntegrationType staleIntegration,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
-        var staleIntegration = im1Integrations.First();
-
-        competition.NonPriceElements = new()
-        {
-            Interoperability = new List<InteroperabilityCriteria>()
-            {
-                new() { IntegrationType = InteropIntegrationType.Im1, Qualifier = staleIntegration },
-            },
-        };
+        competition.NonPriceElements = new() { IntegrationTypes = new List<IntegrationType>() { staleIntegration, }, };
 
         competition.OrganisationId = organisation.Id;
 
         context.Organisations.Add(organisation);
         context.Competitions.Add(competition);
+        context.IntegrationTypes.Add(staleIntegration);
+        context.IntegrationTypes.AddRange(integrationTypes);
 
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        await service.SetInteroperabilityCriteria(organisation.InternalIdentifier, competition.Id, im1Integrations.Skip(1), gpConnectIntegrations);
+        await service.SetInteroperabilityCriteria(organisation.InternalIdentifier, competition.Id, integrationTypes.Select(x => x.Id));
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
             competition.Id);
 
-        var integrations = im1Integrations.Skip(1).Concat(gpConnectIntegrations).ToList();
-
-        updatedCompetition.NonPriceElements.Interoperability.Should().NotContain(x => x.Qualifier == staleIntegration);
-        integrations.ForEach(
-            x => updatedCompetition.NonPriceElements.Interoperability.Should().Contain(y => x == y.Qualifier));
+        updatedCompetition.NonPriceElements.IntegrationTypes.Should().NotContain(x => x.Id == staleIntegration.Id);
+        integrationTypes.ForEach(
+            x => updatedCompetition.NonPriceElements.IntegrationTypes.Should().Contain(y => x.Id == y.Id));
     }
 
     [Theory]
@@ -1411,13 +1402,10 @@ public static class CompetitionsServiceTests
         Organisation organisation,
         Competition competition,
         Solution solution,
-        List<string> im1Integrations,
-        List<string> gpConnectIntegrations,
+        List<IntegrationType> integrationTypes,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
-        var staleIntegration = im1Integrations.First();
-
         competition.CompetitionSolutions = new List<CompetitionSolution>
         {
             new(competition.Id, solution.CatalogueItemId)
@@ -1426,38 +1414,29 @@ public static class CompetitionsServiceTests
             },
         };
 
-        competition.NonPriceElements = new()
-        {
-            Interoperability = new List<InteroperabilityCriteria>()
-            {
-                new() { IntegrationType = InteropIntegrationType.Im1, Qualifier = staleIntegration },
-            },
-        };
+        competition.NonPriceElements = new() { IntegrationTypes = integrationTypes, };
 
         competition.OrganisationId = organisation.Id;
 
         context.Organisations.Add(organisation);
         context.Competitions.Add(competition);
+        context.IntegrationTypes.AddRange(integrationTypes);
 
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
+        var integrations = integrationTypes.Skip(1).ToList();
+
         await service.SetInteroperabilityCriteria(
             organisation.InternalIdentifier,
             competition.Id,
-            im1Integrations.Skip(1),
-            gpConnectIntegrations);
+            integrations.Select(x => x.Id));
 
         var updatedCompetition = await service.GetCompetitionWithNonPriceElements(
             organisation.InternalIdentifier,
             competition.Id);
 
-        var integrations = im1Integrations.Skip(1).Concat(gpConnectIntegrations).ToList();
-
         updatedCompetition.CompetitionSolutions.Should().NotContain(x => x.HasScoreType(ScoreType.Interoperability));
-        updatedCompetition.NonPriceElements.Interoperability.Should().NotContain(x => x.Qualifier == staleIntegration);
-        integrations.ForEach(
-            x => updatedCompetition.NonPriceElements.Interoperability.Should().Contain(y => x == y.Qualifier));
     }
 
     [Theory]
@@ -1976,6 +1955,7 @@ public static class CompetitionsServiceTests
     public static async Task RemoveNonPriceElements_RemovesNonPriceElements(
         Organisation organisation,
         Competition competition,
+        List<IntegrationType> integrationTypes,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
@@ -1983,16 +1963,19 @@ public static class CompetitionsServiceTests
         competition.NonPriceElements = new()
         {
             ServiceLevel =
-                new() { ApplicableDays = Enum.GetValues<Iso8601DayOfWeek>(), TimeFrom = DateTime.UtcNow, TimeUntil = DateTime.UtcNow },
+                new()
+                {
+                    ApplicableDays = Enum.GetValues<Iso8601DayOfWeek>(),
+                    TimeFrom = DateTime.UtcNow,
+                    TimeUntil = DateTime.UtcNow,
+                },
             Implementation = new() { Requirements = "Test" },
-            Interoperability = new List<InteroperabilityCriteria>
-            {
-                new() { IntegrationType = InteropIntegrationType.Im1, Qualifier = "Test" },
-            },
+            IntegrationTypes = integrationTypes,
         };
 
         context.Organisations.Add(organisation);
         context.Competitions.Add(competition);
+        context.IntegrationTypes.AddRange(integrationTypes);
 
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
@@ -2227,7 +2210,7 @@ public static class CompetitionsServiceTests
         {
             NonPriceWeights = new() { Implementation = 50, Interoperability = 25, ServiceLevel = 25, },
             Implementation = new(),
-            Interoperability = new List<InteroperabilityCriteria> { new() },
+            IntegrationTypes = new List<IntegrationType> { new() },
             ServiceLevel = new(),
         };
 

@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -17,7 +19,8 @@ public static class CompetitionReviewCriteriaModelTests
         Organisation organisation,
         Competition competition,
         NonPriceElements nonPriceElements,
-        Weightings weightings)
+        Weightings weightings,
+        List<Integration> integrations)
     {
         competition.Organisation = organisation;
         competition.NonPriceElements = nonPriceElements;
@@ -26,7 +29,7 @@ public static class CompetitionReviewCriteriaModelTests
         var expectedNonPriceWeights = competition.NonPriceElements.GetNonPriceElements()
             .ToDictionary(x => x, x => competition.NonPriceElements.GetNonPriceWeight(x));
 
-        var model = new CompetitionReviewCriteriaModel(competition);
+        var model = new CompetitionReviewCriteriaModel(competition, integrations);
 
         model.InternalOrgId.Should().Be(organisation.InternalIdentifier);
         model.CompetitionId.Should().Be(competition.Id);
@@ -45,14 +48,15 @@ public static class CompetitionReviewCriteriaModelTests
         Organisation organisation,
         Competition competition,
         NonPriceElements nonPriceElements,
-        Weightings weightings)
+        Weightings weightings,
+        List<Integration> integrations)
     {
         competition.Organisation = organisation;
         competition.NonPriceElements = nonPriceElements;
         competition.Weightings = weightings;
         competition.HasReviewedCriteria = hasReviewedCriteria;
 
-        var model = new CompetitionReviewCriteriaModel(competition);
+        var model = new CompetitionReviewCriteriaModel(competition, integrations);
 
         model.ContinueButton.Should().Be(expectedContent);
     }

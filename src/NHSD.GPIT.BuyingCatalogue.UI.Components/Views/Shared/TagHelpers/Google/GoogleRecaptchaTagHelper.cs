@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Security.Models;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Google;

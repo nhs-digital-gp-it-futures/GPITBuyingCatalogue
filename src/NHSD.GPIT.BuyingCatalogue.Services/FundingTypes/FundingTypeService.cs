@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.FundingTypes;

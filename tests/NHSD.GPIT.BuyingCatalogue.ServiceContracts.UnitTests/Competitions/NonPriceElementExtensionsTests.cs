@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
@@ -17,7 +18,7 @@ public static class NonPriceElementExtensionsTests
         new object[]
         {
             NonPriceElement.Interoperability,
-            new NonPriceElements { Interoperability = new List<InteroperabilityCriteria>() },
+            new NonPriceElements { IntegrationTypes = new List<IntegrationType>() },
             false,
         },
         new object[] { NonPriceElement.Implementation, new NonPriceElements { Implementation = null }, false, },
@@ -25,7 +26,7 @@ public static class NonPriceElementExtensionsTests
         new object[]
         {
             NonPriceElement.Interoperability,
-            new NonPriceElements { Interoperability = new List<InteroperabilityCriteria> { new() } },
+            new NonPriceElements { IntegrationTypes = new List<IntegrationType>() { new() } },
             true,
         },
         new object[] { NonPriceElement.Implementation, new NonPriceElements { Implementation = new() }, true, },
@@ -65,7 +66,7 @@ public static class NonPriceElementExtensionsTests
         {
             new NonPriceElements
             {
-                Interoperability = new List<InteroperabilityCriteria> { new() }, NonPriceWeights = new(),
+                IntegrationTypes = new List<IntegrationType>() { new() }, NonPriceWeights = new(),
             },
             true,
         },
@@ -75,7 +76,7 @@ public static class NonPriceElementExtensionsTests
         {
             new NonPriceElements
             {
-                Interoperability = new List<InteroperabilityCriteria> { new() },
+                IntegrationTypes = new List<IntegrationType>() { new() },
                 NonPriceWeights = new() { Interoperability = 5 },
             },
             false,
@@ -96,7 +97,7 @@ public static class NonPriceElementExtensionsTests
         new object[] { new NonPriceElements(), Enumerable.Empty<NonPriceElement>(), },
         new object[]
         {
-            new NonPriceElements { Interoperability = new List<InteroperabilityCriteria> { new() } },
+            new NonPriceElements { IntegrationTypes = new List<IntegrationType>() { new() } },
             new List<NonPriceElement> { NonPriceElement.Interoperability },
         },
         new object[]
@@ -161,4 +162,73 @@ public static class NonPriceElementExtensionsTests
         .Invoking(() => ((NonPriceElement)int.MaxValue).AsScoreType())
         .Should()
         .Throw<ArgumentOutOfRangeException>();
+
+    [Theory]
+    [MockInlineAutoData(NonPriceElement.Features, ScoreType.Features)]
+    [MockInlineAutoData(NonPriceElement.Implementation, ScoreType.Implementation)]
+    [MockInlineAutoData(NonPriceElement.Interoperability, ScoreType.Interoperability)]
+    [MockInlineAutoData(NonPriceElement.ServiceLevel, ScoreType.ServiceLevel)]
+    public static void AsScoreType_ReturnsExpectedScoreType(
+        NonPriceElement nonPriceElement,
+        ScoreType expectedScoreType) => nonPriceElement.AsScoreType().Should().Be(expectedScoreType);
+
+    [Theory]
+    [MockAutoData]
+    public static void RemoveNonPriceElement_Features_ClearsFeatures(
+        List<FeaturesCriteria> featuresCriteria,
+        NonPriceElements nonPriceElements)
+    {
+        nonPriceElements.Features = featuresCriteria;
+
+        nonPriceElements.Features.Should().NotBeEmpty();
+
+        nonPriceElements.RemoveNonPriceElement(NonPriceElement.Features);
+
+        nonPriceElements.Features.Should().BeEmpty();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void RemoveNonPriceElement_Implementation_ClearsImplementation(
+        ImplementationCriteria implementationCriteria,
+        NonPriceElements nonPriceElements)
+    {
+        nonPriceElements.Implementation = implementationCriteria;
+
+        nonPriceElements.Implementation.Should().NotBeNull();
+
+        nonPriceElements.RemoveNonPriceElement(NonPriceElement.Implementation);
+
+        nonPriceElements.Implementation.Should().BeNull();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void RemoveNonPriceElement_Interoperability_ClearsIntegrations(
+        List<IntegrationType> integrationTypes,
+        NonPriceElements nonPriceElements)
+    {
+        nonPriceElements.IntegrationTypes = integrationTypes;
+
+        nonPriceElements.IntegrationTypes.Should().NotBeEmpty();
+
+        nonPriceElements.RemoveNonPriceElement(NonPriceElement.Interoperability);
+
+        nonPriceElements.IntegrationTypes.Should().BeEmpty();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void RemoveNonPriceElement_ServiceLevels_ClearsServiceLevels(
+        ServiceLevelCriteria serviceLevelCriteria,
+        NonPriceElements nonPriceElements)
+    {
+        nonPriceElements.ServiceLevel = serviceLevelCriteria;
+
+        nonPriceElements.ServiceLevel.Should().NotBeNull();
+
+        nonPriceElements.RemoveNonPriceElement(NonPriceElement.ServiceLevel);
+
+        nonPriceElements.ServiceLevel.Should().BeNull();
+    }
 }

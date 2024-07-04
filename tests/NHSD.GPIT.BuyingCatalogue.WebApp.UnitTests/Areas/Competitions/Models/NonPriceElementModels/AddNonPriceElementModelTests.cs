@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
@@ -38,7 +39,7 @@ public static class AddNonPriceElementModelTests
         },
         new object[]
         {
-            new NonPriceElements { Interoperability = new List<InteroperabilityCriteria> { new(), }, },
+            new NonPriceElements { IntegrationTypes = new List<IntegrationType> { new(), }, },
             new List<SelectOption<NonPriceElement>>
             {
                 new(NonPriceElement.Implementation.EnumMemberName(), NonPriceElement.Implementation),
@@ -72,7 +73,7 @@ public static class AddNonPriceElementModelTests
             {
                 Implementation = new(),
                 ServiceLevel = new(),
-                Interoperability = new List<InteroperabilityCriteria> { new(), },
+                IntegrationTypes = new List<IntegrationType> { new(), },
                 Features = new List<FeaturesCriteria> { new() },
             },
             Enumerable.Empty<SelectOption<NonPriceElement>>(),

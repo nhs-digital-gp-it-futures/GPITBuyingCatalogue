@@ -32,13 +32,13 @@
                 label-text="Filter name"
                 label-hint="Provide a unique name for this set of filters so you can use them to carry out a competition." />
 
-            <nhs-textarea 
+            <nhs-textarea
                 asp-for="@Model.Description"
                 label-text="Filter description"
                 label-hint="Provide a description for this set of filters to remind you what search criteria was used." />
-            
+
             <h2>Filters to be saved</h2>
-            
+
             <nhs-table>
                 <nhs-table-column>Capability</nhs-table-column>
                 <nhs-table-column>Epic</nhs-table-column>
@@ -77,9 +77,9 @@
                     </nhs-table-row-container>
                 }
             </nhs-table>
-            
+
             <h2>Additional filters</h2>
-            
+
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Application type">
                     @if (Model.ApplicationTypes is null || !Model.ApplicationTypes.Any())
@@ -150,7 +150,7 @@
                     }
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Interoperability">
-                    @if (Model.InteroperabilityIntegrationTypes is null || !Model.InteroperabilityIntegrationTypes.Any())
+                    @if (Model.Integrations is null || !Model.Integrations.Any())
                     {
                         <p>
                             None selected
@@ -158,47 +158,16 @@
                     }
                     else
                     {
-                        @for (int j = 0; j < @Model.InteroperabilityIntegrationTypes.Count(); j++)
+                        @foreach (var integration in Model.Integrations)
                         {
-                            <input type="hidden" asp-for="InteroperabilityIntegrationTypes[j]" />
-                            @if (@Model.InteroperabilityIntegrationTypes[j].EnumMemberName() == "IM1")
+                            <p>
+                                @integration.Key integrations
+                            </p>
+                            foreach (var integrationType in integration.Value)
                             {
-                                <p>
-                                    @Model.InteroperabilityIntegrationTypes[j].EnumMemberName() integrations
-                                </p>
-                                @for (var i = 0; i < Model.IM1IntegrationsTypes.Count; i++)
-                                {
-                                    <input type="hidden" asp-for="IM1IntegrationsTypes[i]" />
-                                     <li>
-                                          @Model.IM1IntegrationsTypes[i].Name()
-                                     </li>
-                                }
-                            }
-                            @if (@Model.InteroperabilityIntegrationTypes[j].EnumMemberName() == "GP Connect")
-                            {
-                                <p>
-                                    @Model.InteroperabilityIntegrationTypes[j].EnumMemberName() integrations
-                                </p>
-                                @for (var i = 0; i < Model.GPConnectIntegrationsTypes.Count; i++)
-                                {
-                                    <input type="hidden" asp-for="GPConnectIntegrationsTypes[i]" />
-                                    <li>
-                                        @Model.GPConnectIntegrationsTypes[i].Name()
-                                    </li>
-                                }
-                            }
-                            @if (@Model.InteroperabilityIntegrationTypes[j].EnumMemberName() == "NHS App")
-                            {
-                                <p>
-                                    @Model.InteroperabilityIntegrationTypes[j].EnumMemberName() integrations
-                                </p>
-                                @for (var i = 0; i < Model.NhsAppIntegrationsTypes.Count; i++)
-                                {
-                                    <input type="hidden" asp-for="NhsAppIntegrationsTypes[i]" />
-                                    <li>
-                                        @Model.NhsAppIntegrationsTypes[i].Name()
-                                    </li>
-                                }
+                                <li>
+                                    @integrationType
+                                </li>
                             }
                         }
                     }

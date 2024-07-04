@@ -1,5 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
-@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList.TaskListModel
 
@@ -28,7 +27,7 @@
                 {
                     <partial name="TaskListOrderItem"
                                 model="@Model.OrderItemModel(Model.CatalogueSolution.CatalogueItemId)" />
-                }   
+                }
                 </nhs-card-content>
                 <nhs-card-footer>
                     @if (!Model.IsAmendment)
@@ -138,7 +137,7 @@
                     @if (Model.OrderType.MergerOrSplit)
                     {
                             <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>Associated Services cannot be changed</p>
-                    } 
+                    }
                     else if (Model.IsAmendment)
                     {
                         <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>You cannot add Associated Services or edit ones included in the original order when amending an order.</p>

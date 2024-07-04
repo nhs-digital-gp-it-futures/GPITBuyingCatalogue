@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -346,7 +345,7 @@ public static class CompetitionsDashboardControllerTests
 
         filtersService.GetFilterIds(organisation.Id, filterId).Returns(filterIdsModel);
 
-        solutionsFilterService.GetAllSolutionsFiltered(Arg.Any<PageOptions>(), Arg.Any<Dictionary<int, string[]>>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>()).Returns((catalogueItems, null, null));
+        solutionsFilterService.GetAllSolutionsFiltered(Arg.Any<PageOptions>(), Arg.Any<Dictionary<int, string[]>>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Dictionary<SupportedIntegrations, int[]>>()).Returns((catalogueItems, null, null));
 
         var result = (await controller.SaveCompetition(organisation.InternalIdentifier, filterId, model))
             .As<RedirectToActionResult>();

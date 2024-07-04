@@ -22,7 +22,7 @@ public class CompetitionNonPriceElementsService : ICompetitionNonPriceElementsSe
     public async Task DeleteNonPriceElement(string internalOrgId, int competitionId, NonPriceElement nonPriceElement)
     {
         var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.ServiceLevel)
-            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.Features)
             .Include(x => x.NonPriceElements.NonPriceWeights)
@@ -80,7 +80,7 @@ public class CompetitionNonPriceElementsService : ICompetitionNonPriceElementsSe
     {
         var competition = await dbContext.Competitions.Include(x => x.NonPriceElements.Features)
             .Include(x => x.NonPriceElements.ServiceLevel)
-            .Include(x => x.NonPriceElements.Interoperability)
+            .Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.NonPriceElements.Implementation)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);

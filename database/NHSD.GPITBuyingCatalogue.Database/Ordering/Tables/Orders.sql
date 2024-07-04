@@ -17,7 +17,7 @@
     LastUpdated DATETIME2 CONSTRAINT DF_Order_LastUpdated DEFAULT GETUTCDATE() NOT NULL CONSTRAINT Order_LastUpdatedNotBeforeCreated CHECK (LastUpdated >= Created),
     LastUpdatedBy INT NULL,
     Completed DATETIME2 NULL CONSTRAINT Order_CompletedNotBeforeCreated CHECK (Completed >= Created),
-    OrderStatusId INT NULL,
+    OrderStatusId INT NULL, -- TODO: Delete
     IsDeleted BIT CONSTRAINT DF_Order_IsDeleted DEFAULT 0 NOT NULL,
     IsTerminated BIT CONSTRAINT DF_Order_IsTerminated DEFAULT 0 NOT NULL,
     SysStartTime DATETIME2(0) GENERATED ALWAYS AS ROW START NOT NULL,

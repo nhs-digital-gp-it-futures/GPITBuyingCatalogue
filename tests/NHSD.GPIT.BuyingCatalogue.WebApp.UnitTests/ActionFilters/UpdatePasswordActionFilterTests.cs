@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
-using NuGet.Configuration;
 using Xunit;
-using static NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing.Constants;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 {

@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using EnumsNET;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -51,10 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 string selectedFrameworkId = null,
                 string selectedApplicationTypeIds = null,
                 string selectedHostingTypeIds = null,
-                string selectedIm1Integrations = null,
-                string selectedGpConnectIntegrations = null,
-                string selectedNhsAppIntegrations = null,
-                string selectedInteroperabilityOptions = null)
+                Dictionary<SupportedIntegrations, int[]> selectedIntegrationsAndTypes = null)
         {
             (IQueryable<CatalogueItem> query, List<CapabilitiesAndCountModel> count) = await GetFilteredAndNonFilteredQueryResults(capabilitiesAndEpics);
 
@@ -73,8 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     query,
                     selectedApplicationTypeIds,
                     GetSelectedFilterApplication,
-                    x => x.ApplicationTypeDetail != null,
-                    false);
+                    x => x.ApplicationTypeDetail != null);
             }
 
             if (!string.IsNullOrWhiteSpace(selectedHostingTypeIds))
@@ -83,86 +75,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     query,
                     selectedHostingTypeIds,
                     GetSelectedFiltersHosting,
-                    x => x.Hosting != null && x.Hosting.IsValid(),
-                    false);
+                    x => x.Hosting != null && x.Hosting.IsValid());
             }
 
-            if (!string.IsNullOrWhiteSpace(selectedIm1Integrations))
+            if (selectedIntegrationsAndTypes is { Count: > 0 })
             {
-                query = ApplyAdditionalFilterToQuery<InteropIm1IntegrationType>(
-                    query,
-                    selectedIm1Integrations,
-                    GetSelectedFiltersIm1Integration,
-                    x => x.Integrations != null,
-                    false);
-            }
-            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions)
-                     && selectedInteroperabilityOptions.Contains(
-                         ((int)InteropIntegrationType.Im1).ToString(CultureInfo.InvariantCulture),
-                         StringComparison.OrdinalIgnoreCase))
-            {
-                InteropIm1IntegrationType[] enumValues =
-                    (InteropIm1IntegrationType[])Enum.GetValues(typeof(InteropIm1IntegrationType));
+                var integrationsPredicate = IntegrationsPredicate(selectedIntegrationsAndTypes);
 
-                string im1Integrations = enumValues.Select(e => (int)e).ToFilterString();
-                query = ApplyAdditionalFilterToQuery<InteropIm1IntegrationType>(
-                    query,
-                    im1Integrations,
-                    GetSelectedFiltersIm1Integration,
-                    x => x.Integrations != null,
-                    true);
-            }
-
-            if (!string.IsNullOrWhiteSpace(selectedGpConnectIntegrations))
-            {
-                query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrationType>(
-                    query,
-                    selectedGpConnectIntegrations,
-                    GetSelectedFiltersGpConnectIntegration,
-                    x => x.Integrations != null,
-                    false);
-            }
-            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions)
-                     && selectedInteroperabilityOptions.Contains(
-                         ((int)InteropIntegrationType.GpConnect).ToString(CultureInfo.InvariantCulture),
-                         StringComparison.OrdinalIgnoreCase))
-            {
-                InteropGpConnectIntegrationType[] enumValues =
-                    (InteropGpConnectIntegrationType[])Enum.GetValues(typeof(InteropIm1IntegrationType));
-
-                string gpConnectIntegrations = enumValues.Select(e => (int)e).ToFilterString();
-                query = ApplyAdditionalFilterToQuery<InteropGpConnectIntegrationType>(
-                    query,
-                    gpConnectIntegrations,
-                    GetSelectedFiltersGpConnectIntegration,
-                    x => x.Integrations != null,
-                    true);
-            }
-
-            if (!string.IsNullOrWhiteSpace(selectedNhsAppIntegrations))
-            {
-                query = ApplyAdditionalFilterToQuery<InteropNhsAppIntegrationType>(
-                    query,
-                    selectedNhsAppIntegrations,
-                    GetSelectedFiltersNhsAppIntegration,
-                    x => x.Integrations != null,
-                    false);
-            }
-            else if (!string.IsNullOrWhiteSpace(selectedInteroperabilityOptions)
-                     && selectedInteroperabilityOptions.Contains(
-                         ((int)InteropIntegrationType.NhsApp).ToString(CultureInfo.InvariantCulture),
-                         StringComparison.OrdinalIgnoreCase))
-            {
-                InteropNhsAppIntegrationType[] enumValues =
-                    (InteropNhsAppIntegrationType[])Enum.GetValues(typeof(InteropNhsAppIntegrationType));
-
-                string nhsAppIntegrations = enumValues.Select(e => (int)e).ToFilterString();
-                query = ApplyAdditionalFilterToQuery<InteropNhsAppIntegrationType>(
-                    query,
-                    nhsAppIntegrations,
-                    GetSelectedFiltersNhsAppIntegration,
-                    x => x.Integrations != null,
-                    true);
+                query = query.AsExpandable().Where(x => integrationsPredicate.Invoke(x.Solution));
             }
 
             var totalNumberOfItems = await query.CountAsync();
@@ -171,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 PageOptions.SortOptions.LastPublished => query.OrderByDescending(ci => ci.LastPublished)
                     .ThenBy(ci => ci.Name),
                 PageOptions.SortOptions.ZToA => query.OrderByDescending(ci => ci.Name),
-                PageOptions.SortOptions.AtoZ or _ => query.OrderBy(ci => ci.Name),
+                _ => query.OrderBy(ci => ci.Name),
             };
 
             if (options != null)
@@ -202,10 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 selectedFrameworkId: filterIds?.FrameworkId,
                 selectedApplicationTypeIds: filterIds.ApplicationTypeIds.ToFilterString(),
                 selectedHostingTypeIds: filterIds.HostingTypeIds.ToFilterString(),
-                selectedIm1Integrations: filterIds.IM1Integrations.ToFilterString(),
-                selectedGpConnectIntegrations: filterIds.GPConnectIntegrations.ToFilterString(),
-                selectedNhsAppIntegrations: filterIds.NhsAppIntegrations.ToFilterString(),
-                selectedInteroperabilityOptions: filterIds.InteroperabilityOptions.ToFilterString());
+                selectedIntegrationsAndTypes: filterIds.IntegrationsIds);
             return catalogueItems;
         }
 
@@ -235,8 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             IQueryable<CatalogueItem> query,
             string selectedFilterIds,
             Func<Solution, IEnumerable<T>, IEnumerable<T>> getSelectedFilters,
-            Predicate<Solution> isValid,
-            bool isInteropFilter)
+            Predicate<Solution> isValid)
             where T : struct, Enum
         {
             if (string.IsNullOrEmpty(selectedFilterIds))
@@ -255,20 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 var matchingTypes = getSelectedFilters(row.Solution, selectedFilterEnums).ToList();
 
                 if (!(matchingTypes.Count < selectedFilterEnums?.Count)) continue;
-
-                if (isInteropFilter)
-                {
-                    bool shouldKeepRow = matchingTypes.Any(mt => selectedFilterEnums.Contains(mt));
-
-                    if (!shouldKeepRow)
-                    {
-                        query = query.Where(ci => ci.Id != row.Id);
-                    }
-                }
-                else
-                {
-                    query = query.Where(ci => ci.Id != row.Id);
-                }
+                query = query.Where(ci => ci.Id != row.Id);
             }
 
             return query;
@@ -380,6 +283,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             return epicsPredicate;
         }
 
+        private static Expression<Func<Solution, bool>> IntegrationsPredicate(
+            IDictionary<SupportedIntegrations, int[]> selectedIntegrations)
+        {
+            var predicate = PredicateBuilder.New<Solution>();
+
+            foreach (var integration in selectedIntegrations)
+            {
+                var integrationPredicate = PredicateBuilder.New<Solution>();
+                if (integration.Value.Length == 0)
+                {
+                    integrationPredicate = integrationPredicate.And(x => x.Integrations.Any(y => y.IntegrationType.IntegrationId == integration.Key));
+                }
+                else
+                {
+                    integration.Value.ForEach(x =>
+                    {
+                        integrationPredicate =
+                            integrationPredicate.And(y => y.Integrations.Any(z => z.IntegrationTypeId == x));
+                    });
+                }
+
+                predicate.And(integrationPredicate);
+            }
+
+            return predicate;
+        }
+
         private static IEnumerable<ApplicationType> GetSelectedFilterApplication(
             Solution solution,
             IEnumerable<ApplicationType> selectedFilterEnums)
@@ -393,30 +323,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             IEnumerable<HostingType> selectedFilterEnums)
         {
             return selectedFilterEnums?.Where(t => solution.Hosting.HasHostingType(t));
-        }
-
-        private static IEnumerable<InteropIm1IntegrationType> GetSelectedFiltersIm1Integration(
-            Solution solution,
-            IEnumerable<InteropIm1IntegrationType> selectedFilterEnums)
-        {
-            return selectedFilterEnums?.Where(
-                t => solution.Integrations.Contains(t.GetName().Replace('_', ' '), StringComparison.OrdinalIgnoreCase));
-        }
-
-        private static IEnumerable<InteropGpConnectIntegrationType> GetSelectedFiltersGpConnectIntegration(
-            Solution solution,
-            IEnumerable<InteropGpConnectIntegrationType> selectedFilterEnums)
-        {
-            return selectedFilterEnums?.Where(
-                t => solution.Integrations.Contains(t.GetName().Replace('_', ' '), StringComparison.OrdinalIgnoreCase));
-        }
-
-        private static IEnumerable<InteropNhsAppIntegrationType> GetSelectedFiltersNhsAppIntegration(
-            Solution solution,
-            IEnumerable<InteropNhsAppIntegrationType> selectedFilterEnums)
-        {
-            return selectedFilterEnums?.Where(
-                t => solution.Integrations.Contains(t.GetName().Replace('_', ' '), StringComparison.OrdinalIgnoreCase));
         }
     }
 }

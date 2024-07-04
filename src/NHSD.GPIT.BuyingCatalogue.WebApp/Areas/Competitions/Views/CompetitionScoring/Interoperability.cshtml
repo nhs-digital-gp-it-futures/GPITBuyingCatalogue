@@ -2,9 +2,6 @@
 
 @{
     ViewBag.Title = "Compare and score interoperability";
-
-    var im1Integrations = Model.GetIm1Integrations();
-    var gpConnectIntegrations = Model.GetGpConnectIntegrations();
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -23,43 +20,29 @@
         <h2>Your interoperability criteria</h2>
 
         <nhs-card>
-            <h3>IM1 integrations</h3>
-            <nhs-summary-list>
-                <nhs-summary-list-row label-text="Integration type">
-                    @if (!im1Integrations.Any())
-                    {
-                        <span>None selected</span>
-                    }
-                    else
-                    {
-                        <ul>
-                            @foreach (var integration in im1Integrations.Order())
-                            {
-                                <li>@integration</li>
-                            }
-                        </ul>
-                    }
-                </nhs-summary-list-row>
-            </nhs-summary-list>
+            @foreach (var integration in Model.AvailableIntegrations.OrderBy(x => x.Key))
+            {
+                var selectedIntegrationTypes = Model.IntegrationTypes.Where(x => x.IntegrationId == integration.Key).OrderBy(x => x.Name).ToList();
 
-            <h3>GP Connect integrations</h3>
-            <nhs-summary-list>
-                <nhs-summary-list-row label-text="Integration type">
-                    @if (!gpConnectIntegrations.Any())
-                    {
-                        <span>None selected</span>
-                    }
-                    else
-                    {
-                        <ul>
-                            @foreach (var integration in gpConnectIntegrations.Order())
-                            {
-                                <li>@integration</li>
-                            }
-                        </ul>
-                    }
-                </nhs-summary-list-row>
-            </nhs-summary-list>
+                <h3>@(integration.Value) integrations</h3>
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Integration type">
+                        @if (!selectedIntegrationTypes.Any())
+                        {
+                            <span>None selected</span>
+                        }
+                        else
+                        {
+                            <ul>
+                                @foreach (var selectedIntegration in selectedIntegrationTypes.OrderBy(x => x.Name))
+                                {
+                                    <li>@selectedIntegration.Name</li>
+                                }
+                            </ul>
+                        }
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+            }
         </nhs-card>
     </div>
 </div>
@@ -80,55 +63,55 @@
                     <br/>
                     <br/>
 
-                    <h3>IM1 integrations</h3>
+                    @foreach (var integration in Model.AvailableIntegrations.OrderBy(x => x.Key))
+                    {
+                        var solutionIntegrations = solutionScoreModel.Solution.Integrations
+                            .Where(x => x.IntegrationType.IntegrationId == integration.Key)
+                            .GroupBy(x => x.IntegrationType.Name)
+                            .OrderBy(x => x.Key)
+                            .ToList();
 
-                    @if (solutionScoreModel.Im1Integrations.Count == 0)
-                    {
-                        <p>This solution has no IM1 integrations listed</p>
-                    }
-                    else
-                    {
-                        foreach (var integration in solutionScoreModel.Im1Integrations)
+                        <h3>@(integration.Value) integrations</h3>
+
+                        if (solutionIntegrations.Count == 0)
                         {
-                            <nhs-table label-text="@integration.Qualifier">
-                                <nhs-table-column>Provider or consumer</nhs-table-column>
-                                <nhs-table-column>System integrating with</nhs-table-column>
-                                <nhs-table-column>Description</nhs-table-column>
-
-                                @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
-                                {
-                                    <nhs-table-row-container>
-                                        <nhs-table-cell>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</nhs-table-cell>
-                                        <nhs-table-cell>@specificIntegration.IntegratesWith</nhs-table-cell>
-                                        <nhs-table-cell>@specificIntegration.Description</nhs-table-cell>
-                                    </nhs-table-row-container>
-                                }
-                            </nhs-table>
+                            <p>This solution has no @integration.Value integrations listed</p>
                         }
-                    }
-
-                    <h3>GP Connect integrations</h3>
-
-                    @if (solutionScoreModel.GpConnectIntegrations.Count == 0)
-                    {
-                        <p>This solution has no GP Connect integrations listed</p>
-                    }
-                    else
-                    {
-                        foreach (var integration in solutionScoreModel.GpConnectIntegrations)
+                        else
                         {
-                            <nhs-table label-text="@integration.Qualifier">
-                                <nhs-table-column>Provider or consumer</nhs-table-column>
-                                <nhs-table-column>Additional information</nhs-table-column>
+                            foreach (var solutionIntegration in solutionIntegrations)
+                            {
+                                var supportsProviderOrConsumer = solutionIntegration.Any(x => x.IsConsumer.HasValue);
+                                var hasSystemIntegration = solutionIntegration.Any(x => !string.IsNullOrWhiteSpace(x.IntegratesWith));
 
-                                @foreach (var specificIntegration in integration.Integrations.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
-                                {
-                                    <nhs-table-row-container>
-                                        <nhs-table-cell>@(specificIntegration.IsConsumer ? "Consumer" : "Provider")</nhs-table-cell>
-                                        <nhs-table-cell>@specificIntegration.Description</nhs-table-cell>
-                                    </nhs-table-row-container>
-                                }
-                            </nhs-table>
+                                <nhs-table label-text="@solutionIntegration.Key">
+                                    @if (supportsProviderOrConsumer)
+                                    {
+                                        <nhs-table-column>Provider or consumer</nhs-table-column>
+                                    }
+                                    @if (hasSystemIntegration)
+                                    {
+                                        <nhs-table-column>System integrating with</nhs-table-column>
+                                    }
+                                    <nhs-table-column>Description</nhs-table-column>
+
+                                    @foreach (var specificIntegration in solutionIntegration.OrderBy(x => x.IsConsumer).ThenBy(x => x.IntegratesWith))
+                                    {
+                                        <nhs-table-row-container>
+                                            @if (supportsProviderOrConsumer)
+                                            {
+                                                <nhs-table-cell>@(specificIntegration.IsConsumer.GetValueOrDefault() ? "Consumer" : "Provider")</nhs-table-cell>
+                                            }
+                                            @if (hasSystemIntegration)
+                                            {
+                                                <nhs-table-cell>@specificIntegration.IntegratesWith</nhs-table-cell>
+                                            }
+                                            <nhs-table-cell>@(specificIntegration.Description ?? specificIntegration.IntegrationType.Description)</nhs-table-cell>
+                                        </nhs-table-row-container>
+                                    }
+                                </nhs-table>
+
+                            }
                         }
                     }
 

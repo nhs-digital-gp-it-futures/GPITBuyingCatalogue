@@ -46,7 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 solution.CatalogueItemId = catalogueItem.Id;
                 solution.ApplicationTypeDetail = context.Create<ApplicationTypeDetail>();
                 solution.Features = JsonSerializer.Serialize(context.Create<string[]>());
-                solution.Integrations = JsonSerializer.Serialize(context.CreateMany<Integration>());
 
                 AddAdditionalServices(solution, context);
                 AddFrameworkSolutions(solution, context);

@@ -104,7 +104,7 @@
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="**/*.sql" />
+    <Build Include="**/*.sql"/>
     <None Include="PostDeployment/**/*.sql" />
     <Build Remove="obj/**/*.sql" />
     <Build Remove="bin/**/*.sql" />
@@ -154,6 +154,7 @@
     <Folder Include="PostDeployment\TestData\" />
     <Folder Include="PostDeployment\TestData\Competitions\" />
     <Folder Include="PostDeployment\TestData\Solutions\" />
+    <Folder Include="PostDeployment\Seed" />
     <Folder Include="Notifications\" />
     <Folder Include="Notifications\Tables\" />
     <Folder Include="Notifications\TemporalTables\" />

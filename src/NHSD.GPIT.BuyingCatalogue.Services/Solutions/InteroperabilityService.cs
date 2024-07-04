@@ -1,26 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
-using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 {
-    public sealed class InteroperabilityService : IInteroperabilityService
+    public sealed class InteroperabilityService(BuyingCatalogueDbContext dbContext) : IInteroperabilityService
     {
-        private readonly BuyingCatalogueDbContext dbContext;
-
-        public InteroperabilityService(BuyingCatalogueDbContext dbContext)
-        {
-            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        }
+        private readonly BuyingCatalogueDbContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
         public async Task SaveIntegrationLink(CatalogueItemId solutionId, string integrationLink)
         {
@@ -29,101 +21,67 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task AddIntegration(CatalogueItemId catalogueItemId, Integration integration)
+        public async Task AddIntegration(CatalogueItemId catalogueItemId, SolutionIntegration integration)
         {
-            if (integration is null)
-                throw new ArgumentNullException(nameof(integration));
+            ArgumentNullException.ThrowIfNull(integration);
 
-            integration.Id = Guid.NewGuid();
+            var solution = await dbContext.Solutions.Include(x => x.Integrations).FirstAsync(s => s.CatalogueItemId == catalogueItemId);
 
-            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == catalogueItemId);
-
-            var integrations = solution.GetIntegrations() ?? new List<Integration>();
-
-            integrations.Add(integration);
-
-            solution.Integrations = JsonSerializer.Serialize(integrations);
+            solution.Integrations.Add(integration);
 
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<Integration> GetIntegrationById(CatalogueItemId solutionId, Guid integrationId)
+        public async Task EditIntegration(CatalogueItemId solutionId, int integrationId, SolutionIntegration integration)
         {
-            var solution = await dbContext.Solutions.FirstOrDefaultAsync(s => s.CatalogueItemId == solutionId);
+            ArgumentNullException.ThrowIfNull(integration);
 
-            var integration = solution?.GetIntegrations().FirstOrDefault(i => i.Id == integrationId);
+            var solution = await dbContext.Solutions.Include(x => x.Integrations).FirstAsync(s => s.CatalogueItemId == solutionId);
+            var solutionIntegration = solution.Integrations.FirstOrDefault(x => x.Id == integrationId);
+            if (solutionIntegration is null) return;
 
-            return integration;
-        }
-
-        public async Task EditIntegration(CatalogueItemId solutionId, Guid integrationId, Integration integration)
-        {
-            if (integration is null)
-                throw new ArgumentNullException(nameof(integration));
-
-            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-
-            var integrations = solution.GetIntegrations().ToList();
-
-            var index = integrations.IndexOf(integrations.First(i => i.Id == integrationId));
-
-            integrations.RemoveAt(index);
-
-            integrations.Insert(index, integration);
-
-            solution.Integrations = JsonSerializer.Serialize(integrations);
+            solutionIntegration.IntegrationTypeId = integration.IntegrationTypeId;
+            solutionIntegration.IntegratesWith = integration.IntegratesWith;
+            solutionIntegration.Description = integration.Description;
+            solutionIntegration.IsConsumer = integration.IsConsumer;
 
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteIntegration(CatalogueItemId solutionId, Guid integrationId)
+        public async Task DeleteIntegration(CatalogueItemId solutionId, int integrationId)
         {
-            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
+            var solution = await dbContext.Solutions.Include(x => x.Integrations).FirstAsync(s => s.CatalogueItemId == solutionId);
 
-            var integrations = solution.GetIntegrations().ToList();
+            var integration = solution.Integrations.FirstOrDefault(x => x.Id == integrationId);
+            if (integration is null) return;
 
-            var index = integrations.IndexOf(integrations.FirstOrDefault(i => i.Id == integrationId));
-
-            if (index > -1)
-            {
-                integrations.RemoveAt(index);
-
-                solution.Integrations = JsonSerializer.Serialize(integrations);
-
-                await dbContext.SaveChangesAsync();
-            }
+            solution.Integrations.Remove(integration);
+            await dbContext.SaveChangesAsync();
         }
 
-        public async Task SetNhsAppIntegrations(CatalogueItemId solutionId, IEnumerable<string> integrations)
+        public async Task SetNhsAppIntegrations(CatalogueItemId solutionId, IEnumerable<int> integrations)
         {
             ArgumentNullException.ThrowIfNull(integrations);
 
-            var solution = await dbContext.Solutions.FirstAsync(s => s.CatalogueItemId == solutionId);
-
-            var solutionIntegrations = solution.GetIntegrations().ToList();
+            var solution = await dbContext.Solutions.Include(x => x.Integrations).ThenInclude(x => x.IntegrationType).FirstAsync(s => s.CatalogueItemId == solutionId);
 
             var nhsAppIntegrations =
-                solutionIntegrations.Where(x => x.IntegrationType == Interoperability.NhsAppIntegrationType)
+                solution.Integrations.Where(x => x.IntegrationType.IntegrationId == SupportedIntegrations.NhsApp)
                     .ToList();
 
-            var newIntegrations = integrations.Select(x => new Integration(Interoperability.NhsAppIntegrationType, x))
+            var newIntegrations = integrations.Select(x => new SolutionIntegration { IntegrationTypeId = x })
                 .ToList();
 
             var toRemove =
                 nhsAppIntegrations.Where(
-                    x => !newIntegrations.Any(
-                        y => string.Equals(x.Qualifier, y.Qualifier, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
+                    x => newIntegrations.All(y => x.IntegrationTypeId != y.IntegrationTypeId));
 
             var toAdd =
                 newIntegrations.Where(
-                    x => !nhsAppIntegrations.Any(
-                        y => string.Equals(x.Qualifier, y.Qualifier, StringComparison.OrdinalIgnoreCase)));
+                    x => nhsAppIntegrations.All(y => x.IntegrationTypeId != y.IntegrationTypeId));
 
-            toRemove.ForEach(x => solutionIntegrations.Remove(x));
-            solutionIntegrations.AddRange(toAdd);
-
-            solution.Integrations = JsonSerializer.Serialize(solutionIntegrations);
+            toRemove.ToList().ForEach(x => solution.Integrations.Remove(x));
+            toAdd.ToList().ForEach(x => solution.Integrations.Add(x));
 
             await dbContext.SaveChangesAsync();
         }

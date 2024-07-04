@@ -1,7 +1,5 @@
-﻿@using System.Linq
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.Framework.Calculations
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrderSummaryModel
 @{
     Layout = "";
@@ -302,7 +300,7 @@
 
                         <div style="page-break-after: always"></div>
                     }
-                    
+
                 @if (Model.RolledUp.GetAssociatedServices().Any())
                     {
                         <h2>@(Model.RolledUp.GetAdditionalServices().Count() > 1 ? "Associated Services" : "Associated Service")</h2>

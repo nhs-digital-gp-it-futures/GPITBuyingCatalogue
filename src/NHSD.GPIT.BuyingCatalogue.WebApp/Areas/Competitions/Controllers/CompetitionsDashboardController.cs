@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -13,8 +10,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.Services.Framework;
-using NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -147,7 +142,7 @@ public class CompetitionsDashboardController : Controller
         _ = filterId;
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        var backlink = fromFilter == true ?
+        var backlink = fromFilter ?
                 Url.Action(
                     nameof(ManageFiltersController.FilterDetails),
                     typeof(ManageFiltersController).ControllerName(),
@@ -211,10 +206,7 @@ public class CompetitionsDashboardController : Controller
                 selectedFrameworkId: filter.FrameworkId,
                 selectedApplicationTypeIds: filter.ApplicationTypeIds.ToFilterString(),
                 selectedHostingTypeIds: filter.HostingTypeIds.ToFilterString(),
-                selectedIm1Integrations: filter.IM1Integrations.ToFilterString(),
-                selectedGpConnectIntegrations: filter.GPConnectIntegrations.ToFilterString(),
-                selectedNhsAppIntegrations: filter.NhsAppIntegrations.ToFilterString(),
-                selectedInteroperabilityOptions: filter.InteroperabilityOptions.ToFilterString());
+                selectedIntegrationsAndTypes: filter.IntegrationsIds);
 
         var competitionSolutions = solutionsAndServices
             .Where(x => x.Solution.FrameworkSolutions.Any(y => y.FrameworkId == competition.FrameworkId))
