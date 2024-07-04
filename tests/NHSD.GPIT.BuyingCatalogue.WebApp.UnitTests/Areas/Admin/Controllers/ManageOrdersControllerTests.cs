@@ -9,9 +9,12 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Flurl.Http.Content;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -19,15 +22,19 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageOrders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
+using NSubstitute;
 using Xunit;
 using DeleteOrderModel = NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders.DeleteOrderModel;
 
@@ -46,15 +53,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_ReturnsViewWithModel(
             PagedList<AdminManageOrder> orders,
-            [Frozen] Mock<IOrderAdminService> orderAdminService,
+            IEnumerable<EntityFramework.Catalogue.Models.Framework> frameworks,
+            [Frozen] IFrameworkService frameworkService,
+            [Frozen] IOrderAdminService orderAdminService,
             ManageOrdersController controller)
         {
-            var expectedModel = new ManageOrdersDashboardModel(orders.Items, orders.Options);
-            orderAdminService.Setup(s => s.GetPagedOrders(It.IsAny<PageOptions>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(orders);
+            var expectedModel = new ManageOrdersDashboardModel(orders.Items, frameworks, orders.Options, null, string.Empty);
+            orderAdminService.GetPagedOrders(Arg.Any<PageOptions>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<OrderStatus?>()).Returns(orders);
+            frameworkService.GetFrameworks().Returns(frameworks.ToList());
 
             var result = (await controller.Index()).As<ViewResult>();
 
@@ -63,12 +72,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
+        public static void Post_Index_ReturnsRedirectToActionResult(
+            ManageOrdersDashboardModel model,
+            ManageOrdersController controller)
+        {
+            var result = controller.Index(model);
+
+            var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+
+            actualResult.ActionName.Should().Be(nameof(ManageOrdersController.Index));
+            actualResult.ControllerName.Should().Be(typeof(ManageOrdersController).ControllerName());
+            actualResult.RouteValues.Should()
+                .BeEquivalentTo(
+                    new RouteValueDictionary
+                    {
+                        { "framework", model.SelectedFramework },
+                        { "status", model.SelectedStatus },
+                    });
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Get_FilterSearchSuggestions_ReturnsResults(
             string searchTerm,
             Uri uri,
             List<SearchFilterModel> searchResults,
-            [Frozen] Mock<IOrderAdminService> orderAdminService,
+            [Frozen] IOrderAdminService orderAdminService,
             ManageOrdersController controller)
         {
             controller.ControllerContext.HttpContext = new DefaultHttpContext()
@@ -87,8 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                     r.Category,
                     requestUri.AppendQueryParameterToUrl("search", r.Title).AppendQueryParameterToUrl("searchTermType", r.Category).Uri.PathAndQuery));
 
-            orderAdminService.Setup(s => s.GetOrdersBySearchTerm(searchTerm))
-                .ReturnsAsync(searchResults);
+            orderAdminService.GetOrdersBySearchTerm(searchTerm).Returns(searchResults);
 
             var result = (await controller.FilterSearchSuggestions(searchTerm)).As<JsonResult>();
 
@@ -97,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_ViewOrder_ReturnsViewWithModel(
             AspNetUser user,
             Organisation organisation,
@@ -107,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             FrameworkSolution[] frameworkSolutions,
             EntityFramework.Ordering.Models.Order order,
             EntityFramework.Catalogue.Models.Framework framework,
-            [Frozen] Mock<IOrderAdminService> orderAdminService,
+            [Frozen] IOrderAdminService orderAdminService,
             ManageOrdersController controller)
         {
             solution.FrameworkSolutions = frameworkSolutions;
@@ -121,8 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             order.Supplier = supplier;
             order.SelectedFramework = framework;
 
-            orderAdminService.Setup(s => s.GetOrder(order.CallOffId))
-                .ReturnsAsync(order);
+            orderAdminService.GetOrder(order.CallOffId).Returns(order);
 
             var result = (await controller.ViewOrder(order.CallOffId)).As<ViewResult>();
 
@@ -133,31 +161,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Download_CompleteOrder_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderAdminService> orderServiceMock,
-            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
+            [Frozen] IOrderAdminService orderServiceMock,
+            [Frozen] IOrderPdfService pdfServiceMock,
             byte[] fileContents,
             ManageOrdersController controller)
         {
             order.Completed = DateTime.UtcNow;
 
-            orderServiceMock
-                .Setup(s => s.GetOrder(order.CallOffId))
-                .ReturnsAsync(order);
+            orderServiceMock.GetOrder(order.CallOffId).Returns(order);
 
-            pdfServiceMock
-                .Setup(s => s.CreateOrderSummaryPdf(It.IsAny<EntityFramework.Ordering.Models.Order>()))
-                .ReturnsAsync(new MemoryStream(fileContents));
+            pdfServiceMock.CreateOrderSummaryPdf(Arg.Any<EntityFramework.Ordering.Models.Order>()).Returns(new MemoryStream(fileContents));
 
             SetControllerHttpContext(controller);
 
             var result = (await controller.Download(order.CallOffId, internalOrgId)).As<FileContentResult>();
 
-            orderServiceMock.VerifyAll();
-            pdfServiceMock.VerifyAll();
+            await orderServiceMock.Received().GetOrder(order.CallOffId);
+            await pdfServiceMock.Received().CreateOrderSummaryPdf(Arg.Any<EntityFramework.Ordering.Models.Order>());
 
             result.Should().NotBeNull();
             result.ContentType.Should().Be("application/pdf");
@@ -166,31 +190,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Download_InProgressOrder_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderAdminService> orderServiceMock,
-            [Frozen] Mock<IOrderPdfService> pdfServiceMock,
+            [Frozen] IOrderAdminService orderServiceMock,
+            [Frozen] IOrderPdfService pdfServiceMock,
             byte[] fileContents,
             ManageOrdersController controller)
         {
             order.Completed = null;
 
-            orderServiceMock
-                .Setup(s => s.GetOrder(order.CallOffId))
-                .ReturnsAsync(order);
+            orderServiceMock.GetOrder(order.CallOffId).Returns(order);
 
-            pdfServiceMock
-                .Setup(s => s.CreateOrderSummaryPdf(It.IsAny<EntityFramework.Ordering.Models.Order>()))
-                .ReturnsAsync(new MemoryStream(fileContents));
+            pdfServiceMock.CreateOrderSummaryPdf(Arg.Any<EntityFramework.Ordering.Models.Order>()).Returns(new MemoryStream(fileContents));
 
             SetControllerHttpContext(controller);
 
             var result = (await controller.Download(order.CallOffId, internalOrgId)).As<FileContentResult>();
 
-            orderServiceMock.VerifyAll();
-            pdfServiceMock.VerifyAll();
+            await orderServiceMock.Received().GetOrder(order.CallOffId);
+            await pdfServiceMock.Received().CreateOrderSummaryPdf(Arg.Any<EntityFramework.Ordering.Models.Order>());
 
             result.Should().NotBeNull();
             result.ContentType.Should().Be("application/pdf");
@@ -199,20 +219,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(1, 1, "")]
-        [CommonInlineAutoData(1, 2, "Amendment_")]
+        [MockInlineAutoData(1, 1, "")]
+        [MockInlineAutoData(1, 2, "Amendment_")]
         public static async Task Get_DownloadFullOrderCsv_ReturnsExpectedResult(
             int orderNumber,
             int revision,
             string prefix,
             string externalOrgId,
-            [Frozen] Mock<ICsvService> csvService,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderAdminService orderServiceMock,
+            [Frozen] ICsvService csvServiceMock,
             ManageOrdersController controller)
         {
             var callOffId = new CallOffId(orderNumber, revision);
-            var result = (await controller.DownloadFullOrderCsv(callOffId, externalOrgId)).As<FileContentResult>();
 
-            csvService.VerifyAll();
+            orderServiceMock.GetOrder(callOffId).Returns(order);
+
+            csvServiceMock.CreateFullOrderCsvAsync(order.Id, order.OrderType, Arg.Any<MemoryStream>()).Returns(Task.CompletedTask);
+            var result = (await controller.DownloadFullOrderCsv(callOffId, externalOrgId)).As<FileContentResult>();
 
             result.Should().NotBeNull();
             result.ContentType.Should().Be("application/octet-stream");
@@ -220,16 +244,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteNotLatest_ReturnsViewWithModel(
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderAdminService> orderAdminService,
+            [Frozen] IOrderAdminService orderAdminService,
             ManageOrdersController controller)
         {
             var expectedModel = new DeleteNotLatestModel(order.CallOffId);
 
-            orderAdminService.Setup(s => s.GetOrder(order.CallOffId))
-                .ReturnsAsync(order);
+            orderAdminService.GetOrder(order.CallOffId).Returns(order);
 
             var result = (await controller.DeleteNotLatest(order.CallOffId)).As<ViewResult>();
 
@@ -238,20 +261,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteOrder_ReturnsViewWithModel_When_Latest(
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderAdminService> orderAdminService,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderAdminService orderAdminService,
+            [Frozen] IOrderService orderService,
             ManageOrdersController controller)
         {
             var expectedModel = new DeleteOrderModel(order.CallOffId);
 
-            orderAdminService.Setup(s => s.GetOrder(order.CallOffId))
-                .ReturnsAsync(order);
+            orderAdminService.GetOrder(order.CallOffId).Returns(order);
 
-            orderService.Setup(s => s.HasSubsequentRevisions(order.CallOffId))
-                .ReturnsAsync(false);
+            orderService.HasSubsequentRevisions(order.CallOffId).Returns(false);
 
             var result = (await controller.DeleteOrder(order.CallOffId)).As<ViewResult>();
 
@@ -260,20 +281,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteOrder_Redirects_To_DeleteNotLatest_When_Not_Latest(
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderAdminService> orderAdminService,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderAdminService orderAdminService,
+            [Frozen] IOrderService orderService,
             ManageOrdersController controller)
         {
             var expectedModel = new DeleteOrderModel(order.CallOffId);
 
-            orderAdminService.Setup(s => s.GetOrder(order.CallOffId))
-                .ReturnsAsync(order);
+            orderAdminService.GetOrder(order.CallOffId).Returns(order);
 
-            orderService.Setup(s => s.HasSubsequentRevisions(order.CallOffId))
-                .ReturnsAsync(true);
+            orderService.HasSubsequentRevisions(order.CallOffId).Returns(true);
 
             var result = (await controller.DeleteOrder(order.CallOffId)).As<RedirectToActionResult>();
 
@@ -282,7 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteOrder_InvalidModelState(
             DeleteOrderModel model,
             ManageOrdersController controller)
@@ -296,15 +315,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteOrder_ConfirmedDelete(
             DeleteOrderModel model,
-            [Frozen] Mock<IOrderAdminService> orderAdminService,
+            [Frozen] IOrderAdminService orderAdminService,
             ManageOrdersController controller)
         {
             var result = (await controller.DeleteOrder(model)).As<RedirectToActionResult>();
 
-            orderAdminService.Verify(s => s.DeleteOrder(model.CallOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate ?? null), Times.Once());
+            await orderAdminService.Received().DeleteOrder(model.CallOffId, model.NameOfRequester, model.NameOfApprover, model.ApprovalDate ?? null);
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Index));

@@ -59,31 +59,49 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<PagedList<AdminManageOrder>> GetPagedOrders(
             PageOptions options,
             string search = null,
-            string searchTermType = null)
+            string searchTermType = null,
+            string framework = null,
+            OrderStatus? status = null)
         {
             if (options is null)
                 throw new ArgumentNullException(nameof(options));
 
-            var baseQuery = dbContext.Orders.IgnoreQueryFilters().AsNoTracking().AsQueryable();
+            var baseQuery = dbContext.Orders.Include(x => x.OrderingParty)
+                .OrderByDescending(o => o.Created)
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
                 baseQuery = GetSearchTermBySearchType(baseQuery, search, searchTermType);
 
-            options.TotalNumberOfItems = await baseQuery.CountAsync();
+            if (!string.IsNullOrWhiteSpace(framework))
+            {
+                baseQuery = baseQuery.Where(
+                    o => o.SelectedFrameworkId.Contains(framework));
+            }
+
+            var orderList = await baseQuery.ToListAsync();
+            if (status is not null)
+            {
+                orderList = orderList.Where(y => y.OrderStatus == status).ToList();
+            }
+
+            options.TotalNumberOfItems = orderList.Count;
 
             if (options.PageNumber != 0)
-                baseQuery = baseQuery.Skip((options.PageNumber - 1) * options.PageSize);
+                orderList = orderList.Skip((options.PageNumber - 1) * options.PageSize).ToList();
 
-            baseQuery = baseQuery.Take(options.PageSize);
+            orderList = orderList.Take(options.PageSize).ToList();
 
-            var results = await baseQuery
+            var results = orderList
                     .Select(o => new AdminManageOrder
                     {
                         CallOffId = o.CallOffId,
                         OrganisationName = o.OrderingParty.Name,
                         Created = o.Created,
                         Status = o.OrderStatus,
-                    }).ToListAsync();
+                    }).ToList();
 
             return new PagedList<AdminManageOrder>(
                 results,
@@ -173,7 +191,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private static string ParseCallOffId(string search) => search
             .Replace("C0", string.Empty, StringComparison.OrdinalIgnoreCase)
-            .Replace("-01", string.Empty, StringComparison.OrdinalIgnoreCase);
+            .Replace("-01", string.Empty, StringComparison.OrdinalIgnoreCase)
+            .TrimStart('0');
 
         private static class OrderSearchTerms
         {

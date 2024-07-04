@@ -4,6 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Shortlist;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Xunit.Abstractions;
@@ -41,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             OrderingPages = new OrderingPages(Driver, CommonActions, factory);
             CompetitionPages = new CompetitionPages(Driver, CommonActions, factory);
             AdminPages = new AdminPages(Driver, CommonActions, factory);
+            ShortlistPages = new ShortlistPages(Driver, CommonActions, factory);
 
             NavigateToUrl(urlArea);
         }
@@ -60,6 +62,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
         internal CompetitionPages CompetitionPages { get; }
 
         internal AdminPages AdminPages { get; }
+
+        public ShortlistPages ShortlistPages { get; }
 
         internal void AuthorityLogin()
         {

@@ -2,6 +2,15 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders.ManageOrdersDashboardModel;
 @{
     ViewBag.Title = "Manage orders";
+
+    var filterCount = Model.FilterCount;
+    var suffix = filterCount == 1
+            ? "filter selected"
+            : "filters selected";
+    var orderCount = Model.Options?.TotalNumberOfItems ?? Model.Orders.Count;
+    var orderTitle = orderCount == 1
+        ? "1 order found"
+        : $"{orderCount} orders found";
 }
 
 @section Breadcrumbs {
@@ -27,7 +36,7 @@
     </div>
 
     <div class="nhsuk-grid-column-full">
-        @if((Model.Orders.Count == 0 && Context.Request.Query["search"].Count > 0) || Model.Orders.Count > 0)
+        @if ((Model.Orders.Count == 0 && (Context.Request.Query["search"].Count > 0 || Model.FilterCount > 0)) || Model.Orders.Count > 0)
         {
             <vc:nhs-suggestion-search id="orders-suggestion-search"
                                       ajax-url="@Url.Action(
@@ -35,54 +44,90 @@
                                                     typeof(ManageOrdersController).ControllerName())"
                                       title-text="Search by Call-off ID, organisation name, supplier or solution"
                                       query-parameter-name="search"/>
+
+            <form method="post">
+                <nhs-expander label-text="Filter orders" secondary-text-title="@(Model.FilterCount) " secondary-text="@suffix" bold-title="true" open="false">
+                    <div class="nhsuk-grid-row">
+                        <div class="nhsuk-grid-column-one-half">
+                            <nhs-fieldset-form-label asp-for="@Model"
+                                                     label-hint="Filter by framework">
+                                <nhs-radio-buttons asp-for="SelectedFramework"
+                                                   values="@Model.AvailableFrameworks"
+                                                   value-name="Value"
+                                                   display-name="Text"/>
+                            </nhs-fieldset-form-label>
+                        </div>
+                        <div class="nhsuk-grid-column-one-half">
+                            <nhs-fieldset-form-label asp-for="@Model"
+                                                     label-hint="Filter by status">
+                                <nhs-radio-buttons asp-for="SelectedStatus"
+                                                   values="@Model.AvailableStatus"
+                                                   value-name="Value"
+                                                   display-name="Text"/>
+                            </nhs-fieldset-form-label>
+                        </div>
+                    </div>
+                    <hr class="nhsuk-section-break--s"/>
+                    <nhs-submit-button text="Apply filters"/>
+                    <br/>
+                    <a asp-action="@nameof(ManageOrdersController.Index)"
+                       asp-controller="@typeof(ManageOrdersController).ControllerName()">
+                        Clear filters
+                    </a>
+                </nhs-expander>
+            </form>
         }
         @if (Model.Orders is not null && Model.Orders.Count > 0)
         {
-            <nhs-table data-test-id="orders-table">
-                <nhs-table-column>Call-off ID</nhs-table-column>
-                <nhs-table-column>Organisation</nhs-table-column>
-                <nhs-table-column>Date created</nhs-table-column>
-                <nhs-table-column>Status</nhs-table-column>
-                <nhs-table-column>Action</nhs-table-column>
-                @foreach(var order in Model.Orders)
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>@order.CallOffId</nhs-table-cell>
-                        <nhs-table-cell>@order.OrganisationName</nhs-table-cell>
-                        <nhs-table-cell>@order.Created.ToString("d MMM yyyy")</nhs-table-cell>
-                        <nhs-table-cell>
-                            <nhs-tag status-enum="@order.Status" />
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a data-test-id="link-@order.CallOffId"
-                                asp-action="@nameof(ManageOrdersController.ViewOrder)"
-                                asp-controller="@typeof(ManageOrdersController).ControllerName()",
-                                asp-route-callOffId="@order.CallOffId">
-                                View
-                            </a>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
-            <div id="pagination">
-                <nhs-page-number-pagination current-page-number="@Model.Options.PageNumber"
-                                            total-number-of-pages="@Model.Options.NumberOfPages" />
+            <nhs-card-v2>
+                <nhs-card-content title="@orderTitle">
+                    <nhs-table data-test-id="orders-table">
+                        <nhs-table-column>Call-off ID</nhs-table-column>
+                        <nhs-table-column>Organisation</nhs-table-column>
+                        <nhs-table-column>Date created</nhs-table-column>
+                        <nhs-table-column><div style="min-width:110px">Status</div></nhs-table-column>
+                        <nhs-table-column>Action</nhs-table-column>
+                        @foreach (var order in Model.Orders)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>@order.CallOffId</nhs-table-cell>
+                                <nhs-table-cell>@order.OrganisationName</nhs-table-cell>
+                                <nhs-table-cell>@order.Created.ToString("d MMM yyyy")</nhs-table-cell>
+                                <nhs-table-cell>
+                                    <nhs-tag status-enum="@order.Status"/>
+                                </nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a data-test-id="link-@order.CallOffId"
+                                       asp-action="@nameof(ManageOrdersController.ViewOrder)"
+                                       asp-controller="@typeof(ManageOrdersController).ControllerName()",
+                                       asp-route-callOffId="@order.CallOffId">
+                                        View
+                                    </a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                    <div id="pagination">
+                        <div id="pagination">
+                            <govuk-pagination current-page-number="@Model.Options.PageNumber"
+                                              total-number-of-pages="@Model.Options.NumberOfPages"/>
+                        </div>
 
-            </div>
+                    </div>
+                </nhs-card-content>
+            </nhs-card-v2>
         }
         else
         {
-            @if(Context.Request.Query["search"].Count > 0)
+            @if (Context.Request.Query["search"].Count > 0 || Model.FilterCount > 0)
             {
-                <h2 id="no-results-search">No results were found for "@Context.Request.Query["search"].FirstOrDefault()"</h2>
-                <p style="white-space:nowrap;">
-                    Try entering a different search term, or <a
-                    data-test-id="clear-results-link"
-                    asp-action="@nameof(ManageOrdersController.Index)"
-                    asp-controller="@typeof(ManageOrdersController).ControllerName()"
-                    >select an order from the complete list</a>.
-                    </p>
-            } else
+                <nhs-card-v2 >
+                    <nhs-card-content title="0 orders found">
+                        <p>There were no orders found. Try changing any search terms or filters you've used.</p>
+                    </nhs-card-content>
+                </nhs-card-v2>
+            } 
+            else
             {
                 <p id="no-orders">There are currently no orders available.</p>
             }
