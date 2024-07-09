@@ -8,5 +8,7 @@ public class Integration
 
     public string Name { get; set; }
 
+    public bool RequiresDescription => Id is SupportedIntegrations.NhsApp;
+
     public ICollection<IntegrationType> IntegrationTypes { get; set;  } = new HashSet<IntegrationType>();
 }

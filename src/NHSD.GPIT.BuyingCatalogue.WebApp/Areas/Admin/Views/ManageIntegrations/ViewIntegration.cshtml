@@ -1,16 +1,18 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.IntegrationsModels.ViewIntegrationModel
 
 @{
-    ViewBag.Title = "Integration types";
+    ViewBag.Title = $"{Model.IntegrationName} Integration types";
 }
 
-<partial name="Partials/_BackLink" model="Model" />
+<partial name="Partials/_BackLink" model="Model"/>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
 
         <nhs-page-title title="@ViewBag.Title"
-                        advice="These are the current integration types for @(Model.IntegrationName)."/>
+                        advice="These are the current integration types for the @(Model.IntegrationName) integration."/>
+
+        <vc:nhs-action-link text="Add a new integration type" url="@(Url.Action(nameof(ManageIntegrationsController.AddIntegrationType), new { integrationId = (int)Model.IntegrationId }))"/>
 
         @if (Model.IntegrationTypes.Count > 0)
         {
@@ -24,7 +26,12 @@
                     <nhs-table-row-container>
                         <nhs-table-cell>@(integrationType.Name)</nhs-table-cell>
                         <nhs-table-cell>
-                            <a href="#">Edit</a>
+                            <a asp-action="@(nameof(ManageIntegrationsController.EditIntegrationType))"
+                               asp-controller="@(typeof(ManageIntegrationsController).ControllerName())"
+                               asp-route-integrationId="@((int)Model.IntegrationId)"
+                               asp-route-integrationTypeId="@integrationType.Id">
+                                Edit
+                            </a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
