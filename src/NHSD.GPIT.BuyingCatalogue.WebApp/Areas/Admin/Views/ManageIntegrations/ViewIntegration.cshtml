@@ -1,0 +1,34 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.IntegrationsModels.ViewIntegrationModel
+
+@{
+    ViewBag.Title = "Integration types";
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="These are the current integration types for @(Model.IntegrationName)."/>
+
+        @if (Model.IntegrationTypes.Count > 0)
+        {
+            <nhs-table label-text="@(Model.IntegrationName) integration types">
+                <nhs-table-column>Integration type</nhs-table-column>
+                <nhs-table-column>
+                    <span class="nhsuk-u-visually-hidden">Action</span>
+                </nhs-table-column>
+                @foreach (var integrationType in Model.IntegrationTypes)
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@(integrationType.Name)</nhs-table-cell>
+                        <nhs-table-cell>
+                            <a href="#">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        }
+    </div>
+</div>

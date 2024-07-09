@@ -20,6 +20,10 @@ public sealed class IntegrationsService(BuyingCatalogueDbContext dbContext) : II
     public async Task<IEnumerable<Integration>> GetIntegrationsWithTypes()
         => await dbContext.Integrations.Include(x => x.IntegrationTypes).ToListAsync();
 
+    public async Task<Integration> GetIntegrationWithTypes(SupportedIntegrations integrationId)
+        => await dbContext.Integrations.Include(x => x.IntegrationTypes)
+            .FirstOrDefaultAsync(x => x.Id == integrationId);
+
     public async Task<Dictionary<string, IOrderedEnumerable<string>>> GetIntegrationAndTypeNames(
         Dictionary<SupportedIntegrations, int[]> integrationAndTypeIds)
         => await dbContext.Integrations.Include(x => x.IntegrationTypes)
@@ -33,4 +37,10 @@ public sealed class IntegrationsService(BuyingCatalogueDbContext dbContext) : II
 
     public async Task<IEnumerable<IntegrationType>> GetIntegrationTypesByIntegration(SupportedIntegrations integration)
         => await dbContext.IntegrationTypes.Where(x => x.IntegrationId == integration).ToListAsync();
+
+    public async Task<bool> IntegrationTypeExists(SupportedIntegrations integrationId, string integrationTypeName)
+        => await dbContext.IntegrationTypes.AnyAsync(
+            x => x.IntegrationId == integrationId && string.Equals(
+                x.Name,
+                integrationTypeName.Trim()));
 }

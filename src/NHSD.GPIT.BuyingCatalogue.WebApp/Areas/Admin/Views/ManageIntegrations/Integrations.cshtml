@@ -1,0 +1,60 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.IntegrationsModels.ManageIntegrationsModel
+
+@{
+    ViewBag.Title = "Manage integration types";
+}
+
+@section Breadcrumbs {
+<nav class="nhsuk-breadcrumb" aria-label="Breadcrumb">
+    <div class="nhsuk-width-container">
+        <ol class="nhsuk-breadcrumb__list">
+            <li class="nhsuk-breadcrumb__item">
+                <a asp-action="@nameof(HomeController.Index)"
+                   asp-controller="@typeof(HomeController).ControllerName()"
+                   class="nhsuk-breadcrumb__link">Home</a>
+            </li>
+        </ol>
+    </div>
+</nav>
+}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title"
+                        advice="Add new integration types or delete existing ones."/>
+
+        <vc:nhs-action-link text="Add a new integration type" url="#"/>
+
+        <nhs-table label-text="Integrations">
+            <nhs-table-column>Name</nhs-table-column>
+            <nhs-table-column>Integration type</nhs-table-column>
+            <nhs-table-column>
+                <span class="nhsuk-u-visually-hidden">Action</span>
+            </nhs-table-column>
+            @foreach (var integration in Model.Integrations)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@integration.Name</nhs-table-cell>
+                    <nhs-table-cell>
+                        @if (integration.IntegrationTypes.Count > 0)
+                        {
+                            foreach (var integrationType in integration.IntegrationTypes)
+                            {
+                                <span>@integrationType.Name</span>
+                                <br/>
+                            }
+                        }
+                        else
+                        {
+                            <p>Integration types will be shown here once they are added</p>
+                        }
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a href="@(Url.Action(nameof(ManageIntegrationsController.ViewIntegration), typeof(ManageIntegrationsController).ControllerName(), new { integrationId = (int)integration.Id }))">View</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+
+    </div>
+</div>
