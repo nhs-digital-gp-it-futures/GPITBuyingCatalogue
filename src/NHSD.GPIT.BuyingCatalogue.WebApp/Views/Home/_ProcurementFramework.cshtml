@@ -1,11 +1,12 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home.ActionCardModel
 
 <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-    <nhs-card title="@Model.Title" horizontal-align="true">
+    <nhs-card>
+        <h3 class="nhsuk-card__heading nhsuk-heading-s card-title-min-height">@Model.Title</h3>
         <p class="nhsuk-card__description card-min-content-height">
             @Model.Text
         </p>
-        <p class ="nhsuk-card__description">
+        <p class="nhsuk-card__description">
             <a href="@Model.Url" target="_blank" aria-label="@Model.LinkText (opens in a new tab)">@Model.LinkText</a>
         </p>
     </nhs-card>
