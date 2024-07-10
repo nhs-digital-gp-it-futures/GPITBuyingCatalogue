@@ -23,7 +23,8 @@
                     <nhs-radio-buttons asp-for="SelectedFrameworkId"
                                        values="@Model.Frameworks.Cast<object>()"
                                        display-name="Text"
-                                       value-name="Value" />
+                                       value-name="Value"
+                                       disabled-name="Disabled"/>
                 </nhs-fieldset-form-label>
                 <nhs-submit-button class="nhsuk-u-margin-top-4" />
             </form>
