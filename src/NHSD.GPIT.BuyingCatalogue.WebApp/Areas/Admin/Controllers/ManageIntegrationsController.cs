@@ -44,6 +44,8 @@ public class ManageIntegrationsController(IIntegrationsService integrationsServi
     public async Task<IActionResult> AddIntegrationType(SupportedIntegrations integrationId)
     {
         var integration = await integrationsService.GetIntegrationWithTypes(integrationId);
+        if (integration is null)
+            return RedirectToAction(nameof(ViewIntegration), new { integrationId = (int)integrationId });
 
         var model = new AddEditIntegrationTypeModel(integration)
         {

@@ -7,6 +7,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.IntegrationsVa
 
 public class AddEditIntegrationTypeModelValidator : AbstractValidator<AddEditIntegrationTypeModel>
 {
+    internal const string MissingIntegrationTypeNameError = "Enter an integration type name";
+    internal const string MissingDescriptionError = "Enter a description";
+
+    internal const string ExistingIntegrationTypeError =
+        "An integration type with these details already exists. Enter a different name";
+
     public AddEditIntegrationTypeModelValidator(
         IIntegrationsService integrationsService)
     {
@@ -14,12 +20,12 @@ public class AddEditIntegrationTypeModelValidator : AbstractValidator<AddEditInt
 
         RuleFor(x => x.IntegrationTypeName)
             .NotEmpty()
-            .WithMessage("Enter an integration type name");
+            .WithMessage(MissingIntegrationTypeNameError);
 
         RuleFor(x => x.Description)
             .NotEmpty()
             .When(x => x.RequiresDescription)
-            .WithMessage("Enter a description");
+            .WithMessage(MissingDescriptionError);
 
         RuleFor(x => x)
             .Must(
@@ -30,7 +36,7 @@ public class AddEditIntegrationTypeModelValidator : AbstractValidator<AddEditInt
                     .GetAwaiter()
                     .GetResult())
             .When(x => !string.IsNullOrWhiteSpace(x.IntegrationTypeName))
-            .WithMessage("An integration type with these details already exists. Enter a different name")
+            .WithMessage(ExistingIntegrationTypeError)
             .OverridePropertyName(x => x.IntegrationTypeName);
     }
 }
