@@ -271,7 +271,7 @@ public static class IntegrationsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task EditIntegrationType_AddsIntegrationTypeToIntegration(
+    public static async Task EditIntegrationType_InvalidIntegrationTypeId_DoesNotEdit(
         string name,
         string description,
         int invalidIntegrationTypeId,
@@ -324,5 +324,60 @@ public static class IntegrationsServiceTests
         integrationWithTypes.Should().NotBeNull();
         integrationWithTypes.IntegrationTypes.Should().Contain(x => x.Name == name && x.Description == description);
         integrationWithTypes.IntegrationTypes.Should().NotContain(x => x.Name == integrationType.Name && x.Description == integrationType.Description);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task EditIntegrationType_WithWhitespaceInDescription_TrimsDescription(
+        string name,
+        string description,
+        Integration integration,
+        IntegrationType integrationType,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        IntegrationsService service)
+    {
+        integrationType.IntegrationId = integration.Id;
+
+        dbContext.Add(integration);
+        dbContext.Add(integrationType);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        var paddedDescription = $"    {description}    ";
+
+        await service.EditIntegrationType(integration.Id, integrationType.Id, name, paddedDescription);
+
+        var integrationWithTypes = await dbContext.Integrations.Include(x => x.IntegrationTypes)
+            .FirstOrDefaultAsync(x => x.Id == integration.Id);
+
+        integrationWithTypes.Should().NotBeNull();
+        integrationWithTypes.IntegrationTypes.Should().Contain(x => x.Name == name && x.Description == description);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task EditIntegrationType_WithNullDescription_UpdatesDescription(
+        string name,
+        Integration integration,
+        IntegrationType integrationType,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        IntegrationsService service)
+    {
+        integrationType.IntegrationId = integration.Id;
+
+        dbContext.Add(integration);
+        dbContext.Add(integrationType);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        await service.EditIntegrationType(integration.Id, integrationType.Id, name, null);
+
+        var integrationWithTypes = await dbContext.Integrations.Include(x => x.IntegrationTypes)
+            .FirstOrDefaultAsync(x => x.Id == integration.Id);
+
+        integrationWithTypes.Should().NotBeNull();
+        integrationWithTypes.IntegrationTypes.Should().Contain(x => x.Name == name && x.Description == null);
     }
 }
