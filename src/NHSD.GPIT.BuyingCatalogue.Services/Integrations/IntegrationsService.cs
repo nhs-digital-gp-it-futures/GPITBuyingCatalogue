@@ -69,6 +69,8 @@ public sealed class IntegrationsService(BuyingCatalogueDbContext dbContext) : II
         var integration = await dbContext.Integrations.Include(x => x.IntegrationTypes)
             .FirstOrDefaultAsync(x => x.Id == integrationId);
 
+        if (integration is null) return;
+
         integration.IntegrationTypes.Add(new IntegrationType { Name = name, Description = description });
 
         await dbContext.SaveChangesAsync();

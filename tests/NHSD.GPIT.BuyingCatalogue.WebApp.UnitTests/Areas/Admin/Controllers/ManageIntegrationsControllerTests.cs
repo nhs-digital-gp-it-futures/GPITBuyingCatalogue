@@ -54,7 +54,7 @@ public static class ManageIntegrationsControllerTests
     {
         service.GetIntegrationWithTypes(integrationId).Returns((Integration)null);
 
-        var result = (await controller.ViewIntegration(integrationId)).As<RedirectToActionResult>();
+        var result = (await controller.ViewIntegration((int)integrationId)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Integrations));
@@ -71,7 +71,7 @@ public static class ManageIntegrationsControllerTests
 
         var expected = new ViewIntegrationModel(integration);
 
-        var result = (await controller.ViewIntegration(integration.Id)).As<ViewResult>();
+        var result = (await controller.ViewIntegration((int)integration.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
@@ -86,7 +86,7 @@ public static class ManageIntegrationsControllerTests
     {
         service.GetIntegrationWithTypes(integrationId).Returns((Integration)null);
 
-        var result = (await controller.AddIntegrationType(integrationId)).As<RedirectToActionResult>();
+        var result = (await controller.AddIntegrationType((int)integrationId)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.ViewIntegration));
@@ -103,7 +103,7 @@ public static class ManageIntegrationsControllerTests
 
         var expected = new AddEditIntegrationTypeModel(integration);
 
-        var result = (await controller.AddIntegrationType(integration.Id)).As<ViewResult>();
+        var result = (await controller.AddIntegrationType((int)integration.Id)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(m => m.BackLink));
@@ -118,7 +118,7 @@ public static class ManageIntegrationsControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var result = (await controller.AddIntegrationType(integrationId, model)).As<ViewResult>();
+        var result = (await controller.AddIntegrationType((int)integrationId, model)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().Be(model);
@@ -132,7 +132,7 @@ public static class ManageIntegrationsControllerTests
         [Frozen] IIntegrationsService service,
         ManageIntegrationsController controller)
     {
-        var result = (await controller.AddIntegrationType(integrationId, model)).As<RedirectToActionResult>();
+        var result = (await controller.AddIntegrationType((int)integrationId, model)).As<RedirectToActionResult>();
 
         await service.Received().AddIntegrationType(integrationId, model.IntegrationTypeName, model.Description);
 
@@ -151,7 +151,7 @@ public static class ManageIntegrationsControllerTests
         service.GetIntegrationTypeById(integrationId, integrationTypeId).Returns((IntegrationType)null);
 
         var result =
-            (await controller.EditIntegrationType(integrationId, integrationTypeId)).As<RedirectToActionResult>();
+            (await controller.EditIntegrationType((int)integrationId, integrationTypeId)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.ViewIntegration));
@@ -171,7 +171,7 @@ public static class ManageIntegrationsControllerTests
 
         var expected = new AddEditIntegrationTypeModel(integrationType.Integration, integrationType);
 
-        var result = (await controller.EditIntegrationType(integrationType.IntegrationId, integrationType.Id))
+        var result = (await controller.EditIntegrationType((int)integrationType.IntegrationId, integrationType.Id))
             .As<ViewResult>();
 
         result.Should().NotBeNull();
@@ -188,7 +188,7 @@ public static class ManageIntegrationsControllerTests
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var result = (await controller.EditIntegrationType(integrationId, integrationTypeId, model)).As<ViewResult>();
+        var result = (await controller.EditIntegrationType((int)integrationId, integrationTypeId, model)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().Be(model);
@@ -203,7 +203,7 @@ public static class ManageIntegrationsControllerTests
         [Frozen] IIntegrationsService service,
         ManageIntegrationsController controller)
     {
-        var result = (await controller.EditIntegrationType(integrationId, integrationTypeId, model))
+        var result = (await controller.EditIntegrationType((int)integrationId, integrationTypeId, model))
             .As<RedirectToActionResult>();
 
         await service.Received()

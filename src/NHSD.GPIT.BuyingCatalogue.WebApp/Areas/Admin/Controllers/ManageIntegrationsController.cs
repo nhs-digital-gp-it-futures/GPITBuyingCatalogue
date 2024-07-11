@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.IntegrationsModels;
 
@@ -29,9 +29,9 @@ public class ManageIntegrationsController(IIntegrationsService integrationsServi
     }
 
     [HttpGet("{integrationId}")]
-    public async Task<IActionResult> ViewIntegration(SupportedIntegrations integrationId)
+    public async Task<IActionResult> ViewIntegration(int integrationId)
     {
-        var integration = await integrationsService.GetIntegrationWithTypes(integrationId);
+        var integration = await integrationsService.GetIntegrationWithTypes(integrationId.ToIntegrationId());
         if (integration is null)
             return RedirectToAction(nameof(Integrations));
 
@@ -41,15 +41,15 @@ public class ManageIntegrationsController(IIntegrationsService integrationsServi
     }
 
     [HttpGet("{integrationId}/add")]
-    public async Task<IActionResult> AddIntegrationType(SupportedIntegrations integrationId)
+    public async Task<IActionResult> AddIntegrationType(int integrationId)
     {
-        var integration = await integrationsService.GetIntegrationWithTypes(integrationId);
+        var integration = await integrationsService.GetIntegrationWithTypes(integrationId.ToIntegrationId());
         if (integration is null)
-            return RedirectToAction(nameof(ViewIntegration), new { integrationId = (int)integrationId });
+            return RedirectToAction(nameof(ViewIntegration), new { integrationId });
 
         var model = new AddEditIntegrationTypeModel(integration)
         {
-            BackLink = Url.Action(nameof(ViewIntegration), new { integrationId = (int)integrationId }),
+            BackLink = Url.Action(nameof(ViewIntegration), new { integrationId }),
         };
 
         return View(AddEditViewName, model);
@@ -57,27 +57,27 @@ public class ManageIntegrationsController(IIntegrationsService integrationsServi
 
     [HttpPost("{integrationId}/add")]
     public async Task<IActionResult> AddIntegrationType(
-        SupportedIntegrations integrationId,
+        int integrationId,
         AddEditIntegrationTypeModel model)
     {
         if (!ModelState.IsValid)
             return View(AddEditViewName, model);
 
-        await integrationsService.AddIntegrationType(integrationId, model.IntegrationTypeName, model.Description);
+        await integrationsService.AddIntegrationType(integrationId.ToIntegrationId(), model.IntegrationTypeName, model.Description);
 
-        return RedirectToAction(nameof(ViewIntegration), new { integrationId = (int)integrationId });
+        return RedirectToAction(nameof(ViewIntegration), new { integrationId });
     }
 
     [HttpGet("{integrationId}/edit/{integrationTypeId}")]
-    public async Task<IActionResult> EditIntegrationType(SupportedIntegrations integrationId, int integrationTypeId)
+    public async Task<IActionResult> EditIntegrationType(int integrationId, int integrationTypeId)
     {
-        var integrationType = await integrationsService.GetIntegrationTypeById(integrationId, integrationTypeId);
+        var integrationType = await integrationsService.GetIntegrationTypeById(integrationId.ToIntegrationId(), integrationTypeId);
         if (integrationType is null)
-            return RedirectToAction(nameof(ViewIntegration), new { integrationId = (int)integrationId });
+            return RedirectToAction(nameof(ViewIntegration), new { integrationId });
 
         var model = new AddEditIntegrationTypeModel(integrationType.Integration, integrationType)
         {
-            BackLink = Url.Action(nameof(ViewIntegration), new { integrationId = (int)integrationId }),
+            BackLink = Url.Action(nameof(ViewIntegration), new { integrationId }),
         };
 
         return View(AddEditViewName, model);
@@ -85,7 +85,7 @@ public class ManageIntegrationsController(IIntegrationsService integrationsServi
 
     [HttpPost("{integrationId}/edit/{integrationTypeId}")]
     public async Task<IActionResult> EditIntegrationType(
-        SupportedIntegrations integrationId,
+        int integrationId,
         int integrationTypeId,
         AddEditIntegrationTypeModel model)
     {
@@ -93,11 +93,11 @@ public class ManageIntegrationsController(IIntegrationsService integrationsServi
             return View(AddEditViewName, model);
 
         await integrationsService.EditIntegrationType(
-            integrationId,
+            integrationId.ToIntegrationId(),
             integrationTypeId,
             model.IntegrationTypeName,
             model.Description);
 
-        return RedirectToAction(nameof(ViewIntegration), new { integrationId = (int)integrationId });
+        return RedirectToAction(nameof(ViewIntegration), new { integrationId });
     }
 }
