@@ -6,6 +6,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.IntegrationsModels
 
 public class AddEditIntegrationTypeModel : NavBaseModel
 {
+    internal const string EditTitle = "Edit integration type";
+    internal const string AddTitle = "Add integration type";
+
     public AddEditIntegrationTypeModel()
     {
     }
@@ -30,8 +33,8 @@ public class AddEditIntegrationTypeModel : NavBaseModel
 
     public override string Title =>
         IntegrationTypeId is not null
-            ? "Edit integration type"
-            : "Add integration type";
+            ? EditTitle
+            : AddTitle;
 
     public SupportedIntegrations? IntegrationId { get; set; }
 

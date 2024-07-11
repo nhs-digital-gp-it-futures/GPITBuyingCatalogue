@@ -18,7 +18,7 @@ public static class AddEditIntegrationTypeModelTests
         model.IntegrationId.Should().Be(integration.Id);
         model.IntegrationName.Should().Be(integration.Name);
         model.RequiresDescription.Should().Be(integration.RequiresDescription);
-        model.Title.Should().Be("Add integration type");
+        model.Title.Should().Be(AddEditIntegrationTypeModel.AddTitle);
     }
 
     [Theory]
@@ -32,6 +32,6 @@ public static class AddEditIntegrationTypeModelTests
         model.IntegrationTypeId.Should().Be(integrationType.Id);
         model.IntegrationTypeName.Should().Be(integrationType.Name);
         model.Description.Should().Be(integrationType.Description);
-        model.Title.Should().Be("Edit integration type");
+        model.Title.Should().Be(AddEditIntegrationTypeModel.EditTitle);
     }
 }
