@@ -102,6 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         ctx.Response.StatusCode = StatusCodes.Status302Found;
                         return Task.CompletedTask;
                     },
+                    OnValidatePrincipal = SecurityStampValidator.ValidatePrincipalAsync,
                 };
             });
 
@@ -110,6 +111,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.Name = "antiforgery";
             });
+
+            services.Configure<SecurityStampValidatorOptions>(o => o.ValidationInterval = TimeSpan.FromMinutes(0));
         }
 
         public static void ConfigureOds(this IServiceCollection services, IConfiguration configuration)

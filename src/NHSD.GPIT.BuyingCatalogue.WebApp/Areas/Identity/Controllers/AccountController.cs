@@ -13,7 +13,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 {
@@ -40,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             IPasswordResetCallback passwordResetCallback,
             DisabledErrorMessageSettings disabledErrorMessageSettings,
             PasswordSettings passwordSettings)
-        {
+    {
             this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
@@ -90,6 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
                 return View(viewModel);
             }
 
+            await userManager.UpdateSecurityStampAsync(user);
             var signinResult = await signInManager.PasswordSignInAsync(user, viewModel.Password, false, true);
 
             if (!signinResult.Succeeded)
@@ -103,7 +106,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         public async Task<IActionResult> Logout()
         {
             if (signInManager.IsSignedIn(User))
+            {
+                var user = await userManager.FindByNameAsync(User.Identity.Name);
                 await signInManager.SignOutAsync().ConfigureAwait(false);
+                await userManager.UpdateSecurityStampAsync(user);
+            }
 
             return LocalRedirect("~/");
         }
