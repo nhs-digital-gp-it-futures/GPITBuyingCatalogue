@@ -28,6 +28,10 @@
                 <a href="@Url.Action(nameof(Gen2MappingController.Capabilities), typeof(Gen2MappingController).ControllerName(), new { id = Guid.NewGuid() })">Manage Capabilities and Epics</a>
                 <p>Upload new Capabilities and Epics using a CSV file.</p>
             </li>
+            <li>
+                <a href="@Url.Action(nameof(ManageIntegrationsController.Integrations), typeof(ManageIntegrationsController).ControllerName())">Manage interoperability</a>
+                <p>Add new integration types or edit an existing one.</p>
+            </li>
         </ul>
 
         <h2>Manage organisations</h2>

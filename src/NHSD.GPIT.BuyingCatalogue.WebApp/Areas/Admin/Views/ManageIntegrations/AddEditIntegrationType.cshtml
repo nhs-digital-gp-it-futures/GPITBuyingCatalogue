@@ -1,0 +1,37 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.IntegrationsModels.AddEditIntegrationTypeModel
+
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary/>
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.IntegrationName integration"/>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="IntegrationId"/>
+            <input type="hidden" asp-for="IntegrationName"/>
+            <input type="hidden" asp-for="IntegrationTypeId"/>
+            <input type="hidden" asp-for="RequiresDescription"/>
+
+            <nhs-input asp-for="IntegrationTypeName" label-text="Integration type name" input-width="Thirty"/>
+
+            @if (Model.RequiresDescription)
+            {
+                <nhs-textarea asp-for="Description" label-text="Integration type description"/>
+            }
+
+            <br/>
+            <div>
+                <nhs-submit-button/>
+            </div>
+            <div>
+                <a href="@Model.BackLink">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
