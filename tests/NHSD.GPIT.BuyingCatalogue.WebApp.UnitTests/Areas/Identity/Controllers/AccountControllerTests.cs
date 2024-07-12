@@ -5,6 +5,7 @@ using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using FluentAssertions;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using NSubstitute;
+using NuGet.Common;
 using Xunit;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
@@ -357,6 +359,60 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         public static async Task Get_Logout_WhenNotLoggedIn_RedirectsHome(AccountController controller)
         {
             var result = await controller.Logout();
+
+            Assert.IsAssignableFrom<LocalRedirectResult>(result);
+            Assert.Equal("~/", ((LocalRedirectResult)result).Url);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_Logout_WhenLoggedIn_SignsOut_RedirectsHome(
+            string userName,
+            AspNetUser user, 
+            UserManager<AspNetUser> mockUserManager, 
+            SignInManager<AspNetUser> mockSignInManager)
+        {
+            mockUserManager
+                .FindByNameAsync(userName)
+                .Returns(user);
+
+            mockSignInManager
+                .IsSignedIn(Arg.Any<ClaimsPrincipal>())
+                .Returns(true);
+
+            mockSignInManager
+                .SignOutAsync()
+                .Returns(Task.CompletedTask);
+
+            var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
+                new Claim[] { new(ClaimTypes.Name, userName) },
+                "mock"));
+
+            var controller = CreateController(
+                mockUserManager,
+                mockSignInManager);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = userPrincipal, },
+            };
+            var result = await controller.Logout();
+
+            await mockUserManager
+                .Received()
+                .FindByNameAsync(userName);
+
+            await mockUserManager
+                .Received()
+                .UpdateSecurityStampAsync(user);
+
+            mockSignInManager
+                .Received()
+                .IsSignedIn(Arg.Any<ClaimsPrincipal>());
+
+            await mockSignInManager
+                .Received()
+                .SignOutAsync();
 
             Assert.IsAssignableFrom<LocalRedirectResult>(result);
             Assert.Equal("~/", ((LocalRedirectResult)result).Url);
