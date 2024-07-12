@@ -368,8 +368,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         [MockAutoData]
         public static async Task Get_Logout_WhenLoggedIn_SignsOut_RedirectsHome(
             string userName,
-            AspNetUser user, 
-            UserManager<AspNetUser> mockUserManager, 
+            AspNetUser user,
+            UserManager<AspNetUser> mockUserManager,
             SignInManager<AspNetUser> mockSignInManager)
         {
             mockUserManager
