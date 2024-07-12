@@ -103,7 +103,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
         public async Task<IActionResult> Logout()
         {
             if (signInManager.IsSignedIn(User))
+            {
+                var user = await userManager.FindByNameAsync(User.Identity.Name);
                 await signInManager.SignOutAsync().ConfigureAwait(false);
+                await userManager.UpdateSecurityStampAsync(user);
+            }
 
             return LocalRedirect("~/");
         }
