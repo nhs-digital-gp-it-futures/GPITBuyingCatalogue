@@ -9,8 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Appl
     public static class SupportedBrowsersModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_MobileResponsiveNullOrEmpty_SetsModelError(
             string pluginsRequired,
             SupportedBrowsersModel model,
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Appl
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelError(
             SupportedBrowsersModel model,
             SupportedBrowsersModelValidator validator)
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Appl
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Incomplete_HasError(
             SupportedBrowsersModel model,
             SupportedBrowsersModelValidator validator)
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Appl
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SupportedBrowsers_Complete(
             SupportedBrowsersModel model,
             SupportedBrowsersModelValidator validator)

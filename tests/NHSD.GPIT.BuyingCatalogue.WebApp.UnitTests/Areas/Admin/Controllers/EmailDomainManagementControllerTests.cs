@@ -29,16 +29,15 @@ public static class EmailDomainManagementControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Index_ReturnsViewWithModel(
         List<EmailDomain> emailDomains,
-        [Frozen] Mock<IEmailDomainService> service,
+        [Frozen] IEmailDomainService service,
         EmailDomainManagementController controller)
     {
         var expectedModel = new ViewEmailDomainsModel(emailDomains);
 
-        service.Setup(s => s.GetAllowedDomains())
-            .ReturnsAsync(emailDomains);
+        service.GetAllowedDomains().Returns(emailDomains);
 
         var result = (await controller.Index()).As<ViewResult>();
 
@@ -47,7 +46,7 @@ public static class EmailDomainManagementControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Get_AddEmailDomain_ReturnsViewWithModel(
         EmailDomainManagementController controller)
     {
@@ -58,7 +57,7 @@ public static class EmailDomainManagementControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Post_AddEmailDomain_InvalidModelState(
         AddEmailDomainModel model,
         EmailDomainManagementController controller)
@@ -72,28 +71,28 @@ public static class EmailDomainManagementControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Post_AddEmailDomain_Valid(
         AddEmailDomainModel model,
-        [Frozen] Mock<IEmailDomainService> service,
+        [Frozen] IEmailDomainService service,
         EmailDomainManagementController controller)
     {
         var result = (await controller.AddEmailDomain(model)).As<RedirectToActionResult>();
 
-        service.Verify(s => s.AddAllowedDomain(model.EmailDomain));
+        await service.Received().AddAllowedDomain(model.EmailDomain);
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Get_DeleteEmailAddress_IdNotFound(
         int id,
-        [Frozen] Mock<IEmailDomainService> service,
+        [Frozen] IEmailDomainService service,
         EmailDomainManagementController controller)
     {
-        service.Setup(s => s.GetAllowedDomain(id)).ReturnsAsync((EmailDomain)null);
+        service.GetAllowedDomain(id).Returns((EmailDomain)null);
 
         var result = (await controller.DeleteEmailDomain(id)).As<RedirectToActionResult>();
 
@@ -102,37 +101,34 @@ public static class EmailDomainManagementControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Get_DeleteEmailDomain_ReturnsViewWithModel(
         int id,
         EmailDomain emailDomain,
-        [Frozen] Mock<IEmailDomainService> service,
+        [Frozen] IEmailDomainService service,
         EmailDomainManagementController controller)
     {
         var expectedModel = new DeleteEmailDomainModel(emailDomain);
 
-        service.Setup(s => s.GetAllowedDomain(id))
-            .ReturnsAsync(emailDomain);
+        service.GetAllowedDomain(id).Returns(emailDomain);
 
         var result = (await controller.DeleteEmailDomain(id)).As<ViewResult>();
-
-        service.VerifyAll();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Post_DeleteEmailAddress_Redirects(
         int id,
         DeleteEmailDomainModel model,
-        [Frozen] Mock<IEmailDomainService> service,
+        [Frozen] IEmailDomainService service,
         EmailDomainManagementController controller)
     {
         var result = (await controller.DeleteEmailDomain(id, model)).As<RedirectToActionResult>();
 
-        service.Verify(s => s.DeleteAllowedDomain(id));
+        await service.Received().DeleteAllowedDomain(id);
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));

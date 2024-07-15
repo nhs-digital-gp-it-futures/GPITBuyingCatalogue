@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.DesktopB
     public static class OperatingSystemsModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
             Solution solution)
         {

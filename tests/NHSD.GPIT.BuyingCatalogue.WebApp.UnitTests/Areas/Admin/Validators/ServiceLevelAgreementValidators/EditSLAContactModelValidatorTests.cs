@@ -14,12 +14,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
     public static class EditSLAContactModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmptyChannel_SetsModelError(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             EditSLAContactModel model,
             EditSLAContactModelValidator validator)
         {
             model.Channel = string.Empty;
+
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
 
             var result = validator.TestValidate(model);
 
@@ -28,12 +32,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmptyContactInformation_SetsModelError(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             EditSLAContactModel model,
             EditSLAContactModelValidator validator)
         {
             model.ContactInformation = string.Empty;
+
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
 
             var result = validator.TestValidate(model);
 
@@ -42,12 +50,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmptyFrom_SetsModelError(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             EditSLAContactModel model,
             EditSLAContactModelValidator validator)
         {
             model.From = null;
+
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
 
             var result = validator.TestValidate(model);
 
@@ -56,12 +68,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmptyUntil_SetsModelError(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             EditSLAContactModel model,
             EditSLAContactModelValidator validator)
         {
             model.Until = null;
+
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
 
             var result = validator.TestValidate(model);
 
@@ -70,11 +86,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Duplicate_SetsModelError(
             SlaContact slaContact,
             EditSLAContactModel model,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             EditSLAContactModelValidator validator)
         {
             slaContact.ApplicableDays = string.Empty;
@@ -83,8 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             model.Channel = slaContact.Channel;
             model.ContactInformation = slaContact.ContactInformation;
 
-            serviceLevelAgreementsService.Setup(s => s.GetServiceLevelAgreementForSolution(model.SolutionId))
-                .ReturnsAsync(new ServiceLevelAgreements
+            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId)
+                .Returns(new ServiceLevelAgreements
                 {
                     Contacts = new HashSet<SlaContact>
                     {
@@ -99,19 +115,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DuplicateWithApplicableDays_SetsModelError(
             SlaContact slaContact,
             EditSLAContactModel model,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             EditSLAContactModelValidator validator)
         {
             model.Channel = slaContact.Channel;
             model.ContactInformation = slaContact.ContactInformation;
             model.ApplicableDays = slaContact.ApplicableDays;
 
-            serviceLevelAgreementsService.Setup(s => s.GetServiceLevelAgreementForSolution(model.SolutionId))
-                .ReturnsAsync(new ServiceLevelAgreements
+            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId)
+                .Returns(new ServiceLevelAgreements
                 {
                     Contacts = new HashSet<SlaContact>
                     {
@@ -126,19 +142,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Edit_NoModelError(
             SlaContact slaContact,
             EditSLAContactModel model,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             EditSLAContactModelValidator validator)
         {
             model.ContactId = slaContact.Id;
             model.Channel = slaContact.Channel;
             model.ContactInformation = slaContact.ContactInformation;
 
-            serviceLevelAgreementsService.Setup(s => s.GetServiceLevelAgreementForSolution(model.SolutionId))
-                .ReturnsAsync(new ServiceLevelAgreements
+            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId)
+                .Returns(new ServiceLevelAgreements
                 {
                     Contacts = new HashSet<SlaContact>
                     {
@@ -152,11 +168,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EditWithApplicableDays_NoModelError(
             SlaContact slaContact,
             EditSLAContactModel model,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             EditSLAContactModelValidator validator)
         {
             model.ContactId = slaContact.Id;
@@ -164,8 +180,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             model.ContactInformation = slaContact.ContactInformation;
             model.ApplicableDays = slaContact.ApplicableDays;
 
-            serviceLevelAgreementsService.Setup(s => s.GetServiceLevelAgreementForSolution(model.SolutionId))
-                .ReturnsAsync(new ServiceLevelAgreements
+            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId)
+                .Returns(new ServiceLevelAgreements
                 {
                     Contacts = new HashSet<SlaContact>
                     {
@@ -179,11 +195,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoErrors(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             EditSLAContactModel model,
             EditSLAContactModelValidator validator)
         {
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
+
             var result = validator.TestValidate(model);
 
             result.ShouldNotHaveAnyValidationErrors();

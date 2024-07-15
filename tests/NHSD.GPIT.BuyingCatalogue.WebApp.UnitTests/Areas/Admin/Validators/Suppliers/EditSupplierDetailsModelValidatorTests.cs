@@ -15,27 +15,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class EditSupplierDetailsModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoWebsite_DoesNotValidate(
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             EditSupplierDetailsModelValidator validator)
         {
             var model = new EditSupplierDetailsModel();
 
             var result = validator.TestValidate(model);
 
-            urlValidator.Verify(uv => uv.IsValidUrl(It.IsAny<string>()), Times.Never);
+            urlValidator.DidNotReceive().IsValidUrl(Arg.Any<string>());
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MissingProtocol_SetsModelError(
             EditSupplierDetailsModel model,
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             EditSupplierDetailsModelValidator validator)
         {
-            urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
-                .Returns(false);
+            urlValidator.IsValidUrl(model.SupplierWebsite).Returns(false);
 
             var result = validator.TestValidate(model);
 
@@ -44,15 +43,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_InvalidWebsite_SetsModelError(
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             EditSupplierDetailsModelValidator validator)
         {
             var model = new EditSupplierDetailsModel { SupplierWebsite = "http://wiothaoih" };
 
-            urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
-                .Returns(false);
+            urlValidator.IsValidUrl(model.SupplierWebsite).Returns(false);
 
             var result = validator.TestValidate(model);
 
@@ -61,15 +59,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidWebsite_NoModelError(
             Uri uri,
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             EditSupplierDetailsModelValidator validator)
         {
             var model = new EditSupplierDetailsModel { SupplierWebsite = uri.ToString() };
-            urlValidator.Setup(uv => uv.IsValidUrl(model.SupplierWebsite))
-                .Returns(true);
+            urlValidator.IsValidUrl(model.SupplierWebsite).Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -77,9 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AddSupplierName_SetsModelError(
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditSupplierDetailsModelValidator validator)
         {
             var model = new EditSupplierDetailsModel
@@ -87,8 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SupplierName = "Supplier Name",
             };
 
-            suppliersService.Setup(s => s.GetSupplierByName(model.SupplierName))
-                .ReturnsAsync((Supplier)default);
+            suppliersService.GetSupplierByName(model.SupplierName).Returns((Supplier)default);
 
             var result = validator.TestValidate(model);
 
@@ -96,11 +92,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EditDuplicateSupplierName_SetsModelError(
             Uri uri,
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditSupplierDetailsModelValidator validator)
         {
             var model = new EditSupplierDetailsModel
@@ -110,8 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SupplierWebsite = uri.ToString(),
             };
 
-            suppliersService.Setup(s => s.GetSupplierByName(model.SupplierName))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplierByName(model.SupplierName).Returns(supplier);
 
             var result = validator.TestValidate(model);
 
@@ -120,11 +115,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EditSupplierName_NoModelError(
             Uri uri,
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditSupplierDetailsModelValidator validator)
         {
             var model = new EditSupplierDetailsModel
@@ -134,8 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SupplierWebsite = uri.ToString(),
             };
 
-            suppliersService.Setup(s => s.GetSupplierByName(model.SupplierName))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplierByName(model.SupplierName).Returns(supplier);
 
             var result = validator.TestValidate(model);
 
@@ -143,9 +137,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AddSupplierLegalName_SetsModelError(
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditSupplierDetailsModelValidator validator)
         {
             var model = new EditSupplierDetailsModel
@@ -153,8 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SupplierLegalName = "Supplier Legal Name",
             };
 
-            suppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName))
-                .ReturnsAsync((Supplier)default);
+            suppliersService.GetSupplierByLegalName(model.SupplierLegalName).Returns((Supplier)default);
 
             var result = validator.TestValidate(model);
 
@@ -162,11 +155,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EditDuplicateSupplierLegalName_SetsModelError(
             Uri uri,
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditSupplierDetailsModelValidator validator)
         {
             var model = new EditSupplierDetailsModel
@@ -176,8 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SupplierWebsite = uri.ToString(),
             };
 
-            suppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplierByLegalName(model.SupplierLegalName).Returns(supplier);
 
             var result = validator.TestValidate(model);
 
@@ -186,11 +178,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EditSupplierLegalName_SetsModelError(
             Uri uri,
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditSupplierDetailsModelValidator validator)
         {
             var model = new EditSupplierDetailsModel
@@ -200,8 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 SupplierWebsite = uri.ToString(),
             };
 
-            suppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplierByLegalName(model.SupplierLegalName).Returns(supplier);
 
             var result = validator.TestValidate(model);
 
@@ -209,8 +200,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_SupplierNameNullOrEmpty_SetsModelError(
             string supplierName,
             EditSupplierDetailsModelValidator validator)
@@ -227,8 +218,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_SupplierLegalNameNullOrEmpty_SetsModelError(
             string supplierLegalName,
             EditSupplierDetailsModelValidator validator)

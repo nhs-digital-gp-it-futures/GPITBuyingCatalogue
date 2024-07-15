@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
     public static class EditTierPriceModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MissingPrice_SetsModelError(
             EditTierPriceModel model,
             EditTierPriceModelValidator validator)
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NegativePrice_SetsModelError(
             EditTierPriceModel model,
             EditTierPriceModelValidator validator)
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PriceGreaterThan4DecimalPlaces_SetsModelError(
             EditTierPriceModel model,
             EditTierPriceModelValidator validator)
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PriceNotNumeric_SetsModelError(
             EditTierPriceModel model,
             EditTierPriceModelValidator validator)
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidPrice_NoModelErrors(
             EditTierPriceModel model,
             EditTierPriceModelValidator validator)

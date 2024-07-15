@@ -13,8 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Host
     public sealed class HybridModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_HostingModelNullOrEmpty_SetsModelError(
             string hostingModel,
             HybridModel model,
@@ -28,27 +28,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Host
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoLink_DoesNotValidate(
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             HybridModelValidator validator)
         {
             var model = new HybridModel();
 
             var result = validator.TestValidate(model);
 
-            urlValidator.Verify(uv => uv.IsValidUrl(It.IsAny<string>()), Times.Never);
+            urlValidator.DidNotReceive().IsValidUrl(Arg.Any<string>());
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MissingProtocol_SetsModelError(
             HybridModel model,
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             HybridModelValidator validator)
         {
-            urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
-                .Returns(false);
+            urlValidator.IsValidUrl(model.Link).Returns(false);
 
             var result = validator.TestValidate(model);
 
@@ -57,15 +56,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Host
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_InvalidLink_SetsModelError(
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             HybridModelValidator validator)
         {
             var model = new HybridModel { Link = "http://wiothaoih" };
 
-            urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
-                .Returns(false);
+            urlValidator.IsValidUrl(model.Link).Returns(false);
 
             var result = validator.TestValidate(model);
 
@@ -74,15 +72,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Host
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidLink_NoModelError(
             Uri uri,
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             HybridModelValidator validator)
         {
             var model = new HybridModel { Link = uri.ToString() };
-            urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
-                .Returns(true);
+            urlValidator.IsValidUrl(model.Link).Returns(true);
 
             var result = validator.TestValidate(model);
 

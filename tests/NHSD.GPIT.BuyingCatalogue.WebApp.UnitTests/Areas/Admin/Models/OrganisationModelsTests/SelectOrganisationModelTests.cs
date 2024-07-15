@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Organisa
     public static class SelectOrganisationModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidConstruction_PropertiesSetAsExpected(
             OdsOrganisation organisation)
         {

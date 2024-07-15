@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.EmailDom
 public class DeleteEmailDomainModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void WithWildcards_SetsAdviceText(
         EmailDomain emailDomain)
     {
@@ -23,7 +23,7 @@ public class DeleteEmailDomainModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void WithoutWildcards_SetsAdviceText(
         EmailDomain emailDomain)
     {

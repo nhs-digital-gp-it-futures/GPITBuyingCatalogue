@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Organisa
     public static class EditConfirmationModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidConstruction_PropertiesSetAsExpected(
             string organisationName,
             int organisationId)

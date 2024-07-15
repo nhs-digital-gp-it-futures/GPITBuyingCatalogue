@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.MobileTa
     public static class ConnectivityModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
             Solution solution)
         {

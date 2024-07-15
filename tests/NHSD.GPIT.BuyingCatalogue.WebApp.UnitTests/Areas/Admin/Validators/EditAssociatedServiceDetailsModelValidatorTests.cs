@@ -15,8 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class EditAssociatedServiceDetailsModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_NameNullOrEmpty_SetsModelError(
             string name,
             EditAssociatedServiceDetailsModel model,
@@ -31,8 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_DescriptionNullOrEmpty_SetsModelError(
             string description,
             EditAssociatedServiceDetailsModel model,
@@ -47,8 +47,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_OrderGuidanceNullOrEmpty_SetsModelError(
             string orderGuidance,
             EditAssociatedServiceDetailsModel model,
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PracticeReorganisation_OtherReorganisations_SetsModelError(
             EditAssociatedServiceDetailsModel model,
             EditAssociatedServiceDetailsModelValidator validator)
@@ -78,14 +78,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DuplicateNameForSupplier_SetsModelError(
-            [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+            [Frozen] IAssociatedServicesService associatedServicesService,
             EditAssociatedServiceDetailsModel model,
             EditAssociatedServiceDetailsModelValidator validator)
         {
-            associatedServicesService.Setup(s => s.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SupplierId, model.Id.Value))
-                .ReturnsAsync(true);
+            associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SupplierId, model.Id.Value).Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -94,14 +93,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidName_NoModelError(
-            [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+            [Frozen] IAssociatedServicesService associatedServicesService,
             EditAssociatedServiceDetailsModel model,
             EditAssociatedServiceDetailsModelValidator validator)
         {
-            associatedServicesService.Setup(s => s.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SupplierId, default))
-                .ReturnsAsync(false);
+            associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SupplierId, default).Returns(false);
 
             model.PracticeMerger = false;
             model.PracticeSplit = false;
@@ -112,10 +110,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(true, true, true)]
-        [CommonInlineAutoData(false, true, false)]
-        [CommonInlineAutoData(true, false, false)]
-        [CommonInlineAutoData(false, false, false)]
+        [MockInlineAutoData(true, true, true)]
+        [MockInlineAutoData(false, true, false)]
+        [MockInlineAutoData(true, false, false)]
+        [MockInlineAutoData(false, false, false)]
         public static void Validate_WithPriceReorganisation_CalculationProvisioningTypesAndTieredPrice(
             bool haveCorrectProvisioningAndCalculationTypes,
             bool notHaveTieredPrice,

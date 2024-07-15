@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
     public static class AddAssociatedServiceModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AddAssociatedService_ValidCatalogueItem_NoRelatedServices_PropertiesSetAsExpected(
             CatalogueItem catalogueItem)
         {

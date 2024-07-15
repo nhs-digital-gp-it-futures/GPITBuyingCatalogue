@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.UserMode
     public static class UserDetailsModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithUserConstruction_PropertiesSetAsExpected(
             AspNetUser user)
         {
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.UserMode
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void InputFields_IncludesWhitespace_WhitespaceRemoved(
             string firstName,
             string lastName,

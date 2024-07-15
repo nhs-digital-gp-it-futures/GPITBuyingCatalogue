@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class EditAdditionalServiceDetailsModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidModel_NoValidationErrors(
             EditAdditionalServiceDetailsModel model,
             EditAdditionalServiceDetailsModelValidator validator)
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NameNotEntered_HasError(
             Solution solution,
             AdditionalService additionalService,
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DescriptionNotEntered_HasError(
             Solution solution,
             AdditionalService additionalService,
@@ -60,18 +60,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ExistingServiceName_HasError(
             Solution solution,
-            [Frozen] Mock<IAdditionalServicesService> additionalServicesService,
+            [Frozen] IAdditionalServicesService additionalServicesService,
             EditAdditionalServiceDetailsModelValidator validator)
         {
             var additionalService = solution.AdditionalServices.First();
             var additionalServiceCatalogueItem = additionalService.CatalogueItem;
 
-            additionalServicesService.Setup(s =>
-                s.AdditionalServiceExistsWithNameForSolution(It.IsAny<string>(), It.IsAny<CatalogueItemId>(), It.IsAny<CatalogueItemId>()))
-                    .ReturnsAsync(true);
+            additionalServicesService.AdditionalServiceExistsWithNameForSolution(Arg.Any<string>(), Arg.Any<CatalogueItemId>(), Arg.Any<CatalogueItemId>())
+                    .Returns(true);
 
             var model = new EditAdditionalServiceDetailsModel(solution.CatalogueItem, additionalServiceCatalogueItem)
             {
@@ -85,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DuplicatingSolutionName_HasError(
             Solution solution,
             EditAdditionalServiceDetailsModelValidator validator)

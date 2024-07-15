@@ -9,9 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
 public static class AddEditFlatListPriceModelTests
 {
     [Theory]
-    [CommonInlineAutoData(null)]
-    [CommonInlineAutoData(TimeUnit.PerMonth)]
-    [CommonInlineAutoData(TimeUnit.PerYear)]
+    [MockInlineAutoData(null)]
+    [MockInlineAutoData(TimeUnit.PerMonth)]
+    [MockInlineAutoData(TimeUnit.PerYear)]
     public static void Construct_OnDemandPrice_AssignsBillingPeriod(
         TimeUnit? billingPeriod,
         CatalogueItem catalogueItem,
@@ -27,9 +27,9 @@ public static class AddEditFlatListPriceModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(null)]
-    [CommonInlineAutoData(TimeUnit.PerMonth)]
-    [CommonInlineAutoData(TimeUnit.PerYear)]
+    [MockInlineAutoData(null)]
+    [MockInlineAutoData(TimeUnit.PerMonth)]
+    [MockInlineAutoData(TimeUnit.PerYear)]
     public static void Construct_DeclarativePrice_AssignsBillingPeriod(
         TimeUnit? billingPeriod,
         CatalogueItem catalogueItem,
@@ -45,8 +45,8 @@ public static class AddEditFlatListPriceModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-    [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerSolutionOrService)]
+    [MockInlineAutoData(CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+    [MockInlineAutoData(CataloguePriceQuantityCalculationType.PerSolutionOrService)]
     public static void Construct_OnDemandPrice_AssignsQuantityCalculationType(
         CataloguePriceQuantityCalculationType calculationType,
         CatalogueItem catalogueItem,
@@ -62,8 +62,8 @@ public static class AddEditFlatListPriceModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-    [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerSolutionOrService)]
+    [MockInlineAutoData(CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+    [MockInlineAutoData(CataloguePriceQuantityCalculationType.PerSolutionOrService)]
     public static void Construct_DeclarativePrice_AssignsQuantityCalculationType(
         CataloguePriceQuantityCalculationType calculationType,
         CatalogueItem catalogueItem,
@@ -79,7 +79,7 @@ public static class AddEditFlatListPriceModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetBillingPeriod_Patient_PerYear(
         AddEditFlatListPriceModel model)
     {
@@ -89,7 +89,7 @@ public static class AddEditFlatListPriceModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetBillingPeriod_DeclarativeAssociatedService_Null(
         AddEditFlatListPriceModel model)
     {
@@ -100,9 +100,9 @@ public static class AddEditFlatListPriceModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(null)]
-    [CommonInlineAutoData(TimeUnit.PerMonth)]
-    [CommonInlineAutoData(TimeUnit.PerYear)]
+    [MockInlineAutoData(null)]
+    [MockInlineAutoData(TimeUnit.PerMonth)]
+    [MockInlineAutoData(TimeUnit.PerYear)]
     public static void GetBillingPeriod_Declarative_SelectedTimeUnit(
         TimeUnit? selectedBillingPeriod,
         AddEditFlatListPriceModel model)
@@ -115,9 +115,9 @@ public static class AddEditFlatListPriceModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(null)]
-    [CommonInlineAutoData(TimeUnit.PerMonth)]
-    [CommonInlineAutoData(TimeUnit.PerYear)]
+    [MockInlineAutoData(null)]
+    [MockInlineAutoData(TimeUnit.PerMonth)]
+    [MockInlineAutoData(TimeUnit.PerYear)]
     public static void GetBillingPeriod_OnDemand_SelectedTimeUnit(
         TimeUnit? selectedBillingPeriod,
         AddEditFlatListPriceModel model)
@@ -130,8 +130,8 @@ public static class AddEditFlatListPriceModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-    [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerSolutionOrService)]
+    [MockInlineAutoData(CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+    [MockInlineAutoData(CataloguePriceQuantityCalculationType.PerSolutionOrService)]
     public static void GetQuantityCalculationType_Declarative_SelectedQuantityCalculationType(
         CataloguePriceQuantityCalculationType quantityCalculationType,
         AddEditFlatListPriceModel model)
@@ -144,8 +144,8 @@ public static class AddEditFlatListPriceModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-    [CommonInlineAutoData(CataloguePriceQuantityCalculationType.PerSolutionOrService)]
+    [MockInlineAutoData(CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+    [MockInlineAutoData(CataloguePriceQuantityCalculationType.PerSolutionOrService)]
     public static void GetQuantityCalculationType_OnDemand_SelectedQuantityCalculationType(
         CataloguePriceQuantityCalculationType quantityCalculationType,
         AddEditFlatListPriceModel model)

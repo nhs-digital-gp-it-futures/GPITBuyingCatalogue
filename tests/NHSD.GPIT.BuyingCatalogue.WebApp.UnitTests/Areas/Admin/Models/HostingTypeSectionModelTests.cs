@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
     public static class HostingTypeSectionModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
             [Frozen] CatalogueItem catalogueItem,
             HostingTypeSectionModel expected)

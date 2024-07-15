@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
     public static class ListPriceTypeModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NullSelection_SetsModelError(
             ListPriceTypeModel model,
             ListPriceTypeModelValidator validator)
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidSection_NoModelError(
             ListPriceTypeModel model,
             ListPriceTypeModelValidator validator)

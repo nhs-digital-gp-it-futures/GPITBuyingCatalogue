@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
     public static class ViewOrderModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Construct_MapsCorrectly(
             Organisation organisation,
             AspNetUser lastUpdatedBy,

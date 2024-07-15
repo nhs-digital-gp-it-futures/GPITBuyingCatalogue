@@ -16,12 +16,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class EditContactModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_PersonalDetailsNullOrEmpty_SetsModelError(
             string value,
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditContactModelValidator validator)
         {
             var existingContact = supplier.SupplierContacts.First();
@@ -30,9 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             existingContact.LastName = value;
             existingContact.Department = value;
 
-            suppliersService
-                .Setup(s => s.GetSupplier(existingContact.SupplierId))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplier(existingContact.SupplierId).Returns(supplier);
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
@@ -43,21 +41,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_FirstNameNullOrEmpty_SetsModelError(
             string firstName,
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditContactModelValidator validator)
         {
             var existingContact = supplier.SupplierContacts.First();
 
             existingContact.FirstName = firstName;
 
-            suppliersService
-                .Setup(s => s.GetSupplier(existingContact.SupplierId))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplier(existingContact.SupplierId).Returns(supplier);
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
@@ -68,21 +64,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_LastNameNullOrEmpty_SetsModelError(
             string lastName,
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditContactModelValidator validator)
         {
             var existingContact = supplier.SupplierContacts.First();
 
             existingContact.LastName = lastName;
 
-            suppliersService
-                .Setup(s => s.GetSupplier(existingContact.SupplierId))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplier(existingContact.SupplierId).Returns(supplier);
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
@@ -93,12 +87,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_ContactDetailsNullOrEmpty_SetsModelError(
             string value,
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditContactModelValidator validator)
         {
             var existingContact = supplier.SupplierContacts.First();
@@ -106,9 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             existingContact.Email = value;
             existingContact.PhoneNumber = value;
 
-            suppliersService
-                .Setup(s => s.GetSupplier(existingContact.SupplierId))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplier(existingContact.SupplierId).Returns(supplier);
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
@@ -119,19 +111,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmailFormatInvalid_SetsModelError(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditContactModelValidator validator)
         {
             var existingContact = supplier.SupplierContacts.First();
 
             existingContact.Email = "abc";
 
-            suppliersService
-                .Setup(s => s.GetSupplier(existingContact.SupplierId))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplier(existingContact.SupplierId).Returns(supplier);
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 
@@ -142,17 +132,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AddDuplicateContact_SetsModelError(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditContactModelValidator validator)
         {
             var existingContact = supplier.SupplierContacts.First();
 
-            suppliersService
-                .Setup(s => s.GetSupplier(supplier.Id))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplier(supplier.Id).Returns(supplier);
 
             var model = new EditContactModel(supplier)
             {
@@ -170,19 +158,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AddContact_SetsModelError(
             SupplierContact supplierContact,
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditContactModelValidator validator)
         {
             supplierContact.Email = "a@a.com";
             supplier.SupplierContacts = new List<SupplierContact>();
 
-            suppliersService
-                .Setup(s => s.GetSupplier(supplier.Id))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplier(supplier.Id).Returns(supplier);
 
             var model = new EditContactModel(supplier)
             {
@@ -199,17 +185,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EditDuplicateContact_SetsModelError(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditContactModelValidator validator)
         {
             var existingContact = supplier.SupplierContacts.First();
 
-            suppliersService
-                .Setup(s => s.GetSupplier(existingContact.SupplierId))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplier(existingContact.SupplierId).Returns(supplier);
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>())
             {
@@ -223,19 +207,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EditContact_NoModelError(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> suppliersService,
+            [Frozen] ISuppliersService suppliersService,
             EditContactModelValidator validator)
         {
             var existingContact = supplier.SupplierContacts.First();
 
             existingContact.Email = "a@a.com";
 
-            suppliersService
-                .Setup(s => s.GetSupplier(existingContact.SupplierId))
-                .ReturnsAsync(supplier);
+            suppliersService.GetSupplier(existingContact.SupplierId).Returns(supplier);
 
             var model = new EditContactModel(existingContact, supplier, new List<CatalogueItem>());
 

@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class HostingTypeSelectionModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectionWhenTypesAvailable_HasError(
             HostingTypeSelectionModel model,
             HostingTypeSelectionModelValidator validator)
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SelectionWhenTypesAvailable_DoesNotHaveError(
             HostingTypeSelectionModel model,
             HostingTypeSelectionModelValidator validator)
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectionWhenNoTypesAvailable_DoesNotHaveError(
             HostingTypeSelectionModel model,
             HostingTypeSelectionModelValidator validator)

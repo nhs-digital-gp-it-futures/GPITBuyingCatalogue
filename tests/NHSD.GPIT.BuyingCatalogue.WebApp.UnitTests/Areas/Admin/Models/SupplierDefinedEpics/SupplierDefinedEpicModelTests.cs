@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
     public static class SupplierDefinedEpicModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_PropertiesAreSetCorrectly(
             Epic epic)
         {

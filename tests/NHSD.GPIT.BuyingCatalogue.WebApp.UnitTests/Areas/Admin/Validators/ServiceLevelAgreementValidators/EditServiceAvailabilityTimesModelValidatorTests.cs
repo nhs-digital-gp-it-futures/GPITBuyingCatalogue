@@ -15,8 +15,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
     public static class EditServiceAvailabilityTimesModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SupportTypeNotEntered_SetsModelError(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var model = new EditServiceAvailabilityTimesModel
@@ -26,6 +28,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 Until = DateTime.UtcNow.AddMinutes(5),
             };
 
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
+
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.SupportType)
@@ -33,8 +37,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_FromNotEntered_SetsModelError(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var model = new EditServiceAvailabilityTimesModel
@@ -44,6 +50,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 Until = DateTime.UtcNow,
             };
 
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
+
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.From)
@@ -51,8 +59,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_UntilNotEntered_SetsModelError(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var model = new EditServiceAvailabilityTimesModel
@@ -62,6 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 From = DateTime.UtcNow,
             };
 
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
+
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Until)
@@ -69,8 +81,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ApplicableDAysNotEntered_SetsModelError(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var model = new EditServiceAvailabilityTimesModel
@@ -80,6 +94,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 Until = DateTime.UtcNow.AddMinutes(5),
             };
 
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
+
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ApplicableDays)
@@ -87,10 +103,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AddDuplicateAvailabilityTimes_SetsModelError(
             ServiceAvailabilityTimes serviceAvailabilityTimes,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var serviceLevelAgreements = new ServiceLevelAgreements
@@ -102,8 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 },
             };
 
-            serviceLevelAgreementsService.Setup(s => s.GetServiceLevelAgreementForSolution(serviceAvailabilityTimes.SolutionId))
-                .ReturnsAsync(serviceLevelAgreements);
+            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(serviceAvailabilityTimes.SolutionId).Returns(serviceLevelAgreements);
 
             var model = new EditServiceAvailabilityTimesModel
             {
@@ -122,10 +137,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EditExistingServiceAvailabilityTime_NoModelError(
             ServiceAvailabilityTimes serviceAvailabilityTimes,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var serviceLevelAgreements = new ServiceLevelAgreements
@@ -137,8 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 },
             };
 
-            serviceLevelAgreementsService.Setup(s => s.GetServiceLevelAgreementForSolution(serviceAvailabilityTimes.SolutionId))
-                .ReturnsAsync(serviceLevelAgreements);
+            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(serviceAvailabilityTimes.SolutionId).Returns(serviceLevelAgreements);
 
             var model = new EditServiceAvailabilityTimesModel
             {

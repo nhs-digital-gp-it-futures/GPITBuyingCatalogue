@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
     public static class FindOrganisationModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoOdsCode_SetsModelError(
             FindOrganisationModel model,
             FindOrganisationModelValidator validator)
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Orga
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_OdsCode_SetsModelError(
             string odsCode,
             FindOrganisationModel model,

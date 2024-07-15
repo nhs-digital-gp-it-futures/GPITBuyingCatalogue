@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Interope
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
             Solution solution,
             InteroperabilityModel expected)

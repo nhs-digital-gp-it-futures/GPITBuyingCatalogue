@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Appl
     public static class OperatingSystemsModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectedOperatingSystems_SetsModelError(
             OperatingSystemsModel model,
             OperatingSystemsModelValidator validator)
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Appl
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SelectedOperatingSystem_NoModelError(
             OperatingSystemsModel model,
             OperatingSystemsModelValidator validator)

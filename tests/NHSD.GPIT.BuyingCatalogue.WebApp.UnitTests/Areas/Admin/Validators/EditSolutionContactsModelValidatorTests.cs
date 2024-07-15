@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class EditSolutionContactsModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidRequest_NoValidationErrors(
             EditSolutionContactsModel model,
             EditSolutionContactsModelValidator validator)
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectedContacts_SetsModelError(
             EditSolutionContactsModel model,
             EditSolutionContactsModelValidator validator)
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MoreThan2SelectedContacts_SetsModelError(
             Fixture fixture,
             EditSolutionContactsModelValidator validator)

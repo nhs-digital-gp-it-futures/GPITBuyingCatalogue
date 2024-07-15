@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
     public static class EditAdditionalServiceModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void DetailsStatus_WithDetails_ReturnsCompleted(
             string additionalServiceName,
             string additionalServiceDescription,
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void DetailsStatus_WithNoDetails_ReturnsNotStarted(
             Solution solution,
             AdditionalService additionalService)

@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
     public static class AssociatedServicesModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AssociatedServices_ValidCatalogueItem_NoRelatedServices_PropertiesSetAsExpected(
             CatalogueItem catalogueItem,
             List<AssociatedService> associatedServices)
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AssociatedServices_ValidCatalogueItem_RelatedServices_PropertiesSetAsExpected(
            CatalogueItem catalogueItem,
            List<AssociatedService> associatedServices)

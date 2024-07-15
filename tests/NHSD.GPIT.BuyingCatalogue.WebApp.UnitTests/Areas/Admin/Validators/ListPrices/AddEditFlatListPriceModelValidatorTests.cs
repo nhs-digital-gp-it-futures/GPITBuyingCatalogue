@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
     public static class AddEditFlatListPriceModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_InvalidModel_SetsModelError(
             AddEditFlatListPriceModel model,
             AddEditFlatListPriceModelValidator validator)
@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NegativePrice_SetsModelError(
             AddEditFlatListPriceModel model,
             AddEditFlatListPriceModelValidator validator)
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PriceGreaterThan4DecimalPlaces_SetsModelError(
             AddEditFlatListPriceModel model,
             AddEditFlatListPriceModelValidator validator)
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PriceNotNumeric_SetsModelError(
             AddEditFlatListPriceModel model,
             AddEditFlatListPriceModelValidator validator)
@@ -89,22 +89,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Duplicate_SetsModelError(
             AddEditFlatListPriceModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             AddEditFlatListPriceModelValidator validator)
         {
             model.SelectedProvisioningType = EntityFramework.Catalogue.Models.ProvisioningType.Declarative;
             model.InputPrice = "3.14";
 
-            service.Setup(s => s.HasDuplicateFlatPrice(
+            service.HasDuplicateFlatPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
                 model.Price!.Value,
-                model.UnitDescription)).ReturnsAsync(true);
+                model.UnitDescription).Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -113,22 +113,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelError(
             AddEditFlatListPriceModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             AddEditFlatListPriceModelValidator validator)
         {
             model.SelectedProvisioningType = EntityFramework.Catalogue.Models.ProvisioningType.Declarative;
             model.InputPrice = "3.14";
 
-            service.Setup(s => s.HasDuplicateFlatPrice(
+            service.HasDuplicateFlatPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
                 model.Price!.Value,
-                model.UnitDescription)).ReturnsAsync(false);
+                model.UnitDescription).Returns(false);
 
             var result = validator.TestValidate(model);
 

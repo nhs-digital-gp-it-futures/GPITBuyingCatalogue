@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
     public static class ManageCatalogueSolutionModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void PublicationStatuses_Returns_AllStatuses(
             Solution solution,
             SolutionLoadingStatusesModel solutionLoadingStatuses)
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void StatusFeatures_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
             SolutionLoadingStatusesModel solutionLoadingStatuses)
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void StatusDescription_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
             SolutionLoadingStatusesModel solutionLoadingStatuses)
@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void StatusImplementation_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
             SolutionLoadingStatusesModel solutionLoadingStatuses)
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void StatusRoadmap_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
             SolutionLoadingStatusesModel solutionLoadingStatuses)
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void StatusInteroperability_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
             SolutionLoadingStatusesModel solutionLoadingStatuses)
@@ -100,7 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void StatusListPrice_Returns_FromSolutionLoadingStatusesModel(
             Solution solution,
             SolutionLoadingStatusesModel solutionLoadingStatuses)

@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ListPric
     public static class ManageListPricesModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructing_AssignsProperties(
             CatalogueItem catalogueItem,
             ICollection<CataloguePrice> prices)

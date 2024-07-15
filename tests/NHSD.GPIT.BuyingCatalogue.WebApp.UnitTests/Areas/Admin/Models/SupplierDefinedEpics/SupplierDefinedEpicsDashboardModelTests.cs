@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
     public static class SupplierDefinedEpicsDashboardModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_PropertiesAreSetCorrectly(
             IList<Epic> epics,
             string searchTerm)

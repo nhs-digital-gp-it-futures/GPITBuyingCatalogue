@@ -35,28 +35,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_GetsAllSuppliers(
             IList<Supplier> suppliers,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetAllSuppliers(It.IsAny<string>())).ReturnsAsync(suppliers);
+            mockSuppliersService.GetAllSuppliers(Arg.Any<string>()).Returns(suppliers);
 
             await controller.Index();
 
-            mockSuppliersService.Verify(o => o.GetAllSuppliers(It.IsAny<string>()));
+            await mockSuppliersService.Received().GetAllSuppliers(Arg.Any<string>());
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_ActiveSuppliers_DoesntShowInactiveItems(
             IList<Supplier> suppliers,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
             suppliers.ToList().ForEach(s => s.IsActive = true);
-            mockSuppliersService.Setup(s => s.GetAllSuppliers(It.IsAny<string>())).ReturnsAsync(suppliers);
+            mockSuppliersService.GetAllSuppliers(Arg.Any<string>()).Returns(suppliers);
 
             var result = (await controller.Index()).As<ViewResult>();
 
@@ -65,16 +65,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_SearchTerm_DisableScripting(
             string searchTerm,
             IList<Supplier> suppliers,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
             suppliers.ToList().ForEach(s => s.IsActive = true);
             suppliers.First().IsActive = false;
-            mockSuppliersService.Setup(s => s.GetAllSuppliers(searchTerm)).ReturnsAsync(suppliers);
+            mockSuppliersService.GetAllSuppliers(searchTerm).Returns(suppliers);
 
             var result = (await controller.Index(searchTerm)).As<ViewResult>();
 
@@ -83,15 +83,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_ReturnsViewWithExpectedViewModel(
             IList<Supplier> suppliers,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
             var expectedResult = new ManageSuppliersModel(suppliers);
 
-            mockSuppliersService.Setup(o => o.GetAllSuppliers(It.IsAny<string>())).ReturnsAsync(suppliers);
+            mockSuppliersService.GetAllSuppliers(Arg.Any<string>()).Returns(suppliers);
 
             var actual = (await controller.Index()).As<ViewResult>();
 
@@ -101,10 +101,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditSupplier_ReturnsViewWithExpectedViewModel(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
             var expectedResult = new EditSupplierModel(supplier)
@@ -112,28 +112,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 BackLink = "testUrl",
             };
 
-            mockSuppliersService.Setup(s => s.GetSupplier(It.IsAny<int>())).ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
 
-            var actual = (await controller.EditSupplier(It.IsAny<int>())).As<ViewResult>();
+            var actual = (await controller.EditSupplier(supplier.Id)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.Should().BeEquivalentTo(expectedResult);
 
-            mockSuppliersService.Verify(s => s.GetSupplier(It.IsAny<int>()));
+            await mockSuppliersService.Received().GetSupplier(Arg.Any<int>());
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditSupplier_StatusNotChanged_ReturnsRedirectToActionResult(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             EditSupplierModel model,
             SuppliersController controller)
         {
             supplier.IsActive = model.SupplierStatus;
 
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
 
             var actual = (await controller.EditSupplier(supplier.Id, model)).As<RedirectToActionResult>();
 
@@ -142,10 +142,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditSupplier_Activate_MissingInformation_ReturnsExpectedView(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
             supplier.IsActive = true;
@@ -157,7 +157,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             supplier.IsActive = false;
 
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
 
             var actual = (await controller.EditSupplier(supplier.Id, model)).As<ViewResult>();
 
@@ -170,14 +170,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             controller.ModelState.Should().ContainKey(nameof(model.SupplierStatus));
             controller.ModelState[nameof(model.SupplierStatus)]?.Errors.Should().Contain(x => x.ErrorMessage == "Mandatory section incomplete");
 
-            mockSuppliersService.Verify(s => s.GetSupplier(supplier.Id));
+            await mockSuppliersService.Received().GetSupplier(supplier.Id);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditSupplier_Deactivate_PublishedSolutions_ReturnsExpectedView(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
             supplier.IsActive = false;
@@ -186,9 +186,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             supplier.IsActive = true;
 
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
-            mockSuppliersService.Setup(x => x.GetAllSolutionsForSupplier(supplier.Id))
-                .ReturnsAsync(new List<CatalogueItem>() { new CatalogueItem() { PublishedStatus = PublicationStatus.Published } });
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
+            mockSuppliersService.GetAllSolutionsForSupplier(supplier.Id).Returns(new List<CatalogueItem>() { new CatalogueItem() { PublishedStatus = PublicationStatus.Published } });
 
             var actual = (await controller.EditSupplier(supplier.Id, model)).As<ViewResult>();
 
@@ -200,15 +199,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             controller.ModelState.ErrorCount.Should().Be(1);
             controller.ModelState.Should().ContainKey(nameof(model.SupplierStatus));
             controller.ModelState[nameof(model.SupplierStatus)]?.Errors.Should().Contain(x => x.ErrorMessage == "Cannot set to inactive while 1 solutions for this supplier are still published");
-
-            mockSuppliersService.VerifyAll();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditSupplier_UpdateActiveStatus_ReturnsRedirectToAction(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
             supplier.IsActive = false;
@@ -217,21 +214,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             supplier.IsActive = true;
 
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
-            mockSuppliersService.Setup(x => x.GetAllSolutionsForSupplier(supplier.Id))
-                .ReturnsAsync(new List<CatalogueItem>() { new CatalogueItem() { PublishedStatus = PublicationStatus.Draft } });
-            mockSuppliersService.Setup(x => x.UpdateSupplierActiveStatus(supplier.Id, model.SupplierStatus))
-                .ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
+            mockSuppliersService.GetAllSolutionsForSupplier(supplier.Id).Returns(new List<CatalogueItem>() { new CatalogueItem() { PublishedStatus = PublicationStatus.Draft } });
+            mockSuppliersService.UpdateSupplierActiveStatus(supplier.Id, model.SupplierStatus).Returns(supplier);
 
             var actual = (await controller.EditSupplier(supplier.Id, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(SuppliersController.Index));
-            mockSuppliersService.VerifyAll();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_AddSupplierDetails_ReturnsViewWithExpectedViewModel(
             SuppliersController controller)
         {
@@ -248,16 +242,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddSupplierDetails_AddsSupplier_RedirectsCorrectly(
             EditSupplierDetailsModel model,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             Supplier supplier,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
-            mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync((Supplier)null);
-            mockSuppliersService.Setup(s => s.AddSupplier(It.IsAny<ServiceContracts.Models.EditSupplierModel>())).ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplierByName(model.SupplierName).Returns((Supplier)null);
+            mockSuppliersService.GetSupplierByLegalName(model.SupplierLegalName).Returns((Supplier)null);
+            mockSuppliersService.AddSupplier(Arg.Any<ServiceContracts.Models.EditSupplierModel>()).Returns(supplier);
 
             var actual = (await controller.AddSupplierDetails(model)).As<RedirectToActionResult>();
 
@@ -265,17 +259,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ControllerName.Should().Be(typeof(SuppliersController).ControllerName());
             actual.RouteValues["supplierId"].Should().Be(supplier.Id);
 
-            mockSuppliersService.Verify(s => s.AddSupplier(It.IsAny<ServiceContracts.Models.EditSupplierModel>()), Times.Once());
+            await mockSuppliersService.Received().AddSupplier(Arg.Any<ServiceContracts.Models.EditSupplierModel>());
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditSupplierDetails_ReturnsViewWithExpectedViewModel(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
 
             var expectedResult = new EditSupplierDetailsModel(supplier)
             {
@@ -290,16 +284,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditSupplierDetails_SupplierNameExists_MatchesThisSupplier_RedirectsCorrectly(
             EditSupplierDetailsModel model,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             Supplier existingSupplier,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync(existingSupplier);
-            mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync((Supplier)null);
-            mockSuppliersService.Setup(s => s.EditSupplierDetails(existingSupplier.Id, It.IsAny<ServiceContracts.Models.EditSupplierModel>())).ReturnsAsync(existingSupplier);
+            mockSuppliersService.GetSupplierByName(model.SupplierName).Returns(existingSupplier);
+            mockSuppliersService.GetSupplierByLegalName(model.SupplierLegalName).Returns((Supplier)null);
+            mockSuppliersService.EditSupplierDetails(existingSupplier.Id, Arg.Any<ServiceContracts.Models.EditSupplierModel>()).Returns(existingSupplier);
 
             var actual = (await controller.EditSupplierDetails(existingSupplier.Id, model)).As<RedirectToActionResult>();
 
@@ -308,16 +302,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditSupplierDetails_SupplierLegalNameExists_MatchesThisSupplier_RedirectsCorrectly(
             EditSupplierDetailsModel model,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             Supplier existingSupplier,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetSupplierByName(model.SupplierName)).ReturnsAsync((Supplier)null);
-            mockSuppliersService.Setup(s => s.GetSupplierByLegalName(model.SupplierLegalName)).ReturnsAsync(existingSupplier);
-            mockSuppliersService.Setup(s => s.EditSupplierDetails(existingSupplier.Id, It.IsAny<ServiceContracts.Models.EditSupplierModel>())).ReturnsAsync(existingSupplier);
+            mockSuppliersService.GetSupplierByName(model.SupplierName).Returns((Supplier)null);
+            mockSuppliersService.GetSupplierByLegalName(model.SupplierLegalName).Returns(existingSupplier);
+            mockSuppliersService.EditSupplierDetails(existingSupplier.Id, Arg.Any<ServiceContracts.Models.EditSupplierModel>()).Returns(existingSupplier);
 
             var actual = (await controller.EditSupplierDetails(existingSupplier.Id, model)).As<RedirectToActionResult>();
 
@@ -326,13 +320,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditSupplierAddress_ReturnsViewWithExpectedViewModel(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
 
             var expectedResult = new EditSupplierAddressModel(supplier);
 
@@ -344,14 +338,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditSupplierAddress_EditsAddress_RedirectsCorrectly(
             EditSupplierAddressModel model,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             Supplier supplier,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.EditSupplierAddress(supplier.Id, It.IsAny<Address>())).ReturnsAsync(supplier);
+            mockSuppliersService.EditSupplierAddress(supplier.Id, Arg.Any<Address>()).Returns(supplier);
 
             var actual = (await controller.EditSupplierAddress(supplier.Id, model)).As<RedirectToActionResult>();
 
@@ -359,17 +353,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ControllerName.Should().Be(typeof(SuppliersController).ControllerName());
             actual.RouteValues["supplierId"].Should().Be(supplier.Id);
 
-            mockSuppliersService.Verify(s => s.EditSupplierAddress(supplier.Id, It.IsAny<Address>()), Times.Once());
+            await mockSuppliersService.Received().EditSupplierAddress(supplier.Id, Arg.Any<Address>());
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_ManageSupplierContacts_ReturnsViewWithExpectedViewModel(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
 
             var expectedResult = new ManageSupplierContactsModel(supplier)
             {
@@ -384,13 +378,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_AddSupplierContact_ReturnsViewWithExpectedViewModel(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
 
             var expectedResult = new EditContactModel(supplier)
             {
@@ -405,15 +399,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddSupplierContact_AddsContact_RedirectsCorrectly(
             EditContactModel model,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             Supplier supplier,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
-            mockSuppliersService.Setup(s => s.AddSupplierContact(supplier.Id, It.IsAny<SupplierContact>())).ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
+            mockSuppliersService.AddSupplierContact(supplier.Id, Arg.Any<SupplierContact>()).Returns(supplier);
 
             var actual = (await controller.AddSupplierContact(supplier.Id, model)).As<RedirectToActionResult>();
 
@@ -421,21 +415,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ControllerName.Should().Be(typeof(SuppliersController).ControllerName());
             actual.RouteValues["supplierId"].Should().Be(supplier.Id);
 
-            mockSuppliersService.Verify(s => s.AddSupplierContact(supplier.Id, It.IsAny<SupplierContact>()), Times.Once());
+            await mockSuppliersService.Received().AddSupplierContact(supplier.Id, Arg.Any<SupplierContact>());
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditSupplierContact_ReturnsViewWithExpectedViewModel(
             Supplier supplier,
             List<CatalogueItem> solutions,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
 
-            mockSuppliersService.Setup(s => s.GetSolutionsReferencingSupplierContact(supplier.SupplierContacts.First().Id))
-                .ReturnsAsync(solutions);
+            mockSuppliersService.GetSolutionsReferencingSupplierContact(supplier.SupplierContacts.First().Id).Returns(solutions);
 
             var expectedResult = new EditContactModel(supplier.SupplierContacts.First(), supplier, solutions)
             {
@@ -450,18 +443,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditSupplierContact_InvalidViewModel_ReturnsViewWithExpectedViewModel(
             Supplier supplier,
             List<CatalogueItem> solutions,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             EditContactModel model,
             SuppliersController controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
-            mockSuppliersService.Setup(s => s.GetSolutionsReferencingSupplierContact(supplier.SupplierContacts.First().Id))
-                .ReturnsAsync(solutions);
+            mockSuppliersService.GetSolutionsReferencingSupplierContact(supplier.SupplierContacts.First().Id).Returns(solutions);
 
             var actual = (await controller.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, model)).As<ViewResult>();
 
@@ -472,10 +464,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditSupplierContact_ReturnsRedirectToAction(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             EditContactModel model,
             SuppliersController controller)
         {
@@ -489,8 +481,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 Department = model.Department,
             };
 
-            mockSuppliersService.Setup(s => s.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, updatedContact))
-                .ReturnsAsync(supplier);
+            mockSuppliersService.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, updatedContact).Returns(supplier);
 
             var actual = (await controller.EditSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, model)).As<RedirectToActionResult>();
 
@@ -500,13 +491,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteSupplierContact_ReturnsViewWithExpectedViewModel(
             Supplier supplier,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.GetSupplier(supplier.Id)).ReturnsAsync(supplier);
+            mockSuppliersService.GetSupplier(supplier.Id).Returns(supplier);
 
             var expectedResult = new DeleteContactModel(supplier.SupplierContacts.First(), supplier.Name)
             {
@@ -521,14 +512,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteSupplierContact_EditsContact_RedirectsCorrectly(
             DeleteContactModel model,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             Supplier supplier,
             SuppliersController controller)
         {
-            mockSuppliersService.Setup(s => s.DeleteSupplierContact(supplier.Id, It.IsAny<int>())).ReturnsAsync(supplier);
+            mockSuppliersService.DeleteSupplierContact(supplier.Id, Arg.Any<int>()).Returns(supplier);
 
             var actual = (await controller.DeleteSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id, model)).As<RedirectToActionResult>();
 
@@ -536,15 +527,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.ControllerName.Should().Be(typeof(SuppliersController).ControllerName());
             actual.RouteValues["supplierId"].Should().Be(supplier.Id);
 
-            mockSuppliersService.Verify(s => s.DeleteSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id), Times.Once());
+            await mockSuppliersService.Received().DeleteSupplierContact(supplier.Id, supplier.SupplierContacts.First().Id);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_FilterSearchSuggestions_ReturnsResults(
             string searchTerm,
             List<Supplier> searchResults,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
             var expected = searchResults.Select(r => new HtmlEncodedSuggestionSearchResult(
@@ -554,8 +545,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var supplier = searchResults.First();
 
-            mockSuppliersService.Setup(s => s.GetSuppliersBySearchTerm(searchTerm))
-                .ReturnsAsync(searchResults);
+            mockSuppliersService.GetSuppliersBySearchTerm(searchTerm).Returns(searchResults);
 
             var result = (await controller.FilterSearchSuggestions(searchTerm)).As<JsonResult>();
 
@@ -564,10 +554,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_FilterSearchSuggestions_NoResults(
             string searchTerm,
-            [Frozen] Mock<ISuppliersService> mockSuppliersService,
+            [Frozen] ISuppliersService mockSuppliersService,
             SuppliersController controller)
         {
             controller.ControllerContext.HttpContext = new DefaultHttpContext()
@@ -581,8 +571,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 },
             };
 
-            mockSuppliersService.Setup(s => s.GetSuppliersBySearchTerm(searchTerm))
-                .ReturnsAsync(Array.Empty<Supplier>());
+            mockSuppliersService.GetSuppliersBySearchTerm(searchTerm).Returns(Array.Empty<Supplier>());
 
             var result = (await controller.FilterSearchSuggestions(searchTerm)).As<JsonResult>();
 

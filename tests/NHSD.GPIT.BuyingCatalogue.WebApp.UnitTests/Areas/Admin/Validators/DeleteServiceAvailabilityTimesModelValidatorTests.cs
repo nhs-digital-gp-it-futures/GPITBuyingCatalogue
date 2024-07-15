@@ -14,23 +14,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class DeleteServiceAvailabilityTimesModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PublishedSolutionWithManyServiceAgreementTimes_NoModelError(
             Solution solution,
             ServiceAvailabilityTimes serviceAvailabilityTimes,
-            [Frozen] Mock<ISolutionsService> solutionsService,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             DeleteServiceAvailabilityTimesModelValidator validator)
         {
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
 
             var model = new DeleteServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
 
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
-                .ReturnsAsync(1);
+            serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id).Returns(1);
 
             var result = validator.TestValidate(model);
 
@@ -38,23 +36,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PublishedSolutionWitSingleServiceAgreementTimes_SetsModelError(
             Solution solution,
             ServiceAvailabilityTimes serviceAvailabilityTimes,
-            [Frozen] Mock<ISolutionsService> solutionsService,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             DeleteServiceAvailabilityTimesModelValidator validator)
         {
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
 
             var model = new DeleteServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
 
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
-                .ReturnsAsync(0);
+            serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id).Returns(0);
 
             var result = validator.TestValidate(model);
 
@@ -63,23 +59,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_UnpublishedSolutionWithManyServiceAgreementTimes_NoModelError(
             Solution solution,
             ServiceAvailabilityTimes serviceAvailabilityTimes,
-            [Frozen] Mock<ISolutionsService> solutionsService,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             DeleteServiceAvailabilityTimesModelValidator validator)
         {
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Unpublished;
 
             var model = new DeleteServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
 
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
-                .ReturnsAsync(1);
+            serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id).Returns(1);
 
             var result = validator.TestValidate(model);
 
@@ -87,23 +81,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_UnpublishedSolutionWitSingleServiceAgreementTimes_NoModelError(
             Solution solution,
             ServiceAvailabilityTimes serviceAvailabilityTimes,
-            [Frozen] Mock<ISolutionsService> solutionsService,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             DeleteServiceAvailabilityTimesModelValidator validator)
         {
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Unpublished;
 
             var model = new DeleteServiceAvailabilityTimesModel(solution.CatalogueItem, serviceAvailabilityTimes);
 
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            serviceLevelAgreementsService.Setup(s => s.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id))
-                .ReturnsAsync(0);
+            serviceLevelAgreementsService.GetCountOfServiceAvailabilityTimes(solution.CatalogueItemId, serviceAvailabilityTimes.Id).Returns(0);
 
             var result = validator.TestValidate(model);
 

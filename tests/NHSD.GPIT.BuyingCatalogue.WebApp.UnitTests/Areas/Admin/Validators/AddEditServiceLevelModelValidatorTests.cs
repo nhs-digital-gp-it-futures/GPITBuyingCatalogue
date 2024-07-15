@@ -13,8 +13,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class AddEditServiceLevelModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_WithNoServiceType_SetsModelError(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             AddEditServiceLevelModelValidator validator)
         {
             var model = new AddEditServiceLevelModel
@@ -23,6 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 HowMeasured = "How Measured",
                 CreditsApplied = true,
             };
+
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
 
             var result = validator.TestValidate(model);
 
@@ -31,8 +35,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_WithNoServiceLevel_SetsModelError(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             AddEditServiceLevelModelValidator validator)
         {
             var model = new AddEditServiceLevelModel
@@ -42,6 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 CreditsApplied = true,
             };
 
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
+
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.ServiceLevel)
@@ -49,8 +57,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_WithNoHowMeasured_SetsModelError(
+            ServiceLevelAgreements serviceLevelAgreement,
+            [Frozen] IServiceLevelAgreementsService service,
             AddEditServiceLevelModelValidator validator)
         {
             var model = new AddEditServiceLevelModel
@@ -60,6 +70,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
                 CreditsApplied = true,
             };
 
+            service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
+
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.HowMeasured)
@@ -67,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_WithNoCreditsSelection_SetsModelError(
             AddEditServiceLevelModelValidator validator)
         {
@@ -85,18 +97,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Duplicate_SetsModelError(
             Solution solution,
             ServiceLevelAgreements serviceLevelAgreement,
             SlaServiceLevel serviceLevel,
-            [Frozen] Mock<IServiceLevelAgreementsService> serviceLevelAgreementsService,
+            [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             AddEditServiceLevelModelValidator validator)
         {
             serviceLevelAgreement.ServiceLevels.Add(serviceLevel);
 
-            serviceLevelAgreementsService.Setup(s => s.GetServiceLevelAgreementForSolution(solution.CatalogueItemId))
-                .ReturnsAsync(serviceLevelAgreement);
+            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(solution.CatalogueItemId).Returns(serviceLevelAgreement);
 
             var model = new AddEditServiceLevelModel(solution.CatalogueItem)
             {

@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class ApplicationTypeSectionModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoExistingHostingTypes_HasError(
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ExistingHostingTypes_DoesNotHaveError(
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,

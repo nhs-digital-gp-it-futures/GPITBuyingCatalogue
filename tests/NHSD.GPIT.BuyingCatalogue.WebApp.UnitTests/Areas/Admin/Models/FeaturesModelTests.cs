@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
     public static class FeaturesModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AllFeatures_Returns_ValidFeatures(FeaturesModel model)
         {
             var expected = new[]
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
             Solution solution,
             FeaturesModel expected)

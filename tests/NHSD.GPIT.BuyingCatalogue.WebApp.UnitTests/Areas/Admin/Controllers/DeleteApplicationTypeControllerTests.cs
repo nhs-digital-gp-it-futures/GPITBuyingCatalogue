@@ -43,14 +43,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteApplicationTypeConfirmation_ValidId_ReturnsViewWithExpectedModel(
             CatalogueItem catalogueItem,
             ApplicationType applicationType,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DeleteApplicationTypeController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(It.IsAny<CatalogueItemId>())).ReturnsAsync(catalogueItem);
+            mockService.GetSolutionThin(Arg.Any<CatalogueItemId>()).Returns(catalogueItem);
 
             var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, applicationType)).As<ViewResult>();
 
@@ -59,14 +59,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteApplicationTypeConfirmation_InvalidId_ReturnsBadRequest(
             CatalogueItem catalogueItem,
             ApplicationType applicationType,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DeleteApplicationTypeController controller)
         {
-            mockService.Setup(s => s.GetSolutionThin(It.IsAny<CatalogueItemId>())).ReturnsAsync((CatalogueItem)null);
+            mockService.GetSolutionThin(Arg.Any<CatalogueItemId>()).Returns((CatalogueItem)null);
 
             var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItem.Id, applicationType)).As<BadRequestObjectResult>();
 
@@ -76,27 +76,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteApplicationTypeConfirmation_Saves_And_RedirectsToDesktop(
             CatalogueItemId catalogueItemId,
             ApplicationType applicationType,
             DeleteApplicationTypeConfirmationModel model,
             ApplicationTypeDetail applicationTypeDetail,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DeleteApplicationTypeController controller)
         {
-            mockService.Setup(s => s.GetApplicationType(catalogueItemId)).ReturnsAsync(applicationTypeDetail);
+            mockService.GetApplicationType(catalogueItemId).Returns(applicationTypeDetail);
 
             var actual = (await controller.DeleteApplicationTypeConfirmation(catalogueItemId, applicationType, model)).As<RedirectToActionResult>();
 
-            mockService.Verify(s => s.DeleteApplicationType(catalogueItemId, applicationType));
+            await mockService.Received().DeleteApplicationType(catalogueItemId, applicationType);
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ApplicationType));
             actual.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
             actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteApplicationTypeConfirmation_InvalidModelState_ReturnsView(
             string errorKey,
             string errorMessage,
