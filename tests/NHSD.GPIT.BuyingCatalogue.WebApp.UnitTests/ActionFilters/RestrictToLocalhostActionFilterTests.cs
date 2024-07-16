@@ -15,16 +15,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 {
     public sealed class RestrictToLocalhostActionFilterTests
     {
-        private readonly Mock<HttpContext> httpContextMock;
+        private readonly HttpContext httpContextMock;
         private readonly ActionExecutingContext actionExecutingContext;
         private readonly ActionExecutedContext actionExecutedContext;
 
         public RestrictToLocalhostActionFilterTests()
         {
-            httpContextMock = new Mock<HttpContext>();
+            httpContextMock = Substitute.For<HttpContext>();
 
             var actionContext = new ActionContext(
-                httpContextMock.Object,
+                httpContextMock,
                 Mock.Of<Microsoft.AspNetCore.Routing.RouteData>(),
                 Mock.Of<ActionDescriptor>(),
                 new ModelStateDictionary());
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                 },
             };
 
-            httpContextMock.Setup(r => r.Connection).Returns(defaultContext.Connection);
+            httpContextMock.Connection.Returns(defaultContext.Connection);
 
             var filter = new RestrictToLocalhostActionFilter();
 
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                 },
             };
 
-            httpContextMock.Setup(r => r.Connection).Returns(defaultContext.Connection);
+            httpContextMock.Connection.Returns(defaultContext.Connection);
 
             var filter = new RestrictToLocalhostActionFilter();
 

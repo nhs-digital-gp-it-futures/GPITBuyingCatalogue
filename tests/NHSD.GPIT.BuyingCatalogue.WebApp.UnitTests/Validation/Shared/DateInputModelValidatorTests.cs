@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
     public static class DateInputModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DayMissing_ThrowsValidationError(
             DateInputModel model,
             DateInputModelValidator validator)
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DayMissing_WithDescription_ThrowsValidationError(
             DateInputModel model,
             DateInputModelValidator validator)
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MonthMissing_ThrowsValidationError(
             DateInputModel model,
             DateInputModelValidator validator)
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MonthMissing_WithDescription_ThrowsValidationError(
             DateInputModel model,
             DateInputModelValidator validator)
@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_YearMissing_ThrowsValidationError(
             DateInputModel model,
             DateInputModelValidator validator)
@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_YearMissing_WithDescription_ThrowsValidationError(
             DateInputModel model,
             DateInputModelValidator validator)
@@ -106,9 +106,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
         }
 
         [Theory]
-        [CommonInlineAutoData("1")]
-        [CommonInlineAutoData("12")]
-        [CommonInlineAutoData("123")]
+        [MockInlineAutoData("1")]
+        [MockInlineAutoData("12")]
+        [MockInlineAutoData("123")]
         public static void Validate_YearTooShort_ThrowsValidationError(
             string year,
             DateInputModel model,
@@ -126,9 +126,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
         }
 
         [Theory]
-        [CommonInlineAutoData("1")]
-        [CommonInlineAutoData("12")]
-        [CommonInlineAutoData("123")]
+        [MockInlineAutoData("1")]
+        [MockInlineAutoData("12")]
+        [MockInlineAutoData("123")]
         public static void Validate_YearTooShort_WithDescription_ThrowsValidationError(
             string year,
             DateInputModel model,
@@ -146,8 +146,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
         }
 
         [Theory]
-        [CommonInlineAutoData("99", "01", "2022")]
-        [CommonInlineAutoData("01", "99", "2022")]
+        [MockInlineAutoData("99", "01", "2022")]
+        [MockInlineAutoData("01", "99", "2022")]
         public static void Validate_InvalidDate_ThrowsValidationError(
             string day,
             string month,
@@ -167,8 +167,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
         }
 
         [Theory]
-        [CommonInlineAutoData("99", "01", "2022")]
-        [CommonInlineAutoData("01", "99", "2022")]
+        [MockInlineAutoData("99", "01", "2022")]
+        [MockInlineAutoData("01", "99", "2022")]
         public static void Validate_InvalidDate_WithDescription_ThrowsValidationError(
             string day,
             string month,
@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidModel_NoValidationError(
             DateInputModel model,
             DateInputModelValidator validator)

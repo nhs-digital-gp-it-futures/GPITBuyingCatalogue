@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Pricing
     public static class SelectPriceModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectionMade_ThrowsValidationError(
             SelectPriceModel model,
             SelectPriceModelValidator validator)
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Pricing
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AllCorrect_NoErrorThrown(
             SelectPriceModel model,
             SelectPriceModelValidator validator)

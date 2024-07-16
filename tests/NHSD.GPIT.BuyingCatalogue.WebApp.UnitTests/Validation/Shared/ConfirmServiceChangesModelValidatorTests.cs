@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
     public class ConfirmServiceChangesModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ConfirmChangesNull_ThrowsValidationError(
             ConfirmServiceChangesModel model,
             ConfirmServiceChangesModelValidator systemUnderTest)
@@ -23,8 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
+        [MockInlineAutoData(true)]
+        [MockInlineAutoData(false)]
         public static void Validate_ConfirmChangesNotNull_NoValidationErrors(
             bool confirmChanges,
             ConfirmServiceChangesModel model,

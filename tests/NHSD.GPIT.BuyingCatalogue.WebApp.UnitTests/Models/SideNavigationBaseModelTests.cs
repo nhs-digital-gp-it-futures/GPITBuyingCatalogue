@@ -37,19 +37,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
         [Fact]
         public static void FirstSection_Returns_ExpectedResponse()
         {
-            var model = new Mock<SideNavigationBaseModel> { Object = { Sections = SectionModels } };
+            var model = Substitute.For<SideNavigationBaseModel>();
+            model.Sections = SectionModels;
 
-            var actual = model.Object.FirstSection;
+            var actual = model.FirstSection;
             actual.Should().Be(SectionModels[0].Name);
         }
 
         [Fact]
         public static void FirstSection_NoItems_Returns_ExpectedResponse()
         {
-            var model = new Mock<SideNavigationBaseModel> { Object = { Sections = new List<SectionModel>() } };
+            var model = Substitute.For<SideNavigationBaseModel>();
+            model.Sections = new List<SectionModel>();
 
-            var actual = model.Object.FirstSection;
-            actual.Should().BeNull();
+            model.FirstSection.Should().BeNull();
         }
 
         [Theory]
@@ -58,20 +59,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
         [InlineData(2)]
         public static void SelectedSection_Returns_ExpectedResponse(int index)
         {
-            var model = new Mock<SideNavigationBaseModel> { Object = { Sections = SectionModels, } };
+            var model = Substitute.For<SideNavigationBaseModel>();
+            model.Sections = SectionModels;
 
-            model.Setup(x => x.Index).Returns(index);
-            var actual = model.Object.SelectedSection;
-            actual.Should().Be(SectionModels[index].Name);
+            model.Index.Returns(index);
+
+            model.SelectedSection.Should().Be(SectionModels[index].Name);
         }
 
         [Fact]
         public static void SelectedSection_IndexOutOfBoundsReturns_Null()
         {
-            var model = new Mock<SideNavigationBaseModel> { Object = { Sections = SectionModels, } };
-            model.Setup(x => x.Index).Returns(4);
-            var actual = model.Object.SelectedSection;
-            actual.Should().BeNull();
+            var model = Substitute.For<SideNavigationBaseModel>();
+            model.Sections = SectionModels;
+
+            model.Index.Returns(4);
+
+            model.SelectedSection.Should().BeNull();
         }
 
         [Theory]
@@ -81,42 +85,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
         [InlineData(3, true)]
         public static void NotFirstSection_Returns_ExpectedResponse(int index, bool expected)
         {
-            var model = new Mock<SideNavigationBaseModel> { Object = { Sections = SectionModels, } };
-            model.Setup(x => x.Index).Returns(index);
-            var actual = model.Object.NotFirstSection;
-            actual.Should().Be(expected);
+            var model = Substitute.For<SideNavigationBaseModel>();
+            model.Sections = SectionModels;
+
+            model.Index.Returns(index);
+
+            model.NotFirstSection.Should().Be(expected);
         }
 
         [Fact]
         public static void SetPaginationFooter_Returns_ExpectedResponse()
         {
             const int index = 1;
-            var model = new Mock<SideNavigationBaseModel> { Object = { Sections = SectionModels, } };
-            model.Setup(x => x.Index).Returns(index);
-            model.Object.SetPaginationFooter();
+            var model = Substitute.For<SideNavigationBaseModel>();
+            model.Sections = SectionModels;
+            model.Index.Returns(index);
+            model.SetPaginationFooter();
 
-            model.Object.PaginationFooter.Previous.Should().Be(SectionModels[index - 1]);
-            model.Object.PaginationFooter.Next.Should().Be(SectionModels[index + 1]);
+            model.PaginationFooter.Previous.Should().Be(SectionModels[index - 1]);
+            model.PaginationFooter.Next.Should().Be(SectionModels[index + 1]);
         }
 
         [Fact]
         public static void SetPaginationFooter_FirstItem_Returns_ExpectedResponse()
         {
-            var model = new Mock<SideNavigationBaseModel> { Object = { Sections = SectionModels, } };
-            model.Setup(x => x.Index).Returns(0);
-            model.Object.SetPaginationFooter();
+            var model = Substitute.For<SideNavigationBaseModel>();
+            model.Sections = SectionModels;
+            model.Index.Returns(0);
+            model.SetPaginationFooter();
 
-            model.Object.PaginationFooter.Previous.Should().Be(null);
+            model.PaginationFooter.Previous.Should().Be(null);
         }
 
         [Fact]
         public static void SetPaginationFooter_LastItem_Returns_ExpectedResponse()
         {
-            var model = new Mock<SideNavigationBaseModel> { Object = { Sections = SectionModels, } };
-            model.Setup(x => x.Index).Returns(2);
-            model.Object.SetPaginationFooter();
+            var model = Substitute.For<SideNavigationBaseModel>();
+            model.Sections = SectionModels;
+            model.Index.Returns(2);
+            model.SetPaginationFooter();
 
-            model.Object.PaginationFooter.Next.Should().Be(null);
+            model.PaginationFooter.Next.Should().Be(null);
         }
     }
 }

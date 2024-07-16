@@ -9,9 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
     public static class ServiceRecipientQuantityModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_InputQuantityNotEntered_ThrowsValidationError(
             string inputQuantity,
             ServiceRecipientQuantityModel model,
@@ -26,8 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
         }
 
         [Theory]
-        [CommonInlineAutoData("zero")]
-        [CommonInlineAutoData("£1")]
+        [MockInlineAutoData("zero")]
+        [MockInlineAutoData("£1")]
         public static void Validate_InputQuantityNotNumeric_ThrowsValidationError(
             string inputQuantity,
             ServiceRecipientQuantityModel model,
@@ -42,9 +42,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
         }
 
         [Theory]
-        [CommonInlineAutoData("0.1")]
-        [CommonInlineAutoData("1.1")]
-        [CommonInlineAutoData("1.0001")]
+        [MockInlineAutoData("0.1")]
+        [MockInlineAutoData("1.1")]
+        [MockInlineAutoData("1.0001")]
         public static void Validate_InputQuantityNotAWholeNumber_ThrowsValidationError(
             string inputQuantity,
             ServiceRecipientQuantityModel model,
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_InputQuantityNegative_ThrowsValidationError(
             ServiceRecipientQuantityModel model,
             ServiceRecipientQuantityModelValidator validator)
@@ -73,9 +73,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
         }
 
         [Theory]
-        [CommonInlineAutoData("1")]
-        [CommonInlineAutoData("1234")]
-        [CommonInlineAutoData("999999")]
+        [MockInlineAutoData("1")]
+        [MockInlineAutoData("1234")]
+        [MockInlineAutoData("999999")]
         public static void Validate_InputQuantityValid_NoErrors(
             string inputQuantity,
             ServiceRecipientQuantityModel model,

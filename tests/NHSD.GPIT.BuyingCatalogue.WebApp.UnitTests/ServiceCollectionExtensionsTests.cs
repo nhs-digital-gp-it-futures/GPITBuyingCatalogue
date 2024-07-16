@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
     public sealed class ServiceCollectionExtensionsTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AddDataProtection_WithAppName_AddsDataProtection(IConfiguration configuration)
         {
             var services = new ServiceCollection();
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AddDataProtection_WithAppName_SetsAppDiscriminator(IConfiguration configuration)
         {
             var appName = configuration.GetValue<string>("dataProtection:applicationName");
@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AddDataProtection_WithAppName_SetsXmlRepository(IConfiguration configuration)
         {
             var services = new ServiceCollection();
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AddDataProtection_WithAppName_DoesNotSetXmlEncryptor(IConfiguration configuration)
         {
             var services = new ServiceCollection();

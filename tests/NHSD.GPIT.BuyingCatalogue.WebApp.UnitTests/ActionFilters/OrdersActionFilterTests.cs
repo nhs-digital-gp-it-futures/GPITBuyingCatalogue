@@ -19,33 +19,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 {
     public class OrdersActionFilterTests
     {
-        private readonly Mock<HttpRequest> httpRequestMock;
-        private readonly Mock<HttpContext> httpContextMock;
+        private readonly HttpRequest httpRequestMock;
+        private readonly HttpContext httpContextMock;
         private readonly ActionExecutingContext actionExecutingContext;
         private readonly ActionExecutedContext actionExecutedContext;
 
         public OrdersActionFilterTests()
         {
-            httpRequestMock = new Mock<HttpRequest>();
-            httpContextMock = new Mock<HttpContext>();
-            httpContextMock.Setup(c => c.Request).Returns(httpRequestMock.Object);
+            httpRequestMock = Substitute.For<HttpRequest>();
+            httpContextMock = Substitute.For<HttpContext>();
+            httpContextMock.Request.Returns(httpRequestMock);
 
             var actionContext = new ActionContext(
-                httpContextMock.Object,
-                Mock.Of<Microsoft.AspNetCore.Routing.RouteData>(),
-                Mock.Of<ActionDescriptor>(),
+                httpContextMock,
+                Substitute.For<Microsoft.AspNetCore.Routing.RouteData>(),
+                Substitute.For<ActionDescriptor>(),
                 new ModelStateDictionary());
 
             actionExecutingContext = new ActionExecutingContext(
                 actionContext,
                 new List<IFilterMetadata>(),
                 new Dictionary<string, object>(),
-                Mock.Of<Controller>())
+                Substitute.For<Controller>())
             {
                 Result = new OkResult(),
             };
 
-            actionExecutedContext = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Mock.Of<Controller>());
+            actionExecutedContext = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Substitute.For<Controller>());
         }
 
         [Fact]
@@ -61,9 +61,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         [Fact]
         public async Task RequestNotOrderRelated_Returns_Ok()
         {
-            httpRequestMock.Setup(r => r.Path).Returns("/admin");
+            httpRequestMock.Path.Returns(new PathString("/admin"));
 
-            var ordersActionFilter = new OrdersActionFilter(new Mock<ILogWrapper<OrdersActionFilter>>().Object);
+            var mockLogger = Substitute.For<ILogWrapper<OrdersActionFilter>>();
+            var ordersActionFilter = new OrdersActionFilter(mockLogger);
 
             await ordersActionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
@@ -73,9 +74,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         [Fact]
         public async Task OrderMatchesUsersPrimaryInternalOrgId_ReturnsOk()
         {
-            httpRequestMock.Setup(r => r.Path).Returns("/order/organisation/ABC/edit");
+            httpRequestMock.Path.Returns(new PathString("/order/organisation/ABC/edit"));
 
-            httpContextMock.Setup(c => c.User).Returns(new ClaimsPrincipal(
+            httpContextMock.User.Returns(new ClaimsPrincipal(
                      new ClaimsIdentity(
                          new Claim[]
                          {
@@ -83,7 +84,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                              new("primaryOrganisationInternalIdentifier", "ABC"),
                          })));
 
-            var ordersActionFilter = new OrdersActionFilter(new Mock<ILogWrapper<OrdersActionFilter>>().Object);
+            var mockLogger = Substitute.For<ILogWrapper<OrdersActionFilter>>();
+            var ordersActionFilter = new OrdersActionFilter(mockLogger);
 
             await ordersActionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
@@ -93,9 +95,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         [Fact]
         public async Task OrderMatchesUsersSecondaryInternalOrgId_ReturnsOk()
         {
-            httpRequestMock.Setup(r => r.Path).Returns("/order/organisation/GHI/edit");
+            httpRequestMock.Path.Returns(new PathString("/order/organisation/GHI/edit"));
 
-            httpContextMock.Setup(c => c.User).Returns(new ClaimsPrincipal(
+            httpContextMock.User.Returns(new ClaimsPrincipal(
                      new ClaimsIdentity(
                          new Claim[]
                          {
@@ -106,7 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                              new("secondaryOrganisationInternalIdentifier", "JKL"),
                          })));
 
-            var ordersActionFilter = new OrdersActionFilter(new Mock<ILogWrapper<OrdersActionFilter>>().Object);
+            var mockLogger = Substitute.For<ILogWrapper<OrdersActionFilter>>();
+            var ordersActionFilter = new OrdersActionFilter(mockLogger);
 
             await ordersActionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
@@ -119,9 +122,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             const string internalOrgId = "MNO";
             var requestPath = $"/order/organisation/{internalOrgId}/edit";
 
-            httpRequestMock.Setup(r => r.Path).Returns(requestPath);
+            httpRequestMock.Path.Returns(new PathString(requestPath));
 
-            httpContextMock.Setup(c => c.User).Returns(new ClaimsPrincipal(
+            httpContextMock.User.Returns(new ClaimsPrincipal(
                      new ClaimsIdentity(
                          new Claim[]
                          {
@@ -132,15 +135,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                              new("secondaryOrganisationInternalIdentifier", "JKL"),
                          })));
 
-            var mockLogger = new Mock<ILogWrapper<OrdersActionFilter>>();
-            mockLogger.Setup(l => l.LogWarning(It.IsAny<string>()));
+            var mockLogger = Substitute.For<ILogWrapper<OrdersActionFilter>>();
 
-            var ordersActionFilter = new OrdersActionFilter(mockLogger.Object);
+            var ordersActionFilter = new OrdersActionFilter(mockLogger);
 
             await ordersActionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
             actionExecutingContext.Result.Should().BeOfType<NotFoundResult>();
-            mockLogger.Verify(l => l.LogWarning($"Attempt was made to access {requestPath} when user cannot access {internalOrgId}."), Times.Once);
+            mockLogger.Received().LogWarning($"Attempt was made to access {requestPath} when user cannot access {internalOrgId}.");
         }
     }
 }

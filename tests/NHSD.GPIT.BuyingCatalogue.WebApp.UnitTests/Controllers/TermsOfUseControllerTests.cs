@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(TermsOfUseController).GetConstructors();
 
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_TermsOfUse_ReturnsViewAndModel(
             TermsOfUseController controller)
         {
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_TermsOfUse_InvalidModel_ReturnsViewAndModel(
             TermsOfUseModel model,
             TermsOfUseController controller)
@@ -56,11 +56,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_TermsOfUse_Accepts(
             TermsOfUseModel model,
             AspNetUser user,
-            [Frozen] Mock<UserManager<AspNetUser>> userManager,
+            [Frozen] UserManager<AspNetUser> userManager,
             [Frozen] TermsOfUseSettings settings)
         {
             user.AcceptedTermsOfUseDate = null;
@@ -70,14 +70,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 = model.HasAcceptedPrivacyPolicy
                 = model.HasOptedInUserResearch = true;
 
-            userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(user);
+            userManager.FindByIdAsync(Arg.Any<string>()).Returns(user);
 
             var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[] { new(ClaimTypes.Role, "Buyer") },
                 "mock"));
 
-            var controller = new TermsOfUseController(userManager.Object, settings)
+            var controller = new TermsOfUseController(userManager, settings)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -91,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             var result = (await controller.TermsOfUse(model)).As<RedirectResult>();
 
             result.Should().NotBeNull();
-            userManager.Verify(um => um.UpdateAsync(It.Is<AspNetUser>(u => u.HasOptedInUserResearch == true)));
+            await userManager.Received().UpdateAsync(Arg.Is<AspNetUser>(u => u.HasOptedInUserResearch == true));
         }
     }
 }

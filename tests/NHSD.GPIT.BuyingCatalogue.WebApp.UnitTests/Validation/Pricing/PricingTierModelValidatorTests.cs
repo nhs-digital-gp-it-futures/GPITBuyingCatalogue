@@ -9,9 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Pricing
     public static class PricingTierModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_AgreedPriceNotEntered_ThrowsValidationError(
             string agreedPrice,
             PricingTierModel model,
@@ -26,8 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Pricing
         }
 
         [Theory]
-        [CommonInlineAutoData("zero")]
-        [CommonInlineAutoData("£1")]
+        [MockInlineAutoData("zero")]
+        [MockInlineAutoData("£1")]
         public static void Validate_AgreedPriceNotNumeric_ThrowsValidationError(
             string agreedPrice,
             PricingTierModel model,
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Pricing
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AgreedPriceNegative_ThrowsValidationError(
             PricingTierModel model,
             PricingTierModelValidator validator)
@@ -58,9 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Pricing
         }
 
         [Theory]
-        [CommonInlineAutoData("1.00001")]
-        [CommonInlineAutoData("1.000001")]
-        [CommonInlineAutoData("1.0000001")]
+        [MockInlineAutoData("1.00001")]
+        [MockInlineAutoData("1.000001")]
+        [MockInlineAutoData("1.0000001")]
         public static void Validate_AgreedPriceContainsMoreThanFourDecimalPlaces_ThrowsValidationError(
             string agreedPrice,
             PricingTierModel model,
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Pricing
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AgreedPriceHigherThanListPrice_ThrowsValidationError(
             PricingTierModel model,
             PricingTierModelValidator validator)
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Pricing
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AgreedPriceSameAsListPrice_NoErrors(
             PricingTierModel model,
             PricingTierModelValidator validator)
@@ -106,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Pricing
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AgreedPriceLowerThanListPrice_NoErrors(
             PricingTierModel model,
             PricingTierModelValidator validator)
@@ -120,7 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Pricing
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AgreedPriceZero_NoErrors(
             PricingTierModel model,
             PricingTierModelValidator validator)

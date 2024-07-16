@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -25,45 +26,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
-            var constructors = typeof(OrganisationBaseController).GetConstructors();
+            var constructors = typeof(OrganisationControllerStub).GetConstructors();
 
             assertion.Verify(constructors);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Details_ReturnsExpectedResult(
             Organisation organisation,
             List<AspNetUser> users,
             List<Organisation> relatedOrganisations,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            [Frozen] IUsersService mockUsersService,
+            [Frozen] IUrlHelper mockUrlHelper,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
-            mockOrganisationsService
-                .Setup(x => x.GetRelatedOrganisations(organisation.Id))
-                .ReturnsAsync(relatedOrganisations);
+            mockOrganisationsService.GetRelatedOrganisations(organisation.Id).Returns(relatedOrganisations);
 
-            mockUsersService
-                .Setup(x => x.GetAllUsersForOrganisation(organisation.Id))
-                .ReturnsAsync(users);
+            mockUsersService.GetAllUsersForOrganisation(organisation.Id).Returns(users);
 
-            controller.Url = mockUrlHelper.Object;
+            controller.Url = mockUrlHelper;
 
             var result = (await controller.Details(organisation.Id)).As<ViewResult>();
 
-            mockOrganisationsService.VerifyAll();
-            mockUsersService.VerifyAll();
-
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.Details));
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/{nameof(OrganisationControllerStub.Details)}");
 
             var model = result.Model.Should().BeAssignableTo<DetailsModel>().Subject;
 
@@ -75,32 +67,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Users_ReturnsExpectedResult(
             Organisation organisation,
             List<AspNetUser> users,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            [Frozen] IUsersService mockUsersService,
+            [Frozen] IUrlHelper mockUrlHelper,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
-            mockUsersService
-                .Setup(x => x.GetAllUsersForOrganisation(organisation.Id))
-                .ReturnsAsync(users);
+            mockUsersService.GetAllUsersForOrganisation(organisation.Id).Returns(users);
 
-            controller.Url = mockUrlHelper.Object;
+            controller.Url = mockUrlHelper;
 
             var result = (await controller.Users(organisation.Id)).As<ViewResult>();
 
-            mockOrganisationsService.VerifyAll();
-            mockUsersService.VerifyAll();
-
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.Users));
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/{nameof(OrganisationControllerStub.Users)}");
 
             var model = result.Model.Should().BeAssignableTo<UsersModel>().Subject;
 
@@ -110,32 +95,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_AddUser_ReturnsExpectedResult(
             Organisation organisation,
             bool isAccountManagerLimit,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            [Frozen] IUsersService mockUsersService,
+            [Frozen] IUrlHelper mockUrlHelper,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
-            mockUsersService
-                .Setup(x => x.IsAccountManagerLimit(organisation.Id, 0))
-                .ReturnsAsync(isAccountManagerLimit);
+            mockUsersService.IsAccountManagerLimit(organisation.Id, 0).Returns(isAccountManagerLimit);
 
-            controller.Url = mockUrlHelper.Object;
+            controller.Url = mockUrlHelper;
 
             var result = (await controller.AddUser(organisation.Id)).As<ViewResult>();
 
-            mockOrganisationsService.VerifyAll();
-            mockUsersService.VerifyAll();
-
             result.Should().NotBeNull();
-            result.ViewName.Should().Be("OrganisationBase/UserDetails");
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/UserDetails");
 
             var model = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
@@ -144,18 +122,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddUser_WithModelErrors_ReturnsExpectedResult(
             int organisationId,
             UserDetailsModel model,
-            OrganisationBaseController controller)
+            OrganisationControllerStub controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
             var result = (await controller.AddUser(organisationId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be("OrganisationBase/UserDetails");
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/UserDetails");
 
             var actualModel = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
@@ -163,15 +141,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(true, "Buyer")]
-        [CommonInlineAutoData(false, "AccountManager")]
+        [MockInlineAutoData(true, "Buyer")]
+        [MockInlineAutoData(false, "AccountManager")]
         public static async Task Post_AddUser_ValidModel_ReturnsExpectedResult(
             bool isDefaultAccountType,
             string accountType,
             int organisationId,
             UserDetailsModel model,
-            [Frozen] Mock<ICreateUserService> mockCreateBuyerService,
-            OrganisationBaseController controller)
+            [Frozen] ICreateUserService mockCreateBuyerService,
+            OrganisationControllerStub controller)
         {
             model.EmailAddress = "a@b.com";
             model.SelectedAccountType = "AccountManager";
@@ -180,48 +158,40 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             var result = (await controller.AddUser(organisationId, model)).As<RedirectToActionResult>();
 
-            mockCreateBuyerService.Verify(
-                x => x.Create(
+            await mockCreateBuyerService.Received().Create(
                     organisationId,
                     model.FirstName,
                     model.LastName,
                     model.EmailAddress,
                     accountType,
-                    model.IsActive.Value),
-                Times.Once());
+                    model.IsActive.Value);
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrganisationBaseController.Users));
+            result.ActionName.Should().Be(nameof(OrganisationControllerStub.Users));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditUser_ReturnsExpectedResult(
              Organisation organisation,
              AspNetUser user,
-             [Frozen] Mock<IUsersService> mockUsersService,
-             [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-             [Frozen] Mock<IUrlHelper> mockUrlHelper,
-             OrganisationBaseController controller)
+             [Frozen] IUsersService mockUsersService,
+             [Frozen] IOrganisationsService mockOrganisationsService,
+             [Frozen] IUrlHelper mockUrlHelper,
+             OrganisationControllerStub controller)
         {
             user.PrimaryOrganisationId = organisation.Id;
 
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
-            mockUsersService
-                .Setup(x => x.GetUser(user.Id))
-                .ReturnsAsync(user);
+            mockUsersService.GetUser(user.Id).Returns(user);
 
-            controller.Url = mockUrlHelper.Object;
+            controller.Url = mockUrlHelper;
 
             var result = (await controller.EditUser(organisation.Id, user.Id)).As<ViewResult>();
 
-            mockOrganisationsService.VerifyAll();
-
             result.Should().NotBeNull();
-            result.ViewName.Should().Be("OrganisationBase/UserDetails");
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/UserDetails");
 
             var model = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
@@ -231,100 +201,82 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditUser_InvalidOrganisationId_ReturnsExpectedResult(
             Organisation organisation,
             AspNetUser user,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationBaseController controller)
+            [Frozen] IUsersService mockUsersService,
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            [Frozen] IUrlHelper mockUrlHelper,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
-            mockUsersService
-                .Setup(x => x.GetUser(user.Id))
-                .ReturnsAsync(user);
+            mockUsersService.GetUser(user.Id).Returns(user);
 
-            controller.Url = mockUrlHelper.Object;
+            controller.Url = mockUrlHelper;
 
             var result = (await controller.EditUser(organisation.Id, user.Id)).As<NotFoundResult>();
-
-            mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditUser_NullOrganisation_ReturnsExpectedResult(
             Organisation organisation,
             AspNetUser user,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationBaseController controller)
+            [Frozen] IUsersService mockUsersService,
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            [Frozen] IUrlHelper mockUrlHelper,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync((Organisation)null);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns((Organisation)null);
 
-            mockUsersService
-                .Setup(x => x.GetUser(user.Id))
-                .ReturnsAsync(user);
+            mockUsersService.GetUser(user.Id).Returns(user);
 
-            controller.Url = mockUrlHelper.Object;
+            controller.Url = mockUrlHelper;
 
             var result = (await controller.EditUser(organisation.Id, user.Id)).As<NotFoundResult>();
-
-            mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditUser_NullOUser_ReturnsExpectedResult(
             Organisation organisation,
             AspNetUser user,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationBaseController controller)
+            [Frozen] IUsersService mockUsersService,
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            [Frozen] IUrlHelper mockUrlHelper,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
-            mockUsersService
-                .Setup(x => x.GetUser(user.Id))
-                .ReturnsAsync((AspNetUser)null);
+            mockUsersService.GetUser(user.Id).Returns((AspNetUser)null);
 
-            controller.Url = mockUrlHelper.Object;
+            controller.Url = mockUrlHelper;
 
             var result = (await controller.EditUser(organisation.Id, user.Id)).As<NotFoundResult>();
-
-            mockOrganisationsService.VerifyAll();
 
             result.Should().NotBeNull();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditUser_WithModelErrors_ReturnsExpectedResult(
             int organisationId,
             int userId,
             UserDetailsModel model,
-            OrganisationBaseController controller)
+            OrganisationControllerStub controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
             var result = (await controller.EditUser(organisationId, userId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be("OrganisationBase/UserDetails");
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/UserDetails");
 
             var actualModel = result.Model.Should().BeAssignableTo<UserDetailsModel>().Subject;
 
@@ -332,100 +284,78 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditUser_ValidModel_ReturnsExpectedResult(
             int organisationId,
             AspNetUser user,
             UserDetailsModel model,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            OrganisationBaseController controller)
+            [Frozen] IUsersService mockUsersService,
+            OrganisationControllerStub controller)
         {
             user.PrimaryOrganisationId = organisationId;
             model.EmailAddress = "a@b.com";
 
-            mockUsersService
-                .Setup(x => x.GetUser(user.Id))
-                .ReturnsAsync(user);
+            mockUsersService.GetUser(user.Id).Returns(user);
 
-            mockUsersService
-                .Setup(x => x.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId))
-                .Returns(Task.CompletedTask);
+            mockUsersService.UpdateUser(user.Id, model.FirstName, model.LastName, model.EmailAddress, !model.IsActive!.Value, model.SelectedAccountType, organisationId).Returns(Task.CompletedTask);
 
             var result = (await controller.EditUser(organisationId, user.Id, model)).As<RedirectToActionResult>();
 
-            mockUsersService.VerifyAll();
-
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrganisationBaseController.Users));
+            result.ActionName.Should().Be(nameof(OrganisationControllerStub.Users));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditUser_InvalidOrganisationId_ReturnsExpectedResult(
             int organisationId,
             AspNetUser user,
             UserDetailsModel model,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            OrganisationBaseController controller)
+            [Frozen] IUsersService mockUsersService,
+            OrganisationControllerStub controller)
         {
             model.EmailAddress = "a@b.com";
 
-            mockUsersService
-                .Setup(x => x.GetUser(user.Id))
-                .ReturnsAsync(user);
+            mockUsersService.GetUser(user.Id).Returns(user);
 
             var result = (await controller.EditUser(organisationId, user.Id, model)).As<BadRequestResult>();
 
-            mockUsersService.VerifyAll();
-            mockUsersService.VerifyNoOtherCalls();
-
             result.Should().NotBeNull();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_RelatedOrganisations_GPOrganisation_ReturnsBadRequest(
             int organisationId,
             Organisation organisation,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationService,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationService,
+            OrganisationControllerStub controller)
         {
             organisation.OrganisationType = OrganisationType.GP;
 
-            mockOrganisationService
-                .Setup(x => x.GetOrganisation(organisationId))
-                .ReturnsAsync(organisation);
+            mockOrganisationService.GetOrganisation(organisationId).Returns(organisation);
 
             var result = (await controller.RelatedOrganisations(organisationId)).As<BadRequestResult>();
-
-            mockOrganisationService.VerifyAll();
-            mockOrganisationService.VerifyNoOtherCalls();
 
             result.Should().NotBeNull();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_RelatedOrganisations_ReturnsExpectedResult(
             Organisation organisation,
             Organisation relatedOrganisation,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
-            mockOrganisationsService
-                .Setup(x => x.GetRelatedOrganisations(organisation.Id))
-                .ReturnsAsync(new List<Organisation> { relatedOrganisation });
+            mockOrganisationsService.GetRelatedOrganisations(organisation.Id).Returns(new List<Organisation> { relatedOrganisation });
 
             var result = (await controller.RelatedOrganisations(organisation.Id)).As<ViewResult>();
 
-            mockOrganisationsService.VerifyAll();
-
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.RelatedOrganisations));
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/{nameof(OrganisationControllerStub.RelatedOrganisations)}");
 
             var model = result.Model.Should().BeAssignableTo<RelatedOrganisationsModel>().Subject;
 
@@ -435,30 +365,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_RemoveRelatedOrganisation_ReturnsExpectedResult(
             Organisation organisation,
             Organisation relatedOrganisation,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            [Frozen] IUrlHelper mockUrlHelper,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(relatedOrganisation.Id))
-                .ReturnsAsync(relatedOrganisation);
+            mockOrganisationsService.GetOrganisation(relatedOrganisation.Id).Returns(relatedOrganisation);
 
-            controller.Url = mockUrlHelper.Object;
+            controller.Url = mockUrlHelper;
 
             var result = (await controller.RemoveRelatedOrganisation(organisation.Id, relatedOrganisation.Id)).As<ViewResult>();
 
-            mockOrganisationsService.VerifyAll();
-
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.RemoveRelatedOrganisation));
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/{nameof(OrganisationControllerStub.RemoveRelatedOrganisation)}");
 
             var model = result.Model.Should().BeAssignableTo<RemoveRelatedOrganisationModel>().Subject;
 
@@ -469,28 +393,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_RemoveRelatedOrganisation_ReturnsExpectedResult(
             RemoveRelatedOrganisationModel model,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.RemoveRelatedOrganisations(model.OrganisationId, model.RelatedOrganisationId))
-                .Returns(Task.CompletedTask);
+            mockOrganisationsService.RemoveRelatedOrganisations(model.OrganisationId, model.RelatedOrganisationId).Returns(Task.CompletedTask);
 
             var result = await controller.RemoveRelatedOrganisation(
                 model.OrganisationId,
                 model.RelatedOrganisationId,
                 model);
 
-            mockOrganisationsService.VerifyAll();
-
             result.Should().NotBeNull();
 
             var redirectResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
 
-            redirectResult.ActionName.Should().Be(nameof(OrganisationBaseController.RelatedOrganisations));
+            redirectResult.ActionName.Should().Be(nameof(OrganisationControllerStub.RelatedOrganisations));
             redirectResult.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
             {
                 { "organisationId", model.OrganisationId },
@@ -498,49 +418,38 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_NominatedOrganisations_GPOrganisation_ReturnsBadRequest(
             int organisationId,
             Organisation organisation,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationService,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationService,
+            OrganisationControllerStub controller)
         {
             organisation.OrganisationType = OrganisationType.GP;
 
-            mockOrganisationService
-                .Setup(x => x.GetOrganisation(organisationId))
-                .ReturnsAsync(organisation);
+            mockOrganisationService.GetOrganisation(organisationId).Returns(organisation);
 
             var result = (await controller.NominatedOrganisations(organisationId)).As<BadRequestResult>();
-
-            mockOrganisationService.VerifyAll();
-            mockOrganisationService.VerifyNoOtherCalls();
 
             result.Should().NotBeNull();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_NominatedOrganisations_ReturnsExpectedResult(
             Organisation organisation,
             Organisation nominatedOrganisation,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
-            mockOrganisationsService
-                .Setup(x => x.GetNominatedOrganisations(organisation.Id))
-                .ReturnsAsync(new List<Organisation> { nominatedOrganisation });
+            mockOrganisationsService.GetNominatedOrganisations(organisation.Id).Returns(new List<Organisation> { nominatedOrganisation });
 
             var result = (await controller.NominatedOrganisations(organisation.Id)).As<ViewResult>();
 
-            mockOrganisationsService.VerifyAll();
-
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.NominatedOrganisations));
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/{nameof(OrganisationControllerStub.NominatedOrganisations)}");
 
             var model = result.Model.Should().BeAssignableTo<NominatedOrganisationsModel>().Subject;
 
@@ -550,40 +459,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_AddNominatedOrganisation_ReturnsExpectedResult(
             Organisation organisation,
             Organisation nominatedOrganisation,
             Organisation potentialOrganisation,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            [Frozen] IUrlHelper mockUrlHelper,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
             mockOrganisationsService
-                .Setup(x => x.GetAllOrganisations())
-                .ReturnsAsync(new List<Organisation>
+                .GetAllOrganisations()
+                .Returns(new List<Organisation>
                 {
                     organisation,
                     nominatedOrganisation,
                     potentialOrganisation,
                 });
 
-            mockOrganisationsService
-                .Setup(x => x.GetNominatedOrganisations(organisation.Id))
-                .ReturnsAsync(new List<Organisation> { nominatedOrganisation });
+            mockOrganisationsService.GetNominatedOrganisations(organisation.Id).Returns(new List<Organisation> { nominatedOrganisation });
 
-            controller.Url = mockUrlHelper.Object;
+            controller.Url = mockUrlHelper;
 
             var result = (await controller.AddNominatedOrganisation(organisation.Id)).As<ViewResult>();
 
-            mockOrganisationsService.VerifyAll();
-
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddNominatedOrganisation));
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/{nameof(OrganisationControllerStub.AddNominatedOrganisation)}");
 
             var model = result.Model.Should().BeAssignableTo<AddNominatedOrganisationModel>().Subject;
             var expected = new SelectOption<string>(potentialOrganisation.Name, $"{potentialOrganisation.Id}");
@@ -594,27 +497,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddNominatedOrganisation_WithModelErrors_ReturnsExpectedResult(
             Organisation organisation,
             Organisation potentialOrganisation,
             AddNominatedOrganisationModel model,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            OrganisationControllerStub controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
 
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
-            mockOrganisationsService
-                .Setup(x => x.GetAllOrganisations())
-                .ReturnsAsync(new List<Organisation> { potentialOrganisation });
+            mockOrganisationsService.GetAllOrganisations().Returns(new List<Organisation> { potentialOrganisation });
 
-            mockOrganisationsService
-                .Setup(x => x.GetNominatedOrganisations(organisation.Id))
-                .ReturnsAsync(new List<Organisation>());
+            mockOrganisationsService.GetNominatedOrganisations(organisation.Id).Returns(new List<Organisation>());
 
             model.SelectedOrganisationId = string.Empty;
             model.PotentialOrganisations = new[]
@@ -625,7 +522,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             var result = (await controller.AddNominatedOrganisation(organisation.Id, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.AddNominatedOrganisation));
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/{nameof(OrganisationControllerStub.AddNominatedOrganisation)}");
 
             var actualModel = result.Model.Should().BeAssignableTo<AddNominatedOrganisationModel>().Subject;
 
@@ -633,52 +530,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddNominatedOrganisation_ValidModel_ReturnsExpectedResult(
             int nominatedOrganisationId,
             AddNominatedOrganisationModel model,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            OrganisationControllerStub controller)
         {
             model.SelectedOrganisationId = $"{nominatedOrganisationId}";
 
-            mockOrganisationsService
-                .Setup(x => x.AddNominatedOrganisation(model.OrganisationId, nominatedOrganisationId))
-                .Returns(Task.CompletedTask);
+            mockOrganisationsService.AddNominatedOrganisation(model.OrganisationId, nominatedOrganisationId).Returns(Task.CompletedTask);
 
             var result = (await controller.AddNominatedOrganisation(model.OrganisationId, model)).As<RedirectToActionResult>();
 
-            mockOrganisationsService.VerifyAll();
-
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(OrganisationBaseController.NominatedOrganisations));
+            result.ActionName.Should().Be(nameof(OrganisationControllerStub.NominatedOrganisations));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_RemoveNominatedOrganisation_ReturnsExpectedResult(
             Organisation organisation,
             Organisation nominatedOrganisation,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            [Frozen] Mock<IUrlHelper> mockUrlHelper,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            [Frozen] IUrlHelper mockUrlHelper,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisation.Id))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisation.Id).Returns(organisation);
 
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(nominatedOrganisation.Id))
-                .ReturnsAsync(nominatedOrganisation);
+            mockOrganisationsService.GetOrganisation(nominatedOrganisation.Id).Returns(nominatedOrganisation);
 
-            controller.Url = mockUrlHelper.Object;
+            controller.Url = mockUrlHelper;
 
             var result = (await controller.RemoveNominatedOrganisation(organisation.Id, nominatedOrganisation.Id)).As<ViewResult>();
 
-            mockOrganisationsService.VerifyAll();
-
             result.Should().NotBeNull();
-            result.ViewName.Should().Be(typeof(OrganisationBaseController).ControllerName() + "/" + nameof(OrganisationBaseController.RemoveNominatedOrganisation));
+            result.ViewName.Should().Be($"{OrganisationBaseController.ViewBaseName}/{nameof(OrganisationControllerStub.RemoveNominatedOrganisation)}");
 
             var model = result.Model.Should().BeAssignableTo<RemoveNominatedOrganisationModel>().Subject;
 
@@ -689,32 +576,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_RemoveNominatedOrganisation_ReturnsExpectedResult(
             RemoveNominatedOrganisationModel model,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
-            OrganisationBaseController controller)
+            [Frozen] IOrganisationsService mockOrganisationsService,
+            OrganisationControllerStub controller)
         {
-            mockOrganisationsService
-                .Setup(x => x.RemoveNominatedOrganisation(model.OrganisationId, model.NominatedOrganisationId))
-                .Returns(Task.CompletedTask);
+            mockOrganisationsService.RemoveNominatedOrganisation(model.OrganisationId, model.NominatedOrganisationId).Returns(Task.CompletedTask);
 
             var result = await controller.RemoveNominatedOrganisation(
                 model.OrganisationId,
                 model.NominatedOrganisationId,
                 model);
 
-            mockOrganisationsService.VerifyAll();
-
             result.Should().NotBeNull();
 
             var redirectResult = result.Should().BeAssignableTo<RedirectToActionResult>().Subject;
 
-            redirectResult.ActionName.Should().Be(nameof(OrganisationBaseController.NominatedOrganisations));
+            redirectResult.ActionName.Should().Be(nameof(OrganisationControllerStub.NominatedOrganisations));
             redirectResult.RouteValues.Should().BeEquivalentTo(new Dictionary<string, int>
             {
                 { "organisationId", model.OrganisationId },
             });
+        }
+
+        public class OrganisationControllerStub(
+            IOrganisationsService organisationsService,
+            IOdsService odsService,
+            ICreateUserService createBuyerService,
+            IUsersService userService,
+            AccountManagementSettings accountManagementSettings)
+            : OrganisationBaseController(
+                organisationsService,
+                odsService,
+                createBuyerService,
+                userService,
+                accountManagementSettings)
+        {
+            protected override string ControllerName => nameof(OrganisationControllerStub);
+
+            protected override string HomeLink => string.Empty;
         }
     }
 }

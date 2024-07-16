@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.CompetitionResultsPd
 public static class PdfViewResultsModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Organisation organisation,
         Competition competition,
@@ -29,7 +29,7 @@ public static class PdfViewResultsModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SingleSolution_DirectAwardTrue(
         Organisation organisation,
         Competition competition,

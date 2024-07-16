@@ -9,9 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.ProcurementHub
     public static class ProcurementHubDetailsModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_AllPropertiesEmpty_ThrowsValidationError(
             string inputValue,
             ProcurementHubDetailsModel model,
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.ProcurementHub
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmailAddressWrongFormat_ThrowsValidationError(
             ProcurementHubDetailsModel model,
             ProcurementHubDetailsModelValidator validator)
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.ProcurementHub
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PrivacyPolicyNotChecked_ThrowsValidationError(
             ProcurementHubDetailsModel model,
             ProcurementHubDetailsModelValidator validator)
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.ProcurementHub
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EverythingOk_NoErrors(
             ProcurementHubDetailsModel model,
             ProcurementHubDetailsModelValidator validator)

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
@@ -6,8 +7,14 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
@@ -27,14 +34,22 @@ public static class BuyerDashboardControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Index_ReturnsViewWithModel(
         Organisation organisation,
-        [Frozen] Mock<IOrganisationsService> organisationsService,
+        List<Filter> filters,
+        List<Competition> competitions,
+        List<Order> orders,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] IOrderService orderService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IManageFiltersService filtersService,
         BuyerDashboardController controller)
     {
-        organisationsService.Setup(x => x.GetOrganisationByInternalIdentifier(It.IsAny<string>()))
-            .ReturnsAsync(organisation);
+        filtersService.GetFilters(Arg.Any<int>()).Returns(filters);
+        competitionsService.GetCompetitions(Arg.Any<string>()).Returns(competitions);
+        orderService.GetOrders(Arg.Any<int>()).Returns(orders);
+        organisationsService.GetOrganisationByInternalIdentifier(Arg.Any<string>()).Returns(organisation);
 
         var result = (await controller.Index(organisation.InternalIdentifier)).As<ViewResult>();
 

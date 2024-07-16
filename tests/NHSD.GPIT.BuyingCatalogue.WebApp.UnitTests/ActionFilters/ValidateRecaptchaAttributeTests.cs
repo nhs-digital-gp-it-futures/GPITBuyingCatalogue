@@ -20,19 +20,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters;
 public static class ValidateRecaptchaAttributeTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecutionAsync_RecaptchaDisabled_DoesNotAddModelState(
         RecaptchaSettings settings,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
-        [Frozen] Mock<IRecaptchaVerificationService> service,
+        [Frozen] IRecaptchaVerificationService service,
         ValidateRecaptchaAttribute filter)
     {
         settings.IsEnabled = false;
 
         context.HttpContext.RequestServices = new ServiceCollection()
             .AddSingleton(Options.Create(settings))
-            .AddSingleton(sp => service.Object)
+            .AddSingleton(_ => service)
             .BuildServiceProvider();
 
         await filter.OnActionExecutionAsync(context, next);
@@ -41,23 +41,23 @@ public static class ValidateRecaptchaAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecutionAsync_Invalid_AddsModelState(
         RecaptchaSettings settings,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
-        [Frozen] Mock<IRecaptchaVerificationService> service,
+        [Frozen] IRecaptchaVerificationService service,
         ValidateRecaptchaAttribute filter)
     {
         settings.IsEnabled = true;
 
-        service.Setup(x => x.Validate(It.IsAny<string>()))
-            .ReturnsAsync(false);
+        service.Validate(Arg.Any<string>())
+            .Returns(false);
 
         context.HttpContext.Request.Form = new FormCollection(new Dictionary<string, StringValues>());
         context.HttpContext.RequestServices = new ServiceCollection()
             .AddSingleton(Options.Create(settings))
-            .AddSingleton(sp => service.Object)
+            .AddSingleton(_ => service)
             .BuildServiceProvider();
 
         await filter.OnActionExecutionAsync(context, next);
@@ -66,23 +66,23 @@ public static class ValidateRecaptchaAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecutionAsync_Valid_DoesNotAddModelState(
         RecaptchaSettings settings,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
-        [Frozen] Mock<IRecaptchaVerificationService> service,
+        [Frozen] IRecaptchaVerificationService service,
         ValidateRecaptchaAttribute filter)
     {
         settings.IsEnabled = true;
 
-        service.Setup(x => x.Validate(It.IsAny<string>()))
-            .ReturnsAsync(true);
+        service.Validate(Arg.Any<string>())
+            .Returns(true);
 
         context.HttpContext.Request.Form = new FormCollection(new Dictionary<string, StringValues>());
         context.HttpContext.RequestServices = new ServiceCollection()
             .AddSingleton(Options.Create(settings))
-            .AddSingleton(sp => service.Object)
+            .AddSingleton(_ => service)
             .BuildServiceProvider();
 
         await filter.OnActionExecutionAsync(context, next);

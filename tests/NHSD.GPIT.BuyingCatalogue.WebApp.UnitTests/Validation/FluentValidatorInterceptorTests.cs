@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
     public static class FluentValidatorInterceptorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void BeforeValidation_ReturnsContext(
             ActionContext actionContext,
             IValidationContext validationContext,
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AfterValidation_NoErrors_ReturnsResult(
             ActionContext actionContext,
             IValidationContext validationContext,
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AfterValidation_NoDelimitedErrors_ReturnsResult(
             ActionContext actionContext,
             IValidationContext validationContext,
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AfterValidation_DelimitedErrors_AddsModelErrorForEach(
             ActionContext actionContext,
             IValidationContext validationContext,
@@ -78,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AfterValidation_DelimitedErrors_PreservesNonDelimitedErrors(
             ActionContext actionContext,
             IValidationContext validationContext,
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AfterValidation_DuplicatedProperties_DeduplicatesErrors(
             ActionContext actionContext,
             IValidationContext validationContext,
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AfterValidation_FormattedMessagePlaceholderValues(
             ActionContext actionContext,
             IValidationContext validationContext,

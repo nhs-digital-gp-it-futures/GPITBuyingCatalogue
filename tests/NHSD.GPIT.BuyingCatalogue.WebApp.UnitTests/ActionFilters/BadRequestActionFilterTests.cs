@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
     public static class BadRequestActionFilterTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OnActionExecuted_SuccessfulResult_DoesNotRedirect(
             ActionExecutedContext context,
             BadRequestActionFilter filter)
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OnActionExecuted_BadRequestResult_Redirects(
             ActionExecutedContext context,
             BadRequestActionFilter filter)

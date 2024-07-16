@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Prices
     public class ConfirmPriceModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithDefaultConstructor_SpecificPropertiesCorrectlySet(
             RoutingSource routingSource)
         {
@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Prices
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidCatalogueItem_SpecificPropertiesCorrectlySet(
             OrderItem orderItem,
             RoutingSource routingSource)
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Prices
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidOrderItem_SpecificPropertiesCorrectlySet(
             OrderItem orderItem,
             RoutingSource routingSource)
@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Prices
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void AgreedPrices_ExpectedResult(OrderItem orderItem)
         {
             var model = new ConfirmPriceModel(orderItem.OrderItemPrice, orderItem.CatalogueItem);

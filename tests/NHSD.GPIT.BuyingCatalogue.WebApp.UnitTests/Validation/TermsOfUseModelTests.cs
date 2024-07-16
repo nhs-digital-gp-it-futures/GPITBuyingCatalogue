@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
     public static class TermsOfUseModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void TestValidate_AcceptsLatestTerms_NoModelErrors(
             TermsOfUseModel model,
             TermsOfUseModelValidator validator)
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void TestValidate_DoesNotAcceptLatestTerms_SetsModelErrors(
             TermsOfUseModel model,
             TermsOfUseModelValidator validator)
@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void TestValidate_HasPreviouslyAcceptedTerms_NoModelErrors(
             TermsOfUseModel model,
             TermsOfUseModelValidator validator)

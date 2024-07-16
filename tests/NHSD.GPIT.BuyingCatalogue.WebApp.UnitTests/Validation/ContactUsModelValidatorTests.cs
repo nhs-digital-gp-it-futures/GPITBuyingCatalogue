@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
     public static class ContactUsModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PropertiesEmpty_ThrowsValidationError(
             ContactUsModel model,
             ContactUsModelValidator validator)
@@ -27,9 +27,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonInlineAutoData(null, ContactUsModelValidator.EmailAddressMissingErrorMessage)]
-        [CommonInlineAutoData("", ContactUsModelValidator.EmailAddressMissingErrorMessage)]
-        [CommonInlineAutoData("abc", ContactUsModelValidator.EmailAddressWrongFormatErrorMessage)]
+        [MockInlineAutoData(null, ContactUsModelValidator.EmailAddressMissingErrorMessage)]
+        [MockInlineAutoData("", ContactUsModelValidator.EmailAddressMissingErrorMessage)]
+        [MockInlineAutoData("abc", ContactUsModelValidator.EmailAddressWrongFormatErrorMessage)]
         public static void Validate_InvalidEmail_ThrowsValidationError(
             string emailAddress,
             string expectedErrorMessage,
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PrivacyPolicyNotAccepted_ThrowsValidationError(
             ContactUsModel model,
             ContactUsModelValidator validator)
@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelErrors(
             string fullName,
             string message,

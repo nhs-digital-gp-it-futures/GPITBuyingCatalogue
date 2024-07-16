@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Prices
     public class ViewPriceModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void WithValidOrderItem_SpecificPropertiesCorrectlySet(
             string internalOrgId,
             CallOffId callOffId,

@@ -8,7 +8,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
@@ -31,30 +30,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OnActionExecutionAsync_NotAuthenticated_CallsNext(
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
             TermsOfUseActionFilter filter)
         {
             executingContext.HttpContext.User = new ClaimsPrincipal(
                 new ClaimsIdentity());
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Once());
+            called.Should().BeTrue();
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OnActionExecutionAsync_NotBuyer_CallsNext(
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
             TermsOfUseActionFilter filter)
         {
             var claims = new Claim[]
@@ -66,20 +68,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             executingContext.HttpContext.User = new ClaimsPrincipal(
                 new ClaimsIdentity(claims, "mock"));
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Once());
+            called.Should().BeTrue();
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OnActionExecutionAsync_NotOrderPath_CallsNext(
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
             TermsOfUseActionFilter filter)
         {
             var claims = new Claim[]
@@ -91,22 +97,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             executingContext.HttpContext.User = new ClaimsPrincipal(
                 new ClaimsIdentity(claims, "mock"));
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Once());
+            called.Should().BeTrue();
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OnActionExecutionAsync_ValidUser_HasAccepted_CallsNext(
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
             AspNetUser user,
-            Mock<UserManager<AspNetUser>> userManager,
+            UserManager<AspNetUser> userManager,
             TermsOfUseSettings settings)
         {
             var claims = new Claim[]
@@ -121,27 +131,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             settings.RevisionDate = DateTime.UtcNow.AddDays(-1);
             user.AcceptedTermsOfUseDate = DateTime.UtcNow;
 
-            userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(user);
+            userManager.FindByIdAsync(Arg.Any<string>())
+                .Returns(user);
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            var filter = new TermsOfUseActionFilter(userManager, settings);
 
-            var filter = new TermsOfUseActionFilter(userManager.Object, settings);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Once());
+            called.Should().BeTrue();
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OnActionExecutionAsync_ValidUser_NotAccepted_Redirects(
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
             AspNetUser user,
-            Mock<UserManager<AspNetUser>> userManager,
+            UserManager<AspNetUser> userManager,
             TermsOfUseSettings settings)
         {
             var claims = new Claim[]
@@ -156,23 +170,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             settings.RevisionDate = DateTime.UtcNow;
             user.AcceptedTermsOfUseDate = DateTime.UtcNow.AddDays(-1);
 
-            userManager.Setup(u => u.FindByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(user);
+            userManager.FindByIdAsync(Arg.Any<string>())
+                .Returns(user);
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            var filter = new TermsOfUseActionFilter(userManager, settings);
 
-            var filter = new TermsOfUseActionFilter(userManager.Object, settings);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Never);
+            called.Should().BeFalse();
             var result = executingContext.Result.As<RedirectToActionResult>();
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(TermsOfUseController.TermsOfUse));
             result.RouteValues.Should().NotBeNull();
             result.RouteValues.ContainsKey("returnUrl");
             result.RouteValues["returnUrl"].Should().Be(executingContext.HttpContext.Request.Path);
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
     }
 }

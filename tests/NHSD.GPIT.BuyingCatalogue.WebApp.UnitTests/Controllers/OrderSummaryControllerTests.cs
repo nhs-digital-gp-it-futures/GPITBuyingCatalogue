@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(OrderSummaryController).GetConstructors();
 
@@ -37,24 +37,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_CompleteOrder_ReturnsExpectedResult(
             string internalOrgId,
             Order order,
             ImplementationPlan defaultPlan,
-            [Frozen] Mock<IImplementationPlanService> implementationPlanService,
-            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] IImplementationPlanService implementationPlanService,
+            [Frozen] IOrderService orderServiceMock,
             OrderSummaryController controller)
         {
             order.Completed = DateTime.UtcNow;
 
-            orderServiceMock
-                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderServiceMock.GetOrderForSummary(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            implementationPlanService
-                .Setup(x => x.GetDefaultImplementationPlan())
-                .ReturnsAsync(defaultPlan);
+            implementationPlanService.GetDefaultImplementationPlan().Returns(defaultPlan);
 
             var expectedViewData = new OrderSummaryModel(new OrderWrapper(order), defaultPlan);
 
@@ -65,24 +61,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_InProgress_InCompletable_Order_ReturnsExpectedResult(
             string internalOrgId,
             Order order,
             ImplementationPlan defaultPlan,
-            [Frozen] Mock<IImplementationPlanService> implementationPlanService,
-            [Frozen] Mock<IOrderService> orderServiceMock,
+            [Frozen] IImplementationPlanService implementationPlanService,
+            [Frozen] IOrderService orderServiceMock,
             OrderSummaryController controller)
         {
             order.Completed = null;
 
-            orderServiceMock
-                .Setup(s => s.GetOrderForSummary(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderServiceMock.GetOrderForSummary(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            implementationPlanService
-                .Setup(x => x.GetDefaultImplementationPlan())
-                .ReturnsAsync(defaultPlan);
+            implementationPlanService.GetDefaultImplementationPlan().Returns(defaultPlan);
 
             var expectedViewData = new OrderSummaryModel(new OrderWrapper(order), defaultPlan);
 

@@ -31,67 +31,78 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OnActionExecutionAsync_IdentityAccountPath_CallsNext(
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
             UpdatePasswordActionFilter filter)
         {
             executingContext.HttpContext.Request.Path = "/identity/account";
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Once());
+            called.Should().BeTrue();
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OnActionExecutionAsync_HomeErrorPath_CallsNext(
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
             UpdatePasswordActionFilter filter)
         {
             executingContext.HttpContext.Request.Path = "/home/error";
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Once());
+            called.Should().BeTrue();
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OnActionExecutionAsync_NotAuthenticated_CallsNext(
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
             UpdatePasswordActionFilter filter)
         {
             executingContext.HttpContext.User = new ClaimsPrincipal(
                 new ClaimsIdentity());
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Once());
+            called.Should().BeTrue();
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OnActionExecutionAsync_UserIdNull_CallsNext(
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
-            Mock<UserManager<AspNetUser>> userManager,
+            UserManager<AspNetUser> userManager,
             PasswordSettings passwordSettings)
         {
             passwordSettings.PasswordExpiryDays = 365;
@@ -103,25 +114,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             executingContext.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims, "mock"));
 
-            userManager.Setup(x => x.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns((string)null);
+            userManager.GetUserId(Arg.Any<ClaimsPrincipal>()).Returns((string)null);
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            var filter = new UpdatePasswordActionFilter(userManager, passwordSettings);
 
-            var filter = new UpdatePasswordActionFilter(userManager.Object, passwordSettings);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Once());
+            called.Should().BeTrue();
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OnActionExecutionAsync_UserNull_CallsNext(
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
-            Mock<UserManager<AspNetUser>> userManager,
+            UserManager<AspNetUser> userManager,
             PasswordSettings passwordSettings)
         {
             var userId = "1";
@@ -134,28 +149,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             executingContext.HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims, "mock"));
 
-            userManager.Setup(x => x.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
-            userManager.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync((AspNetUser)null);
+            userManager.GetUserId(Arg.Any<ClaimsPrincipal>()).Returns(userId);
+            userManager.FindByIdAsync(userId).Returns((AspNetUser)null);
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            var filter = new UpdatePasswordActionFilter(userManager, passwordSettings);
 
-            var filter = new UpdatePasswordActionFilter(userManager.Object, passwordSettings);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Once());
+            called.Should().BeTrue();
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
 
         [Theory]
-        [CommonInlineAutoData(0)]
-        [CommonInlineAutoData(364)]
+        [MockInlineAutoData(0)]
+        [MockInlineAutoData(364)]
         public static async Task OnActionExecutionAsync_UserPasswordNotExpired_CallsNext(
             int daysSincePasswordChange,
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
-            Mock<UserManager<AspNetUser>> userManager,
+            UserManager<AspNetUser> userManager,
             AspNetUser user,
             PasswordSettings passwordSettings)
         {
@@ -172,27 +191,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             user.PasswordUpdatedDate = DateTime.UtcNow.AddDays(-daysSincePasswordChange);
 
-            userManager.Setup(x => x.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
-            userManager.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync(user);
+            userManager.GetUserId(Arg.Any<ClaimsPrincipal>()).Returns(userId);
+            userManager.FindByIdAsync(userId).Returns(user);
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            var filter = new UpdatePasswordActionFilter(userManager, passwordSettings);
 
-            var filter = new UpdatePasswordActionFilter(userManager.Object, passwordSettings);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Once());
+            called.Should().BeTrue();
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OnActionExecutionAsync_UserPasswordExpired_Redirects(
             ActionExecutingContext executingContext,
             ActionExecutedContext executedContext,
-            Mock<ActionExecutionDelegate> nextDelegate,
             AspNetUser user,
-            Mock<UserManager<AspNetUser>> userManager,
+            UserManager<AspNetUser> userManager,
             PasswordSettings passwordSettings)
         {
             var userId = "1";
@@ -206,20 +229,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             user.PasswordUpdatedDate = DateTime.UtcNow.AddDays(-passwordSettings.PasswordExpiryDays);
 
-            userManager.Setup(x => x.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
-            userManager.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync(user);
+            userManager.GetUserId(Arg.Any<ClaimsPrincipal>()).Returns(userId);
+            userManager.FindByIdAsync(userId).Returns(user);
 
-            nextDelegate.Setup(d => d())
-                .ReturnsAsync(executedContext);
+            var filter = new UpdatePasswordActionFilter(userManager, passwordSettings);
 
-            var filter = new UpdatePasswordActionFilter(userManager.Object, passwordSettings);
+            bool called = false;
 
-            await filter.OnActionExecutionAsync(executingContext, nextDelegate.Object);
+            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
 
-            nextDelegate.Verify(d => d(), Times.Never);
+            called.Should().BeFalse();
             var result = executingContext.Result.As<RedirectToActionResult>();
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(AccountController.UpdatePassword));
+
+            Task<ActionExecutedContext> NextDelegate()
+            {
+                called = true;
+                return Task.FromResult(executedContext);
+            }
         }
     }
 }

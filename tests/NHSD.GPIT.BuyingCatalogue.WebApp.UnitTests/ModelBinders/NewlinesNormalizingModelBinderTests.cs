@@ -19,29 +19,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ModelBinders
         }
 
         [Theory]
-        [InlineData("Abc", 3)]
-        [InlineData("Abc\ndef", 7)]
-        [InlineData("Abc\rdef", 7)]
-        [InlineData("Abc\r\ndef", 7)]
-        [InlineData("Abc\rdef\nghi", 11)]
-        public static void ValidInput_CorrectlyRemovesCarriageReturn(string input, int expectedCount)
+        [MockInlineAutoData("Abc", 3)]
+        [MockInlineAutoData("Abc\ndef", 7)]
+        [MockInlineAutoData("Abc\rdef", 7)]
+        [MockInlineAutoData("Abc\r\ndef", 7)]
+        [MockInlineAutoData("Abc\rdef\nghi", 11)]
+        public static void ValidInput_CorrectlyRemovesCarriageReturn(
+            string input,
+            int expectedCount,
+            ModelStateDictionary modelState,
+            DefaultModelBindingContext context,
+            NewlinesNormalizingModelBinder modelBinder)
         {
-            var valueProviderMock = new Mock<IValueProvider>();
-            var contextMock = new Mock<ModelBindingContext>();
-            var modelStateMock = new Mock<ModelStateDictionary>();
+            context.ModelName = "Description";
+            context.ModelState = modelState;
+            context.ValueProvider.GetValue(Arg.Any<string>()).Returns(new ValueProviderResult(input));
 
-            var modelBinder = new NewlinesNormalizingModelBinder();
+            modelBinder.BindModelAsync(context);
 
-            valueProviderMock.Setup(v => v.GetValue(It.IsAny<string>())).Returns(new ValueProviderResult(input));
-
-            contextMock.SetupAllProperties();
-            contextMock.Setup(c => c.ModelName).Returns("Description");
-            contextMock.Setup(c => c.ValueProvider).Returns(valueProviderMock.Object);
-            contextMock.Setup(c => c.ModelState).Returns(modelStateMock.Object);
-
-            modelBinder.BindModelAsync(contextMock.Object);
-
-            contextMock.Object.Result.Model.As<string>().Length.Should().Be(expectedCount);
+            context.Result.Model.As<string>().Length.Should().Be(expectedCount);
         }
     }
 }

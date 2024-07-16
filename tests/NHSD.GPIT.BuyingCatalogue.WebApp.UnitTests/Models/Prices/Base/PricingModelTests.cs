@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Prices.Base
     public class PricingModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void WithValidCatalogueItem_PropertiesCorrectlySet(CatalogueItem item)
         {
             var price = item.CataloguePrices.First();
@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Prices.Base
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public void WithValidCatalogueItem_AndExistingOrderItem_PropertiesCorrectlySet(CatalogueItem item, OrderItem orderItem)
         {
             var price = item.CataloguePrices.First();

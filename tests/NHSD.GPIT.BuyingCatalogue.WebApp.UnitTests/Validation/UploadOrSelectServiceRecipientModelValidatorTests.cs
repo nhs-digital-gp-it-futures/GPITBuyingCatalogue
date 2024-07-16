@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
     public static class UploadOrSelectServiceRecipientModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectedSelectServiceRecipientOptions_SetsModelError(
             UploadOrSelectServiceRecipientModel model,
             UploadOrSelectServiceRecipientModelValidator validator)
@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SelectedServiceRecipientOptions_NoModelError(
             UploadOrSelectServiceRecipientModel model,
             UploadOrSelectServiceRecipientModelValidator validator)

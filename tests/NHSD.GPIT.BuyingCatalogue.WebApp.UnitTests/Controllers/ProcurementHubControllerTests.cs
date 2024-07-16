@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ProcurementHubController).GetConstructors();
 
@@ -37,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_ReturnsDefaultView(
             ProcurementHubController systemUnderTest)
         {
@@ -50,12 +50,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_UserLoggedIn_ReturnsPopulatedDefaultView(
             AspNetUser user,
             Organisation organisation,
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationsService,
+            [Frozen] IUsersService mockUsersService,
+            [Frozen] IOrganisationsService mockOrganisationsService,
             ProcurementHubController systemUnderTest)
         {
             const int userId = 1;
@@ -63,18 +63,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             user.PrimaryOrganisationId = organisationId;
 
-            mockUsersService
-                .Setup(x => x.GetUser(userId))
-                .ReturnsAsync(user);
+            mockUsersService.GetUser(userId).Returns(user);
 
-            mockOrganisationsService
-                .Setup(x => x.GetOrganisation(organisationId))
-                .ReturnsAsync(organisation);
+            mockOrganisationsService.GetOrganisation(organisationId).Returns(organisation);
 
             var result = await systemUnderTest.Index();
-
-            mockUsersService.VerifyAll();
-            mockOrganisationsService.VerifyAll();
 
             var actualResult = result.Should().BeAssignableTo<ViewResult>().Subject;
 
@@ -89,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Index_InvalidModelState_ReturnsDefaultView(
             ProcurementHubController systemUnderTest)
         {
@@ -104,22 +97,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Index_ValidModelState_RedirectsToConfirmation(
             ProcurementHubDetailsModel expected,
-            [Frozen] Mock<IProcurementHubService> mockProcurementHubService,
+            [Frozen] IProcurementHubService mockProcurementHubService,
             ProcurementHubController systemUnderTest)
         {
             ProcurementHubRequest actual = null;
 
             mockProcurementHubService
-                .Setup(x => x.ContactProcurementHub(It.IsAny<ProcurementHubRequest>()))
-                .Callback<ProcurementHubRequest>(x => actual = x)
-                .Returns(Task.CompletedTask);
+                .When(x => x.ContactProcurementHub(Arg.Any<ProcurementHubRequest>()))
+                .Do(x => actual = x.Arg<ProcurementHubRequest>());
 
             var result = await systemUnderTest.Index(expected);
-
-            mockProcurementHubService.VerifyAll();
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(ProcurementHubController.Confirmation));
@@ -132,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Confirmation_ReturnsDefaultView(
             ProcurementHubController systemUnderTest)
         {
