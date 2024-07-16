@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
     public static class FundingSourceModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FundingSource_WithArguments_FundingNull_SetsCorrectly(
             string internalOrgId,
             [Frozen] CallOffId callOffId,
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.FundingS
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FundingSource_WithArguments_FundingSet_SetsCorrectly(
             string internalOrgId,
             [Frozen] CallOffId callOffId,

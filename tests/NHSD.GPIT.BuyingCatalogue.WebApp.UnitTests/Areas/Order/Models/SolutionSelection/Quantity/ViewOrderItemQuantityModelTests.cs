@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidOrderItem_PropertiesCorrectlySet(OrderItem item)
         {
             var model = new ViewOrderItemQuantityModel(item);

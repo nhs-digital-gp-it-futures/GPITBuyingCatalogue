@@ -10,12 +10,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
     public static class SelectSupplierModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null, OrderTypeEnum.Solution)]
-        [CommonInlineAutoData("", OrderTypeEnum.Solution)]
-        [CommonInlineAutoData(" ", OrderTypeEnum.Solution)]
-        [CommonInlineAutoData(null, OrderTypeEnum.AssociatedServiceOther)]
-        [CommonInlineAutoData("", OrderTypeEnum.AssociatedServiceOther)]
-        [CommonInlineAutoData(" ", OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(null, OrderTypeEnum.Solution)]
+        [MockInlineAutoData("", OrderTypeEnum.Solution)]
+        [MockInlineAutoData(" ", OrderTypeEnum.Solution)]
+        [MockInlineAutoData(null, OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData("", OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(" ", OrderTypeEnum.AssociatedServiceOther)]
         public static void Validate_ValuesMissing_ThrowsValidationError_Search(
             string supplierId,
             OrderTypeEnum orderType,
@@ -32,12 +32,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
         }
 
         [Theory]
-        [CommonInlineAutoData(null, OrderTypeEnum.AssociatedServiceSplit)]
-        [CommonInlineAutoData("", OrderTypeEnum.AssociatedServiceSplit)]
-        [CommonInlineAutoData(" ", OrderTypeEnum.AssociatedServiceSplit)]
-        [CommonInlineAutoData(null, OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData("", OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(" ", OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(null, OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData("", OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(" ", OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(null, OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData("", OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(" ", OrderTypeEnum.AssociatedServiceMerger)]
         public static void Validate_ValuesMissing_ThrowsValidationError_Select(
             string supplierId,
             OrderTypeEnum orderType,

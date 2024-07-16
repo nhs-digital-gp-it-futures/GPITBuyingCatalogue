@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
     public static class SupplierModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValuesMissing_ThrowsValidationError(
             SupplierModel model,
             SupplierModelValidator systemUnderTest)

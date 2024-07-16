@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
 public static class RecipientForPracticeReorganisationModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoFileSpecified_SetsModelError(
         RecipientForPracticeReorganisationModel model,
         RecipientForPracticeReorganisationModelValidator validator)
@@ -23,7 +23,7 @@ public static class RecipientForPracticeReorganisationModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_ValidFile_NoModelErrors(
         RecipientForPracticeReorganisationModel model,
         RecipientForPracticeReorganisationModelValidator validator)

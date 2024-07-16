@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(QuantityController).GetConstructors();
 
@@ -49,37 +49,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_SelectQuantity_BadRequest(
             string internalOrgId,
             CallOffId callOffId,
             CatalogueItemId catalogueItemId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             QuantityController controller)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
-            var orderItem = order.OrderItems.First();
-
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.SelectQuantity(internalOrgId, callOffId, catalogueItemId);
-
-            mockOrderService.VerifyAll();
 
             result.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_SelectQuantity_ViewResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            RoutingResult routingResult,
+            [Frozen] IRoutingService routingService,
+            [Frozen] IOrderService mockOrderService,
             QuantityController controller)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
@@ -90,13 +86,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+            routingService.GetRoute(
+                    RoutingPoint.SelectQuantityBackLink,
+                    Arg.Any<OrderWrapper>(),
+                    Arg.Any<RouteValues>())
+                .Returns(routingResult);
 
             var result = await controller.SelectQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectOrderItemQuantityModel>().Subject;
@@ -106,16 +103,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(ProvisioningType.Patient, null)]
-        [CommonInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-        [CommonInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Patient, null)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
         public static async Task Get_SelectQuantity_ProvisioningType_CataloguePriceQuantityCalculationType_PerServiceRecipient_Combination_Redirects(
             ProvisioningType provisioningType,
             CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             QuantityController controller)
         {
             var orderItem = order.OrderItems.First();
@@ -124,13 +121,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderItem.OrderItemPrice.ProvisioningType = provisioningType;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType;
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.SelectQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -146,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_SelectQuantity_ModelError_ReturnsModel(
             string internalOrgId,
             CallOffId callOffId,
@@ -164,16 +157,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_SelectQuantity_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             SelectOrderItemQuantityModel model,
             int quantity,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOrderQuantityService> mockOrderQuantityService,
-            [Frozen] Mock<IRoutingService> mockRoutingService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOrderQuantityService mockOrderQuantityService,
+            [Frozen] IRoutingService mockRoutingService,
             QuantityController controller)
         {
             var orderItem = order.OrderItems.First();
@@ -181,25 +174,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             var orderWrapper = new OrderWrapper(order);
-            mockOrderService
-                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
-                .ReturnsAsync(orderWrapper);
+            mockOrderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId).Returns(orderWrapper);
 
-            mockOrderQuantityService
-                .Setup(x => x.SetOrderItemQuantity(order.Id, orderItem.CatalogueItemId, quantity))
-                .Returns(Task.CompletedTask);
+            mockOrderQuantityService.SetOrderItemQuantity(order.Id, orderItem.CatalogueItemId, quantity).Returns(Task.CompletedTask);
 
-            mockRoutingService
-                .Setup(x => x.GetRoute(RoutingPoint.SelectQuantity, orderWrapper, It.IsAny<RouteValues>()))
-                .Returns(Route(internalOrgId, callOffId));
+            mockRoutingService.GetRoute(RoutingPoint.SelectQuantity, orderWrapper, Arg.Any<RouteValues>()).Returns(Route(internalOrgId, callOffId));
 
             model.Quantity = $"{quantity}";
 
             var result = await controller.SelectQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, model);
-
-            mockOrderService.VerifyAll();
-            mockOrderQuantityService.VerifyAll();
-            mockRoutingService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -213,16 +196,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-        [CommonInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
+        [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
         public static async Task Get_SelectServiceRecipientQuantity_ProvisioningType_Not_Patient(
             ProvisioningType provisioningType,
             CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOdsService> odsService,
+            RoutingResult routingResult,
+            [Frozen] IRoutingService routingService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOdsService odsService,
             QuantityController controller,
             string location)
         {
@@ -233,18 +218,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType;
             order.OrderRecipients.ForEach(r => r.OrderItemRecipients.ForEach(x => x.Quantity = null));
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            odsService.Setup(x => x.GetServiceRecipientsById(internalOrgId, It.IsAny<IEnumerable<string>>())).ReturnsAsync(
+            odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(
                  order.OrderRecipients.Select(
                             x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
                         .ToList());
 
-            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
+            routingService.GetRoute(
+                    RoutingPoint.SelectQuantityBackLink,
+                    Arg.Any<OrderWrapper>(),
+                    Arg.Any<RouteValues>())
+                .Returns(routingResult);
 
-            mockOrderService.VerifyAll();
+            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
@@ -265,14 +252,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_SelectServiceRecipientQuantity_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IGpPracticeService> mockGpPracticeService,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOdsService> odsService,
+            RoutingResult routingResult,
+            [Frozen] IRoutingService routingService,
+            [Frozen] IGpPracticeService mockGpPracticeService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOdsService odsService,
             QuantityController controller,
             string location)
         {
@@ -282,26 +271,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.OrderRecipients.ForEach(r => r.OrderItemRecipients.ForEach(x => x.Quantity = null));
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockGpPracticeService
-                .Setup(x => x.GetNumberOfPatients(It.IsAny<IEnumerable<string>>()))
-                .ReturnsAsync(
+            mockGpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>())
+                .Returns(
                     order.OrderRecipients.Select(
                             x => new GpPracticeSize { OdsCode = x.OdsCode, NumberOfPatients = NumberOfPatients })
                         .ToList());
 
-            odsService.Setup(x => x.GetServiceRecipientsById(internalOrgId, It.IsAny<IEnumerable<string>>())).ReturnsAsync(
+            odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(
                  order.OrderRecipients.Select(
                             x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
                         .ToList());
 
-            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
+            routingService.GetRoute(
+                    RoutingPoint.SelectQuantityBackLink,
+                    Arg.Any<OrderWrapper>(),
+                    Arg.Any<RouteValues>())
+                .Returns(routingResult);
 
-            mockOrderService.VerifyAll();
-            mockGpPracticeService.VerifyAll();
+            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
@@ -322,13 +311,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_SelectServiceRecipientQuantity_WithPrePopulatedSolutionRecipients_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOdsService> odsService,
+            RoutingResult routingResult,
+            [Frozen] IRoutingService routingService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOdsService odsService,
             QuantityController controller,
             string location)
         {
@@ -345,18 +336,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
             order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Where(i => i.CatalogueItemId == orderItem.CatalogueItemId).ForEach(x => x.Quantity = null));
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            odsService.Setup(x => x.GetServiceRecipientsById(internalOrgId, It.IsAny<IEnumerable<string>>())).ReturnsAsync(
+            odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(
                  order.OrderRecipients.Select(
                             x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
                         .ToList());
 
-            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
+            routingService.GetRoute(
+                    RoutingPoint.SelectQuantityBackLink,
+                    Arg.Any<OrderWrapper>(),
+                    Arg.Any<RouteValues>())
+                .Returns(routingResult);
 
-            mockOrderService.VerifyAll();
+            var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
@@ -378,7 +371,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_SelectServiceRecipientQuantity_ModelError_ReturnsModel(
             string internalOrgId,
             CallOffId callOffId,
@@ -396,15 +389,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_SelectServiceRecipientQuantity_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             SelectServiceRecipientQuantityModel model,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOrderQuantityService> mockOrderQuantityService,
-            [Frozen] Mock<IRoutingService> mockRoutingService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOrderQuantityService mockOrderQuantityService,
+            [Frozen] IRoutingService mockRoutingService,
             QuantityController controller)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
@@ -414,27 +407,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             var orderWrapper = new OrderWrapper(order);
-            mockOrderService
-                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
-                .ReturnsAsync(orderWrapper);
+            mockOrderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId).Returns(orderWrapper);
 
             List<OrderItemRecipientQuantityDto> actual = null;
 
             mockOrderQuantityService
-                .Setup(x => x.SetServiceRecipientQuantities(order.Id, orderItem.CatalogueItemId, It.IsAny<List<OrderItemRecipientQuantityDto>>()))
-                .Callback<int, CatalogueItemId, List<OrderItemRecipientQuantityDto>>((_, _, x) => actual = x)
-                .Returns(Task.CompletedTask);
+                .When(x => x.SetServiceRecipientQuantities(order.Id, orderItem.CatalogueItemId, Arg.Any<List<OrderItemRecipientQuantityDto>>()))
+                .Do(x => actual = x.Arg<List<OrderItemRecipientQuantityDto>>());
 
-            mockRoutingService
-                .Setup(x => x.GetRoute(RoutingPoint.SelectQuantity, orderWrapper, It.IsAny<RouteValues>()))
-                .Returns(Route(internalOrgId, callOffId));
+            mockRoutingService.GetRoute(RoutingPoint.SelectQuantity, orderWrapper, Arg.Any<RouteValues>()).Returns(Route(internalOrgId, callOffId));
 
             model.ServiceRecipients.ForEach(x => x.InputQuantity = x.Quantity > 0 ? string.Empty : "1");
 
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, model);
-
-            mockOrderService.VerifyAll();
-            mockOrderQuantityService.VerifyAll();
 
             foreach (var dto in actual)
             {
@@ -455,14 +440,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(ProvisioningType.Patient)]
+        [MockInlineAutoData(ProvisioningType.Patient)]
         public static async Task Get_ViewOrderItemQuantity_PerServiceRecipientPrice_ExpectedResult(
             ProvisioningType provisioningType,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             EntityFramework.Ordering.Models.Order amendment,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderService orderService,
             QuantityController controller)
         {
             order.Revision = 1;
@@ -474,13 +459,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderItem.OrderItemPrice.ProvisioningType = provisioningType;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient;
 
-            orderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(new[] { order, amendment }));
+            orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order, amendment }));
 
             var result = await controller.ViewOrderItemQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
-
-            orderService.VerifyAll();
 
             var actual = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -495,15 +476,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(ProvisioningType.Declarative)]
-        [CommonInlineAutoData(ProvisioningType.OnDemand)]
+        [MockInlineAutoData(ProvisioningType.Declarative)]
+        [MockInlineAutoData(ProvisioningType.OnDemand)]
         public static async Task Get_ViewOrderItemQuantity_ExpectedResult(
             ProvisioningType provisioningType,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             EntityFramework.Ordering.Models.Order amendment,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderService orderService,
             QuantityController controller)
         {
             order.Revision = 1;
@@ -515,13 +496,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderItem.OrderItemPrice.ProvisioningType = provisioningType;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
-            orderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(new[] { order, amendment }));
+            orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order, amendment }));
 
             var result = await controller.ViewOrderItemQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
-
-            orderService.VerifyAll();
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -536,13 +513,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_ViewServiceRecipientQuantity_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             EntityFramework.Ordering.Models.Order amendment,
-            [Frozen] Mock<IOrderService> orderService,
+            [Frozen] IOrderService orderService,
             QuantityController controller)
         {
             order.Revision = 1;
@@ -551,13 +528,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var orderItem = order.OrderItems.First();
 
-            orderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(new[] { order, amendment }));
+            orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order, amendment }));
 
             var result = await controller.ViewServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId);
-
-            orderService.VerifyAll();
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 

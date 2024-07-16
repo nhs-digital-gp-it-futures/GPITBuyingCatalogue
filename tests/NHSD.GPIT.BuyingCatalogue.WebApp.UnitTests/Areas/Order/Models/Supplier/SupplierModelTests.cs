@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
     public static class SupplierModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
             CallOffId callOffId,
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithContacts_PropertiesCorrectlySet(
             string internalOrgId,
             CallOffId callOffId,
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Supplier
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithContacts_AndATemporaryContact_PropertiesCorrectlySet(
             string internalOrgId,
             CallOffId callOffId,

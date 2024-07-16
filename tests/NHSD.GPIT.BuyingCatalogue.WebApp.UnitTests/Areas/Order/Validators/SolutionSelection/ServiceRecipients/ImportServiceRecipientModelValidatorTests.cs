@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
 public static class ImportServiceRecipientModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoFileSpecified_SetsModelError(
         ImportServiceRecipientModel model,
         ImportServiceRecipientModelValidator validator)
@@ -26,7 +26,7 @@ public static class ImportServiceRecipientModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_IncorrectFileType_SetsModelError(
         ImportServiceRecipientModel model,
         ImportServiceRecipientModelValidator validator)
@@ -40,7 +40,7 @@ public static class ImportServiceRecipientModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_FileSizeTooLarge_SetsModelError(
         ImportServiceRecipientModel model,
         ImportServiceRecipientModelValidator validator)
@@ -59,7 +59,7 @@ public static class ImportServiceRecipientModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_ValidFile_NoModelErrors(
         ImportServiceRecipientModel model,
         ImportServiceRecipientModelValidator validator)

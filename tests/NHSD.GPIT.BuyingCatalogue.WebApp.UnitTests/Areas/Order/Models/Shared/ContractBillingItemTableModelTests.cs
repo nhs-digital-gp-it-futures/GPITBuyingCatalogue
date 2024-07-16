@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Shared
     public static class ContractBillingItemTableModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string title, ICollection<ContractBillingItem> items, bool isAction, CallOffId callOffId, string internalOrgId)
         {

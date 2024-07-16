@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
     public static class MilestoneModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_Add_PropertiesCorrectlySet(
             CallOffId callOffId, string internalOrgId)
         {
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_Edit_PropertiesCorrectlySet(
             CallOffId callOffId, string internalOrgId, ImplementationPlanMilestone milestone)
         {

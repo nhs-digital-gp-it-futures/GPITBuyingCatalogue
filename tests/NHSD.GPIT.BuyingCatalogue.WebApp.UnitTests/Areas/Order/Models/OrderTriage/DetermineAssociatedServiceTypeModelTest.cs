@@ -8,9 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.OrderTri
     public static class DetermineAssociatedServiceTypeModelTest
     {
         [Theory]
-        [CommonInlineAutoData(true, true)]
-        [CommonInlineAutoData(true, false)]
-        [CommonInlineAutoData(false, true)]
+        [MockInlineAutoData(true, true)]
+        [MockInlineAutoData(true, false)]
+        [MockInlineAutoData(false, true)]
         public static void GetPageTitle_Either_Merger_Or_Split_Or_Both_Enabled(
             bool mergerEnabled,
             bool splitEnabled,
@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.OrderTri
         }
 
         [Theory]
-        [CommonInlineAutoData(false, false)]
+        [MockInlineAutoData(false, false)]
         public static void GetPageTitle_Only_Other(
             bool mergerEnabled,
             bool splitEnabled,

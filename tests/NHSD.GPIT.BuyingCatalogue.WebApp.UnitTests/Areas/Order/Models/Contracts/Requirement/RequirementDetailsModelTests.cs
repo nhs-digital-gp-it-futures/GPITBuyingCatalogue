@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_Add_PropertiesCorrectlySet(
             IEnumerable<OrderItem> associatedServices,
             CallOffId callOffId,
@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_Edit_PropertiesCorrectlySet(
             IEnumerable<OrderItem> associatedServices,
             CallOffId callOffId,

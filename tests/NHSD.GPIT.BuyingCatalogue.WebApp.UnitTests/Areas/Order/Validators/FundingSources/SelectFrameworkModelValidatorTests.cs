@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Fund
     public static class SelectFrameworkModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SelectedFrameworkNotSelected_SetsModelError(
             SelectFrameworkModel model,
             SelectFrameworkModelValidator validator)

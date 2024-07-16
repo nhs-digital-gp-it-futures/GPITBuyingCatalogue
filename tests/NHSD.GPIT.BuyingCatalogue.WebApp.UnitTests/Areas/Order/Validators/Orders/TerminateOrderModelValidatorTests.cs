@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Orde
     public static class TerminateOrderModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DayMissing_ThrowsValidationError(
             TerminateOrderModel model,
             TerminateOrderModelValidator validator)
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Orde
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MonthMissing_ThrowsValidationError(
             TerminateOrderModel model,
             TerminateOrderModelValidator validator)
@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Orde
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_YearMissing_ThrowsValidationError(
             TerminateOrderModel model,
             TerminateOrderModelValidator validator)
@@ -55,9 +55,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Orde
         }
 
         [Theory]
-        [CommonInlineAutoData("1")]
-        [CommonInlineAutoData("12")]
-        [CommonInlineAutoData("123")]
+        [MockInlineAutoData("1")]
+        [MockInlineAutoData("12")]
+        [MockInlineAutoData("123")]
         public static void Validate_YearTooShort_ThrowsValidationError(
             string year,
             TerminateOrderModel model,
@@ -74,8 +74,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Orde
         }
 
         [Theory]
-        [CommonInlineAutoData("99", "01", "2022")]
-        [CommonInlineAutoData("01", "99", "2022")]
+        [MockInlineAutoData("99", "01", "2022")]
+        [MockInlineAutoData("01", "99", "2022")]
         public static void Validate_InvalidDate_ThrowsValidationError(
             string day,
             string month,
@@ -94,9 +94,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Orde
         }
 
         [Theory]
-        [CommonInlineAutoData(0)]
-        [CommonInlineAutoData(-1)]
-        [CommonInlineAutoData(-10)]
+        [MockInlineAutoData(0)]
+        [MockInlineAutoData(-1)]
+        [MockInlineAutoData(-10)]
         public static void Validate_DateInPast_ThrowsValidationError(
             int days,
             TerminateOrderModel model,
@@ -115,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Orde
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ReasonNull_SetsModelError(
             TerminateOrderModel model,
             TerminateOrderModelValidator validator)
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Orde
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Confirm_SetsModelError(
             TerminateOrderModel model,
             TerminateOrderModelValidator validator)
@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Orde
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidModel_NoValidationError(
             TerminateOrderModel model,
             TerminateOrderModelValidator validator)

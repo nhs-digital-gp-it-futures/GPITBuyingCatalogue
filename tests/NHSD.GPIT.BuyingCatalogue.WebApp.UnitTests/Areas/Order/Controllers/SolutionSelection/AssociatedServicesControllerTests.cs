@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(AssociatedServicesController).GetConstructors();
 
@@ -43,18 +43,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static async Task Get_SelectAssociatedServices_ReturnsExpectedResult(
             OrderType orderType,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> services,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IAssociatedServicesService mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
             order.OrderType = orderType;
@@ -62,18 +62,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(orderWrapper);
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(orderWrapper);
 
-            mockAssociatedServicesService
-                .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.GetSolutionId(), orderType.ToPracticeReorganisationType))
-                .ReturnsAsync(services);
+            mockAssociatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId(), orderType.ToPracticeReorganisationType).Returns(services);
 
             var result = await controller.SelectAssociatedServices(internalOrgId, callOffId);
-
-            mockOrderService.VerifyAll();
-            mockAssociatedServicesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -92,16 +85,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
         public static async Task Get_SelectAssociatedServices_MergerSplit_WithSingleService_RedirectsToSelectPrice(
             OrderType orderType,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             CatalogueItem service,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IAssociatedServicesService> mockAssociatedServicesService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IAssociatedServicesService mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
             order.OrderType = orderType;
@@ -109,13 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockOrderService
-                .Setup(x => x.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(orderWrapper);
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(orderWrapper);
 
-            mockAssociatedServicesService
-                .Setup(x => x.GetPublishedAssociatedServicesForSolution(order.GetSolutionId(), orderType.ToPracticeReorganisationType))
-                .ReturnsAsync(new[] { service }.ToList());
+            mockAssociatedServicesService.GetPublishedAssociatedServicesForSolution(order.GetSolutionId(), orderType.ToPracticeReorganisationType).Returns(new[] { service }.ToList());
 
             var result = await controller.SelectAssociatedServices(internalOrgId, callOffId);
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -125,7 +114,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_SelectAssociatedServices_WithModelErrors_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -140,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_SelectAssociatedServices_NoSelectionMade_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -163,12 +152,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_SelectAssociatedServices_SelectionMade_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             SelectServicesModel model,
-            [Frozen] Mock<IOrderItemService> mockOrderItemService,
+            [Frozen] IOrderItemService mockOrderItemService,
             AssociatedServicesController controller)
         {
             model.Services.ForEach(x => x.IsSelected = false);
@@ -176,13 +165,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var catalogueItemId = model.Services.First().CatalogueItemId;
 
-            mockOrderItemService
-                .Setup(x => x.AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId }))
-                .Returns(Task.CompletedTask);
+            mockOrderItemService.AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId }).Returns(Task.CompletedTask);
 
             var result = await controller.SelectAssociatedServices(internalOrgId, callOffId, model);
-
-            mockOrderItemService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 

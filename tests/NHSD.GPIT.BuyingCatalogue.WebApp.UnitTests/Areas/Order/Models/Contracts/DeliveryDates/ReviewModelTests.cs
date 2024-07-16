@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
     public static class ReviewModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             EntityFramework.Ordering.Models.Order order,
             OrderItem additionalService,
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OrderItemRecipients_ReturnsRecipientsForDate(
             EntityFramework.Ordering.Models.Order order,
             OrderItem solution,
@@ -74,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void OrderDates_ReturnsDatesForOrderItem(
             EntityFramework.Ordering.Models.Order order,
             OrderItem solution,

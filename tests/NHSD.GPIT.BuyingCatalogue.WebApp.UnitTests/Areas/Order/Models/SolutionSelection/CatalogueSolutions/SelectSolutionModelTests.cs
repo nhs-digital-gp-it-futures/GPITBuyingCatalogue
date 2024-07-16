@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
     public static class SelectSolutionModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> solutions,
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void GetAdditionalServicesIdsForSelectedCatalogueSolution_ReturnsExpectedResult(
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> solutions,

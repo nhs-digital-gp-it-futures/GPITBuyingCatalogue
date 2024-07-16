@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ContractBillingController).GetConstructors();
 
@@ -40,13 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_ReturnsExpectedResult(
            string internalOrgId,
            EntityFramework.Ordering.Models.Order order,
            Contract contract,
-           [Frozen] Mock<IOrderService> mockOrderService,
-           [Frozen] Mock<IContractsService> mockContractsService,
+           [Frozen] IOrderService mockOrderService,
+           [Frozen] IContractsService mockContractsService,
            ContractBillingController controller)
         {
             var solution = order.OrderItems.First();
@@ -56,18 +56,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockContractsService
-                .Setup(x => x.GetContractWithContractBilling(order.Id))
-                .ReturnsAsync(contract);
+            mockContractsService.GetContractWithContractBilling(order.Id).Returns(contract);
 
             var result = await controller.Index(internalOrgId, order.CallOffId);
-
-            mockOrderService.VerifyAll();
-            mockContractsService.VerifyAll();
 
             var expected = new ContractBillingModel(contract?.ContractBilling)
             {
@@ -81,7 +74,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Index_ModelError_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -98,58 +91,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Index_ReturnsExpectedResult(
             string internalOrgId,
             ContractBillingModel model,
             EntityFramework.Ordering.Models.Order order,
             Contract contract,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IContractsService> mockContractsService,
-            [Frozen] Mock<IContractBillingService> mockContractBillingService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IContractsService mockContractsService,
+            [Frozen] IContractBillingService mockContractBillingService,
             ContractBillingController controller)
         {
             contract.Order = order;
-            mockOrderService
-                .Setup(s => s.GetOrderThin(model.CallOffId, model.InternalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(model.CallOffId, model.InternalOrgId).Returns(new OrderWrapper(order));
 
-            mockContractsService
-                .Setup(x => x.GetContract(order.Id))
-                .ReturnsAsync(contract);
+            mockContractsService.GetContract(order.Id).Returns(contract);
 
-            mockContractBillingService
-                .Setup(x => x.AddContractBilling(order.Id, contract.Id))
-                .ReturnsAsync(contract);
+            mockContractBillingService.AddContractBilling(order.Id, contract.Id).Returns(contract);
 
             var result = await controller.Index(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockContractsService.VerifyAll();
-            mockContractBillingService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             actualResult.ActionName.Should().Be(nameof(RequirementController.Index));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_AddMilestone_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             ContractBillingController controller)
         {
-            mockOrderService
-                .Setup(s => s.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.AddMilestone(internalOrgId, callOffId);
 
             var expected = new ContractBillingItemModel(callOffId, internalOrgId, order.GetAssociatedServices());
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().Be("ContractBillingItem");
@@ -157,35 +136,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddMilestone_InvalidOrder_ReturnsNotFound(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             ContractBillingItemModel model,
             ContractBillingController controller)
         {
             order.OrderItems.Clear();
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.AddMilestone(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
 
             result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddMilestone_ModelError_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             ContractBillingItemModel model,
             ContractBillingController controller)
         {
@@ -195,15 +170,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             controller.ModelState.AddModelError("some-property", "some-error");
 
             var result = await controller.AddMilestone(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().Be("ContractBillingItem");
@@ -212,15 +183,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddMilestone_ReturnsExpectedResult(
             string internalOrgId,
             ContractBillingItemModel model,
             EntityFramework.Ordering.Models.Order order,
             Contract contract,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IContractsService> mockContractsService,
-            [Frozen] Mock<IContractBillingService> mockContractBillingService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IContractsService mockContractsService,
+            [Frozen] IContractBillingService mockContractBillingService,
             ContractBillingController controller)
         {
             order.OrderItems.Add(new OrderItem()
@@ -229,54 +200,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
             contract.Order = order;
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockContractsService
-                .Setup(x => x.GetContract(order.Id))
-                .ReturnsAsync(contract);
+            mockContractsService.GetContract(order.Id).Returns(contract);
 
-            mockContractBillingService
-                .Setup(x => x.AddBespokeContractBillingItem(order.Id, contract.Id, model.SelectedOrderItemId, model.Name, model.PaymentTrigger, model.Quantity.GetValueOrDefault()))
-                .Returns(Task.CompletedTask);
+            mockContractBillingService.AddBespokeContractBillingItem(order.Id, contract.Id, model.SelectedOrderItemId, model.Name, model.PaymentTrigger, model.Quantity.GetValueOrDefault()).Returns(Task.CompletedTask);
 
             var result = await controller.AddMilestone(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockContractsService.VerifyAll();
-            mockContractBillingService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             actualResult.ActionName.Should().Be(nameof(ContractBillingController.Index));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditMilestone_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             ContractBillingItem item,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IContractBillingService> mockContractBillingService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IContractBillingService mockContractBillingService,
             ContractBillingController controller)
         {
             item.OrderItem = new OrderItem();
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockContractBillingService
-                .Setup(x => x.GetContractBillingItem(order.Id, item.Id))
-                .ReturnsAsync(item);
+            mockContractBillingService.GetContractBillingItem(order.Id, item.Id).Returns(item);
 
             var expected = new ContractBillingItemModel(item, order.CallOffId, internalOrgId, order.GetAssociatedServices());
 
             var result = await controller.EditMilestone(internalOrgId, order.CallOffId, item.Id);
-
-            mockOrderService.VerifyAll();
-            mockContractBillingService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().Be("ContractBillingItem");
@@ -284,33 +238,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditMilestone_InvalidOrder_ReturnsNotFoundResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             ContractBillingItemModel model,
             ContractBillingController controller)
         {
             order.OrderItems.Clear();
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.EditMilestone(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
 
             result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditMilestone_ModelError_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             ContractBillingItemModel model,
             ContractBillingController controller)
         {
@@ -320,15 +270,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             controller.ModelState.AddModelError("some-property", "some-error");
 
             var result = await controller.EditMilestone(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().Be("ContractBillingItem");
@@ -337,13 +283,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditMilestone_ReturnsExpectedResult(
             string internalOrgId,
             ContractBillingItemModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IContractBillingService> mockContractBillingService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IContractBillingService mockContractBillingService,
             ContractBillingController controller)
         {
             order.OrderItems.Add(new OrderItem()
@@ -352,40 +298,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockContractBillingService
-                .Setup(x => x.EditContractBillingItem(order.Id, model.ItemId, model.SelectedOrderItemId, model.Name, model.PaymentTrigger, model.Quantity.GetValueOrDefault()))
-                .Returns(Task.CompletedTask);
+            mockContractBillingService.EditContractBillingItem(order.Id, model.ItemId, model.SelectedOrderItemId, model.Name, model.PaymentTrigger, model.Quantity.GetValueOrDefault()).Returns(Task.CompletedTask);
 
             var result = await controller.EditMilestone(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockContractBillingService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             actualResult.ActionName.Should().Be(nameof(ContractBillingController.Index));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteContractBillingItem_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             ContractBillingItem item,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IContractBillingService> mockContractBillingService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IContractBillingService mockContractBillingService,
             ContractBillingController controller)
         {
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockContractBillingService
-                .Setup(x => x.GetContractBillingItem(order.Id, item.Id))
-                .ReturnsAsync(item);
+            mockContractBillingService.GetContractBillingItem(order.Id, item.Id).Returns(item);
 
             var result = await controller.DeleteContractBillingItem(internalOrgId, order.CallOffId, item.Id);
 
@@ -395,27 +330,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteContractBillingItem_ReturnsExpectedResult(
             string internalOrgId,
             DeleteContractBillingItemModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IContractBillingService> mockContractBillingService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IContractBillingService mockContractBillingService,
             ContractBillingController controller)
         {
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockContractBillingService
-                .Setup(x => x.DeleteContractBillingItem(order.Id, model.ItemId))
-                .Returns(Task.CompletedTask);
+            mockContractBillingService.DeleteContractBillingItem(order.Id, model.ItemId).Returns(Task.CompletedTask);
 
             var result = await controller.DeleteContractBillingItem(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockContractBillingService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             actualResult.ActionName.Should().Be(nameof(ContractBillingController.Index));

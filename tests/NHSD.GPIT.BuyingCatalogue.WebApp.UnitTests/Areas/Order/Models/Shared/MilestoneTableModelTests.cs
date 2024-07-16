@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Shared
     public static class MilestoneTableModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string title, ICollection<ImplementationPlanMilestone> milestones, bool isAction, CallOffId callOffId, string internalOrgId)
         {

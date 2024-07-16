@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(AdditionalServicesController).GetConstructors();
 
@@ -43,13 +43,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditAdditionalServices_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> services,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IAdditionalServicesService mockAdditionalServicesService,
             AdditionalServicesController controller)
         {
             var orderWrapper = new OrderWrapper(order);
@@ -58,18 +58,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var solutionId = order.OrderItems.First().CatalogueItemId;
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(orderWrapper);
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(orderWrapper);
 
-            mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionId(solutionId, true))
-                .ReturnsAsync(services);
+            mockAdditionalServicesService.GetAdditionalServicesBySolutionId(solutionId, true).Returns(services);
 
             var result = await controller.SelectAdditionalServices(internalOrgId, order.CallOffId);
-
-            mockOrderService.VerifyAll();
-            mockAdditionalServicesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -90,13 +83,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditAdditionalServices_NoChangesMade_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             SelectServicesModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             AdditionalServicesController controller)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
@@ -108,13 +101,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 model.Services[i].IsSelected = true;
             }
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.SelectAdditionalServices(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
 
@@ -128,8 +117,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(1)]
-        [CommonInlineAutoData(2)]
+        [MockInlineAutoData(1)]
+        [MockInlineAutoData(2)]
         public static async Task Post_EditAdditionalServices_ServicesAdded_ReturnsExpectedResult(
             int revision,
             string internalOrgId,
@@ -137,8 +126,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             SelectServicesModel model,
             EntityFramework.Ordering.Models.Order order,
             CatalogueItemId newServiceId,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOrderItemService> mockOrderItemService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOrderItemService mockOrderItemService,
             AdditionalServicesController controller)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, revision);
@@ -156,20 +145,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 IsSelected = true,
             });
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             IEnumerable<CatalogueItemId> newServiceIds = null;
 
             mockOrderItemService
-                .Setup(x => x.AddOrderItems(internalOrgId, callOffId, It.IsAny<IEnumerable<CatalogueItemId>>()))
-                .Callback<string, CallOffId, IEnumerable<CatalogueItemId>>((_, _, x) => newServiceIds = x);
+                .When(x => x.AddOrderItems(internalOrgId, callOffId, Arg.Any<IEnumerable<CatalogueItemId>>()))
+                .Do(x => newServiceIds = x.Arg<IEnumerable<CatalogueItemId>>());
 
             var result = await controller.SelectAdditionalServices(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockOrderItemService.VerifyAll();
 
             newServiceIds.Should().BeEquivalentTo(new[] { newServiceId });
 

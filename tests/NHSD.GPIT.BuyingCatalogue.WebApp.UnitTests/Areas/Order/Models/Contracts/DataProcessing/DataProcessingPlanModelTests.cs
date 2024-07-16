@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
     public static class DataProcessingPlanModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void CreateDataProcessingPlan(
             ContractFlags contract)
         {

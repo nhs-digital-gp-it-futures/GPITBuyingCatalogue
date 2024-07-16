@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
     public static class NewContactModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PersonalDetailsMissing_ThrowsValidationError(
             NewContactModel model,
             NewContactModelValidator systemUnderTest)
@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_FirstNameMissing_ThrowsValidationError(
             NewContactModel model,
             NewContactModelValidator systemUnderTest)
@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_LastNameMissing_ThrowsValidationError(
             NewContactModel model,
             NewContactModelValidator systemUnderTest)
@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ContactDetailsMissing_ThrowsValidationError(
             NewContactModel model,
             NewContactModelValidator systemUnderTest)
@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmailWrongFormat_ThrowsValidationError(
             string email,
             NewContactModel model,

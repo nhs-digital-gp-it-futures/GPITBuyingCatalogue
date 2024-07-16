@@ -24,7 +24,7 @@ public class DataProcessingControllerTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(DataProcessingPlanController).GetConstructors();
 
@@ -32,28 +32,21 @@ public class DataProcessingControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Get_ReturnsViewWithModel(
         string internalOrgId,
         CallOffId callOffId,
         int orderId,
         ContractFlags contract,
-        [Frozen] Mock<IOrderService> orderService,
-        [Frozen] Mock<IContractsService> contractsService,
+        [Frozen] IOrderService orderService,
+        [Frozen] IContractsService contractsService,
         DataProcessingPlanController controller)
     {
-        orderService
-            .Setup(x => x.GetOrderId(internalOrgId, callOffId))
-            .ReturnsAsync(orderId);
+        orderService.GetOrderId(internalOrgId, callOffId).Returns(orderId);
 
-        contractsService
-            .Setup(s => s.GetContractFlags(orderId))
-            .ReturnsAsync(contract);
+        contractsService.GetContractFlags(orderId).Returns(contract);
 
         var result = (await controller.Index(internalOrgId, callOffId)).As<ViewResult>();
-
-        orderService.VerifyAll();
-        contractsService.VerifyAll();
 
         var expected = new BespokeDataProcessingModel(internalOrgId, callOffId)
         {
@@ -66,30 +59,23 @@ public class DataProcessingControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Get_ExistingDataProcessing_ReturnsViewWithModel(
         string internalOrgId,
         CallOffId callOffId,
         int orderId,
         ContractFlags contract,
-        [Frozen] Mock<IOrderService> orderService,
-        [Frozen] Mock<IContractsService> contractsService,
+        [Frozen] IOrderService orderService,
+        [Frozen] IContractsService contractsService,
         DataProcessingPlanController controller)
     {
         contract.UseDefaultDataProcessing = false;
 
-        orderService
-            .Setup(x => x.GetOrderId(internalOrgId, callOffId))
-            .ReturnsAsync(orderId);
+        orderService.GetOrderId(internalOrgId, callOffId).Returns(orderId);
 
-        contractsService
-            .Setup(s => s.GetContractFlags(orderId))
-            .ReturnsAsync(contract);
+        contractsService.GetContractFlags(orderId).Returns(contract);
 
         var result = (await controller.Index(internalOrgId, callOffId)).As<ViewResult>();
-
-        orderService.VerifyAll();
-        contractsService.VerifyAll();
 
         var expected = new BespokeDataProcessingModel(internalOrgId, callOffId)
         {
@@ -102,7 +88,7 @@ public class DataProcessingControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Post_InvalidModel_ReturnsRedirect(
         string internalOrgId,
         CallOffId callOffId,
@@ -118,28 +104,18 @@ public class DataProcessingControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Post_DataProcessingSetAsSeen_SetsSeen(
         string internalOrgId,
         CallOffId callOffId,
         int orderId,
         BespokeDataProcessingModel model,
-        [Frozen] Mock<IOrderService> orderService,
-        [Frozen] Mock<IContractsService> contractsService,
+        [Frozen] IOrderService orderService,
         DataProcessingPlanController controller)
     {
-        orderService
-            .Setup(x => x.GetOrderId(internalOrgId, callOffId))
-            .ReturnsAsync(orderId);
-
-        contractsService
-            .Setup(x => x.UseDefaultDataProcessing(orderId, true))
-            .Verifiable();
+        orderService.GetOrderId(internalOrgId, callOffId).Returns(orderId);
 
         var result = (await controller.Index(internalOrgId, callOffId, model)).As<RedirectToActionResult>();
-
-        orderService.VerifyAll();
-        contractsService.VerifyAll();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(OrderController.Order));

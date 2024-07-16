@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Fund
     public static class FundingSourceModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SelectedFundingTypeNotSelected_SetsModelError(
             FundingSource model,
             FundingSourceModelValidator validator)
