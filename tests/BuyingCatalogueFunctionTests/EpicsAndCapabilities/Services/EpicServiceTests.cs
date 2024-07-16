@@ -11,6 +11,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
@@ -19,7 +20,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
     public static class EpicServiceTests
     {
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Read(EpicService service)
         {
             var stream = new MemoryStream(
@@ -54,7 +55,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task ProcessNull(EpicService service)
         {
             await service.Invoking(async s => await s.Process(null))
@@ -63,7 +64,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_New_Epic(
             Capability capability,
             Epic epic,
@@ -111,7 +112,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_Existing_Epic(
             Capability capability,
             Capability capabilityToChangeTo,
@@ -169,7 +170,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_Existing_Epic_Change_Level(
             Capability capability,
             Epic epic,
@@ -225,7 +226,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_Update_Existing_To_Not_Active(
             Epic epic,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -248,7 +249,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_Existing_SupplierDefined_Epic_Is_Left_Active_With_Links_To_Capabilities(
             Capability capability,
             Epic epic,

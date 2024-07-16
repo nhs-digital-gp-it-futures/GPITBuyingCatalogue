@@ -590,9 +590,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             AdditionalService additionalService,
             int cataloguePriceId,
+            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAdditionalServicesService additionalServicesService,
             AdditionalServiceListPriceController controller)
         {
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+
             additionalServicesService.GetAdditionalService(solution.CatalogueItemId, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
 
             var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, additionalService.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();

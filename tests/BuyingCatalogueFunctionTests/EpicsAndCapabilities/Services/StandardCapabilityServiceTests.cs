@@ -10,6 +10,7 @@ using BuyingCatalogueFunction.EpicsAndCapabilities.Services;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
@@ -18,7 +19,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
     public static class StandardCapabilityServiceTests
     {
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Read(StandardCapabilityService service)
         {
             var stream = new MemoryStream(
@@ -40,7 +41,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task ProcessNull(StandardCapabilityService service)
         {
             await service.Invoking(async s => await s.Process(null))
@@ -49,7 +50,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_New_StandardCapability(
             StandardCapability standardCapability,
             [Frozen] BuyingCatalogueDbContext dbContext,
@@ -71,7 +72,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_Existing_StandardCapability(
             StandardCapability standardCapability,
             StandardCapability existingStandardCapability,

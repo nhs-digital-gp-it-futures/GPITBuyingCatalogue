@@ -11,9 +11,9 @@ using FluentAssertions;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using Xunit;
 
@@ -22,7 +22,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
     public static class CapabilityServiceTests
     {
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Read(CapabilityService service)
         {
             var stream = new MemoryStream(
@@ -49,7 +49,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task ProcessNull(CapabilityService service)
         {
             await service.Invoking(async s => await s.Process(null))
@@ -58,7 +58,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_New_Capability_With_Existing_Category_Creates_Capability(
             Framework framework,
             CapabilityCategory category,
@@ -90,7 +90,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_New_Capability_With_New_Category_Creates_Capability(
             Framework framework,
             CapabilityCategory category,
@@ -121,7 +121,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_Existing_Capability_With_Existing_Categories_Updates_Capability(
             Framework framework,
             Framework frameworkToChangeTo,
@@ -159,7 +159,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_Existing_Capability_To_New_Category_Updates_Capability(
             Framework framework,
             Framework frameworkToChangeTo,
@@ -196,7 +196,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
         }
 
         [Theory]
-        [InMemoryDbAutoData]
+        [MockInMemoryDbAutoData]
         public static async Task Process_Existing_Capability_Expire(
             Framework framework,
             Capability capability,

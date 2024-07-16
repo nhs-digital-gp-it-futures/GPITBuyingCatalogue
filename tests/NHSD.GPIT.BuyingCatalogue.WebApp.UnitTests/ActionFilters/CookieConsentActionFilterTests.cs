@@ -120,7 +120,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             };
 
             var outString = string.Empty;
-            cookieCollection.TryGetValue(Arg.Any<string>(), out outString).Returns(true);
+            cookieCollection.TryGetValue(Arg.Any<string>(), out Arg.Any<string>()).Returns(x =>
+            {
+                x[1] = outString;
+                return true;
+            });
 
             httpRequestMock.Cookies.Returns(cookieCollection);
 
@@ -145,7 +149,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             cookieData.Analytics = null;
 
             var outString = JsonSerializer.Serialize(cookieData, (JsonSerializerOptions)null);
-            cookieCollection.TryGetValue(Arg.Any<string>(), out outString).Returns(true);
+            cookieCollection.TryGetValue(Arg.Any<string>(), out Arg.Any<string>()).Returns(x =>
+            {
+                x[1] = outString;
+                return true;
+            });
+
             httpRequestMock.Cookies.Returns(cookieCollection);
 
             await actionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
