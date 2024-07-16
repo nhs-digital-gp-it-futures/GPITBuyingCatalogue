@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Mana
     public static class DeleteFilterModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_InitializesProperties(string filterName, int filterId)
         {
             var model = new DeleteFilterModel(filterId, filterName);

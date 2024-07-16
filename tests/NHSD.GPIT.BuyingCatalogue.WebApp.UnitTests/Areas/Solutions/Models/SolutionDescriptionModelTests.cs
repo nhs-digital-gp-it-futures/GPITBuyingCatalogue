@@ -40,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FrameworkTitle_FrameworksMoreThanOne_ReturnsPlural(SolutionDescriptionModel model)
         {
             model.Frameworks.Count.Should().BeGreaterThan(1);
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FrameworkTitle_OneFramework_ReturnsSingle(
             EntityFramework.Catalogue.Models.Framework framework)
         {
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasDescription_ValidDescription_ReturnsTrue(SolutionDescriptionModel model)
         {
             model.Description.Should().NotBeNullOrWhiteSpace();
@@ -108,7 +108,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasSummary_ValidSummary_ReturnsTrue(SolutionDescriptionModel model)
         {
             model.Summary.Should().NotBeNullOrWhiteSpace();
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasAboutUrl_ValidUrl_ReturnsTrue(SolutionDescriptionModel model)
         {
             model.AboutUrl.Should().NotBeNullOrWhiteSpace();

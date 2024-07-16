@@ -11,13 +11,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Models
         [Fact]
         public static void Constructor_PropertiesCorrectlySet()
         {
-            var model = new Mock<YourAccountBaseModel>();
-            model.Object.ShowBackToTop.Should().BeFalse();
-            model.Object.ShowBreadcrumb.Should().BeFalse();
-            model.Object.ShowPagination.Should().BeFalse();
-            model.Object.ShowSideNavigation.Should().BeTrue();
-            model.Object.Sections.Any().Should().BeTrue();
-            model.Object.BreadcrumbItems.Any().Should().BeFalse();
+            var model = new YourAccountModelStub();
+            model.ShowBackToTop.Should().BeFalse();
+            model.ShowBreadcrumb.Should().BeFalse();
+            model.ShowPagination.Should().BeFalse();
+            model.ShowSideNavigation.Should().BeTrue();
+            model.Sections.Any().Should().BeTrue();
+            model.BreadcrumbItems.Any().Should().BeFalse();
+        }
+
+        private sealed class YourAccountModelStub : YourAccountBaseModel
+        {
+            public YourAccountModelStub()
+                : base()
+            {
+            }
+
+            public override int Index => 0;
         }
     }
 }

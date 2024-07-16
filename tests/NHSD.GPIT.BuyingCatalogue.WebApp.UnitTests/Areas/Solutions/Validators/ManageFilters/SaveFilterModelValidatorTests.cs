@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(SaveFilterModelValidator).GetConstructors();
 
@@ -25,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_NameNullOrEmpty_SetsModelError(
             string name,
             SaveFilterModel model,
@@ -41,8 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_DescriptionNullOrEmpty_SetsModelError(
             string description,
             SaveFilterModel model,
@@ -57,15 +57,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DuplicateName_SetsModelError(
-            [Frozen] Mock<IManageFiltersService> mockManageFiltersService,
+            [Frozen] IManageFiltersService mockManageFiltersService,
             SaveFilterModel model,
             SaveFilterModelValidator validator)
         {
-            mockManageFiltersService
-                .Setup(x => x.FilterExists(model.Name, model.OrganisationId))
-                .ReturnsAsync(true);
+            mockManageFiltersService.FilterExists(model.Name, model.OrganisationId).Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -74,15 +72,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelError(
-            [Frozen] Mock<IManageFiltersService> mockManageFiltersService,
+            [Frozen] IManageFiltersService mockManageFiltersService,
             SaveFilterModel model,
             SaveFilterModelValidator validator)
         {
-            mockManageFiltersService
-                .Setup(x => x.FilterExists(model.Name, model.OrganisationId))
-                .ReturnsAsync(false);
+            mockManageFiltersService.FilterExists(model.Name, model.OrganisationId).Returns(false);
 
             var result = validator.TestValidate(model);
 

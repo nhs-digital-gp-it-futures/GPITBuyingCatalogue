@@ -11,9 +11,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
         private const string EmailAddress = "a@b.com";
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_AllPropertiesEmpty_ThrowsValidationError(
             string inputValue,
             RegistrationDetailsModel model,
@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmailAddressWrongFormat_ThrowsValidationError(
             RegistrationDetailsModel model,
             RegistrationDetailsModelValidator validator)
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PrivacyPolicyNotChecked_ThrowsValidationError(
             RegistrationDetailsModel model,
             RegistrationDetailsModelValidator validator)
@@ -62,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EverythingOk_NoErrors(
             RegistrationDetailsModel model,
             RegistrationDetailsModelValidator validator)

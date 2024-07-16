@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
     public static class FilterEpicsModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_PropertiesAreSetCorrectly(
             List<Capability> capabilities,
             Epic epic)
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_WithSelectedIds_PropertiesAreSetCorrectly(
             List<Capability> capabilities,
             Epic epic)
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Items_ReturnsExpectedResult(
             List<Capability> capabilities,
             List<Epic> epics)

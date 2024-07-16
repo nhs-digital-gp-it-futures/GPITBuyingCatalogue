@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
     public static class FilterCapabilitiesModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_IsFilter_PropertiesAreSetCorrectly(
             List<Capability> capabilities)
         {
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_NotFilter_PropertiesAreSetCorrectly(
             List<Capability> capabilities)
         {
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_WithSelectedIds_PropertiesAreSetCorrectly(
             List<Capability> capabilities)
         {
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Capabilities_ReturnsExpectedResult(
             List<Capability> capabilities)
         {
