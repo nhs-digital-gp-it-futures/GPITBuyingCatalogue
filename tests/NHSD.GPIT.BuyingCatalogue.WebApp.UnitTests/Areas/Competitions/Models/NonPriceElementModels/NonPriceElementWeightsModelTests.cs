@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.N
 public static class NonPriceElementWeightsModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Competition competition,
         NonPriceWeights nonPriceWeights)
@@ -45,8 +45,8 @@ public static class NonPriceElementWeightsModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(true, "Continue")]
-    [CommonInlineAutoData(false, "Save and continue")]
+    [MockInlineAutoData(true, "Continue")]
+    [MockInlineAutoData(false, "Save and continue")]
     public static void ContinueButton_ReviewedCriteria_ExpectedContent(
         bool hasReviewedCriteria,
         string expectedContent,
@@ -60,8 +60,8 @@ public static class NonPriceElementWeightsModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(true, "Non-price weightings")]
-    [CommonInlineAutoData(false, "How would you like to weight your non-price elements for this competition?")]
+    [MockInlineAutoData(true, "Non-price weightings")]
+    [MockInlineAutoData(false, "How would you like to weight your non-price elements for this competition?")]
     public static void Title_ReviewedCriteria_ExpectedContent(
         bool hasReviewedCriteria,
         string expectedContent,
@@ -75,8 +75,8 @@ public static class NonPriceElementWeightsModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(true, "These are the non-price elements weightings you applied for this competition.")]
-    [CommonInlineAutoData(false, "Give your chosen non-price elements weightings based on how important they are to you.")]
+    [MockInlineAutoData(true, "These are the non-price elements weightings you applied for this competition.")]
+    [MockInlineAutoData(false, "Give your chosen non-price elements weightings based on how important they are to you.")]
     public static void Advice_ReviewedCriteria_ExpectedContent(
         bool hasReviewedCriteria,
         string expectedContent,

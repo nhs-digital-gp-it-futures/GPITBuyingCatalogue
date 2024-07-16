@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
 public static class SolutionScoreModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NullScore_SetsModelError(
         SolutionScoreModel model,
         SolutionScoreModelValidator validator)
@@ -23,7 +23,7 @@ public static class SolutionScoreModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NullJustification_SetsModelError(
         SolutionScoreModel model,
         SolutionScoreModelValidator validator)
@@ -37,8 +37,8 @@ public static class SolutionScoreModelValidatorTests
     }
 
     [Theory]
-    [CommonInlineAutoData(0)]
-    [CommonInlineAutoData(6)]
+    [MockInlineAutoData(0)]
+    [MockInlineAutoData(6)]
     public static void Validate_ScoreOutOfRange_SetsModelError(
         int score,
         SolutionScoreModel model,
@@ -53,7 +53,7 @@ public static class SolutionScoreModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NullScore_NoModelErrors(
         SolutionScoreModel model,
         SolutionScoreModelValidator validator)

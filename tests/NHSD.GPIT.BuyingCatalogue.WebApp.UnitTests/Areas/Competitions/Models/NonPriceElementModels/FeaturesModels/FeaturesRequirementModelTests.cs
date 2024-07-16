@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.N
 public static class FeaturesRequirementModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Competition competition)
     {
@@ -19,7 +19,7 @@ public static class FeaturesRequirementModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithFeaturesCriteria_SetsPropertiesAsExpected(
         Competition competition,
         FeaturesCriteria featuresCriteria)

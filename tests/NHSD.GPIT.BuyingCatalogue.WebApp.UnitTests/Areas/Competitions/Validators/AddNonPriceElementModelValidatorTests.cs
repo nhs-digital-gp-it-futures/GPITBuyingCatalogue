@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
 public static class AddNonPriceElementModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoSelectedNonPriceElement_SetsModelError(
         AddNonPriceElementModel model,
         AddNonPriceElementModelValidator validator)
@@ -32,7 +32,7 @@ public static class AddNonPriceElementModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_Valid_NoModelErrors(
         AddNonPriceElementModel model,
         AddNonPriceElementModelValidator validator)

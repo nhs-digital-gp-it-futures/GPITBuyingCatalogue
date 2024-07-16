@@ -33,7 +33,7 @@ public static class CompetitionSelectSolutionsControllerTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(CompetitionSelectSolutionsController).GetConstructors();
 

@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.R
 public static class ViewResultsModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Organisation organisation,
         NonPriceWeights nonPriceWeights,
@@ -50,7 +50,7 @@ public static class ViewResultsModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsCompetitionSolutionResults(
         Organisation organisation,
         Weightings weightings,
@@ -103,7 +103,7 @@ public static class ViewResultsModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsAdditionalPropertiesAsExpected(
         Organisation organisation,
         Competition competition,

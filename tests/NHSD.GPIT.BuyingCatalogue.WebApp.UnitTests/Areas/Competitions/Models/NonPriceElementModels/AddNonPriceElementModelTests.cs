@@ -81,7 +81,7 @@ public static class AddNonPriceElementModelTests
     };
 
     [Theory]
-    [CommonMemberAutoData(nameof(AddNonPriceElementsTestData))]
+    [MockMemberAutoData(nameof(AddNonPriceElementsTestData))]
     public static void Construct_SetsPropertiesAsExpected(
         NonPriceElements elements,
         IEnumerable<SelectOption<NonPriceElement>> expected,

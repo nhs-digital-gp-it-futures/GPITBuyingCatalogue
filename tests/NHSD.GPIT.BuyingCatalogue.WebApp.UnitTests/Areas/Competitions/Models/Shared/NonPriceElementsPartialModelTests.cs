@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.S
 public static class NonPriceElementsPartialModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         string internalOrgId,
         int competitionId,
@@ -30,7 +30,7 @@ public static class NonPriceElementsPartialModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_Alternate_SetsPropertiesAsExpected(
         string internalOrgId,
         int competitionId,

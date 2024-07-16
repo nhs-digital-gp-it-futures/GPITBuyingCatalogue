@@ -864,7 +864,7 @@ public static class CompetitionNonPriceElementsControllerTests
     }
 
     [Theory]
-    [CommonMemberAutoData(nameof(GetRedirectNonPriceElementTestData))]
+    [MockMemberAutoData(nameof(GetRedirectNonPriceElementTestData))]
     public static void GetRedirect_WithSelectedNonPriceElements_RedirectsToNonPriceElement(
         NonPriceElement[] nonPriceElements,
         NonPriceElement expectedNonPriceElementAction,

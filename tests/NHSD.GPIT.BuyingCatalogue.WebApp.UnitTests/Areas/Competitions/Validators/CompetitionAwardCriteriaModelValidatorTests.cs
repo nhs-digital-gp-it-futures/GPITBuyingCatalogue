@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
 public static class CompetitionAwardCriteriaModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoCriteriaSelection_SetsModelError(
         CompetitionAwardCriteriaModel model,
         CompetitionAwardCriteriaModelValidator validator)
@@ -23,7 +23,7 @@ public static class CompetitionAwardCriteriaModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_Valid_NoModelErrors(
         CompetitionAwardCriteriaModel model,
         CompetitionAwardCriteriaModelValidator validator)

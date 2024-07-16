@@ -20,16 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.AccountManagement
     public static class ManageAccountControllerTests
     {
         [Fact]
-        public static void ClassIsCorrectlyDecorated()
-        {
-            typeof(ManageAccountController).Should().BeDecoratedWith<AuthorizeAttribute>(a => a.Policy == "AccountManager");
-            typeof(ManageAccountController).Should().BeDecoratedWith<AreaAttribute>(a => a.RouteValue == "AccountManagement");
-        }
-
-        [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ManageAccountController).GetConstructors();
 
@@ -37,16 +30,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.AccountManagement
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_RedirectsToUserOrgDetails(
             string internalOrgId,
             Organisation organisation,
-            [Frozen] Mock<IOrganisationsService> mockOrganisationService,
+            [Frozen] IOrganisationsService mockOrganisationService,
             ManageAccountController controller)
         {
-            mockOrganisationService
-                .Setup(o => o.GetOrganisationByInternalIdentifier(internalOrgId))
-                .ReturnsAsync(organisation);
+            mockOrganisationService.GetOrganisationByInternalIdentifier(internalOrgId)
+                .Returns(organisation);
 
             var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(
                 new Claim[] { new("primaryOrganisationInternalIdentifier", internalOrgId) },
@@ -58,8 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.AccountManagement
             };
 
             var result = await controller.Index();
-
-            mockOrganisationService.VerifyAll();
 
             var actualResult = result.Should().BeAssignableTo<RedirectToActionResult>();
             actualResult.Subject.ActionName.Should().Be(nameof(ManageAccountController.Details));

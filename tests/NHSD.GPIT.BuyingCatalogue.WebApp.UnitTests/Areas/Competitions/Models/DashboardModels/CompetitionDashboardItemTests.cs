@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.D
 public static class CompetitionDashboardItemTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsValues(
         Competition competition)
     {
@@ -25,7 +25,7 @@ public static class CompetitionDashboardItemTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_NullCompletedDate_SetsProgressStatus(
         Competition competition)
     {
@@ -37,7 +37,7 @@ public static class CompetitionDashboardItemTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_ValidCompletedDate_SetsProgressStatus(
         Competition competition)
     {
@@ -49,7 +49,7 @@ public static class CompetitionDashboardItemTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SingleItem_IsDirectAward(
         Competition competition,
         CompetitionSolution competitionSolution)
@@ -62,7 +62,7 @@ public static class CompetitionDashboardItemTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_MultipleItems_IsNotDirectAward(
         Competition competition,
         Collection<CompetitionSolution> competitionSolutions)

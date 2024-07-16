@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.R
 public static class CompetitionSolutionResultTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Organisation organisation,
         Supplier supplier,
@@ -43,7 +43,7 @@ public static class CompetitionSolutionResultTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPriceScoreWeighting(
         Organisation organisation,
         Supplier supplier,
@@ -74,7 +74,7 @@ public static class CompetitionSolutionResultTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsNonPriceElementWeights(
         Organisation organisation,
         Supplier supplier,

@@ -33,7 +33,7 @@ public static class CompetitionResultsControllerTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(CompetitionResultsController).GetConstructors();
 
@@ -41,15 +41,14 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Confirm_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsController controller)
     {
-        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionForResults(internalOrgId, competition.Id).Returns(competition);
 
         var expectedModel = new ConfirmResultsModel(competition) { InternalOrgId = internalOrgId };
 
@@ -60,7 +59,7 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Confirm_Post_Redirects(
         string internalOrgId,
         int competitionId,
@@ -74,26 +73,23 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task ViewResults_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
         FilterDetailsModel filterDetailsModel,
         ICollection<CompetitionSolution> nonShortlistedSolutions,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IManageFiltersService> filtersService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IManageFiltersService filtersService,
         CompetitionResultsController controller)
     {
         competition.Organisation = organisation;
 
-        filtersService.Setup(x => x.GetFilterDetails(It.IsAny<int>(), competition.FilterId))
-            .ReturnsAsync(filterDetailsModel);
+        filtersService.GetFilterDetails(Arg.Any<int>(), competition.FilterId).Returns(filterDetailsModel);
 
-        competitionsService.Setup(x => x.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id).Returns(competition);
 
-        competitionsService.Setup(x => x.GetNonShortlistedSolutions(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(nonShortlistedSolutions);
+        competitionsService.GetNonShortlistedSolutions(organisation.InternalIdentifier, competition.Id).Returns(nonShortlistedSolutions);
 
         var expectedModel = new ViewResultsModel(competition, filterDetailsModel, nonShortlistedSolutions);
 
@@ -105,25 +101,22 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task DirectAward_OneResult_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
         FilterDetailsModel filterDetailsModel,
         ICollection<CompetitionSolution> nonShortlistedSolutions,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IManageFiltersService> filtersService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IManageFiltersService filtersService,
         CompetitionResultsController controller,
         Organisation organisation)
     {
-        filtersService.Setup(x => x.GetFilterDetails(It.IsAny<int>(), competition.FilterId))
-            .ReturnsAsync(filterDetailsModel);
+        filtersService.GetFilterDetails(Arg.Any<int>(), competition.FilterId).Returns(filterDetailsModel);
 
-        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionForResults(internalOrgId, competition.Id).Returns(competition);
 
-        competitionsService.Setup(x => x.GetNonShortlistedSolutions(internalOrgId, competition.Id))
-            .ReturnsAsync(nonShortlistedSolutions);
+        competitionsService.GetNonShortlistedSolutions(internalOrgId, competition.Id).Returns(nonShortlistedSolutions);
 
         competition.Organisation = organisation;
 
@@ -137,15 +130,14 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task DownloadResults_NullCompetition_ReturnsNotFoundResult(
         string internalOrgId,
         int competitionId,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsController controller)
     {
-        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competitionId))
-            .ReturnsAsync((Competition)null);
+        competitionsService.GetCompetition(internalOrgId, competitionId).Returns((Competition)null);
 
         var result = (await controller.DownloadResults(internalOrgId, competitionId)).As<NotFoundResult>();
 
@@ -153,20 +145,17 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task DownloadResults_ValidCompetition_ReturnsFileResult(
         string internalOrgId,
         Competition competition,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IPdfService> pdfService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IPdfService pdfService,
         CompetitionResultsController controller)
     {
-        competitionsService.Setup(x => x.GetCompetition(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetition(internalOrgId, competition.Id).Returns(competition);
 
-        pdfService
-            .Setup(s => s.BaseUri())
-            .Returns(new Uri("http://localhost"));
+        pdfService.BaseUri().Returns(new Uri("http://localhost"));
 
         var result = (await controller.DownloadResults(internalOrgId, competition.Id)).As<FileResult>();
 
@@ -175,15 +164,14 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task DownloadConfirmResults_NullCompetition_ReturnsNotFoundResult(
         string internalOrgId,
         int competitionId,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsController controller)
     {
-        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competitionId))
-            .ReturnsAsync((Competition)null);
+        competitionsService.GetCompetitionForResults(internalOrgId, competitionId).Returns((Competition)null);
 
         var result = (await controller.DownloadConfirmResults(internalOrgId, competitionId)).As<NotFoundResult>();
 
@@ -191,20 +179,17 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task DownloadConfirmResults_ValidCompetition_ReturnsFileResult(
         string internalOrgId,
         Competition competition,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IPdfService> pdfService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IPdfService pdfService,
         CompetitionResultsController controller)
     {
-        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionForResults(internalOrgId, competition.Id).Returns(competition);
 
-        pdfService
-            .Setup(s => s.BaseUri())
-            .Returns(new Uri("http://localhost"));
+        pdfService.BaseUri().Returns(new Uri("http://localhost"));
 
         var result = (await controller.DownloadConfirmResults(internalOrgId, competition.Id)).As<FileResult>();
 
@@ -213,15 +198,14 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OrderingInformation_NoWinningSolution_Redirects(
         string internalOrgId,
         Competition competition,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsController controller)
     {
-        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionForResults(internalOrgId, competition.Id).Returns(competition);
 
         var result = (await controller.OrderingInformation(internalOrgId, competition.Id)).As<RedirectToActionResult>();
 
@@ -230,16 +214,15 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OrderingInformation_InvalidSolutionId_Redirects(
         string internalOrgId,
         Competition competition,
         CatalogueItemId solutionId,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsController controller)
     {
-        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionForResults(internalOrgId, competition.Id).Returns(competition);
 
         var result = (await controller.OrderingInformation(internalOrgId, competition.Id, solutionId)).As<RedirectToActionResult>();
 
@@ -248,14 +231,14 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OrderingInformation_SetsCorrectBacklink(
         Organisation organisation,
         Competition competition,
         CompetitionSolution competitionSolution,
         Solution solution,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IUrlHelper> urlHelper,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IUrlHelper urlHelper,
         CompetitionResultsController controller)
     {
         competitionSolution.IsWinningSolution = true;
@@ -265,25 +248,23 @@ public static class CompetitionResultsControllerTests
         competition.Organisation = organisation;
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id).Returns(competition);
 
         _ = await controller.OrderingInformation(
             organisation.InternalIdentifier,
             competition.Id);
 
-        urlHelper.Verify(
-            x => x.Action(It.Is<UrlActionContext>(y => y.Action == nameof(controller.ViewResults))));
+        urlHelper.Received().Action(Arg.Is<UrlActionContext>(y => y.Action == nameof(controller.ViewResults)));
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OrderingInformation_Valid_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
         CompetitionSolution competitionSolution,
         Solution solution,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsController controller)
     {
         competitionSolution.IsWinningSolution = true;
@@ -293,8 +274,7 @@ public static class CompetitionResultsControllerTests
         competition.Organisation = organisation;
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
-        competitionsService.Setup(x => x.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id).Returns(competition);
 
         var expectedModel = new OrderingInformationModel(competition, competitionSolution);
 
@@ -307,7 +287,7 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Post_OrderingInformation_Redirects(
         string internalOrgId,
         int competitionId,
@@ -324,18 +304,17 @@ public static class CompetitionResultsControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task RecipientsCsv_ReturnsFileResult(
         string internalOrgId,
         Competition competition,
         List<OdsOrganisation> competitionRecipients,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsController controller)
     {
         competition.Recipients = competitionRecipients;
 
-        competitionsService.Setup(x => x.GetCompetitionWithRecipients(internalOrgId, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionWithRecipients(internalOrgId, competition.Id).Returns(competition);
 
         var result = (await controller.RecipientsCsv(internalOrgId, competition.Id)).As<FileResult>();
 

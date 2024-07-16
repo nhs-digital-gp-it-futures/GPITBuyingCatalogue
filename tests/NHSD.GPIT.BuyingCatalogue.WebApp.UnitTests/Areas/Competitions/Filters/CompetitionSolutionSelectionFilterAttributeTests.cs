@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Filters;
 public static class CompetitionSolutionSelectionFilterAttributeTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_NoCompetitionId_Returns(
         string organisationId,
         ActionExecutingContext context,
@@ -34,7 +34,7 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_NoOrganisationId_Returns(
         int competitionId,
         ActionExecutingContext context,
@@ -50,7 +50,7 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_InvalidCompetitionIdFormat_Returns(
         string organisationId,
         string competitionId,
@@ -68,27 +68,26 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_ShortlistAccepted_SetsResult(
         Organisation organisation,
         Competition competition,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionSolutionSelectionFilterAttribute filter)
     {
         competition.Organisation = organisation;
         competition.Completed = null;
         competition.ShortlistAccepted = DateTime.UtcNow;
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
 
         context.ActionArguments.Add(ParameterKeyConstants.InternalOrgIdKey, organisation.InternalIdentifier);
         context.ActionArguments.Add(ParameterKeyConstants.CompetitionIdKey, competition.Id.ToString());
 
         context.HttpContext.RequestServices = new ServiceCollection()
-            .AddSingleton(competitionsService.Object)
+            .AddSingleton(competitionsService)
             .BuildServiceProvider();
 
         await filter.OnActionExecutionAsync(context, next);
@@ -97,27 +96,26 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_CompetitionCompleted_SetsResult(
         Organisation organisation,
         Competition competition,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionSolutionSelectionFilterAttribute filter)
     {
         competition.Organisation = organisation;
         competition.Completed = DateTime.UtcNow;
         competition.ShortlistAccepted = null;
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
 
         context.ActionArguments.Add(ParameterKeyConstants.InternalOrgIdKey, organisation.InternalIdentifier);
         context.ActionArguments.Add(ParameterKeyConstants.CompetitionIdKey, competition.Id.ToString());
 
         context.HttpContext.RequestServices = new ServiceCollection()
-            .AddSingleton(competitionsService.Object)
+            .AddSingleton(competitionsService)
             .BuildServiceProvider();
 
         await filter.OnActionExecutionAsync(context, next);
@@ -126,25 +124,24 @@ public static class CompetitionSolutionSelectionFilterAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_CompetitionInProgress_Returns(
         Organisation organisation,
         Competition competition,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionSolutionSelectionFilterAttribute filter)
     {
         competition.Completed = null;
         competition.ShortlistAccepted = null;
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
 
         context.ActionArguments.Add(ParameterKeyConstants.InternalOrgIdKey, organisation.InternalIdentifier);
         context.ActionArguments.Add(ParameterKeyConstants.CompetitionIdKey, competition.Id.ToString());
 
         context.HttpContext.RequestServices = new ServiceCollection()
-            .AddSingleton(competitionsService.Object)
+            .AddSingleton(competitionsService)
             .BuildServiceProvider();
 
         await filter.OnActionExecutionAsync(context, next);

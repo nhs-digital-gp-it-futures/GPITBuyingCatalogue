@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.T
 public static class CompetitionReviewCriteriaModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Organisation organisation,
         Competition competition,
@@ -40,8 +40,8 @@ public static class CompetitionReviewCriteriaModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(true, "Continue")]
-    [CommonInlineAutoData(false, "Confirm competition criteria")]
+    [MockInlineAutoData(true, "Continue")]
+    [MockInlineAutoData(false, "Confirm competition criteria")]
     public static void ContinueButton_ReviewedCriteria_ExpectedContent(
         bool hasReviewedCriteria,
         string expectedContent,

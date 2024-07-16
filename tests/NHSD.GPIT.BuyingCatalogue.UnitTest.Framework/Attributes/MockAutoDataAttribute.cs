@@ -12,7 +12,7 @@ public class MockInlineAutoDataAttribute(params object[] arguments)
     : InlineAutoDataAttribute(new MockAutoDataAttribute(), arguments);
 
 public class MockMemberAutoDataAttribute(string memberName, params object[] parameters)
-    : MemberAutoDataAttribute(memberName, parameters);
+    : MemberAutoDataAttribute(memberName, parameters, FixtureFactoryV2.Create);
 
 public class MockInMemoryDbAutoDataAttribute() : AutoDataAttribute(
     () => FixtureFactoryV2.Create(

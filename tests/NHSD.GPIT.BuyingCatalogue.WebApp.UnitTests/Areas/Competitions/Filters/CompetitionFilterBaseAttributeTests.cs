@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Filters;
 public static class CompetitionFilterBaseAttributeTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_NoCompetitionId_Returns(
         string organisationId,
         ActionExecutingContext context,
@@ -26,7 +26,7 @@ public static class CompetitionFilterBaseAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_NoOrganisationId_Returns(
         int competitionId,
         ActionExecutingContext context,
@@ -42,7 +42,7 @@ public static class CompetitionFilterBaseAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_InvalidCompetitionIdFormat_Returns(
         string organisationId,
         string competitionId,

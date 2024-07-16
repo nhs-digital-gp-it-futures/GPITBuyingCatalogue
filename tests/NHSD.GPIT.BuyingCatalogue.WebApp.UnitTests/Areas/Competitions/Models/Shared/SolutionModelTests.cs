@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.S
 public static class SolutionModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsProperties(
         Solution solution,
         Supplier supplier,
@@ -41,7 +41,7 @@ public static class SolutionModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetAdditionalServicesList_ReturnsCommaSeparatedList(
         List<string> requiredServices,
         SolutionModel model)

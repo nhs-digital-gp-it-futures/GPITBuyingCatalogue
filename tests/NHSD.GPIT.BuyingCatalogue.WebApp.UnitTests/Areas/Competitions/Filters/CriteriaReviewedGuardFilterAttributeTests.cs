@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Filters;
 public static class CriteriaReviewedGuardFilterAttributeTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_NoCompetitionId_Returns(
         string organisationId,
         ActionExecutingContext context,
@@ -35,7 +35,7 @@ public static class CriteriaReviewedGuardFilterAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_NoOrganisationId_Returns(
         int competitionId,
         ActionExecutingContext context,
@@ -51,7 +51,7 @@ public static class CriteriaReviewedGuardFilterAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_InvalidCompetitionIdFormat_Returns(
         string organisationId,
         string competitionId,
@@ -69,26 +69,25 @@ public static class CriteriaReviewedGuardFilterAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_CompetitionCriteriaReviewed_SetsResult(
         Organisation organisation,
         Competition competition,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CriteriaReviewedGuardFilterAttribute filter)
     {
         competition.Organisation = organisation;
         competition.HasReviewedCriteria = true;
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
 
         context.ActionArguments.Add(ParameterKeyConstants.InternalOrgIdKey, organisation.InternalIdentifier);
         context.ActionArguments.Add(ParameterKeyConstants.CompetitionIdKey, competition.Id.ToString());
 
         context.HttpContext.RequestServices = new ServiceCollection()
-            .AddSingleton(competitionsService.Object)
+            .AddSingleton(competitionsService)
             .BuildServiceProvider();
 
         await filter.OnActionExecutionAsync(context, next);
@@ -101,25 +100,24 @@ public static class CriteriaReviewedGuardFilterAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_CompetitionCriteriaNotReviewed_Returns(
         Organisation organisation,
         Competition competition,
         ActionExecutingContext context,
         ActionExecutionDelegate next,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CriteriaReviewedGuardFilterAttribute filter)
     {
         competition.HasReviewedCriteria = false;
 
-        competitionsService.Setup(x => x.GetCompetition(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
 
         context.ActionArguments.Add(ParameterKeyConstants.InternalOrgIdKey, organisation.InternalIdentifier);
         context.ActionArguments.Add(ParameterKeyConstants.CompetitionIdKey, competition.Id.ToString());
 
         context.HttpContext.RequestServices = new ServiceCollection()
-            .AddSingleton(competitionsService.Object)
+            .AddSingleton(competitionsService)
             .BuildServiceProvider();
 
         await filter.OnActionExecutionAsync(context, next);

@@ -11,7 +11,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     private const int NumberNotDivisibleByFive = 3;
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_HasImplementationWithNullImplementationScore_SetsModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -26,7 +26,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoImplementationWithNullImplementationScore_NoModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -40,7 +40,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_HasImplementationWithInvalidImplementationScore_SetsModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -55,7 +55,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoImplementationWithInvalidImplementationScore_NoModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -69,7 +69,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_HasInteroperabilityWithNullInteroperabilityScore_SetsModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -84,7 +84,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoInteroperabilityWithNullInteroperabilityScore_NoModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -98,7 +98,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_HasInteroperabilityWithInvalidInteroperabilityScore_SetsModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -113,7 +113,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoInteroperabilityWithInvalidInteroperabilityScore_NoModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -127,7 +127,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_HasServiceLevelWithNullServiceLevelScore_SetsModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -142,7 +142,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoServiceLevelWithNullServiceLevelScore_NoModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -156,7 +156,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_HasServiceLevelWithInvalidServiceLevelScore_SetsModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -171,7 +171,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoServiceLevelWithInvalidServiceLevelScore_NoModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -185,7 +185,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_HasFeaturesWithNullFeaturesScore_SetsModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -200,7 +200,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoFeaturesWithNullFeaturesScore_NoModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -214,7 +214,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_HasFeaturesWithInvalidFeaturesScore_SetsModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -229,7 +229,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoFeaturesWithInvalidFeaturesScore_NoModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -243,7 +243,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_TotalNotEqualToHundred_SetsModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)
@@ -262,7 +262,7 @@ public static class NonPriceElementWeightsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_TotalsEquateToHundred_NoModelError(
         NonPriceElementWeightsModel model,
         NonPriceElementWeightsModelValidator validator)

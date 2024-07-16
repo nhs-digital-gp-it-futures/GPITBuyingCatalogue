@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
 public static class SaveCompetitionModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoName_SetsModelError(
         SaveCompetitionModel model,
         SaveCompetitionModelValidator validator)
@@ -26,15 +26,13 @@ public static class SaveCompetitionModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_DuplicateName_SetsModelError(
         SaveCompetitionModel model,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         SaveCompetitionModelValidator validator)
     {
-        competitionsService
-            .Setup(x => x.Exists(It.IsAny<string>(), model.Name))
-            .ReturnsAsync(true);
+        competitionsService.Exists(Arg.Any<string>(), model.Name).Returns(true);
 
         var result = validator.TestValidate(model);
 
@@ -43,7 +41,7 @@ public static class SaveCompetitionModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoDescription_SetsModelError(
         SaveCompetitionModel model,
         SaveCompetitionModelValidator validator)
@@ -57,15 +55,13 @@ public static class SaveCompetitionModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_Valid_NoModelErrors(
         SaveCompetitionModel model,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         SaveCompetitionModelValidator validator)
     {
-        competitionsService
-            .Setup(x => x.Exists(It.IsAny<string>(), model.Name))
-            .ReturnsAsync(false);
+        competitionsService.Exists(Arg.Any<string>(), model.Name).Returns(false);
 
         var result = validator.TestValidate(model);
 

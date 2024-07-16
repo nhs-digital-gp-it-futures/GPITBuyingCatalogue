@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.P
 public static class SolutionPriceModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Competition competition,
         Solution solution,
@@ -29,7 +29,7 @@ public static class SolutionPriceModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_PriceProgressCompleted_SetsPrice(
         Competition competition,
         Solution solution,

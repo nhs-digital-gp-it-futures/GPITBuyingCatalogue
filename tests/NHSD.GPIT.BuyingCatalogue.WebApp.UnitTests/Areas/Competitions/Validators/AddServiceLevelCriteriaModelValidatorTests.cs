@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
 public static class AddServiceLevelCriteriaModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoSelectedApplicableDays_SetsModelError(
         AddServiceLevelCriteriaModel model,
         AddServiceLevelCriteriaModelValidator validator)
@@ -30,7 +30,7 @@ public static class AddServiceLevelCriteriaModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NullTimeFrom_SetsModelError(
         AddServiceLevelCriteriaModel model,
         AddServiceLevelCriteriaModelValidator validator)
@@ -44,7 +44,7 @@ public static class AddServiceLevelCriteriaModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NullBankHolidaysSelection_SetsModelError(
         AddServiceLevelCriteriaModel model,
         AddServiceLevelCriteriaModelValidator validator)
@@ -58,7 +58,7 @@ public static class AddServiceLevelCriteriaModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NullTimeUntil_SetsModelError(
         AddServiceLevelCriteriaModel model,
         AddServiceLevelCriteriaModelValidator validator)
@@ -73,7 +73,7 @@ public static class AddServiceLevelCriteriaModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_Valid_NoModelError(
         List<Iso8601DayOfWeek> applicableDays,
         AddServiceLevelCriteriaModel model,
