@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using FluentAssertions;
 using MoreLinq;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.DeleteOrder;
 using Xunit;
 

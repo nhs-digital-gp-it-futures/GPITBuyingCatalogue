@@ -1,6 +1,5 @@
 ﻿using System;
 using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.DeleteOrder;
 using Xunit;

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using FluentAssertions;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using Xunit;
 

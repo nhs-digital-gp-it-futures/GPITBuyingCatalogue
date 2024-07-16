@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.Http;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
