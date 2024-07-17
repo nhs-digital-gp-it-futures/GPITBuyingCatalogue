@@ -37,17 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             executingContext.HttpContext.User = new ClaimsPrincipal(
                 new ClaimsIdentity());
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
-
-            called.Should().BeTrue();
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
+            nextWasCalled.Should().BeTrue();
         }
 
         [Theory]
@@ -66,17 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             executingContext.HttpContext.User = new ClaimsPrincipal(
                 new ClaimsIdentity(claims, "mock"));
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
-
-            called.Should().BeTrue();
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
+            nextWasCalled.Should().BeTrue();
         }
 
         [Theory]
@@ -95,17 +79,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             executingContext.HttpContext.User = new ClaimsPrincipal(
                 new ClaimsIdentity(claims, "mock"));
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
-
-            called.Should().BeTrue();
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
+            nextWasCalled.Should().BeTrue();
         }
 
         [Theory]
@@ -134,17 +110,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var filter = new TermsOfUseActionFilter(userManager, settings);
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
-
-            called.Should().BeTrue();
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
+            nextWasCalled.Should().BeTrue();
         }
 
         [Theory]
@@ -173,23 +141,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var filter = new TermsOfUseActionFilter(userManager, settings);
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
+            nextWasCalled.Should().BeFalse();
 
-            called.Should().BeFalse();
             var result = executingContext.Result.As<RedirectToActionResult>();
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(TermsOfUseController.TermsOfUse));
             result.RouteValues.Should().NotBeNull();
             result.RouteValues.ContainsKey("returnUrl");
             result.RouteValues["returnUrl"].Should().Be(executingContext.HttpContext.Request.Path);
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
         }
     }
 }

@@ -36,17 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         {
             executingContext.HttpContext.Request.Path = "/identity/account";
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
-
-            called.Should().BeTrue();
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
+            nextWasCalled.Should().BeTrue();
         }
 
         [Theory]
@@ -58,17 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         {
             executingContext.HttpContext.Request.Path = "/home/error";
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
-
-            called.Should().BeTrue();
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
+            nextWasCalled.Should().BeTrue();
         }
 
         [Theory]
@@ -81,17 +65,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             executingContext.HttpContext.User = new ClaimsPrincipal(
                 new ClaimsIdentity());
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
-
-            called.Should().BeTrue();
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
+            nextWasCalled.Should().BeTrue();
         }
 
         [Theory]
@@ -115,17 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var filter = new UpdatePasswordActionFilter(userManager, passwordSettings);
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
-
-            called.Should().BeTrue();
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
+            nextWasCalled.Should().BeTrue();
         }
 
         [Theory]
@@ -151,17 +119,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var filter = new UpdatePasswordActionFilter(userManager, passwordSettings);
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
-
-            called.Should().BeTrue();
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
+            nextWasCalled.Should().BeTrue();
         }
 
         [Theory]
@@ -193,17 +153,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var filter = new UpdatePasswordActionFilter(userManager, passwordSettings);
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
-
-            called.Should().BeTrue();
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
+            nextWasCalled.Should().BeTrue();
         }
 
         [Theory]
@@ -231,20 +183,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var filter = new UpdatePasswordActionFilter(userManager, passwordSettings);
 
-            bool called = false;
+            var nextWasCalled = await filter.TestOnActionExecutionAsync(executingContext, executedContext);
 
-            await filter.OnActionExecutionAsync(executingContext, NextDelegate);
+            nextWasCalled.Should().BeFalse();
 
-            called.Should().BeFalse();
             var result = executingContext.Result.As<RedirectToActionResult>();
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(AccountController.UpdatePassword));
-
-            Task<ActionExecutedContext> NextDelegate()
-            {
-                called = true;
-                return Task.FromResult(executedContext);
-            }
         }
     }
 }
