@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ModelBinders
         [Theory]
         [MockInlineAutoData("")]
         [MockInlineAutoData("\t")]
-        public static Task TimeInputModelBinder_NullOrWhitespaceModelName_ThrowsException(
+        public static Task TimeInputModelBinder_EmptyOrWhitespaceModelName_ThrowsException(
             string modelName,
             DefaultModelBindingContext context,
             TimeInputModelBinder modelBinder)
