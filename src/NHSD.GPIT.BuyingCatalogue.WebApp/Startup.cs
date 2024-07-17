@@ -34,6 +34,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         {
             Configuration = configuration;
             this.hostEnvironment = hostEnvironment;
+
+            CurrentEnvironment.IsDevelopment = hostEnvironment.IsDevelopment() || IsE2ETestEnvironment();
         }
 
         public IConfiguration Configuration { get; }
@@ -41,8 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            CurrentEnvironment.IsDevelopment = hostEnvironment.IsDevelopment() || IsE2ETestEnvironment();
-
             if (!IsE2ETestEnvironment())
             {
                 services.ConfigureDataProtection(Configuration);
@@ -77,7 +77,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureIdentity(Configuration);
 
-            services.ConfigureCacheKeySettings(Configuration)
+            services
+                .ConfigureHsts(Configuration)
+                .ConfigureCacheKeySettings(Configuration)
                 .ConfigureGovNotify(Configuration)
                 .ConfigureImportPracticeListMessageSettings(Configuration)
                 .ConfigureNominateOrganisationMessageSettings(Configuration)
@@ -89,9 +91,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .ConfigureAnalyticsSettings(Configuration)
                 .ConfigurePriceTiersCap(Configuration)
                 .ConfigureAccountManagement(Configuration)
-                .ConfigureRecaptcha(Configuration);
-
-            services.ConfigureCookies(Configuration);
+                .ConfigureRecaptcha(Configuration)
+                .ConfigureCookies(Configuration);
 
             services.ConfigurePassword(Configuration);
 
@@ -154,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 opts.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms. Action {ActionName}";
             });
 
-            if (env.IsDevelopment() || env.IsEnvironment("E2ETest"))
+            if (CurrentEnvironment.IsDevelopment)
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -177,7 +178,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         });
                 });
 
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -204,11 +204,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             app.Use(async (context, next) =>
             {
-                context.Response.Headers["X-Frame-Options"] = "DENY";
-                context.Response.Headers["X-Xss-Protection"] = "1; mode=block";
-                context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-                context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-                context.Response.Headers["Pragma"] = "no-cache";
+                context.Response.Headers.XFrameOptions = "DENY";
+                context.Response.Headers.XXSSProtection = "1; mode=block";
+                context.Response.Headers.XContentTypeOptions = "nosniff";
+                context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+                context.Response.Headers.Pragma = "no-cache";
+
                 await next().ConfigureAwait(false);
             });
 
