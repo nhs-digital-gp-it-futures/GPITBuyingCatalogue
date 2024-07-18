@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderingParty.OrderingPartyModel;
 @{
-    ViewBag.Title = "Call-off Ordering Party contact details";
+    ViewBag.Title = "Who is the primary contact for this order?";
 }
 
 <div data-test-id="ordering-party-page">
@@ -12,12 +12,10 @@
                 <input type="hidden" asp-for="@Model.BackLinkText" />
                 <nhs-validation-summary />
                 <nhs-page-title title="@ViewBag.Title"
-                                advice="Provide information about the primary contact for this order."
+                                advice="Provide information about the best person to contact at your organisation."
 								caption = "Order @Model.CallOffId"/>
 
-				<nhs-fieldset-form-container asp-for="@Model"
-											label-text="Primary contact details"
-											label-hint="Who is the best person to contact about this order?">
+				<nhs-fieldset-form-container asp-for="@Model">
 					<nhs-input asp-for="@Model.Contact.FirstName"
                                             label-text="First name" />
                     <nhs-input asp-for="@Model.Contact.LastName"
