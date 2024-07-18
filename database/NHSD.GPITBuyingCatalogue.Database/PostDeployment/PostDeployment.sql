@@ -48,9 +48,6 @@
 :r ./InsertEventTypes.sql
 :r ./InsertEmailNotificationType.sql
 
-:r ./DropImport.sql
-:r ./DropPublish.sql
-
 :r ./ProdLikeData/MergeSuppliers.sql
 :r ./ProdLikeData/MergeCatalogueItems.sql
 :r ./ProdLikeData/MergeSolutions.sql
