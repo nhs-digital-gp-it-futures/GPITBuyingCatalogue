@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
@@ -21,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NhsDefined_NhsDefinedArrayNotEmpty_ReturnsTrue(SolutionCheckEpicsModel model)
         {
             model.NhsDefined.Should().NotBeEmpty();
@@ -46,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void SupplierDefined_SupplierDefinedArrayNotEmpty_ReturnsTrue(SolutionCheckEpicsModel model)
         {
             model.SupplierDefined.Should().NotBeEmpty();
@@ -71,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasNoEpics_NoNhsOrSupplierDefinedEpics_ReturnsTrue(
             CatalogueItemCapability solutionCapability,
             [Frozen] CatalogueItem catalogueItem)
@@ -84,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasNoEpics_HasNhsDefinedEpicsOnly_ReturnsFalse(
             List<CatalogueItemEpic> epics,
             CatalogueItemCapability solutionCapability,
@@ -100,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasNoEpics_HasSupplierDefinedEpicsOnly_ReturnsFalse(
             List<CatalogueItemEpic> epics,
             CatalogueItemCapability solutionCapability,

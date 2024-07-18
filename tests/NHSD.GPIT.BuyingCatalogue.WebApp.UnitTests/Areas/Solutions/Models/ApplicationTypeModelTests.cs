@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 
@@ -18,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_BrowserBasedType_LoadsBrowserBasedDetails(
             ApplicationTypeDetail applicationTypeDetail,
             SupportedBrowser browser)
@@ -34,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_NativeMobileType_LoadsNativeMobileDetails(
             ApplicationTypeDetail applicationTypeDetail,
             string operatingSystem)
@@ -51,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_NativeDesktopType_LoadsNativeDesktopDetails(
             ApplicationTypeDetail applicationTypeDetail,
             string description)

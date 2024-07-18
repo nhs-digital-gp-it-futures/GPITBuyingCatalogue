@@ -2,19 +2,19 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.TaskList;
 using Xunit;
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(TaskListController).GetConstructors();
 
@@ -41,21 +41,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task TaskList_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            RoutingResult backRoute,
+            RoutingResult onwardRoute,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IAssociatedServicesService associatedServicesService,
+            [Frozen] IAdditionalServicesService additionalServicesService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IRoutingService routingService,
             TaskListController controller)
         {
-            mockOrderService
-                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+
+            solutionsService.GetSupplierSolutions(order.SupplierId, order.SelectedFrameworkId).Returns(Enumerable.Empty<CatalogueItem>().ToList());
+
+            additionalServicesService
+                .GetAdditionalServicesBySolutionId(
+                    Arg.Any<CatalogueItemId?>(),
+                    Arg.Any<bool>())
+                .Returns(Enumerable.Empty<CatalogueItem>().ToList());
+
+            associatedServicesService
+                .GetPublishedAssociatedServicesForSolution(
+                    Arg.Any<CatalogueItemId?>(),
+                    Arg.Any<PracticeReorganisationTypeEnum>())
+                .Returns(Enumerable.Empty<CatalogueItem>().ToList());
+
+            routingService.GetRoute(RoutingPoint.TaskListBackLink, Arg.Any<OrderWrapper>(), Arg.Any<RouteValues>())
+                .Returns(backRoute);
+
+            routingService.GetRoute(RoutingPoint.TaskList, Arg.Any<OrderWrapper>(), Arg.Any<RouteValues>())
+                .Returns(onwardRoute);
 
             var result = await controller.TaskList(internalOrgId, callOffId);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -65,32 +87,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task TaskList_WithAdditionalServicesAvailable_ExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> additionalServices,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IAdditionalServicesService> mockAdditionalServicesService,
+            RoutingResult backRoute,
+            RoutingResult onwardRoute,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IAssociatedServicesService associatedServicesService,
+            [Frozen] IAdditionalServicesService mockAdditionalServicesService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IRoutingService routingService,
             TaskListController controller)
         {
             order.OrderType = OrderTypeEnum.Solution;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockAdditionalServicesService
-                .Setup(x => x.GetAdditionalServicesBySolutionId(order.OrderItems.First().CatalogueItemId, true))
-                .ReturnsAsync(additionalServices);
+            mockAdditionalServicesService.GetAdditionalServicesBySolutionId(order.OrderItems.First().CatalogueItemId, true).Returns(additionalServices);
+
+            solutionsService.GetSupplierSolutions(order.SupplierId, order.SelectedFrameworkId).Returns(Enumerable.Empty<CatalogueItem>().ToList());
+
+            associatedServicesService
+                .GetPublishedAssociatedServicesForSolution(
+                    Arg.Any<CatalogueItemId?>(),
+                    Arg.Any<PracticeReorganisationTypeEnum>())
+                .Returns(Enumerable.Empty<CatalogueItem>().ToList());
+
+            routingService.GetRoute(RoutingPoint.TaskListBackLink, Arg.Any<OrderWrapper>(), Arg.Any<RouteValues>())
+                .Returns(backRoute);
+
+            routingService.GetRoute(RoutingPoint.TaskList, Arg.Any<OrderWrapper>(), Arg.Any<RouteValues>())
+                .Returns(onwardRoute);
 
             var result = await controller.TaskList(internalOrgId, callOffId);
-
-            mockOrderService.VerifyAll();
-            mockAdditionalServicesService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -104,37 +138,58 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(1)]
-        [CommonInlineAutoData(2)]
-        public static async Task TaskList_EnsureOrderItemsForAmendment_ExpectedResult2(
+        [MockInlineAutoData(1)]
+        [MockInlineAutoData(2)]
+        public static async Task TaskList_EnsureOrderItemsForAmendment_ExpectedResult(
             int revision,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            RoutingResult backRoute,
+            RoutingResult onwardRoute,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IAssociatedServicesService associatedServicesService,
+            [Frozen] IAdditionalServicesService additionalServicesService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IRoutingService routingService,
             TaskListController controller)
         {
             order.Revision = revision;
             order.OrderType = OrderTypeEnum.Solution;
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockOrderService
-                .Setup(x => x.EnsureOrderItemsForAmendment(internalOrgId, callOffId));
+            solutionsService.GetSupplierSolutions(order.SupplierId, order.SelectedFrameworkId).Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
-            var result = await controller.TaskList(internalOrgId, callOffId);
+            additionalServicesService
+                .GetAdditionalServicesBySolutionId(
+                    Arg.Any<CatalogueItemId?>(),
+                    Arg.Any<bool>())
+                .Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
-            mockOrderService.Verify(x => x.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId), Times.Once);
+            associatedServicesService
+                .GetPublishedAssociatedServicesForSolution(
+                    Arg.Any<CatalogueItemId?>(),
+                    Arg.Any<PracticeReorganisationTypeEnum>())
+                .Returns(Enumerable.Empty<CatalogueItem>().ToList());
+
+            routingService.GetRoute(RoutingPoint.TaskListBackLink, Arg.Any<OrderWrapper>(), Arg.Any<RouteValues>())
+                .Returns(backRoute);
+
+            routingService.GetRoute(RoutingPoint.TaskList, Arg.Any<OrderWrapper>(), Arg.Any<RouteValues>())
+                .Returns(onwardRoute);
+
+            _ = await controller.TaskList(internalOrgId, callOffId);
+
+            await mockOrderService.Received().GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
 
             if (revision == 1)
             {
-                mockOrderService.Verify(x => x.EnsureOrderItemsForAmendment(internalOrgId, callOffId), Times.Never);
+                await mockOrderService.DidNotReceive().EnsureOrderItemsForAmendment(internalOrgId, callOffId);
             }
             else
             {
-                mockOrderService.Verify(x => x.EnsureOrderItemsForAmendment(internalOrgId, callOffId), Times.Once);
+                await mockOrderService.Received().EnsureOrderItemsForAmendment(internalOrgId, callOffId);
             }
         }
     }

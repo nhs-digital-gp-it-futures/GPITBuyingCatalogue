@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
 using Xunit;
 
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
     public static class EditSupplierDefinedEpicModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void CanDelete_InactiveEpicNoReferences_True(
             Epic epic,
             Capability capability)
@@ -25,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void CanDelete_InactiveEpicWithReferences_False(
             Epic epic,
             IList<CatalogueItem> referencingItems,
@@ -40,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void CanDelete_ActiveEpicNoReferences_False(
             Epic epic,
             Capability capability)
@@ -54,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void CanDelete_ActiveEpicWithReferences_False(
             Epic epic,
             IList<CatalogueItem> referencingItems,

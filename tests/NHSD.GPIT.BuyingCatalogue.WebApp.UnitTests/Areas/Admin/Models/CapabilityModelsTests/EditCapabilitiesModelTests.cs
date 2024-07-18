@@ -4,7 +4,6 @@ using EnumsNET;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using Xunit;
 
@@ -13,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
     public sealed class EditCapabilitiesModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructing_SetsPropertiesAsExpected(
             Solution solution,
             AdditionalService additionalService,
@@ -30,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructing_WithSolution_SetsPropertiesAsExpected(
             Solution solution,
             IReadOnlyList<CapabilityCategory> capabilityCategories)
@@ -46,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructing_WithExistingItemCapability_SetsCapabilityAsSelected(
             AdditionalService additionalService,
             CatalogueItemCapability catalogueItemCapability)
@@ -116,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructing_WithNoExistingItemCapabilities_SetsCapabilityCategoriesAsExpected(
             AdditionalService additionalService,
             List<CapabilityCategory> capabilityCategories,
@@ -131,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructing_CapabilityCategoryWithNoCapabilities_DoesNotAdd(
             AdditionalService additionalService)
         {

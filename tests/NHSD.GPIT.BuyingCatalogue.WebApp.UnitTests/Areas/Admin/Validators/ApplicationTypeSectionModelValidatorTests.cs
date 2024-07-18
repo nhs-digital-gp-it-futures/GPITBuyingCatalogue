@@ -1,7 +1,6 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Xunit;
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class ApplicationTypeSectionModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoExistingHostingTypes_HasError(
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
@@ -32,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ExistingHostingTypes_DoesNotHaveError(
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Capabilities;
 using Xunit;
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Capa
 public static class CapabilityModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoSelectedMustEpics_SetsModelError(
         List<CapabilityEpicModel> mustEpics,
         CapabilityModel model,
@@ -29,7 +28,7 @@ public static class CapabilityModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoMustEpics_NoModelError(
         CapabilityModel model,
         CapabilityModelValidator validator)
@@ -43,7 +42,7 @@ public static class CapabilityModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_CapabilityNotSelected_WithMustEpics_NoModelError(
         List<CapabilityEpicModel> mustEpics,
         CapabilityModel model,
@@ -59,7 +58,7 @@ public static class CapabilityModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_CapabilityNotSelected_NoMustEpics_NoModelError(
         CapabilityModel model,
         CapabilityModelValidator validator)
@@ -73,7 +72,7 @@ public static class CapabilityModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_CapabilitySelectedWithMustEpics_NoModelError(
         List<CapabilityEpicModel> mustEpics,
         CapabilityModel model,

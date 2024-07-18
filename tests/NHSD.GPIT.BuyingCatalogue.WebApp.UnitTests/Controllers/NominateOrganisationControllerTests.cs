@@ -1,17 +1,14 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.NominateOrganisation;
-using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers

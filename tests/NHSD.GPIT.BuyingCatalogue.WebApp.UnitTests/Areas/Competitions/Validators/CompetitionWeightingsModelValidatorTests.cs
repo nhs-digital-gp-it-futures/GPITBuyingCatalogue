@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.TaskListModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
 using Xunit;

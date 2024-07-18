@@ -4,7 +4,6 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.TestData;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
@@ -40,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FrameworkTitle_FrameworksMoreThanOne_ReturnsPlural(SolutionDescriptionModel model)
         {
             model.Frameworks.Count.Should().BeGreaterThan(1);
@@ -51,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FrameworkTitle_OneFramework_ReturnsSingle(
             EntityFramework.Catalogue.Models.Framework framework)
         {
@@ -86,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasDescription_ValidDescription_ReturnsTrue(SolutionDescriptionModel model)
         {
             model.Description.Should().NotBeNullOrWhiteSpace();
@@ -108,7 +107,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasSummary_ValidSummary_ReturnsTrue(SolutionDescriptionModel model)
         {
             model.Summary.Should().NotBeNullOrWhiteSpace();
@@ -130,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasAboutUrl_ValidUrl_ReturnsTrue(SolutionDescriptionModel model)
         {
             model.AboutUrl.Should().NotBeNullOrWhiteSpace();

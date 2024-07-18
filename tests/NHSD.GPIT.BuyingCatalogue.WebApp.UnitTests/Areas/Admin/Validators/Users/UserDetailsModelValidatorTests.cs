@@ -1,12 +1,10 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.UserModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Users;
 using Xunit;
@@ -19,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         private const string EmailAddress = "a@nhs.net";
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SelectedOrganisationIdNullOrEmpty_SetsModelError(
             UserDetailsModelValidator validator)
         {
@@ -35,9 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_FirstNameNullOrEmpty_SetsModelError(
             string firstName,
             UserDetailsModelValidator validator)
@@ -54,9 +52,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_LastNameNullOrEmpty_SetsModelError(
             string lastName,
             UserDetailsModelValidator validator)
@@ -73,9 +71,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_EmailNullOrEmpty_SetsModelError(
             string email,
             UserDetailsModelValidator validator)
@@ -92,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmailInvalidFormat_SetsModelError(
             UserDetailsModel model,
             UserDetailsModelValidator validator)
@@ -104,16 +102,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmailInvalidDomain_SetsModelError(
-            [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
+            [Frozen] IEmailDomainService mockEmailDomainService,
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
             model.Email = InvalidEmailAddress;
 
-            mockEmailDomainService.Setup(s => s.IsAllowed(InvalidEmailAddress))
-                .ReturnsAsync(false);
+            mockEmailDomainService.IsAllowed(InvalidEmailAddress).Returns(false);
 
             var result = validator.TestValidate(model);
 
@@ -122,17 +119,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmailInUse_SetsModelError(
-            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] IUsersService mockUsersService,
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
             model.Email = EmailAddress;
 
-            mockUsersService
-                .Setup(x => x.EmailAddressExists(EmailAddress, model.UserId))
-                .ReturnsAsync(true);
+            mockUsersService.EmailAddressExists(EmailAddress, model.UserId).Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -141,9 +136,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_AccountTypeNullOrEmpty_SetsModelError(
             string accountType,
             UserDetailsModelValidator validator)
@@ -160,7 +155,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AccountTypeIsAdmin_OrganisationIdNotNhsDigital_SetsModelError(
             UserDetailsModelValidator validator)
         {
@@ -177,7 +172,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_AccountTypeIsAdmin_OrganisationIdNhsDigital_NoModelError(
             UserDetailsModelValidator validator)
         {
@@ -193,29 +188,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonInlineAutoData(false, "AccountManager", null)]
-        [CommonInlineAutoData(false, "AccountManager", true)]
-        [CommonInlineAutoData(false, "AccountManager", false)]
-        [CommonInlineAutoData(false, "Buyer", null)]
-        [CommonInlineAutoData(false, "Buyer", true)]
-        [CommonInlineAutoData(false, "Buyer", false)]
-        [CommonInlineAutoData(false, "Authority", null)]
-        [CommonInlineAutoData(false, "Authority", true)]
-        [CommonInlineAutoData(false, "Authority", false)]
-        [CommonInlineAutoData(true, "AccountManager", null)]
-        [CommonInlineAutoData(true, "AccountManager", false)]
-        [CommonInlineAutoData(true, "Buyer", null)]
-        [CommonInlineAutoData(true, "Buyer", true)]
-        [CommonInlineAutoData(true, "Buyer", false)]
-        [CommonInlineAutoData(true, "Authority", null)]
-        [CommonInlineAutoData(true, "Authority", true)]
-        [CommonInlineAutoData(true, "Authority", false)]
+        [MockInlineAutoData(false, "AccountManager", null)]
+        [MockInlineAutoData(false, "AccountManager", true)]
+        [MockInlineAutoData(false, "AccountManager", false)]
+        [MockInlineAutoData(false, "Buyer", null)]
+        [MockInlineAutoData(false, "Buyer", true)]
+        [MockInlineAutoData(false, "Buyer", false)]
+        [MockInlineAutoData(false, "Authority", null)]
+        [MockInlineAutoData(false, "Authority", true)]
+        [MockInlineAutoData(false, "Authority", false)]
+        [MockInlineAutoData(true, "AccountManager", null)]
+        [MockInlineAutoData(true, "AccountManager", false)]
+        [MockInlineAutoData(true, "Buyer", null)]
+        [MockInlineAutoData(true, "Buyer", true)]
+        [MockInlineAutoData(true, "Buyer", false)]
+        [MockInlineAutoData(true, "Authority", null)]
+        [MockInlineAutoData(true, "Authority", true)]
+        [MockInlineAutoData(true, "Authority", false)]
         public static void Validate_AccountType_MaxLimit_NoModelError(
             bool isAccountManagerLimit,
             string accountType,
             bool? isActive,
             int userId,
-            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] IUsersService mockUsersService,
             UserDetailsModelValidator validator)
         {
             var model = new UserDetailsModel
@@ -226,9 +221,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
                 IsActive = isActive,
             };
 
-            mockUsersService
-                .Setup(x => x.IsAccountManagerLimit(OrganisationConstants.NhsDigitalOrganisationId, userId))
-                .ReturnsAsync(isAccountManagerLimit);
+            mockUsersService.IsAccountManagerLimit(OrganisationConstants.NhsDigitalOrganisationId, userId).Returns(isAccountManagerLimit);
 
             var result = validator.TestValidate(model);
 
@@ -236,11 +229,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ActiveAccountManager_MaxLimitTrue_ModelError(
             int organisationId,
             int userId,
-            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] IUsersService mockUsersService,
             [Frozen] AccountManagementSettings accountManagementSettings,
             UserDetailsModelValidator validator)
         {
@@ -252,9 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
                 IsActive = true,
             };
 
-            mockUsersService
-                .Setup(x => x.IsAccountManagerLimit(organisationId, userId))
-                .ReturnsAsync(true);
+            mockUsersService.IsAccountManagerLimit(organisationId, userId).Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -263,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
+        [MockInlineAutoData(null)]
         public static void Validate_AccountStatusNullOrEmpty_SetsModelError(
             bool? isActive,
             UserDetailsModel model,
@@ -278,23 +269,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.User
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EverythingOk_NoModelErrors(
-            [Frozen] Mock<IUsersService> mockUsersService,
-            [Frozen] Mock<IEmailDomainService> mockEmailDomainService,
+            [Frozen] IUsersService mockUsersService,
+            [Frozen] IEmailDomainService mockEmailDomainService,
             UserDetailsModel model,
             UserDetailsModelValidator validator)
         {
             model.Email = EmailAddress;
             model.SelectedAccountType = OrganisationFunction.Buyer.Name;
 
-            mockUsersService
-                .Setup(x => x.EmailAddressExists(EmailAddress, 0))
-                .ReturnsAsync(false);
+            mockUsersService.EmailAddressExists(EmailAddress, 0).Returns(false);
 
-            mockEmailDomainService
-                .Setup(x => x.IsAllowed(EmailAddress))
-                .ReturnsAsync(true);
+            mockEmailDomainService.IsAllowed(EmailAddress).Returns(true);
 
             var result = validator.TestValidate(model);
 

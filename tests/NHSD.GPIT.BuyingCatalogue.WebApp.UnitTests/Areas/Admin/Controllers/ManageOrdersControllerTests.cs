@@ -5,7 +5,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -24,11 +23,9 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdminManageOrders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
-using NSubstitute;
 using Xunit;
 using DeleteOrderModel = NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders.DeleteOrderModel;
 
@@ -39,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ManageOrdersController).GetConstructors();
 

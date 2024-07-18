@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.CompetitionResultsPdf;
 using Xunit;
@@ -24,7 +21,7 @@ public static class CompetitionResultsPdfControllerTests
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
         var assertion = new GuardClauseAssertion(fixture);
         var constructors = typeof(CompetitionResultsPdfController).GetConstructors();
 
@@ -32,15 +29,14 @@ public static class CompetitionResultsPdfControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Index_NullCompetition_ReturnsNotFoundResult(
         string internalOrgId,
         int competitionId,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsPdfController controller)
     {
-        competitionsService.Setup(x => x.GetCompetitionForResults(internalOrgId, competitionId))
-            .ReturnsAsync((Competition)null);
+        competitionsService.GetCompetitionForResults(internalOrgId, competitionId).Returns((Competition)null);
 
         var result = (await controller.Index(internalOrgId, competitionId)).As<NotFoundResult>();
 
@@ -48,26 +44,23 @@ public static class CompetitionResultsPdfControllerTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task Index_ValidCompetition_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
         FilterDetailsModel filterDetailsModel,
         ICollection<CompetitionSolution> nonShortlistedSolutions,
-        [Frozen] Mock<ICompetitionsService> competitionsService,
-        [Frozen] Mock<IManageFiltersService> filtersService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IManageFiltersService filtersService,
         CompetitionResultsPdfController controller)
     {
-        filtersService.Setup(x => x.GetFilterDetails(It.IsAny<int>(), competition.FilterId))
-            .ReturnsAsync(filterDetailsModel);
+        filtersService.GetFilterDetails(Arg.Any<int>(), competition.FilterId).Returns(filterDetailsModel);
 
         competition.Organisation = organisation;
 
-        competitionsService.Setup(x => x.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(competition);
+        competitionsService.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id).Returns(competition);
 
-        competitionsService.Setup(x => x.GetNonShortlistedSolutions(organisation.InternalIdentifier, competition.Id))
-            .ReturnsAsync(nonShortlistedSolutions);
+        competitionsService.GetNonShortlistedSolutions(organisation.InternalIdentifier, competition.Id).Returns(nonShortlistedSolutions);
 
         var expectedModel = new PdfViewResultsModel(competition, filterDetailsModel, nonShortlistedSolutions);
 

@@ -2,7 +2,6 @@
 using AutoFixture;
 using FluentValidation.TestHelper;
 using MoreLinq;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Xunit;
@@ -12,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class EditSolutionContactsModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidRequest_NoValidationErrors(
             EditSolutionContactsModel model,
             EditSolutionContactsModelValidator validator)
@@ -23,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectedContacts_SetsModelError(
             EditSolutionContactsModel model,
             EditSolutionContactsModelValidator validator)
@@ -37,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MoreThan2SelectedContacts_SetsModelError(
             Fixture fixture,
             EditSolutionContactsModelValidator validator)

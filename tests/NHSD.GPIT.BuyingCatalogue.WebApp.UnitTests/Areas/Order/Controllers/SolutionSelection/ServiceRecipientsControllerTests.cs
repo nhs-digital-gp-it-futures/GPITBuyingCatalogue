@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Moq;
 using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -18,7 +16,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
@@ -40,7 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ServiceRecipientsController).GetConstructors();
 
@@ -48,9 +45,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData(SelectionMode.None)]
-        [CommonInlineAutoData(SelectionMode.All)]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData(SelectionMode.None)]
+        [MockInlineAutoData(SelectionMode.All)]
         public static async Task Get_SelectServiceRecipients_Solution_ReturnsExpectedResult(
             SelectionMode? selectionMode,
             Organisation organisation,
@@ -58,9 +55,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<ServiceRecipient> serviceRecipients,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOdsService> mockOdsService,
-            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOdsService mockOdsService,
+            [Frozen] IOrganisationsService organisationsService,
             ServiceRecipientsController controller)
         {
             order.OrderType = OrderTypeEnum.Solution;
@@ -70,22 +67,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockOdsService
-                .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
-                .ReturnsAsync(serviceRecipients);
+            mockOdsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
 
-            organisationsService
-                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
-                .ReturnsAsync(organisation);
+            organisationsService.GetOrganisationByInternalIdentifier(internalOrgId).Returns(organisation);
 
             var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, selectionMode);
-
-            mockOrderService.VerifyAll();
-            mockOdsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -116,15 +104,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(null, OrderTypeEnum.AssociatedServiceSplit, 2)]
-        [CommonInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceSplit, 2)]
-        [CommonInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceSplit, 2)]
-        [CommonInlineAutoData(null, OrderTypeEnum.AssociatedServiceMerger, 2)]
-        [CommonInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceMerger, 2)]
-        [CommonInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceMerger, 2)]
-        [CommonInlineAutoData(null, OrderTypeEnum.AssociatedServiceOther, null)]
-        [CommonInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceOther, null)]
-        [CommonInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceOther, null)]
+        [MockInlineAutoData(null, OrderTypeEnum.AssociatedServiceSplit, 2)]
+        [MockInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceSplit, 2)]
+        [MockInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceSplit, 2)]
+        [MockInlineAutoData(null, OrderTypeEnum.AssociatedServiceMerger, 2)]
+        [MockInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceMerger, 2)]
+        [MockInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceMerger, 2)]
+        [MockInlineAutoData(null, OrderTypeEnum.AssociatedServiceOther, null)]
+        [MockInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceOther, null)]
+        [MockInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceOther, null)]
         public static async Task Get_SelectServiceRecipients_MergerSplitOther_ReturnsExpectedResult(
             SelectionMode selectionMode,
             OrderTypeEnum orderType,
@@ -134,31 +122,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<ServiceRecipient> serviceRecipients,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOdsService> mockOdsService,
-            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOdsService mockOdsService,
+            [Frozen] IOrganisationsService organisationsService,
             ServiceRecipientsController controller)
         {
             order.OrderType = orderType;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
             order.OrderItems = order.OrderItems.Take(1).ToList();
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockOdsService
-                .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
-                .ReturnsAsync(serviceRecipients);
+            mockOdsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
 
-            organisationsService
-                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
-                .ReturnsAsync(organisation);
+            organisationsService.GetOrganisationByInternalIdentifier(internalOrgId).Returns(organisation);
 
             var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, selectionMode);
-
-            mockOrderService.VerifyAll();
-            mockOdsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -189,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_SelectServiceRecipients_WithImportedSolutionRecipients_ReturnsExpectedResult(
             string internalOrgId,
             Organisation organisation,
@@ -197,9 +176,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             EntityFramework.Ordering.Models.Order order,
             EntityFramework.Ordering.Models.Order amendment,
             List<ServiceRecipient> serviceRecipients,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOdsService> mockOdsService,
-            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOdsService mockOdsService,
+            [Frozen] IOrganisationsService organisationsService,
             ServiceRecipientsController controller)
         {
             order.Revision = 1;
@@ -213,22 +192,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var importedRecipients = string.Join(',', order.OrderRecipients.Select(x => x.OdsCode));
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(new[] { order, amendment }));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order, amendment }));
 
-            mockOdsService
-                .Setup(x => x.GetServiceRecipientsByParentInternalIdentifier(internalOrgId))
-                .ReturnsAsync(serviceRecipients);
+            mockOdsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
 
-            organisationsService
-                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
-                .ReturnsAsync(organisation);
+            organisationsService.GetOrganisationByInternalIdentifier(internalOrgId).Returns(organisation);
 
             var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, importedRecipients: importedRecipients);
-
-            mockOrderService.VerifyAll();
-            mockOdsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeAssignableTo<SelectRecipientsModel>().Subject;
@@ -238,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_SelectServiceRecipients_WithModelErrors_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -255,22 +225,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static async Task Post_SelectServiceRecipients_RedirectsTo_ConfirmChanges(
             OrderTypeEnum orderType,
             string internalOrgId,
             CallOffId callOffId,
             SelectRecipientsModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             ServiceRecipientsController controller)
         {
             order.OrderType = orderType;
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(new[] { order }));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order }));
 
             var selectedOdsCodes = model.GetServiceRecipients().Where(x => x.Selected).Select(x => x.OdsCode);
             var recipientIds = selectedOdsCodes.ToRecipientsString();
@@ -290,23 +258,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
         public static async Task Post_SelectServiceRecipients_RedirectsTo_SelectRecipientForPracticeReorganisation(
             OrderTypeEnum orderType,
             string internalOrgId,
             CallOffId callOffId,
             SelectRecipientsModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             ServiceRecipientsController controller)
         {
             order.OrderType = orderType;
             var selectedRecipientId = order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode;
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(new[] { order }));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order }));
 
             var recipientIds = model
                 .GetServiceRecipients()
@@ -330,27 +296,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static async Task Get_SelectRecipientForPracticeReorganisation_With_WrongTypesOfOrders_ReturnsBadRequest(
             OrderTypeEnum orderType,
             string internalOrgId,
             Organisation organisation,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOrganisationsService organisationsService,
             ServiceRecipientsController controller)
         {
             order.OrderType = orderType;
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(new[] { order }));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order }));
 
-            organisationsService
-                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
-                .ReturnsAsync(organisation);
+            organisationsService.GetOrganisationByInternalIdentifier(internalOrgId).Returns(organisation);
 
             var result = await controller.SelectRecipientForPracticeReorganisation(internalOrgId, callOffId, default, default(string));
 
@@ -358,8 +320,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
         public static async Task Get_SelectRecipientForPracticeReorganisation_With_MergerOrSplit_Returns(
             OrderTypeEnum orderType,
             string internalOrgId,
@@ -368,24 +330,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<ServiceRecipient> serviceRecipients,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IOdsService> mockOdsService,
-            [Frozen] Mock<IOrganisationsService> organisationsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IOdsService mockOdsService,
+            [Frozen] IOrganisationsService organisationsService,
             ServiceRecipientsController controller)
         {
             order.OrderType = orderType;
 
-            mockOrderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(new[] { order }));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order }));
 
-            mockOdsService
-                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.IsAny<IEnumerable<string>>()))
-                .ReturnsAsync(serviceRecipients);
+            mockOdsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(serviceRecipients);
 
-            organisationsService
-                .Setup(x => x.GetOrganisationByInternalIdentifier(internalOrgId))
-                .ReturnsAsync(organisation);
+            organisationsService.GetOrganisationByInternalIdentifier(internalOrgId).Returns(organisation);
 
             var result = await controller.SelectRecipientForPracticeReorganisation(internalOrgId, callOffId, string.Empty, selectedOdsCode);
 
@@ -413,7 +369,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_SelectRecipientForPracticeReorganisation_WithModelErrors_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -430,7 +386,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_SelectRecipientForPracticeReorganisation_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -454,16 +410,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static async Task Get_ConfirmChanges_ReturnsExpectedResult(
             OrderTypeEnum orderType,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<ServiceRecipient> serviceRecipients,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<IOdsService> odsService,
+            [Frozen] IOrderService orderService,
+            [Frozen] IOdsService odsService,
             ServiceRecipientsController controller)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
@@ -474,27 +430,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            orderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var recipientIds = serviceRecipients.Select(r => r.OrgId);
-            odsService
-                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))))
-                .ReturnsAsync(serviceRecipients);
+            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))).Returns(serviceRecipients);
 
-            odsService
-                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>()))))
-                .ReturnsAsync(new List<ServiceRecipient>());
+            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>()))).Returns(new List<ServiceRecipient>());
 
             var result = await controller.ConfirmChanges(
                 internalOrgId,
                 callOffId,
                 recipientIds.ToRecipientsString(),
                 string.Empty);
-
-            orderService.VerifyAll();
-            odsService.VerifyAll();
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -514,8 +461,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
         public static async Task Get_ConfirmChanges_MergerOrSplit_Throws(
             OrderTypeEnum orderType,
             string internalOrgId,
@@ -523,8 +470,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<ServiceRecipient> serviceRecipients,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<IOdsService> odsService,
+            [Frozen] IOrderService orderService,
+            [Frozen] IOdsService odsService,
             ServiceRecipientsController controller)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
@@ -535,18 +482,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            orderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var recipientIds = serviceRecipients.Select(r => r.OrgId);
-            odsService
-                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))))
-                .ReturnsAsync(serviceRecipients);
+            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))).Returns(serviceRecipients);
 
-            odsService
-                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>()))))
-                .ReturnsAsync(new List<ServiceRecipient>());
+            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>()))).Returns(new List<ServiceRecipient>());
 
             await FluentActions.Invoking(async () => await controller.ConfirmChanges(
                 internalOrgId,
@@ -558,16 +499,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
         public static async Task Get_ConfirmChanges_MergerOrSplit_ReturnsExpectedResult(
             OrderTypeEnum orderType,
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
             List<ServiceRecipient> serviceRecipients,
-            [Frozen] Mock<IOrderService> orderService,
-            [Frozen] Mock<IOdsService> odsService,
+            [Frozen] IOrderService orderService,
+            [Frozen] IOdsService odsService,
             ServiceRecipientsController controller)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
@@ -578,28 +519,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            orderService
-                .Setup(x => x.GetOrderWithOrderItems(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var recipientIds = serviceRecipients.Select(r => r.OrgId);
             var recipientIdFromList = recipientIds.First();
-            odsService
-                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))))
-                .ReturnsAsync(serviceRecipients);
+            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))).Returns(serviceRecipients);
 
-            odsService
-                .Setup(x => x.GetServiceRecipientsById(internalOrgId, It.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>()))))
-                .ReturnsAsync(new List<ServiceRecipient>());
+            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>()))).Returns(new List<ServiceRecipient>());
 
             var result = await controller.ConfirmChanges(
                 internalOrgId,
                 callOffId,
                 recipientIds.ToRecipientsString(),
                 recipientIdFromList);
-
-            orderService.VerifyAll();
-            odsService.VerifyAll();
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
@@ -625,10 +557,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
         public static async Task Post_ConfirmChanges_ReturnsExpectedResult(
             OrderTypeEnum orderType,
             string internalOrgId,
@@ -647,7 +579,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void UploadOrSelectServiceRecipients_Get_ReturnsViewWithModel(
         string internalOrgId,
         CallOffId callOffId,
@@ -664,7 +596,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void UploadOrSelectServiceRecipients_Post_InvalidModel_ReturnsViewWithModel(
             UploadOrSelectServiceRecipientModel model,
             string internalOrgId,
@@ -682,7 +614,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void UploadOrSelectServiceRecipients_Post_UploadRecipients_RedirectsToImportController(
             UploadOrSelectServiceRecipientModel model,
             string internalOrgId,
@@ -699,7 +631,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void UploadOrSelectServiceRecipients_Post_DoNotUploadRecipients_RedirectsToSelectServiceRecipientsAction(
             UploadOrSelectServiceRecipientModel model,
             string internalOrgId,

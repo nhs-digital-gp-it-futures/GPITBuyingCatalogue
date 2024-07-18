@@ -1,7 +1,6 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using Xunit;
 
@@ -16,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_SetsExpected_CatalogueItemId(CatalogueItem catalogueItem)
         {
             var actual = new CatalogueModel(catalogueItem);
@@ -25,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_SetsExpected_Name(CatalogueItem catalogueItem)
         {
             var actual = new CatalogueModel(catalogueItem);
@@ -34,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_ValidSupplierLastUpdated_SetAsLastUpdated(Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;
@@ -47,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_SolutionIsNull_SetMinValueAsLastUpdated(CatalogueItem catalogueItem)
         {
             catalogueItem.Solution = null;
@@ -58,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_SetsExpected_PublishedStatus(CatalogueItem catalogueItem)
         {
             var actual = new CatalogueModel(catalogueItem);
@@ -67,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_SupplierIsValid_SetsNameAsSupplier(CatalogueItem catalogueItem)
         {
             var actual = new CatalogueModel(catalogueItem);
@@ -76,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_SupplierIsNull_SetsEmptyStringAsSupplier(CatalogueItem catalogueItem)
         {
             catalogueItem.Supplier = null;

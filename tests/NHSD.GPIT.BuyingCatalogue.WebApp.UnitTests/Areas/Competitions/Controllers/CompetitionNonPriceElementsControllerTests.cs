@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -16,12 +15,9 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
-using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controllers;
@@ -864,7 +860,7 @@ public static class CompetitionNonPriceElementsControllerTests
     }
 
     [Theory]
-    [CommonMemberAutoData(nameof(GetRedirectNonPriceElementTestData))]
+    [MockMemberAutoData(nameof(GetRedirectNonPriceElementTestData))]
     public static void GetRedirect_WithSelectedNonPriceElements_RedirectsToNonPriceElement(
         NonPriceElement[] nonPriceElements,
         NonPriceElement expectedNonPriceElementAction,

@@ -2,19 +2,16 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.DevelopmentPlans;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.DevelopmentPlans;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans;
 using Xunit;
@@ -26,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(DevelopmentPlansController).GetConstructors();
 
@@ -34,15 +31,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DevelopmentPlans_ValidId_ReturnsViewWithExpectedModel(
             Solution solution,
             CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(catalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(catalogueItemId).Returns(solution.CatalogueItem);
 
             var expected = new DevelopmentPlanModel(solution.CatalogueItem)
             {
@@ -51,20 +47,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetSolutionWithWorkOffPlans(catalogueItemId));
+            await mockService.Received().GetSolutionWithWorkOffPlans(catalogueItemId);
             actual.ViewName.Should().BeNull();
             actual.Model.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DevelopmentPlans_InvalidId_ReturnsBadRequestResult(
             CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            mockService.GetSolutionWithWorkOffPlans(catalogueItemId).Returns(default(CatalogueItem));
 
             var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<BadRequestObjectResult>();
 
@@ -72,15 +67,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DevelopmentPlans_InvalidId_ReturnsBadRequestResult(
             CatalogueItemId catalogueItemId,
             DevelopmentPlanModel model,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(catalogueItemId))
-                .ReturnsAsync(default(CatalogueItem));
+            mockService.GetSolutionWithWorkOffPlans(catalogueItemId).Returns(default(CatalogueItem));
 
             var actual = (await controller.DevelopmentPlans(catalogueItemId, model)).As<BadRequestObjectResult>();
 
@@ -89,48 +83,52 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DevelopmentPlans_CallsSavesSolutionDevelopmentPlans(
-            CatalogueItemId catalogueItemId,
+            Solution solution,
             DevelopmentPlanModel model,
-            [Frozen] Mock<IDevelopmentPlansService> mockService,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IDevelopmentPlansService developmentPlansService,
             DevelopmentPlansController controller)
         {
-            await controller.DevelopmentPlans(catalogueItemId, model);
+            solutionsService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            await controller.DevelopmentPlans(solution.CatalogueItemId, model);
 
-            mockService.Verify(s => s.SaveDevelopmentPlans(catalogueItemId, model.Link));
+            await developmentPlansService.Received().SaveDevelopmentPlans(solution.CatalogueItemId, model.Link);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DevelopmentPlans_RedirectsToManageCatalogueSolution(
-            CatalogueItemId catalogueItemId,
+            Solution solution,
             DevelopmentPlanModel model,
+            [Frozen] ISolutionsService solutionsService,
             DevelopmentPlansController controller)
         {
-            var actual = (await controller.DevelopmentPlans(catalogueItemId, model)).As<RedirectToActionResult>();
+            solutionsService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+
+            var actual = (await controller.DevelopmentPlans(solution.CatalogueItemId, model)).As<RedirectToActionResult>();
 
             actual.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
             actual.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
-            actual.RouteValues["solutionId"].Should().Be(catalogueItemId);
+            actual.RouteValues["solutionId"].Should().Be(solution.CatalogueItemId);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DevelopmentPlans_InvalidId_ExpectedViewModel(
             Solution solution,
             CatalogueItemId catalogueItemId,
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(catalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(catalogueItemId).Returns(solution.CatalogueItem);
 
             var expected = new DevelopmentPlanModel(solution.CatalogueItem);
 
             var actual = (await controller.DevelopmentPlans(catalogueItemId)).As<ViewResult>();
 
-            mockService.Verify(s => s.GetSolutionWithWorkOffPlans(catalogueItemId));
+            await mockService.Received().GetSolutionWithWorkOffPlans(catalogueItemId);
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNull();
@@ -138,14 +136,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_AddWorkOffPlan_InvalidId_ReturnsBadRequestResult(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             CatalogueItemId id)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
-                .ReturnsAsync(default(CatalogueItem));
+            mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
             var actual = (await controller.DevelopmentPlans(id)).As<BadRequestObjectResult>();
 
@@ -154,20 +151,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_AddWorkOffPlan_ValidSolutionForId_ReturnsExpectedViewResult(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             Solution solution,
             List<Standard> standards)
         {
             var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, standards);
 
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            mockService.Setup(s => s.GetSolutionStandardsForEditing(solution.CatalogueItemId))
-                .ReturnsAsync(standards);
+            mockService.GetSolutionStandardsForEditing(solution.CatalogueItemId).Returns(standards);
 
             var actual = (await controller.AddWorkOffPlan(solution.CatalogueItemId)).As<ViewResult>();
 
@@ -179,15 +174,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddWorkOffPlan_InvalidId_ReturnsBadRequestResult(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             EditWorkOffPlanModel model,
             CatalogueItemId id)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
-                .ReturnsAsync(default(CatalogueItem));
+            mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
             var actual = (await controller.AddWorkOffPlan(id, model)).As<BadRequestObjectResult>();
 
@@ -196,15 +190,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddWorkOffPlan_ValidIdForSolution_CallsSaveWorkOffPlans(
-            [Frozen] Mock<ISolutionsService> mockService,
-            [Frozen] Mock<IDevelopmentPlansService> mockDPService,
+            [Frozen] ISolutionsService mockService,
+            [Frozen] IDevelopmentPlansService mockDPService,
             DevelopmentPlansController controller,
             Solution solution)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel()
             {
@@ -218,18 +211,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             await controller.AddWorkOffPlan(solution.CatalogueItemId, model);
 
-            mockDPService.Verify(dp => dp.SaveWorkOffPlan(solution.CatalogueItemId, It.IsAny<SaveWorkOffPlanModel>()));
+            await mockDPService.Received().SaveWorkOffPlan(solution.CatalogueItemId, Arg.Any<SaveWorkOffPlanModel>());
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddWorkOffPlan_ValidIdForSolution_RedirectsToDevelopmentPlans(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             Solution solution)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel()
             {
@@ -249,14 +241,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditWorkOffPlan_InvalidId_ReturnsBadRequestResult(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             CatalogueItemId id)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
-                .ReturnsAsync(default(CatalogueItem));
+            mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
             var actual = (await controller.EditWorkOffPlan(id, 1)).As<BadRequestObjectResult>();
 
@@ -265,15 +256,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditWorkOffPlan_InvalidWorkOffPlanId_ReturnsBadRequest(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             Solution solution,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var actual = (await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlanId)).As<BadRequestObjectResult>();
 
@@ -282,9 +272,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditWorkOffPlan_ValidSolutionForId_ReturnsExpectedViewResult(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             Solution solution,
             List<Standard> standards)
@@ -293,11 +283,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, standards, workOffPlan);
 
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            mockService.Setup(s => s.GetSolutionStandardsForEditing(solution.CatalogueItemId))
-                .ReturnsAsync(standards);
+            mockService.GetSolutionStandardsForEditing(solution.CatalogueItemId).Returns(standards);
 
             var actual = (await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id)).As<ViewResult>();
 
@@ -308,16 +296,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditWorkOffPlan_InvalidId_ReturnsBadRequestResult(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             EditWorkOffPlanModel model,
             CatalogueItemId id,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
-                .ReturnsAsync(default(CatalogueItem));
+            mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
             var actual = (await controller.EditWorkOffPlan(id, workOffPlanId, model)).As<BadRequestObjectResult>();
 
@@ -326,16 +313,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditWorkOffPlan_InvalidWorkOffPlanId_ReturnsBadRequest(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             EditWorkOffPlanModel model,
             Solution solution,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var actual = (await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlanId, model)).As<BadRequestObjectResult>();
 
@@ -344,17 +330,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditWorkOffPlan_ValidIdForSolution_CallsSaveWorkOffPlans(
-            [Frozen] Mock<ISolutionsService> mockService,
-            [Frozen] Mock<IDevelopmentPlansService> mockDPService,
+            [Frozen] ISolutionsService mockService,
+            [Frozen] IDevelopmentPlansService mockDPService,
             DevelopmentPlansController controller,
             Solution solution)
         {
             var workOffPlan = solution.WorkOffPlans.FirstOrDefault();
 
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel()
             {
@@ -368,20 +353,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             await controller.EditWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id, model);
 
-            mockDPService.Verify(dp => dp.UpdateWorkOffPlan(workOffPlan.Id, It.IsAny<SaveWorkOffPlanModel>()));
+            await mockDPService.Received().UpdateWorkOffPlan(workOffPlan.Id, Arg.Any<SaveWorkOffPlanModel>());
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditWorkOffPlan_ValidIdForSolution_RedirectsToDevelopmentPlans(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             Solution solution)
         {
             var workOffPlan = solution.WorkOffPlans.FirstOrDefault();
 
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel()
             {
@@ -401,14 +385,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteWorkOffPlan_InvalidId_ReturnsBadRequestResult(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             CatalogueItemId id)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
-                .ReturnsAsync(default(CatalogueItem));
+            mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
             var actual = (await controller.DeleteWorkOffPlan(id, 1)).As<BadRequestObjectResult>();
 
@@ -417,15 +400,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteWorkOffPlan_InvalidWorkOffPlanId_ReturnsBadRequest(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             Solution solution,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var actual = (await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlanId)).As<BadRequestObjectResult>();
 
@@ -434,9 +416,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteWorkOffPlan_ValidSolutionForId_ReturnsExpectedViewResult(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             Solution solution)
         {
@@ -444,8 +426,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var expectedModel = new EditWorkOffPlanModel(solution.CatalogueItem, workOffPlan);
 
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var actual = (await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id)).As<ViewResult>();
 
@@ -456,16 +437,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteWorkOffPlan_InvalidId_ReturnsBadRequestResult(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             EditWorkOffPlanModel model,
             CatalogueItemId id,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(id))
-                .ReturnsAsync(default(CatalogueItem));
+            mockService.GetSolutionWithWorkOffPlans(id).Returns(default(CatalogueItem));
 
             var actual = (await controller.DeleteWorkOffPlan(id, workOffPlanId, model)).As<BadRequestObjectResult>();
 
@@ -474,16 +454,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteWorkOffPlan_InvalidWorkOffPlanId_ReturnsBadRequest(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             EditWorkOffPlanModel model,
             Solution solution,
             int workOffPlanId)
         {
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var actual = (await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlanId, model)).As<BadRequestObjectResult>();
 
@@ -492,36 +471,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteWorkOffPlan_ValidIdForSolution_CallsSaveWorkOffPlans(
-            [Frozen] Mock<ISolutionsService> mockService,
-            [Frozen] Mock<IDevelopmentPlansService> mockDPService,
+            [Frozen] ISolutionsService mockService,
+            [Frozen] IDevelopmentPlansService mockDPService,
             DevelopmentPlansController controller,
             Solution solution)
         {
             var workOffPlan = solution.WorkOffPlans.FirstOrDefault();
 
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel();
 
             await controller.DeleteWorkOffPlan(solution.CatalogueItemId, workOffPlan.Id, model);
 
-            mockDPService.Verify(dp => dp.DeleteWorkOffPlan(workOffPlan.Id));
+            await mockDPService.Received().DeleteWorkOffPlan(workOffPlan.Id);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteWorkOffPlan_ValidIdForSolution_RedirectsToDevelopmentPlans(
-            [Frozen] Mock<ISolutionsService> mockService,
+            [Frozen] ISolutionsService mockService,
             DevelopmentPlansController controller,
             Solution solution)
         {
             var workOffPlan = solution.WorkOffPlans.FirstOrDefault();
 
-            mockService.Setup(s => s.GetSolutionWithWorkOffPlans(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new EditWorkOffPlanModel();
 

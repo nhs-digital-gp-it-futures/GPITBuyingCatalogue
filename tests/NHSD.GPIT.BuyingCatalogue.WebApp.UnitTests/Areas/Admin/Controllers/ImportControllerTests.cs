@@ -1,15 +1,12 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ImportModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -33,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(ImportController).GetConstructors();
 
@@ -41,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_ImportGpPracticeList_ReturnsExpectedResult(
             ImportController systemUnderTest)
         {
@@ -52,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ImportGpPracticeList_ModelContainsErrors_ReturnsExpectedResult(
             ImportGpPracticeListModel model,
             ImportController systemUnderTest)
@@ -66,28 +63,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ImportGpPracticeList_ReturnsExpectedResult(
             string emailAddress,
             ImportGpPracticeListModel model,
-            [Frozen] Mock<IUsersService> mockUsersService,
+            [Frozen] IUsersService mockUsersService,
             ImportController systemUnderTest)
         {
             model.CsvUrl = Url;
 
-            mockUsersService
-                .Setup(x => x.GetUser(UserId))
-                .ReturnsAsync(new AspNetUser { Email = emailAddress });
+            mockUsersService.GetUser(UserId).Returns(new AspNetUser { Email = emailAddress });
 
             var result = (await systemUnderTest.ImportGpPracticeList(model)).As<RedirectToActionResult>();
-
-            mockUsersService.VerifyAll();
 
             result.ActionName.Should().Be(nameof(ImportController.ImportGpPracticeListConfirmation));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_ImportGpPracticeListConfirmation_ReturnsExpectedResult(
             ImportController systemUnderTest)
         {

@@ -2,7 +2,6 @@
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using Xunit;
 
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
     public static class ApplicationTypeSectionModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void FromCatalogueItem_ValidCatalogueItem_PropertiesSetAsExpected(
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,

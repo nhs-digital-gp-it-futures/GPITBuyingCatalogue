@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using Xunit;
 
@@ -20,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidConstruction_AgreementNotSigned_PropertiesSetAsExpected(
             Organisation organisation,
             List<AspNetUser> users,
@@ -34,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidConstruction_IsGpPractice_PropertiesSetAsExpected(
             Organisation organisation,
             List<AspNetUser> users,
@@ -48,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidConstruction_NotGpPractice_PropertiesSetAsExpected(
             Organisation organisation,
             List<AspNetUser> users,

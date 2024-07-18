@@ -2,7 +2,6 @@
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 
@@ -19,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasServices_ValidServices_ReturnsTrue(
             AssociatedService service,
             Solution solution,
@@ -36,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasServices_NoService_ReturnsFalse(Solution solution)
         {
             var catalogueItem = solution.CatalogueItem;

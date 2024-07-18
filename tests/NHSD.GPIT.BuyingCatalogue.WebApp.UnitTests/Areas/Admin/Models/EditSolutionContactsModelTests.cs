@@ -2,7 +2,6 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using Xunit;
 
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
     public static class EditSolutionContactsModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructing_ValidCatalogueItem_SetsPropertiesAsExpected(
             CatalogueItem catalogueItem)
         {
@@ -22,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructing_DisplayNameSetAsExpected(
             IList<SupplierContact> supplierContacts,
             CatalogueItem catalogueItem)

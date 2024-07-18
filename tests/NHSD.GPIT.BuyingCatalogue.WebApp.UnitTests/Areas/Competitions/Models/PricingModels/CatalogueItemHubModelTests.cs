@@ -6,7 +6,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
 using Xunit;
 
@@ -15,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.P
 public static class CatalogueItemHubModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
@@ -43,7 +42,7 @@ public static class CatalogueItemHubModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithPrice_SetsPriceIdAsExpected(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
@@ -65,7 +64,7 @@ public static class CatalogueItemHubModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_WithInvalidPrice_SetsPriceIdAsExpected(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
@@ -88,7 +87,7 @@ public static class CatalogueItemHubModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void PriceProgress_NoTiers_Expected(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
@@ -111,7 +110,7 @@ public static class CatalogueItemHubModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void PriceProgress_WithTiers_Expected(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
@@ -133,7 +132,7 @@ public static class CatalogueItemHubModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void QuantityProgress_PriceNotCompleted_AsExpected(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
@@ -157,7 +156,7 @@ public static class CatalogueItemHubModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void QuantityProgress_GlobalQuantityDefined_AsExpected(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
@@ -179,7 +178,7 @@ public static class CatalogueItemHubModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void QuantityProgress_RecipientQuantitiesDefined_AsExpected(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
@@ -201,7 +200,7 @@ public static class CatalogueItemHubModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void QuantityProgress_RecipientQuantityMissing_AsExpected(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,

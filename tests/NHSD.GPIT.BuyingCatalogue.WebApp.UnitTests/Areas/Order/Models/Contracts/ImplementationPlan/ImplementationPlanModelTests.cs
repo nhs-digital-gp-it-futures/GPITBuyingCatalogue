@@ -2,7 +2,6 @@
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans;
 using Xunit;
 
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
     public static class ImplementationPlanModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NullBespokePlan_ThrowsException(
             EntityFramework.Ordering.Models.ImplementationPlan bespokePlan,
             Solution solution)
@@ -22,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             EntityFramework.Ordering.Models.ImplementationPlan defaultPlan,
             EntityFramework.Ordering.Models.ImplementationPlan bespokePlan,
@@ -40,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NullSolution_SupplierImplementationPlanCorrectlySet(
             EntityFramework.Ordering.Models.ImplementationPlan defaultPlan,
             EntityFramework.Ordering.Models.ImplementationPlan bespokePlan)
@@ -51,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NullImplementationDetail_SupplierImplementationPlanCorrectlySet(
             EntityFramework.Ordering.Models.ImplementationPlan defaultPlan,
             EntityFramework.Ordering.Models.ImplementationPlan bespokePlan,
@@ -65,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NullBespokePlan_PropertiesCorrectlySet(
             EntityFramework.Ordering.Models.ImplementationPlan defaultPlan,
             Solution solution)
@@ -76,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NoMilestones_PropertiesCorrectlySet(
             EntityFramework.Ordering.Models.ImplementationPlan defaultPlan,
             EntityFramework.Ordering.Models.ImplementationPlan bespokePlan,

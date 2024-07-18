@@ -2,18 +2,15 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.Services.ServiceHelpers;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierDefinedEpics;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
@@ -28,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(SupplierDefinedEpicsController).GetConstructors();
 
@@ -36,44 +33,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Dashboard_ReturnsViewWithExpectedViewModel(
             List<Epic> epics,
-            [Frozen] Mock<ISupplierDefinedEpicsService> mockEpicsService,
+            [Frozen] ISupplierDefinedEpicsService mockEpicsService,
             SupplierDefinedEpicsController systemUnderTest)
         {
             var model = new SupplierDefinedEpicsDashboardModel(epics, null);
 
-            mockEpicsService
-                .Setup(o => o.GetSupplierDefinedEpics())
-                .ReturnsAsync(epics);
+            mockEpicsService.GetSupplierDefinedEpics().Returns(epics);
 
             var actual = (await systemUnderTest.Dashboard()).As<ViewResult>();
 
-            mockEpicsService.VerifyAll();
-
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
             actual.Model.As<SupplierDefinedEpicsDashboardModel>().Should().BeEquivalentTo(model);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Dashboard_WithSearchTerm_ReturnsViewWithExpectedViewModel(
             string searchTerm,
             List<Epic> epics,
-            [Frozen] Mock<ISupplierDefinedEpicsService> mockEpicsService,
+            [Frozen] ISupplierDefinedEpicsService mockEpicsService,
             SupplierDefinedEpicsController systemUnderTest)
         {
             var model = new SupplierDefinedEpicsDashboardModel(epics, searchTerm);
 
-            mockEpicsService
-                .Setup(o => o.GetSupplierDefinedEpicsBySearchTerm(searchTerm))
-                .ReturnsAsync(epics);
+            mockEpicsService.GetSupplierDefinedEpicsBySearchTerm(searchTerm).Returns(epics);
 
             var actual = (await systemUnderTest.Dashboard(searchTerm)).As<ViewResult>();
-
-            mockEpicsService.VerifyAll();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
@@ -81,24 +70,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static async Task Get_Dashboard_WithInvalidSearchTerm_ReturnsViewWithExpectedViewModel(
             string searchTerm,
             List<Epic> epics,
-            [Frozen] Mock<ISupplierDefinedEpicsService> mockEpicsService,
+            [Frozen] ISupplierDefinedEpicsService mockEpicsService,
             SupplierDefinedEpicsController systemUnderTest)
         {
-            mockEpicsService
-                .Setup(o => o.GetSupplierDefinedEpics())
-                .ReturnsAsync(epics);
+            mockEpicsService.GetSupplierDefinedEpics().Returns(epics);
 
             var model = new SupplierDefinedEpicsDashboardModel(epics, searchTerm);
 
             var actual = (await systemUnderTest.Dashboard(searchTerm)).As<ViewResult>();
-
-            mockEpicsService.VerifyAll();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().BeNullOrEmpty();
@@ -106,23 +91,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_SearchResults_WithMatches_ReturnsExpectedResult(
             string searchTerm,
             Capability capability,
             List<Epic> epics,
-            [Frozen] Mock<ISupplierDefinedEpicsService> mockEpicsService,
+            [Frozen] ISupplierDefinedEpicsService mockEpicsService,
             SupplierDefinedEpicsController systemUnderTest)
         {
             epics.ForEach(x => x.Capabilities = new List<Capability> { capability });
 
-            mockEpicsService
-                .Setup(o => o.GetSupplierDefinedEpicsBySearchTerm(searchTerm))
-                .ReturnsAsync(epics);
+            mockEpicsService.GetSupplierDefinedEpicsBySearchTerm(searchTerm).Returns(epics);
 
             var result = await systemUnderTest.SearchResults(searchTerm);
-
-            mockEpicsService.VerifyAll();
 
             var actualResult = result.As<JsonResult>()
                 .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
@@ -135,19 +116,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_SearchResults_NoMatches_ReturnsExpectedResult(
             string searchTerm,
-            [Frozen] Mock<ISupplierDefinedEpicsService> mockEpicsService,
+            [Frozen] ISupplierDefinedEpicsService mockEpicsService,
             SupplierDefinedEpicsController systemUnderTest)
         {
-            mockEpicsService
-                .Setup(o => o.GetSupplierDefinedEpicsBySearchTerm(searchTerm))
-                .ReturnsAsync(new List<Epic>());
+            mockEpicsService.GetSupplierDefinedEpicsBySearchTerm(searchTerm).Returns(new List<Epic>());
 
             var result = await systemUnderTest.SearchResults(searchTerm);
-
-            mockEpicsService.VerifyAll();
 
             var actualResult = result.As<JsonResult>()
                 .Value.As<IEnumerable<HtmlEncodedSuggestionSearchResult>>()
@@ -157,10 +134,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_SelectCapabilities_ReturnsModel(
+            List<Capability> capabilities,
+            [Frozen] ICapabilitiesService capabilitiesService,
             SupplierDefinedEpicsController controller)
         {
+            capabilitiesService.GetCapabilities().Returns(capabilities);
+
             var result = (await controller.SelectCapabilities()).As<ViewResult>();
 
             result.Should().NotBeNull();
@@ -171,19 +152,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_SelectCapabilities_InvalidModel_ReturnsView(
+            List<Capability> capabilities,
+            [Frozen] ICapabilitiesService capabilitiesService,
             FilterCapabilitiesModel model,
             SupplierDefinedEpicsController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
+
+            capabilitiesService.GetCapabilities().Returns(capabilities);
 
             var result = (await controller.SelectCapabilities(model)).As<ViewResult>();
             result.Should().NotBeNull();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_SelectCapabilities_ValidModel_ReturnsView(
             FilterCapabilitiesModel model,
             SupplierDefinedEpicsController controller)
@@ -196,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_AddEpic_ReturnsModel(
             SupplierDefinedEpicsController controller)
         {
@@ -210,7 +195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddEpic_InvalidModel_ReturnsView(
             AddSupplierDefinedEpicDetailsModel model,
             SupplierDefinedEpicsController controller)
@@ -224,10 +209,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddEpic_ValidModel_AddsSupplierDefinedEpic(
             AddSupplierDefinedEpicDetailsModel model,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
             model.SelectedCapabilityIds = "1.2";
@@ -235,18 +220,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var capabilityIds = (List<int>)SolutionsFilterHelper.ParseCapabilityIds(model.SelectedCapabilityIds);
 
-            supplierDefinedEpicsService.Verify(
-                s => s.AddSupplierDefinedEpic(
-                It.Is<AddEditSupplierDefinedEpic>(
+            await supplierDefinedEpicsService.Received().AddSupplierDefinedEpic(
+                Arg.Is<AddEditSupplierDefinedEpic>(
                 m => m.CapabilityIds.SequenceEqual(capabilityIds)
                          && m.Name == model.Name
                          && m.Description == model.Description
-                         && m.IsActive == model.IsActive!.Value)),
-                Times.Once);
+                         && m.IsActive == model.IsActive!.Value));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddEpic_ValidModel_RedirectsToReview(
             AddSupplierDefinedEpicDetailsModel model,
             SupplierDefinedEpicsController controller)
@@ -258,14 +241,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditEpic_EpicNotFound_ReturnsBadRequestObjectResult(
             string epicId,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(epicId))
-                .ReturnsAsync((Epic)null);
+            supplierDefinedEpicsService.GetEpic(epicId).Returns((Epic)null);
 
             var result = (await controller.EditSupplierDefinedEpic(epicId)).As<BadRequestObjectResult>();
 
@@ -274,25 +256,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditEpic_Valid_ReturnsModel(
             Epic epic,
             List<Capability> capabilities,
             List<CatalogueItem> relatedItems,
-            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ICapabilitiesService capabilitiesService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
             epic.Capabilities = capabilities;
 
-            capabilitiesService.Setup(s => s.GetCapabilities())
-                .ReturnsAsync(capabilities);
+            capabilitiesService.GetCapabilities().Returns(capabilities);
 
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(epic.Id))
-                .ReturnsAsync(epic);
+            supplierDefinedEpicsService.GetEpic(epic.Id).Returns(epic);
 
-            supplierDefinedEpicsService.Setup(s => s.GetItemsReferencingEpic(epic.Id))
-                .ReturnsAsync(relatedItems);
+            supplierDefinedEpicsService.GetItemsReferencingEpic(epic.Id).Returns(relatedItems);
 
             var expectedModel = new EditSupplierDefinedEpicModel(epic, relatedItems);
 
@@ -303,14 +282,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditCapabilities_EpicNotFound_ReturnsBadRequestObjectResult(
             string epicId,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(epicId))
-                .ReturnsAsync((Epic)null);
+            supplierDefinedEpicsService.GetEpic(epicId).Returns((Epic)null);
 
             var result = (await controller.EditCapabilities(epicId)).As<BadRequestObjectResult>();
 
@@ -319,21 +297,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditCapabilities_Valid_ReturnsModel(
             Epic epic,
             List<Capability> capabilities,
-            [Frozen] Mock<ICapabilitiesService> capabilitiesService,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ICapabilitiesService capabilitiesService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
             epic.Capabilities = capabilities;
 
-            capabilitiesService.Setup(s => s.GetCapabilities())
-                .ReturnsAsync(capabilities);
+            capabilitiesService.GetCapabilities().Returns(capabilities);
 
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(epic.Id))
-                .ReturnsAsync(epic);
+            supplierDefinedEpicsService.GetEpic(epic.Id).Returns(epic);
 
             var expectedModel = new FilterCapabilitiesModel(capabilities, capabilities.Select(x => x.Id).ToList());
 
@@ -347,15 +323,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditCapabilities_EpicNotFound_ReturnsBadRequestObjectResult(
             string epicId,
             FilterCapabilitiesModel model,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(epicId))
-                .ReturnsAsync((Epic)null);
+            supplierDefinedEpicsService.GetEpic(epicId).Returns((Epic)null);
 
             var result = (await controller.EditCapabilities(epicId, model)).As<BadRequestObjectResult>();
 
@@ -364,11 +339,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditCapabilities_InvalidModel_ReturnsView(
             Epic epic,
             FilterCapabilitiesModel model,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            List<Capability> capabilities,
+            [Frozen] ICapabilitiesService capabilitiesService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
             for (int i = 0; i < model.CapabilitySelectionItems.Length; i++)
@@ -376,8 +353,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 model.CapabilitySelectionItems[i].Id = (i + 1).ToString();
             }
 
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(epic.Id))
-                .ReturnsAsync(epic);
+            supplierDefinedEpicsService.GetEpic(epic.Id).Returns(epic);
+            capabilitiesService.GetCapabilities().Returns(capabilities);
 
             controller.ModelState.AddModelError("some-key", "some-error");
 
@@ -387,11 +364,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditCapabilities_ValidModel_RedirectsToEditSupplierDefinedEpic(
             Epic epic,
             FilterCapabilitiesModel model,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
             for (int i = 0; i < model.CapabilitySelectionItems.Length; i++)
@@ -399,8 +376,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 model.CapabilitySelectionItems[i].Id = (i + 1).ToString();
             }
 
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(epic.Id))
-                .ReturnsAsync(epic);
+            supplierDefinedEpicsService.GetEpic(epic.Id).Returns(epic);
 
             var result = (await controller.EditCapabilities(epic.Id, model)).As<RedirectToActionResult>();
 
@@ -409,7 +385,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_EditEpic_InvalidModel_ReturnsView(
             EditSupplierDefinedEpicModel model,
             SupplierDefinedEpicsController controller)
@@ -422,14 +398,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditSupplierDefinedEpicDetails_EpicNotFound_ReturnsBadRequestObjectResult(
             string epicId,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(epicId))
-                .ReturnsAsync((Epic)null);
+            supplierDefinedEpicsService.GetEpic(epicId).Returns((Epic)null);
 
             var result = (await controller.EditSupplierDefinedEpicDetails(epicId)).As<BadRequestObjectResult>();
 
@@ -438,18 +413,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditSupplierDefinedEpicDetails_Valid_ReturnsModel(
             Epic epic,
             List<CatalogueItem> items,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(epic.Id))
-                .ReturnsAsync(epic);
+            supplierDefinedEpicsService.GetEpic(epic.Id).Returns(epic);
 
-            supplierDefinedEpicsService.Setup(s => s.GetItemsReferencingEpic(epic.Id))
-                .ReturnsAsync(items);
+            supplierDefinedEpicsService.GetItemsReferencingEpic(epic.Id).Returns(items);
 
             var expectedModel = new EditSupplierDefinedEpicDetailsModel(epic, items)
             {
@@ -462,14 +435,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditSupplierDefinedEpicDetails_EpicNotFound_ReturnsBadRequestObjectResult(
             EditSupplierDefinedEpicDetailsModel model,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             SupplierDefinedEpicsController controller)
         {
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(model.Id))
-                .ReturnsAsync((Epic)null);
+            supplierDefinedEpicsService.GetEpic(model.Id).Returns((Epic)null);
 
             var result = (await controller.EditSupplierDefinedEpicDetails(model.Id, model)).As<BadRequestObjectResult>();
 
@@ -478,7 +450,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditEpicDetails_InvalidModel_ReturnsView(
             EditSupplierDefinedEpicDetailsModel model,
             SupplierDefinedEpicsController controller)
@@ -491,18 +463,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditEpicDetails_InvalidModel_RepopulatesRelatedItems(
             List<CatalogueItem> relatedItems,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             EditSupplierDefinedEpicDetailsModel model,
             Epic epic,
             SupplierDefinedEpicsController controller)
         {
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(model.Id))
-                .ReturnsAsync(epic);
-            supplierDefinedEpicsService.Setup(s => s.GetItemsReferencingEpic(epic.Id))
-                .ReturnsAsync(relatedItems);
+            supplierDefinedEpicsService.GetEpic(model.Id).Returns(epic);
+            supplierDefinedEpicsService.GetItemsReferencingEpic(epic.Id).Returns(relatedItems);
             model.RelatedItems = relatedItems;
             controller.ModelState.AddModelError("some-key", "some-error");
 
@@ -516,34 +486,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditEpicDetails_ValidModel_EditsSupplierDefinedEpic(
             EditSupplierDefinedEpicDetailsModel model,
             List<Capability> capabilities,
-            [Frozen] Mock<ISupplierDefinedEpicsService> supplierDefinedEpicsService,
+            [Frozen] ISupplierDefinedEpicsService supplierDefinedEpicsService,
             Epic epic,
             SupplierDefinedEpicsController controller)
         {
             epic.Capabilities = capabilities;
 
-            supplierDefinedEpicsService.Setup(s => s.GetEpic(model.Id))
-                .ReturnsAsync(epic);
+            supplierDefinedEpicsService.GetEpic(model.Id).Returns(epic);
 
             _ = await controller.EditSupplierDefinedEpicDetails(model.Id, model);
 
-            supplierDefinedEpicsService.Verify(
-                s => s.EditSupplierDefinedEpic(
-                It.Is<AddEditSupplierDefinedEpic>(
+            await supplierDefinedEpicsService.Received().EditSupplierDefinedEpic(
+                Arg.Is<AddEditSupplierDefinedEpic>(
                     m => m.Id == model.Id
                          && m.CapabilityIds.SequenceEqual(epic.Capabilities.Select(x => x.Id).ToList())
                          && m.Name == model.Name
                          && m.Description == model.Description
-                         && m.IsActive == model.IsActive!.Value)),
-                Times.Once);
+                         && m.IsActive == model.IsActive!.Value));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_EditEpic_ValidModel_RedirectsToDashboard(
             EditSupplierDefinedEpicModel model,
             SupplierDefinedEpicsController controller)

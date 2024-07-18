@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using Xunit;
 
@@ -10,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models;
 public static class ExpiredFrameworkModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetWarningText_OneExpiredNoActive_ReturnsExpected(
         EntityFramework.Catalogue.Models.Framework expiredFramework)
     {
@@ -24,7 +23,7 @@ public static class ExpiredFrameworkModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetWarningText_MultipleExpiredNoActive_ReturnsExpected(
         List<EntityFramework.Catalogue.Models.Framework> frameworks)
     {
@@ -36,7 +35,7 @@ public static class ExpiredFrameworkModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetWarningText_OneExpiredWithActive_ReturnsExpected(
         EntityFramework.Catalogue.Models.Framework expiredFramework,
         EntityFramework.Catalogue.Models.Framework activeFramework)
@@ -54,7 +53,7 @@ public static class ExpiredFrameworkModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetWarningText_MultipleExpiredWithActive_ReturnsExpected(
         List<EntityFramework.Catalogue.Models.Framework> frameworks)
     {

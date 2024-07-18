@@ -2,7 +2,6 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using Xunit;
 
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.R
 public static class SelectRecipientsModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
@@ -40,8 +39,8 @@ public static class SelectRecipientsModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(SelectionMode.All, true)]
-    [CommonInlineAutoData(SelectionMode.None, false)]
+    [MockInlineAutoData(SelectionMode.All, true)]
+    [MockInlineAutoData(SelectionMode.None, false)]
     public static void Construct_SelectionMode_SetsSelections(
         SelectionMode selectionMode,
         bool expectedSelection,
@@ -64,7 +63,7 @@ public static class SelectRecipientsModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_ImportedRecipients_SelectsImportedRecipients(
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
@@ -85,7 +84,7 @@ public static class SelectRecipientsModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_InvalidImportedRecipients_DoesNotSelectImportedRecipients(
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
@@ -105,7 +104,7 @@ public static class SelectRecipientsModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_ImportedRecipients_OverridesExistingRecipients(
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients)

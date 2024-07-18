@@ -4,7 +4,6 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
 using Contract = NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models.Contract;
@@ -14,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
     public static class OrderSummaryModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             ImplementationPlan defaultPlan,
             Contract contract,
@@ -35,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NullBespokePlan_PropertiesCorrectlySet(
             ImplementationPlan defaultPlan,
             Contract contract,
@@ -51,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void NoMilestones_PropertiesCorrectlySet(
             ImplementationPlan defaultPlan,
             Contract contract,
@@ -70,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void BuildAmendOrderItemModel_PropertiesCorrectlySet(
             ImplementationPlan implementationPlan,
             Order order)
@@ -92,8 +91,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.Solution)]
         public static void BuildAmendOrderItemModel_PracticeReorganisationName(
             OrderTypeEnum orderType,
             ImplementationPlan implementationPlan,
@@ -110,8 +109,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
         public static void BuildAmendOrderItemModel_MergerSplit_PracticeReorganisationName(
             OrderTypeEnum orderType,
             ImplementationPlan implementationPlan,

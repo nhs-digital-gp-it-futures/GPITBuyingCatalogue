@@ -3,7 +3,6 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Quantity;
 using Xunit;
 
@@ -20,9 +19,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         }
 
         [Theory]
-        [CommonInlineAutoData(ProvisioningType.Declarative, ViewServiceRecipientQuantityModel.QuantityColumnText)]
-        [CommonInlineAutoData(ProvisioningType.OnDemand, ViewServiceRecipientQuantityModel.QuantityColumnText)]
-        [CommonInlineAutoData(ProvisioningType.Patient, ViewServiceRecipientQuantityModel.QuantityColumnPatientText)]
+        [MockInlineAutoData(ProvisioningType.Declarative, ViewServiceRecipientQuantityModel.QuantityColumnText)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, ViewServiceRecipientQuantityModel.QuantityColumnText)]
+        [MockInlineAutoData(ProvisioningType.Patient, ViewServiceRecipientQuantityModel.QuantityColumnPatientText)]
         public static void WithValidOrderItem_PropertiesCorrectlySet(
             ProvisioningType provisioningType,
             string expectedQuantityColumnTitle,

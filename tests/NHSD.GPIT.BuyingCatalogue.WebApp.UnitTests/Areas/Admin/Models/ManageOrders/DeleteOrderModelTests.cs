@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
 using Xunit;
 
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
     public static class DeleteOrderModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             CallOffId callOffId)
         {
@@ -20,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithNullOrderDeletionApproval_PropertiesCorrectlySet(
             CallOffId callOffId)
         {
@@ -32,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ManageOr
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ApprovalDate_InvalidDayMonthYear_ReturnsNull(
             CallOffId callOffId)
         {

@@ -6,13 +6,12 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NSubstitute.Core;
 using Xunit;
 using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
@@ -21,11 +20,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
     public static class ConsentControllerTests
     {
         [Theory]
-        [CommonInlineAutoData(false)]
-        [CommonInlineAutoData(true)]
+        [MockInlineAutoData(false)]
+        [MockInlineAutoData(true)]
         public static void AcceptCookies_CreatesExpectedCookieData(
             bool agreeToAnalytics,
-            [Frozen] Mock<IResponseCookies> responseCookiesMock,
+            [Frozen] IResponseCookies responseCookiesMock,
             ConsentController controller)
         {
             var appendedCookieData = new AppendedCookieData(responseCookiesMock);
@@ -36,11 +35,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(false)]
-        [CommonInlineAutoData(true)]
+        [MockInlineAutoData(false)]
+        [MockInlineAutoData(true)]
         public static void AcceptCookies_SetsExpectedCookieData(
             bool agreeToAnalytics,
-            [Frozen] Mock<IResponseCookies> responseCookiesMock,
+            [Frozen] IResponseCookies responseCookiesMock,
             ConsentController controller)
         {
             var appendedCookieData = new AppendedCookieData(responseCookiesMock);
@@ -52,12 +51,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(false)]
-        [CommonInlineAutoData(true)]
+        [MockInlineAutoData(false)]
+        [MockInlineAutoData(true)]
         public static void AcceptCookies_SetsExpectedCookieOptions(
             bool agreeToAnalytics,
             [Frozen] CookieExpirationSettings cookieExpirationSettings,
-            [Frozen] Mock<IResponseCookies> responseCookiesMock,
+            [Frozen] IResponseCookies responseCookiesMock,
             ConsentController controller)
         {
             var appendedCookieData = new AppendedCookieData(responseCookiesMock);
@@ -77,8 +76,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(false)]
-        [CommonInlineAutoData(true)]
+        [MockInlineAutoData(false)]
+        [MockInlineAutoData(true)]
         public static void AcceptCookies_NoReferrer_ReturnsExpectedResult(
             bool agreeToAnalytics,
             ConsentController controller)
@@ -91,8 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(false)]
-        [CommonInlineAutoData(true)]
+        [MockInlineAutoData(false)]
+        [MockInlineAutoData(true)]
         public static void AcceptCookies_WithReferrer_ReturnsExpectedResult(
             bool agreeToAnalytics,
             [Frozen] HeaderDictionary headerDictionary,
@@ -111,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_CookieSettings_ExpectedResult(
             ConsentController controller)
         {
@@ -122,15 +121,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_CookieSettings_UseAnalyticsAsExpected(
             CookieData cookieData,
-            [Frozen] Mock<IRequestCookieCollection> requestCookiesMock,
+            [Frozen] IRequestCookieCollection requestCookiesMock,
             ConsentController controller)
         {
             var cookieAsString = JsonSerializer.Serialize(cookieData);
 
-            requestCookiesMock.Setup(c => c[CatalogueCookies.BuyingCatalogueConsent]).Returns(cookieAsString);
+            requestCookiesMock[CatalogueCookies.BuyingCatalogueConsent].Returns(cookieAsString);
 
             var result = controller.CookieSettings();
 
@@ -140,7 +139,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Post_CookieSettings_InvalidModel(
             CookieSettingsModel model,
             ConsentController controller)
@@ -154,11 +153,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(false)]
-        [CommonInlineAutoData(true)]
+        [MockInlineAutoData(false)]
+        [MockInlineAutoData(true)]
         public static void Post_CookieSettings_SetsExpectedCookieData(
             bool agreeToAnalytics,
-            [Frozen] Mock<IResponseCookies> responseCookiesMock,
+            [Frozen] IResponseCookies responseCookiesMock,
             ConsentController controller)
         {
             var appendedCookieData = new AppendedCookieData(responseCookiesMock);
@@ -175,12 +174,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonInlineAutoData(false)]
-        [CommonInlineAutoData(true)]
+        [MockInlineAutoData(false)]
+        [MockInlineAutoData(true)]
         public static void Post_CookieSettings_ClearsCookies(
             bool agreeToAnalytics,
-            [Frozen] Mock<IRequestCookieCollection> requestCookiesMock,
-            [Frozen] Mock<IResponseCookies> responseCookiesMock,
+            [Frozen] IRequestCookieCollection requestCookiesMock,
+            [Frozen] IResponseCookies responseCookiesMock,
             ConsentController controller)
         {
             var cookieList = new List<KeyValuePair<string, string>>
@@ -188,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 new KeyValuePair<string, string>("some-cookie", "cookie-value"),
             };
 
-            requestCookiesMock.Setup(c => c.GetEnumerator()).Returns(cookieList.GetEnumerator());
+            requestCookiesMock.GetEnumerator().Returns(cookieList.GetEnumerator());
 
             var model = new CookieSettingsModel
             {
@@ -197,16 +196,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             _ = controller.CookieSettings(model);
 
-            responseCookiesMock.Verify(c => c.Delete(It.IsAny<string>()));
+            responseCookiesMock.Received().Delete(Arg.Any<string>());
         }
 
         [Theory]
-        [CommonInlineAutoData(false)]
-        [CommonInlineAutoData(true)]
+        [MockInlineAutoData(false)]
+        [MockInlineAutoData(true)]
         public static void Post_CookieSettings_DoesNotClearMandatoryCookies(
             bool agreeToAnalytics,
-            [Frozen] Mock<IRequestCookieCollection> requestCookiesMock,
-            [Frozen] Mock<IResponseCookies> responseCookiesMock,
+            [Frozen] IRequestCookieCollection requestCookiesMock,
+            [Frozen] IResponseCookies responseCookiesMock,
             ConsentController controller)
         {
             var cookieList = new List<KeyValuePair<string, string>>
@@ -215,7 +214,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 new KeyValuePair<string, string>("user-session", "user-session-value"),
             };
 
-            requestCookiesMock.Setup(c => c.GetEnumerator()).Returns(cookieList.GetEnumerator());
+            requestCookiesMock.GetEnumerator().Returns(cookieList.GetEnumerator());
 
             var model = new CookieSettingsModel
             {
@@ -224,19 +223,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             _ = controller.CookieSettings(model);
 
-            responseCookiesMock.Verify(c => c.Delete("some-cookie"));
-            responseCookiesMock.Verify(c => c.Delete("user-session"), Times.Never());
+            responseCookiesMock.Received().Delete("some-cookie");
+            responseCookiesMock.DidNotReceive().Delete("user-session");
         }
 
         private sealed class AppendedCookieData
         {
             private CookieData actualCookieData;
 
-            internal AppendedCookieData(Mock<IResponseCookies> responseCookiesMock)
+            internal AppendedCookieData(IResponseCookies responseCookiesMock)
             {
                 responseCookiesMock
-                    .Setup(rc => rc.Append(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CookieOptions>()))
-                    .Callback<string, string, CookieOptions>(CookieCallback);
+                    .When(rc => rc.Append(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CookieOptions>()))
+                    .Do(CookieCallback);
             }
 
             internal DateTime CookieCreationDate => new(actualCookieData?.CreationDate.GetValueOrDefault() ?? 0);
@@ -249,11 +248,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
 
             internal bool? UseAnalytics => actualCookieData?.Analytics;
 
-            private void CookieCallback(string key, string value, CookieOptions cookieOptions)
+            private void CookieCallback(CallInfo callInfo)
             {
-                CookieName = key;
-                actualCookieData = JsonSerializer.Deserialize<CookieData>(value);
-                CookieOptions = cookieOptions;
+                CookieName = callInfo.ArgAt<string>(0);
+                actualCookieData = JsonSerializer.Deserialize<CookieData>(callInfo.ArgAt<string>(1));
+                CookieOptions = callInfo.ArgAt<CookieOptions>(2);
             }
         }
     }

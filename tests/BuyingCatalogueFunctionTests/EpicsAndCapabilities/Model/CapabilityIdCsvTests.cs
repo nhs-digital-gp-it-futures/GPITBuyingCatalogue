@@ -1,6 +1,6 @@
 ﻿using System;
 using AutoFixture;
-using AutoFixture.AutoMoq;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Models;
 using FluentAssertions;
@@ -13,7 +13,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Model
         [Fact]
         public static void Constructor_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(CapabilityIdCsv).GetConstructors();
 

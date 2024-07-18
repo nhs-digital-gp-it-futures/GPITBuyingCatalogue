@@ -2,54 +2,59 @@ using OrganisationImporter.Services;
 using FluentAssertions;
 using Xunit;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
-using Moq;
 using OrganisationImporter.Interfaces;
 using OrganisationImporter.Models;
-using OrganisationImporterTests.AutoFixtureCustomizations;
 
 namespace OrganisationImporterTests.Services;
 
 public static class OrganisationImportServiceTests
 {
     [Theory]
-    [AutoMoqData]
+    [MockAutoData]
     public static Task ImportFromUrl_Returns(
         Uri importUrl,
         OrganisationImportService service)
         => service.Invoking(x => x.ImportFromUrl(importUrl)).Should().NotThrowAsync();
 
     [Theory]
-    [AutoMoqData]
+    [MockAutoData]
     public static async Task ImportFromUrl_InvalidTrudData_DoesNotSave(
         Uri importUrl,
-        [Frozen] Mock<ITrudService> trudService,
+        [Frozen] ITrudService trudService,
         OrganisationImportService service)
     {
-        trudService
-            .Setup(s => s.GetTrudDataAsync(importUrl))
-            .ReturnsAsync((OrgRefData)null);
+        trudService.GetTrudDataAsync(importUrl).Returns((OrgRefData)null);
 
         await service.ImportFromUrl(importUrl);
 
-        trudService.Verify(x => x.SaveTrudDataAsync(It.IsAny<OdsOrganisationMapping>()), Times.Never());
+        await trudService.DidNotReceive().SaveTrudDataAsync(Arg.Any<OdsOrganisationMapping>());
     }
 
     [Theory]
-    [AutoMoqData]
+    [MockAutoData]
     public static async Task ImportFromUrl_ValidTrudData_Saves(
         Uri importUrl,
         OrgRefData trudData,
-        [Frozen] Mock<ITrudService> trudService,
+        [Frozen] ITrudService trudService,
         OrganisationImportService service)
     {
-        trudService
-            .Setup(s => s.GetTrudDataAsync(importUrl))
-            .ReturnsAsync(trudData);
+        trudData.CodeSystems = new()
+        {
+            CodeSystem = new List<CodeSystem>
+            {
+                new() { Name = TrudCodeSystemKeys.RolesKey, Concept = Enumerable.Empty<Concept>().ToList() },
+                new() { Name = TrudCodeSystemKeys.RelationshipKey, Concept = Enumerable.Empty<Concept>().ToList() },
+            }
+        };
+
+        trudService.GetTrudDataAsync(importUrl).Returns(trudData);
 
         await service.ImportFromUrl(importUrl);
 
-        trudService.Verify(x => x.SaveTrudDataAsync(It.IsAny<OdsOrganisationMapping>()), Times.Once());
+        await trudService.Received().SaveTrudDataAsync(Arg.Any<OdsOrganisationMapping>());
     }
 }

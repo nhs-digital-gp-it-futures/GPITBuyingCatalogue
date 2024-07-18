@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using FluentValidation.TestHelper;
 using MoreLinq.Extensions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared;
 public static class SelectRecipientsModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoSelectionMade_ThrowsValidationError(
         SelectRecipientsModel model,
         SelectRecipientsModelValidator systemUnderTest)
@@ -26,7 +25,7 @@ public static class SelectRecipientsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_AtLeastSelectionMade_ThrowsValidationError(
         SelectRecipientsModel model,
         SelectRecipientsModelValidator systemUnderTest)
@@ -42,9 +41,9 @@ public static class SelectRecipientsModelValidatorTests
     }
 
     [Theory]
-    [CommonInlineAutoData(null)]
-    [CommonInlineAutoData(0)]
-    [CommonInlineAutoData(1)]
+    [MockInlineAutoData(null)]
+    [MockInlineAutoData(0)]
+    [MockInlineAutoData(1)]
     public static void Validate_SelectionMade_NoValidationErrors(
         int? selectAtLeast,
         SelectRecipientsModel model,

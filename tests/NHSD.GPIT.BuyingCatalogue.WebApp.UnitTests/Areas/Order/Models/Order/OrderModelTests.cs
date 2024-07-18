@@ -4,7 +4,6 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 using Xunit;
 
@@ -13,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
     public static class OrderModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void InProgressOrder_WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
             AspNetUser aspNetUser,
@@ -35,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void InProgressOrder_IsAmendment_SetsTitle(
             string internalOrgId,
             AspNetUser aspNetUser,
@@ -54,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void InProgressOrder_OriginalOrder_SetsTitle(
             string internalOrgId,
             AspNetUser aspNetUser,
@@ -74,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void InProgressOrder_CompetitionOrder_SetsTitle(
             string internalOrgId,
             AspNetUser aspNetUser,
@@ -94,18 +93,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderSummaryField.OrderDescription, true)]
-        [CommonInlineAutoData(OrderSummaryField.OrderingParty, true)]
-        [CommonInlineAutoData(OrderSummaryField.Supplier, true)]
-        [CommonInlineAutoData(OrderSummaryField.CommencementDate, true)]
-        [CommonInlineAutoData(OrderSummaryField.ServiceRecipients, false)]
-        [CommonInlineAutoData(OrderSummaryField.SolutionsAndServices, false)]
-        [CommonInlineAutoData(OrderSummaryField.PlannedDeliveryDates, false)]
-        [CommonInlineAutoData(OrderSummaryField.FundingSources, true)]
-        [CommonInlineAutoData(OrderSummaryField.ImplementationPlan, false)]
-        [CommonInlineAutoData(OrderSummaryField.AssociatedServicesBilling, false)]
-        [CommonInlineAutoData(OrderSummaryField.DataProcessing, false)]
-        [CommonInlineAutoData(OrderSummaryField.ReviewAndComplete, true)]
+        [MockInlineAutoData(OrderSummaryField.OrderDescription, true)]
+        [MockInlineAutoData(OrderSummaryField.OrderingParty, true)]
+        [MockInlineAutoData(OrderSummaryField.Supplier, true)]
+        [MockInlineAutoData(OrderSummaryField.CommencementDate, true)]
+        [MockInlineAutoData(OrderSummaryField.ServiceRecipients, false)]
+        [MockInlineAutoData(OrderSummaryField.SolutionsAndServices, false)]
+        [MockInlineAutoData(OrderSummaryField.PlannedDeliveryDates, false)]
+        [MockInlineAutoData(OrderSummaryField.FundingSources, true)]
+        [MockInlineAutoData(OrderSummaryField.ImplementationPlan, false)]
+        [MockInlineAutoData(OrderSummaryField.AssociatedServicesBilling, false)]
+        [MockInlineAutoData(OrderSummaryField.DataProcessing, false)]
+        [MockInlineAutoData(OrderSummaryField.ReviewAndComplete, true)]
         public static void InProgressOrder_StausDecription_IsAmendment_ReturnsExpected(
             OrderSummaryField key,
             bool amendmentSpecific,
@@ -134,30 +133,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderDescription)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderingParty)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.Supplier)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.CommencementDate)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ServiceRecipients)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.SolutionsAndServices)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.PlannedDeliveryDates)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.FundingSources)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ImplementationPlan)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.AssociatedServicesBilling)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.DataProcessing)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ReviewAndComplete)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderDescription)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderingParty)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.Supplier)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.CommencementDate)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ServiceRecipients)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.SolutionsAndServices)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.PlannedDeliveryDates)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.FundingSources)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ImplementationPlan)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.AssociatedServicesBilling)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.DataProcessing)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ReviewAndComplete)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderDescription)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderingParty)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.Supplier)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.CommencementDate)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ServiceRecipients)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.SolutionsAndServices)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.PlannedDeliveryDates)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.FundingSources)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ImplementationPlan)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.AssociatedServicesBilling)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.DataProcessing)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ReviewAndComplete)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderDescription)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderingParty)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.Supplier)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.CommencementDate)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ServiceRecipients)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.SolutionsAndServices)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.PlannedDeliveryDates)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.FundingSources)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ImplementationPlan)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.AssociatedServicesBilling)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.DataProcessing)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ReviewAndComplete)]
         public static void InProgressOrder_StausDecription_IsOriginalOrder_ReturnsExpected(
             OrderTypeEnum orderType,
             OrderSummaryField key,
@@ -178,18 +177,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderSummaryField.OrderDescription, true)]
-        [CommonInlineAutoData(OrderSummaryField.OrderingParty, false)]
-        [CommonInlineAutoData(OrderSummaryField.Supplier, true)]
-        [CommonInlineAutoData(OrderSummaryField.CommencementDate, true)]
-        [CommonInlineAutoData(OrderSummaryField.ServiceRecipients, true)]
-        [CommonInlineAutoData(OrderSummaryField.SolutionsAndServices, true)]
-        [CommonInlineAutoData(OrderSummaryField.PlannedDeliveryDates, false)]
-        [CommonInlineAutoData(OrderSummaryField.FundingSources, false)]
-        [CommonInlineAutoData(OrderSummaryField.ImplementationPlan, false)]
-        [CommonInlineAutoData(OrderSummaryField.AssociatedServicesBilling, false)]
-        [CommonInlineAutoData(OrderSummaryField.DataProcessing, false)]
-        [CommonInlineAutoData(OrderSummaryField.ReviewAndComplete, false)]
+        [MockInlineAutoData(OrderSummaryField.OrderDescription, true)]
+        [MockInlineAutoData(OrderSummaryField.OrderingParty, false)]
+        [MockInlineAutoData(OrderSummaryField.Supplier, true)]
+        [MockInlineAutoData(OrderSummaryField.CommencementDate, true)]
+        [MockInlineAutoData(OrderSummaryField.ServiceRecipients, true)]
+        [MockInlineAutoData(OrderSummaryField.SolutionsAndServices, true)]
+        [MockInlineAutoData(OrderSummaryField.PlannedDeliveryDates, false)]
+        [MockInlineAutoData(OrderSummaryField.FundingSources, false)]
+        [MockInlineAutoData(OrderSummaryField.ImplementationPlan, false)]
+        [MockInlineAutoData(OrderSummaryField.AssociatedServicesBilling, false)]
+        [MockInlineAutoData(OrderSummaryField.DataProcessing, false)]
+        [MockInlineAutoData(OrderSummaryField.ReviewAndComplete, false)]
         public static void InProgressOrder_StausDecription_IsCompetitionOrder_ReturnsExpected(
             OrderSummaryField key,
             bool competitionSpecific,
@@ -218,30 +217,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderDescription, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderingParty, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.Supplier, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.CommencementDate, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ServiceRecipients, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.SolutionsAndServices, true)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.PlannedDeliveryDates, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.FundingSources, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ImplementationPlan, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.AssociatedServicesBilling, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.DataProcessing, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ReviewAndComplete, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderDescription, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderingParty, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.Supplier, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.CommencementDate, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ServiceRecipients, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.SolutionsAndServices, true)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.PlannedDeliveryDates, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.FundingSources, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ImplementationPlan, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.AssociatedServicesBilling, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.DataProcessing, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ReviewAndComplete, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderDescription, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderingParty, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.Supplier, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.CommencementDate, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ServiceRecipients, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.SolutionsAndServices, true)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.PlannedDeliveryDates, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.FundingSources, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ImplementationPlan, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.AssociatedServicesBilling, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.DataProcessing, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ReviewAndComplete, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderDescription, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderingParty, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.Supplier, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.CommencementDate, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ServiceRecipients, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.SolutionsAndServices, true)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.PlannedDeliveryDates, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.FundingSources, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ImplementationPlan, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.AssociatedServicesBilling, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.DataProcessing, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ReviewAndComplete, false)]
         public static void InProgressOrder_StausDecription_MergerSplitOrder_ReturnsExpected(
             OrderTypeEnum orderType,
             OrderSummaryField key,
@@ -271,10 +270,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.Solution)]
         public static void NewOrder_WithValidArguments_PropertiesCorrectlySet(
             OrderTypeEnum orderType,
             string internalOrgId,
@@ -291,30 +290,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderDescription)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderingParty)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.Supplier)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.CommencementDate)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ServiceRecipients)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.SolutionsAndServices)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.PlannedDeliveryDates)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.FundingSources)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ImplementationPlan)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.AssociatedServicesBilling)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.DataProcessing)]
-        [CommonInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ReviewAndComplete)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderDescription)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderingParty)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.Supplier)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.CommencementDate)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ServiceRecipients)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.SolutionsAndServices)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.PlannedDeliveryDates)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.FundingSources)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ImplementationPlan)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.AssociatedServicesBilling)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.DataProcessing)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ReviewAndComplete)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderDescription)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.OrderingParty)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.Supplier)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.CommencementDate)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ServiceRecipients)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.SolutionsAndServices)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.PlannedDeliveryDates)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.FundingSources)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ImplementationPlan)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.AssociatedServicesBilling)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.DataProcessing)]
+        [MockInlineAutoData(OrderTypeEnum.Solution, OrderSummaryField.ReviewAndComplete)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderDescription)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.OrderingParty)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.Supplier)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.CommencementDate)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ServiceRecipients)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.SolutionsAndServices)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.PlannedDeliveryDates)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.FundingSources)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ImplementationPlan)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.AssociatedServicesBilling)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.DataProcessing)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther, OrderSummaryField.ReviewAndComplete)]
         public static void NewOrder_StausDecription_IsOriginalOrder_ReturnsExpected(
             OrderTypeEnum orderType,
             OrderSummaryField key,
@@ -329,30 +328,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderDescription, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderingParty, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.Supplier, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.CommencementDate, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ServiceRecipients, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.SolutionsAndServices, true)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.PlannedDeliveryDates, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.FundingSources, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ImplementationPlan, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.AssociatedServicesBilling, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.DataProcessing, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ReviewAndComplete, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderDescription, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderingParty, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.Supplier, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.CommencementDate, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ServiceRecipients, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.SolutionsAndServices, true)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.PlannedDeliveryDates, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.FundingSources, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ImplementationPlan, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.AssociatedServicesBilling, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.DataProcessing, false)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ReviewAndComplete, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderDescription, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.OrderingParty, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.Supplier, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.CommencementDate, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ServiceRecipients, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.SolutionsAndServices, true)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.PlannedDeliveryDates, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.FundingSources, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ImplementationPlan, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.AssociatedServicesBilling, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.DataProcessing, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger, OrderSummaryField.ReviewAndComplete, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderDescription, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.OrderingParty, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.Supplier, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.CommencementDate, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ServiceRecipients, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.SolutionsAndServices, true)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.PlannedDeliveryDates, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.FundingSources, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ImplementationPlan, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.AssociatedServicesBilling, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.DataProcessing, false)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit, OrderSummaryField.ReviewAndComplete, false)]
         public static void NewOrder_StausDecription_MergerSplitOrder_ReturnsExpected(
             OrderTypeEnum orderType,
             OrderSummaryField key,

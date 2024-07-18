@@ -3,7 +3,6 @@ using FluentAssertions;
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationStatusValidation;
 using Xunit;
@@ -13,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class EditAdditionalServiceModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SamePublicationStatus_NoModelError(
             Solution solution,
             AdditionalService additionalService,
@@ -27,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MissingDetails_SetsModelError(
             Solution solution,
             AdditionalService additionalService,
@@ -52,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MissingCapabilities_SetsModelError(
             Solution solution,
             AdditionalService additionalService,

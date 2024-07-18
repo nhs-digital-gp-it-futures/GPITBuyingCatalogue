@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels;
 using Xunit;
 
@@ -12,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.D
 public static class SelectFilterModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_PropertiesSetAsExpected(
         string organisationName,
         List<Filter> filters)

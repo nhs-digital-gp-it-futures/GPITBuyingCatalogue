@@ -5,7 +5,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels.OrderingInformationModels;
 using Xunit;
 
@@ -14,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.R
 public static class OrderingInformationModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Organisation organisation,
         Competition competition,
@@ -37,7 +36,7 @@ public static class OrderingInformationModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SolutionGlobalQuantity_SetsAsExpected(
         Organisation organisation,
         Competition competition,
@@ -59,7 +58,7 @@ public static class OrderingInformationModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SolutionRecipientQuantity_SetsAsExpected(
         Organisation organisation,
         Competition competition,
@@ -84,7 +83,7 @@ public static class OrderingInformationModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SolutionServiceGlobalQuantity_SetsAsExpected(
         Organisation organisation,
         Competition competition,
@@ -118,7 +117,7 @@ public static class OrderingInformationModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SolutionServiceRecipientQuantity_SetsAsExpected(
         Organisation organisation,
         Competition competition,
@@ -155,7 +154,7 @@ public static class OrderingInformationModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetAssociatedServices_ReturnsAssociatedServices(
         OrderingInformationModel model)
     {
@@ -171,7 +170,7 @@ public static class OrderingInformationModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void GetAdditionalServices_ReturnsAssociatedServices(
         OrderingInformationModel model)
     {
@@ -187,7 +186,7 @@ public static class OrderingInformationModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void CalculateTotalOneOffCost_ReturnsExpected(
         OrderingInformationModel model,
         CompetitionCatalogueItemPrice solutionPrice,
@@ -209,7 +208,7 @@ public static class OrderingInformationModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void CalculateTotalMonthlyCost_ReturnsExpected(
         OrderingInformationModel model,
         CompetitionCatalogueItemPrice solutionPrice,
@@ -232,7 +231,7 @@ public static class OrderingInformationModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void CalculateTotalYearlyCost_ReturnsExpected(
         OrderingInformationModel model,
         CompetitionCatalogueItemPrice solutionPrice,

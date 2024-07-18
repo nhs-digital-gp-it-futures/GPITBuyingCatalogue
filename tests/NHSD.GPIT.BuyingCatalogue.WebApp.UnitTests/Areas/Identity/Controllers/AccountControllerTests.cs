@@ -2,10 +2,8 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using FluentAssertions;
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +16,8 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
-using NSubstitute;
-using NuGet.Common;
 using Xunit;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 

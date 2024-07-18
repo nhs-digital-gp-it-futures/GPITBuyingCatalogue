@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Filters;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using Xunit;
 
@@ -10,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Filters;
 public static class CompetitionFilterBaseAttributeTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_NoCompetitionId_Returns(
         string organisationId,
         ActionExecutingContext context,
@@ -26,7 +25,7 @@ public static class CompetitionFilterBaseAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_NoOrganisationId_Returns(
         int competitionId,
         ActionExecutingContext context,
@@ -42,7 +41,7 @@ public static class CompetitionFilterBaseAttributeTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task OnActionExecution_InvalidCompetitionIdFormat_Returns(
         string organisationId,
         string competitionId,

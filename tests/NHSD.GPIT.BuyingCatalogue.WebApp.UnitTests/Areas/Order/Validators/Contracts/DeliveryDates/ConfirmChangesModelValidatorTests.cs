@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.DeliveryDates;
 using Xunit;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
     public static class ConfirmChangesModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ConfirmChangesIsNull_ThrowsValidationError(
             ConfirmChangesModel model,
             ConfirmChangesModelValidator validator)
@@ -23,8 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
+        [MockInlineAutoData(true)]
+        [MockInlineAutoData(false)]
         public static void Validate_ConfirmChangesIsNotNull_NoErrors(
             bool confirmChanges,
             ConfirmChangesModel model,

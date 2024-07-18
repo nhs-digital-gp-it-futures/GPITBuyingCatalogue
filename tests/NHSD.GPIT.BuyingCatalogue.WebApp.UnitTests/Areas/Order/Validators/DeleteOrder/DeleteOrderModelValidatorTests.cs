@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.DeleteOrder;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.DeleteOrder;
 using Xunit;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Dele
     public static class DeleteOrderModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Amendment_SelectedOptionsNull_SetsModelError(
             DeleteOrderModel model,
             DeleteOrderModelValidator validator)
@@ -24,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Dele
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Order_SelectedOptionsNull_SetsModelError(
             DeleteOrderModel model,
             DeleteOrderModelValidator validator)
@@ -39,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Dele
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelError(
             DeleteOrderModel model,
             DeleteOrderModelValidator validator)

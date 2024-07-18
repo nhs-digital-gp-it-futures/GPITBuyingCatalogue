@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices;
 using Xunit;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
     public static class ListPriceTypeModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NullSelection_SetsModelError(
             ListPriceTypeModel model,
             ListPriceTypeModelValidator validator)
@@ -23,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidSection_NoModelError(
             ListPriceTypeModel model,
             ListPriceTypeModelValidator validator)

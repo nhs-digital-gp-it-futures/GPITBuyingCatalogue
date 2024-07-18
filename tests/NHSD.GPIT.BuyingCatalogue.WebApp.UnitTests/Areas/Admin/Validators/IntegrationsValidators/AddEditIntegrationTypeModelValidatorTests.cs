@@ -1,13 +1,10 @@
 ﻿using AutoFixture;
-using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.IntegrationsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.IntegrationsValidators;
-using NSubstitute;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.IntegrationsValidators;

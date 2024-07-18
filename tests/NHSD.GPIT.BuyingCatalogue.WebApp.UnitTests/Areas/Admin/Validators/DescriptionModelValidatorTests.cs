@@ -1,9 +1,7 @@
 ﻿using System;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Xunit;
@@ -13,8 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class DescriptionModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_SummaryNullOrEmpty_SetsModelError(
             string summary,
             DescriptionModel model,
@@ -29,27 +27,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoLink_DoesNotValidate(
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             DescriptionModelValidator validator)
         {
             var model = new DescriptionModel();
 
             var result = validator.TestValidate(model);
 
-            urlValidator.Verify(uv => uv.IsValidUrl(It.IsAny<string>()), Times.Never);
+            urlValidator.DidNotReceive().IsValidUrl(Arg.Any<string>());
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MissingProtocol_SetsModelError(
             DescriptionModel model,
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             DescriptionModelValidator validator)
         {
-            urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
-                .Returns(false);
+            urlValidator.IsValidUrl(model.Link).Returns(false);
 
             var result = validator.TestValidate(model);
 
@@ -58,15 +55,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_InvalidLink_SetsModelError(
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             DescriptionModelValidator validator)
         {
             var model = new DescriptionModel { Link = "http://wiothaoih" };
 
-            urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
-                .Returns(false);
+            urlValidator.IsValidUrl(model.Link).Returns(false);
 
             var result = validator.TestValidate(model);
 
@@ -75,15 +71,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidLink_NoModelError(
             Uri uri,
-            [Frozen] Mock<IUrlValidator> urlValidator,
+            [Frozen] IUrlValidator urlValidator,
             DescriptionModelValidator validator)
         {
             var model = new DescriptionModel { Link = uri.ToString() };
-            urlValidator.Setup(uv => uv.IsValidUrl(model.Link))
-                .Returns(true);
+            urlValidator.IsValidUrl(model.Link).Returns(true);
 
             var result = validator.TestValidate(model);
 

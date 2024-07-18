@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -12,10 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using Xunit;
 
@@ -24,41 +21,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
     public sealed class CookieConsentActionFilterTests
     {
         private readonly Dictionary<object, object> contextItems;
-        private readonly Mock<HttpRequest> httpRequestMock;
-        private readonly Mock<HttpContext> httpContextMock;
+        private readonly HttpRequest httpRequestMock;
+        private readonly HttpContext httpContextMock;
         private readonly ActionExecutingContext actionExecutingContext;
         private readonly ActionExecutedContext actionExecutedContext;
 
         public CookieConsentActionFilterTests()
         {
             contextItems = new Dictionary<object, object>();
-            httpRequestMock = new Mock<HttpRequest>();
-            httpContextMock = new Mock<HttpContext>();
-            httpContextMock.Setup(c => c.Request).Returns(httpRequestMock.Object);
-            httpContextMock.Setup(c => c.Items).Returns(contextItems);
+            httpRequestMock = Substitute.For<HttpRequest>();
+            httpContextMock = Substitute.For<HttpContext>();
+            httpContextMock.Request.Returns(httpRequestMock);
+            httpContextMock.Items = contextItems;
 
             var actionContext = new ActionContext(
-                httpContextMock.Object,
-                Mock.Of<Microsoft.AspNetCore.Routing.RouteData>(),
-                Mock.Of<ActionDescriptor>(),
+                httpContextMock,
+                Substitute.For<Microsoft.AspNetCore.Routing.RouteData>(),
+                Substitute.For<ActionDescriptor>(),
                 new ModelStateDictionary());
 
             actionExecutingContext = new ActionExecutingContext(
                 actionContext,
                 new List<IFilterMetadata>(),
                 new Dictionary<string, object>(),
-                Mock.Of<Controller>())
+                Substitute.For<Controller>())
             {
                 Result = new OkResult(),
             };
 
-            actionExecutedContext = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Mock.Of<Controller>());
+            actionExecutedContext = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Substitute.For<Controller>());
         }
 
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(CookieConsentActionFilter).GetConstructors();
 
@@ -66,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static Task Invoke_NullContext_ThrowsException(
             CookieConsentActionFilter actionFilter)
         {
@@ -74,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public async Task Invoke_NullRequest_SetsExpectedItems(
             CookieConsentActionFilter actionFilter)
         {
@@ -84,7 +81,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                 { CatalogueCookies.UseAnalytics, false },
             };
 
-            httpContextMock.Setup(c => c.Request).Returns((HttpRequest)null);
+            httpContextMock.Request.Returns((HttpRequest)null);
 
             await actionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
@@ -93,8 +90,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public async Task Invoke_NoCookie_SetsExpectedItems(
+            IRequestCookieCollection cookieCollection,
             CookieConsentActionFilter actionFilter)
         {
             var expectedItems = new Dictionary<object, object>(1)
@@ -102,8 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                 { CatalogueCookies.ShowCookieBanner, true },
             };
 
-            var cookieCollectionMock = new Mock<IRequestCookieCollection>();
-            httpRequestMock.Setup(r => r.Cookies).Returns(cookieCollectionMock.Object);
+            httpRequestMock.Cookies.Returns(cookieCollection);
 
             await actionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
@@ -112,8 +109,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public async Task Invoke_NoCookieContent_SetsExpectedItems(
+            IRequestCookieCollection cookieCollection,
             CookieConsentActionFilter actionFilter)
         {
             var expectedItems = new Dictionary<object, object>(1)
@@ -121,11 +119,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                 { CatalogueCookies.ShowCookieBanner, true },
             };
 
-            var cookieCollectionMock = new Mock<IRequestCookieCollection>();
             var outString = string.Empty;
-            cookieCollectionMock.Setup(c => c.TryGetValue(It.IsAny<string>(), out outString)).Returns(true);
+            cookieCollection.TryGetValue(Arg.Any<string>(), out Arg.Any<string>()).Returns(x =>
+            {
+                x[1] = outString;
+                return true;
+            });
 
-            httpRequestMock.Setup(r => r.Cookies).Returns(cookieCollectionMock.Object);
+            httpRequestMock.Cookies.Returns(cookieCollection);
 
             await actionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
@@ -134,9 +135,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public async Task Invoke_ValidCookieContent_NoAnalytics_SetsExpectedItems(
             CookieData cookieData,
+            IRequestCookieCollection cookieCollection,
             CookieConsentActionFilter actionFilter)
         {
             var expectedItems = new Dictionary<object, object>(1)
@@ -146,10 +148,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             cookieData.Analytics = null;
 
-            var cookieCollectionMock = new Mock<IRequestCookieCollection>();
             var outString = JsonSerializer.Serialize(cookieData, (JsonSerializerOptions)null);
-            cookieCollectionMock.Setup(c => c.TryGetValue(It.IsAny<string>(), out outString)).Returns(true);
-            httpRequestMock.Setup(r => r.Cookies).Returns(cookieCollectionMock.Object);
+            cookieCollection.TryGetValue(Arg.Any<string>(), out Arg.Any<string>()).Returns(x =>
+            {
+                x[1] = outString;
+                return true;
+            });
+
+            httpRequestMock.Cookies.Returns(cookieCollection);
 
             await actionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
@@ -158,9 +164,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public async Task Invoke_ValidCookieContent_NoPolicyDate_SetsExpectedItems(
             CookieData cookieData,
+            IRequestCookieCollection cookieCollection,
             [Frozen] CookieExpirationSettings cookieExpirationSettings,
             CookieConsentActionFilter actionFilter)
         {
@@ -172,10 +179,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
                 { CatalogueCookies.UseAnalytics, cookieData.Analytics },
             };
 
-            var cookieCollectionMock = new Mock<IRequestCookieCollection>();
             var outString = JsonSerializer.Serialize(cookieData, (JsonSerializerOptions)null);
-            cookieCollectionMock.Setup(c => c.TryGetValue(It.IsAny<string>(), out outString)).Returns(true);
-            httpRequestMock.Setup(r => r.Cookies).Returns(cookieCollectionMock.Object);
+            cookieCollection.TryGetValue(Arg.Any<string>(), out Arg.Any<string>())
+                .Returns(
+                    x =>
+                    {
+                        x[1] = outString;
+                        return true;
+                    });
+
+            httpRequestMock.Cookies.Returns(cookieCollection);
 
             await actionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
@@ -184,9 +197,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public async Task Invoke_ValidCookieContent_PolicyDateInFuture_SetsExpectedItems(
             CookieData cookieData,
+            IRequestCookieCollection cookieCollection,
             [Frozen] CookieExpirationSettings cookieExpirationSettings,
             CookieConsentActionFilter actionFilter)
         {
@@ -198,10 +212,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             cookieExpirationSettings.BuyingCatalogueCookiePolicyDate = DateTime.UtcNow.AddSeconds(5);
 
-            var cookieCollectionMock = new Mock<IRequestCookieCollection>();
             var outString = JsonSerializer.Serialize(cookieData, (JsonSerializerOptions)null);
-            cookieCollectionMock.Setup(c => c.TryGetValue(It.IsAny<string>(), out outString)).Returns(true);
-            httpRequestMock.Setup(r => r.Cookies).Returns(cookieCollectionMock.Object);
+            cookieCollection.TryGetValue(Arg.Any<string>(), out Arg.Any<string>())
+                .Returns(
+                    x =>
+                    {
+                        x[1] = outString;
+                        return true;
+                    });
+
+            httpRequestMock.Cookies.Returns(cookieCollection);
 
             await actionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 
@@ -210,9 +230,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public async Task Invoke_ValidCookieContent_CookieDateEarlierThanPolicy_SetsExpectedItems(
             CookieData cookieData,
+            IRequestCookieCollection cookieCollection,
             [Frozen] CookieExpirationSettings cookieExpirationSettings,
             CookieConsentActionFilter actionFilter)
         {
@@ -224,11 +245,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
             cookieData.CreationDate = DateTime.UtcNow.AddSeconds(-10).Ticks;
             cookieExpirationSettings.BuyingCatalogueCookiePolicyDate = DateTime.UtcNow.AddSeconds(-5);
 
-            var cookieCollectionMock = new Mock<IRequestCookieCollection>();
             var outString = JsonSerializer.Serialize(cookieData, (JsonSerializerOptions)null);
-            cookieCollectionMock.Setup(c => c.TryGetValue(It.IsAny<string>(), out outString)).Returns(true);
+            cookieCollection.TryGetValue(Arg.Any<string>(), out Arg.Any<string>())
+                .Returns(
+                    x =>
+                    {
+                        x[1] = outString;
+                        return true;
+                    });
 
-            httpRequestMock.Setup(r => r.Cookies).Returns(cookieCollectionMock.Object);
+            httpRequestMock.Cookies.Returns(cookieCollection);
 
             await actionFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(actionExecutedContext));
 

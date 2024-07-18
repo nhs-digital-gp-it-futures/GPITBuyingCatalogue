@@ -2,18 +2,15 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using EnumsNET;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels.MobileTabletBasedModels;
 using Xunit;
@@ -25,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(MobileTabletBasedController).GetConstructors();
 
@@ -33,14 +30,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task MobileTablet_InvalidSolutionId_ReturnsBadRequestResult(
             CatalogueItemId solutionId,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
-                .ReturnsAsync((CatalogueItem)null);
+            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
             var result = (await controller.MobileTablet(solutionId)).As<BadRequestObjectResult>();
 
@@ -48,57 +44,52 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task MobileTablet_WithBrowserClientApplication_SetsCorrectBacklink(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
-            [Frozen] Mock<IUrlHelper> urlHelper,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IUrlHelper urlHelper,
             MobileTabletBasedController controller)
         {
             solution.ApplicationTypeDetail.ApplicationTypes.Add(
                 ApplicationType.MobileTablet.AsString(EnumFormat.EnumMemberValue));
 
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             _ = await controller.MobileTablet(solution.CatalogueItemId);
 
-            urlHelper.Verify(
-                x => x.Action(
-                    It.Is<UrlActionContext>(y => y.Action == nameof(CatalogueSolutionsController.ApplicationType))));
+            urlHelper.Received().Action(
+                    Arg.Is<UrlActionContext>(y => y.Action == nameof(CatalogueSolutionsController.ApplicationType)));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task MobileTablet_WithoutBrowserClientApplication_SetsCorrectBacklink(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
-            [Frozen] Mock<IUrlHelper> urlHelper,
+            [Frozen] ISolutionsService solutionsService,
+            [Frozen] IUrlHelper urlHelper,
             MobileTabletBasedController controller)
         {
             solution.ApplicationTypeDetail.ApplicationTypes = new HashSet<string>();
 
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             _ = await controller.MobileTablet(solution.CatalogueItemId);
 
-            urlHelper.Verify(
-                x => x.Action(
-                    It.Is<UrlActionContext>(y => y.Action == nameof(CatalogueSolutionsController.AddApplicationType))));
+            urlHelper.Received().Action(
+                    Arg.Is<UrlActionContext>(y => y.Action == nameof(CatalogueSolutionsController.AddApplicationType)));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task MobileTablet_Valid_ReturnsViewWithModel(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
             solution.ApplicationTypeDetail.ApplicationTypes = new HashSet<string>();
 
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var expectedModel = new MobileTabletBasedModel(solution.CatalogueItem);
 
@@ -109,14 +100,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task OperatingSystems_InvalidSolutionId_ReturnsBadRequestResult(
             CatalogueItemId solutionId,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
-                .ReturnsAsync((CatalogueItem)null);
+            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
             var result = (await controller.OperatingSystems(solutionId)).As<BadRequestObjectResult>();
 
@@ -124,14 +114,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_OperatingSystems_ValidSolutionId_ReturnsViewWithModel(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var expectedModel = new OperatingSystemsModel(solution.CatalogueItem);
 
@@ -142,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_OperatingSystems_InvalidModel_ReturnsViewWithModel(
             CatalogueItemId solutionId,
             OperatingSystemsModel model,
@@ -157,18 +146,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_OperatingSystems_NullApplicationType_ReturnsBadRequestResult(
             Solution solution,
             OperatingSystemsModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync((ApplicationTypeDetail)null);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
             var result = (await controller.OperatingSystems(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
@@ -176,21 +163,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_OperatingSystems_Valid_SetsApplication(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             OperatingSystemsModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
             applicationTypeDetails.MobileOperatingSystems = null;
 
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             _ = await controller.OperatingSystems(solution.CatalogueItemId, model);
 
@@ -198,21 +183,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_OperatingSystems_Existing_SetsApplication(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             OperatingSystemsModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
             applicationTypeDetails.MobileOperatingSystems = new() { OperatingSystems = null };
 
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             _ = await controller.OperatingSystems(solution.CatalogueItemId, model);
 
@@ -225,19 +208,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_OperatingSystems_Valid_Redirects(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             OperatingSystemsModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             var result = (await controller.OperatingSystems(solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();
@@ -247,14 +228,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Connectivity_InvalidSolutionId_ReturnsBadRequestResult(
             CatalogueItemId solutionId,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
-                .ReturnsAsync((CatalogueItem)null);
+            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
             var result = (await controller.Connectivity(solutionId)).As<BadRequestObjectResult>();
 
@@ -262,14 +242,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Connectivity_ValidSolutionId_ReturnsViewWithModel(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var expectedModel = new ConnectivityModel(solution.CatalogueItem);
 
@@ -280,7 +259,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Connectivity_InvalidModel_ReturnsViewWithModel(
             CatalogueItemId solutionId,
             ConnectivityModel model,
@@ -295,18 +274,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Connectivity_NullApplicationType_ReturnsBadRequestResult(
             Solution solution,
             ConnectivityModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync((ApplicationTypeDetail)null);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
             var result = (await controller.Connectivity(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
@@ -314,21 +291,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Connectivity_Valid_SetsApplication(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             ConnectivityModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
             applicationTypeDetails.MobileConnectionDetails = null;
 
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             _ = await controller.Connectivity(solution.CatalogueItemId, model);
 
@@ -337,21 +312,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Connectivity_Existing_SetsApplication(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             ConnectivityModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
             applicationTypeDetails.MobileConnectionDetails = new() { ConnectionType = null };
 
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             _ = await controller.Connectivity(solution.CatalogueItemId, model);
 
@@ -364,19 +337,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Connectivity_Valid_Redirects(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             ConnectivityModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             var result = (await controller.Connectivity(solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();
@@ -386,14 +357,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task MemoryAndStorage_InvalidSolutionId_ReturnsBadRequestResult(
             CatalogueItemId solutionId,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
-                .ReturnsAsync((CatalogueItem)null);
+            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
             var result = (await controller.MemoryAndStorage(solutionId)).As<BadRequestObjectResult>();
 
@@ -401,14 +371,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_MemoryAndStorage_ValidSolutionId_ReturnsViewWithModel(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var expectedModel = new MemoryAndStorageModel(solution.CatalogueItem);
 
@@ -419,7 +388,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_MemoryAndStorage_InvalidModel_ReturnsViewWithModel(
             CatalogueItemId solutionId,
             MemoryAndStorageModel model,
@@ -434,18 +403,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_MemoryAndStorage_NullApplicationType_ReturnsBadRequestResult(
             Solution solution,
             MemoryAndStorageModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync((ApplicationTypeDetail)null);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
             var result = (await controller.MemoryAndStorage(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
@@ -453,21 +420,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_MemoryAndStorage_Valid_SetsApplication(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             MemoryAndStorageModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
             applicationTypeDetails.MobileMemoryAndStorage = null;
 
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             _ = await controller.MemoryAndStorage(solution.CatalogueItemId, model);
 
@@ -476,19 +441,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_MemoryAndStorage_Valid_Redirects(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             MemoryAndStorageModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             var result = (await controller.MemoryAndStorage(solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();
@@ -498,14 +461,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task ThirdPartyComponents_InvalidSolutionId_ReturnsBadRequestResult(
             CatalogueItemId solutionId,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
-                .ReturnsAsync((CatalogueItem)null);
+            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
             var result = (await controller.ThirdPartyComponents(solutionId)).As<BadRequestObjectResult>();
 
@@ -513,14 +475,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_ThirdPartyComponents_ValidSolutionId_ReturnsViewWithModel(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var expectedModel = new ThirdPartyComponentsModel(solution.CatalogueItem);
 
@@ -531,7 +492,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ThirdPartyComponents_InvalidModel_ReturnsViewWithModel(
             CatalogueItemId solutionId,
             ThirdPartyComponentsModel model,
@@ -546,18 +507,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ThirdPartyComponents_NullApplicationType_ReturnsBadRequestResult(
             Solution solution,
             ThirdPartyComponentsModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync((ApplicationTypeDetail)null);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
             var result = (await controller.ThirdPartyComponents(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
@@ -565,21 +524,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ThirdPartyComponents_Valid_SetsApplication(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             ThirdPartyComponentsModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
             applicationTypeDetails.MobileThirdParty = null;
 
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             _ = await controller.ThirdPartyComponents(solution.CatalogueItemId, model);
 
@@ -588,19 +545,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ThirdPartyComponents_Valid_Redirects(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             ThirdPartyComponentsModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             var result = (await controller.ThirdPartyComponents(solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();
@@ -610,14 +565,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task HardwareRequirements_InvalidSolutionId_ReturnsBadRequestResult(
             CatalogueItemId solutionId,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
-                .ReturnsAsync((CatalogueItem)null);
+            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
             var result = (await controller.HardwareRequirements(solutionId)).As<BadRequestObjectResult>();
 
@@ -625,14 +579,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_HardwareRequirements_ValidSolutionId_ReturnsViewWithModel(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var expectedModel = new HardwareRequirementsModel(solution.CatalogueItem);
 
@@ -643,7 +596,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_HardwareRequirements_InvalidModel_ReturnsViewWithModel(
             CatalogueItemId solutionId,
             HardwareRequirementsModel model,
@@ -658,18 +611,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_HardwareRequirements_NullApplicationType_ReturnsBadRequestResult(
             Solution solution,
             HardwareRequirementsModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync((ApplicationTypeDetail)null);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
             var result = (await controller.HardwareRequirements(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
@@ -677,19 +628,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_HardwareRequirements_Valid_SetsApplication(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             HardwareRequirementsModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             _ = await controller.HardwareRequirements(solution.CatalogueItemId, model);
 
@@ -697,19 +646,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_HardwareRequirements_Valid_Redirects(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             HardwareRequirementsModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             var result = (await controller.HardwareRequirements(solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();
@@ -719,14 +666,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task AdditionalInformation_InvalidSolutionId_ReturnsBadRequestResult(
             CatalogueItemId solutionId,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solutionId))
-                .ReturnsAsync((CatalogueItem)null);
+            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
 
             var result = (await controller.AdditionalInformation(solutionId)).As<BadRequestObjectResult>();
 
@@ -734,14 +680,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_AdditionalInformation_ValidSolutionId_ReturnsViewWithModel(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var expectedModel = new AdditionalInformationModel(solution.CatalogueItem);
 
@@ -752,7 +697,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AdditionalInformation_InvalidModel_ReturnsViewWithModel(
             CatalogueItemId solutionId,
             AdditionalInformationModel model,
@@ -767,18 +712,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AdditionalInformation_NullApplicationType_ReturnsBadRequestResult(
             Solution solution,
             AdditionalInformationModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync((ApplicationTypeDetail)null);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns((ApplicationTypeDetail)null);
 
             var result = (await controller.AdditionalInformation(solution.CatalogueItemId, model)).As<BadRequestObjectResult>();
 
@@ -786,19 +729,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AdditionalInformation_Valid_SetsApplication(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             AdditionalInformationModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             _ = await controller.AdditionalInformation(solution.CatalogueItemId, model);
 
@@ -806,19 +747,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AdditionalInformation_Valid_Redirects(
             Solution solution,
             ApplicationTypeDetail applicationTypeDetails,
             AdditionalInformationModel model,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             MobileTabletBasedController controller)
         {
-            solutionsService.Setup(x => x.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            solutionsService.Setup(x => x.GetApplicationType(solution.CatalogueItemId))
-                .ReturnsAsync(applicationTypeDetails);
+            solutionsService.GetApplicationType(solution.CatalogueItemId).Returns(applicationTypeDetails);
 
             var result = (await controller.AdditionalInformation(solution.CatalogueItemId, model))
                 .As<RedirectToActionResult>();

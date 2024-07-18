@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Supplier;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
@@ -10,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
     public static class NewContactModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PersonalDetailsMissing_ThrowsValidationError(
             NewContactModel model,
             NewContactModelValidator systemUnderTest)
@@ -26,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_FirstNameMissing_ThrowsValidationError(
             NewContactModel model,
             NewContactModelValidator systemUnderTest)
@@ -40,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_LastNameMissing_ThrowsValidationError(
             NewContactModel model,
             NewContactModelValidator systemUnderTest)
@@ -54,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ContactDetailsMissing_ThrowsValidationError(
             NewContactModel model,
             NewContactModelValidator systemUnderTest)
@@ -69,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Supp
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmailWrongFormat_ThrowsValidationError(
             string email,
             NewContactModel model,

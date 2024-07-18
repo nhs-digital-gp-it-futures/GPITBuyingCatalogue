@@ -1,8 +1,6 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices;
 using Xunit;
@@ -12,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
     public static class AddTieredListPriceModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_InvalidModel_SetsModelError(
             AddTieredListPriceModel model,
             AddTieredListPriceModelValidator validator)
@@ -38,22 +36,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Duplicate_SetsModelError(
             AddTieredListPriceModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             AddTieredListPriceModelValidator validator)
         {
             model.SelectedCalculationType = EntityFramework.Catalogue.Models.CataloguePriceCalculationType.Volume;
             model.SelectedProvisioningType = EntityFramework.Catalogue.Models.ProvisioningType.Declarative;
 
-            service.Setup(s => s.HasDuplicateTieredPrice(
+            service.HasDuplicateTieredPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
                 model.UnitDescription,
-                model.RangeDefinition)).ReturnsAsync(true);
+                model.RangeDefinition).Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -62,22 +60,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelError(
             AddTieredListPriceModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             AddTieredListPriceModelValidator validator)
         {
             model.SelectedCalculationType = EntityFramework.Catalogue.Models.CataloguePriceCalculationType.Volume;
             model.SelectedProvisioningType = EntityFramework.Catalogue.Models.ProvisioningType.Declarative;
 
-            service.Setup(s => s.HasDuplicateTieredPrice(
+            service.HasDuplicateTieredPrice(
                 model.CatalogueItemId,
                 model.CataloguePriceId,
                 model.SelectedProvisioningType!.Value,
                 model.SelectedCalculationType!.Value,
                 model.UnitDescription,
-                model.RangeDefinition)).ReturnsAsync(false);
+                model.RangeDefinition).Returns(false);
 
             var result = validator.TestValidate(model);
 

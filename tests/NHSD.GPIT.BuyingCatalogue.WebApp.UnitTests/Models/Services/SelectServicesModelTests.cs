@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 using Xunit;
 
@@ -12,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Services
     public static class SelectServicesModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidOrder_BasicPropertiesCorrectlySet(
             EntityFramework.Ordering.Models.Order order,
             List<CatalogueItem> services)
@@ -39,8 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Services
         }
 
         [Theory]
-        [CommonInlineAutoData(CatalogueItemType.AdditionalService)]
-        [CommonInlineAutoData(CatalogueItemType.AssociatedService)]
+        [MockInlineAutoData(CatalogueItemType.AdditionalService)]
+        [MockInlineAutoData(CatalogueItemType.AssociatedService)]
         public static void WithValidArguments_PropertiesCorrectlySet(
             CatalogueItemType catalogueItemType,
             EntityFramework.Ordering.Models.Order order,

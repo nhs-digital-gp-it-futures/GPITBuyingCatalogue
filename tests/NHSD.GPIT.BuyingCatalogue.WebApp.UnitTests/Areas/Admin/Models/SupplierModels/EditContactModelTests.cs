@@ -4,7 +4,6 @@ using System.Linq;
 using AutoFixture;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
 using Xunit;
 
@@ -44,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidConstruction_PropertiesSetAsExpected(
             Supplier supplier)
         {
@@ -56,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidConstructionOverload_PropertiesSetAsExpected(
             SupplierContact contact,
             Supplier supplier,
@@ -77,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ValidConstructor_WithActiveSupplierAndASingleUnreferencedContact_AssignsCanDelete_False(
             Supplier supplier,
             SupplierContact contact)
@@ -92,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ValidConstructor_WithInactiveSupplierAndASingleUnreferencedContact_AssignsCanDelete_True(
             Supplier supplier,
             SupplierContact contact)
@@ -107,7 +106,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ValidConstructor_WithInactiveSupplierAndASingleReferencedContact_AssignsCanDelete_False(
             Supplier supplier,
             SupplierContact contact,
@@ -123,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Supplier
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ValidConstructor_WithActiveSupplierAndUnreferencedContacts_AssignsCanDelete_True(
             Supplier supplier,
             IFixture fixture)

@@ -7,7 +7,6 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 
@@ -70,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasApplicationType_ValueValid_ReturnsYes(
             ApplicationType applicationType,
             [Frozen] CatalogueItem catalogueItem,
@@ -91,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void HasApplicationType_ValueNotValid_ReturnsNo(
             [Frozen] CatalogueItem catalogueItem,
             [Frozen] Solution solution,
@@ -112,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Construct_BrowserBasedApplication_CreatesDescriptionListViewModel(
             Solution solution,
             CatalogueItemContentStatus contentStatus)
@@ -148,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Construct_NativeDesktopApplication_CreatesDescriptionListViewModel(
             Solution solution,
             CatalogueItemContentStatus contentStatus)
@@ -192,7 +191,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Construct_NativeMobileApplication_CreatesDescriptionListViewModel(
             Solution solution,
             CatalogueItemContentStatus contentStatus)
@@ -237,7 +236,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Construct_AllApplicationTypes(
             Solution solution,
             CatalogueItemContentStatus contentStatus)

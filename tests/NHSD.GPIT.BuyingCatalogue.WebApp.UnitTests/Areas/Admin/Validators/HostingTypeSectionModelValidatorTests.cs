@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.HostingTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Xunit;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class HostingTypeSectionModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoExistingHostingTypes_HasError(
             HostingTypeSectionModel model,
             HostingTypeSectionModelValidator validator)
@@ -23,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ExistingHostingTypes_DoesNotHaveError(
             HostingTypeSectionModel model,
             HostingTypeSectionModelValidator validator)

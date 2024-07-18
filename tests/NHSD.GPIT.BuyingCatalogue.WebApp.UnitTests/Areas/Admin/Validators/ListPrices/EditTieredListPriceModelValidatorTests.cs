@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices;
 using Xunit;
@@ -14,12 +12,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
     public static class EditTieredListPriceModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoTiers_SetsModelError(
             Solution solution,
             CataloguePrice price,
             EditTieredListPriceModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             EditTieredListPriceModelValidator validator)
         {
             model.SelectedPublicationStatus = PublicationStatus.Published;
@@ -30,8 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            service.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
 
@@ -40,13 +37,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_InvalidStartingRange_SetsModelError(
             Solution solution,
             CataloguePrice price,
             CataloguePriceTier tier,
             EditTieredListPriceModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             EditTieredListPriceModelValidator validator)
         {
             model.SelectedPublicationStatus = PublicationStatus.Published;
@@ -64,8 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            service.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
 
@@ -74,13 +70,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoInfiniteRange_SetsModelError(
             Solution solution,
             CataloguePrice price,
             CataloguePriceTier tier,
             EditTieredListPriceModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             EditTieredListPriceModelValidator validator)
         {
             model.SelectedPublicationStatus = PublicationStatus.Published;
@@ -98,8 +94,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            service.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
 
@@ -108,14 +103,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_GapsBetweenRanges_SetsModelError(
             Solution solution,
             CataloguePrice price,
             CataloguePriceTier firstTier,
             CataloguePriceTier secondTier,
             EditTieredListPriceModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             EditTieredListPriceModelValidator validator)
         {
             model.SelectedPublicationStatus = PublicationStatus.Published;
@@ -137,8 +132,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            service.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
 
@@ -147,14 +141,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_OverlapBetweenRanges_SetsModelError(
             Solution solution,
             CataloguePrice price,
             CataloguePriceTier firstTier,
             CataloguePriceTier secondTier,
             EditTieredListPriceModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             EditTieredListPriceModelValidator validator)
         {
             model.SelectedPublicationStatus = PublicationStatus.Published;
@@ -176,8 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            service.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
 
@@ -186,7 +179,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelErrors(
             Solution solution,
             CataloguePrice price,
@@ -194,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             CataloguePriceTier secondTier,
             CataloguePriceTier thirdTier,
             EditTieredListPriceModel model,
-            [Frozen] Mock<IListPriceService> service,
+            [Frozen] IListPriceService service,
             EditTieredListPriceModelValidator validator)
         {
             firstTier.LowerRange = 1;
@@ -215,8 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
             model.CatalogueItemId = solution.CatalogueItemId;
             model.CataloguePriceId = price.CataloguePriceId;
 
-            service.Setup(s => s.GetCatalogueItemWithListPrices(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            service.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
 

@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderingParty;
 using Xunit;
 
@@ -8,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Ordering
     public static class OrderingPartyModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order)
