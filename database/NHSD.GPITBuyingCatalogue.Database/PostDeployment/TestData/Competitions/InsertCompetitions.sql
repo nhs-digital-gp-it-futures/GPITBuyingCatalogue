@@ -720,15 +720,13 @@ BEGIN
     INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays], [NonPriceElementsId]) VALUES (1, GETUTCDATE(), GETUTCDATE(), N'0,1,2,3,4', 2)
     INSERT [competitions].[ServiceLevelCriteria] ([Id], [TimeFrom], [TimeUntil], [ApplicableDays], [NonPriceElementsId]) VALUES (2, GETUTCDATE(), GETUTCDATE(), N'0,1,2,3,4', 3)
     SET IDENTITY_INSERT [competitions].[ServiceLevelCriteria] OFF
-
-    SET IDENTITY_INSERT [competitions].[InteroperabilityCriteria] ON
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (0, 0, N'Appointment Booking', 1)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (1, 0, N'Structured Record', 1)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (2, 0, N'Patient Facing', 0)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (3, 3, N'Patient Facing', 0)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (4, 3, N'Appointment Booking', 1)
-    INSERT [competitions].[InteroperabilityCriteria] ([Id], [NonPriceElementsId], [Qualifier], [IntegrationType]) VALUES (5, 3, N'Structured Record', 1)
-    SET IDENTITY_INSERT [competitions].[InteroperabilityCriteria] OFF
+    
+    INSERT [competitions].[IntegrationsCriteria] ([NonPriceElementsId],[IntegrationTypeId]) VALUES (0, 5)
+    INSERT [competitions].[IntegrationsCriteria] ([NonPriceElementsId],[IntegrationTypeId]) VALUES (0, 6)
+    INSERT [competitions].[IntegrationsCriteria] ([NonPriceElementsId],[IntegrationTypeId]) VALUES (0, 3)
+    INSERT [competitions].[IntegrationsCriteria] ([NonPriceElementsId],[IntegrationTypeId]) VALUES (3, 3)
+    INSERT [competitions].[IntegrationsCriteria] ([NonPriceElementsId],[IntegrationTypeId]) VALUES (3, 5)
+    INSERT [competitions].[IntegrationsCriteria] ([NonPriceElementsId],[IntegrationTypeId]) VALUES (3, 6)
 
 END
 GO

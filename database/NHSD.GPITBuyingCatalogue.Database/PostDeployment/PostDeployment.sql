@@ -35,7 +35,6 @@
 :r ./TestData/InsertStandards.sql
 :r ./TestData/InsertStandardsCapabilities.sql
 
-:r ./InsertOrderStatuses.sql
 :r ./InsertOrderTriageValues.sql
 :r ./InsertOrderItemFundingTypes.sql
 :r ./InsertTimeUnits.sql
@@ -78,5 +77,3 @@
 :r ./MigrateMergersAndSplits.sql
 :r ./MigrateOrderType.sql
 :r ./MigrateFrameworks.sql
-:r ./MigrateGpConnectIntegrations.sql
-:r ./MigrateSolutionIntegrations.sql

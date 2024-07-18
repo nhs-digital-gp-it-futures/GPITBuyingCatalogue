@@ -12,7 +12,6 @@ BEGIN
         UserName = 'SueSmith@email.com';
 
     DECLARE
-        @OrderStatus INT = 2,
         @SupplierId INT = 99999, --notEmis Health,
         @CatalogueSolutionId NVARCHAR(14) = '99999-89', --NotEmis Web GP
         @CatalogueSolutionPriceId INT = 19, --NotEmis Web GP Tiered Price
@@ -69,7 +68,7 @@ BEGIN
     -------------------------------------------------------
 
     INSERT INTO ordering.Orders
-    (OrderNumber, Revision, Description, OrderingPartyId, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
+    (OrderNumber, Revision, Description, OrderingPartyId, Created, LastUpdated, LastUpdatedBy, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
     1,
@@ -79,7 +78,6 @@ BEGIN
     SYSDATETIME(),
     SYSDATETIME(),
     @sueId,
-    @OrderStatus,
     0,
     @AssociatedServicesOnly);
 
@@ -96,7 +94,7 @@ BEGIN
     SELECT @LastBuyerContactId = IDENT_CURRENT('ordering.Contacts');
 
     INSERT INTO ordering.Orders
-    (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
+    (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, Created, LastUpdated, LastUpdatedBy, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
     2,
@@ -107,7 +105,6 @@ BEGIN
     SYSDATETIME(),
     SYSDATETIME(),
     @sueId,
-    @OrderStatus,
     0,
     @AssociatedServicesOnly);
 
@@ -133,7 +130,7 @@ BEGIN
 
     INSERT INTO ordering.Orders
     (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId,
-        Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, AssociatedServicesOnly)
+        Created, LastUpdated, LastUpdatedBy, IsDeleted, AssociatedServicesOnly)
     VALUES
     (
     3,
@@ -146,7 +143,6 @@ BEGIN
     SYSDATETIME(),
     SYSDATETIME(),
     @sueId,
-    @OrderStatus,
     0,
     @AssociatedServicesOnly);
 
@@ -172,7 +168,7 @@ BEGIN
 
     INSERT INTO ordering.Orders
     (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
-        Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
+        Created, LastUpdated, LastUpdatedBy, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
     VALUES
     (
     4,
@@ -186,7 +182,6 @@ BEGIN
     SYSDATETIME(),
     SYSDATETIME(),
     @sueId,
-    @OrderStatus,
     0,
     6,
     36,
@@ -218,7 +213,7 @@ BEGIN
 
     INSERT INTO ordering.Orders
     (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
-        Created, LastUpdated, LastUpdatedBy, OrderStatusId, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
+        Created, LastUpdated, LastUpdatedBy, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly)
         OUTPUT INSERTED.Id INTO @OrderIdCatSolAdditional (Id)
     VALUES
     (
@@ -233,7 +228,6 @@ BEGIN
     SYSDATETIME(),
     SYSDATETIME(),
     @sueId,
-    @OrderStatus,
     0,
     6,
     36,
