@@ -20,6 +20,7 @@ using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
+using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
@@ -402,6 +403,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 x =>
                 {
                     x.BaseAddress = RecaptchaSettings.GoogleRecaptchaApiUri;
+                });
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureHsts(this IServiceCollection services, IConfiguration configuration)
+        {
+            if (CurrentEnvironment.IsDevelopment) return services;
+
+            const int defaultDays = 365;
+
+            var maxAgeDays = configuration.GetValue<int?>("hstsMaxAgeDays") ?? defaultDays;
+
+            services.AddHsts(
+                x =>
+                {
+                    x.Preload = true;
+                    x.IncludeSubDomains = true;
+                    x.MaxAge = TimeSpan.FromDays(maxAgeDays);
                 });
 
             return services;
