@@ -28,8 +28,8 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             var stream = new MemoryStream(
                 Encoding.UTF8.GetBytes(
                     new StringBuilder()
-                        .AppendLine("ID,Name,Version,Capability Category,URL,Description,Framework")
-                        .AppendLine("C1,NameValue,1.0.2,Citizen services,https://test.com,DescriptionValue,GP IT Futures|Tech Innovation")
+                        .AppendLine("ID,Name,Capability Category,URL,Description,Framework")
+                        .AppendLine("C1,NameValue,Citizen services,https://test.com,DescriptionValue,GP IT Futures|Tech Innovation")
                         .ToString())
 
             );
@@ -41,7 +41,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.Should().NotBeNull();
             result!.Id.Value.Should().Be(1);
             result.Name.Should().Be("NameValue");
-            result.Version.Should().Be("1.0.2");
             result.Category.Should().Be("Citizen services");
             result.Url.Should().Be("https://test.com");
             result.Description.Should().Be("DescriptionValue");
@@ -81,7 +80,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.Should().NotBeNull();
             result!.Id.Should().Be(capability.Id);
             result.Name.Should().Be(capability.Name);
-            result.Version.Should().Be(capability.Version);
             result.Description.Should().Be(capability.Description);
             result.SourceUrl.Should().Be(capability.SourceUrl);
             result.Category.Name.Should().Be(capability.Category.Name);
@@ -112,7 +110,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.Should().NotBeNull();
             result!.Id.Should().Be(capability.Id);
             result.Name.Should().Be(capability.Name);
-            result.Version.Should().Be(capability.Version);
             result.Description.Should().Be(capability.Description);
             result.SourceUrl.Should().Be(capability.SourceUrl);
             result.Category.Name.Should().Be(capability.Category.Name);
@@ -150,7 +147,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.Should().NotBeNull();
             result!.Id.Should().Be(capability.Id);
             result.Name.Should().Be("modified name");
-            result.Version.Should().Be("modified version");
             result.Description.Should().Be("modified description");
             result.SourceUrl.Should().Be("modified url");
             result.Category.Name.Should().Be(categoryToChangeTo.Name);
@@ -187,7 +183,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.Should().NotBeNull();
             result!.Id.Should().Be(capability.Id);
             result.Name.Should().Be("modified name");
-            result.Version.Should().Be("modified version");
             result.Description.Should().Be("modified description");
             result.SourceUrl.Should().Be("modified url");
             result.Category.Name.Should().Be(categoryToChangeTo.Name);
@@ -227,7 +222,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
                 Id = new CapabilityIdCsv($"C{capability.Id}"),
                 Category = categoryToChangeTo.Name,
                 Name = "modified name",
-                Version = "modified version",
                 Description = "modified description",
                 Url = "modified url",
                 Framework = new List<string>() { frameworkToChangeTo.ShortName },
@@ -241,7 +235,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
                 Id = new CapabilityIdCsv($"C{capability.Id}"),
                 Category = capability.Category.Name,
                 Name = capability.Name,
-                Version = capability.Version,
                 Description = capability.Description,
                 Url = capability.SourceUrl,
                 Framework = new List<string>() { framework.ShortName },

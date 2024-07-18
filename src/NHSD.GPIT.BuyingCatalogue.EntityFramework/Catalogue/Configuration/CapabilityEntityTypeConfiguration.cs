@@ -43,10 +43,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
             builder.HasMany(c => c.FrameworkCapabilities)
                 .WithOne(f => f.Capability);
 
-            builder.Property(c => c.Version)
-                .IsRequired()
-                .HasMaxLength(10);
-
             builder.HasOne(c => c.Category)
                 .WithMany(cc => cc.Capabilities)
                 .HasForeignKey(c => c.CategoryId)

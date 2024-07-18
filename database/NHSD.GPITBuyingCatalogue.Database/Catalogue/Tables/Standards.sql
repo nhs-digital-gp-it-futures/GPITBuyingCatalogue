@@ -4,7 +4,7 @@
     [Name] NVARCHAR(255) NOT NULL,
     [Description] NVARCHAR(500) NOT NULL,
     [Url] NVARCHAR(1000) NOT NULL,
-    [Version] NVARCHAR(10) NULL,
+    [Version] NVARCHAR(10) NULL, --TODO Remove column in future release
     StandardTypeId INT NOT NULL,
   	IsDeleted bit NOT NULL CONSTRAINT DF_Standards_IsDeleted DEFAULT(0),
     LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,

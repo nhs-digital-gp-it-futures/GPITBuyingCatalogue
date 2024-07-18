@@ -2,7 +2,7 @@
 (
      Id int NOT NULL,
      CapabilityRef nvarchar(4),
-     [Version] nvarchar(10) NOT NULL,
+     [Version] nvarchar(10) NULL,
      StatusId int NOT NULL,
      [Name] nvarchar(255) NOT NULL,
      [Description] nvarchar(500) NOT NULL,

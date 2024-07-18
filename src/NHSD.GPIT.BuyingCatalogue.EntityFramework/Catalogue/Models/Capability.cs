@@ -21,8 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public string CapabilityRef { get; set; }
 
-        public string Version { get; set; }
-
         public string Name { get; set; }
 
         public string NameWithStatusSuffix => Status == CapabilityStatus.Expired

@@ -77,7 +77,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Capabilities
                 capability.Id = i;
                 capability.CapabilityRef = $"{i}";
                 capability.Description = $"{i}";
-                capability.Version = $"{i}";
 
                 context.Capabilities.Add(capability);
 

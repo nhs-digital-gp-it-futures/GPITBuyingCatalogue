@@ -61,7 +61,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             csv.ReadHeader();
             while (await csv.ReadAsync())
             {
-                // ID,Name,Version,Type,URL,Description,Framework
+                // ID,Name,Type,URL,Description,Framework
                 var standard = Map(csv);
                 standards.Add(standard);
             }
@@ -88,7 +88,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             {
                 Id = csv.GetField<string>("ID"),
                 Name = csv.GetField<string>("Name"),
-                Version = csv.GetField<string>("Version"),
                 StandardType = ParseStandardType(csv.GetField<string>("Type")),
                 Url = csv.GetField<string>("URL"),
                 Description = csv.GetField<string>("Description"),
@@ -118,7 +117,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
                 Id = standard.Id,
                 Name = standard.Name,
                 Description = standard.Description,
-                Version = standard.Version,
                 Url = standard.Url,
                 StandardType = standard.StandardType,
                 IsDeleted = false,
@@ -132,7 +130,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
         {
             existing.Name = standard.Name;
             existing.Description = standard.Description;
-            existing.Version = standard.Version;
             existing.Url = standard.Url;
             existing.StandardType = standard.StandardType;
             existing.IsDeleted = false;
