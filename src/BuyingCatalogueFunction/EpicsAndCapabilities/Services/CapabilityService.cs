@@ -67,7 +67,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             csv.ReadHeader();
             while (await csv.ReadAsync())
             {
-                // ID,Name,Version,Capability Category,URL,Description,Framework
+                // ID,Name,Capability Category,URL,Description,Framework
                 var capability = Map(csv);
                 capabilities.Add(capability);
             }
@@ -94,7 +94,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             {
                 Id = new CapabilityIdCsv(csv.GetField<string>("ID")),
                 Name = csv.GetField<string>("Name"),
-                Version = csv.GetField<string>("Version"),
                 Category = csv.GetField<string>("Capability Category"),
                 Url = csv.GetField<string>("URL"),
                 Description = csv.GetField<string>("Description"),
@@ -168,7 +167,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
                 Id = capability.Id.Value,
                 Name = capability.Name,
                 Description = capability.Description,
-                Version = capability.Version,
                 SourceUrl = capability.Url,
                 CategoryId = capabilityCategory.Id,
                 Status = CapabilityStatus.Effective,
@@ -193,7 +191,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
         {
             existing.Name = capability.Name;
             existing.Description = capability.Description;
-            existing.Version = capability.Version;
             existing.SourceUrl = capability.Url;
             existing.CategoryId = capabilityCategory.Id;
             existing.Status = CapabilityStatus.Effective;

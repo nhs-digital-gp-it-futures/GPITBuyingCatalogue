@@ -3,12 +3,6 @@ using System.Xml.Serialization;
 
 namespace OrganisationImporter.Models;
 
-[XmlRoot(ElementName="Version")]
-public class Version {
-	[XmlAttribute(AttributeName="value")]
-	public string Value { get; set; }
-}
-
 [XmlRoot(ElementName="PublicationType")]
 public class PublicationType {
 	[XmlAttribute(AttributeName="value")]
@@ -67,8 +61,6 @@ public class PrimaryRoleScope {
 
 [XmlRoot(ElementName="Manifest")]
 public class Manifest {
-	[XmlElement(ElementName="Version")]
-	public Version Version { get; set; }
 	[XmlElement(ElementName="PublicationType")]
 	public PublicationType PublicationType { get; set; }
 	[XmlElement(ElementName="PublicationSource")]
