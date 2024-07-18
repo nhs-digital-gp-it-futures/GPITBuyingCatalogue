@@ -38,6 +38,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 using Notify.Client;
 using Notify.Interfaces;
+using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp
 {
@@ -90,6 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.LoginPath = "/Identity/Account/Login";
                 options.LogoutPath = "/Identity/Account/Logout";
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Strict;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionIdleTimeout);
                 options.SlidingExpiration = cookieExpiration.SlidingExpiration;
                 options.AccessDeniedPath = "/unauthorized";
