@@ -26,8 +26,8 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             var stream = new MemoryStream(
                 Encoding.UTF8.GetBytes(
                     new StringBuilder()
-                        .AppendLine("ID,Name,Version,Type,URL,Description,Framework")
-                        .AppendLine("S49,StandardName,1.0.0,Context Specific Standard,https://test.com,\"Description\",GP IT Futures|Tech Innovation")
+                        .AppendLine("ID,Name,Type,URL,Description,Framework")
+                        .AppendLine("S49,StandardName,Context Specific Standard,https://test.com,\"Description\",GP IT Futures|Tech Innovation")
                         .ToString())
             );
 
@@ -38,7 +38,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.Should().NotBeNull();
             result!.Id.Should().Be("S49");
             result.Name.Should().Be("StandardName");
-            result.Version.Should().Be("1.0.0");
             result.StandardType.Should().Be(StandardType.ContextSpecific);
             result.Url.Should().Be("https://test.com");
             result.Description.Should().Be("Description");
@@ -64,7 +63,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             {
                 Id = standard.Id,
                 Name = standard.Name,
-                Version = standard.Version,
                 Description = standard.Description,
                 StandardType = standard.StandardType,
                 Url = standard.Url,
@@ -80,7 +78,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
 
             result!.Id.Should().Be(standard.Id);
             result.Name.Should().Be(standard.Name);
-            result.Version.Should().Be(standard.Version);
             result.Description.Should().Be(standard.Description);
             result.StandardType.Should().Be(standard.StandardType);
             result.Url.Should().Be(standard.Url);
@@ -102,7 +99,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
                 Id = standard.Id,
                 Name = "modified name",
                 Description = "modified description",
-                Version = "modified version",
                 StandardType = StandardType.Overarching,
                 Url = "http://test2.com",
             };
@@ -118,7 +114,6 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result!.Id.Should().Be(standard.Id);
             result.Name.Should().Be("modified name");
             result.Description.Should().Be("modified description");
-            result.Version.Should().Be("modified version");
             result.Url.Should().Be("http://test2.com");
             result.StandardType.Should().Be(StandardType.Overarching);
         }

@@ -8,8 +8,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Models
 
         public string Name { get; set; }
 
-        public string Version { get; set; }
-
         public string Category { get; set; }
 
         public string Url { get; set; }

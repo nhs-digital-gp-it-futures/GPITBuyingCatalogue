@@ -2,7 +2,7 @@
 (
      Id int NOT NULL,
      CapabilityRef AS 'C' + CAST(Id AS nvarchar(3)),
-     [Version] nvarchar(10) NOT NULL,
+     [Version] nvarchar(10) NULL, --TODO Remove column in future release
      StatusId int NOT NULL,
      [Name] nvarchar(255) NOT NULL,
      [Description] nvarchar(500) NOT NULL,
