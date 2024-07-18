@@ -1,6 +1,5 @@
 ﻿using FluentValidation.TestHelper;
 using MoreLinq;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Capabilities;
 using Xunit;
@@ -10,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Capa
 public static class EditCapabilitiesModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoSelectedCapabilities_SetsModelError(
         EditCapabilitiesModel model,
         EditCapabilitiesModelValidator validator)
@@ -24,7 +23,7 @@ public static class EditCapabilitiesModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_CapabilitiesSelected_NoModelError(
         EditCapabilitiesModel model,
         EditCapabilitiesModelValidator validator)

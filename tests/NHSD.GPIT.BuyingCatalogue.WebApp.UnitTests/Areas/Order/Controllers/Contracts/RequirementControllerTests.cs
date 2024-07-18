@@ -1,19 +1,16 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using MoreLinq.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement;
@@ -33,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(RequirementController).GetConstructors();
 
@@ -41,13 +38,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_Index_ReturnsExpectedResult(
            string internalOrgId,
            EntityFramework.Ordering.Models.Order order,
            Contract contract,
-           [Frozen] Mock<IOrderService> mockOrderService,
-           [Frozen] Mock<IContractsService> mockContractsService,
+           [Frozen] IOrderService mockOrderService,
+           [Frozen] IContractsService mockContractsService,
            RequirementController controller)
         {
             var solution = order.OrderItems.First();
@@ -57,18 +54,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockContractsService
-                .Setup(x => x.GetContractWithContractBillingRequirements(order.Id))
-                .ReturnsAsync(contract);
+            mockContractsService.GetContractWithContractBillingRequirements(order.Id).Returns(contract);
 
             var result = await controller.Index(internalOrgId, order.CallOffId);
-
-            mockOrderService.VerifyAll();
-            mockContractsService.VerifyAll();
 
             var expected = new RequirementModel(contract?.ContractBilling)
             {
@@ -82,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Index_ModelError_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
@@ -99,58 +89,44 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Index_ReturnsExpectedResult(
             string internalOrgId,
             RequirementModel model,
             EntityFramework.Ordering.Models.Order order,
             Contract contract,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IContractsService> mockContractsService,
-            [Frozen] Mock<IRequirementsService> mockRequirementsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IContractsService mockContractsService,
+            [Frozen] IRequirementsService mockRequirementsService,
             RequirementController controller)
         {
             contract.Order = order;
-            mockOrderService
-                .Setup(s => s.GetOrderThin(model.CallOffId, model.InternalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(model.CallOffId, model.InternalOrgId).Returns(new OrderWrapper(order));
 
-            mockContractsService
-                .Setup(x => x.GetContract(order.Id))
-                .ReturnsAsync(contract);
+            mockContractsService.GetContract(order.Id).Returns(contract);
 
-            mockRequirementsService
-                .Setup(x => x.SetRequirementComplete(order.Id, contract.Id))
-                .ReturnsAsync(contract);
+            mockRequirementsService.SetRequirementComplete(order.Id, contract.Id).Returns(contract);
 
             var result = await controller.Index(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockContractsService.VerifyAll();
-            mockRequirementsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             actualResult.ActionName.Should().Be(nameof(OrderController.Order));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_AddRequirement_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             RequirementController controller)
         {
-            mockOrderService
-                .Setup(s => s.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.AddRequirement(internalOrgId, callOffId);
 
             var expected = new RequirementDetailsModel(callOffId, internalOrgId, order.GetAssociatedServices());
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().Be("RequirementDetails");
@@ -158,35 +134,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddRequirement_InvalidOrder_ReturnsNotFound(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             RequirementDetailsModel model,
             RequirementController controller)
         {
             order.OrderItems.Clear();
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.AddRequirement(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
 
             result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddRequirement_ModelError_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             RequirementDetailsModel model,
             RequirementController controller)
         {
@@ -196,15 +168,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(callOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             controller.ModelState.AddModelError("some-property", "some-error");
 
             var result = await controller.AddRequirement(internalOrgId, callOffId, model);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().Be("RequirementDetails");
@@ -213,15 +181,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_AddRequirement_ReturnsExpectedResult(
             string internalOrgId,
             RequirementDetailsModel model,
             EntityFramework.Ordering.Models.Order order,
             Contract contract,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IContractsService> mockContractsService,
-            [Frozen] Mock<IRequirementsService> mockRequirementsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IContractsService mockContractsService,
+            [Frozen] IRequirementsService mockRequirementsService,
             RequirementController controller)
         {
             order.OrderItems.Add(new OrderItem()
@@ -230,54 +198,37 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
             contract.Order = order;
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockContractsService
-                .Setup(x => x.GetContract(order.Id))
-                .ReturnsAsync(contract);
+            mockContractsService.GetContract(order.Id).Returns(contract);
 
-            mockRequirementsService
-                .Setup(x => x.AddRequirement(order.Id, contract.Id, model.SelectedOrderItemId, model.Details))
-                .Returns(Task.CompletedTask);
+            mockRequirementsService.AddRequirement(order.Id, contract.Id, model.SelectedOrderItemId, model.Details).Returns(Task.CompletedTask);
 
             var result = await controller.AddRequirement(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockContractsService.VerifyAll();
-            mockRequirementsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             actualResult.ActionName.Should().Be(nameof(RequirementController.Index));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_EditRequirement_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             Requirement item,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IRequirementsService> mockRequirementsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IRequirementsService mockRequirementsService,
             RequirementController controller)
         {
             item.OrderItem = new OrderItem();
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockRequirementsService
-                .Setup(x => x.GetRequirement(order.Id, item.Id))
-                .ReturnsAsync(item);
+            mockRequirementsService.GetRequirement(order.Id, item.Id).Returns(item);
 
             var expected = new RequirementDetailsModel(item, order.CallOffId, internalOrgId, order.GetAssociatedServices());
 
             var result = await controller.EditRequirement(internalOrgId, order.CallOffId, item.Id);
-
-            mockOrderService.VerifyAll();
-            mockRequirementsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().Be("RequirementDetails");
@@ -285,33 +236,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditRequirement_InvalidOrder_ReturnsNotFoundResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             RequirementDetailsModel model,
             RequirementController controller)
         {
             order.OrderItems.Clear();
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.EditRequirement(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
 
             result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditRequirement_ModelError_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
+            [Frozen] IOrderService mockOrderService,
             RequirementDetailsModel model,
             RequirementController controller)
         {
@@ -321,15 +268,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             controller.ModelState.AddModelError("some-property", "some-error");
 
             var result = await controller.EditRequirement(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().Be("RequirementDetails");
@@ -338,13 +281,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_EditRequirement_ReturnsExpectedResult(
             string internalOrgId,
             RequirementDetailsModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IRequirementsService> mockRequirementsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IRequirementsService mockRequirementsService,
             RequirementController controller)
         {
             order.OrderItems.Add(new OrderItem()
@@ -353,40 +296,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                 CatalogueItem = new CatalogueItem() { Name = "Test", Id = model.SelectedOrderItemId, CatalogueItemType = CatalogueItemType.AssociatedService, },
             });
 
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockRequirementsService
-                .Setup(x => x.EditRequirement(order.Id, model.ItemId, model.SelectedOrderItemId, model.Details))
-                .Returns(Task.CompletedTask);
+            mockRequirementsService.EditRequirement(order.Id, model.ItemId, model.SelectedOrderItemId, model.Details).Returns(Task.CompletedTask);
 
             var result = await controller.EditRequirement(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockRequirementsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             actualResult.ActionName.Should().Be(nameof(RequirementController.Index));
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Get_DeleteRequirement_ReturnsExpectedResult(
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             Requirement item,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IRequirementsService> mockRequirementsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IRequirementsService mockRequirementsService,
             RequirementController controller)
         {
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockRequirementsService
-                .Setup(x => x.GetRequirement(order.Id, item.Id))
-                .ReturnsAsync(item);
+            mockRequirementsService.GetRequirement(order.Id, item.Id).Returns(item);
 
             var result = await controller.DeleteRequirement(internalOrgId, order.CallOffId, item.Id);
 
@@ -396,27 +328,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_DeleteRequirement_ReturnsExpectedResult(
             string internalOrgId,
             DeleteRequirementModel model,
             EntityFramework.Ordering.Models.Order order,
-            [Frozen] Mock<IOrderService> mockOrderService,
-            [Frozen] Mock<IRequirementsService> mockRequirementsService,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] IRequirementsService mockRequirementsService,
             RequirementController controller)
         {
-            mockOrderService
-                .Setup(s => s.GetOrderThin(order.CallOffId, internalOrgId))
-                .ReturnsAsync(new OrderWrapper(order));
+            mockOrderService.GetOrderThin(order.CallOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            mockRequirementsService
-                .Setup(x => x.DeleteRequirement(order.Id, model.ItemId))
-                .Returns(Task.CompletedTask);
+            mockRequirementsService.DeleteRequirement(order.Id, model.ItemId).Returns(Task.CompletedTask);
 
             var result = await controller.DeleteRequirement(internalOrgId, order.CallOffId, model);
-
-            mockOrderService.VerifyAll();
-            mockRequirementsService.VerifyAll();
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             actualResult.ActionName.Should().Be(nameof(RequirementController.Index));

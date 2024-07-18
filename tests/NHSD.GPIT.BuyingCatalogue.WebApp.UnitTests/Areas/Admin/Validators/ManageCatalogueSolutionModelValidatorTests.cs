@@ -2,11 +2,9 @@
 using System.Linq;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Xunit;
@@ -16,15 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class ManageCatalogueSolutionModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SamePublicationStatus_NoModelError(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Published;
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
             {
@@ -38,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NonPublishedStatus_NoModelError(
             ManageCatalogueSolutionModelValidator validator)
         {
@@ -53,13 +50,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_IncompleteDescription_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
             List<SlaServiceLevel> slaServiceLevels,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
             solution.FullDescription = null;
@@ -70,8 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
             {
@@ -86,13 +82,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_IncompleteApplicationType_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
             List<SlaServiceLevel> slaServiceLevels,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
             solution.ApplicationTypeDetail = null;
@@ -101,8 +97,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
             {
@@ -117,13 +112,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_IncompleteHostingType_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
             List<SlaServiceLevel> slaServiceLevels,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
             solution.Hosting.PublicCloud.Summary = string.Empty;
@@ -136,8 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
             {
@@ -152,13 +146,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_IncompleteListPrices_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
             List<SlaServiceLevel> slaServiceLevels,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
             solution.CatalogueItem.CataloguePrices = new List<CataloguePrice>();
@@ -168,8 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
             {
@@ -184,13 +177,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_IncompleteSupplierDetails_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
             List<SlaServiceLevel> slaServiceLevels,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
             solution.CatalogueItem.CatalogueItemContacts = new List<SupplierContact>();
@@ -199,8 +192,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.ServiceLevels = slaServiceLevels;
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
             {
@@ -215,13 +207,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_IncompleteCapabilities_SetsModelError(
             Solution solution,
             List<ServiceAvailabilityTimes> serviceAvailabilityTimes,
             List<SlaContact> slaContacts,
             List<SlaServiceLevel> slaServiceLevels,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
             solution.CatalogueItem.CatalogueItemCapabilities = new List<CatalogueItemCapability>();
@@ -231,8 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             solution.ServiceLevelAgreement.Contacts = slaContacts;
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
             {
@@ -247,16 +238,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_IncompleteServiceLevelAgreement_SetsModelError(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
             solution.CatalogueItem.CatalogueItemContacts.Add(solution.CatalogueItem.Supplier.SupplierContacts.First());
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel
             {
@@ -271,10 +261,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelError(
             Solution solution,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             ManageCatalogueSolutionModelValidator validator)
         {
             SolutionLoadingStatusesModel solutionLoadingStatuses = new SolutionLoadingStatusesModel
@@ -295,8 +285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             };
 
             solution.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new ManageCatalogueSolutionModel(solutionLoadingStatuses, solution.CatalogueItem)
             {

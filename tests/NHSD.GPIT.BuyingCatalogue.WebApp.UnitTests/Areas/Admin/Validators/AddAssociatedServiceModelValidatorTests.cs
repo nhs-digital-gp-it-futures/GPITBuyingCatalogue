@@ -1,8 +1,6 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Xunit;
@@ -12,8 +10,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class AddAssociatedServiceModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_NameNullOrEmpty_SetsModelError(
             string name,
             AddAssociatedServiceModel model,
@@ -28,8 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_DescriptionNullOrEmpty_SetsModelError(
             string description,
             AddAssociatedServiceModel model,
@@ -44,8 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_OrderGuidanceNullOrEmpty_SetsModelError(
             string orderGuidance,
             AddAssociatedServiceModel model,
@@ -60,14 +58,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DuplicateNameForSupplier_SetsModelError(
-            [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+            [Frozen] IAssociatedServicesService associatedServicesService,
             AddAssociatedServiceModel model,
             AddAssociatedServiceModelValidator validator)
         {
-            associatedServicesService.Setup(s => s.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default))
-                .ReturnsAsync(true);
+            associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default).Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -76,14 +73,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidName_NoModelError(
-            [Frozen] Mock<IAssociatedServicesService> associatedServicesService,
+            [Frozen] IAssociatedServicesService associatedServicesService,
             AddAssociatedServiceModel model,
             AddAssociatedServiceModelValidator validator)
         {
-            associatedServicesService.Setup(s => s.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default))
-                .ReturnsAsync(false);
+            associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default).Returns(false);
 
             var result = validator.TestValidate(model);
 

@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
     public static class SolutionSearchResultModelTest
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_Sets_Properties_NoLinks_Defaults_To_False(CatalogueItem catalogueItem)
         {
             var model = new SolutionSearchResultModel(catalogueItem);
@@ -19,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Constructor_Sets_Properties_NoLinks_True(CatalogueItem catalogueItem)
         {
             var model = new SolutionSearchResultModel(catalogueItem, true);

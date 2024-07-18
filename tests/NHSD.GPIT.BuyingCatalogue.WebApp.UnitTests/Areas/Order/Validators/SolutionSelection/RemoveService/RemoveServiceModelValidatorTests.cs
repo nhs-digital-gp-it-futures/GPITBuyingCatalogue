@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.RemoveService;
 using Xunit;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
     public static class RemoveServiceModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValuesMissing_ThrowsValidationError(
             RemoveServiceModel model,
             RemoveServiceModelValidator systemUnderTest)
@@ -25,8 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
+        [MockInlineAutoData(true)]
+        [MockInlineAutoData(false)]
         public static void Validate_ValuesProvided_NoValidationErrors(
             bool selection,
             RemoveServiceModel model,

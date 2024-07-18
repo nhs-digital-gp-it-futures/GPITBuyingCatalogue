@@ -1,13 +1,10 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.Registration;
 using Xunit;
@@ -26,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
-            var fixture = new Fixture().Customize(new AutoMoqCustomization());
+            var fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
             var assertion = new GuardClauseAssertion(fixture);
             var constructors = typeof(RegistrationController).GetConstructors();
 
@@ -34,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Index_ReturnsDefaultView(
             RegistrationController systemUnderTest)
         {
@@ -45,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Confirmation_ReturnsDefaultView(
             RegistrationController systemUnderTest)
         {
@@ -56,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Details_ReturnsDefaultView(
             RegistrationController systemUnderTest)
         {
@@ -68,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Details_InvalidModelState_ReturnsDefaultView(
             RegistrationController systemUnderTest)
         {
@@ -82,22 +79,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_Details_ValidModelState_RedirectsToConfirmation(
             RegistrationDetailsModel expected,
-            [Frozen] Mock<IRequestAccountService> mockRequestAccountService,
+            [Frozen] IRequestAccountService mockRequestAccountService,
             RegistrationController systemUnderTest)
         {
             NewAccountDetails actual = null;
 
             mockRequestAccountService
-                .Setup(x => x.RequestAccount(It.IsAny<NewAccountDetails>()))
-                .Callback<NewAccountDetails>(x => actual = x)
-                .Returns(Task.CompletedTask);
+                .When(x => x.RequestAccount(Arg.Any<NewAccountDetails>()))
+                .Do(x => actual = x.Arg<NewAccountDetails>());
 
             var result = await systemUnderTest.Details(expected);
-
-            mockRequestAccountService.VerifyAll();
 
             result.As<RedirectToActionResult>().Should().NotBeNull();
             result.As<RedirectToActionResult>().ActionName.Should().Be(nameof(RegistrationController.Confirmation));

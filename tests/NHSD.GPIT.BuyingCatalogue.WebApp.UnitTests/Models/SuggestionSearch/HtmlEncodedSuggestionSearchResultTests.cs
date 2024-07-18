@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
 using Xunit;
 

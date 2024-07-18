@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.ImplementationPlans;
 using Xunit;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
     public static class MilestoneModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Milestone_NameNull_SetsModelError(
             MilestoneModel model,
             MilestoneModelValidator validator)
@@ -24,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Milestone_PaymentTriggerNull_SetsModelError(
             MilestoneModel model,
             MilestoneModelValidator validator)
@@ -39,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelError(
             MilestoneModel model,
             MilestoneModelValidator validator)

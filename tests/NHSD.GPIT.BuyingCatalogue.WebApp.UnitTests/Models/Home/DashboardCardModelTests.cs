@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Home;
 using Xunit;
 

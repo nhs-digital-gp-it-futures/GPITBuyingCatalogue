@@ -14,6 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public abstract class OrganisationBaseController : Controller
     {
+        internal const string ViewBaseName = "OrganisationBase";
         private readonly AccountManagementSettings accountManagementSettings;
 
         protected OrganisationBaseController(
@@ -56,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = ControllerName,
             };
 
-            return View("OrganisationBase/Details", model);
+            return View($"{ViewBaseName}/Details", model);
         }
 
         [HttpGet("{organisationId}/users")]
@@ -75,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = ControllerName,
             };
 
-            return View("OrganisationBase/Users", model);
+            return View($"{ViewBaseName}/Users", model);
         }
 
         [HttpGet("{organisationId}/users/add")]
@@ -92,14 +93,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
             };
 
-            return View("OrganisationBase/UserDetails", model);
+            return View($"{ViewBaseName}/UserDetails", model);
         }
 
         [HttpPost("{organisationId}/users/add")]
         public async Task<IActionResult> AddUser(int organisationId, UserDetailsModel model)
         {
             if (!ModelState.IsValid)
-                return View("OrganisationBase/UserDetails", model);
+                return View($"{ViewBaseName}/UserDetails", model);
 
             await CreateBuyerService.Create(
                 organisationId,
@@ -133,14 +134,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 MaxNumberOfAccountManagers = accountManagementSettings.MaximumNumberOfAccountManagers,
             };
 
-            return View("OrganisationBase/UserDetails", model);
+            return View($"{ViewBaseName}/UserDetails", model);
         }
 
         [HttpPost("{organisationId}/users/{userId}/edit")]
         public async Task<IActionResult> EditUser(int organisationId, int userId, UserDetailsModel model)
         {
             if (!ModelState.IsValid)
-                return View("OrganisationBase/UserDetails", model);
+                return View($"{ViewBaseName}/UserDetails", model);
 
             var user = await UserService.GetUser(userId);
 
@@ -180,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = ControllerName,
             };
 
-            return View("OrganisationBase/RelatedOrganisations", model);
+            return View($"{ViewBaseName}/RelatedOrganisations", model);
         }
 
         [HttpGet("{organisationId}/related/{relatedOrganisationId}/remove")]
@@ -199,7 +200,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = ControllerName,
             };
 
-            return View("OrganisationBase/RemoveRelatedOrganisation", model);
+            return View($"{ViewBaseName}/RemoveRelatedOrganisation", model);
         }
 
         [HttpPost("{organisationId}/related/{relatedOrganisationId}/remove")]
@@ -228,7 +229,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = ControllerName,
             };
 
-            return View("OrganisationBase/NominatedOrganisations", model);
+            return View($"{ViewBaseName}/NominatedOrganisations", model);
         }
 
         [HttpGet("{organisationId}/nominated/add")]
@@ -244,7 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 PotentialOrganisations = await GetPotentialOrganisations(organisationId),
             };
 
-            return View("OrganisationBase/AddNominatedOrganisation", model);
+            return View($"{ViewBaseName}/AddNominatedOrganisation", model);
         }
 
         [HttpPost("{organisationId}/nominated/add")]
@@ -254,7 +255,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             {
                 model.PotentialOrganisations = await GetPotentialOrganisations(organisationId);
 
-                return View("OrganisationBase/AddNominatedOrganisation", model);
+                return View($"{ViewBaseName}/AddNominatedOrganisation", model);
             }
 
             await OrganisationsService.AddNominatedOrganisation(organisationId, int.Parse(model.SelectedOrganisationId));
@@ -278,7 +279,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 ControllerName = ControllerName,
             };
 
-            return View("OrganisationBase/RemoveNominatedOrganisation", model);
+            return View($"{ViewBaseName}/RemoveNominatedOrganisation", model);
         }
 
         [HttpPost("{organisationId}/nominated/{nominatedOrganisationId}/remove")]

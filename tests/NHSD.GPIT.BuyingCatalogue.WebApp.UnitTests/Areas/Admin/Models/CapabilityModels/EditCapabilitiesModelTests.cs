@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using Xunit;
 
@@ -12,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
 public static class EditCapabilitiesModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_Solution_SetsProperties(
         Solution solution,
         List<CapabilityCategory> capabilityCategories)
@@ -25,7 +24,7 @@ public static class EditCapabilitiesModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_Service_SetsProperties(
         AdditionalService additionalService,
         List<CapabilityCategory> capabilityCategories)
@@ -38,7 +37,7 @@ public static class EditCapabilitiesModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_NoSelectedEffectiveCapabilities_SelectsAllMustEpics(
         Solution solution,
         CapabilityCategory capabilityCategory,
@@ -73,7 +72,7 @@ public static class EditCapabilitiesModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SelectedCapabilities_DoesNotSelectAllMustEpics(
         Solution solution,
         CapabilityCategory capabilityCategory,

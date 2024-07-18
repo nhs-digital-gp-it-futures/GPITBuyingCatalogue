@@ -1,7 +1,6 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 using Xunit;
 
@@ -10,8 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
     public static class FundingTypeDescriptionModelTest
     {
         [Theory]
-        [CommonInlineAutoData(new[] { OrderItemFundingType.MixedFunding })]
-        [CommonInlineAutoData(
+        [MockInlineAutoData(new[] { OrderItemFundingType.MixedFunding })]
+        [MockInlineAutoData(
             new[]
             {
                 OrderItemFundingType.None,
@@ -19,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
                 OrderItemFundingType.LocalFunding,
                 OrderItemFundingType.CentralFunding,
             })]
-        [CommonInlineAutoData(
+        [MockInlineAutoData(
             new[]
             {
                 OrderItemFundingType.None,
@@ -27,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
                 OrderItemFundingType.LocalFundingOnly,
                 OrderItemFundingType.CentralFunding,
             })]
-        [CommonInlineAutoData(
+        [MockInlineAutoData(
             new[]
             {
                 OrderItemFundingType.None,
@@ -44,16 +43,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(new[] { OrderItemFundingType.LocalFunding })]
-        [CommonInlineAutoData(new[] { OrderItemFundingType.LocalFundingOnly })]
-        [CommonInlineAutoData(
+        [MockInlineAutoData(new[] { OrderItemFundingType.LocalFunding })]
+        [MockInlineAutoData(new[] { OrderItemFundingType.LocalFundingOnly })]
+        [MockInlineAutoData(
             new[]
             {
                 OrderItemFundingType.None,
                 OrderItemFundingType.NoFundingRequired,
                 OrderItemFundingType.LocalFunding,
             })]
-        [CommonInlineAutoData(
+        [MockInlineAutoData(
             new[]
             {
                 OrderItemFundingType.None,
@@ -68,8 +67,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(new[] { OrderItemFundingType.CentralFunding })]
-        [CommonInlineAutoData(new[] { OrderItemFundingType.None, OrderItemFundingType.NoFundingRequired, OrderItemFundingType.CentralFunding })]
+        [MockInlineAutoData(new[] { OrderItemFundingType.CentralFunding })]
+        [MockInlineAutoData(new[] { OrderItemFundingType.None, OrderItemFundingType.NoFundingRequired, OrderItemFundingType.CentralFunding })]
         public static void Funding_CentralFunding(OrderItemFundingType[] fundingTypes)
         {
             var sut = new FundingTypeDescriptionModel(fundingTypes);
@@ -78,8 +77,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(new[] { OrderItemFundingType.NoFundingRequired })]
-        [CommonInlineAutoData(
+        [MockInlineAutoData(new[] { OrderItemFundingType.NoFundingRequired })]
+        [MockInlineAutoData(
             new[]
             {
                 OrderItemFundingType.None,
@@ -93,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(new[] { OrderItemFundingType.None })]
+        [MockInlineAutoData(new[] { OrderItemFundingType.None })]
         public static void Funding_NotEntered(OrderItemFundingType[] fundingTypes)
         {
             var sut = new FundingTypeDescriptionModel(fundingTypes);
@@ -102,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(new[] { int.MaxValue })]
+        [MockInlineAutoData(new[] { int.MaxValue })]
         public static void Funding_Unexpected(OrderItemFundingType[] fundingTypes)
         {
             var sut = new FundingTypeDescriptionModel(fundingTypes);

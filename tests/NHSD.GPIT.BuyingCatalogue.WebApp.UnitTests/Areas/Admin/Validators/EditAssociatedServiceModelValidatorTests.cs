@@ -3,11 +3,9 @@ using System.Linq;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationStatusValidation;
 using Xunit;
@@ -17,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class EditAssociatedServiceModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SamePublicationStatus_NoModelError(
             Solution solution,
             AssociatedService associatedService,
@@ -31,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_MissingDetails_SetsModelError(
             Solution solution,
             AssociatedService associatedService,
@@ -55,20 +53,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(PublicationStatus.Published)]
-        [CommonInlineAutoData(PublicationStatus.Suspended)]
-        [CommonInlineAutoData(PublicationStatus.InRemediation)]
+        [MockInlineAutoData(PublicationStatus.Published)]
+        [MockInlineAutoData(PublicationStatus.Suspended)]
+        [MockInlineAutoData(PublicationStatus.InRemediation)]
         public static void Validate_UnpublishWithActiveSolutions_SetsModelError(
             PublicationStatus solutionsPublicationStatus,
             List<Solution> solutions,
-            [Frozen] Mock<IAssociatedServicesService> service,
+            [Frozen] IAssociatedServicesService service,
             EditAssociatedServiceModel model,
             EditAssociatedServiceModelValidator validator)
         {
             solutions.ForEach(s => s.CatalogueItem.PublishedStatus = solutionsPublicationStatus);
 
-            service.Setup(s => s.GetAllSolutionsForAssociatedService(model.AssociatedServiceId))
-                .ReturnsAsync(solutions.Select(s => s.CatalogueItem).ToList());
+            service.GetAllSolutionsForAssociatedService(model.AssociatedServiceId).Returns(solutions.Select(s => s.CatalogueItem).ToList());
 
             model.AssociatedServicePublicationStatus = PublicationStatus.Published;
             model.SelectedPublicationStatus = PublicationStatus.Unpublished;
@@ -80,19 +77,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(PublicationStatus.Draft)]
-        [CommonInlineAutoData(PublicationStatus.Unpublished)]
+        [MockInlineAutoData(PublicationStatus.Draft)]
+        [MockInlineAutoData(PublicationStatus.Unpublished)]
         public static void Validate_UnpublishWithInactiveSolutions_NoModelError(
             PublicationStatus solutionsPublicationStatus,
             List<Solution> solutions,
-            [Frozen] Mock<IAssociatedServicesService> service,
+            [Frozen] IAssociatedServicesService service,
             EditAssociatedServiceModel model,
             EditAssociatedServiceModelValidator validator)
         {
             solutions.ForEach(s => s.CatalogueItem.PublishedStatus = solutionsPublicationStatus);
 
-            service.Setup(s => s.GetAllSolutionsForAssociatedService(model.AssociatedServiceId))
-                .ReturnsAsync(solutions.Select(s => s.CatalogueItem).ToList());
+            service.GetAllSolutionsForAssociatedService(model.AssociatedServiceId).Returns(solutions.Select(s => s.CatalogueItem).ToList());
 
             model.AssociatedServicePublicationStatus = PublicationStatus.Published;
             model.SelectedPublicationStatus = PublicationStatus.Unpublished;

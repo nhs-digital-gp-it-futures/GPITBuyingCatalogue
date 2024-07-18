@@ -2,8 +2,6 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Primitives;
-using Moq;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ModelBinders;
 using Xunit;
 
@@ -12,15 +10,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ModelBinders;
 public static class NumberModelBinderTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task BindModelAsync_NullValue_DoesNothing(
         DefaultModelBindingContext context,
         NumberModelBinder binder)
     {
         context.Result = default;
 
-        Mock.Get(context.ValueProvider)
-            .Setup(x => x.GetValue(context.ModelName))
+        context.ValueProvider.GetValue(context.ModelName)
             .Returns(ValueProviderResult.None);
 
         await binder.BindModelAsync(context);
@@ -29,7 +26,7 @@ public static class NumberModelBinderTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static async Task BindModelAsync_ValidInteger_SetsSuccessResult(
         string modelName,
         int value,
@@ -43,8 +40,7 @@ public static class NumberModelBinderTests
 
         var result = new ValueProviderResult(stringValues);
 
-        Mock.Get(context.ValueProvider)
-            .Setup(x => x.GetValue(It.IsAny<string>()))
+        context.ValueProvider.GetValue(Arg.Any<string>())
             .Returns(result);
 
         await binder.BindModelAsync(context);

@@ -1,6 +1,5 @@
 ﻿using System;
 using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ManageOrders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Xunit;
@@ -10,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class DeleteOrderModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DeleteOrderDayMissing_ThrowsValidationError(
             DeleteOrderModel model,
             DeleteOrderModelValidator validator)
@@ -24,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DeleteOrderMonthMissing_ThrowsValidationError(
             DeleteOrderModel model,
             DeleteOrderModelValidator validator)
@@ -39,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_DeleteOrderYearMissing_ThrowsValidationError(
             DeleteOrderModel model,
             DeleteOrderModelValidator validator)
@@ -55,9 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData("1")]
-        [CommonInlineAutoData("12")]
-        [CommonInlineAutoData("123")]
+        [MockInlineAutoData("1")]
+        [MockInlineAutoData("12")]
+        [MockInlineAutoData("123")]
         public static void Validate_DeleteOrderYearTooShort_ThrowsValidationError(
             string year,
             DeleteOrderModel model,
@@ -74,8 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData("99", "01", "2022")]
-        [CommonInlineAutoData("01", "99", "2022")]
+        [MockInlineAutoData("99", "01", "2022")]
+        [MockInlineAutoData("01", "99", "2022")]
         public static void Validate_InvalidDate_ThrowsValidationError(
             string day,
             string month,
@@ -94,9 +93,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(59)]
-        [CommonInlineAutoData(20)]
-        [CommonInlineAutoData(1)]
+        [MockInlineAutoData(59)]
+        [MockInlineAutoData(20)]
+        [MockInlineAutoData(1)]
         public static void Validate_ApprovalDateInTheFuture_ThrowsValidationError(
             int days,
             DeleteOrderModel model,
@@ -115,9 +114,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(-59)]
-        [CommonInlineAutoData(-20)]
-        [CommonInlineAutoData(-1)]
+        [MockInlineAutoData(-59)]
+        [MockInlineAutoData(-20)]
+        [MockInlineAutoData(-1)]
         public static void Validate_ApprovalDateBeforeOrderCreation_ThrowsValidationError(
             int days,
             DeleteOrderModel model,
@@ -138,9 +137,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(0)]
-        [CommonInlineAutoData(-1)]
-        [CommonInlineAutoData(-20)]
+        [MockInlineAutoData(0)]
+        [MockInlineAutoData(-1)]
+        [MockInlineAutoData(-20)]
         public static void Validate_ApprovalDateWithinThreshold_NoValidationError(
             int days,
             DeleteOrderModel model,
@@ -160,9 +159,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_NameOfApproverNotEntered_ThrowsValidationError(
             string name,
             DeleteOrderModel model,
@@ -177,9 +176,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_NameOfRequesterNotEntered_ThrowsValidationError(
             string name,
             DeleteOrderModel model,
@@ -194,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidModel_NoValidationError(
             DeleteOrderModel model,
             DeleteOrderModelValidator validator)

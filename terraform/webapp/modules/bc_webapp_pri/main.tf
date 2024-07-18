@@ -42,20 +42,14 @@ resource "azurerm_linux_web_app" "webapp" {
     NOTIFY_API_KEY                      = var.notify_api_key
 
     SESSION_IDLE_TIMEOUT               = "60"
-    WEBSITE_HTTPLOGGING_RETENTION_DAYS = "2"
   }
 
   # Configure Docker Image to load on start
   site_config {
-
     use_32_bit_worker   = true
     always_on           = var.always_on
     minimum_tls_version = "1.2"
-
-    application_stack {
-      docker_image     = "https://${var.docker_registry_server_url}/${var.repository_name}"
-      docker_image_tag = "latest"
-    }
+    ip_restriction_default_action = "Deny"
 
     dynamic "ip_restriction" {
       for_each = var.app_gateway_ip == null ? [] : tolist([var.app_gateway_ip])
@@ -66,7 +60,7 @@ resource "azurerm_linux_web_app" "webapp" {
         headers    = []
       }
     }
-
+    
     ip_restriction {
       name       = "PRIMARY_VPN_ACCESS"
       ip_address = "${var.primary_vpn}/32"
@@ -90,8 +84,10 @@ resource "azurerm_linux_web_app" "webapp" {
       virtual_network_subnet_id,
       site_config[0].scm_minimum_tls_version,
       site_config[0].ftps_state,
-      site_config[0].application_stack[0].docker_image,
-      site_config[0].application_stack[0].docker_image_tag
+      site_config[0].application_stack[0].docker_image_name,
+      site_config[0].application_stack[0].docker_registry_url,
+      site_config[0].application_stack[0].docker_registry_username,
+      site_config[0].application_stack[0].docker_registry_password
     ]
   }
 }

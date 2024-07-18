@@ -1,7 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Validators.Registration;
 using Xunit;

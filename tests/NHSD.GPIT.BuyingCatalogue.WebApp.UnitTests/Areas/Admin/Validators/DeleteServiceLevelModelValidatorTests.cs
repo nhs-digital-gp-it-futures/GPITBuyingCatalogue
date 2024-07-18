@@ -2,10 +2,8 @@
 using System.Linq;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAgreementValidators;
 using Xunit;
@@ -15,12 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class DeleteServiceLevelModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PublishedSolutionWithManyServiceLevels_NoModelError(
                Solution solution,
                ServiceLevelAgreements serviceLevelAgreement,
                List<SlaServiceLevel> serviceLevels,
-               [Frozen] Mock<ISolutionsService> solutionsService,
+               [Frozen] ISolutionsService solutionsService,
                DeleteServiceLevelModelValidator validator)
         {
             var serviceLevel = serviceLevels.First();
@@ -30,8 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceLevelModel(solution.CatalogueItem, serviceLevel);
 
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
 
@@ -39,12 +36,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_PublishedSolutionWitSingleServiceLevels_SetsModelError(
             Solution solution,
             ServiceLevelAgreements serviceLevelAgreement,
             SlaServiceLevel serviceLevel,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             DeleteServiceLevelModelValidator validator)
         {
             serviceLevelAgreement.ServiceLevels.Clear();
@@ -54,8 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceLevelModel(solution.CatalogueItem, serviceLevel);
 
-            solutionsService.Setup(s => s.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
 
@@ -64,12 +60,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_UnpublishedSolutionWithManyServiceAgreementTimes_NoModelError(
             Solution solution,
             ServiceLevelAgreements serviceLevelAgreement,
             List<SlaServiceLevel> serviceLevels,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             DeleteServiceLevelModelValidator validator)
         {
             var serviceLevel = serviceLevels.First();
@@ -79,8 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceLevelModel(solution.CatalogueItem, serviceLevel);
 
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
 
@@ -88,12 +83,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_UnpublishedSolutionWitSingleServiceAgreementTimes_NoModelError(
             Solution solution,
             ServiceLevelAgreements serviceLevelAgreement,
             SlaServiceLevel serviceLevel,
-            [Frozen] Mock<ISolutionsService> solutionsService,
+            [Frozen] ISolutionsService solutionsService,
             DeleteServiceLevelModelValidator validator)
         {
             serviceLevelAgreement.ServiceLevels.Clear();
@@ -103,8 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
 
             var model = new DeleteServiceLevelModel(solution.CatalogueItem, serviceLevel);
 
-            solutionsService.Setup(s => s.GetSolutionThin(solution.CatalogueItemId))
-                .ReturnsAsync(solution.CatalogueItem);
+            solutionsService.GetSolutionWithServiceLevelAgreements(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var result = validator.TestValidate(model);
 

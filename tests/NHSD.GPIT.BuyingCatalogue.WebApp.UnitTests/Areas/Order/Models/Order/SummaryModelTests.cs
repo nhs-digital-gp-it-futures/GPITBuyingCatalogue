@@ -5,7 +5,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 using Xunit;
 
@@ -14,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
     public static class SummaryModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
             string internalOrgId,
             bool hasSubsequentRevisions,
@@ -30,10 +29,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(false, false, false)]
-        [CommonInlineAutoData(false, true, true)]
-        [CommonInlineAutoData(true, false, false)]
-        [CommonInlineAutoData(true, true, false)]
+        [MockInlineAutoData(false, false, false)]
+        [MockInlineAutoData(false, true, true)]
+        [MockInlineAutoData(true, false, false)]
+        [MockInlineAutoData(true, true, false)]
         public static void CanBeTerminated_PropertiesCorrectlySet(
             bool hasSubsequentRevisions,
             bool completed,
@@ -48,22 +47,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonInlineAutoData(false, false, false, false, false)]
-        [CommonInlineAutoData(false, false, false, true, true)]
-        [CommonInlineAutoData(false, false, true, false, false)]
-        [CommonInlineAutoData(false, false, true, true, false)]
-        [CommonInlineAutoData(false, true, false, false, false)]
-        [CommonInlineAutoData(false, true, false, true, false)]
-        [CommonInlineAutoData(false, true, true, false, false)]
-        [CommonInlineAutoData(false, true, true, true, false)]
-        [CommonInlineAutoData(true, false, false, false, false)]
-        [CommonInlineAutoData(true, false, false, true, false)]
-        [CommonInlineAutoData(true, false, true, false, false)]
-        [CommonInlineAutoData(true, false, true, true, false)]
-        [CommonInlineAutoData(true, true, false, false, false)]
-        [CommonInlineAutoData(true, true, false, true, false)]
-        [CommonInlineAutoData(true, true, true, false, false)]
-        [CommonInlineAutoData(true, true, true, true, false)]
+        [MockInlineAutoData(false, false, false, false, false)]
+        [MockInlineAutoData(false, false, false, true, true)]
+        [MockInlineAutoData(false, false, true, false, false)]
+        [MockInlineAutoData(false, false, true, true, false)]
+        [MockInlineAutoData(false, true, false, false, false)]
+        [MockInlineAutoData(false, true, false, true, false)]
+        [MockInlineAutoData(false, true, true, false, false)]
+        [MockInlineAutoData(false, true, true, true, false)]
+        [MockInlineAutoData(true, false, false, false, false)]
+        [MockInlineAutoData(true, false, false, true, false)]
+        [MockInlineAutoData(true, false, true, false, false)]
+        [MockInlineAutoData(true, false, true, true, false)]
+        [MockInlineAutoData(true, true, false, false, false)]
+        [MockInlineAutoData(true, true, false, true, false)]
+        [MockInlineAutoData(true, true, true, false, false)]
+        [MockInlineAutoData(true, true, true, true, false)]
         public static void CanBeAmended_PropertiesCorrectlySet(
             bool contractExpired,
             bool associatedServicesOnly,
@@ -85,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void ValidContract_PropertiesCorrectlySet(
             string internalOrgId,
             bool hasSubsequentRevisions,
@@ -120,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void BuildAmendOrderItemModel_PropertiesCorrectlySet(
             string internalOrgId,
             bool hasSubsequentRevisions,
@@ -144,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void BuildOrderTotals_PropertiesCorrectlySet(
             string internalOrgId,
             bool hasSubsequentRevisions,

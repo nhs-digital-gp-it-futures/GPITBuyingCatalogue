@@ -1,6 +1,5 @@
 ﻿using FluentValidation.TestHelper;
 using MoreLinq;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
@@ -10,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
     public static class FilterCapabilitiesModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectionMade_ThrowsValidationError(
             FilterCapabilitiesModel model,
             FilterCapabilitiesModelValidator validator)
@@ -25,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectionMade_NoErrors(
             FilterCapabilitiesModel model,
             FilterCapabilitiesModelValidator validator)
@@ -39,8 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
+        [MockInlineAutoData(true)]
+        [MockInlineAutoData(false)]
         public static void Validate_SelectionMade_NoErrors(
             bool isFiltering,
             FilterCapabilitiesModel model,

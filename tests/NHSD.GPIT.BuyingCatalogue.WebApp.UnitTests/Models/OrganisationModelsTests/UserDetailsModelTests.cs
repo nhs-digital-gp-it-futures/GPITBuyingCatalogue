@@ -3,7 +3,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.OrganisationModels;
 using Xunit;
 
@@ -12,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
     public static class UserDetailsModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithOrganisationConstruction_PropertiesSetAsExpected(
             Organisation organisation, int maxNumberAccountManagers)
         {
@@ -29,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithUserConstruction_PropertiesSetAsExpected(
             Organisation organisation,
             AspNetUser user,
@@ -49,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void IsDefaultAccountType_True_PropertiesSetAsExpected(
             Organisation organisation)
         {
@@ -58,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void IsDefaultAccountType_False_PropertiesSetAsExpected(
             Organisation organisation)
         {
@@ -67,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void IsNhsDigitalOrganisation_True_PropertiesSetAsExpected(
             Organisation organisation)
         {
@@ -80,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void InputFields_IncludesWhitespace_WhitespaceRemoved(
             string firstName,
             string lastName,

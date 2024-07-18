@@ -2,7 +2,6 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ContractBilling;
 using Xunit;
 
@@ -19,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_Add_PropertiesCorrectlySet(
             IEnumerable<OrderItem> associatedServices,
             CallOffId callOffId,
@@ -35,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidArguments_Edit_PropertiesCorrectlySet(
             IEnumerable<OrderItem> associatedServices,
             CallOffId callOffId,

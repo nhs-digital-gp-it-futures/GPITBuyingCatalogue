@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using Xunit;
@@ -25,34 +24,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var actionContext = new ActionContext(
                 httpContextMock,
-                Mock.Of<Microsoft.AspNetCore.Routing.RouteData>(),
-                Mock.Of<ActionDescriptor>(),
+                Substitute.For<Microsoft.AspNetCore.Routing.RouteData>(),
+                Substitute.For<ActionDescriptor>(),
                 modelState);
 
             var actionExecutingContext = new ActionExecutingContext(
                 actionContext,
                 new List<IFilterMetadata>(),
                 new Dictionary<string, object>(),
-                Mock.Of<Controller>())
+                Substitute.For<Controller>())
             {
                 Result = new OkResult(), // It will return ok unless during code execution you change this when by condition
             };
 
             var listOfLogStrings = new List<string>();
 
-            var mockLogger = new Mock<ILogWrapper<ActionArgumentNullFilter>>();
+            var mockLogger = Substitute.For<ILogWrapper<ActionArgumentNullFilter>>();
 
             mockLogger
-                .Setup(l => l.LogWarning(It.IsAny<string>(), It.IsAny<object[]>()))
-                .Callback<string, object[]>((l, _) => listOfLogStrings.Add(l));
+                .When(l => l.LogWarning(Arg.Any<string>(), Arg.Any<object[]>()))
+                .Do(x => listOfLogStrings.Add(x.ArgAt<string>(0)));
 
             actionExecutingContext.ActionArguments.Add("AStringValue", "Hello,World");
             actionExecutingContext.ActionArguments.Add("AGuidValue", Guid.Parse("54a18b28-8491-467c-bf0f-90f29660bd16"));
             actionExecutingContext.ActionArguments.Add("AnObjectValue", new object());
 
-            var context = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Mock.Of<Controller>());
+            var context = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Substitute.For<Controller>());
 
-            var actionArgumentFilter = new ActionArgumentNullFilter(mockLogger.Object);
+            var actionArgumentFilter = new ActionArgumentNullFilter(mockLogger);
 
             await actionArgumentFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(context));
 
@@ -70,34 +69,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters
 
             var actionContext = new ActionContext(
                 httpContextMock,
-                Mock.Of<Microsoft.AspNetCore.Routing.RouteData>(),
-                Mock.Of<ActionDescriptor>(),
+                Substitute.For<Microsoft.AspNetCore.Routing.RouteData>(),
+                Substitute.For<ActionDescriptor>(),
                 modelState);
 
             var actionExecutingContext = new ActionExecutingContext(
                 actionContext,
                 new List<IFilterMetadata>(),
                 new Dictionary<string, object>(),
-                Mock.Of<Controller>())
+                Substitute.For<Controller>())
             {
                 Result = new OkResult(), // It will return ok unless during code execution you change this when by condition
             };
 
             var listOfLogStrings = new List<string>();
 
-            var mockLogger = new Mock<ILogWrapper<ActionArgumentNullFilter>>();
+            var mockLogger = Substitute.For<ILogWrapper<ActionArgumentNullFilter>>();
 
             mockLogger
-                .Setup(l => l.LogWarning(It.IsAny<string>(), It.IsAny<object[]>()))
-                .Callback<string, object[]>((l, _) => listOfLogStrings.Add(l));
+                .When(l => l.LogWarning(Arg.Any<string>(), Arg.Any<object[]>()))
+                .Do(x => listOfLogStrings.Add(x.ArgAt<string>(0)));
 
             actionExecutingContext.ActionArguments.Add("AStringValue", aStringValue);
             actionExecutingContext.ActionArguments.Add("AGuidValue", aGuidValue);
             actionExecutingContext.ActionArguments.Add("AnObjectValue", anObjectValue);
 
-            var context = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Mock.Of<Controller>());
+            var context = new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), Substitute.For<Controller>());
 
-            var actionArgumentFilter = new ActionArgumentNullFilter(mockLogger.Object);
+            var actionArgumentFilter = new ActionArgumentNullFilter(mockLogger);
 
             await actionArgumentFilter.OnActionExecutionAsync(actionExecutingContext, () => Task.FromResult(context));
 

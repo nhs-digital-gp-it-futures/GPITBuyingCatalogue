@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.Http;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
@@ -12,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Solu
 public static class ImportServiceRecipientModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_NoFileSpecified_SetsModelError(
         ImportServiceRecipientModel model,
         ImportServiceRecipientModelValidator validator)
@@ -26,7 +25,7 @@ public static class ImportServiceRecipientModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_IncorrectFileType_SetsModelError(
         ImportServiceRecipientModel model,
         ImportServiceRecipientModelValidator validator)
@@ -40,7 +39,7 @@ public static class ImportServiceRecipientModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_FileSizeTooLarge_SetsModelError(
         ImportServiceRecipientModel model,
         ImportServiceRecipientModelValidator validator)
@@ -59,7 +58,7 @@ public static class ImportServiceRecipientModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_ValidFile_NoModelErrors(
         ImportServiceRecipientModel model,
         ImportServiceRecipientModelValidator validator)

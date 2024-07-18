@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ModelBinders;
 using Xunit;
 
@@ -12,39 +11,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ModelBinders
     public static class TimeInputModelBinderTests
     {
         [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("\t")]
-        public static Task TimeInputModelBinder_NullOrWhitespaceModelName_ThrowsException(string modelName)
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("\t")]
+        public static Task TimeInputModelBinder_EmptyOrWhitespaceModelName_ThrowsException(
+            string modelName,
+            DefaultModelBindingContext context,
+            TimeInputModelBinder modelBinder)
         {
-            Mock<IValueProvider> valueProviderMock = new Mock<IValueProvider>();
-            Mock<ModelBindingContext> contextMock = new Mock<ModelBindingContext>();
-            TimeInputModelBinder modelBinder = new TimeInputModelBinder();
+            context.ModelName = modelName;
+            context.ValueProvider.GetValue(Arg.Any<string>()).Returns(ValueProviderResult.None);
 
-            valueProviderMock.Setup(v => v.GetValue(It.IsAny<string>())).Returns(ValueProviderResult.None);
-
-            contextMock.SetupAllProperties();
-            contextMock.Setup(c => c.ModelName).Returns(modelName);
-            contextMock.Setup(c => c.ValueProvider).Returns(valueProviderMock.Object);
-
-            return Assert.ThrowsAsync<ArgumentException>(() => modelBinder.BindModelAsync(contextMock.Object));
+            return Assert.ThrowsAsync<ArgumentException>(() => modelBinder.BindModelAsync(context));
         }
 
-        [Fact]
-        public static async Task TimeInputModelBinder_NoValue_ResultIsFailed()
+        [Theory]
+        [MockAutoData]
+        public static async Task TimeInputModelBinder_NoValue_ResultIsFailed(
+            DefaultModelBindingContext context,
+            TimeInputModelBinder modelBinder)
         {
-            Mock<IValueProvider> valueProviderMock = new Mock<IValueProvider>();
-            Mock<ModelBindingContext> contextMock = new Mock<ModelBindingContext>();
-            TimeInputModelBinder modelBinder = new TimeInputModelBinder();
-
-            valueProviderMock.Setup(v => v.GetValue(It.IsAny<string>())).Returns(ValueProviderResult.None);
-
-            contextMock.SetupAllProperties();
-            contextMock.Setup(c => c.ModelName).Returns("model");
-            contextMock.Setup(c => c.ValueProvider).Returns(valueProviderMock.Object);
-            contextMock.Setup(c => c.ModelState).Returns(new ModelStateDictionary());
-
-            var context = contextMock.Object;
+            context.ModelName = "model";
+            context.ModelState = new ModelStateDictionary();
+            context.ValueProvider.GetValue(Arg.Any<string>()).Returns(ValueProviderResult.None);
 
             await modelBinder.BindModelAsync(context);
 
@@ -52,36 +40,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ModelBinders
         }
 
         [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("\t")]
-        [InlineData("1258")]
-        [InlineData("25:01")]
-        [InlineData("13:93")]
-        [InlineData("12")]
-        [InlineData("Hello")]
-        public static async Task TimeInputModelBinder_ValueNotDateTimeConvertable_ResultsIsFailed(string value)
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData("\t")]
+        [MockInlineAutoData("1258")]
+        [MockInlineAutoData("25:01")]
+        [MockInlineAutoData("13:93")]
+        [MockInlineAutoData("12")]
+        [MockInlineAutoData("Hello")]
+        public static async Task TimeInputModelBinder_ValueNotDateTimeConvertable_ResultsIsFailed(
+            string value,
+            DefaultModelBindingContext context,
+            TimeInputModelBinder modelBinder)
         {
-            Mock<IValueProvider> valueProviderMock = new Mock<IValueProvider>();
-            Mock<ModelBindingContext> contextMock = new Mock<ModelBindingContext>();
-            TimeInputModelBinder modelBinder = new TimeInputModelBinder();
-
-            valueProviderMock.Setup(v => v.GetValue(It.IsAny<string>())).Returns(new ValueProviderResult(value));
-
-            contextMock.SetupAllProperties();
-            contextMock.Setup(c => c.ModelName).Returns("model");
-            contextMock.Setup(c => c.ValueProvider).Returns(valueProviderMock.Object);
-            contextMock.Setup(c => c.ModelState).Returns(new ModelStateDictionary());
-
-            var context = contextMock.Object;
+            context.ModelName = "model";
+            context.ModelState = new ModelStateDictionary();
+            context.ValueProvider.GetValue(Arg.Any<string>()).Returns(new ValueProviderResult(value));
 
             await modelBinder.BindModelAsync(context);
 
             context.Result.Should().Be(ModelBindingResult.Failed());
         }
 
-        [Fact]
-        public static async Task TimeInputModelBinder_ReturnsSuccessWithDateTime()
+        [Theory]
+        [MockAutoData]
+        public static async Task TimeInputModelBinder_ReturnsSuccessWithDateTime(
+            DefaultModelBindingContext context,
+            TimeInputModelBinder modelBinder)
         {
             const string correctValue = "12:58";
 
@@ -94,18 +79,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ModelBinders
 
             var expectedValue = ModelBindingResult.Success(parsedDateTime);
 
-            Mock<IValueProvider> valueProviderMock = new Mock<IValueProvider>();
-            Mock<ModelBindingContext> contextMock = new Mock<ModelBindingContext>();
-            TimeInputModelBinder modelBinder = new TimeInputModelBinder();
-
-            valueProviderMock.Setup(v => v.GetValue(It.IsAny<string>())).Returns(new ValueProviderResult(correctValue));
-
-            contextMock.SetupAllProperties();
-            contextMock.Setup(c => c.ModelName).Returns("model");
-            contextMock.Setup(c => c.ValueProvider).Returns(valueProviderMock.Object);
-            contextMock.Setup(c => c.ModelState).Returns(new ModelStateDictionary());
-
-            var context = contextMock.Object;
+            context.ModelName = "model";
+            context.ModelState = new ModelStateDictionary();
+            context.ValueProvider.GetValue(Arg.Any<string>()).Returns(new ValueProviderResult(correctValue));
 
             await modelBinder.BindModelAsync(context);
 

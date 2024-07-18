@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Validators.Filters;
 using Xunit;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
     public static class IncludeEpicsModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectionMade_ThrowsValidationError(
             IncludeEpicsModel model,
             IncludeEpicsModelValidator validator)
@@ -23,8 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Validators.
         }
 
         [Theory]
-        [CommonInlineAutoData(true)]
-        [CommonInlineAutoData(false)]
+        [MockInlineAutoData(true)]
+        [MockInlineAutoData(false)]
         public static void Validate_SelectionMade_NoErrors(
             bool value,
             IncludeEpicsModel model,

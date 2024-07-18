@@ -7,7 +7,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 using Xunit;
 
@@ -16,9 +15,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
     public static class SelectServiceRecipientQuantityModelTests
     {
         [Theory]
-        [CommonInlineAutoData(ProvisioningType.Patient, SelectServiceRecipientQuantityModel.AdviceTextPatient)]
-        [CommonInlineAutoData(ProvisioningType.OnDemand, SelectServiceRecipientQuantityModel.AdviceText)]
-        [CommonInlineAutoData(ProvisioningType.Declarative, SelectServiceRecipientQuantityModel.AdviceText)]
+        [MockInlineAutoData(ProvisioningType.Patient, SelectServiceRecipientQuantityModel.AdviceTextPatient)]
+        [MockInlineAutoData(ProvisioningType.OnDemand, SelectServiceRecipientQuantityModel.AdviceText)]
+        [MockInlineAutoData(ProvisioningType.Declarative, SelectServiceRecipientQuantityModel.AdviceText)]
         public static void WithValidOrderItem_PropertiesCorrectlySet(
             ProvisioningType provisioningType,
             string expectedAdvice,
@@ -47,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidOrderItem_ServiceRecipientsNull_EmptyServiceRecipients(
            OrderItem item)
         {
@@ -59,8 +58,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static void WithValidOrderItem_Not_MergerSplit_PropertiesCorrectlySet(
             OrderType orderType,
             List<ServiceRecipientDto> serviceRecipients,
@@ -87,8 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
         public static void WithValidOrderItem_MergerSplit_PropertiesCorrectlySet(
             OrderType orderType,
             OdsOrganisation organisation,
@@ -117,10 +116,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
         }
 
         [Theory]
-        [CommonInlineAutoData(OrderTypeEnum.Solution)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
-        [CommonInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(OrderTypeEnum.Solution)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(OrderTypeEnum.AssociatedServiceSplit)]
         public static void WithValidOrderItem_PreviousServiceRecipientsEmpty_EmptyPreviouslySelected(
            OrderType orderType,
            OrderItem item)

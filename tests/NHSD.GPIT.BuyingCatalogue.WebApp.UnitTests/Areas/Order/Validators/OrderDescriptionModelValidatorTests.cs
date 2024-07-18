@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderDescription;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators;
 using Xunit;
@@ -9,8 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
     public static class OrderDescriptionModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_DescriptionNullOrEmpty_SetsModelError(
             string description,
             OrderDescriptionModel model,
@@ -25,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelError(
             OrderDescriptionModel model,
             OrderDescriptionModelValidator validator)

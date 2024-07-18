@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 using Xunit;
 
@@ -10,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
     public static class SelectOrderItemQuantityModelTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidOrderItem_PropertiesCorrectlySet(OrderItem item)
         {
             var model = new SelectOrderItemQuantityModel(item.CatalogueItem, item.OrderItemPrice, item.Quantity);

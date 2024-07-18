@@ -1,8 +1,6 @@
 ﻿using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Validation;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ImportModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.Import;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
@@ -15,9 +13,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Impo
         private const string Url = "https://www.test.com";
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
-        [CommonInlineAutoData(" ")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
+        [MockInlineAutoData(" ")]
         public static void Validate_NoCsvUrl_SetsModelError(
             string csvUrl,
             ImportGpPracticeListModel model,
@@ -32,42 +30,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Impo
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_InvalidCsvUrl_SetsModelError(
             ImportGpPracticeListModel model,
-            [Frozen] Mock<IUrlValidator> mockUrlValidator,
+            [Frozen] IUrlValidator mockUrlValidator,
             ImportGpPracticeListModelValidator validator)
         {
             model.CsvUrl = Url;
 
-            mockUrlValidator
-                .Setup(x => x.IsValidUrl(Url))
-                .Returns(false);
+            mockUrlValidator.IsValidUrl(Url).Returns(false);
 
             var result = validator.TestValidate(model);
-
-            mockUrlValidator.VerifyAll();
 
             result.ShouldHaveValidationErrorFor(m => m.CsvUrl)
                 .WithErrorMessage(FluentValidationExtensions.InvalidUrlErrorMessage);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_ValidCsvUrl_NoErrors(
             ImportGpPracticeListModel model,
-            [Frozen] Mock<IUrlValidator> mockUrlValidator,
+            [Frozen] IUrlValidator mockUrlValidator,
             ImportGpPracticeListModelValidator validator)
         {
             model.CsvUrl = Url;
 
-            mockUrlValidator
-                .Setup(x => x.IsValidUrl(Url))
-                .Returns(true);
+            mockUrlValidator.IsValidUrl(Url).Returns(true);
 
             var result = validator.TestValidate(model);
-
-            mockUrlValidator.VerifyAll();
 
             result.ShouldNotHaveAnyValidationErrors();
         }

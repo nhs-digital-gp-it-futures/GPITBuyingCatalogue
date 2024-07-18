@@ -3,7 +3,6 @@ using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 using Xunit;
 
@@ -12,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
     public static class AmendOrderItemModelTest
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Contructor_Requires_OrderItem(
             CallOffId callOffId,
             bool isAmendment,
@@ -24,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void IsOrderItemAdded_True_When_Previous_OrderItem_Null(
             CallOffId callOffId,
             OrderItem orderItem,
@@ -37,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void PreviousTotalQuantity_0_When_Previous_OrderItem_Null(
             CallOffId callOffId,
             OrderItem orderItem,
@@ -49,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void IsOrderItemAdded_False_When_Previous_OrderItem_NotNull(
             CallOffId callOffId,
             OrderItem orderItem,
@@ -61,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void IsServiceRecipientAdded_True_When_Previous_Recipients_Null(
             CallOffId callOffId,
             OrderItem orderItem,
@@ -76,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void IsServiceRecipientAdded_True_When_Previous_Recipients_Does_Not_Include_Recipient(
             CallOffId callOffId,
             OrderItem orderItem,
@@ -93,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void IsServiceRecipientAdded_False_When_Previous_Recipients_Same(
             CallOffId callOffId,
             OrderItem orderItem,
@@ -106,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void PropertiesCorrectlySet(
             CallOffId callOffId,
             OrderItem orderItem,

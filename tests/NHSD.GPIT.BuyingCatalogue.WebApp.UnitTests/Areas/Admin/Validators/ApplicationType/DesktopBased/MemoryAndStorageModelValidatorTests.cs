@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels.DesktopBasedModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ApplicationType.DesktopBased;
 using Xunit;
@@ -9,8 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Appl
     public static class MemoryAndStorageModelValidatorTests
     {
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_SelectedMemorySizeNullOrEmpty_SetsModelError(
             string selectedMemorySize,
             MemoryAndStorageModel model,
@@ -25,8 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Appl
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_StorageSpaceNullOrEmpty_SetsModelError(
             string storageSpace,
             MemoryAndStorageModel model,
@@ -41,8 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Appl
         }
 
         [Theory]
-        [CommonInlineAutoData(null)]
-        [CommonInlineAutoData("")]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData("")]
         public static void Validate_ProcessingPowerNullOrEmpty_SetsModelError(
             string processingPower,
             MemoryAndStorageModel model,
@@ -57,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Appl
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoModelError(
             MemoryAndStorageModel model,
             MemoryAndStorageModelValidator validator)

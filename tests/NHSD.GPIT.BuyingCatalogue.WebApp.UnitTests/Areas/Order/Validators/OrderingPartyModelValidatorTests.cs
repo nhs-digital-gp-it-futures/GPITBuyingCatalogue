@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderingParty;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators;
 using Xunit;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
     public static class OrderingPartyModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_FirstNameEmpty_SetsModelError(
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)
@@ -23,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_LastNameEmpty_SetsModelError(
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)
@@ -37,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_TelephoneEmpty_SetsModelError(
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)
@@ -51,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmailEmpty_SetsModelError(
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)
@@ -65,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_EmailNotValid_SetsModelError(
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)
@@ -79,7 +78,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_Valid_NoValidationError(
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)

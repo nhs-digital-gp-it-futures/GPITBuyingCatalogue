@@ -1,6 +1,5 @@
 ﻿using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators.NonPriceElements;
 using Xunit;
@@ -10,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
 public static class FeaturesRequirementModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_MissingRequirements_SetsModelError(
         FeaturesRequirementModel model,
         FeaturesRequirementModelValidator validator)
@@ -24,7 +23,7 @@ public static class FeaturesRequirementModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_MissingCompliance_SetsModelError(
         FeaturesRequirementModel model,
         FeaturesRequirementModelValidator validator)
@@ -38,7 +37,7 @@ public static class FeaturesRequirementModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_Valid_NoModelErrors(
         string requirements,
         CompliancyLevel selectedCompliance,

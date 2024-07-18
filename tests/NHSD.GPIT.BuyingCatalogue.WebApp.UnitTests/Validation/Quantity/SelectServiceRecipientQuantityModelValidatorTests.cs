@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Quantity;
 using Xunit;
@@ -19,11 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
         }
 
         [Theory]
-        [CommonInlineAutoData("-1", false)]
-        [CommonInlineAutoData("0.5", false)]
-        [CommonInlineAutoData("a", false)]
-        [CommonInlineAutoData("0", false)]
-        [CommonInlineAutoData("1", true)]
+        [MockInlineAutoData("-1", false)]
+        [MockInlineAutoData("0.5", false)]
+        [MockInlineAutoData("a", false)]
+        [MockInlineAutoData("0", false)]
+        [MockInlineAutoData("1", true)]
         public void Validate__ShouldValidateServiceRecipients_CompareResults(string quantity, bool expected)
         {
 #pragma warning disable SA1413

@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using Xunit;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
     public static class ApplicationTypeSelectionModelValidatorTests
     {
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectionWhenTypesAvailable_HasError(
             ApplicationTypeSelectionModel model,
             ApplicationTypeSelectionModelValidator validator)
@@ -24,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_SelectionWhenTypesAvailable_DoesNotHaveError(
             ApplicationTypeSelectionModel model,
             ApplicationTypeSelectionModelValidator validator)
@@ -37,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Validate_NoSelectionWhenNoTypesAvailable_DoesNotHaveError(
             ApplicationTypeSelectionModel model,
             ApplicationTypeSelectionModelValidator validator)

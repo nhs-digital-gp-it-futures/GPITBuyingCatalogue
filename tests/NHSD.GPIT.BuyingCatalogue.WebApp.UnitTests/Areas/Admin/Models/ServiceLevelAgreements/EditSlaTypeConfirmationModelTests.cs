@@ -1,7 +1,6 @@
 ﻿using System;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
 using Xunit;
 
@@ -18,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ServiceL
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void WithValidConstruction_PropertiesSetAsExpected(
             Solution solution)
         {

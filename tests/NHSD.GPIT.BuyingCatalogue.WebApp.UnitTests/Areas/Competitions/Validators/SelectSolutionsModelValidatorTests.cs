@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoFixture;
 using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
@@ -13,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
 public static class SelectSolutionsModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_SingleSolutionMissingAwardSelection_SetsModelError(
         SolutionModel solution,
         SelectSolutionsModel model,
@@ -29,7 +28,7 @@ public static class SelectSolutionsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_SingleSolutionValid_NoModelError(
         SolutionModel solution,
         SelectSolutionsModel model,
@@ -44,7 +43,7 @@ public static class SelectSolutionsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_MultipleSolutionsNotEnoughSelections_SetsModelError(
         List<SolutionModel> solutions,
         SelectSolutionsModel model,
@@ -62,7 +61,7 @@ public static class SelectSolutionsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_MultipleSolutionsTooManySelections_SetsModelError(
         IFixture fixture,
         SelectSolutionsModel model,
@@ -81,7 +80,7 @@ public static class SelectSolutionsModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_MultipleSolutionsValid_NoModelErrors(
         IFixture fixture,
         SelectSolutionsModel model,

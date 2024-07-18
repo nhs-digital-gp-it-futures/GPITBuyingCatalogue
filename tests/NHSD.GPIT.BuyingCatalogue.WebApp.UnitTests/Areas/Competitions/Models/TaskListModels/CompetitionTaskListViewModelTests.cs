@@ -2,7 +2,6 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.TaskListModels;
 using Xunit;
 
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.T
 public static class CompetitionTaskListViewModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsProperties(
         Organisation organisation,
         CompetitionTaskListModel competitionTaskListModel)
@@ -24,8 +23,8 @@ public static class CompetitionTaskListViewModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(TaskProgress.Completed, "View the award criteria you selected to help you compare your shortlisted solutions.")]
-    [CommonInlineAutoData(TaskProgress.NotStarted, "Select the award criteria you want to use to compare your shortlisted solutions.")]
+    [MockInlineAutoData(TaskProgress.Completed, "View the award criteria you selected to help you compare your shortlisted solutions.")]
+    [MockInlineAutoData(TaskProgress.NotStarted, "Select the award criteria you want to use to compare your shortlisted solutions.")]
     public static void AwardCriteriaText_ReviewedCriteria_ExpectedContent(
         TaskProgress taskProgress,
         string expectedContent,
@@ -40,8 +39,8 @@ public static class CompetitionTaskListViewModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(TaskProgress.Completed, "View the award criteria weightings you gave for price and non-price elements.")]
-    [CommonInlineAutoData(TaskProgress.NotStarted, "Give your chosen award criteria weightings based on how important they are to you.")]
+    [MockInlineAutoData(TaskProgress.Completed, "View the award criteria weightings you gave for price and non-price elements.")]
+    [MockInlineAutoData(TaskProgress.NotStarted, "Give your chosen award criteria weightings based on how important they are to you.")]
     public static void AwardCriteriaWeightingsText_ReviewedCriteria_ExpectedContent(
         TaskProgress taskProgress,
         string expectedContent,
@@ -56,8 +55,8 @@ public static class CompetitionTaskListViewModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(TaskProgress.Completed, "View any non-price elements you added to help you score your shortlisted solutions.")]
-    [CommonInlineAutoData(TaskProgress.NotStarted, "Select any non-price elements you want to add to help you score your shortlisted solutions.")]
+    [MockInlineAutoData(TaskProgress.Completed, "View any non-price elements you added to help you score your shortlisted solutions.")]
+    [MockInlineAutoData(TaskProgress.NotStarted, "Select any non-price elements you want to add to help you score your shortlisted solutions.")]
     public static void NonPriceElementsText_ReviewedCriteria_ExpectedContent(
         TaskProgress taskProgress,
         string expectedContent,
@@ -72,8 +71,8 @@ public static class CompetitionTaskListViewModelTests
     }
 
     [Theory]
-    [CommonInlineAutoData(TaskProgress.Completed, "View the non-price elements weightings you applied for this competition.")]
-    [CommonInlineAutoData(TaskProgress.NotStarted, "Give your chosen non-price elements weightings based on how important they are to you.")]
+    [MockInlineAutoData(TaskProgress.Completed, "View the non-price elements weightings you applied for this competition.")]
+    [MockInlineAutoData(TaskProgress.NotStarted, "Give your chosen non-price elements weightings based on how important they are to you.")]
     public static void NonPriceWeightingsText_ReviewedCriteria_ExpectedContent(
         TaskProgress taskProgress,
         string expectedContent,

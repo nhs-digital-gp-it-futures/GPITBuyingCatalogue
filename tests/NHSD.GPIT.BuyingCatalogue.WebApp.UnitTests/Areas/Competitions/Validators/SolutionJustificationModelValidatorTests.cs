@@ -1,5 +1,4 @@
 using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.SelectSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
 using Xunit;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
 public static class SolutionJustificationModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_JustificationEmpty_SetsModelError(
         SolutionJustificationModel model,
         SolutionJustificationModelValidator validator)
@@ -23,7 +22,7 @@ public static class SolutionJustificationModelValidatorTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_Valid_NoModelErrors(
         string justification,
         SolutionJustificationModel model,

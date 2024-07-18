@@ -2,7 +2,6 @@
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using Xunit;
 
@@ -11,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Capabili
 public static class CapabilityModelTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsProperties_Effective(
         Solution solution,
         Capability capability)
@@ -27,7 +26,7 @@ public static class CapabilityModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_SetsProperties_Expired(
         Solution solution,
         Capability capability)
@@ -43,7 +42,7 @@ public static class CapabilityModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_Selected_SetsSelected(
         Solution solution,
         Capability capability)
@@ -56,7 +55,7 @@ public static class CapabilityModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_Epics_SplitsMustAndMay(
         Solution solution,
         Capability capability,
@@ -81,7 +80,7 @@ public static class CapabilityModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_Effective_CapabilityNotSelected_SelectsAllMustEpics(
         Solution solution,
         Capability capability,
@@ -109,7 +108,7 @@ public static class CapabilityModelTests
     }
 
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Construct_CapabilitySelected_PreservesMustEpics(
         Solution solution,
         Capability capability,

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -8,9 +7,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using Xunit;
@@ -30,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Index_ReturnsDefaultView(
             HomeController controller)
         {
@@ -41,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_PrivacyPolicy_ReturnsDefaultView(
             HomeController controller)
         {
@@ -52,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Error500_ReturnsDefaultErrorView(
             HomeController controller)
         {
@@ -63,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_ErrorNullStatus_ReturnsDefaultErrorView(
             HomeController controller)
         {
@@ -74,12 +71,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Error404_ReturnsPageNotFound(
-            [Frozen] Mock<IFeatureCollection> features,
+            [Frozen] IFeatureCollection features,
             HomeController controller)
         {
-            features.Setup(c => c.Get<IStatusCodeReExecuteFeature>()).Returns(new StatusCodeReExecuteFeature { OriginalPath = "BAD" });
+            features.Get<IStatusCodeReExecuteFeature>().Returns(new StatusCodeReExecuteFeature { OriginalPath = "BAD" });
 
             var result = controller.Error(404).As<ViewResult>();
 
@@ -89,12 +86,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_Error404_NullFeature_ReturnsPageNotFound(
-            [Frozen] Mock<HttpContext> httpContextMock,
+            [Frozen] HttpContext httpContextMock,
             HomeController controller)
         {
-            httpContextMock.Setup(x => x.Features.Get<IStatusCodeReExecuteFeature>()).Returns<StatusCodeReExecuteFeature>(null);
+            httpContextMock.Features.Get<IStatusCodeReExecuteFeature>().Returns((StatusCodeReExecuteFeature)null);
 
             var result = controller.Error(404).As<ViewResult>();
 
@@ -104,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_ErrorWithErrorValue_ReturnsErrorViewModel(
             string error,
             HomeController controller)
@@ -118,7 +115,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_ContactUs_ReturnsViewWithModel(
             HomeController controller)
             => controller
@@ -129,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
                 .NotBeNull();
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ContactUs_InvalidModel_ReturnsViewWithModel(
             ContactUsModel model,
             HomeController controller)
@@ -142,22 +139,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ContactUs_ValidModel_SubmitsQuery(
             ContactUsModel model,
-            [Frozen] Mock<IContactUsService> service,
+            [Frozen] IContactUsService service,
             HomeController controller)
         {
             _ = await controller.ContactUs(model);
 
-            service.Verify(s => s.SubmitQuery(
+            await service.Received().SubmitQuery(
                 model.FullName,
                 model.EmailAddress,
-                model.Message));
+                model.Message);
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static async Task Post_ContactUs_ValidModel_RedirectsContactUsConfirmation(
             ContactUsModel model,
             HomeController controller)
@@ -169,7 +166,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_ContactUsConfirmation_ReturnsView(
             HomeController controller)
         {
@@ -179,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_ContactUsConfirmation_ReturnsExpectedModel(
             HomeController controller)
         {
@@ -191,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_AccessibilityStatement_ReturnsDefaultView(
             HomeController controller)
         {
@@ -202,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
         }
 
         [Theory]
-        [CommonAutoData]
+        [MockAutoData]
         public static void Get_NotAuthorised_ReturnsDefaultView(
             HomeController controller)
         {

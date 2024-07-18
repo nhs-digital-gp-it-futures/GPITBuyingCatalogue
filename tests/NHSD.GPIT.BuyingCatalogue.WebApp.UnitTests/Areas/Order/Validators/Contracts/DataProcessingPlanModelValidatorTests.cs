@@ -1,5 +1,4 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DataProcessing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts;
 using Xunit;
@@ -9,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
 public class DataProcessingPlanModelValidatorTests
 {
     [Theory]
-    [CommonAutoData]
+    [MockAutoData]
     public static void Validate_UseDefaultDataProcessingNull_SetsModelError(
         DataProcessingPlanModel model,
         DataProcessingPlanModelValidator validator)
@@ -24,8 +23,8 @@ public class DataProcessingPlanModelValidatorTests
     }
 
     [Theory]
-    [CommonInlineAutoData(true)]
-    [CommonInlineAutoData(false)]
+    [MockInlineAutoData(true)]
+    [MockInlineAutoData(false)]
     public static void Validate_Valid_NoModelError(
         bool useDefaultDataProcessing,
         DataProcessingPlanModel model,
