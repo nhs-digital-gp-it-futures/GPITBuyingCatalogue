@@ -16,10 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Ordering
 
             model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(order.CallOffId.ToString());
-            model.Contact.FirstName.Should().Be(order.OrderingPartyContact.FirstName);
-            model.Contact.LastName.Should().Be(order.OrderingPartyContact.LastName);
-            model.Contact.EmailAddress.Should().Be(order.OrderingPartyContact.Email);
-            model.Contact.TelephoneNumber.Should().Be(order.OrderingPartyContact.Phone);
+            model.FirstName.Should().Be(order.OrderingPartyContact.FirstName);
+            model.LastName.Should().Be(order.OrderingPartyContact.LastName);
+            model.EmailAddress.Should().Be(order.OrderingPartyContact.Email);
+            model.TelephoneNumber.Should().Be(order.OrderingPartyContact.Phone);
         }
     }
 }

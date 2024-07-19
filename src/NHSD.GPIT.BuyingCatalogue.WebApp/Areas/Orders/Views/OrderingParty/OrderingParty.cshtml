@@ -16,14 +16,14 @@
 								caption = "Order @Model.CallOffId"/>
 
 				<nhs-fieldset-form-container asp-for="@Model">
-					<nhs-input asp-for="@Model.Contact.FirstName"
+					<nhs-input asp-for="@Model.FirstName"
                                             label-text="First name" />
-                    <nhs-input asp-for="@Model.Contact.LastName"
+                    <nhs-input asp-for="@Model.LastName"
                                             label-text="Last name" />
-					<nhs-input asp-for="@Model.Contact.TelephoneNumber"
+					<nhs-input asp-for="@Model.TelephoneNumber"
 											label-text="Telephone number"
 											input-width="Ten"/>
-                    <nhs-input asp-for="@Model.Contact.EmailAddress"
+                    <nhs-input asp-for="@Model.EmailAddress"
                                             label-text="Email address" />
 				</nhs-fieldset-form-container>
 				<br/>
