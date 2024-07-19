@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] IOrderService orderServiceMock,
             [Frozen] IOrderingPartyService orderingPartyServiceMock,
             OrderingPartyController controller,
-            OrderingPartyModel model, 
+            OrderingPartyModel model,
             Contact contact)
         {
             order.OrderingPartyContact = contact;
