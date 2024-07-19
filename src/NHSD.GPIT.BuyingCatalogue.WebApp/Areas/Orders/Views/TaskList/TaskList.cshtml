@@ -35,10 +35,10 @@
                         if (Model.AlternativeSolutionsAvailable)
                         {
                             <p>
-                                <a class="nhsuk-link--no-visited-state" href="@Url.Action(
-                                nameof(CatalogueSolutionsController.EditSolution),
-                                typeof(CatalogueSolutionsController).ControllerName(),
-                                new { Model.InternalOrgId, Model.CallOffId })">Change Catalogue Solution</a>
+                                <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(CatalogueSolutionsController.EditSolution), typeof(CatalogueSolutionsController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                    Change Catalogue Solution
+                                </a>
                             </p>
                         }
                         else
