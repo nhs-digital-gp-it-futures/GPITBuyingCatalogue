@@ -21,5 +21,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Ordering
             model.EmailAddress.Should().Be(order.OrderingPartyContact.Email);
             model.TelephoneNumber.Should().Be(order.OrderingPartyContact.Phone);
         }
+
+        [Theory]
+        [MockAutoData]
+        public static void WithNullOrderingPartyContact_PropertiesCorrectlySet(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            order.OrderingPartyContact = null;
+            var model = new OrderingPartyModel(internalOrgId, order);
+
+            model.FirstName.Should().BeNull();
+            model.LastName.Should().BeNull();
+            model.EmailAddress.Should().BeNull();
+            model.TelephoneNumber.Should().BeNull();
+        }
     }
 }
