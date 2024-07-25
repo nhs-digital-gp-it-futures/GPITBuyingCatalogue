@@ -35,7 +35,6 @@
 :r ./TestData/InsertStandards.sql
 :r ./TestData/InsertStandardsCapabilities.sql
 
-:r ./InsertOrderStatuses.sql
 :r ./InsertOrderTriageValues.sql
 :r ./InsertOrderItemFundingTypes.sql
 :r ./InsertTimeUnits.sql
@@ -48,9 +47,6 @@
 :r ./InsertEmailPreferenceTypes.sql
 :r ./InsertEventTypes.sql
 :r ./InsertEmailNotificationType.sql
-
-:r ./DropImport.sql
-:r ./DropPublish.sql
 
 :r ./ProdLikeData/MergeSuppliers.sql
 :r ./ProdLikeData/MergeCatalogueItems.sql
@@ -78,5 +74,3 @@
 :r ./MigrateMergersAndSplits.sql
 :r ./MigrateOrderType.sql
 :r ./MigrateFrameworks.sql
-:r ./MigrateGpConnectIntegrations.sql
-:r ./MigrateSolutionIntegrations.sql

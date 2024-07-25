@@ -147,7 +147,6 @@
     <Folder Include="Users\" />
     <Folder Include="Users\Tables\" />
     <Folder Include="Users\TemporalTables\" />
-    <Folder Include="PostDeployment\IntegrationTests\" />
     <Folder Include="PostDeployment\OdsOrganisationsSeedData\" />
     <Folder Include="PostDeployment\OrderSeedData\" />
     <Folder Include="PostDeployment\ProdLikeData\" />
