@@ -167,27 +167,33 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             var secondarySpanBuilder = new TagBuilder(TagHelperConstants.Span);
             secondarySpanBuilder.AddCssClass(summaryClass);
 
-            var secondaryTitleBuilder = new TagBuilder("b");
-            secondaryTitleBuilder.InnerHtml.Append(secondaryTextTitle);
+            if (!string.IsNullOrEmpty(secondaryTextTitle))
+            {
+                var secondaryTitleBuilder = new TagBuilder("b");
+                secondaryTitleBuilder.InnerHtml.Append(secondaryTextTitle);
 
-            secondarySpanBuilder.InnerHtml
-                .AppendHtml(secondaryTitleBuilder)
-                .Append(secondaryText);
+                secondarySpanBuilder.InnerHtml
+                    .AppendHtml(secondaryTitleBuilder)
+                    .Append(secondaryText);
+            }
 
-            if (secondaryUrlTitle is not null)
+            if (!string.IsNullOrEmpty(secondaryTextTitle) && !string.IsNullOrEmpty(secondaryUrlTitle))
             {
                 var breakRow = new TagBuilder("br") { TagRenderMode = TagRenderMode.SelfClosing };
+                secondarySpanBuilder.InnerHtml
+                    .AppendHtml(breakRow);
+            }
 
+            if (!string.IsNullOrEmpty(secondaryUrlTitle))
+            {
                 var secondaryUrlBuilder = new TagBuilder(TagHelperConstants.Anchor);
 
-                secondaryUrlBuilder.AddCssClass(TagHelperConstants.NhsLink);
-                secondaryUrlBuilder.AddCssClass(TagHelperConstants.NhsLinkNonVisited);
+                secondaryUrlBuilder.AddCssClass($"{TagHelperConstants.NhsLink} {TagHelperConstants.NhsLinkNonVisited}");
                 secondaryUrlBuilder.Attributes.Add(TagHelperConstants.Link, secondaryUrl);
                 secondaryUrlBuilder.Attributes.Add(TagHelperConstants.Style, "float: right;");
                 secondaryUrlBuilder.InnerHtml.Append(secondaryUrlTitle);
 
                 secondarySpanBuilder.InnerHtml
-                    .AppendHtml(breakRow)
                     .AppendHtml(secondaryUrlBuilder);
             }
 

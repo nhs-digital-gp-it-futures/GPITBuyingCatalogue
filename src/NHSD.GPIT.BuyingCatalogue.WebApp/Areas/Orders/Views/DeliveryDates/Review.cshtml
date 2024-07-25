@@ -159,15 +159,13 @@
 
                     var secondaryTitle = string.Empty;
                     var secondaryText = string.Empty;
-                    var secondaryUrlTitle = string.Empty;
-                    var secondaryUrl = string.Empty;
+                    var secondaryUrlTitle = $"Change date";
+                    var secondaryUrl = url;
 
                     if (!mergerSplit)
                     {
                         secondaryTitle = $"Planned delivery date: ";
                         secondaryText = GetFormattedDate(date);
-                        secondaryUrlTitle = $"Change date";
-                        secondaryUrl = url;
                     }
                     <nhs-expander label-text="@label"
                                   secondary-text-title="@secondaryTitle"
