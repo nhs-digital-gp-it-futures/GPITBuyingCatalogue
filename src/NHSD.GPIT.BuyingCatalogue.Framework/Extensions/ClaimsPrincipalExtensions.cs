@@ -9,22 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {
-        public static string GetPrimaryOrganisationName(this ClaimsPrincipal user)
-        {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
-
-            return GetClaimValue(user, Constants.CatalogueClaims.PrimaryOrganisationName);
-        }
-
-        public static string GetUserDisplayName(this ClaimsPrincipal user)
-        {
-            if (user is null)
-                throw new ArgumentNullException(nameof(user));
-
-            return GetClaimValue(user, Constants.CatalogueClaims.UserDisplayName);
-        }
-
         public static string GetPrimaryOrganisationInternalIdentifier(this ClaimsPrincipal user)
         {
             if (user is null)

@@ -49,3 +49,17 @@ services:
     environment:
       AZURE_STORAGE_CONNECTION_STRING: "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://nhsd_gpitbc_azurite:10000/devstoreaccount1;QueueEndpoint=http://nhsd_gpitbc_azurite:10001/devstoreaccount1;"
     entrypoint: ["bash", "-c", "sleep 10 && az storage container create -n orderpdfs && az storage container create -n publicdocs && az storage container create -n capabilities-update && az storage queue create -n send-email-notification && az storage queue create -n complete-email-notification"]
+
+  nhsd_gpitbc_identity:
+    image: nhsd.gpit.buyingcatalogue.identity
+    build:
+      context: .
+      dockerfile: src/NHSD.GPIT.BuyingCatalogue.Identity/Dockerfile
+    depends_on:
+      - nhsd_gpitbcdb_deploy
+      - sqlserver
+    environment:
+      ASPNETCORE_URLS: "http://*:44310"
+      CONNECTIONSTRINGS__BUYINGCATALOGUE: "Server=sqlserver,1433;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false;TrustServerCertificate=true"
+    ports:
+      - "44310:44310"

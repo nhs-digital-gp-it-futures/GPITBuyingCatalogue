@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO.Compression;
 using System.Linq;
 using System.Security.Claims;
@@ -9,25 +10,20 @@ using Azure.Storage.Queues;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Constants;
 using NHSD.GPIT.BuyingCatalogue.Framework.Environments;
-using NHSD.GPIT.BuyingCatalogue.Framework.Identity;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
@@ -41,6 +37,7 @@ using NHSD.GPIT.BuyingCatalogue.Services.Security;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Services;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 using Notify.Client;
 using Notify.Interfaces;
@@ -59,7 +56,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
         public static void ConfigureAuthorization(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IClaimsTransformation, CustomClaimTransformation>();
+            services.AddScoped<ITokenValidatedHandler, AuthenticationTokenValidatedHandler>();
+            services.AddScoped<ITokenValidatedHandler, EnrichingTokenValidatedHandler>();
+
+            services.AddScoped<IExecuteTokenValidatedHandler, ExecuteTokenValidatedHandler>();
 
             services.AddAuthentication(
                     options =>
@@ -91,6 +91,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         options.ClientId = openIdSettings.ClientId;
                         options.ClientSecret = openIdSettings.ClientSecret;
 
+                        options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
+                        options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+
                         options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                         options.ResponseType = OpenIdConnectResponseType.Code;
 
@@ -104,27 +107,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                         options.Scope.Add(OpenIdConnectScope.OpenIdProfile);
                         options.Scope.Add(OpenIdConnectScope.Email);
 
+                        options.ClaimActions.MapUniqueJsonKey(CatalogueClaims.Email, "EmailAddress");
+
+                        if (CurrentEnvironment.IsDevelopment)
+                        {
+                            options.RequireHttpsMetadata = false;
+                        }
+
                         options.Events = new OpenIdConnectEvents
                         {
                             OnTokenValidated = async context =>
                             {
-                                var idToken = context.SecurityToken;
-                                var emailClaim = idToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
-                                if (emailClaim == null || string.IsNullOrWhiteSpace(emailClaim.Value)) return;
+                                var tokenHandlerExecutor = context.HttpContext.RequestServices
+                                    .GetRequiredService<IExecuteTokenValidatedHandler>();
 
-                                var dbContext = context.HttpContext.RequestServices
-                                    .GetRequiredService<BuyingCatalogueDbContext>();
-
-                                var user = await dbContext.AspNetUsers.FirstOrDefaultAsync(
-                                    x => x.Email == emailClaim.Value);
-
-                                if (user is null)
-                                {
-                                    await context.HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
-
-                                    context.Response.Redirect("/unauthorized");
-                                    context.HandleResponse();
-                                }
+                                await tokenHandlerExecutor.ExecuteAsync(context);
                             },
                             OnAccessDenied = context =>
                             {
