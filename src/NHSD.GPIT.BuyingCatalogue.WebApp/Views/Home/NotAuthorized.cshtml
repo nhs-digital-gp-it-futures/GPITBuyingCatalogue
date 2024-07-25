@@ -6,13 +6,14 @@
             return ("You're not logged in as an admin", "Only users with an admin account can access this section of the Buying Catalogue.");
         }
 
-        return ("You're not logged in as a buyer", "Only users with a buyer account can create and manage orders on the Buying Catalogue.");
+        return !User.IsBuyer()
+            ? ("You're not logged in as a buyer", "Only users with a buyer account can create and manage orders on the Buying Catalogue.")
+            : ("You're not logged in", "Only users with a valid account can access the Buying Catalogue");
     }
 
-    (string title, string advice) = GetTitleAndAdvice();
+    var (title, advice) = GetTitleAndAdvice();
     ViewBag.Title = title;
     var backLinkModel = new NavBaseModel{ BackLink = "/", BackLinkText = "Go back to Homepage" };
-
 }
 
 <partial name="Partials/_BackLink" model="@backLinkModel" />

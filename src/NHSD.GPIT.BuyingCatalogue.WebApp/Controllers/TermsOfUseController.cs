@@ -1,26 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Users;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
 {
     public class TermsOfUseController : Controller
     {
-        private readonly UserManager<AspNetUser> userManager;
+        private readonly IUsersService usersService;
         private readonly TermsOfUseSettings settings;
 
         public TermsOfUseController(
-            UserManager<AspNetUser> userManager,
+            IUsersService usersService,
             TermsOfUseSettings settings)
         {
-            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.usersService = usersService ?? throw new ArgumentNullException(nameof(usersService));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         public async Task<IActionResult> TermsOfUse(string returnUrl = "./")
         {
             var user = await GetUserAsync();
-            var userRoles = await GetUserRoles(user);
+            var userRoles = user?.AspNetUserRoles?.Select(x => x.Role.Name) ?? Enumerable.Empty<string>();
             return View(new TermsOfUseModel(user, userRoles, settings.RevisionDate)
             {
                 ReturnUrl = returnUrl,
@@ -47,16 +47,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
                 return View(model);
             }
 
-            var user = await GetUserAsync();
+            if (!User.Identity?.IsAuthenticated ?? false) return RedirectToAction(nameof(TermsOfUse));
 
-            if (!user.HasAcceptedLatestTermsOfUse(settings.RevisionDate))
-            {
-                user.AcceptedTermsOfUseDate = DateTime.UtcNow;
-            }
-
-            user.HasOptedInUserResearch = model.HasOptedInUserResearch;
-
-            await userManager.UpdateAsync(user);
+            await usersService.SetTermsOfUse(User.UserId(), model.HasOptedInUserResearch);
 
             return Redirect(model.ReturnUrl);
         }
@@ -66,18 +59,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
             if (!User.Identity.IsAuthenticated)
                 return null;
 
-            var userId = userManager.GetUserId(User);
-            var user = await userManager.FindByIdAsync(userId);
+            var userId = User.UserId();
+            var user = await usersService.GetUser(userId);
 
             return user;
-        }
-
-        private async Task<IList<string>> GetUserRoles(AspNetUser user)
-        {
-            if (user == null)
-                return Enumerable.Empty<string>().ToList();
-
-            return await userManager.GetRolesAsync(user);
         }
     }
 }

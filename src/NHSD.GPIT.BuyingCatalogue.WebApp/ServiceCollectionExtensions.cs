@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth.Claims;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +20,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -30,11 +36,11 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Security;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Security.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
 using NHSD.GPIT.BuyingCatalogue.Services.Email;
-using NHSD.GPIT.BuyingCatalogue.Services.Identity;
 using NHSD.GPIT.BuyingCatalogue.Services.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Security;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation;
 using Notify.Client;
 using Notify.Interfaces;
@@ -51,71 +57,119 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         private const string BuyingCataloguePdfEnvironmentVariable = "USE_SSL_FOR_PDF";
         private const string SessionIdleTimeoutEnvironmentVariable = "SESSION_IDLE_TIMEOUT";
 
-        public static void ConfigureAuthorization(this IServiceCollection services)
+        public static void ConfigureAuthorization(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(
+            services.AddTransient<IClaimsTransformation, CustomClaimTransformation>();
+
+            services.AddAuthentication(
+                    options =>
+                    {
+                        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                    })
+                .AddCookie(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    options =>
+                    {
+                        var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
+
+                        var sessionIdleTimeout = configuration.GetValue<int?>(SessionIdleTimeoutEnvironmentVariable) ?? DefaultSessionTimeout;
+
+                        options.Cookie.Name = "user-session";
+                        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                        options.Cookie.SameSite = SameSiteMode.Lax;
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionIdleTimeout);
+                        options.SlidingExpiration = cookieExpiration.SlidingExpiration;
+                        options.AccessDeniedPath = "/unauthorized";
+                    })
+                .AddOpenIdConnect(
+                    options =>
+                    {
+                        var openIdSettings = configuration.GetSection("openIdSettings").Get<OpenIdConfigurationModel>();
+
+                        options.Authority = openIdSettings.Authority.ToString();
+                        options.ClientId = openIdSettings.ClientId;
+                        options.ClientSecret = openIdSettings.ClientSecret;
+
+                        options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.ResponseType = OpenIdConnectResponseType.Code;
+
+                        options.GetClaimsFromUserInfoEndpoint = true;
+                        options.SaveTokens = true;
+
+                        options.MapInboundClaims = false;
+                        options.TokenValidationParameters.NameClaimType = JwtRegisteredClaimNames.Name;
+
+                        options.Scope.Clear();
+                        options.Scope.Add(OpenIdConnectScope.OpenIdProfile);
+                        options.Scope.Add(OpenIdConnectScope.Email);
+
+                        options.Events = new OpenIdConnectEvents
+                        {
+                            OnTokenValidated = async context =>
+                            {
+                                var idToken = context.SecurityToken;
+                                var emailClaim = idToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
+                                if (emailClaim == null || string.IsNullOrWhiteSpace(emailClaim.Value)) return;
+
+                                var dbContext = context.HttpContext.RequestServices
+                                    .GetRequiredService<BuyingCatalogueDbContext>();
+
+                                var user = await dbContext.AspNetUsers.FirstOrDefaultAsync(
+                                    x => x.Email == emailClaim.Value);
+
+                                if (user is null)
+                                {
+                                    await context.HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+
+                                    context.Response.Redirect("/unauthorized");
+                                    context.HandleResponse();
+                                }
+                            },
+                            OnAccessDenied = context =>
+                            {
+                                context.Response.Redirect("/unauthorized");
+                                context.HandleResponse();
+
+                                return Task.CompletedTask;
+                            },
+                            OnAuthenticationFailed = context =>
+                            {
+                                context.Response.Redirect("/unauthorized");
+                                context.HandleResponse();
+
+                                return Task.CompletedTask;
+                            },
+                        };
+                    });
+
+            services.AddAuthorizationBuilder()
+                .AddPolicy(
                     "AdminOnly",
                     policy => policy.RequireClaim(
                         ClaimTypes.Role,
-                        new[] { OrganisationFunction.Authority.Name }));
-
-                options.AddPolicy(
+                        [OrganisationFunction.Authority.Name]))
+                .AddPolicy(
                     "Buyer",
                     policy => policy.RequireClaim(
                         ClaimTypes.Role,
-                        new[] { OrganisationFunction.Buyer.Name, OrganisationFunction.AccountManager.Name }));
-
-                options.AddPolicy(
+                        [OrganisationFunction.Buyer.Name, OrganisationFunction.AccountManager.Name]))
+                .AddPolicy(
                     "AccountManager",
                     policy => policy.RequireClaim(
                         ClaimTypes.Role,
-                        new[] { OrganisationFunction.AccountManager.Name }));
-
-                options.AddPolicy(
-                    "Development",
-                    policy => policy.Requirements.Add(new DevelopmentRequirement()));
-            });
+                        [OrganisationFunction.AccountManager.Name]))
+                .AddPolicy("Development", policy => policy.Requirements.Add(new DevelopmentRequirement()));
         }
 
         public static void ConfigureCookies(this IServiceCollection services, IConfiguration configuration)
         {
-            var cookieExpiration = configuration.GetSection("cookieExpiration").Get<CookieExpirationSettings>();
-
-            var sessionIdleTimeout = configuration.GetValue<int?>(SessionIdleTimeoutEnvironmentVariable) ?? DefaultSessionTimeout;
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.Cookie.Name = "user-session";
-                options.LoginPath = "/Identity/Account/Login";
-                options.LogoutPath = "/Identity/Account/Logout";
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.SameSite = SameSiteMode.Strict;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionIdleTimeout);
-                options.SlidingExpiration = cookieExpiration.SlidingExpiration;
-                options.AccessDeniedPath = "/unauthorized";
-
-                options.Events = new CookieAuthenticationEvents
-                {
-                    OnRedirectToLogin = ctx =>
-                    {
-                        var relativeRedirectUri = new Uri(ctx.RedirectUri).PathAndQuery;
-                        ctx.Response.Headers[HeaderNames.Location] = relativeRedirectUri;
-                        ctx.Response.StatusCode = StatusCodes.Status302Found;
-                        return Task.CompletedTask;
-                    },
-                    OnValidatePrincipal = SecurityStampValidator.ValidatePrincipalAsync,
-                };
-            });
-
             services.AddAntiforgery(options =>
             {
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.Name = "antiforgery";
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Strict;
             });
-
-            services.Configure<SecurityStampValidatorOptions>(o => o.ValidationInterval = TimeSpan.FromMinutes(0));
         }
 
         public static void ConfigureOds(this IServiceCollection services, IConfiguration configuration)
@@ -230,32 +284,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton(gpPracticeCacheKeySettings);
 
             return services;
-        }
-
-        public static void ConfigureIdentity(this IServiceCollection services, IConfiguration configuration)
-        {
-            var passwordSettings = configuration.GetSection("password").Get<PasswordSettings>();
-
-            services.AddTransient<IUserClaimsPrincipalFactory<AspNetUser>, CatalogueUserClaimsPrincipalFactory>();
-
-            services.AddIdentity<AspNetUser, AspNetRole>(o =>
-                {
-                    PasswordValidator.ConfigurePasswordOptions(o.Password);
-
-                    o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(passwordSettings.LockOutTimeInMinutes);
-                    o.Lockout.MaxFailedAccessAttempts = passwordSettings.MaxAccessFailedAttempts;
-                })
-                .AddEntityFrameworkStores<BuyingCatalogueDbContext>()
-                .AddTokenProvider<DataProtectorTokenProvider<AspNetUser>>(TokenOptions.DefaultProvider)
-                .AddPasswordValidator<PasswordValidator>();
-        }
-
-        public static void ConfigurePassword(this IServiceCollection services, IConfiguration configuration)
-        {
-            var passwordSettings = configuration.GetSection("password").Get<PasswordSettings>();
-            services.AddSingleton(passwordSettings);
-            services.AddScoped<IPasswordService, PasswordService>();
-            services.AddScoped<IPasswordResetCallback, PasswordResetCallback>();
         }
 
         public static IServiceCollection ConfigureGovNotify(this IServiceCollection services, IConfiguration configuration)

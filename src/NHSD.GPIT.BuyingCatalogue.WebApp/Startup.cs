@@ -56,7 +56,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(typeof(OrdersActionFilter));
                 options.Filters.Add(typeof(CookieConsentActionFilter));
                 options.Filters.Add(typeof(TermsOfUseActionFilter));
-                options.Filters.Add(typeof(UpdatePasswordActionFilter));
                 options.Filters.Add<SerilogMvcLoggingAttribute>();
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 options.Filters.Add(new BadRequestActionFilter());
@@ -71,12 +70,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.ConfigureDbContexts(Configuration);
 
+            services.ConfigureAuthorization(Configuration);
+
             if (!IsE2ETestEnvironment())
             {
                 services.ConfigureSession(Configuration);
             }
-
-            services.ConfigureIdentity(Configuration);
 
             services
                 .ConfigureHsts(Configuration)
@@ -95,8 +94,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 .ConfigureRecaptcha(Configuration)
                 .ConfigureCookies(Configuration);
 
-            services.ConfigurePassword(Configuration);
-
             services.ConfigureRegistration(Configuration);
 
             services.ConfigureContactUs(Configuration);
@@ -110,8 +107,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.ConfigureFormOptions();
 
             services.ConfigureDisabledErrorMessage(Configuration);
-
-            services.ConfigureAuthorization();
 
             services.ConfigureBlobStorage(Configuration);
 
@@ -140,16 +135,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             app.UseResponseCompression();
-
-            var forwardingOptions = new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-            };
-
-            forwardingOptions.KnownNetworks.Clear();
-            forwardingOptions.KnownProxies.Clear();
-            app.UseForwardedHeaders(forwardingOptions);
-
             app.UseSerilogRequestLogging(opts =>
             {
                 opts.GetLevel = SerilogRequestLoggingOptions.GetLevel;
@@ -217,7 +202,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             app.UseRouting();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

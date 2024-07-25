@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -12,14 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
 {
     public class TermsOfUseActionFilter : ActionFilterAttribute
     {
-        private readonly UserManager<AspNetUser> userManager;
+        private readonly BuyingCatalogueDbContext dbContext;
         private readonly TermsOfUseSettings settings;
 
         public TermsOfUseActionFilter(
-            UserManager<AspNetUser> userManager,
+            BuyingCatalogueDbContext dbContext,
             TermsOfUseSettings settings)
         {
-            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.settings = settings ?? throw new ArgumentNullException(nameof(settings));
         }
 
@@ -34,9 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters
                 return;
             }
 
-            var userId = userManager.GetUserId(contextUser);
-            var user = await userManager.FindByIdAsync(userId);
-
+            var user = await dbContext.AspNetUsers.FirstOrDefaultAsync(x => x.Id == context.HttpContext.User.UserId());
             if (user.HasAcceptedLatestTermsOfUse(settings.RevisionDate))
             {
                 await next();

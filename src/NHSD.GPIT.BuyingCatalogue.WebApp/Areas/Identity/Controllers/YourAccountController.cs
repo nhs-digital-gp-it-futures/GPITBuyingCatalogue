@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Identity;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Models.YourAccount;
 
@@ -22,16 +21,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
 
         private readonly IOrganisationsService organisationsService;
         private readonly IEmailPreferenceService emailPreferenceService;
-        private readonly IPasswordService passwordService;
 
         public YourAccountController(
             IOrganisationsService organisationsService,
-            IEmailPreferenceService emailPreferenceService,
-            IPasswordService passwordService)
+            IEmailPreferenceService emailPreferenceService)
         {
             this.organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
             this.emailPreferenceService = emailPreferenceService ?? throw new ArgumentNullException(nameof(emailPreferenceService));
-            this.passwordService = passwordService ?? throw new ArgumentNullException(nameof(passwordService));
         }
 
         [HttpGet]
@@ -42,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             var model = new YourAccountModel(organisation)
             {
                 Title = YourAccountTitle,
-                Caption = User.GetUserDisplayName(),
+                Caption = User.Identity.Name,
             };
 
             return View(model);
@@ -56,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
             var model = new ManageEmailPreferencesModel()
             {
                 Title = ManageEmailNotificationsTitle,
-                Caption = User.GetUserDisplayName(),
+                Caption = User.Identity.Name,
                 EmailPreferences = preferences,
                 Saved = saved,
             };
@@ -80,46 +76,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers
                 nameof(ManageEmailNotifications),
                 typeof(YourAccountController).ControllerName(),
                 new { saved });
-        }
-
-        [HttpGet("ManagePassword")]
-        public IActionResult ManagePassword(bool saved = false)
-        {
-            var model = new ManagePasswordModel()
-            {
-                Title = ManagePasswordTitle,
-                Caption = User.GetUserDisplayName(),
-                Saved = saved,
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("ManagePassword")]
-        public async Task<IActionResult> ManagePassword(ManagePasswordModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                model.UpdatePasswordViewModel.IdentityResult = await passwordService.ChangePasswordAsync(User.Identity.Name, model.UpdatePasswordViewModel.CurrentPassword, model.UpdatePasswordViewModel.NewPassword);
-                if (TryValidateModel(model))
-                {
-                    if (!model.UpdatePasswordViewModel.IdentityResult.Succeeded)
-                    {
-                        // it's not succeeded and the validator hasn't handled it
-                        throw new InvalidOperationException($"Unexpected errors whilst updating password: {string.Join(" & ", model.UpdatePasswordViewModel.IdentityResult.Errors.Select(error => error.Description))}");
-                    }
-
-                    await passwordService.UpdatePasswordChangedDate(User.Identity.Name);
-                    var saved = true;
-
-                    return RedirectToAction(
-                        nameof(ManagePassword),
-                        typeof(YourAccountController).ControllerName(),
-                        new { saved });
-                }
-            }
-
-            return View(model);
         }
     }
 }
