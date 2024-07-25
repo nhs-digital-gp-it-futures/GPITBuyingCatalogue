@@ -12,6 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
     public sealed class RadioButtonsTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-radio-buttons";
+        private const string InlineName = "inline";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -42,6 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.Size)]
         public RadioButtonSize Size { get; set; } = RadioButtonSize.Normal;
 
+        [HtmlAttributeName(InlineName)]
+        public bool Inline { get; set; }
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (!Values.Any() || string.IsNullOrWhiteSpace(ValueName) || string.IsNullOrWhiteSpace(DisplayName))
@@ -50,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 return;
             }
 
-            RadioButtonBuilders.UpdateRadioContainerOutput(output, context, Size == RadioButtonSize.Small);
+            RadioButtonBuilders.UpdateRadioContainerOutput(output, context, Size == RadioButtonSize.Small, inline:Inline);
 
             IEnumerable<TagBuilder> radioItems = BuildRadiosFromValueList();
 

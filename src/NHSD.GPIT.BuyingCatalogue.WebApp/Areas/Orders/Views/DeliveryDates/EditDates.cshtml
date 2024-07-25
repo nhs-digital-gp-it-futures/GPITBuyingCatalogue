@@ -4,8 +4,8 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.EditDatesModel
 @{
     ViewBag.Title = Model.OrderType.MergerOrSplit
-        ? $"Planned delivery dates"
-        : $"Planned delivery dates for {Model.CatalogueItemType.Name()}";
+        ? $"Review planned delivery dates"
+        : $"Review planned delivery dates for {Model.CatalogueItemType.Name()}";
 
     var deliveryDate = Model.DeliveryDate.HasValue
         ? $"{Model.DeliveryDate:d MMMM yyyy}"
@@ -20,7 +20,7 @@
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Description"
-                        advice="Make sure the correct planned delivery dates have been applied for each of your Service Recipients." />
+                        advice="Make sure the correct dates are applied to the items you're ordering." />
 
         @if (Model.OrderType.MergerOrSplit)
         {
@@ -55,7 +55,7 @@
                    href="@Url.Action(
                              nameof(DeliveryDatesController.SelectDate),
                              typeof(DeliveryDatesController).ControllerName(),
-                             new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Edit</a>
+                             new { Model.InternalOrgId, Model.CallOffId, returnUrl })">Change</a>
             }
         </p>
         <hr />
@@ -80,7 +80,7 @@
                 };
             }
             <nhs-expander label-text="@expanderLabel"
-                          open="true" content-only="@Model.OrderType.MergerOrSplit == false">
+                          open="true">
                 <nhs-table>
                     <nhs-table-column>Organisation</nhs-table-column>
                     <nhs-table-column>ODS code</nhs-table-column>

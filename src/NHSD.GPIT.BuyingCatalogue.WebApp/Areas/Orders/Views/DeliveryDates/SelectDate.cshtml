@@ -23,18 +23,19 @@
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="What is the planned delivery date?"
                                          label-hint="If you have more than one planned delivery date, enter the date the majority of recipients will begin using the items you’re ordering."
-                                         size="ExtraSmall">
+                                         size="Small">
                     <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
                 </nhs-fieldset-form-label>
                 
                 <nhs-fieldset-form-label asp-for="ApplyToAll"
                                          label-text="Do you want to use the same delivery date for all recipients?"
                                          label-hint="Selecting yes will apply the date you’ve entered to all recipients. If you select no, you’ll be able to change the dates for individual recipients."
-                                         size="ExtraSmall">
+                                         size="Small">
                     <nhs-radio-buttons asp-for="ApplyToAll"
                                        values="@Model.ApplyToAllOptions.Cast<object>()"
                                        value-name="Value"
-                                       display-name="Text" />
+                                       display-name="Text" 
+                                       inline="true"/>
                 </nhs-fieldset-form-label>
             </div>
 

@@ -106,6 +106,7 @@
         internal const string RadioLabelClass = "nhsuk-radios__label";
         internal const string NhsRadios = "nhsuk-radios";
         internal const string NhsRadiosSizeSmall = "nhsuk-radios--small";
+        internal const string NhsRadiosInline = "nhsuk-radios--inline";
         internal const string NhsRadiosHint = "nhsuk-radios__hint";
         internal const string NhsRadiosParentContainerConditional = "nhsuk-radios--conditional";
         internal const string NhsRadiosChildConditional = "nhsuk-radios__conditional";
