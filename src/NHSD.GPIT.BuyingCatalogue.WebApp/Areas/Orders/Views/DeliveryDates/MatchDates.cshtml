@@ -14,10 +14,6 @@
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.ItemName"
                         advice="@advice" />
-
-        <nhs-inset-text>
-            <p>If you have any extra Service Recipients for your service, you can add planned delivery dates for them later.</p>
-        </nhs-inset-text>
         
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />

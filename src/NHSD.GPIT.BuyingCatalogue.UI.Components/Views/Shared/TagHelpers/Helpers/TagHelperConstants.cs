@@ -90,6 +90,8 @@
         internal const string NhsList = "nhsuk-list";
         internal const string NhsValidationInputError = "nhsuk-input--error";
         internal const string NhsBackLinkLink = "nhsuk-back-link__link";
+        internal const string NhsLink = "nhsuk-link";
+        internal const string NhsLinkNonVisited = "nhsuk-link--no-visited-state";
         internal const string NhsIcon = "nhsuk-icon";
         internal const string NhsIconArrowRight = "nhsuk-icon__arrow-right";
         internal const string NhsIconArrowLeft = "nhsuk-icon__arrow-left";

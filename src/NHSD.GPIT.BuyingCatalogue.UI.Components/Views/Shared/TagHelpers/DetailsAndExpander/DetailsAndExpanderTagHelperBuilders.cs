@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using System;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 {
@@ -16,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         private const string DetailsTextClass = "nhsuk-details__text";
         private const string PaddingTop = "nhsuk-u-padding-top-7";
         private const string SummaryTextSecondaryClass = "nhsuk-details__summary-text_secondary";
+        private const string SummaryTextSecondaryUrlClass = "nhsuk-details__summary-text_secondary_url";
         private const string TagTopLevelClass = "bc-c-task-list__task-status";
         private const string TagClass = "nhsuk-tag";
         private const string TagColourClass = "nhsuk-tag--blue";
@@ -130,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             return summaryBuilder;
         }
 
-        public static TagBuilder GetSummaryLabelBuilderWithSecondaryInformation(string labelText, string secondaryTextTitle, string secondaryText, bool bold, bool addedSticker = false)
+        public static TagBuilder GetSummaryLabelBuilderWithSecondaryInformation(string labelText, string secondaryTextTitle, string secondaryText, string secondaryUrlTitle, string secondaryUrl, bool bold, bool addedSticker = false)
         {
             var summaryBuilder = new TagBuilder("summary");
             summaryBuilder.AddCssClass(DetailsSummaryClass);
@@ -160,8 +163,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
                 labelSpanBuilder.InnerHtml.AppendHtml("&nbsp");
             }
 
+            var summaryClass = secondaryUrlTitle is not null ? SummaryTextSecondaryUrlClass : SummaryTextSecondaryClass;
             var secondarySpanBuilder = new TagBuilder(TagHelperConstants.Span);
-            secondarySpanBuilder.AddCssClass(SummaryTextSecondaryClass);
+            secondarySpanBuilder.AddCssClass(summaryClass);
 
             var secondaryTitleBuilder = new TagBuilder("b");
             secondaryTitleBuilder.InnerHtml.Append(secondaryTextTitle);
@@ -169,6 +173,23 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             secondarySpanBuilder.InnerHtml
                 .AppendHtml(secondaryTitleBuilder)
                 .Append(secondaryText);
+
+            if (secondaryUrlTitle is not null)
+            {
+                var breakRow = new TagBuilder("br") { TagRenderMode = TagRenderMode.SelfClosing };
+
+                var secondaryUrlBuilder = new TagBuilder(TagHelperConstants.Anchor);
+
+                secondaryUrlBuilder.AddCssClass(TagHelperConstants.NhsLink);
+                secondaryUrlBuilder.AddCssClass(TagHelperConstants.NhsLinkNonVisited);
+                secondaryUrlBuilder.Attributes.Add(TagHelperConstants.Link, secondaryUrl);
+                secondaryUrlBuilder.Attributes.Add(TagHelperConstants.Style, "float: right;");
+                secondaryUrlBuilder.InnerHtml.Append(secondaryUrlTitle);
+
+                secondarySpanBuilder.InnerHtml
+                    .AppendHtml(breakRow)
+                    .AppendHtml(secondaryUrlBuilder);
+            }
 
             summaryBuilder.InnerHtml
                 .AppendHtml(labelSpanBuilder)
