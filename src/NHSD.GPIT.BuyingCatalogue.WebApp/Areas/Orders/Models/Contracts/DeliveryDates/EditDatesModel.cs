@@ -37,15 +37,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
             var recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId)
                 .Select(x => new RecipientDateModel(x, x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate, order.CommencementDate!.Value, organisations?.FirstOrDefault(y => x.OdsCode == y.OrgId).Location))
+                .OrderBy(y => y.Description)
                 .ToArray();
 
-            Recipients = recipients
-                .GroupBy(x => x.Location)
-                .Select(
-                    x => new KeyValuePair<string, RecipientDateModel[]>(
-                        x.Key,
-                        x.ToArray()))
-                .ToList();
+            Recipients = OrderType.MergerOrSplit ?
+                new List<KeyValuePair<string, RecipientDateModel[]>> { new(OrderType.Value == OrderTypeEnum.AssociatedServiceSplit ? "Service Recipients receiving patients" : "Service Recipients to be merged", recipients) }:
+                recipients
+                    .GroupBy(x => x.Location)
+                    .Select(
+                        x => new KeyValuePair<string, RecipientDateModel[]>(
+                            x.Key,
+                            x.OrderBy(y=> y.Description).ToArray()))
+                    .ToList();
         }
 
         public string InternalOrgId { get; set; }

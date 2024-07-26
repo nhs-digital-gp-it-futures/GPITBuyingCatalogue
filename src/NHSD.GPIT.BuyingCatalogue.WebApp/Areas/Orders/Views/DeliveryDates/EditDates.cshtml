@@ -73,16 +73,10 @@
             @for (var i = 0; i < Model.Recipients.Count; i++)
             {
                 <input type="hidden" asp-for="@Model.Recipients[i].Key" />
-                var expanderLabel = Model.OrderType.Value switch
-                {
-                    OrderTypeEnum.AssociatedServiceSplit => "Service Recipients receiving patients",
-                    OrderTypeEnum.AssociatedServiceMerger => "Service Recipients to be merged",
-                    _ => Model.Recipients[i].Key,
-                };
                 
                 var secondaryText = Model.Recipients[i].Value.Length == 1 ? " recipient" : " recipients";
-                
-                <nhs-expander label-text="@expanderLabel"
+
+                <nhs-expander label-text="@Model.Recipients[i].Key"
                               open="true"
                               secondary-text-title="@Model.Recipients[i].Value.Length"
                               secondary-text="@secondaryText">
