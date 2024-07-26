@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Linq;
+using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.DeliveryDates
@@ -9,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.Del
         {
             RuleForEach(x => x.Recipients)
                 .Cascade(CascadeMode.Continue)
-                .SetValidator(new RecipientDateModelValidator());
+                .SetValidator(new RecipientLocationModelValidator());
         }
     }
 }

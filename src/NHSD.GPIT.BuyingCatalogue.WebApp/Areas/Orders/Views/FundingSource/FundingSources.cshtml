@@ -2,12 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSource
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources.FundingSources
 @{
     ViewBag.Title = Model.Title;
@@ -17,7 +12,7 @@
     @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
         advice = Model.Order.IsAmendment
             ? "Provide information on how you'll be paying for the amendments you've made to the previous order."
-            : "Provide information on how you’ll be paying for the items you’ve added to this order.";
+            : "Provide information on how you’ll be paying for the items you’ve added to this order. You’ll only be able to use local funding or funding sources related to the framework you’ve selected.";
     else if (Model.OrderItemsSingleFundingType != null && Model.OrderItemsSingleFundingType.Any())
         advice = Model.Order.OrderingParty.OrganisationType == OrganisationType.GP
             ? "As you are buying for a single practice, you can only pay for this order using local funding."
