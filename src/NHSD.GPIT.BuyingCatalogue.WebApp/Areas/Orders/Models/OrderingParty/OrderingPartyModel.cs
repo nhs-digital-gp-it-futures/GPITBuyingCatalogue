@@ -1,5 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderingParty
 {
@@ -13,16 +13,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderingParty
         {
             InternalOrgId = internalOrgId;
             CallOffId = order.CallOffId.ToString();
-            Contact = new PrimaryContactModel
-            {
-                FirstName = order.OrderingPartyContact?.FirstName,
-                LastName = order.OrderingPartyContact?.LastName,
-                EmailAddress = order.OrderingPartyContact?.Email,
-                TelephoneNumber = order.OrderingPartyContact?.Phone,
-            };
+            FirstName = order.OrderingPartyContact?.FirstName;
+            LastName = order.OrderingPartyContact?.LastName;
+            EmailAddress = order.OrderingPartyContact?.Email;
+            TelephoneNumber = order.OrderingPartyContact?.Phone;
         }
 
-        public PrimaryContactModel Contact { get; set; }
+        [StringLength(100)]
+        public string FirstName { get; set; }
+
+        [StringLength(100)]
+        public string LastName { get; set; }
+
+        [StringLength(35)]
+        public string TelephoneNumber { get; set; }
+
+        [StringLength(256)]
+        public string EmailAddress { get; set; }
 
         public string CallOffId { get; set; }
     }

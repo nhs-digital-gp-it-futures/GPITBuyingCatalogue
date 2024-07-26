@@ -13,11 +13,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)
         {
-            model.Contact.FirstName = string.Empty;
+            model.FirstName = string.Empty;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Contact.FirstName)
+            result.ShouldHaveValidationErrorFor(m => m.FirstName)
                 .WithErrorMessage("Enter a first name");
         }
 
@@ -27,11 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)
         {
-            model.Contact.LastName = string.Empty;
+            model.LastName = string.Empty;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Contact.LastName)
+            result.ShouldHaveValidationErrorFor(m => m.LastName)
                 .WithErrorMessage("Enter a last name");
         }
 
@@ -41,11 +41,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)
         {
-            model.Contact.TelephoneNumber = string.Empty;
+            model.TelephoneNumber = string.Empty;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Contact.TelephoneNumber)
+            result.ShouldHaveValidationErrorFor(m => m.TelephoneNumber)
                 .WithErrorMessage("Enter a telephone number");
         }
 
@@ -55,11 +55,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)
         {
-            model.Contact.EmailAddress = string.Empty;
+            model.EmailAddress = string.Empty;
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Contact.EmailAddress)
+            result.ShouldHaveValidationErrorFor(m => m.EmailAddress)
                 .WithErrorMessage("Enter an email address");
         }
 
@@ -69,11 +69,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)
         {
-            model.Contact.EmailAddress = "test";
+            model.EmailAddress = "test";
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.Contact.EmailAddress)
+            result.ShouldHaveValidationErrorFor(m => m.EmailAddress)
                 .WithErrorMessage("Enter an email address in the correct format, like name@example.com");
         }
 
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             OrderingPartyModel model,
             OrderingPartyModelValidator validator)
         {
-            model.Contact.EmailAddress = "a@b.com";
+            model.EmailAddress = "a@b.com";
 
             var result = validator.TestValidate(model);
 

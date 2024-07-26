@@ -50,10 +50,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var contact = order.OrderingPartyContact ?? new Contact();
 
-            contact.FirstName = model.Contact.FirstName.Trim();
-            contact.LastName = model.Contact.LastName.Trim();
-            contact.Email = model.Contact.EmailAddress.Trim();
-            contact.Phone = model.Contact.TelephoneNumber.Trim();
+            contact.FirstName = model.FirstName.Trim();
+            contact.LastName = model.LastName.Trim();
+            contact.Email = model.EmailAddress.Trim();
+            contact.Phone = model.TelephoneNumber.Trim();
 
             await orderingPartyService.SetOrderingPartyContact(callOffId, contact);
 
