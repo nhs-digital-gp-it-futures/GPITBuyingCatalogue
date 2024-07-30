@@ -15,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts;
@@ -389,6 +390,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderService orderService,
             [Frozen] IRoutingService routingService,
+            [Frozen] IOdsService odsService,
             DeliveryDatesController controller)
         {
             order.SetupCatalogueSolution();
@@ -411,6 +413,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                     routeValues = callInfo.Arg<RouteValues>();
                 });
 
+            var organisations = order.OrderRecipients.Select(x => new ServiceRecipient() { OrgId = x.OdsCode, Location = "Test" });
+
+            odsService.GetServiceRecipientsById(
+                    internalOrgId,
+                    Arg.Any<IEnumerable<string>>())
+                .Returns(organisations);
+
             var result = await controller.EditDates(internalOrgId, callOffId, catalogueItemId);
 
             await orderService.Received().GetOrderWithOrderItems(callOffId, internalOrgId);
@@ -421,7 +430,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             routeValues.CatalogueItemId.Should().Be(catalogueItemId);
             routeValues.Source.Should().BeNull();
 
-            var expected = new EditDatesModel(orderWrapper, catalogueItemId, new List<ServiceRecipient>());
+            var expected = new EditDatesModel(orderWrapper, catalogueItemId, organisations);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -479,6 +488,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderService orderService,
             [Frozen] IRoutingService routingService,
+            [Frozen] IOdsService odsService,
             DeliveryDatesController controller)
         {
             order.SetupCatalogueSolution();
@@ -504,6 +514,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                     routeValues = callInfo.Arg<RouteValues>();
                 });
 
+            var organisations = order.OrderRecipients.Select(x => new ServiceRecipient() { OrgId = x.OdsCode, Location = "Test" });
+
+            odsService.GetServiceRecipientsById(
+                internalOrgId,
+                Arg.Any<IEnumerable<string>>())
+                .Returns(organisations);
+
             var result = await controller.EditDates(internalOrgId, callOffId, catalogueItemId);
 
             await orderService.Received().GetOrderWithOrderItems(callOffId, internalOrgId);
@@ -514,7 +531,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             routeValues.CatalogueItemId.Should().Be(catalogueItemId);
             routeValues.Source.Should().BeNull();
 
-            var expected = new EditDatesModel(new OrderWrapper(order), catalogueItemId, new List<ServiceRecipient>());
+            var expected = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

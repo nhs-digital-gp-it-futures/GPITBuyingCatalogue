@@ -41,13 +41,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
                 .ToArray();
 
             Recipients = OrderType.MergerOrSplit ?
-                new List<KeyValuePair<string, RecipientDateModel[]>> { new(OrderType.Value == OrderTypeEnum.AssociatedServiceSplit ? "Service Recipients receiving patients" : "Service Recipients to be merged", recipients) }:
+                new List<KeyValuePair<string, RecipientDateModel[]>> { new(OrderType.Value == OrderTypeEnum.AssociatedServiceSplit ? "Service Recipients receiving patients" : "Service Recipients to be merged", recipients) } :
                 recipients
                     .GroupBy(x => x.Location)
                     .Select(
                         x => new KeyValuePair<string, RecipientDateModel[]>(
                             x.Key,
-                            x.OrderBy(y=> y.Description).ToArray()))
+                            x.OrderBy(y => y.Description).ToArray()))
                     .ToList();
         }
 

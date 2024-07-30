@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 return;
             }
 
-            RadioButtonBuilders.UpdateRadioContainerOutput(output, context, Size == RadioButtonSize.Small, inline:Inline);
+            RadioButtonBuilders.UpdateRadioContainerOutput(output, context, Size == RadioButtonSize.Small, inline: Inline);
 
             IEnumerable<TagBuilder> radioItems = BuildRadiosFromValueList();
 

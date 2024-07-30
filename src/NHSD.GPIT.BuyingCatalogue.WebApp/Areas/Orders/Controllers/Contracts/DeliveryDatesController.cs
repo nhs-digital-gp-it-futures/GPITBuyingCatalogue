@@ -171,7 +171,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 RoutingPoint.EditDeliveryDatesBackLink,
                 orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
-            
+
             var orderRecipients = orderWrapper.DetermineOrderRecipients(catalogueItemId);
             var organisations = await odsService.GetServiceRecipientsById(internalOrgId, orderRecipients.Select(x => x.OdsCode));
 
@@ -195,8 +195,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var order = orderWrapper.Order;
 
             var recipients = model.Recipients.SelectMany(x => x.Value).ToList();
-                
-             var deliveryDates   = recipients
+
+            var deliveryDates = recipients
                 .Select(x => new RecipientDeliveryDateDto(x.OdsCode, x.Date!.Value))
                 .ToList();
 
