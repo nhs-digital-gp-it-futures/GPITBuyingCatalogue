@@ -7,19 +7,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators
     {
         public OrderingPartyModelValidator()
         {
-            RuleFor(m => m.Contact.FirstName)
+            RuleFor(m => m.FirstName)
                 .NotEmpty()
                 .WithMessage("Enter a first name");
 
-            RuleFor(m => m.Contact.LastName)
+            RuleFor(m => m.LastName)
                 .NotEmpty()
                 .WithMessage("Enter a last name");
 
-            RuleFor(m => m.Contact.TelephoneNumber)
+            RuleFor(m => m.TelephoneNumber)
                 .NotEmpty()
                 .WithMessage("Enter a telephone number");
 
-            RuleFor(m => m.Contact.EmailAddress)
+            RuleFor(m => m.EmailAddress)
                 .NotEmpty()
                 .WithMessage("Enter an email address")
                 .EmailAddress()
