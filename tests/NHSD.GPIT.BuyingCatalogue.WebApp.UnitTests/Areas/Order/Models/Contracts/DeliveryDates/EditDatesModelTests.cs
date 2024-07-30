@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FluentAssertions;
+using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -82,6 +83,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.Recipients.Count.Should().Be(organisations.Count);
             model.Recipients.Select(x => x.Key).Should().BeEquivalentTo(organisations.Select(x => x.Location));
             model.Recipients.SelectMany(x => x.Value).Count().Should().Be(order.OrderRecipients.Count);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void NullDates_RecipientsCorrectlySet(
+            EntityFramework.Ordering.Models.Order order)
+        {
+            order.OrderType = OrderTypeEnum.AssociatedServiceSplit;
+            order.OrderRecipients.ForEach(x => x.OrderItemRecipients.ForEach(y => y.DeliveryDate = null));
+            var organisations = order.OrderRecipients
+                .Select(item => new ServiceRecipient() { OrgId = item.OdsCode, Location = Guid.NewGuid().ToString() })
+                .ToList();
+            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+
+            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
+
+            model.Recipients.Count.Should().Be(1);
+            model.Recipients.First().Value.ForEach(x => x.Day.Should().Be($"{order.DeliveryDate.Value.Day:00}"));
+            model.Recipients.First().Value.ForEach(x => x.Month.Should().Be($"{order.DeliveryDate.Value.Month:00}"));
+            model.Recipients.First().Value.ForEach(x => x.Year.Should().Be($"{order.DeliveryDate.Value.Year:0000}"));
         }
     }
 }
