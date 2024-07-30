@@ -1,9 +1,7 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans.DeleteMilestoneModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ImplementationPlans.DeleteMilestoneModel
 
 @{
-    ViewBag.Title = "Delete this milestone?";
+    ViewBag.Title = "Delete milestone?";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -12,8 +10,16 @@
     <div class="nhsuk-grid-column-full">
         
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.MilestoneName"
-                        advice="The bespoke milestone will be deleted from this order." />
+                        caption="Order @Model.CallOffId" />
+
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Name">
+                @Model.MilestoneName
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Description">
+                @Model.MilestoneDescription
+            </nhs-summary-list-row>
+        </nhs-summary-list>
 
         <form method="post">
             <div class="nhsuk-u-margin-top-9">
@@ -21,12 +27,9 @@
                 <input type="hidden" asp-for="CallOffId" />
                 <input type="hidden" asp-for="InternalOrgId" />
                 <input type="hidden" asp-for="MilestoneId" />
-
-                <div>
-                    <nhs-submit-button text="Delete milestone"/>
-                </div>
-                <div>
-                    <a href="@Model.BackLink">Cancel</a>
+                <div style="display: inline;">
+                    <nhs-submit-button text="Delete milestone" />
+                    <a href="@Model.BackLink" class="nhsuk-link--no-visited-state nhsuk-u-margin-left-4 modal-link-adjuster">Cancel</a>
                 </div>
             </div>
         </form>

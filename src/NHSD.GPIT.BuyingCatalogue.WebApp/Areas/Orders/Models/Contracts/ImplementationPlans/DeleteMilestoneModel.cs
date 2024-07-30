@@ -15,11 +15,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Impleme
             InternalOrgId = internalOrgId;
             MilestoneId = milestone.Id;
             MilestoneName = milestone.Title;
+            MilestoneDescription = milestone.PaymentTrigger;
         }
 
         public int MilestoneId { get; set; }
 
         public string MilestoneName { get; set; }
+
+        public string MilestoneDescription { get; set; }
 
         public CallOffId CallOffId { get; set; }
 

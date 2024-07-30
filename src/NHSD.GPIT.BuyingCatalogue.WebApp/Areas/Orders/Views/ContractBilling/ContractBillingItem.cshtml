@@ -45,11 +45,6 @@
                     <nhs-submit-button text="Save and continue"/>
                 </nhs-button-group>
 
-                @if (Model.IsEdit)
-                {
-                    <vc:nhs-delete-button url="@Url.Action(nameof(ContractBillingController.DeleteContractBillingItem), typeof(ContractBillingController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId, Model.ItemId })"
-                                          text="Delete milestone"/>
-                }
             </div>
         </form>
     </div>

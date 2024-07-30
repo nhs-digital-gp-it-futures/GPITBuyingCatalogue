@@ -8,24 +8,30 @@
     <nhs-table-column>Milestone payment trigger</nhs-table-column>
     @if (Model.IsAction)
     {
-        <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
+        <nhs-table-column><span class="nhsuk-u-visually-hidden">Change action</span></nhs-table-column>
+
+        <nhs-table-column><span class="nhsuk-u-visually-hidden">Delete action</span></nhs-table-column>
     }
         
     @foreach (var milestone in Model.Milestones)
     {
         <nhs-table-row-container>
-            <nhs-table-cell>@milestone.Title</nhs-table-cell>
-            <nhs-table-cell>@milestone.PaymentTrigger</nhs-table-cell>
+            <nhs-table-cell style="word-break:break-word">@milestone.Title</nhs-table-cell>
+            <nhs-table-cell style="word-break:break-word">@milestone.PaymentTrigger</nhs-table-cell>
             @if (Model.IsAction)
             {
                 <nhs-table-cell>
                     <span data-test-id="milestone-edit-link">
                         <a asp-action="@nameof(ImplementationPlanController.EditMilestone)"
-                            asp-controller="@typeof(ImplementationPlanController).ControllerName()"
-                            asp-route-internalOrgId="@Model.InternalOrgId"
-                            asp-route-callOffId="@Model.CallOffId"
-                            asp-route-milestoneId="@milestone.Id">Change</a>
+                           asp-controller="@typeof(ImplementationPlanController).ControllerName()"
+                           asp-route-internalOrgId="@Model.InternalOrgId"
+                           asp-route-callOffId="@Model.CallOffId"
+                           asp-route-milestoneId="@milestone.Id">Change</a>
                     </span>
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <vc:nhs-delete-button url="@Url.Action(nameof(ImplementationPlanController.DeleteMilestone), typeof(ImplementationPlanController).ControllerName(), new { internalOrgId = Model.InternalOrgId, callOffId = Model.CallOffId, milestoneId = milestone.Id })"
+                                          text="Delete" />
                 </nhs-table-cell>
             }
         </nhs-table-row-container>

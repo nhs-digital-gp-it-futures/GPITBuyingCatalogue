@@ -143,8 +143,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var model = new DeleteRequirementModel(callOffId, internalOrgId, requirement.Id)
             {
                 BackLink = Url.Action(
-                    nameof(EditRequirement),
-                    new { internalOrgId, callOffId, itemId }),
+                    nameof(Index),
+                    new { internalOrgId, callOffId }),
             };
             return View(model);
         }
