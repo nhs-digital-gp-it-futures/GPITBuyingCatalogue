@@ -1302,7 +1302,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.AddFlatListPrice(solution.CatalogueItemId,  associatedService.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.AddFlatListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));

@@ -11,18 +11,7 @@
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
-                        advice="Enter the planned delivery date for when any solutions and services you're ordering will start being used." />
-                        
-        <nhs-inset-text>
-            <p>
-                If you have more than one planned delivery date, you should enter the date the majority
-                of Service Recipients will begin using any solutions and services you're ordering.
-            </p>
-            <p>
-                This date will initially be applied to all recipients, but you'll be able
-                to change it for any recipients with a different planned delivery date.
-            </p>
-        </nhs-inset-text>
+                        advice="Enter the date the solutions and services you’re ordering will start being used." />
 
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
@@ -33,18 +22,20 @@
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="What is the planned delivery date?"
-                                         label-hint="This is the date any solutions and services you've ordered will start being used."
-                                         size="ExtraSmall">
+                                         label-hint="If you have more than one planned delivery date, enter the date the majority of recipients will begin using the items you’re ordering."
+                                         size="Small">
                     <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
                 </nhs-fieldset-form-label>
                 
                 <nhs-fieldset-form-label asp-for="ApplyToAll"
                                          label-text="Do you want to use the same delivery date for all recipients?"
-                                         size="ExtraSmall">
+                                         label-hint="Selecting yes will apply the date you’ve entered to all recipients. If you select no, you’ll be able to change the dates for individual recipients."
+                                         size="Small">
                     <nhs-radio-buttons asp-for="ApplyToAll"
                                        values="@Model.ApplyToAllOptions.Cast<object>()"
                                        value-name="Value"
-                                       display-name="Text" />
+                                       display-name="Text" 
+                                       inline="true"/>
                 </nhs-fieldset-form-label>
             </div>
 

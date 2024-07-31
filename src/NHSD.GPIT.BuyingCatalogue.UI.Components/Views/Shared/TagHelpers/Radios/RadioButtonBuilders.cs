@@ -16,17 +16,23 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Radios
             Small,
         }
 
-        public static void UpdateRadioContainerOutput(TagHelperOutput output, TagHelperContext context, bool small = false, ConditionalContext conditionalContext = null)
+        public static void UpdateRadioContainerOutput(TagHelperOutput output, TagHelperContext context, bool small = false, ConditionalContext conditionalContext = null, bool inline = false)
         {
             output.TagName = TagHelperConstants.Div;
             output.TagMode = TagMode.StartTagAndEndTag;
+
+            var baseClass = TagHelperConstants.NhsRadios;
+            if (small)
+                baseClass += $" {TagHelperConstants.NhsRadiosSizeSmall}";
+            if (inline)
+                baseClass += $" {TagHelperConstants.NhsRadiosInline}";
 
             output.Attributes.Add(new TagHelperAttribute(
                 TagHelperConstants.Class,
                 TagHelperFunctions.BuildCssClassForConditionalContentOutput(
                     context,
                     conditionalContext,
-                    small ? $"{TagHelperConstants.NhsRadios} {TagHelperConstants.NhsRadiosSizeSmall}" : $"{TagHelperConstants.NhsRadios}",
+                    baseClass,
                     TagHelperConstants.NhsRadiosParentContainerConditional)));
         }
 
