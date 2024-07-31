@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -14,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
         }
 
-        public EditDatesModel(OrderWrapper orderWrapper, CatalogueItemId catalogueItemId, RoutingSource? source = null)
+        public EditDatesModel(OrderWrapper orderWrapper, CatalogueItemId catalogueItemId, IReadOnlyDictionary<string, string> organisations, RoutingSource? source = null)
         {
             var order = orderWrapper.Order;
             InternalOrgId = order.OrderingParty.InternalIdentifier;
@@ -32,9 +34,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             CatalogueItemType = orderItem.CatalogueItem.CatalogueItemType;
             Description = orderItem.CatalogueItem.Name;
 
-            Recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId)
-                .Select(x => new RecipientDateModel(x, x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate, order.CommencementDate!.Value))
+            var recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId)
+                .Select(x => new RecipientDateModel(x, x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate, order.CommencementDate!.Value, organisations[x.OdsCode]))
+                .OrderBy(y => y.Description)
                 .ToArray();
+
+            Recipients = OrderType.MergerOrSplit ?
+                new List<KeyValuePair<string, RecipientDateModel[]>> { new(OrderType.Value == OrderTypeEnum.AssociatedServiceSplit ? "Service Recipients receiving patients" : "Service Recipients to be merged", recipients) } :
+                recipients
+                    .GroupBy(x => x.Location)
+                    .Select(
+                        x => new KeyValuePair<string, RecipientDateModel[]>(
+                            x.Key,
+                            x.OrderBy(y => y.Description).ToArray()))
+                    .ToList();
         }
 
         public string InternalOrgId { get; set; }
@@ -59,6 +72,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
 
         public bool DisplayEditLink { get; set; }
 
-        public RecipientDateModel[] Recipients { get; set; }
+        public List<KeyValuePair<string, RecipientDateModel[]>> Recipients { get; set; }
     }
 }

@@ -41,7 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
 
             if (Size == DetailsAndExpanderTagHelperBuilders.DetailsLabelSize.Small)
             {
-               output.AddClass(DetailsAndExpanderTagHelperBuilders.DetailsSummaryTextSmallClass, HtmlEncoder.Default);
+                output.AddClass(DetailsAndExpanderTagHelperBuilders.DetailsSummaryTextSmallClass, HtmlEncoder.Default);
             }
 
             textItem.InnerHtml.AppendHtml(children);

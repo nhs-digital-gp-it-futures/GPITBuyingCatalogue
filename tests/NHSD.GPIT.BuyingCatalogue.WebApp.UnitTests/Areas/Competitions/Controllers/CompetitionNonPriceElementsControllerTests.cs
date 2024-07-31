@@ -192,7 +192,8 @@ public static class CompetitionNonPriceElementsControllerTests
 
         var expectedModel = new SelectInteroperabilityCriteriaModel(competition, integrations)
         {
-            InternalOrgId = organisation.InternalIdentifier, CompetitionId = competition.Id,
+            InternalOrgId = organisation.InternalIdentifier,
+            CompetitionId = competition.Id,
         };
 
         var result =
@@ -253,7 +254,8 @@ public static class CompetitionNonPriceElementsControllerTests
 
         var expectedModel = new AddImplementationCriteriaModel(competition)
         {
-            InternalOrgId = organisation.InternalIdentifier, CompetitionId = competition.Id,
+            InternalOrgId = organisation.InternalIdentifier,
+            CompetitionId = competition.Id,
         };
 
         var result = (await controller.Implementation(organisation.InternalIdentifier, competition.Id))
@@ -311,7 +313,8 @@ public static class CompetitionNonPriceElementsControllerTests
 
         var expectedModel = new AddServiceLevelCriteriaModel(competition)
         {
-            InternalOrgId = organisation.InternalIdentifier, CompetitionId = competition.Id,
+            InternalOrgId = organisation.InternalIdentifier,
+            CompetitionId = competition.Id,
         };
 
         var result = (await controller.ServiceLevel(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
@@ -523,7 +526,8 @@ public static class CompetitionNonPriceElementsControllerTests
 
         var expectedModel = new FeaturesRequirementModel(competition, requirement)
         {
-            InternalOrgId = internalOrgId, IsAdding = false,
+            InternalOrgId = internalOrgId,
+            IsAdding = false,
         };
 
         var result = (await controller.EditFeatureRequirement(internalOrgId, competition.Id, requirement.Id))

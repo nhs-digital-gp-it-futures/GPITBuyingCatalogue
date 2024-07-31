@@ -90,6 +90,8 @@
         internal const string NhsList = "nhsuk-list";
         internal const string NhsValidationInputError = "nhsuk-input--error";
         internal const string NhsBackLinkLink = "nhsuk-back-link__link";
+        internal const string NhsLink = "nhsuk-link";
+        internal const string NhsLinkNonVisited = "nhsuk-link--no-visited-state";
         internal const string NhsIcon = "nhsuk-icon";
         internal const string NhsIconArrowRight = "nhsuk-icon__arrow-right";
         internal const string NhsIconArrowLeft = "nhsuk-icon__arrow-left";
@@ -104,6 +106,7 @@
         internal const string RadioLabelClass = "nhsuk-radios__label";
         internal const string NhsRadios = "nhsuk-radios";
         internal const string NhsRadiosSizeSmall = "nhsuk-radios--small";
+        internal const string NhsRadiosInline = "nhsuk-radios--inline";
         internal const string NhsRadiosHint = "nhsuk-radios__hint";
         internal const string NhsRadiosParentContainerConditional = "nhsuk-radios--conditional";
         internal const string NhsRadiosChildConditional = "nhsuk-radios__conditional";

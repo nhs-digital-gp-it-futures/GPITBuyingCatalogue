@@ -14,10 +14,6 @@
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.ItemName"
                         advice="@advice" />
-
-        <nhs-inset-text>
-            <p>If you have any extra Service Recipients for your service, you can add planned delivery dates for them later.</p>
-        </nhs-inset-text>
         
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
@@ -25,18 +21,15 @@
             <input type="hidden" asp-for="@Model.ItemName" />
 
             <div class="nhsuk-u-margin-bottom-9">
-                <nhs-fieldset-form-label asp-for="@Model"
+                <nhs-fieldset-form-label asp-for="MatchDates"
                                          label-text="@labelText"
                                          label-hint="If you choose not to match, then the planned delivery date for the majority of your Service Recipients will be applied. You'll be able to edit them later."
-                                         size="Medium">
-                    <nhs-radio-button-container>
-                        @foreach (var option in Model.Options)
-                        {
-                            <nhs-radio-button asp-for="MatchDates"
-                                              display-text="@option.Text"
-                                              value="@option.Value"/>
-                        }
-                    </nhs-radio-button-container>
+                                         size="Small">
+                    <nhs-radio-buttons asp-for="MatchDates"
+                                       values="@Model.Options.Cast<object>()"
+                                       value-name="Value"
+                                       display-name="Text"
+                                       inline="true" />
                 </nhs-fieldset-form-label>
             </div>
 
