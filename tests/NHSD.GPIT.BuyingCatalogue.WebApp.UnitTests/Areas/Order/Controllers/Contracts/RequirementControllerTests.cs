@@ -324,7 +324,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             actualResult.ViewName.Should().BeNull();
-            actualResult.Model.Should().BeEquivalentTo(new DeleteRequirementModel(order.CallOffId, internalOrgId, item.Id), x => x.Excluding(m => m.BackLink));
+            actualResult.Model.Should().BeEquivalentTo(new DeleteRequirementModel(order.CallOffId, internalOrgId, item), x => x.Excluding(m => m.BackLink));
         }
 
         [Theory]
