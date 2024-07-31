@@ -18,6 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             model.InternalOrgId.Should().Be(internalOrgId);
             model.ItemId.Should().Be(item.Id);
             model.ItemName.Should().Be(item.Milestone.Title);
+            model.ItemDescription.Should().Be(item.Milestone.PaymentTrigger);
         }
     }
 }
