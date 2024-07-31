@@ -1,11 +1,9 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared.MilestoneTableModel
 
 <nhs-table label-text="@Model.Title">
     <nhs-table-column>Milestone name</nhs-table-column>
-    <nhs-table-column>Milestone payment trigger</nhs-table-column>
+    <nhs-table-column>Payment trigger</nhs-table-column>
     @if (Model.IsAction)
     {
         <nhs-table-column><span class="nhsuk-u-visually-hidden">Change action</span></nhs-table-column>

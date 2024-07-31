@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
             var requirement = await requirementsService.GetRequirement(order.Id, itemId);
 
-            var model = new DeleteRequirementModel(callOffId, internalOrgId, requirement.Id)
+            var model = new DeleteRequirementModel(callOffId, internalOrgId, requirement)
             {
                 BackLink = Url.Action(
                     nameof(Index),

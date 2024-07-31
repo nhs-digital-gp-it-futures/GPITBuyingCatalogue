@@ -1,17 +1,26 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement.DeleteRequirementModel
 
 @{
-    ViewBag.Title = "Delete this requirement?";
+    ViewBag.Title = "Delete requirement?";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full">
+    <div class="nhsuk-grid-two-thirds">
         
         <nhs-page-title title="@ViewBag.Title"
-                        advice="The requirement will be deleted from this order." />
+                        caption="Order @Model.CallOffId" />
 
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Associated service name">
+                @Model.AssociatedServiceName
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Requirement">
+                @Model.Requirement
+            </nhs-summary-list-row>
+        </nhs-summary-list>
+        
         <form method="post">
             <div class="nhsuk-u-margin-top-9">
 
