@@ -1,7 +1,5 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 {

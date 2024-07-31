@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -17,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
         }
 
-        public EditDatesModel(OrderWrapper orderWrapper, CatalogueItemId catalogueItemId, IEnumerable<ServiceRecipient> organisations, RoutingSource? source = null)
+        public EditDatesModel(OrderWrapper orderWrapper, CatalogueItemId catalogueItemId, IReadOnlyDictionary<string, string> organisations, RoutingSource? source = null)
         {
             var order = orderWrapper.Order;
             InternalOrgId = order.OrderingParty.InternalIdentifier;
@@ -36,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             Description = orderItem.CatalogueItem.Name;
 
             var recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId)
-                .Select(x => new RecipientDateModel(x, x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate, order.CommencementDate!.Value, organisations?.FirstOrDefault(y => x.OdsCode == y.OrgId).Location))
+                .Select(x => new RecipientDateModel(x, x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate, order.CommencementDate!.Value, organisations[x.OdsCode]))
                 .OrderBy(y => y.Description)
                 .ToArray();
 

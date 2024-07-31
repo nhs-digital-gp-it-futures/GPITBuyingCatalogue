@@ -173,7 +173,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
             var orderRecipients = orderWrapper.DetermineOrderRecipients(catalogueItemId);
-            var organisations = await odsService.GetServiceRecipientsById(internalOrgId, orderRecipients.Select(x => x.OdsCode));
+            var organisations = (await odsService.GetServiceRecipientsById(internalOrgId, orderRecipients.Select(x => x.OdsCode)))
+                .ToDictionary(sr => sr.OrgId, sr => sr.Location);
 
             var model = new EditDatesModel(orderWrapper, catalogueItemId, organisations, source)
             {

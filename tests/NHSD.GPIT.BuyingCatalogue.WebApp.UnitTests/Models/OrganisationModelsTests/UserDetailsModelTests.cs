@@ -72,7 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.OrganisationModelsTe
         {
             var actual = new UserDetailsModel(organisation)
             {
-                IsDefaultAccountType = false, OrganisationId = OrganisationConstants.NhsDigitalOrganisationId,
+                IsDefaultAccountType = false,
+                OrganisationId = OrganisationConstants.NhsDigitalOrganisationId,
             };
 
             actual.SelectedAccountType.Should().Be(OrganisationFunction.Authority.Name);

@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 using Xunit;
@@ -18,8 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             EntityFramework.Ordering.Models.Order order)
         {
             var organisations = order.OrderRecipients
-                .Select(item => new ServiceRecipient() { OrgId = item.OdsCode, Location = Guid.NewGuid().ToString() })
-                .ToList();
+                .ToDictionary(item => item.OdsCode, _ => Guid.NewGuid().ToString());
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
             var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
@@ -39,8 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceMerger;
             var organisations = order.OrderRecipients
-                .Select(item => new ServiceRecipient() { OrgId = item.OdsCode, Location = Guid.NewGuid().ToString() })
-                .ToList();
+                .ToDictionary(item => item.OdsCode, _ => Guid.NewGuid().ToString());
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
             var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
@@ -57,8 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceSplit;
             var organisations = order.OrderRecipients
-                .Select(item => new ServiceRecipient() { OrgId = item.OdsCode, Location = Guid.NewGuid().ToString() })
-                .ToList();
+                .ToDictionary(item => item.OdsCode, _ => Guid.NewGuid().ToString());
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
             var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
@@ -75,13 +71,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         {
             order.OrderType = OrderTypeEnum.Solution;
             var organisations = order.OrderRecipients
-                .Select(item => new ServiceRecipient() { OrgId = item.OdsCode, Location = Guid.NewGuid().ToString() })
-                .ToList();
+                .ToDictionary(item => item.OdsCode, _ => Guid.NewGuid().ToString());
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
             var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
             model.Recipients.Count.Should().Be(organisations.Count);
-            model.Recipients.Select(x => x.Key).Should().BeEquivalentTo(organisations.Select(x => x.Location));
+            model.Recipients.Select(x => x.Key).Should().BeEquivalentTo(organisations.Values);
             model.Recipients.SelectMany(x => x.Value).Count().Should().Be(order.OrderRecipients.Count);
         }
 
@@ -93,8 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             order.OrderType = OrderTypeEnum.AssociatedServiceSplit;
             order.OrderRecipients.ForEach(x => x.OrderItemRecipients.ForEach(y => y.DeliveryDate = null));
             var organisations = order.OrderRecipients
-                .Select(item => new ServiceRecipient() { OrgId = item.OdsCode, Location = Guid.NewGuid().ToString() })
-                .ToList();
+                .ToDictionary(item => item.OdsCode, _ => Guid.NewGuid().ToString());
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
             var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
