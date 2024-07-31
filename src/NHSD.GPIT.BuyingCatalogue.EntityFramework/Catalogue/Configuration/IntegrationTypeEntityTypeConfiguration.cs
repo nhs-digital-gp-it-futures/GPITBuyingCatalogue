@@ -14,6 +14,18 @@ internal sealed class IntegrationTypeEntityTypeConfiguration : IEntityTypeConfig
 
         builder.Property(x => x.Name).IsRequired().HasMaxLength(50);
 
+        builder.HasMany(x => x.Solutions)
+            .WithMany()
+            .UsingEntity<SolutionIntegration>(
+                r => r.HasOne(x => x.Solution)
+                    .WithMany(x => x.Integrations)
+                    .HasForeignKey(nameof(SolutionIntegration.CatalogueItemId))
+                    .HasConstraintName("FK_SolutionIntegrations_Solution"),
+                l => l.HasOne(x => x.IntegrationType)
+                    .WithMany()
+                    .HasForeignKey(nameof(SolutionIntegration.IntegrationTypeId))
+                    .HasConstraintName("FK_SolutionIntegration_IntegrationType"));
+
         builder.HasOne(x => x.Integration)
             .WithMany(x => x.IntegrationTypes)
             .HasForeignKey(x => x.IntegrationId)
