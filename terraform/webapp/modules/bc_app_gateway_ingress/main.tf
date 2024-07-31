@@ -106,14 +106,6 @@ resource "azurerm_application_gateway" "app_gateway" {
   # Rewrite rules
   rewrite_rule_set {
     name = local.redirect_ruleset_name
-    rewrite_rule {
-      name          = "StrictTransportSecurityRule"
-      rule_sequence = 1
-      response_header_configuration {
-        header_name  = "Strict-Transport-Security"
-        header_value = "max-age=86400; includeSubDomains"
-      }
-    }
 
     rewrite_rule {
       name          = "RewriteUrlFromAzurewebsites"
