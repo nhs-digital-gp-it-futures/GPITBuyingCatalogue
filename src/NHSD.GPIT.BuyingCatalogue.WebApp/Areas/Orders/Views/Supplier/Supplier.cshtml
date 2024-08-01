@@ -12,17 +12,8 @@
             <nhs-validation-summary RadioId="SelectedContactId" />
 
             <nhs-page-title title="@Model.Title"
-                            caption="Order @(Model.CallOffId)"
-                            advice="Select an existing contact for @Model.SupplierName or add a new one." />
-
-            @if (!Model.IsAmendment)
-            {
-                <nhs-inset-text>
-                    <h3>Your confirmed supplier</h3>
-                    <p>As you've confirmed the supplier details for this order they cannot be changed.</p>
-                    <p>If you need to select a new supplier, you must start a new order.</p>
-                </nhs-inset-text>
-            }
+                            caption="@(Model.SupplierName)"
+                            advice="Select an existing contact for this supplier or add a new one." />
 
             <form method="post">
                 <input type="hidden" asp-for="SupplierId" />
@@ -30,6 +21,35 @@
                 <input type="hidden" asp-for="SupplierName" />
                 <input type="hidden" asp-for="Title" />
                 <input type="hidden" asp-for="IsAmendment" />
+                
+                <nhs-card-v2>
+                    <nhs-card-content>
+                        <h2>Contacts for this supplier</h2>
+                        <nhs-summary-list>
+                            <nhs-summary-list-row label-text="Name">
+                                <p data-test-id="supplier-name">
+                                    @Model.Name
+                                </p>
+                            </nhs-summary-list-row>
+                            <nhs-summary-list-row label-text="Email address">
+                                <p data-test-id="supplier-legal-name">
+                                    @Model.LegalName
+                                </p>
+                            </nhs-summary-list-row>
+                        </nhs-summary-list>
+                    </nhs-card-content>
+                    if (!Model.OnlyOption)
+                    {
+                    <nhs-card-footer>
+                        <p>
+                            <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(SupplierController.SelectSupplier), typeof(SupplierController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                Add a new contact
+                            </a>
+                        </p>
+                    </nhs-card-footer>
+                    }
+                </nhs-card-v2>
 
                 @if (Model.Contacts.Count > 1)
                 {

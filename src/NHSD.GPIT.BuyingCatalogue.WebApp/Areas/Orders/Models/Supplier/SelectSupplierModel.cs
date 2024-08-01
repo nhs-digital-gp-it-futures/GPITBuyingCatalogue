@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
         internal static readonly PageTitleModel StandardPageTitle = new()
         {
             Title = TitleText,
-            Advice = "Search for the supplier you want to order from. You'll only be able to find suppliers with solutions published on the Buying Catalogue.",
+            Advice = "Search for the supplier you want to order from. You’ll only be able to find suppliers with solutions on the framework you selected.",
         };
 
         internal static readonly PageTitleModel SelectionPageTitle = new()
@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
             Advice = "You'll only be able to select suppliers that offer either mergers or splits as Additional Services with their solutions.",
         };
 
-        private const string TitleText = "Supplier information";
+        private const string TitleText = "Find supplier";
 
         public CallOffId CallOffId { get; set; }
 

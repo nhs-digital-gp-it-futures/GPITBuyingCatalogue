@@ -1,11 +1,16 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
 {
     public class ConfirmSupplierModel : OrderingBaseModel
     {
+        public const string YesOption = "Yes";
+        public const string NoOption = "No"; 
+        
         internal static readonly PageTitleModel StandardSupplierConfirmationPageTitle = new()
         {
             Title = "Supplier details",
@@ -49,12 +54,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
         {
             if (OnlyOption)
             {
-                return SingleSupplierConfirmationPageTitle with { Caption = $"Order {CallOffId}" };
+                return SingleSupplierConfirmationPageTitle with { Caption = Name };
             }
             else
             {
-                return StandardSupplierConfirmationPageTitle with { Caption = $"Order {CallOffId}" };
+                return StandardSupplierConfirmationPageTitle with { Caption = Name };
             }
         }
+
+        public bool? ConfirmSupplier { get; set; }
+
+        public IEnumerable<SelectOption<bool>> Options => new List<SelectOption<bool>>
+        {
+            new(YesOption, true),
+            new(NoOption, false),
+        };
     }
 }
