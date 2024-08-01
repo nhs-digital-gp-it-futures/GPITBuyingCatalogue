@@ -159,6 +159,32 @@ public static class IntegrationsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
+    public static async Task GetIntegrationTypeById_WithReferences_ReturnsIntegrationType(
+        Solution solution,
+        Integration integration,
+        IntegrationType integrationType,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        IntegrationsService service)
+    {
+        integration.IntegrationTypes.Clear();
+        integrationType.Integration = null;
+        integrationType.IntegrationId = integration.Id;
+        integrationType.Solutions.Add(solution);
+
+        dbContext.Add(solution);
+        dbContext.Add(integration);
+        dbContext.Add(integrationType);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        var result = await service.GetIntegrationTypeById(integration.Id, integrationType.Id);
+
+        result.Solutions.Should().ContainSingle();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static async Task IntegrationTypeExists_DuplicateIntegrationTypeName_ReturnsExpected(
         Integration integration,
         IntegrationType integrationType,

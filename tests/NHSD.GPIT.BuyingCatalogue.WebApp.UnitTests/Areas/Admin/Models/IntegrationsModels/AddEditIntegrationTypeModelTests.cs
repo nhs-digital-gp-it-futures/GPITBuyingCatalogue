@@ -32,5 +32,38 @@ public static class AddEditIntegrationTypeModelTests
         model.IntegrationTypeName.Should().Be(integrationType.Name);
         model.Description.Should().Be(integrationType.Description);
         model.Title.Should().Be(AddEditIntegrationTypeModel.EditTitle);
+        model.IsReferenced.Should().Be(integrationType.Solutions.Count > 0);
+    }
+
+    [Theory]
+    [MockInlineAutoData(SupportedIntegrations.Im1, null, false, false)]
+    [MockInlineAutoData(null, 0, false, false)]
+    [MockInlineAutoData(null, null, true, false)]
+    [MockInlineAutoData(SupportedIntegrations.Im1, 0, false, false)]
+    [MockInlineAutoData(null, 0, false, false)]
+    [MockInlineAutoData(SupportedIntegrations.Im1, 0, true, true)]
+    public static void ShouldShowFilterLink_ReturnsExpected(
+        SupportedIntegrations? integrationId,
+        int? integrationTypeId,
+        bool isReferenced,
+        bool expected)
+    {
+        var model = new AddEditIntegrationTypeModel
+        {
+            IntegrationId = integrationId, IntegrationTypeId = integrationTypeId, IsReferenced = isReferenced,
+        };
+
+        model.ShouldShowFilterLink.Should().Be(expected);
+    }
+
+    [Fact]
+    public static void FilterQueryString_ReturnsExpected()
+    {
+        var model = new AddEditIntegrationTypeModel
+        {
+            IntegrationId = SupportedIntegrations.Im1, IntegrationTypeId = 5,
+        };
+
+        model.FilterQueryString.Should().Be("0.5");
     }
 }

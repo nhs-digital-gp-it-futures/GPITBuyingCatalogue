@@ -10,7 +10,8 @@ internal sealed class IntegrationTypeCustomization : ICustomization
     public void Customize(IFixture fixture)
     {
         static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<IntegrationType> composer) => composer
-            .Without(x => x.Integration);
+            .Without(x => x.Integration)
+            .Without(x => x.Solutions);
 
         fixture.Customize<IntegrationType>(ComposerTransformation);
     }

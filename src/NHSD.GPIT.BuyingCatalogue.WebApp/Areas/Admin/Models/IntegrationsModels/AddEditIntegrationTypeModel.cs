@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.IntegrationsModels;
@@ -29,6 +30,7 @@ public class AddEditIntegrationTypeModel : NavBaseModel
         IntegrationTypeId = integrationType.Id;
         IntegrationTypeName = integrationType.Name;
         Description = integrationType.Description;
+        IsReferenced = integrationType.Solutions.Count > 0;
     }
 
     public override string Title =>
@@ -49,4 +51,11 @@ public class AddEditIntegrationTypeModel : NavBaseModel
 
     [StringLength(350)]
     public string Description { get; set; }
+
+    public bool IsReferenced { get; set; }
+
+    public string FilterQueryString => new[] { (int)IntegrationId!, IntegrationTypeId.GetValueOrDefault() }.ToFilterString();
+
+    public bool ShouldShowFilterLink =>
+        IntegrationId.HasValue && IntegrationTypeId.HasValue && IsReferenced;
 }
