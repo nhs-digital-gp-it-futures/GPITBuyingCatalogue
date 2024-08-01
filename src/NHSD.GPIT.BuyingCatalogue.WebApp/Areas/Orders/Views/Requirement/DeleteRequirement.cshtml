@@ -1,29 +1,34 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement.DeleteRequirementModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement.DeleteRequirementModel
 
 @{
-    ViewBag.Title = "Delete this requirement?";
+    ViewBag.Title = "Delete requirement?";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-full">
+    <div class="nhsuk-grid-two-thirds">
         
         <nhs-page-title title="@ViewBag.Title"
-                        advice="The requirement will be deleted from this order." />
+                        caption="Order @Model.CallOffId" />
 
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Associated service name">
+                @Model.AssociatedServiceName
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Requirement">
+                @Model.Requirement
+            </nhs-summary-list-row>
+        </nhs-summary-list>
+        
         <form method="post">
             <div class="nhsuk-u-margin-top-9">
 
                 <input type="hidden" asp-for="ItemId" />
 
-                <div>
-                    <nhs-submit-button text="Delete requirement"/>
-                </div>
-                <div>
-                    <a href="@Model.BackLink">Cancel</a>
+                <div style="display: inline;">
+                    <nhs-submit-button text="Delete requirement" />
+                    <a href="@Model.BackLink" class="nhsuk-link nhsuk-link--no-visited-state nhsuk-u-margin-left-4 modal-link-adjuster">Cancel</a>
                 </div>
             </div>
         </form>

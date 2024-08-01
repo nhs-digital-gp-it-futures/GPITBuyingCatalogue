@@ -1,5 +1,4 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients.ImportServiceRecipientModel
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputBoxes
 @{
     ViewBag.Title = "Upload Service Recipients";
 }
@@ -13,15 +12,17 @@
                         caption="@Model.Caption"
                         advice="Create a CSV with your Service Recipients in the first column and their ODS codes in the second column."/>
 
+        <p>
+            Add your Service Recipients to a template and upload them into your order.
+            You’ll be able to edit them later.
+            If you upload Service Recipients more than once for this item, they’ll be overwritten each time.
+        </p>
+
         <vc:nhs-secondary-button text="Download template (CSV)"
                                  type="Secondary"
                                  url="@Model.DownloadTemplateLink"/>
-
-        <p>
-            Add your Service Recipients to a template and import them for @Model.Caption.
-            You’ll be able to edit them later.
-            If you import Service Recipients more than once, they’ll be overwritten each time.
-        </p>
+        
+        <hr class="nhsuk-section-break--m" />
 
         <form method="post" enctype="multipart/form-data">
             <input type="hidden" asp-for="BackLink"/>

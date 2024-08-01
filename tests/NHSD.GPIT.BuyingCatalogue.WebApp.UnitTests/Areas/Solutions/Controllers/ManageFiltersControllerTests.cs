@@ -284,7 +284,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
                     false,
                     filterIds)
                 {
-                    Caption = organisation.Name, OrganisationName = organisation.Name, InExpander = true,
+                    Caption = organisation.Name,
+                    OrganisationName = organisation.Name,
+                    InExpander = true,
                 };
             actualResult.Model.Should().BeEquivalentTo(expected, opt => opt.Excluding(x => x.BackLink));
         }

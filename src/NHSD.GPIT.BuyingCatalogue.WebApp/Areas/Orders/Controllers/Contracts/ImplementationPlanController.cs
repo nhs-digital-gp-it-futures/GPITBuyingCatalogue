@@ -139,9 +139,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var model = new DeleteMilestoneModel(callOffId, internalOrgId, milestone)
             {
                 BackLink = Url.Action(
-                    nameof(EditMilestone),
+                    nameof(Index),
                     typeof(ImplementationPlanController).ControllerName(),
-                    new { internalOrgId, callOffId, milestoneId }),
+                    new { internalOrgId, callOffId }),
             };
             return View(model);
         }

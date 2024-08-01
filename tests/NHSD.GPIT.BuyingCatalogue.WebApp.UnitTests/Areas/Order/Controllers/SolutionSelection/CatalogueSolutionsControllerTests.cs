@@ -656,9 +656,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 },
                 ToRemove = order.OrderItems.Select(
                         x => new ServiceModel
-                            {
-                                CatalogueItemId = x.CatalogueItemId, Description = x.CatalogueItem.Name,
-                            })
+                        {
+                            CatalogueItemId = x.CatalogueItemId,
+                            Description = x.CatalogueItem.Name,
+                        })
                     .ToList(),
                 Caption = $"Order {callOffId}",
             };
@@ -841,7 +842,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 ToRemove = order.OrderItems.Select(
                         x => new ServiceModel
                         {
-                            CatalogueItemId = x.CatalogueItemId, Description = x.CatalogueItem.Name,
+                            CatalogueItemId = x.CatalogueItemId,
+                            Description = x.CatalogueItem.Name,
                         })
                     .ToList(),
             };

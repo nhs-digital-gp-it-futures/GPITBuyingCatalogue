@@ -13,6 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         public const string ColourModeName = "colour-mode";
         public const string SecondaryTextTitleName = "secondary-text-title";
         public const string SecondaryTextName = "secondary-text";
+        public const string SecondaryUrlTitleName = "secondary-url-title";
+        public const string SecondaryUrlName = "secondary-url";
         public const string OpenName = "open";
         public const string ContentOnlyName = "content-only";
 
@@ -44,6 +46,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         [HtmlAttributeName(SecondaryTextName)]
         public string SecondaryText { get; set; }
 
+        [HtmlAttributeName(SecondaryUrlTitleName)]
+        public string SecondaryUrlTitle { get; set; }
+
+        [HtmlAttributeName(SecondaryUrlName)]
+        public string SecondaryUrl { get; set; }
+
         [HtmlAttributeName(OpenName)]
         public bool Open { get; set; }
 
@@ -70,12 +78,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             if (string.IsNullOrWhiteSpace(SecondaryText) != string.IsNullOrWhiteSpace(SecondaryTextTitle))
                 throw new ArgumentException($"you must set both {SecondaryTextName} and {SecondaryTextTitleName} or set neither.");
 
+            if (string.IsNullOrWhiteSpace(SecondaryUrl) != string.IsNullOrWhiteSpace(SecondaryUrlTitle))
+                throw new ArgumentException($"you must set both {SecondaryUrlName} and {SecondaryUrlTitleName} or set neither.");
+
             output.TagName = "details";
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            var summary = string.IsNullOrWhiteSpace(SecondaryTextTitle)
+            var summary = string.IsNullOrWhiteSpace(SecondaryTextTitle) && string.IsNullOrWhiteSpace(SecondaryUrlTitle)
                 ? DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(HeadingText, LabelText, BoldTitle, AddedSticker)
-                : DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilderWithSecondaryInformation(LabelText, SecondaryTextTitle, SecondaryText, BoldTitle, AddedSticker);
+                : DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilderWithSecondaryInformation(LabelText, SecondaryTextTitle, SecondaryText, SecondaryUrlTitle, SecondaryUrl, AddedSticker);
 
             var textItem = DetailsAndExpanderTagHelperBuilders.GetTextItem();
 

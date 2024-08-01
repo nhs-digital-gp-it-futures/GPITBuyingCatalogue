@@ -438,7 +438,8 @@ public class CompetitionHubController : Controller
             .Select(
                 x => new ServiceModel
                 {
-                    CatalogueItemId = x, Description = associatedServices.FirstOrDefault(s => s.Id == x)?.Name,
+                    CatalogueItemId = x,
+                    Description = associatedServices.FirstOrDefault(s => s.Id == x)?.Name,
                 });
 
         var toRemove = existingServiceIds
@@ -446,7 +447,8 @@ public class CompetitionHubController : Controller
             .Select(
                 x => new ServiceModel
                 {
-                    CatalogueItemId = x, Description = associatedServices.FirstOrDefault(s => s.Id == x)?.Name,
+                    CatalogueItemId = x,
+                    Description = associatedServices.FirstOrDefault(s => s.Id == x)?.Name,
                 });
 
         var model = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.AssociatedService)

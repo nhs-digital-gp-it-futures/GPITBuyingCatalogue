@@ -34,11 +34,6 @@
                     <nhs-submit-button text="Save and continue"/>
                 </nhs-button-group>
 
-                @if (Model.IsEdit)
-                {
-                    <vc:nhs-delete-button url="@Url.Action(nameof(RequirementController.DeleteRequirement), typeof(RequirementController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId, Model.ItemId })"
-                                          text="Delete requirement"/>
-                }
             </div>
         </form>
     </div>

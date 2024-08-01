@@ -1,7 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement.RequirementModel
 @{
@@ -25,19 +23,29 @@
             </nhs-details>
         </div>
 
-        <vc:nhs-action-link text="Add a requirement"
-                            url="@Url.Action(nameof(RequirementController.AddRequirement),
-                                     typeof(RequirementController).ControllerName(),
-                                     new { Model.InternalOrgId, Model.CallOffId })" />
-
-        @if (Model.HasRequirements)
-        {
-                <partial name="RequirementTable" model="new RequirementTableModel(Model.RequirementLabelText, Model.ContractBilling?.Requirements, true, Model.CallOffId, Model.InternalOrgId)" />
-        }
-        else
-        {
-            <p>No specific requirements have been added to this order.</p>
-        }
+        <nhs-card-v2>
+            <nhs-card-content>
+                @if (Model.HasRequirements)
+                {
+                    <h3>Specific requirements</h3>
+                    <partial name="RequirementTable" model="new RequirementTableModel(Model.RequirementLabelText, Model.ContractBilling?.Requirements, true, Model.CallOffId, Model.InternalOrgId)" />
+                }
+                else
+                {
+                    <p>No specific requirements have been added to this order.</p>
+                }
+            </nhs-card-content>
+            <nhs-card-footer>
+                <p class="nhsuk-body-m">
+                    <a class="nhsuk-link--no-visited-state" href="@Url.Action(
+                                                                      nameof(RequirementController.AddRequirement),
+                                                                      typeof(RequirementController).ControllerName(),
+                                                                      new { Model.InternalOrgId, Model.CallOffId })">
+                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add a requirement
+                    </a>
+                </p>
+            </nhs-card-footer>
+        </nhs-card-v2>
 
         <form method="post">
             <div class="nhsuk-u-margin-top-9">

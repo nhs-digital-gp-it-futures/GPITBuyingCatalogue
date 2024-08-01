@@ -152,7 +152,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
         importedServiceRecipients.First().OdsCode = "MISMATCH";
 
         var expectedModel = new ValidateOdsModel(
-            importedServiceRecipients.Take(1).ToList()) { Caption = competition.Name };
+            importedServiceRecipients.Take(1).ToList())
+        { Caption = competition.Name };
 
         importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
 
@@ -254,7 +255,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
         };
 
         var expectedModel = new ValidateNamesModel(
-            mismatchedNames) { Caption = competition.Name };
+            mismatchedNames)
+        { Caption = competition.Name };
 
         importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
 

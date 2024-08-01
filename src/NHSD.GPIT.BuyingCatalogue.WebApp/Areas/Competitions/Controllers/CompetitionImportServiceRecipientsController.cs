@@ -132,7 +132,8 @@ public class CompetitionImportServiceRecipientsController : Controller
             nameof(ValidateNames),
             new
             {
-                internalOrgId, competitionId,
+                internalOrgId,
+                competitionId,
             });
     }
 
@@ -171,7 +172,10 @@ public class CompetitionImportServiceRecipientsController : Controller
             typeof(CompetitionRecipientsController).ControllerName(),
             new
             {
-                internalOrgId, competitionId, recipientIds = string.Join(',', validOdsCodes), hasImported = true,
+                internalOrgId,
+                competitionId,
+                recipientIds = string.Join(',', validOdsCodes),
+                hasImported = true,
             });
     }
 
@@ -195,7 +199,10 @@ public class CompetitionImportServiceRecipientsController : Controller
             typeof(CompetitionRecipientsController).ControllerName(),
             new
             {
-                internalOrgId, competitionId, recipientIds = string.Join(',', validOdsCodes), hasImported = true,
+                internalOrgId,
+                competitionId,
+                recipientIds = string.Join(',', validOdsCodes),
+                hasImported = true,
             });
     }
 
@@ -239,16 +246,16 @@ public class CompetitionImportServiceRecipientsController : Controller
         List<ServiceRecipient> serviceRecipients)
     {
         return (from importedRecipient in importedServiceRecipients
-            from serviceRecipient in serviceRecipients
-            where string.Equals(
-                importedRecipient.OdsCode,
-                serviceRecipient.OrgId,
-                StringComparison.OrdinalIgnoreCase)
-            where !string.Equals(
-                importedRecipient.Organisation,
-                serviceRecipient.Name,
-                StringComparison.OrdinalIgnoreCase)
-            select (importedRecipient.Organisation, serviceRecipient.Name, serviceRecipient.OrgId)).ToList();
+                from serviceRecipient in serviceRecipients
+                where string.Equals(
+                    importedRecipient.OdsCode,
+                    serviceRecipient.OrgId,
+                    StringComparison.OrdinalIgnoreCase)
+                where !string.Equals(
+                    importedRecipient.Organisation,
+                    serviceRecipient.Name,
+                    StringComparison.OrdinalIgnoreCase)
+                select (importedRecipient.Organisation, serviceRecipient.Name, serviceRecipient.OrgId)).ToList();
     }
 
     private static string GetNameValidationBacklink(

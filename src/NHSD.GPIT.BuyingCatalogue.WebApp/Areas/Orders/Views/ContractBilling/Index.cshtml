@@ -1,7 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ContractBilling.ContractBillingModel
 @{
@@ -20,20 +18,28 @@
         <h2>Default milestones and payment triggers</h2>
         <p>The delivery date is the default milestone for an Associated Service and triggers the requirement that payment is made 30 days later. However, you can add bespoke milestones that you've agreed with the supplier to act as payment triggers for this order.</p>
         <p>The default milestone will apply to any Associated Services not assigned a bespoke milestone.</p>
-
-        <vc:nhs-action-link text="Add a milestone"
-                            url="@Url.Action(nameof(ContractBillingController.AddMilestone),
-                                     typeof(ContractBillingController).ControllerName(),
-                                     new { Model.InternalOrgId, Model.CallOffId })" />
-
-        @if (Model.HasBespokeBilling)
-        {
-            <partial name="ContractBillingItemTable" model="new ContractBillingItemTableModel(Model.BespokeBillingLabelText, Model.BespokeBilling?.ContractBillingItems, true, Model.CallOffId, Model.InternalOrgId)" />
-        }
-        else
-        {
-            <p>No bespoke milestones have been added to this order.</p>
-        }
+        <nhs-card-v2>
+        <nhs-card-content>
+            @if (Model.HasBespokeBilling)
+            {
+                <partial name="ContractBillingItemTable" model="new ContractBillingItemTableModel(Model.BespokeBillingLabelText, Model.BespokeBilling?.ContractBillingItems, true, Model.CallOffId, Model.InternalOrgId)" />
+            }
+            else
+            {
+                <p>No bespoke milestones have been added to this order.</p>
+            }
+        </nhs-card-content>
+            <nhs-card-footer>
+                <p class="nhsuk-body-m">
+                    <a class="nhsuk-link--no-visited-state" href="@Url.Action(
+                                                                      nameof(ContractBillingController.AddMilestone),
+                                                                      typeof(ContractBillingController).ControllerName(),
+                                                                      new { Model.InternalOrgId, Model.CallOffId })">
+                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add a milestone
+                    </a>
+                </p>
+            </nhs-card-footer>
+        </nhs-card-v2>
 
         <form method="post">
             <div class="nhsuk-u-margin-top-9">

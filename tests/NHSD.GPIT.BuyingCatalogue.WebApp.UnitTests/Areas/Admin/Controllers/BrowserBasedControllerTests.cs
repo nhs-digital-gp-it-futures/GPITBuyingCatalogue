@@ -220,7 +220,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                             b =>
                                 new SupportedBrowser
                                 {
-                                    BrowserName = b.BrowserName, MinimumBrowserVersion = b.MinimumBrowserVersion,
+                                    BrowserName = b.BrowserName,
+                                    MinimumBrowserVersion = b.MinimumBrowserVersion,
                                 })
                         .ToHashSet());
         }

@@ -9,11 +9,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Require
         {
         }
 
-        public DeleteRequirementModel(CallOffId callOffId, string internalOrgId, int itemId)
+        public DeleteRequirementModel(CallOffId callOffId, string internalOrgId, EntityFramework.Ordering.Models.Requirement requirement)
         {
             CallOffId = callOffId;
             InternalOrgId = internalOrgId;
-            ItemId = itemId;
+            ItemId = requirement.Id;
+            AssociatedServiceName = requirement.OrderItem?.CatalogueItem?.Name;
+            Requirement = requirement.Details;
         }
 
         public int ItemId { get; set; }
@@ -21,5 +23,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Require
         public CallOffId CallOffId { get; set; }
 
         public string InternalOrgId { get; set; }
+
+        public string AssociatedServiceName { get; set; }
+
+        public string Requirement { get; set; }
     }
 }
