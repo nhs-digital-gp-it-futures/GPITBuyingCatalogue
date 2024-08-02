@@ -1,87 +1,58 @@
-#home-hero {
-    margin-left: 0px;
-    margin-right: 0px;
-    position: relative;
-    background-image: url(/images/home-page-image.png);
+.nhsuk-hero--image {
+  background-image: url(/images/home-page-image.png);
+  min-height: 370px;
 
-    background-position: center right;
-    background-repeat: no-repeat;
-    background-size: cover;
+  .nhsuk-hero__overlay {
     min-height: 370px;
-
-
-
-    .nhsuk-hero-content {
-        bottom: -48px;
-        margin-bottom: 0;
-        max-width: 35em;
-        padding: 32px 40px;
-        position: absolute;
-        top: auto;
-        background-color: #005eb8;
-        color: #fff;
-    }
-
-    .nhsuk-hero__arrow {
-        left: 46px;
-        bottom: -10px;
-        display: block;
-        height: 20px;
-        background-color: #005eb8;
-        overflow: hidden;
-        position: absolute;
-        transform: rotate(45deg);
-        width: 20px;
-    }
+  }
 }
 
-.nhs-grid-row__no-padding {
-    padding-left: 0px;
-}
-
-.splash-intro-img {
-    width: 180px;
-    margin-bottom: 16px;
-}
-
-.nhs-card__min-height {
-    min-height: 320px;
-
-    .nhsuk-card__heading {
-        min-height: 60px;
-    }
+.app-section__content {
+  padding-bottom: 40px;
+  padding-top: 40px;
 }
 
 .card-title-min-height {
-    min-height: 96px;
+  min-height: 96px;
 }
 
 .card-min-content-height {
-    min-height: 130px;
-}
-
-.white-section {
-    background-color: white;
-    margin-left: 0px;
-    margin-right: 0px;
-}
-
-.padding-removed {
-    padding-left: 0px;
-    padding-right: 0px;
-    margin-left: 0px;
-    margin-right: 0px;
+  min-height: 130px;
 }
 
 .app-homepage {
-    padding-top: 0px;
-    padding-bottom: 0px;
-}
-
-.nhsuk-card__center {
-    text-align: center !important;
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 
 .logout-link {
-    font-weight: bold;
+  font-weight: bold;
+}
+
+@media (max-width: 40.0625em) {
+  .nhsuk-hero--image {
+    min-height: 200px;
+
+    .nhsuk-hero__overlay {
+      min-height: 200px;
+    }
+  }
+
+  .card-title-min-height {
+    min-height: 50px;
+  }
+
+  .card-min-content-height {
+    min-height: 65px;
+  }
+}
+
+@media (min-width: 794px) {
+  .nhs-card__min-height {
+    min-height: 380px;
+
+    .nhsuk-card__heading {
+      min-height: 60px;
+    }
+  }
 }
