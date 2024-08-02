@@ -29,6 +29,22 @@
   font-weight: bold;
 }
 
+.nhsuk-header__logo {
+  float: left;
+}
+
+.nhsuk-header__content::after {
+  clear: both;
+  content: "";
+  display: block;
+}
+
+@media (min-width: 40.0625em) {
+  .nhsuk-header__content {
+    float: right;
+  }
+}
+
 @media (max-width: 40.0625em) {
   .nhsuk-hero--image {
     min-height: 200px;
