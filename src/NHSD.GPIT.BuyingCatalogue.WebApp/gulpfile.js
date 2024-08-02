@@ -38,8 +38,7 @@ gulp.task('nhsuk', function () {
 });
 
 gulp.task('govuk', function () {
-    return gulp.src(paths.nodemod + 'govuk-frontend/govuk/all.js')
-        .pipe(rename('govuk-frontend.min.js'))
+    return gulp.src(paths.nodemod + 'govuk-frontend/dist/govuk/govuk-frontend.min.js')
         .pipe(gulp.dest(paths.govuk + 'assets/js'))
 });
 
