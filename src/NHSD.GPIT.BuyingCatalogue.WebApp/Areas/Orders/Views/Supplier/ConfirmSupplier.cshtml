@@ -34,7 +34,7 @@
                         </nhs-summary-list-row>
                     </nhs-summary-list>
                 </nhs-card-content>
-                if (!Model.OnlyOption)
+                @if (!Model.OnlyOption)
                 {
                     <nhs-card-footer>
                         <p>
@@ -51,7 +51,7 @@
                 <input type="hidden" asp-for="SupplierId" />
                 <input type="hidden" asp-for="Name" />
                 <input type="hidden" asp-for="LegalName" />
-                <input type="hidden" asp-for="Address" />
+                <input type="hidden" asp-for="OnlyOption" />
                 
                 <div class="nhsuk-u-margin-top-4 nhsuk-u-bottom-bottom-5">
                     <nhs-fieldset-form-label asp-for="ConfirmSupplier"

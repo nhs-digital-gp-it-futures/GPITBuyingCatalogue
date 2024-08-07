@@ -233,7 +233,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         public async Task<IActionResult> ConfirmSupplier(string internalOrgId, CallOffId callOffId, ConfirmSupplierModel model)
         {
             if (!ModelState.IsValid)
+            {
+                var supplier = await supplierService.GetSupplierFromBuyingCatalogue(model.SupplierId);
+                model.Address = supplier.Address;
                 return View(model);
+            }
 
             await supplierService.AddOrderSupplier(callOffId, internalOrgId, model.SupplierId);
 

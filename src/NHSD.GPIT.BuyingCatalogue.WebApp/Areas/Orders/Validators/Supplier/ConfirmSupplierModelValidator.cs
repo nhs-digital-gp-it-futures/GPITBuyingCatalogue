@@ -10,8 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Supplier
         public ConfirmSupplierModelValidator()
         {
             RuleFor(x => x.ConfirmSupplier)
-                .NotNull()
-                .Equal(true)
+                .Must(x => x.HasValue && x.Value)
                 .WithMessage(ConfirmSupplierErrorMessage);
         }
     }

@@ -1,4 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier.SupplierModel;
 @{
     ViewBag.Title = Model.Title;
@@ -24,91 +25,51 @@
                 
                 <nhs-card-v2>
                     <nhs-card-content>
-                        <h2>Contacts for this supplier</h2>
-                        <nhs-summary-list>
-                            <nhs-summary-list-row label-text="Name">
-                                <p data-test-id="supplier-name">
-                                    @Model.Name
-                                </p>
-                            </nhs-summary-list-row>
-                            <nhs-summary-list-row label-text="Email address">
-                                <p data-test-id="supplier-legal-name">
-                                    @Model.LegalName
-                                </p>
-                            </nhs-summary-list-row>
-                        </nhs-summary-list>
+                       @*  <h2>Contacts for this supplier</h2> *@
+
+                        <nhs-fieldset-form-label asp-for="@Model"
+                                                 label-text="Contacts for this supplier">
+                            <nhs-radio-button-container>
+                                @foreach (var contact in Model.Contacts)
+                                {
+                                    @if (Model.Contacts.Count > 1)
+                                    {
+                                        <nhs-radio-button asp-for="SelectedContactId"
+                                                          display-text="@contact.FullName"
+                                                          value="@contact.Id" />
+                                    }
+                                    
+                                    <nhs-summary-list>
+                                        <nhs-summary-list-row label-text="Name">
+                                            <p data-test-id="supplier-name">
+                                                @contact.FullName
+                                            </p>
+                                        </nhs-summary-list-row>
+                                        <nhs-summary-list-row label-text="Email address" action="@CreateAction(contact.Id)">
+                                            <p data-test-id="supplier-legal-name">
+                                                @contact.Email
+                                            </p>
+                                        </nhs-summary-list-row>
+                                    </nhs-summary-list>
+                                }
+                            </nhs-radio-button-container>
+                        </nhs-fieldset-form-label>
                     </nhs-card-content>
-                    if (!Model.OnlyOption)
+                    @if (Model.TemporaryContact is null)
                     {
-                    <nhs-card-footer>
-                        <p>
-                            <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(SupplierController.SelectSupplier), typeof(SupplierController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                                Add a new contact
-                            </a>
-                        </p>
-                    </nhs-card-footer>
+                        <nhs-card-footer>
+                            <p>
+                                <a class="nhsuk-link--no-visited-state" href="@Url.Action(
+                                                                                  nameof(SupplierController.NewContact),
+                                                                                  typeof(SupplierController).ControllerName(),
+                                                                                  new { Model.InternalOrgId, Model.CallOffId })">
+                                    <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />
+                                    Add a new contact
+                                </a>
+                            </p>
+                        </nhs-card-footer>
                     }
                 </nhs-card-v2>
-
-                @if (Model.Contacts.Count > 1)
-                {
-                    <div class="nhsuk-u-margin-bottom-9">
-                        <nhs-fieldset-form-label asp-for="@Model"
-                                             label-text="Who is your contact for this order?"
-                                             label-hint="Select one option.">
-                            <nhs-radio-buttons asp-for="SelectedContactId"
-                                           values="@Model.FormattedContacts.Cast<object>()"
-                                           value-name="Value"
-                                           display-name="Text" />
-                        </nhs-fieldset-form-label>
-                    </div>
-                }
-                else if (Model.Contacts.Count == 1)
-                {
-                    <div class="nhsuk-u-margin-bottom-9">
-                        <input type="hidden" asp-for="SelectedContactId" value="@Model.Contacts.First().Id" />
-                        <h3>Contact for this order</h3>
-                        <p>@Model.FormattedContacts.First().Text</p>
-                    </div>
-                }
-
-                @if (Model.TemporaryContact != null)
-                {
-                    <p>
-                        Your contact has been added. You may edit this contact at any time.
-                    </p>
-
-                    <nhs-table label-text="Contacts added to this order">
-                        <nhs-table-column>Contact</nhs-table-column>
-                        <nhs-table-column>Telephone</nhs-table-column>
-                        <nhs-table-column>Email</nhs-table-column>
-                        <nhs-table-column>Action</nhs-table-column>
-
-                        <nhs-table-row-container>
-                            <nhs-table-cell>@Model.TemporaryContact.Description</nhs-table-cell>
-                            <nhs-table-cell>@Model.TemporaryContact.PhoneNumber</nhs-table-cell>
-                            <nhs-table-cell>@Model.TemporaryContact.Email</nhs-table-cell>
-                            <nhs-table-cell>
-                                <a asp-action="@nameof(SupplierController.NewContact)"
-                               asp-controller="@typeof(SupplierController).ControllerName()"
-                               asp-route-internalOrgId="@Model.InternalOrgId"
-                               asp-route-callOffId="@Model.CallOffId">Edit</a>
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                    </nhs-table>
-                }
-                else
-                {
-                    <vc:nhs-action-link url="@Url.Action(
-                                                 nameof(SupplierController.NewContact),
-                                                 typeof(SupplierController).ControllerName(),
-                                                 new { Model.InternalOrgId, Model.CallOffId })"
-                                    text="Add a new contact" />
-                    <p>
-                        If your contact for this supplier is not listed, you can add their details using the link. The information will only appear on this order.
-                    </p>
-                }
 
                 <div class="nhsuk-u-margin-top-9">
                     <nhs-submit-button />
@@ -117,3 +78,10 @@
         </div>
     </div>
 </div>
+
+@{
+    (string, string) CreateAction(int id) => id == SupplierContact.TemporaryContactId ? ("Change", Url.Action(
+        nameof(SupplierController.NewContact),
+        typeof(SupplierController).ControllerName(),
+        new { Model.InternalOrgId, Model.CallOffId })) : (null, null);
+}
