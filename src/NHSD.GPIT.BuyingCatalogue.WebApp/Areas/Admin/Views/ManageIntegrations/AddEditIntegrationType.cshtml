@@ -1,3 +1,4 @@
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.IntegrationsModels.AddEditIntegrationTypeModel
 
 @{
@@ -11,12 +12,27 @@
         <nhs-validation-summary/>
         <nhs-page-title title="@ViewBag.Title" caption="@Model.IntegrationName integration"/>
 
+        @if (Model.ShouldShowFilterLink)
+        {
+            <nhs-inset-text>
+                <p>This integration type is implemented by one or more Catalogue Solutions.</p>
+                <a asp-action="@(nameof(SolutionsController.Index))"
+                   asp-controller="@(typeof(SolutionsController).ControllerName())"
+                   asp-area="@(typeof(SolutionsController).AreaName())"
+                   asp-route-selectedIntegrations="@(Model.FilterQueryString)"
+                   target="_blank">
+                    View the Catalogue Solutions that implement this integration type (opens in a new tab)
+                </a>
+            </nhs-inset-text>
+        }
+
         <form method="post">
             <input type="hidden" asp-for="BackLink"/>
             <input type="hidden" asp-for="IntegrationId"/>
             <input type="hidden" asp-for="IntegrationName"/>
             <input type="hidden" asp-for="IntegrationTypeId"/>
             <input type="hidden" asp-for="RequiresDescription"/>
+            <input type="hidden" asp-for="IsReferenced"/>
 
             <nhs-input asp-for="IntegrationTypeName" label-text="Integration type name" input-width="Thirty"/>
 

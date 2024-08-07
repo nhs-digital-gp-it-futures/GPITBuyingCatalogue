@@ -50,7 +50,9 @@ public sealed class IntegrationsService(BuyingCatalogueDbContext dbContext) : II
         SupportedIntegrations integrationId,
         int integrationTypeId)
         => await dbContext.IntegrationTypes.Include(x => x.Integration)
+            .Include(x => x.Solutions)
             .AsNoTracking()
+            .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == integrationTypeId && x.IntegrationId == integrationId);
 
     public async Task<bool> IntegrationTypeExists(

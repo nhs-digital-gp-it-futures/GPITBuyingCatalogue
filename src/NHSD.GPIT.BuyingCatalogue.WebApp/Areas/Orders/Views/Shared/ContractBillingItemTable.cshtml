@@ -1,24 +1,23 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Shared.ContractBillingItemTableModel
 
 <div class="nhsuk-u-margin-bottom-9">
     <nhs-table label-text="@Model.Title">
         <nhs-table-column>Associated Service name</nhs-table-column>
         <nhs-table-column>Milestone name</nhs-table-column>
-        <nhs-table-column>Milestone payment trigger</nhs-table-column>
-        <nhs-table-column>Number of units to be billed</nhs-table-column>
+        <nhs-table-column>Payment trigger</nhs-table-column>
+        <nhs-table-column>Billed units</nhs-table-column>
         @if (Model.IsAction)
         {
-            <nhs-table-column>Action</nhs-table-column>
+            <nhs-table-column><span class="nhsuk-u-visually-hidden">Change action</span></nhs-table-column>
+            <nhs-table-column><span class="nhsuk-u-visually-hidden">Delete action</span></nhs-table-column>
         }
         @foreach (var item in Model.ContractBillingItems)
         {
             <nhs-table-row-container>
                 <nhs-table-cell>@item.OrderItem.CatalogueItem.Name</nhs-table-cell>
-                <nhs-table-cell>@item.Milestone.Title</nhs-table-cell>
-                <nhs-table-cell>@item.Milestone.PaymentTrigger</nhs-table-cell>
+                <nhs-table-cell style="word-break:break-word">@item.Milestone.Title</nhs-table-cell>
+                <nhs-table-cell style="word-break:break-word">@item.Milestone.PaymentTrigger</nhs-table-cell>
                 <nhs-table-cell>@item.Quantity</nhs-table-cell>
                 @if (Model.IsAction)
                 {
@@ -28,8 +27,12 @@
                                asp-controller="@typeof(ContractBillingController).ControllerName()"
                                asp-route-internalOrgId="@Model.InternalOrgId"
                                asp-route-callOffId="@Model.CallOffId"
-                               asp-route-itemId="@item.Id">Edit</a>
+                               asp-route-itemId="@item.Id">Change</a>
                         </span>
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <vc:nhs-delete-button url="@Url.Action(nameof(ContractBillingController.DeleteContractBillingItem), typeof(ContractBillingController).ControllerName(), new { internalOrgId = Model.InternalOrgId, callOffId = Model.CallOffId, itemId = item.Id })"
+                                              text="Delete" />
                     </nhs-table-cell>
                 }
             </nhs-table-row-container>
