@@ -9,8 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
     public class ConfirmSupplierModel : OrderingBaseModel
     {
         public const string YesOption = "Yes";
-        public const string NoOption = "No"; 
-        
+        public const string NoOption = "No";
+
         internal static readonly PageTitleModel StandardSupplierConfirmationPageTitle = new()
         {
             Title = "Supplier details",
@@ -50,6 +50,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
 
         public Address Address { get; set; }
 
+        public bool? ConfirmSupplier { get; set; }
+
+        public IEnumerable<SelectOption<bool>> Options => new List<SelectOption<bool>>
+        {
+            new(YesOption, true),
+            new(NoOption, false),
+        };
+
         public PageTitleModel GetPageTitle()
         {
             if (OnlyOption)
@@ -61,13 +69,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
                 return StandardSupplierConfirmationPageTitle with { Caption = Name };
             }
         }
-
-        public bool? ConfirmSupplier { get; set; }
-
-        public IEnumerable<SelectOption<bool>> Options => new List<SelectOption<bool>>
-        {
-            new(YesOption, true),
-            new(NoOption, false),
-        };
     }
 }
