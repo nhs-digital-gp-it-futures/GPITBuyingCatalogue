@@ -15,6 +15,8 @@ RUN dotnet restore "src/NHSD.GPIT.BuyingCatalogue.WebApp/NHSD.GPIT.BuyingCatalog
 COPY . .
 RUN apk add --update npm
 WORKDIR "/src/src/NHSD.GPIT.BuyingCatalogue.WebApp"
+RUN npm install
+RUN npx gulp min
 RUN dotnet build "NHSD.GPIT.BuyingCatalogue.WebApp.csproj" -c Release -o /app/build
 
 FROM build AS publish

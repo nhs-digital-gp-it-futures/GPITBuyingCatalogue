@@ -56,14 +56,14 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public void ClickSave() =>
             Driver.FindElement(CommonSelectors.SubmitButton).Click();
 
-        public void ClickSaveFilters() => 
+        public void ClickSaveFilters() =>
             Driver.FindElement(By.XPath("//button[contains(@class, 'nhsuk-button') and contains(@class, 'nhsuk-button--reverse') and contains(@Id, 'Submit')]")).Click();
 
         public void ClickFirstCheckbox() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox][value=true]")).First().Click();
 
         public void ClickFirstExpander() =>
-            Driver.FindElements(By.CssSelector("details.nhsuk-expander")).First().Click();        
+            Driver.FindElements(By.CssSelector("details.nhsuk-expander")).First().Click();
 
         public void ClickFirstRadio() =>
             Driver.FindElements(By.CssSelector("input[type=radio]")).First().Click();
@@ -180,6 +180,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         {
             var selectElement = new SelectElement(Driver.FindElement(targetField));
             selectElement.SelectByValue(value);
+        }
+
+        public IList<string> GetAllDropdownOptions(By targetField)
+        {
+            var selectElement = new SelectElement(Driver.FindElement(targetField));
+
+            return selectElement.Options.Skip(1).Select(y => y.GetAttribute("value")).ToList();
         }
 
         public string SelectRandomDropDownItem(By targetField)
@@ -315,7 +322,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public bool AnyCheckboxSelected() =>
             Driver
                 .FindElements(By.CssSelector("input[type=checkbox]"))
-                    .Any(cb => cb.Selected);    
+                    .Any(cb => cb.Selected);
 
         // Element Comparisons
 
