@@ -10,45 +10,65 @@
 
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-validation-summary />
+            <nhs-validation-summary RadioId="@nameof(Model.ConfirmSupplier)" />
             <nhs-page-title model="@pageTitle" />
 
-            <nhs-summary-list>
-                <nhs-summary-list-row label-text="Supplier name">
-                    <p data-test-id="supplier-name">
-                        @Model.Name
+            <nhs-card-v2>
+                <nhs-card-content>
+                    <h2>Supplier details</h2>
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Supplier name">
+                            <p data-test-id="supplier-name">
+                                @Model.Name
+                            </p>
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Legal name">
+                            <p data-test-id="supplier-legal-name">
+                                @Model.LegalName
+                            </p>
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Registered address">
+                            <div data-test-id="supplier-address">
+                                <vc:nhs-address address="@Model.Address"/>
+                            </div>
+                        </nhs-summary-list-row>
+                    </nhs-summary-list>
+                </nhs-card-content>
+                <nhs-card-footer>
+                    <p>
+                        @if (Model.OnlyOption)
+                        {
+                            <img src="~/images/circle-info-solid.svg" width="20px" aria-hidden="true"> <p>This is the only supplier available for this framework and order type.</p> 
+                        }
+                        else
+                        {
+                            <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(SupplierController.SelectSupplier), typeof(SupplierController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                Change supplier
+                            </a>
+                        }
                     </p>
-                </nhs-summary-list-row>
-                <nhs-summary-list-row label-text="Legal name">
-                    <p data-test-id="supplier-legal-name">
-                        @Model.LegalName
-                    </p>
-                </nhs-summary-list-row>
-                <nhs-summary-list-row label-text="Registered address">
-                    <div data-test-id="supplier-address">
-                        <vc:nhs-address address="@Model.Address" />
-                    </div>
-                </nhs-summary-list-row>
-            </nhs-summary-list>
-
-            @if (!Model.OnlyOption)
-            {
-                <vc:nhs-action-link url="@Url.Action(
-                                         nameof(SupplierController.SelectSupplier),
-                                         typeof(SupplierController).ControllerName(),
-                                         new { Model.InternalOrgId, Model.CallOffId })"
-                                    text="Select a different supplier" />
-            }
-
-            <div class="nhsuk-inset-text">
-                <span class="nhsuk-u-visually-hidden">Information: </span>
-                <h3>Confirming your supplier</h3>
-                <p>Once you’ve confirmed your supplier you’ll not be able to change it for this order.</p>
-                <p>If you do progress and later decide that you want to change your supplier, you’ll need to start a new order.</p>
-            </div>
-
+                </nhs-card-footer>
+            </nhs-card-v2>
+            
             <form method="post">
                 <input type="hidden" asp-for="SupplierId" />
+                <input type="hidden" asp-for="Name" />
+                <input type="hidden" asp-for="LegalName" />
+                <input type="hidden" asp-for="OnlyOption" />
+                
+                <div class="nhsuk-u-margin-top-4 nhsuk-u-bottom-bottom-5">
+                    <nhs-fieldset-form-label asp-for="ConfirmSupplier"
+                                             label-text="Confirm this supplier"
+                                             label-hint="Once you’ve confirmed your supplier you’ll not be able to change it for this order."
+                                             size="Small">
+                        <nhs-radio-buttons asp-for="ConfirmSupplier"
+                                           values="@Model.Options.Cast<object>()"
+                                           value-name="Value"
+                                           display-name="Text"
+                                           inline="true" />
+                    </nhs-fieldset-form-label>
+                </div>
                 <div data-test-id="save-button">
                     <nhs-submit-button text="Confirm supplier" />
                 </div>
