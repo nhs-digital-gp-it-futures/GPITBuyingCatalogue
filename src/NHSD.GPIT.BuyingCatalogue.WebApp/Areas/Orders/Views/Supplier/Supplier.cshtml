@@ -28,16 +28,16 @@
                         <nhs-fieldset-form-label asp-for="@Model"
                                                  label-text="Contacts for this supplier">
                             <nhs-radio-button-container>
-                                @foreach (var contact in Model.Contacts)
+                                @for (var i = 0; i < Model.Contacts.Count; i++)
                                 {
+                                    var contact = Model.Contacts[i];
                                     @if (Model.Contacts.Count > 1)
                                     {
                                         var text = string.IsNullOrEmpty(contact.FullName) ? contact.Department : contact.FullName;
-                                        var index = Model.Contacts.FindIndex(x => x.Id == contact.Id);
                                         <nhs-radio-button asp-for="SelectedContactId"
                                                           display-text="@text"
                                                           value="@contact.Id"
-                                                          index="@index" />
+                                                          index="@i" />
                                     }
                                     
                                     <nhs-summary-list>
