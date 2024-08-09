@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
         internal static readonly PageTitleModel StandardPageTitle = new()
         {
             Title = TitleText,
-            Advice = "Search for the supplier you want to order from. You’ll only be able to find suppliers with solutions on the framework you selected.",
+            Advice = "Search for the supplier you want to order from. You'll only be able to find suppliers with solutions on the framework you selected.",
         };
 
         internal static readonly PageTitleModel SelectionPageTitle = new()

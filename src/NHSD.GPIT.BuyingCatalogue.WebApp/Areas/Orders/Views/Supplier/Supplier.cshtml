@@ -33,9 +33,11 @@
                                     @if (Model.Contacts.Count > 1)
                                     {
                                         var text = string.IsNullOrEmpty(contact.FullName) ? contact.Department : contact.FullName;
+                                        var index = Model.Contacts.FindIndex(x => x.Id == contact.Id);
                                         <nhs-radio-button asp-for="SelectedContactId"
                                                           display-text="@text"
-                                                          value="@contact.Id" />
+                                                          value="@contact.Id"
+                                                          index="@index" />
                                     }
                                     
                                     <nhs-summary-list>

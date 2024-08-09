@@ -34,17 +34,21 @@
                         </nhs-summary-list-row>
                     </nhs-summary-list>
                 </nhs-card-content>
-                @if (!Model.OnlyOption)
-                {
-                    <nhs-card-footer>
-                        <p>
+                <nhs-card-footer>
+                    <p>
+                        @if (Model.OnlyOption)
+                        {
+                            <img src="~/images/circle-info-solid.svg" width="20px" aria-hidden="true"> <p>This is the only supplier available for this framework and order type.</p> 
+                        }
+                        else
+                        {
                             <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(SupplierController.SelectSupplier), typeof(SupplierController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
                                 <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                 Change supplier
                             </a>
-                        </p>
-                    </nhs-card-footer>
-                }
+                        }
+                    </p>
+                </nhs-card-footer>
             </nhs-card-v2>
             
             <form method="post">
