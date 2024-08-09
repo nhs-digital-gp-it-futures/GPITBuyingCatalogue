@@ -44,69 +44,74 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
 
         public void AddIM1Integrations(ProviderOrConsumer providerOrConsumer)
         {
-            var interopIntegrationTypes = GetIm1Integrations();
-
-            foreach (var type in interopIntegrationTypes)
-            {
-                CommonActions.ClickLinkElement(InteroperabilityObjects.IM1IntegrationsLink);
-                CommonActions.PageLoadedCorrectGetIndex(
+            CommonActions.ClickLinkElement(InteroperabilityObjects.IM1IntegrationsLink);
+            CommonActions.PageLoadedCorrectGetIndex(
                     typeof(InteroperabilityController),
                     nameof(InteroperabilityController.AddIm1Integration))
-                    .Should().BeTrue();
+                .Should()
+                .BeTrue();
+
+            var integrationTypes = CommonActions.GetAllDropdownOptions(InteroperabilityObjects.SelectedIntegrationType);
+
+            for (var i = 0; i < integrationTypes.Count; i++)
+            {
+                var type = integrationTypes[i];
 
                 CommonActions.SelectDropDownItemByValue(InteroperabilityObjects.SelectedIntegrationType, type);
-                CommonActions.SelectDropDownItemByValue(InteroperabilityObjects.SelectedProviderOrConsumer, providerOrConsumer.ToString());
+                CommonActions.SelectDropDownItemByValue(
+                    InteroperabilityObjects.SelectedProviderOrConsumer,
+                    (providerOrConsumer == ProviderOrConsumer.Consumer).ToString());
 
                 TextGenerators.TextInputAddText(InteroperabilityObjects.IntegratesWith, 100);
 
                 TextGenerators.TextInputAddText(E2ETests.Framework.Objects.Common.CommonSelectors.Description, 1000);
                 CommonActions.ClickSave();
+
+                if ((integrationTypes.Count - 1) == i) continue;
+
+                CommonActions.ClickLinkElement(InteroperabilityObjects.IM1IntegrationsLink);
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(InteroperabilityController),
+                        nameof(InteroperabilityController.AddIm1Integration))
+                    .Should()
+                    .BeTrue();
             }
         }
 
         public void AddGPConnect1Integrations(ProviderOrConsumer providerOrConsumer)
         {
-            var interopGPIntegrationTypes = GetGPConnectIntegrations();
-
-            foreach (var type in interopGPIntegrationTypes)
-            {
-                CommonActions.ClickLinkElement(InteroperabilityObjects.GPConnectIntegrationsLink);
-                CommonActions.PageLoadedCorrectGetIndex(
+            CommonActions.ClickLinkElement(InteroperabilityObjects.GPConnectIntegrationsLink);
+            CommonActions.PageLoadedCorrectGetIndex(
                     typeof(InteroperabilityController),
                     nameof(InteroperabilityController.AddGpConnectIntegration))
-                    .Should().BeTrue();
-                CommonActions.SelectDropDownItemByValue(InteroperabilityObjects.SelectedIntegrationType, type);
+                .Should()
+                .BeTrue();
+
+            var integrationTypes = CommonActions.GetAllDropdownOptions(InteroperabilityObjects.SelectedIntegrationType);
+
+            for (var i = 0; i < integrationTypes.Count; i++)
+            {
+                var type = integrationTypes[i];
 
                 CommonActions.SelectDropDownItemByValue(InteroperabilityObjects.SelectedIntegrationType, type);
-                CommonActions.SelectDropDownItemByValue(InteroperabilityObjects.SelectedProviderOrConsumer, providerOrConsumer.ToString());
+                CommonActions.SelectDropDownItemByValue(
+                    InteroperabilityObjects.SelectedProviderOrConsumer,
+                    (providerOrConsumer == ProviderOrConsumer.Consumer).ToString());
 
-                TextGenerators.TextInputAddText(E2ETests.Framework.Objects.Common.CommonSelectors.AdditionalInfoTextArea, 1000);
+                TextGenerators.TextInputAddText(
+                    E2ETests.Framework.Objects.Common.CommonSelectors.AdditionalInfoTextArea,
+                    1000);
                 CommonActions.ClickSave();
+
+                if ((integrationTypes.Count - 1) == i) continue;
+
+                CommonActions.ClickLinkElement(InteroperabilityObjects.GPConnectIntegrationsLink);
+                CommonActions.PageLoadedCorrectGetIndex(
+                        typeof(InteroperabilityController),
+                        nameof(InteroperabilityController.AddGpConnectIntegration))
+                    .Should()
+                    .BeTrue();
             }
-        }
-
-        public List<string> GetIm1Integrations()
-        {
-            var im1IntegrationTypes = Enum.GetValues(typeof(InteroperabilityIm1IntegrationType))
-            .Cast<InteroperabilityIm1IntegrationType>()
-            .Select(v => v.ToString())
-            .ToList();
-
-            List<string> im1Integrations = new List<string>(im1IntegrationTypes.Select(v => v.ToString().Replace("_", " ")));
-
-            return im1Integrations;
-        }
-
-        public List<string> GetGPConnectIntegrations()
-        {
-            var gpConnectIntegrationTypes = Enum.GetValues(typeof(InteropGpConnectIntegrationType))
-            .Cast<InteropGpConnectIntegrationType>()
-            .Select(v => v.ToString())
-            .ToList();
-
-            List<string> gpConnectIntegrations = new List<string>(gpConnectIntegrationTypes.Select(v => v.ToString().Replace("_", " ")));
-
-            return gpConnectIntegrations;
         }
     }
 }

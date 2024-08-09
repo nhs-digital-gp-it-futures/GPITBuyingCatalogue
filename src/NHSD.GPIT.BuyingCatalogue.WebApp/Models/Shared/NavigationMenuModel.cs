@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Identity.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
@@ -85,6 +86,12 @@ public readonly struct NavigationMenuModel
                                 nameof(SolutionsController.Index),
                                 typeof(SolutionsController).ControllerName(),
                                 new { area = typeof(SolutionsController).AreaName() })),
+                        new(
+                            "Log out",
+                            urlHelper.Action(
+                                nameof(AccountController.Logout),
+                                typeof(AccountController).ControllerName(),
+                                new { area = typeof(AccountController).AreaName() })),
                     ]),
                 (
                     user => user.IsAdmin(), (_, urlHelper, _) =>
@@ -119,6 +126,12 @@ public readonly struct NavigationMenuModel
                                 nameof(CatalogueSolutionsController.Index),
                                 typeof(CatalogueSolutionsController).ControllerName(),
                                 new { area = typeof(OrganisationsController).AreaName() })),
+                        new(
+                            "Log out",
+                            urlHelper.Action(
+                                nameof(AccountController.Logout),
+                                typeof(AccountController).ControllerName(),
+                                new { area = typeof(AccountController).AreaName() })),
                     ]),
             };
 
