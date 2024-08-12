@@ -19,9 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public DateTime TimeUntil { get; set; }
 
-        [Obsolete("Replaced with IncludedDays")]
-        public string ApplicableDays { get; set; }
-
         public ICollection<Iso8601DayOfWeek> IncludedDays { get; set; } = new HashSet<Iso8601DayOfWeek>();
 
         public bool IncludesBankHolidays { get; set; }

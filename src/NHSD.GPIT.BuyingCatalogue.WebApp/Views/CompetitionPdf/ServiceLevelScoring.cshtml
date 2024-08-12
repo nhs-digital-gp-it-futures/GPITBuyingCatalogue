@@ -113,79 +113,107 @@
     </style>
 </head>
 <body class="nhsuk-bc-print">
-    <div class="nhsuk-width-container">
-        <main class="nhsuk-main-wrapper" id="maincontent">
-            <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-full">
-                    <nhs-page-title title="Compare and score service levels" caption="@Model.Competition.Name" />
-                    <h2>Your service level criteria</h2>
-                    <h3>Core support hours</h3>
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Times">@($"{Model.From:HH:mm} to {Model.Until:HH:mm}")</nhs-summary-list-row>
-                        <nhs-summary-list-row label-text="Days">
-                            <ul>
-                                @foreach (var day in Model.ApplicableDays)
-                                {
-                                    <li>@day.ToString()</li>
-                                }
-                            </ul>
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
-                    <div style="page-break-after: always"></div>
-                    @for (var i = 0; i < Model.SolutionScores.Count; i++)
-                    {
-                        var solutionScoreModel = Model.SolutionScores[i];
-                        var solutionName = solutionScoreModel.Solution.CatalogueItem.Name;
-                        <hr/>
-                        <h2>@solutionName</h2>
-                        <b>These are the levels of service the supplier has committed to for this Catalogue Solution:</b>
+<div class="nhsuk-width-container">
+    <main class="nhsuk-main-wrapper" id="maincontent">
+        <div class="nhsuk-grid-row">
+            <div class="nhsuk-grid-column-full">
+                <nhs-page-title title="Compare and score service levels" caption="@Model.Competition.Name"/>
+                <h2>Your service level criteria</h2>
+                <h3>Support hours</h3>
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Times">@($"{Model.From:HH:mm} to {Model.Until:HH:mm}")</nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Days">
+                        <ul>
+                            @foreach (var day in Model.ApplicableDays)
+                            {
+                                <li>@day.ToString()</li>
+                            }
+                        </ul>
+                    </nhs-summary-list-row>
+                </nhs-summary-list>
+                <div style="page-break-after: always"></div>
+                @for (var i = 0; i < Model.SolutionScores.Count; i++)
+                {
+                    var solutionScoreModel = Model.SolutionScores[i];
+                    var solutionName = solutionScoreModel.Solution.CatalogueItem.Name;
+                    <hr/>
+                    <h2>@solutionName</h2>
+                    <b>These are the levels of service the supplier has committed to for this Catalogue Solution:</b>
 
-                        <br />
-                        <br />
+                    <br/>
+                    <br/>
 
-                        <h4>Service availability</h4>
-                        <table>
-                            <thead>
-                                <tr class="alternating">
-                                    <th>Category</th>
-                                    <th>Time period</th>
-                                    <th>Applicable days</th>
-                                </tr>
-                            </thead>
+                    <h4>Service availability</h4>
+                    <table>
+                        <thead>
+                        <tr class="alternating">
+                            <th>Category</th>
+                            <th>Time period</th>
+                            <th>Applicable days</th>
+                            <th>Includes bank holidays</th>
+                            <th>Additional information</th>
+                        </tr>
+                        </thead>
 
-                            <tbody>
-                                @foreach (var serviceLevelItem in solutionScoreModel.Solution.ServiceLevelAgreement.ServiceHours)
-                                {
-                                    <tr class="alternating">
-                                        <td>@serviceLevelItem.Category</td>
-                                        <td>@($"{serviceLevelItem.TimeFrom:HH:mm} - {serviceLevelItem.TimeUntil:HH:mm}")</td>
-                                        <td>@serviceLevelItem.ApplicableDays</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-
-                        <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
-                                                 label-text="What score would you give this solution?"
-                                                 label-hint="Score each solution between 1 and 5. The higher the score, the better you think a solution meets your needs." size="Small">
-                            <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId" />
-                            <nhs-input asp-for="@Model.SolutionScores[i].Score" input-width="Three" />
-                        </nhs-fieldset-form-label>
-
-                        <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
-                                                 label-text="Why have you given this score?"
-                                                 label-hint="Provide a justification for the score you have given this solution." size="Small">
-                            <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId" />
-                            <nhs-textarea asp-for="@Model.SolutionScores[i].Justification" character-count="false" />
-                        </nhs-fieldset-form-label>
-                        @if (i + 1 < Model.SolutionScores.Count)
+                        <tbody>
+                        @foreach (var serviceLevelItem in solutionScoreModel.Solution.ServiceLevelAgreement.ServiceHours)
                         {
-                            <div style="page-break-after: always"></div>
+                            <tr class="alternating">
+                                <td>@serviceLevelItem.Category</td>
+                                <td>@($"{serviceLevelItem.TimeFrom:HH:mm} - {serviceLevelItem.TimeUntil:HH:mm}")</td>
+                                <td>
+                                    @if (serviceLevelItem.IncludedDays?.Count > 0)
+                                    {
+                                        <ul>
+                                            @foreach (var day in serviceLevelItem.IncludedDays)
+                                            {
+                                                <li>@day.ToString()</li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <span>None</span>
+                                    }
+                                </td>
+                                <td>@serviceLevelItem.IncludesBankHolidays.ToYesNo()</td>
+                                <td style="word-break: break-word">
+
+                                    @if (string.IsNullOrWhiteSpace(serviceLevelItem.AdditionalInformation))
+                                    {
+                                        <span>None</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@serviceLevelItem.AdditionalInformation</span>
+                                    }
+                                </td>
+                            </tr>
                         }
+                        </tbody>
+                    </table>
+
+                    <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
+                                             label-text="What score would you give this solution?"
+                                             label-hint="Score each solution between 1 and 5. The higher the score, the better you think a solution meets your needs." size="Small">
+                        <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId"/>
+                        <nhs-input asp-for="@Model.SolutionScores[i].Score" input-width="Three"/>
+                    </nhs-fieldset-form-label>
+
+                    <nhs-fieldset-form-label asp-for="@Model.SolutionScores[i]"
+                                             label-text="Why have you given this score?"
+                                             label-hint="Provide a justification for the score you have given this solution." size="Small">
+                        <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId"/>
+                        <nhs-textarea asp-for="@Model.SolutionScores[i].Justification" character-count="false"/>
+                    </nhs-fieldset-form-label>
+                    @if (i + 1 < Model.SolutionScores.Count)
+                    {
+                        <div style="page-break-after: always"></div>
                     }
-                </div>
+                }
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
+</div>
 </body>
 </html>

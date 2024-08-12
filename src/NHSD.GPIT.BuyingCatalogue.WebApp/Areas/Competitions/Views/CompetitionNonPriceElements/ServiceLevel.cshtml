@@ -22,7 +22,7 @@
             <input type="hidden" asp-for="BackLink"/>
 
             <nhs-fieldset-form-label asp-for="@Model"
-                                     label-text="Times you require core support to be available"
+                                     label-text="Times you require support to be available"
                                      size="Medium">
                 <nhs-time-range-input asp-for="@Model"
                                       asp-for-from="TimeFrom"
@@ -31,7 +31,7 @@
 
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="Applicable days"
-                                     label-hint="Select the days you require core support to be available."
+                                     label-hint="Select the days you require support to be available."
                                      size="Medium">
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.ApplicableDays.Count; i++)

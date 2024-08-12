@@ -60,7 +60,7 @@
 
     <nhs-card title="Service levels" size="Large">
         <nhs-summary-list>
-            <nhs-summary-list-row label-text="Core support hours" action="@CreateAction(serviceLevelUrl)">
+            <nhs-summary-list-row label-text="Support hours" action="@CreateAction(serviceLevelUrl)">
                 @($"{Model.NonPriceElements.ServiceLevel.TimeFrom:HH:mm} to {Model.NonPriceElements.ServiceLevel.TimeUntil:HH:mm}")
             </nhs-summary-list-row>
             <nhs-summary-list-row label-text="Applicable days" action="@CreateAction(serviceLevelUrl)">

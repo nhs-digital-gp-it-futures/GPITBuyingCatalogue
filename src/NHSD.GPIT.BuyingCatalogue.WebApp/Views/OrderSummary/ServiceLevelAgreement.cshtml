@@ -7,21 +7,49 @@
     </p>
     <table>
         <thead>
-            <tr>
-                <th>Category</th>
-                <th>Time period</th>
-                <th>Applicable days</th>
-            </tr>
+        <tr>
+            <th>Category</th>
+            <th>Time period</th>
+            <th>Applicable days</th>
+            <th>Includes bank holidays</th>
+            <th>Additional information</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var time in Model.ServiceHours)
-            {
-                <tr class="alternating">
-                    <td>@time.Category</td>
-                    <td>@time.TimeFrom.ToString("HH:mm") - @time.TimeUntil.ToString("HH:mm")</td>
-                    <td>@time.ApplicableDays</td>
-                </tr>
-            }
+        @foreach (var time in Model.ServiceHours)
+        {
+            <tr class="alternating">
+                <td>@time.Category</td>
+                <td>@time.TimeFrom.ToString("HH:mm") - @time.TimeUntil.ToString("HH:mm")</td>
+                <td>
+                    @if (time.IncludedDays?.Count > 0)
+                    {
+                        <ul>
+                            @foreach (var day in time.IncludedDays)
+                            {
+                                <li>@day.ToString()</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>None</span>
+                    }
+                </td>
+                <td>@time.IncludesBankHolidays.ToYesNo()</td>
+                <td style="word-break: break-word">
+
+                    @if (string.IsNullOrWhiteSpace(time.AdditionalInformation))
+                    {
+                        <span>None</span>
+                    }
+                    else
+                    {
+                        <span>@time.AdditionalInformation</span>
+                    }
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>
@@ -33,21 +61,21 @@
     </p>
     <table>
         <thead>
-            <tr>
-                <th>Channel</th>
-                <th>Contact</th>
-                <th>Accessible hours</th>
-            </tr>
+        <tr>
+            <th>Channel</th>
+            <th>Contact</th>
+            <th>Accessible hours</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var contact in Model.Contacts)
-            {
-                <tr class="alternating">
-                    <td>@contact.Channel</td>
-                    <td>@contact.ContactInformation</td>
-                    <td>@contact.TimeFrom.ToString("HH:mm") - @contact.TimeUntil.ToString("HH:mm")</td>
-                </tr>
-            }
+        @foreach (var contact in Model.Contacts)
+        {
+            <tr class="alternating">
+                <td>@contact.Channel</td>
+                <td>@contact.ContactInformation</td>
+                <td>@contact.TimeFrom.ToString("HH:mm") - @contact.TimeUntil.ToString("HH:mm")</td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>
@@ -58,23 +86,23 @@
     <h3>Service levels</h3>
     <table>
         <thead>
-            <tr>
-                <th>Service level type</th>
-                <th>Service level</th>
-                <th>How the service levels are measured</th>
-                <th>Are service credits applied?</th>
-            </tr>
+        <tr>
+            <th>Service level type</th>
+            <th>Service level</th>
+            <th>How the service levels are measured</th>
+            <th>Are service credits applied?</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var level in Model.ServiceLevels)
-            {
-                <tr class="alternating">
-                    <td>@level.TypeOfService</td>
-                    <td>@level.ServiceLevel</td>
-                    <td>@level.HowMeasured</td>
-                    <td>@level.ServiceCredits.ToYesNo()</td>
-                </tr>
-            }
+        @foreach (var level in Model.ServiceLevels)
+        {
+            <tr class="alternating">
+                <td>@level.TypeOfService</td>
+                <td>@level.ServiceLevel</td>
+                <td>@level.HowMeasured</td>
+                <td>@level.ServiceCredits.ToYesNo()</td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>

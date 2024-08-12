@@ -125,12 +125,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
         public static async Task UpdateServiceLevelTypeAsync_NoChange_LevelsAndHours_Unchanged(
             [Frozen] BuyingCatalogueDbContext context,
             ServiceLevelAgreementsService service,
-            ServiceAvailabilityTimes serviceAvailalabilityTime,
+            ServiceAvailabilityTimes serviceAvailabilityTime,
             SlaServiceLevel slaServiceLevel,
             Solution solution)
         {
             solution.ServiceLevelAgreement.SlaType = SlaType.Type1;
-            solution.ServiceLevelAgreement.ServiceHours.Add(serviceAvailalabilityTime);
+            solution.ServiceLevelAgreement.ServiceHours.Add(serviceAvailabilityTime);
             solution.ServiceLevelAgreement.ServiceLevels.Add(slaServiceLevel);
             context.CatalogueItems.Add(solution.CatalogueItem);
             await context.SaveChangesAsync();
@@ -143,7 +143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
                 .First(s => s.SolutionId == solution.CatalogueItemId);
 
             sla.SlaType.Should().Be(SlaType.Type1);
-            sla.ServiceHours.First().ApplicableDays.Should().Be(serviceAvailalabilityTime.ApplicableDays);
+            sla.ServiceHours.First().IncludedDays.Should().BeEquivalentTo(serviceAvailabilityTime.IncludedDays);
             sla.ServiceLevels.First().ServiceLevel.Should().Be(slaServiceLevel.ServiceLevel);
         }
 
@@ -197,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
                 .First(s => s.SolutionId == solution.CatalogueItemId);
 
             sla.SlaType.Should().Be(SlaType.Type1);
-            sla.ServiceHours.ForEach(s => s.ApplicableDays.Should().NotBe(serviceAvailalabilityTime.ApplicableDays));
+            sla.ServiceHours.ForEach(s => s.IncludedDays.Should().NotBeEquivalentTo(serviceAvailalabilityTime.IncludedDays));
             sla.ServiceLevels.ForEach(s => s.ServiceLevel.Should().NotBe(slaServiceLevel.ServiceLevel));
             sla.ServiceHours.Count.Should().Be(2);
             sla.ServiceLevels.Count.Should().Be(5);
