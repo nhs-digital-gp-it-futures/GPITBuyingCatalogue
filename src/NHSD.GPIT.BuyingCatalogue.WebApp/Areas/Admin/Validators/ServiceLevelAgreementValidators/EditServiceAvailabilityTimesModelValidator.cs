@@ -37,9 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
                 .WithMessage("Enter an until time")
                 .Unless(m => !m.From.HasValue);
 
-            RuleFor(m => m.ApplicableDays)
-                .NotEmpty()
-                .WithMessage("Enter the applicable days");
+            RuleFor(m => m.IncludesBankHolidays)
+                .NotNull()
+                .WithMessage("Select yes if you want to include Bank Holidays");
         }
 
         private static bool IsTimeEquals(DateTime first, DateTime second)
@@ -52,11 +52,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ServiceLevelAg
         private bool NotBeADuplicateServiceAvailabilityTime(EditServiceAvailabilityTimesModel model)
         {
             var serviceLevelAgreement = serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(model.SolutionId).GetAwaiter().GetResult();
+            var selectedDays = model.ApplicableDays.Where(y => y.Selected).Select(y => y.Value);
 
             return !serviceLevelAgreement.ServiceHours.Any(s =>
                 s.Id != model.ServiceAvailabilityTimesId
                 && string.Equals(s.Category, model.SupportType, StringComparison.CurrentCultureIgnoreCase)
-                && string.Equals(s.ApplicableDays, model.ApplicableDays, StringComparison.CurrentCultureIgnoreCase)
+                && string.Equals(s.AdditionalInformation, model.AdditionalInformation, StringComparison.CurrentCultureIgnoreCase)
+                && s.IncludedDays.All(x => selectedDays.Contains(x))
+                && s.IncludesBankHolidays == model.IncludesBankHolidays
                 && IsTimeEquals(s.TimeFrom, model.From.GetValueOrDefault())
                 && IsTimeEquals(s.TimeUntil, model.Until.GetValueOrDefault()));
         }

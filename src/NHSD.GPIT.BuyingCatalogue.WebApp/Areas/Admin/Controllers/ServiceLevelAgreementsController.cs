@@ -203,8 +203,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 SupportType = model.SupportType,
                 From = model.From!.Value,
-                Until = model.Until.Value,
-                ApplicableDays = model.ApplicableDays,
+                Until = model.Until!.Value,
+                ApplicableDays = model.ApplicableDays.Where(x => x.Selected).Select(x => x.Value).ToList(),
+                IncludesBankHolidays = model.IncludesBankHolidays.GetValueOrDefault(),
+                AdditionalInformation = model.AdditionalInformation,
                 UserId = User.UserId(),
             };
 
@@ -251,8 +253,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             {
                 SupportType = model.SupportType,
                 From = model.From!.Value,
-                Until = model.Until.Value,
-                ApplicableDays = model.ApplicableDays,
+                Until = model.Until!.Value,
+                ApplicableDays = model.ApplicableDays.Where(x => x.Selected).Select(x => x.Value).ToList(),
+                IncludesBankHolidays = model.IncludesBankHolidays.GetValueOrDefault(),
+                AdditionalInformation = model.AdditionalInformation,
                 UserId = User.UserId(),
             };
 

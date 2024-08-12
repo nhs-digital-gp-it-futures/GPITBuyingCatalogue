@@ -1,87 +1,106 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.ServiceLevelAgreementDetailsModel
-@{ 
+@{
     var showContactsApplicableDays = Model.SlaContacts.Any(c => !string.IsNullOrWhiteSpace(c.ApplicableDays));
 }
 
-<partial name="_solutionSummary" model="Model" />
+<partial name="_solutionSummary" model="Model"/>
 <p>These are the levels of service the supplier has committed to for this Catalogue Solution:</p>
 
-<nhs-expander label-text="Service availability" open="false">
-    <p>This is when you can contact support services for this Catalogue Solution.</p>
+<h2 class="nhsuk-heading-m">Contact details</h2>
+<p>This is how you can contact support services for this Catalogue Solution.</p>
+<nhs-card-v2>
+    <nhs-card-content>
+        <nhs-table data-test-id="service-contacts-table">
+            <nhs-table-column>Channel</nhs-table-column>
+            <nhs-table-column>Contact</nhs-table-column>
+            <nhs-table-column>Accessible hours</nhs-table-column>
+            @if (showContactsApplicableDays)
+            {
+                <nhs-table-column>Applicable days</nhs-table-column>
+            }
+            <nhs-table-column></nhs-table-column>
+            @foreach (var slaContact in Model.SlaContacts.OrderBy(sat => sat.Channel).ThenBy(sat => sat.TimeFrom))
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@slaContact.Channel</nhs-table-cell>
+                    <nhs-table-cell>@slaContact.ContactInformation</nhs-table-cell>
+                    <nhs-table-cell>@slaContact.TimeFrom.ToString("HH:mm") - @slaContact.TimeUntil.ToString("HH:mm")</nhs-table-cell>
+                    @if (showContactsApplicableDays)
+                    {
+                        <nhs-table-cell>@slaContact.ApplicableDays</nhs-table-cell>
+                    }
+                    <nhs-table-cell></nhs-table-cell>
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+    </nhs-card-content>
+</nhs-card-v2>
+<hr/>
 
-    <nhs-table data-test-id="service-availability-table">
-        <nhs-table-column>Category</nhs-table-column>
-        <nhs-table-column>Time period</nhs-table-column>
-        <nhs-table-column>Applicable days</nhs-table-column>
-        <nhs-table-column></nhs-table-column>
-        @foreach (var serviceAvailabilityTime in Model.ServiceAvailabilityTimes.OrderBy(sat => sat.Category).ThenBy(sat => sat.TimeFrom))
-        {
-            <nhs-table-row-container>
-                <nhs-table-cell>@serviceAvailabilityTime.Category</nhs-table-cell>
-                <nhs-table-cell>@serviceAvailabilityTime.TimeFrom.ToString("HH:mm") - @serviceAvailabilityTime.TimeUntil.ToString("HH:mm")</nhs-table-cell>
-                <nhs-table-cell>@serviceAvailabilityTime.ApplicableDays</nhs-table-cell>
-                <nhs-table-cell></nhs-table-cell>
-            </nhs-table-row-container>
-        }
-    </nhs-table>
-</nhs-expander>
+<h2 class="nhsuk-heading-s">Service availability</h2>
+<p>This is when you can contact support services for this Catalogue Solution.</p>
 
-<nhs-expander label-text="Contact details" open="false">
-    <h2>Contact details</h2>
-    <p>This is how you can contact support services for this Catalogue Solution.</p>
-
-    <nhs-table data-test-id="service-contacts-table">
-        <nhs-table-column>Channel</nhs-table-column>
-        <nhs-table-column>Contact</nhs-table-column>
-        <nhs-table-column>Accessible hours</nhs-table-column>
-        @if (showContactsApplicableDays)
-        {
-            <nhs-table-column>Applicable days</nhs-table-column>
-        }
-        <nhs-table-column></nhs-table-column>
-        @foreach (var slaContact in Model.SlaContacts.OrderBy(sat => sat.Channel).ThenBy(sat => sat.TimeFrom))
-        {
-            <nhs-table-row-container>
-                <nhs-table-cell>@slaContact.Channel</nhs-table-cell>
-                <nhs-table-cell>@slaContact.ContactInformation</nhs-table-cell>
-                <nhs-table-cell>@slaContact.TimeFrom.ToString("HH:mm") - @slaContact.TimeUntil.ToString("HH:mm")</nhs-table-cell>
-                @if (showContactsApplicableDays)
+@foreach (var serviceAvailabilityTime in Model.ServiceAvailabilityTimes.OrderBy(sat => sat.Category).ThenBy(sat => sat.TimeFrom))
+{
+    <nhs-expander label-text="@serviceAvailabilityTime.Category" open="false">
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Time period">@serviceAvailabilityTime.TimeFrom.ToString("HH:mm") - @serviceAvailabilityTime.TimeUntil.ToString("HH:mm")</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Applicable days">
+                @if (serviceAvailabilityTime.IncludedDays?.Count > 0)
                 {
-                    <nhs-table-cell>@slaContact.ApplicableDays</nhs-table-cell>
+                    <ul>
+                        @foreach (var day in serviceAvailabilityTime.IncludedDays)
+                        {
+                            <li>@day.ToString()</li>
+                        }
+                    </ul>
                 }
-                <nhs-table-cell></nhs-table-cell>
-            </nhs-table-row-container>
-        }
-    </nhs-table>
-</nhs-expander>  
+                else
+                {
+                    <span>None selected</span>
+                }
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Includes bank holidays">@serviceAvailabilityTime.IncludesBankHolidays.ToYesNo()</nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Additional information" style="word-break: break-word">
+                @if (string.IsNullOrWhiteSpace(serviceAvailabilityTime.AdditionalInformation))
+                {
+                    <span>None</span>
+                }
+                else
+                {
+                    <span>@serviceAvailabilityTime.AdditionalInformation</span>
+                }
+            </nhs-summary-list-row>
+        </nhs-summary-list>
+    </nhs-expander>
+}
 <hr>
-<h4 class="nhsuk-heading-s">Service levels</h4>
+<h2 class="nhsuk-heading-s">Service levels</h2>
 <p>These are the levels of service provided for this Catalogue Solution.</p>
 
 @foreach (var serviceLevel in Model.ServiceLevels)
- {
+{
     <nhs-expander label-text="@serviceLevel.TypeOfService" open="false">
         <dl class="nhsuk-summary-list">
             <div class="nhsuk-summary-list__row">
                 <dt class="nhsuk-summary-list__key">Service level&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</dt>
-                    <dd class="nhsuk-summary-list__value">
-                        <span style="white-space: pre-line">@serviceLevel.ServiceLevel</span>
-                    </dd>
+                <dd class="nhsuk-summary-list__value">
+                    <span style="white-space: pre-line">@serviceLevel.ServiceLevel</span>
+                </dd>
             </div>
             <div class="nhsuk-summary-list__row">
-                <dt class="nhsuk-summary-list__key">How the service levels<br />are measured</dt>
+                <dt class="nhsuk-summary-list__key">How the service levels<br/>are measured</dt>
                 <dd class="nhsuk-summary-list__value">
                     <span style="white-space: pre-line">@serviceLevel.HowMeasured</span>
                 </dd>
             </div>
-                <div class="nhsuk-summary-list__row">
-                <dt class="nhsuk-summary-list__key">Are service<br />credits applied?</dt>
+            <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Are service<br/>credits applied?</dt>
                 <dd class="nhsuk-summary-list__value">
                     <span style="white-space: pre-line">@serviceLevel.ServiceCredits.ToYesNo()</span>
-                    </dd>
+                </dd>
             </div>
         </dl>
     </nhs-expander>
 }
-

@@ -7,7 +7,7 @@
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
+        <nhs-validation-summary RadioId="@(nameof(Model.IncludesBankHolidays))" />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
                         advice="Provide information on when your support services are available under this Service Level Agreement." />
@@ -33,9 +33,34 @@
                                       asp-for-until="Until" />
             </nhs-fieldset-form-label>
 
-            <nhs-input asp-for="ApplicableDays"
-                       label-text="Applicable days"
-                       label-hint="The days this support type is available during the times entered." />
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Applicable days (optional)"
+                                     label-hint="The days this support type is available during the times entered."
+                                     size="Medium">
+                <nhs-checkbox-container>
+                    @for (var i = 0; i < Model.ApplicableDays.Count; i++)
+                    {
+                    <input type="hidden" asp-for="@Model.ApplicableDays[i].Text" />
+                    <nhs-checkbox asp-for="@Model.ApplicableDays[i].Selected"
+                                  label-text="@Model.ApplicableDays[i].Text"
+                                  hidden-input="@Model.ApplicableDays[i].Value"/>
+                    }
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Bank Holidays"
+                                     label-hint="Select if this support type is available on Bank Holidays."
+                                     size="Medium">
+                <nhs-radio-buttons asp-for="IncludesBankHolidays"
+                                   values="@Model.BankHolidayOptions"
+                                   display-name="Text"
+                                   value-name="Value" />
+            </nhs-fieldset-form-label>
+
+            <nhs-textarea asp-for="AdditionalInformation"
+                       label-text="Additional information (optional)"
+                       label-hint="Provide additional information about this support type." number-of-rows="8" />
 
             <nhs-submit-button />
         </form>

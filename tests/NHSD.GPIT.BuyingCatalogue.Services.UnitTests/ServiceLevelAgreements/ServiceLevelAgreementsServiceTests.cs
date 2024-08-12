@@ -247,7 +247,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
             var serviceAvailabilityTimes = context.ServiceAvailabilityTimes.First(s => s.SolutionId == solution.CatalogueItemId);
 
             serviceAvailabilityTimes.Should().NotBeNull();
-            serviceAvailabilityTimes.ApplicableDays.Should().Be(model.ApplicableDays);
+            serviceAvailabilityTimes.IncludedDays.Should().BeEquivalentTo(model.ApplicableDays);
+            serviceAvailabilityTimes.IncludesBankHolidays.Should().Be(model.IncludesBankHolidays);
+            serviceAvailabilityTimes.AdditionalInformation.Should().Be(model.AdditionalInformation);
             serviceAvailabilityTimes.Category.Should().Be(model.SupportType);
             serviceAvailabilityTimes.TimeFrom.Should().Be(model.From);
             serviceAvailabilityTimes.TimeUntil.Should().Be(model.Until);
@@ -289,7 +291,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceLevelAgreements
             var actualServiceAvailabilityTimes = context.ServiceAvailabilityTimes.First(s => s.Id == serviceAvailabilityTimes.Id);
 
             actualServiceAvailabilityTimes.Should().NotBeNull();
-            actualServiceAvailabilityTimes.ApplicableDays.Should().Be(model.ApplicableDays);
+            serviceAvailabilityTimes.IncludedDays.Should().BeEquivalentTo(model.ApplicableDays);
+            serviceAvailabilityTimes.IncludesBankHolidays.Should().Be(model.IncludesBankHolidays);
+            serviceAvailabilityTimes.AdditionalInformation.Should().Be(model.AdditionalInformation);
             actualServiceAvailabilityTimes.Category.Should().Be(model.SupportType);
             actualServiceAvailabilityTimes.TimeFrom.Should().Be(model.From);
             actualServiceAvailabilityTimes.TimeUntil.Should().Be(model.Until);
