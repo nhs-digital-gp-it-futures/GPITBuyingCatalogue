@@ -10,8 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.StepLi
     {
         public const string TagHelperName = "nhs-step-list-item";
 
-        //private const string ItemListItemClass = "bc-step-list__item";
-
         private const string ItemHeaderClass = "bc-step-list__header";
 
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
@@ -21,8 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.StepLi
         {
             output.TagName = "li";
             output.TagMode = TagMode.StartTagAndEndTag;
-
-            //output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, ItemListItemClass));
 
             var header = GetStepHeaderBuilder();
             header.InnerHtml.Append(LabelText);
