@@ -5,9 +5,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
     public class CompletedModel : NavBaseModel
     {
-        private const string TitleText = "Order{0} completed";
+        public const string TitleText = "Order{0} completed";
 
-        private const string AdviceText = "You’ve successfully completed your Call-off Order Form{0}. Make sure you carry out the listed tasks where relevant to finalise your procurement. We’ll send these tasks to the email address you’ve provided.";
+        public const string AdviceText = "You’ve successfully completed your Call-off Order Form{0}. Make sure you carry out the listed tasks where relevant to finalise your procurement. We’ll send these tasks to the email address you’ve provided.";
 
         public CompletedModel(string internalOrgId, Order order)
         {
