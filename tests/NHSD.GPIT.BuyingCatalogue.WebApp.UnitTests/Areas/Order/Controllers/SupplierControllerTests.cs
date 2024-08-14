@@ -8,6 +8,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Addresses.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -500,6 +501,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             result.Should().BeOfType<ViewResult>();
             result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_ConfirmSupplier_WithModelErrors_ReturnsExpectedResult(
+            Supplier supplier,
+            ConfirmSupplierModel model,
+            [Frozen] ISupplierService mockSupplierService,
+            SupplierController controller)
+        {
+            mockSupplierService
+                .GetSupplierFromBuyingCatalogue(model.SupplierId)
+                .Returns(supplier);
+
+            controller.ModelState.AddModelError("key", "errorMessage");
+
+            var result = await controller.ConfirmSupplier(model.InternalOrgId, model.CallOffId, model);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            var actualModel = actualResult.ViewData.Model.Should().BeAssignableTo<ConfirmSupplierModel>().Subject;
+
+            actualModel.CallOffId.Should().Be(model.CallOffId);
+            actualModel.InternalOrgId.Should().Be(model.InternalOrgId);
+            actualModel.Address.Should().Be(supplier.Address);
         }
 
         [Theory]
