@@ -96,6 +96,8 @@ jobs:
           scannerMode: 'MSBuild'
           projectKey: '$(SonarKey)'
           projectName: '$(SonarProject)'
+          extraProperties: |
+            sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/*/coverage.opencover.xml
 
       - task: DotNetCoreCLI@2
         displayName: 'Run dotnet build'
@@ -118,7 +120,7 @@ jobs:
         inputs:
           command: test
           projects: '**/*UnitTests.csproj'
-          arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage" -- xunit.parallelizeTestCollections=true'
+          arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=cobertura,opencover" -- xunit.parallelizeTestCollections=true'
           publishTestResults: false
 
       - task: SonarCloudAnalyze@1
