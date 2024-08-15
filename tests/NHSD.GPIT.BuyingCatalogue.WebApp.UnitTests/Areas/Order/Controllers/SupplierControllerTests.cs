@@ -75,10 +75,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] ISupplierService supplierServiceMock,
             SupplierController controller)
         {
+            order.SupplierContact.FirstName = supplier.SupplierContacts.First().FirstName;
+            order.SupplierContact.LastName = supplier.SupplierContacts.First().LastName;
+            order.SupplierContact.Email = supplier.SupplierContacts.First().Email;
+            order.SupplierContact.Department = supplier.SupplierContacts.First().Department;
+
             var model = new SupplierModel(internalOrgId, order.CallOffId, order)
             {
                 Contacts = supplier.SupplierContacts.ToList(),
-                SelectedContactId = SupplierContact.TemporaryContactId,
+                SelectedContactId = supplier.SupplierContacts.First().Id,
             };
 
             orderServiceMock
