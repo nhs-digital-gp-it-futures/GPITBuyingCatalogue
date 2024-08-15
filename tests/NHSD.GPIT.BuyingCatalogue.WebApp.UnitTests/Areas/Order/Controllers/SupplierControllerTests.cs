@@ -143,6 +143,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [MockAutoData]
+        public static async Task Get_Supplier_WithSingleContact_ReturnsExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            Supplier supplier,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISupplierService mockSupplierService,
+            SupplierContact contact,
+            SupplierController controller)
+        {
+            supplier.SupplierContacts.Clear();
+            supplier.SupplierContacts.Add(contact);
+
+            var model = new SupplierModel(internalOrgId, order.CallOffId, order)
+            {
+                Contacts = supplier.SupplierContacts.ToList(),
+                SelectedContactId = contact.Id,
+            };
+
+            mockOrderService
+                .GetOrderWithSupplier(order.CallOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
+
+            mockSupplierService
+                .GetSupplierFromBuyingCatalogue(order.Supplier.Id)
+                .Returns(supplier);
+
+            var result = await controller.Supplier(internalOrgId, order.CallOffId);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            actualResult.ViewData.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Post_Supplier_UpdatesContact_CorrectlyRedirects(
             string internalOrgId,
             CallOffId callOffId,
