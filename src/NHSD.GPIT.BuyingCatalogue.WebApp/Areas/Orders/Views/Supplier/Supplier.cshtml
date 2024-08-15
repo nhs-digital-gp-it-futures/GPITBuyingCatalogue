@@ -39,7 +39,11 @@
                                                           value="@contact.Id"
                                                           index="@i" />
                                     }
-                                    
+                                    else
+                                    {
+                                        <input type="hidden" asp-for="SelectedContactId" />
+                                    }
+
                                     <nhs-summary-list>
                                         @if (!string.IsNullOrEmpty(contact.FullName))
                                         {
