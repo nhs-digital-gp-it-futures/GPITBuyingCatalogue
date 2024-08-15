@@ -8,14 +8,18 @@
                 advice="Let buyers know what support is provided for your Catalogue Solution and how they can contact you." />
 
 <p class="nhsuk-heading-m">Current solution type: @ConvertSlaType(Model.ServiceLevelAgreements.SlaType)</p>
-<vc:nhs-action-link text="Change solution type"
-                    url="@Url.Action(
-                    nameof(ServiceLevelAgreementsController.EditServiceLevelAgreementType),
-                    typeof(ServiceLevelAgreementsController).ControllerName(),
-                    new  { solutionId = Model.CatalogueItem.Id })" />
+@if (Model.CatalogueItem.PublishedStatus is PublicationStatus.Published) {
+    <vc:nhs-action-link text="Change solution type"
+                        url="@Url.Action(
+                        nameof(ServiceLevelAgreementsController.EditServiceLevelAgreementType),
+                        typeof(ServiceLevelAgreementsController).ControllerName(),
+                        new  { solutionId = Model.CatalogueItem.Id })" />
 
-
-<p>Use the link to select the Catalogue Solution type that this Service Level Agreement covers.</p>
+    <p>Use the link to select the Catalogue Solution type that this Service Level Agreement covers.</p>
+} else
+{
+    <nhs-inset-text>You cannot change the solution type while the solution is published.</nhs-inset-text>
+}
 
 <h2>Service availability</h2>
 <p>Provide information on when users can contact your support services. You must add at least one time period.</p>
