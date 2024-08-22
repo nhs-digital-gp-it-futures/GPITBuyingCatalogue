@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ServiceLevelAgreements;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreements;
@@ -21,9 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         {
             var model = new EditServiceAvailabilityTimesModel
             {
-                ApplicableDays = "Monday",
-                From = DateTime.UtcNow,
-                Until = DateTime.UtcNow.AddMinutes(5),
+                From = DateTime.UtcNow, Until = DateTime.UtcNow.AddMinutes(5),
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -43,9 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         {
             var model = new EditServiceAvailabilityTimesModel
             {
-                SupportType = "Service hours",
-                ApplicableDays = "Monday",
-                Until = DateTime.UtcNow,
+                SupportType = "Service hours", Until = DateTime.UtcNow,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -65,9 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         {
             var model = new EditServiceAvailabilityTimesModel
             {
-                SupportType = "Service hours",
-                ApplicableDays = "Monday",
-                From = DateTime.UtcNow,
+                SupportType = "Service hours", From = DateTime.UtcNow,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -80,53 +76,56 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
 
         [Theory]
         [MockAutoData]
-        public static void Validate_ApplicableDAysNotEntered_SetsModelError(
+        public static void Validate_BankHolidaysNotEntered_SetsModelError(
             ServiceLevelAgreements serviceLevelAgreement,
             [Frozen] IServiceLevelAgreementsService service,
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var model = new EditServiceAvailabilityTimesModel
             {
-                SupportType = "Serivce hours",
+                SupportType = "Service hours",
                 From = DateTime.UtcNow,
-                Until = DateTime.UtcNow.AddMinutes(5),
+                Until = DateTime.UtcNow.AddHours(3),
+                IncludesBankHolidays = null,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
 
             var result = validator.TestValidate(model);
 
-            result.ShouldHaveValidationErrorFor(m => m.ApplicableDays)
-                .WithErrorMessage("Enter the applicable days");
+            result.ShouldHaveValidationErrorFor(m => m.IncludesBankHolidays)
+                .WithErrorMessage("Select yes if you want to include Bank Holidays");
         }
 
         [Theory]
         [MockAutoData]
         public static void Validate_AddDuplicateAvailabilityTimes_SetsModelError(
+            Solution solution,
             ServiceAvailabilityTimes serviceAvailabilityTimes,
             [Frozen] IServiceLevelAgreementsService serviceLevelAgreementsService,
             EditServiceAvailabilityTimesModelValidator validator)
         {
             var serviceLevelAgreements = new ServiceLevelAgreements
             {
-                SolutionId = serviceAvailabilityTimes.SolutionId,
-                ServiceHours = new HashSet<ServiceAvailabilityTimes>
-                {
-                    serviceAvailabilityTimes,
-                },
+                SolutionId = solution.CatalogueItemId,
+                ServiceHours = new HashSet<ServiceAvailabilityTimes> { serviceAvailabilityTimes, },
             };
 
-            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(serviceAvailabilityTimes.SolutionId).Returns(serviceLevelAgreements);
+            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(serviceAvailabilityTimes.SolutionId)
+                .Returns(serviceLevelAgreements);
 
-            var model = new EditServiceAvailabilityTimesModel
+            var model = new EditServiceAvailabilityTimesModel(solution.CatalogueItem)
             {
                 ServiceAvailabilityTimesId = serviceAvailabilityTimes.Id + 1,
                 SolutionId = serviceAvailabilityTimes.SolutionId,
                 SupportType = serviceAvailabilityTimes.Category,
                 From = serviceAvailabilityTimes.TimeFrom,
                 Until = serviceAvailabilityTimes.TimeUntil,
-                ApplicableDays = serviceAvailabilityTimes.ApplicableDays,
+                IncludesBankHolidays = serviceAvailabilityTimes.IncludesBankHolidays,
+                AdditionalInformation = serviceAvailabilityTimes.AdditionalInformation,
             };
+
+            model.ApplicableDays.ForEach(x => x.Selected = serviceAvailabilityTimes.IncludedDays.Contains(x.Value));
 
             var result = validator.TestValidate(model);
 
@@ -144,13 +143,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
             var serviceLevelAgreements = new ServiceLevelAgreements
             {
                 SolutionId = serviceAvailabilityTimes.SolutionId,
-                ServiceHours = new HashSet<ServiceAvailabilityTimes>
-                {
-                    serviceAvailabilityTimes,
-                },
+                ServiceHours = new HashSet<ServiceAvailabilityTimes> { serviceAvailabilityTimes, },
             };
 
-            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(serviceAvailabilityTimes.SolutionId).Returns(serviceLevelAgreements);
+            serviceLevelAgreementsService.GetServiceLevelAgreementForSolution(serviceAvailabilityTimes.SolutionId)
+                .Returns(serviceLevelAgreements);
 
             var model = new EditServiceAvailabilityTimesModel
             {
@@ -159,8 +156,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
                 SupportType = serviceAvailabilityTimes.Category,
                 From = serviceAvailabilityTimes.TimeFrom,
                 Until = serviceAvailabilityTimes.TimeUntil,
-                ApplicableDays = serviceAvailabilityTimes.ApplicableDays,
             };
+
+            model.ApplicableDays.ForEach(x => x.Selected = serviceAvailabilityTimes.IncludedDays.Contains(x.Value));
 
             var result = validator.TestValidate(model);
 

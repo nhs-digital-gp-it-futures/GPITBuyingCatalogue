@@ -43,12 +43,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
                 nameof(ServiceLevelAgreementsController.EditServiceLevelAgreement))
                 .Should().BeTrue();
 
-            AddAvailablityTimes();
+            AddAvailabilityTimes();
             AddContactLevelDetails();
             AddServiceLevelDetails();
         }
 
-        private void AddAvailablityTimes()
+        private void AddAvailabilityTimes()
         {
             CommonActions.ClickLinkElement(ServiceAvailabilityTimesObjects.AddAvailabilityTimesLink);
             CommonActions.PageLoadedCorrectGetIndex(
@@ -62,10 +62,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
             var untilTime = currentDate.ToString("HH:mm");
 
             TextGenerators.TextInputAddText(ServiceAvailabilityTimesObjects.SupportTypeInput, 20);
-            TextGenerators.TextInputAddText(ServiceAvailabilityTimesObjects.ApplicableDaysInput, 20);
+            CommonActions.ClickAllCheckboxes();
 
             CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.FromInput, fromTime);
             CommonActions.ElementAddValue(ServiceAvailabilityTimesObjects.UntilInput, untilTime);
+
+            CommonActions.ClickRadioButtonWithValue(false.ToString());
 
             CommonActions.ClickSave();
 
