@@ -89,7 +89,7 @@ jobs:
           command: 'install'
           workingDir: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
 
-      - task: SonarCloudPrepare@1
+      - task: SonarCloudPrepare@2
         inputs:
           SonarCloud: 'SonarCloud'
           organization: '$(SonarOrganization)'
@@ -97,7 +97,7 @@ jobs:
           projectKey: '$(SonarKey)'
           projectName: '$(SonarProject)'
           extraProperties: |
-            sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/*/coverage.opencover.xml
+            sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/tests/**/coverage.opencover.xml
 
       - task: DotNetCoreCLI@2
         displayName: 'Run dotnet build'
@@ -120,10 +120,11 @@ jobs:
         inputs:
           command: test
           projects: '**/*UnitTests.csproj'
-          arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=cobertura,opencover" -- xunit.parallelizeTestCollections=true'
+          arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
           publishTestResults: false
 
-      - task: SonarCloudAnalyze@1
+      - task: SonarCloudAnalyze@2
+      - task: SonarCloudPublish@2
 
       - task: Docker@2
         displayName: 'Docker: Build and Push'
