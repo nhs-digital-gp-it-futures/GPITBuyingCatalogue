@@ -8,7 +8,7 @@
                 advice="Let buyers know what support is provided for your Catalogue Solution and how they can contact you." />
 
 <p class="nhsuk-heading-m">Current solution type: @ConvertSlaType(Model.ServiceLevelAgreements.SlaType)</p>
-@if (Model.CatalogueItem.PublishedStatus is PublicationStatus.Published) {
+@if (Model.CatalogueItem.PublishedStatus is not PublicationStatus.Published) {
     <vc:nhs-action-link text="Change solution type"
                         url="@Url.Action(
                         nameof(ServiceLevelAgreementsController.EditServiceLevelAgreementType),
