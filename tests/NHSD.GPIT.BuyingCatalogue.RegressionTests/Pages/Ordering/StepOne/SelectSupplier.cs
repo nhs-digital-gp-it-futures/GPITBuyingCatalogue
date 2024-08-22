@@ -30,6 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
                typeof(SupplierController),
                nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
 
+            CommonActions.ClickRadioButtonWithText("Yes");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
@@ -43,6 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
                typeof(SupplierController),
                nameof(SupplierController.ConfirmSupplier)).Should().BeTrue();
 
+            CommonActions.ClickRadioButtonWithText("Yes");
             CommonActions.ClickSave();
 
             CommonActions.PageLoadedCorrectGetIndex(
