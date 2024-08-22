@@ -1,9 +1,8 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.CompletedModel
 
 @{
-    ViewBag.Title = "Order completed";
-
     var returnUrl = Url.Action(
         nameof(DashboardController.Organisation),
         typeof(DashboardController).ControllerName(),
@@ -19,74 +18,62 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="@ViewBag.Title"
+        <nhs-page-title title="@Model.Title"
                         caption="Order @Model.CallOffId"
-                        advice="You’ve successfully completed your Call-off Order Form. Make sure you carry out the listed tasks where relevant to finalise your procurement." />
+                        advice="@Model.Advice" />
 
-        <div class="nhsuk-u-margin-bottom-6">
-            <h3>Next steps</h3>
-            <ul>
-                <li>
-                    return a signed copy of your Call-off Order Form to gpitf.commercial1@nhs.net and dsicfinance@nhs.net
-                </li>
-                <li>
-                    if you’ve paid using your central allocation, we’ll process the payments for you
-                </li>
-                <li>
-                    if you’ve paid using local funding, you’ll need to contact the supplier to arrange payment
-                </li>
-                <li>
-                    if you’ve ordered a migration, you can find more information on
-                    <a href="https://digital.nhs.uk/services/gp-it-futures-systems/clinical-system-migration-guide" target="_blank">preparing and planning (opens in a new tab)</a>
-                </li>
-                <li>
-                    once solutions and services are in use, enter the activation dates on the order tracker so we can start paying for centrally funded orders
-                </li>
-            </ul>
-        </div>
+        <h2 class="nhsuk-u-margin-bottom-5">Next steps</h2>
+        <nhs-step-list>
+            <nhs-step-list-item label-text="Get your order signed">
+                Send a copy of your completed order form to the supplier for signature.
+            </nhs-step-list-item>
+            @if (!Model.Order.OrderType.AssociatedServicesOnly)
+            {
+                <nhs-step-list-item label-text="Include the Data Processing Template">
+                    <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12207980954/Order+form+template+Data+processing+information" target="_blank">Download the Data Processing Template (opens in a new tab)</a> and send it to the supplier along with your order for them to complete.
+                </nhs-step-list-item>
+            }
+            <nhs-step-list-item label-text="Let us know about your order">
+                Return a signed copy of your order form to gpitf.commercial1@nhs.net and dsicfinance@nhs.net.
+            </nhs-step-list-item>
+            <nhs-step-list-item label-text="Centrally funded payments">
+                For the items on your order using your central allocation, the NHS finance team will process the payments for you.
+            </nhs-step-list-item>
+            <nhs-step-list-item label-text="Locally funded payments">
+                For the items on your order using local funding, you’ll need to contact the supplier to arrange payment.
+            </nhs-step-list-item>
+            <nhs-step-list-item label-text="Preparing for data migration">
+                If you’ve ordered a migration, read information on how to <a href="https://digital.nhs.uk/services/gp-it-futures-systems/clinical-system-migration-guide" target="_blank">prepare and plan for the transfer of data to your new solution (opens in a new tab)</a>.
+            </nhs-step-list-item>
+            @if (Model.Order.OrderType.AssociatedServicesOnly)
+            {
+                <nhs-step-list-item label-text="Once Associated Services are in use">
+                    After Associated Services, such as training, migration or practice mergers and splits have been provided, inform dsicfinance@nhs.net so the NHS finance team can start paying the supplier.
+                </nhs-step-list-item>
+            }
+            else
+            {
+                <nhs-step-list-item label-text="Once solutions and services are in use">
+                    Enter the activation dates on the order tracker so we can start paying for centrally funded orders.
+                </nhs-step-list-item>
+            }
+        </nhs-step-list>
 
-        <div class="nhsuk-inset-text">
-            <span class="nhsuk-u-visually-hidden">Information: </span>
-            <p>A copy of these tasks will be emailed to the address you’ve provided.</p>
-        </div>
-
-        @if (Model.HasBespokeDataProcessing)
-        {
-            <div class="nhsuk-u-margin-bottom-9" id="supporting-documents">
-                <h2>Supporting documents</h2>
-                <p>
-                    A blank copy of the following templates must be included for the supplier to complete when you send your Call-off Order Form for signature.
-                </p>
-
-                <ul>
-                    <li id="has-bespoke-data-processing">
-                            <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12207980954/Order+form+template+Data+processing+information" target="_blank">
-                                Data processing information template (opens in a new tab)
-                            </a>
-                    </li>
-                </ul>
-            </div>
-        }
-
-        <div class="nhsuk-u-margin-bottom-6">
-            <vc:nhs-secondary-button text="Download order form (PDF)"
+        <nhs-button-group>
+            <vc:nhs-secondary-button text="Return to orders dashboard"
+                                     type="Primary"
+                                     url="@Model.BackLink" />
+            <vc:nhs-secondary-button text="Download order (PDF)"
                                      type="Secondary"
                                      url="@Url.Action(
                                               nameof(OrderController.Download),
                                               typeof(OrderController).ControllerName(),
                                               new { Model!.InternalOrgId, Model.CallOffId })" />
-            <br/>
-            <vc:nhs-secondary-button text="Return to orders dashboard"
-                                     type="Primary"
-                                     url="@Model.BackLink" />
-        </div>
+        </nhs-button-group>
 
-        <h3>Need help?</h3>
+        <h2>Need help?</h2>
         <p>
-            If you need any help or have any queries, you can contact the National and Commercial Procurement Hub:
+            If you need any help or have any queries, you can <a href="@procurementSupportUrl" target="_blank">contact the National and Commercial Procurement Hub (opens in a new tab)</a>.
         </p>
-
-        <vc:nhs-action-link text="Get procurement support"
-                            url="@procurementSupportUrl" />
     </div>
 </div>

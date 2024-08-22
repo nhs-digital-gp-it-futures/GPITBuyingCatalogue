@@ -87,6 +87,7 @@
         internal const string GovUkCharacterCount = "govuk-character-count";
         internal const string GovUkJsCharacterCount = "govuk-js-character-count";
         internal const string GovUkFileUploadInput = "govuk-file-upload";
+        internal const string NhsBody = "nhsuk-body";
         internal const string NhsList = "nhsuk-list";
         internal const string NhsValidationInputError = "nhsuk-input--error";
         internal const string NhsBackLinkLink = "nhsuk-back-link__link";
