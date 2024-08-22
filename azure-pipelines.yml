@@ -98,6 +98,7 @@ jobs:
           projectName: '$(SonarProject)'
           extraProperties: |
             sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/tests/**/coverage.opencover.xml
+            sonar.exclusions=src/NHSD.GPIT.BuyingCatalogue.UI.Components,src/NHSD.GPIT.BuyingCatalogue.UI.Components.WebApp,**/*.cshtml,tests/**
 
       - task: DotNetCoreCLI@2
         displayName: 'Run dotnet build'
