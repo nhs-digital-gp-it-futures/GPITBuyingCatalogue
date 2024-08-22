@@ -19,18 +19,17 @@
             {
                 <nhs-table-column>Applicable days</nhs-table-column>
             }
-            <nhs-table-column></nhs-table-column>
+
             @foreach (var slaContact in Model.SlaContacts.OrderBy(sat => sat.Channel).ThenBy(sat => sat.TimeFrom))
             {
                 <nhs-table-row-container>
-                    <nhs-table-cell>@slaContact.Channel</nhs-table-cell>
-                    <nhs-table-cell>@slaContact.ContactInformation</nhs-table-cell>
+                    <nhs-table-cell style="word-break: break-word">@slaContact.Channel</nhs-table-cell>
+                    <nhs-table-cell style="word-break: break-word">@slaContact.ContactInformation</nhs-table-cell>
                     <nhs-table-cell>@slaContact.TimeFrom.ToString("HH:mm") - @slaContact.TimeUntil.ToString("HH:mm")</nhs-table-cell>
                     @if (showContactsApplicableDays)
                     {
-                        <nhs-table-cell>@slaContact.ApplicableDays</nhs-table-cell>
+                        <nhs-table-cell  style="word-break: break-word">@slaContact.ApplicableDays</nhs-table-cell>
                     }
-                    <nhs-table-cell></nhs-table-cell>
                 </nhs-table-row-container>
             }
         </nhs-table>
@@ -43,7 +42,7 @@
 
 @foreach (var serviceAvailabilityTime in Model.ServiceAvailabilityTimes.OrderBy(sat => sat.Category).ThenBy(sat => sat.TimeFrom))
 {
-    <nhs-expander label-text="@serviceAvailabilityTime.Category" open="false">
+    <nhs-expander label-text="@serviceAvailabilityTime.Category" open="false" style="word-break: break-word">
         <nhs-summary-list>
             <nhs-summary-list-row label-text="Time period">@serviceAvailabilityTime.TimeFrom.ToString("HH:mm") - @serviceAvailabilityTime.TimeUntil.ToString("HH:mm")</nhs-summary-list-row>
             <nhs-summary-list-row label-text="Applicable days">
@@ -82,25 +81,16 @@
 @foreach (var serviceLevel in Model.ServiceLevels)
 {
     <nhs-expander label-text="@serviceLevel.TypeOfService" open="false">
-        <dl class="nhsuk-summary-list">
-            <div class="nhsuk-summary-list__row">
-                <dt class="nhsuk-summary-list__key">Service level&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</dt>
-                <dd class="nhsuk-summary-list__value">
-                    <span style="white-space: pre-line">@serviceLevel.ServiceLevel</span>
-                </dd>
-            </div>
-            <div class="nhsuk-summary-list__row">
-                <dt class="nhsuk-summary-list__key">How the service levels<br/>are measured</dt>
-                <dd class="nhsuk-summary-list__value">
-                    <span style="white-space: pre-line">@serviceLevel.HowMeasured</span>
-                </dd>
-            </div>
-            <div class="nhsuk-summary-list__row">
-                <dt class="nhsuk-summary-list__key">Are service<br/>credits applied?</dt>
-                <dd class="nhsuk-summary-list__value">
-                    <span style="white-space: pre-line">@serviceLevel.ServiceCredits.ToYesNo()</span>
-                </dd>
-            </div>
-        </dl>
+        <nhs-summary-list>
+            <nhs-summary-list-row label-text="Service level" style="word-break: break-word">
+                @serviceLevel.ServiceLevel
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="How the service levels are measured" style="word-break: break-word">
+                @serviceLevel.HowMeasured
+            </nhs-summary-list-row>
+            <nhs-summary-list-row label-text="Are service credits applied?" style="word-break: break-word">
+                @serviceLevel.ServiceCredits.ToYesNo()
+            </nhs-summary-list-row>
+        </nhs-summary-list>
     </nhs-expander>
 }

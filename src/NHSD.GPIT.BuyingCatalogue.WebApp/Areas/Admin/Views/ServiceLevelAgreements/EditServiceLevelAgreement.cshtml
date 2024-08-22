@@ -39,7 +39,7 @@
     @foreach (var item in Model.ServiceLevelAgreements.ServiceHours)
     {
         <nhs-table-row-container>
-            <nhs-table-cell>@item.Category</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.Category</nhs-table-cell>
             <nhs-table-cell>@item.TimeFrom.ToString("HH:mm") - @item.TimeUntil.ToString("HH:mm")</nhs-table-cell>
             <nhs-table-cell>
                 @if (item.IncludedDays?.Count > 0)
@@ -98,8 +98,8 @@
     @foreach (var item in Model.ServiceLevelAgreements.Contacts)
     {
         <nhs-table-row-container>
-            <nhs-table-cell>@item.Channel</nhs-table-cell>
-            <nhs-table-cell>@item.ContactInformation</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.Channel</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.ContactInformation</nhs-table-cell>
             <nhs-table-cell>@item.TimeFrom.ToString("HH:mm") - @item.TimeUntil.ToString("HH:mm")</nhs-table-cell>
             <nhs-table-cell>@item.ApplicableDays</nhs-table-cell>
             <nhs-table-cell>
@@ -130,9 +130,9 @@
     @foreach (var item in Model.ServiceLevelAgreements.ServiceLevels)
     {
         <nhs-table-row-container>
-            <nhs-table-cell>@item.TypeOfService</nhs-table-cell>
-            <nhs-table-cell>@item.ServiceLevel</nhs-table-cell>
-            <nhs-table-cell>@item.HowMeasured</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.TypeOfService</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.ServiceLevel</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.HowMeasured</nhs-table-cell>
             <nhs-table-cell>@item.ServiceCredits.ToYesNo()</nhs-table-cell>
             <nhs-table-cell>
                 <a asp-action="@nameof(ServiceLevelAgreementsController.EditServiceLevel)"
