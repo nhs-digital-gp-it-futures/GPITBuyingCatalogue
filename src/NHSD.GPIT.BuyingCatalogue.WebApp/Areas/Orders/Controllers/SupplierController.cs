@@ -72,10 +72,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 sessionService.SetSupplierContact(callOffId, supplier.Id, temporaryContact);
             }
 
-            if (selected == null
-                && order.SupplierContact != null)
+            var contacts = GetSupplierContacts(callOffId, supplier);
+            if (selected == null)
             {
-                selected = supplierContact?.Id ?? SupplierContact.TemporaryContactId;
+                if (contacts?.Count == 1)
+                {
+                    selected = contacts.First().Id;
+                }
+                else if (order.SupplierContact != null)
+                {
+                    selected = supplierContact?.Id ?? SupplierContact.TemporaryContactId;
+                }
             }
 
             var model = new SupplierModel(internalOrgId, callOffId, order)
@@ -84,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                     nameof(OrderController.Order),
                     typeof(OrderController).ControllerName(),
                     new { internalOrgId, callOffId }),
-                Contacts = GetSupplierContacts(callOffId, supplier),
+                Contacts = contacts,
                 SelectedContactId = selected,
             };
 
