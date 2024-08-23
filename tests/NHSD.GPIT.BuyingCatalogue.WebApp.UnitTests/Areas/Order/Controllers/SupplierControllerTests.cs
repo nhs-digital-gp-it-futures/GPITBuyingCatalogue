@@ -75,10 +75,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             [Frozen] ISupplierService supplierServiceMock,
             SupplierController controller)
         {
+            order.SupplierContact.FirstName = supplier.SupplierContacts.First().FirstName;
+            order.SupplierContact.LastName = supplier.SupplierContacts.First().LastName;
+            order.SupplierContact.Email = supplier.SupplierContacts.First().Email;
+            order.SupplierContact.Department = supplier.SupplierContacts.First().Department;
+
             var model = new SupplierModel(internalOrgId, order.CallOffId, order)
             {
                 Contacts = supplier.SupplierContacts.ToList(),
-                SelectedContactId = SupplierContact.TemporaryContactId,
+                SelectedContactId = supplier.SupplierContacts.First().Id,
             };
 
             orderServiceMock
@@ -135,6 +140,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             actual.Department.Should().Be(order.SupplierContact.Department);
             actual.PhoneNumber.Should().Be(order.SupplierContact.Phone);
             actual.Email.Should().Be(order.SupplierContact.Email);
+
+            var actualResult = result.Should().BeOfType<ViewResult>().Subject;
+
+            actualResult.ViewData.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_Supplier_WithSingleContact_ReturnsExpectedResult(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order,
+            Supplier supplier,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISupplierService mockSupplierService,
+            SupplierContact contact,
+            SupplierController controller)
+        {
+            supplier.SupplierContacts.Clear();
+            supplier.SupplierContacts.Add(contact);
+
+            var model = new SupplierModel(internalOrgId, order.CallOffId, order)
+            {
+                Contacts = supplier.SupplierContacts.ToList(),
+                SelectedContactId = contact.Id,
+            };
+
+            mockOrderService
+                .GetOrderWithSupplier(order.CallOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
+
+            mockSupplierService
+                .GetSupplierFromBuyingCatalogue(order.Supplier.Id)
+                .Returns(supplier);
+
+            var result = await controller.Supplier(internalOrgId, order.CallOffId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 

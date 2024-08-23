@@ -18,8 +18,7 @@
         <h2>Your service level criteria</h2>
 
         <nhs-card>
-            <h3>Core support hours</h3>
-
+            <h3>Core Support hours</h3>
             <nhs-summary-list>
                 <nhs-summary-list-row label-text="Times">@($"{Model.From:HH:mm} to {Model.Until:HH:mm}")</nhs-summary-list-row>
                 <nhs-summary-list-row label-text="Days">
@@ -44,7 +43,7 @@
             <input type="hidden" asp-for="Until"/>
             @for (var i = 0; i < Model.ApplicableDays.Count; i++)
             {
-                <input type="hidden" asp-for="@Model.ApplicableDays[i]" />
+                <input type="hidden" asp-for="@Model.ApplicableDays[i]"/>
             }
 
             @for (var i = 0; i < Model.SolutionScores.Count; i++)
@@ -53,7 +52,7 @@
                 var solutionName = solutionScoreModel.Solution.CatalogueItem.Name;
 
                 <h2>@solutionName</h2>
-                <nhs-expander label-text="View @solutionName implementation details" open="true">
+                <nhs-expander label-text="View @(solutionName) implementation details" open="true">
                     <h2>@solutionScoreModel.Solution.CatalogueItem.Name</h2>
 
                     <b>These are the levels of service the supplier has committed to for this Catalogue Solution:</b>
@@ -65,13 +64,40 @@
                         <nhs-table-column>Category</nhs-table-column>
                         <nhs-table-column>Time period</nhs-table-column>
                         <nhs-table-column>Applicable days</nhs-table-column>
+                        <nhs-table-column>Includes bank holidays</nhs-table-column>
+                        <nhs-table-column>Additional information</nhs-table-column>
 
                         @foreach (var serviceLevelItem in solutionScoreModel.Solution.ServiceLevelAgreement.ServiceHours)
                         {
                             <nhs-table-row-container>
                                 <nhs-table-cell>@serviceLevelItem.Category</nhs-table-cell>
                                 <nhs-table-cell>@($"{serviceLevelItem.TimeFrom:HH:mm} - {serviceLevelItem.TimeUntil:HH:mm}")</nhs-table-cell>
-                                <nhs-table-cell>@serviceLevelItem.ApplicableDays</nhs-table-cell>
+                                <nhs-table-cell>
+                                    @if (serviceLevelItem.IncludedDays?.Count > 0)
+                                    {
+                                        <ul>
+                                            @foreach (var day in serviceLevelItem.IncludedDays)
+                                            {
+                                                <li>@day.ToString()</li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <span>None</span>
+                                    }
+                                </nhs-table-cell>
+                                <nhs-table-cell>@serviceLevelItem.IncludesBankHolidays.ToYesNo()</nhs-table-cell>
+                                <nhs-table-cell style="word-break: break-word">
+                                    @if (string.IsNullOrWhiteSpace(serviceLevelItem.AdditionalInformation))
+                                    {
+                                        <span>None</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@serviceLevelItem.AdditionalInformation</span>
+                                    }
+                                </nhs-table-cell>
                             </nhs-table-row-container>
                         }
                     </nhs-table>
@@ -87,7 +113,7 @@
                                              label-text="Why have you given this score?"
                                              label-hint="Provide a justification for the score you have given this solution." size="Medium">
                         <input type="hidden" asp-for="@Model.SolutionScores[i].SolutionId"/>
-                        <nhs-textarea asp-for="@Model.SolutionScores[i].Justification" />
+                        <nhs-textarea asp-for="@Model.SolutionScores[i].Justification"/>
                     </nhs-fieldset-form-label>
                 </nhs-expander>
                 @if (i == Model.SolutionScores.Count - 1)
@@ -97,10 +123,11 @@
                         <nhs-submit-button/>
 
                         <vc:nhs-secondary-button text="Download service levels comparison (PDF)"
-                                             url="@Model.PdfUrl"
-                                             type="Secondary" />
+                                                 url="@Model.PdfUrl"
+                                                 type="Secondary"/>
                     </nhs-button-group>
                 }
+
                 <hr/>
             }
         </form>

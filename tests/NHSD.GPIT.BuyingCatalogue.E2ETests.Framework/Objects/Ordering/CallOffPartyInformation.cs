@@ -13,12 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By OrganisationAddress => ByExtensions.DataTestId("organisation-address");
 
-        public static By FirstNameInput => By.Id("Contact_FirstName");
+        public static By FirstNameInput => By.Id("FirstName");
 
-        public static By LastNameInput => By.Id("Contact_LastName");
+        public static By LastNameInput => By.Id("LastName");
 
-        public static By EmailAddressInput => By.Id("Contact_EmailAddress");
+        public static By EmailAddressInput => By.Id("EmailAddress");
 
-        public static By PhoneNumberInput => By.Id("Contact_TelephoneNumber");
+        public static By PhoneNumberInput => By.Id("TelephoneNumber");
     }
 }

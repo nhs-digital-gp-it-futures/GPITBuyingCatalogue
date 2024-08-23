@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceLevelAgreements
 {
@@ -10,7 +12,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceLevelAgreemen
 
         public DateTime Until { get; set; }
 
-        public string ApplicableDays { get; set; }
+        public ICollection<Iso8601DayOfWeek> ApplicableDays { get; set; }
+
+        public bool IncludesBankHolidays { get; set; }
+
+        public string AdditionalInformation { get; set; }
 
         public int UserId { get; set; }
     }

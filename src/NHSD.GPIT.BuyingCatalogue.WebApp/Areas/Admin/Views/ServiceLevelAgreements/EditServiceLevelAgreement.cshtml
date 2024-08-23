@@ -8,14 +8,18 @@
                 advice="Let buyers know what support is provided for your Catalogue Solution and how they can contact you." />
 
 <p class="nhsuk-heading-m">Current solution type: @ConvertSlaType(Model.ServiceLevelAgreements.SlaType)</p>
-<vc:nhs-action-link text="Change solution type"
-                    url="@Url.Action(
-                    nameof(ServiceLevelAgreementsController.EditServiceLevelAgreementType),
-                    typeof(ServiceLevelAgreementsController).ControllerName(),
-                    new  { solutionId = Model.CatalogueItem.Id })" />
+@if (Model.CatalogueItem.PublishedStatus is not PublicationStatus.Published) {
+    <vc:nhs-action-link text="Change solution type"
+                        url="@Url.Action(
+                        nameof(ServiceLevelAgreementsController.EditServiceLevelAgreementType),
+                        typeof(ServiceLevelAgreementsController).ControllerName(),
+                        new  { solutionId = Model.CatalogueItem.Id })" />
 
-
-<p>Use the link to select the Catalogue Solution type that this Service Level Agreement covers.</p>
+    <p>Use the link to select the Catalogue Solution type that this Service Level Agreement covers.</p>
+} else
+{
+    <nhs-inset-text>You cannot change the solution type while the solution is published.</nhs-inset-text>
+}
 
 <h2>Service availability</h2>
 <p>Provide information on when users can contact your support services. You must add at least one time period.</p>
@@ -29,13 +33,42 @@
     <nhs-table-column>Type of support</nhs-table-column>
     <nhs-table-column>Time period</nhs-table-column>
     <nhs-table-column>Applicable days</nhs-table-column>
+    <nhs-table-column>Includes bank holidays</nhs-table-column>
+    <nhs-table-column>Additional information</nhs-table-column>
     <nhs-table-column>Action</nhs-table-column>
     @foreach (var item in Model.ServiceLevelAgreements.ServiceHours)
     {
         <nhs-table-row-container>
-            <nhs-table-cell>@item.Category</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.Category</nhs-table-cell>
             <nhs-table-cell>@item.TimeFrom.ToString("HH:mm") - @item.TimeUntil.ToString("HH:mm")</nhs-table-cell>
-            <nhs-table-cell>@item.ApplicableDays</nhs-table-cell>
+            <nhs-table-cell>
+                @if (item.IncludedDays?.Count > 0)
+                {
+                    <ul>
+                        @foreach (var day in item.IncludedDays)
+                        {
+                            <li>@day.ToString()</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <span>None</span>
+                }
+            </nhs-table-cell>
+            <nhs-table-cell>
+                @item.IncludesBankHolidays.ToYesNo()
+            </nhs-table-cell>
+            <nhs-table-cell style="word-break:break-word">
+                @if (string.IsNullOrWhiteSpace(item.AdditionalInformation))
+                {
+                    <span>None</span>
+                }
+                else
+                {
+                    <span>@item.AdditionalInformation</span>
+                }
+            </nhs-table-cell>
             <nhs-table-cell>
                 <a asp-action="@nameof(ServiceLevelAgreementsController.EditServiceAvailabilityTimes)"
                    asp-controller="@typeof(ServiceLevelAgreementsController).ControllerName()"
@@ -65,8 +98,8 @@
     @foreach (var item in Model.ServiceLevelAgreements.Contacts)
     {
         <nhs-table-row-container>
-            <nhs-table-cell>@item.Channel</nhs-table-cell>
-            <nhs-table-cell>@item.ContactInformation</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.Channel</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.ContactInformation</nhs-table-cell>
             <nhs-table-cell>@item.TimeFrom.ToString("HH:mm") - @item.TimeUntil.ToString("HH:mm")</nhs-table-cell>
             <nhs-table-cell>@item.ApplicableDays</nhs-table-cell>
             <nhs-table-cell>
@@ -97,9 +130,9 @@
     @foreach (var item in Model.ServiceLevelAgreements.ServiceLevels)
     {
         <nhs-table-row-container>
-            <nhs-table-cell>@item.TypeOfService</nhs-table-cell>
-            <nhs-table-cell>@item.ServiceLevel</nhs-table-cell>
-            <nhs-table-cell>@item.HowMeasured</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.TypeOfService</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.ServiceLevel</nhs-table-cell>
+            <nhs-table-cell style="word-break: break-word">@item.HowMeasured</nhs-table-cell>
             <nhs-table-cell>@item.ServiceCredits.ToYesNo()</nhs-table-cell>
             <nhs-table-cell>
                 <a asp-action="@nameof(ServiceLevelAgreementsController.EditServiceLevel)"

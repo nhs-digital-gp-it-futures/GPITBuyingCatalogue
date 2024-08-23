@@ -16,11 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Contract
 
         public static By EditDatesDescription(int index) => By.Id($"Recipients_{index}__Description");
 
-        public static By EditDatesDayInput(int index) => By.Id($"Recipients_{index}__Day");
+        public static By EditDatesDayInput(int index) => By.Id($"Recipients_{index}__Value_{index}__Day");
 
-        public static By EditDatesMonthInput(int index) => By.Id($"Recipients_{index}__Month");
+        public static By EditDatesMonthInput(int index) => By.Id($"Recipients_{index}__Value_{index}__Month");
 
-        public static By EditDatesYearInput(int index) => By.Id($"Recipients_{index}__Year");
+        public static By EditDatesYearInput(int index) => By.Id($"Recipients_{index}__Value_{index}__Year");
 
         public static By MatchDates => By.Id("match-dates");
 
