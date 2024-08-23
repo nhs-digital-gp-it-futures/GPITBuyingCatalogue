@@ -773,7 +773,7 @@ public static class CompetitionHubControllerTests
 
         result.Should().NotBeNull();
         result.Model.Should()
-            .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.ServiceRecipients));
+            .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.SubLocations));
     }
 
     [Theory]
@@ -817,7 +817,7 @@ public static class CompetitionHubControllerTests
 
         result.Should().NotBeNull();
         result.Model.Should()
-            .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.ServiceRecipients));
+            .BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.SubLocations));
     }
 
     [Theory]
@@ -851,7 +851,7 @@ public static class CompetitionHubControllerTests
     {
         serviceRecipients.ForEach(x => x.InputQuantity = x.Quantity.ToString());
 
-        model.ServiceRecipients = serviceRecipients;
+        model.SubLocations.First().ServiceRecipients = serviceRecipients;
 
         _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, solutionId, model);
 
@@ -876,7 +876,7 @@ public static class CompetitionHubControllerTests
     {
         serviceRecipients.ForEach(x => x.InputQuantity = x.Quantity.ToString());
 
-        model.ServiceRecipients = serviceRecipients;
+        model.SubLocations.First().ServiceRecipients = serviceRecipients;
 
         _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, solutionId, model, serviceId);
 
@@ -900,7 +900,7 @@ public static class CompetitionHubControllerTests
     {
         serviceRecipients.ForEach(x => x.InputQuantity = x.Quantity.ToString());
 
-        model.ServiceRecipients = serviceRecipients;
+        model.SubLocations.First().ServiceRecipients = serviceRecipients;
 
         var result = (await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, solutionId, model))
             .As<RedirectToActionResult>();

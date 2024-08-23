@@ -61,6 +61,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         [HtmlAttributeName(DetailsAndExpanderTagHelperBuilders.BoldTitle)]
         public bool BoldTitle { get; set; }
 
+        [HtmlAttributeName(TagHelperConstants.Id)]
+        public string Id { get; set; }
+
         public override void Init(TagHelperContext context)
         {
             if (!context.Items.TryGetValue("InExpanderContext", out _))
@@ -97,6 +100,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
                 classAttribute += $" {ExpanderBlackAndWhite}";
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, classAttribute));
+            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Id, Id));
 
             textItem.InnerHtml.AppendHtml(children);
 

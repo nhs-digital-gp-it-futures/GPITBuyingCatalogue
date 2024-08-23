@@ -39,9 +39,7 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
         ProvisioningType = price.ProvisioningType;
         BillingPeriod = price.BillingPeriod;
 
-        ServiceRecipients = (serviceRecipients ?? Enumerable.Empty<ServiceRecipientDto>())
-            .Select(CreateServiceRecipient)
-            .ToArray();
+        SubLocations = CreateSubLocations(serviceRecipients ?? []);
     }
 
     public SelectServiceRecipientQuantityModel(
@@ -60,9 +58,7 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
             Advice = AdviceTextMergerSplit;
         }
 
-        PreviouslySelected = previousRecipients?
-            .Select(CreateServiceRecipient)
-            .ToArray() ?? Array.Empty<ServiceRecipientQuantityModel>();
+        PreviouslySelected = CreateSubLocations(previousRecipients ?? []) ?? [];
     }
 
     public OrderType OrderType { get; set; }
@@ -73,9 +69,9 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
 
     public TimeUnit? BillingPeriod { get; set; }
 
-    public ServiceRecipientQuantityModel[] PreviouslySelected { get; set; } = Array.Empty<ServiceRecipientQuantityModel>();
+    public SubLocationModel[] PreviouslySelected { get; set; } = [];
 
-    public ServiceRecipientQuantityModel[] ServiceRecipients { get; set; }
+    public SubLocationModel[] SubLocations { get; set; }
 
     public RoutingSource? Source { get; set; }
 
@@ -87,19 +83,28 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
         _ => QuantityColumnTitleText,
     };
 
-    private ServiceRecipientQuantityModel CreateServiceRecipient(ServiceRecipientDto recipient)
+    private static SubLocationModel[] CreateSubLocations(IEnumerable<ServiceRecipientDto> recipients)
+    {
+        return recipients
+            .GroupBy(x => x.Location)
+            .Select(
+                x => new SubLocationModel(
+                    x.Key,
+                    x.Select(CreateServiceRecipient).ToArray()))
+            .ToArray();
+    }
+
+    private static ServiceRecipientQuantityModel CreateServiceRecipient(ServiceRecipientDto recipient)
     {
         var recipientQuantityModel = new ServiceRecipientQuantityModel
         {
             OdsCode = recipient.OdsCode,
             Name = recipient.Name,
-            Location = recipient.Location,
+            Quantity = recipient.Quantity ?? 0,
+            InputQuantity = recipient.Quantity.HasValue
+                ? $"{recipient.Quantity}"
+                : string.Empty,
         };
-
-        recipientQuantityModel.Quantity = recipient.Quantity ?? 0;
-        recipientQuantityModel.InputQuantity = recipient.Quantity.HasValue
-            ? $"{recipient.Quantity}"
-            : string.Empty;
 
         return recipientQuantityModel;
     }

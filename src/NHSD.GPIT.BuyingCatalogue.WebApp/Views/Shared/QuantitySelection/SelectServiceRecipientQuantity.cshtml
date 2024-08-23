@@ -1,5 +1,10 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
+@using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SelectServiceRecipientQuantityModel
 
 @{
@@ -10,7 +15,7 @@
 
 <div class="nhsuk-grid-row" data-test-id="perServiceRecipient">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
+        <nhs-validation-summary exclude-child-errors="true"/>
         <nhs-page-title model="Model" />
 
         @if (Model.ShouldShowInset)
@@ -61,43 +66,44 @@
                 </h2>
             }
 
-            @foreach (var location in Model.ServiceRecipients.GroupBy(x => x.Location))
+            @for (var i=0; i < Model.SubLocations.Length; i++)
             {
-                var count = location.Count();
-                <nhs-expander label-text="@location.Key" secondary-text-title="@count.ToString()" secondary-text=" recipients added" bold-title="true" open="true">
+                <input type="hidden" asp-for="@Model.SubLocations[i].Name" />
+
+                var id = $"SubLocations_{i}_";
+                <nhs-expander id="@id" label-text="@Model.SubLocations[i].Name" secondary-text-title="@Model.SubLocations[i].ServiceRecipients.Length.ToString()" secondary-text=" recipients added" bold-title="true" open="true">
                     <nhs-table data-test-id="additional-service-dashboard-table">
                         <nhs-table-column>Organisation </nhs-table-column>
                         <nhs-table-column>ODS code</nhs-table-column>
                         <nhs-table-column>@Model.QuantityColumnTitle</nhs-table-column>
 
-                        @foreach (var recipient in location)
+                        @foreach (var recipient in Model.SubLocations[i].ServiceRecipients)
                         {
-                            var index = Array.FindIndex(Model.ServiceRecipients, x => x.OdsCode.Contains(recipient.OdsCode));
+                            var index = Array.FindIndex(Model.SubLocations[i].ServiceRecipients, x => x.OdsCode.Contains(recipient.OdsCode));
                             <nhs-table-row-container>
                                 <nhs-table-cell>
-                                    <input type="hidden" asp-for="@Model.ServiceRecipients[index].Name" />
-                                    <input type="hidden" asp-for="@Model.ServiceRecipients[index].OdsCode" />
-                                    <input type="hidden" asp-for="@Model.ServiceRecipients[index].Quantity" />
-                                    <input type="hidden" asp-for="@Model.ServiceRecipients[index].Location" />
+                                    <input type="hidden" asp-for="@Model.SubLocations[i].ServiceRecipients[index].Name" />
+                                    <input type="hidden" asp-for="@Model.SubLocations[i].ServiceRecipients[index].OdsCode" />
+                                    <input type="hidden" asp-for="@Model.SubLocations[i].ServiceRecipients[index].Quantity" />
                                     <div style="margin-top: 6px">
-                                        @Model.ServiceRecipients[index].Name
+                                        @Model.SubLocations[i].ServiceRecipients[index].Name
                                     </div>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     <div style="margin-top: 6px">
-                                        @Model.ServiceRecipients[index].OdsCode
+                                        @Model.SubLocations[i].ServiceRecipients[index].OdsCode
                                     </div>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    @if (Model.ServiceRecipients[index].Quantity > 0 && (Model.OrderType?.MergerOrSplit ?? false))
+                                    @if (Model.SubLocations[i].ServiceRecipients[index].Quantity > 0 && (Model.OrderType?.MergerOrSplit ?? false))
                                     {
-                                        <input type="hidden" asp-for="@Model.ServiceRecipients[index].InputQuantity" />
-                                        @($"{Model.ServiceRecipients[index].Quantity:N0}")
+                                        <input type="hidden" asp-for="@Model.SubLocations[i].ServiceRecipients[index].InputQuantity" />
+                                        @($"{Model.SubLocations[i].ServiceRecipients[index].Quantity:N0}")
                                     }
                                     else
                                     {
                                         inputRequired = true;
-                                        <nhs-input asp-for="@Model.ServiceRecipients[index].InputQuantity"
+                                        <nhs-input asp-for="@Model.SubLocations[i].ServiceRecipients[index].InputQuantity"
                                                    input-width="Five"
                                                    data-test-id="input_quantity" />
                                     }
@@ -113,12 +119,17 @@
                 <div id="previously-selected-quantities">
                     <nhs-details label-text="View Service Recipients from the original order">
                         <ul>
-                            @foreach (var (recipient, index) in Model.PreviouslySelected.Select((x, i) => (x, i)))
+                            @foreach (var (location, locationIndex) in Model.PreviouslySelected.Select((x, i) => (x, i)))
                             {
-                                <input type="hidden" asp-for="PreviouslySelected[index].Name" />
-                                <input type="hidden" asp-for="PreviouslySelected[index].OdsCode" />
-                                <input type="hidden" asp-for="PreviouslySelected[index].InputQuantity" />
-                                <li>@recipient.Description : @recipient.InputQuantity</li>
+                                <input type="hidden" asp-for="PreviouslySelected[locationIndex].Name" />
+
+                                @foreach (var (recipient, index) in location.ServiceRecipients.Select((y, j) => (y, j)))
+                                {
+                                    <input type="hidden" asp-for="PreviouslySelected[locationIndex].ServiceRecipients[index].Name"/>
+                                    <input type="hidden" asp-for="PreviouslySelected[locationIndex].ServiceRecipients[index].OdsCode" />
+                                    <input type="hidden" asp-for="PreviouslySelected[locationIndex].ServiceRecipients[index].InputQuantity" />
+                                    <li>@recipient.Description : @recipient.InputQuantity</li>
+                                }
                             }
                         </ul>
                     </nhs-details>

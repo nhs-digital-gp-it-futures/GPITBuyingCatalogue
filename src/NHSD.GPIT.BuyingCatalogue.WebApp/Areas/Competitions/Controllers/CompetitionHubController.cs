@@ -333,7 +333,7 @@ public class CompetitionHubController : Controller
             return View(ServiceRecipientViewName, model);
         }
 
-        var quantities = model.ServiceRecipients
+        var quantities = model.SubLocations.SelectMany(x => x.ServiceRecipients)
             .Select(
                 x => new ServiceRecipientDto
                 {
