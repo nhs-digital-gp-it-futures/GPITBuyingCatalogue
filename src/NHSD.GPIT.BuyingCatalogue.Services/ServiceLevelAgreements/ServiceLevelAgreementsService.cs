@@ -51,7 +51,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
         public async Task UpdateServiceLevelTypeAsync(CatalogueItem solution, SlaType slaLevel)
         {
-            var sla = await dbContext.ServiceLevelAgreements.FirstAsync(s => s.SolutionId == solution.Id);
+            var sla = await dbContext.ServiceLevelAgreements.Include(x => x.ServiceHours)
+                .Include(x => x.ServiceLevels)
+                .FirstAsync(s => s.SolutionId == solution.Id);
 
             if (sla.SlaType != slaLevel)
             {
@@ -80,7 +82,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
             var serviceAvailabilityTimes = new ServiceAvailabilityTimes
             {
-                ApplicableDays = model.ApplicableDays,
+                IncludedDays = model.ApplicableDays,
+                IncludesBankHolidays = model.IncludesBankHolidays,
+                AdditionalInformation = model.AdditionalInformation,
                 Category = model.SupportType,
                 TimeFrom = model.From,
                 TimeUntil = model.Until,
@@ -102,7 +106,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.ServiceLevelAgreements
 
             var serviceAvailabilityTimes = await GetServiceAvailabilityTimes(solution.Id, serviceAvailabilityTimesId);
 
-            serviceAvailabilityTimes.ApplicableDays = model.ApplicableDays;
+            serviceAvailabilityTimes.IncludedDays = model.ApplicableDays;
+            serviceAvailabilityTimes.IncludesBankHolidays = model.IncludesBankHolidays;
+            serviceAvailabilityTimes.AdditionalInformation = model.AdditionalInformation;
             serviceAvailabilityTimes.Category = model.SupportType;
             serviceAvailabilityTimes.TimeFrom = model.From;
             serviceAvailabilityTimes.TimeUntil = model.Until;

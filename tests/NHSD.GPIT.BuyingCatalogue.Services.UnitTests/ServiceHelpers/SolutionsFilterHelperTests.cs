@@ -115,6 +115,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         }
 
         [Fact]
+        public static void ParseApplicationTypeIds_NullInput_GeneratesResults()
+        {
+            var result = SolutionsFilterHelper.ParseEnumFilter<ApplicationType>(null);
+
+            result.Should().BeEquivalentTo(new List<ApplicationType>());
+        }
+
+        [Fact]
         public static void ParseApplicationTypeIds_OneItemNotParseable_GeneratesResults()
         {
             var input = "0.1.hello.2";
@@ -187,6 +195,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
         }
 
         [Fact]
+        public static void ParseHostingTypeIds_NullInput_GeneratesResults()
+        {
+            var result = SolutionsFilterHelper.ParseEnumFilter<HostingType>(null);
+
+            result.Should().BeEquivalentTo(new List<HostingType>());
+        }
+
+        [Fact]
         public static void ParseHostingTypeIds_OneItemNotParseable_GeneratesResults()
         {
             var input = "0.1.hello.2.3";
@@ -256,6 +272,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.ServiceHelpers
             var expected = new List<HostingType> { HostingType.PublicCloud, HostingType.PrivateCloud, HostingType.Hybrid, HostingType.OnPremise };
 
             result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public static void ParseSupportedIntegrationIds_NullInput_GeneratesResults()
+        {
+            var result = SolutionsFilterHelper.ParseEnumFilter<SupportedIntegrations>(null);
+
+            result.Should().BeEquivalentTo(new List<SupportedIntegrations>());
         }
 
         [Fact]
