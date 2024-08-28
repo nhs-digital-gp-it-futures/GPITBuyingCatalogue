@@ -31,8 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 model.DescriptionStatus,
                 model.ApplicationTypeStatus,
                 model.ListPriceStatus,
-                model.SupplierDetailsStatus,
                 model.CapabilitiesStatus,
+                model.SupplierDetailsStatus,
                 model.SlaStatus,
             };
 
