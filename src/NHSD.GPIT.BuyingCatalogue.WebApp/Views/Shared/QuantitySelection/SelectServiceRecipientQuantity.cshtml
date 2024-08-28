@@ -3,7 +3,6 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
 @using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities.SelectServiceRecipientQuantityModel
 
@@ -14,7 +13,7 @@
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row" data-test-id="perServiceRecipient">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-column-full">
         <nhs-validation-summary exclude-child-errors="true"/>
         <nhs-page-title model="Model" />
 
@@ -70,8 +69,7 @@
             {
                 <input type="hidden" asp-for="@Model.SubLocations[i].Name" />
 
-                var id = $"SubLocations_{i}_";
-                <nhs-expander id="@id" label-text="@Model.SubLocations[i].Name" secondary-text-title="@Model.SubLocations[i].ServiceRecipients.Length.ToString()" secondary-text=" recipients added" bold-title="true" open="true">
+                <nhs-expander asp-for="@Model.SubLocations[i]" label-text="@Model.SubLocations[i].Name" secondary-text-title="@Model.SubLocations[i].ServiceRecipients.Length.ToString()" secondary-text=" recipients added" bold-title="true" open="true" catches-errors="true">
                     <nhs-table data-test-id="additional-service-dashboard-table">
                         <nhs-table-column>Organisation </nhs-table-column>
                         <nhs-table-column>ODS code</nhs-table-column>
@@ -105,7 +103,8 @@
                                         inputRequired = true;
                                         <nhs-input asp-for="@Model.SubLocations[i].ServiceRecipients[index].InputQuantity"
                                                    input-width="Five"
-                                                   data-test-id="input_quantity" />
+                                                   data-test-id="input_quantity" 
+                                                   visually-hidden-error="true"/>
                                     }
                                 </nhs-table-cell>
                             </nhs-table-row-container>

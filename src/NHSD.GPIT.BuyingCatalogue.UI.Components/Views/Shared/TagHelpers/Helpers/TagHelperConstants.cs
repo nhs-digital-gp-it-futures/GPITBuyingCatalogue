@@ -76,6 +76,7 @@
         internal const string NhsErrorMessage = "nhsuk-error-message";
         internal const string NhsFormGroup = "nhsuk-form-group";
         internal const string NhsFormGroupError = "nhsuk-form-group--error";
+        internal const string NhsValidationSummary = "nhsuk-error-summary";
         internal const string NhsInput = "nhsuk-input";
         internal const string NhsLabel = "nhsuk-label";
         internal const string BoldLabel = "bold-label";

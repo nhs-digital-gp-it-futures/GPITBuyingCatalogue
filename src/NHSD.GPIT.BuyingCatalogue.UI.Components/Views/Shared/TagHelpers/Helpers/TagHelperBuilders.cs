@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -62,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return builder;
         }
 
-        public static TagBuilder GetValidationBuilder(ViewContext viewContext, ModelExpression aspFor, IHtmlGenerator htmlGenerator)
+        public static TagBuilder GetValidationBuilder(ViewContext viewContext, ModelExpression aspFor, IHtmlGenerator htmlGenerator, bool containsHiddenContent = false)
         {
             if (!TagHelperFunctions.CheckIfModelStateHasErrors(viewContext, aspFor))
                 return null;
@@ -76,6 +77,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 new { @class = TagHelperConstants.NhsErrorMessage });
 
             builder.GenerateId($"{aspFor.Name}-error", "_");
+
+            if (containsHiddenContent)
+            {
+                var message = TagHelperFunctions.GetInnerHtml(builder);
+                var regex = new Regex("&lt;(.*?)&gt;");
+                var newMessage = regex.Replace(message, string.Empty);
+                var hiddenMessage = regex.Match(message).Groups[1].Value;
+                var hiddenSpan = GetHiddenContentBuilder(hiddenMessage);
+                builder.InnerHtml.Clear();
+                builder.InnerHtml.AppendHtml(newMessage).AppendHtml(hiddenSpan);
+            }
 
             return builder;
         }
@@ -157,11 +169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public static TagBuilder GetVisuallHiddenSpanClassBuilder()
         {
-            var builder = new TagBuilder(TagHelperConstants.Span);
-            builder.AddCssClass(TagHelperConstants.NhsVisuallyHidden);
-            builder.InnerHtml.Append(TagHelperConstants.NhsVisuallyHiddenSpanContent);
-
-            return builder;
+            return GetHiddenContentBuilder(TagHelperConstants.NhsVisuallyHiddenSpanContent);
         }
 
         public static TagBuilder GetChildContentConditionalBuilder(TagBuilder input, IEnumerable<string> classes)
@@ -197,6 +205,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 items,
                 allowMultiple == true,
                 new { @class = nhsSelectClass });
+        }
+
+        public static TagBuilder GetHiddenContentBuilder(string content)
+        {
+            var builder = new TagBuilder(TagHelperConstants.Span);
+            builder.AddCssClass(TagHelperConstants.NhsVisuallyHidden);
+            builder.InnerHtml.Append(content);
+
+            return builder;
         }
     }
 }

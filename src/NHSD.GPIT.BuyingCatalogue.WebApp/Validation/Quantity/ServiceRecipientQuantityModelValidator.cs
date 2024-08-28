@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Quantity
 {
     public class ServiceRecipientQuantityModelValidator : AbstractValidator<ServiceRecipientQuantityModel>
     {
-        public const string ValueNotEnteredErrorMessage = "Enter a practice list size for {0}";
+        public const string ValueNotEnteredErrorMessage = "Enter a practice list size< for {0}>";
         public const string ValueNotNumericErrorMessage = "Practice list size for {0} must be a number";
         public const string ValueNotAnIntegerErrorMessage = "Practice list size for {0} must be a whole number";
         public const string ValueNegativeErrorMessage = "Practice list size for {0} must be greater than zero";
