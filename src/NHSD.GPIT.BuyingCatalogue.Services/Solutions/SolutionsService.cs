@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         DataProcessing = (ci.Solution.DataProcessingInformation != null && (ci.Solution
                                 .DataProcessingInformation.Location != null && !string.IsNullOrWhiteSpace(
                                 ci.Solution
-                                    .DataProcessingInformation.Location.Location))
+                                    .DataProcessingInformation.Location.ProcessingLocation))
                             && (ci.Solution.DataProcessingInformation.Details != null
                                 && !string.IsNullOrWhiteSpace(ci.Solution.DataProcessingInformation.Details.Subject)
                                 && !string.IsNullOrWhiteSpace(ci.Solution.DataProcessingInformation.Details.Duration)

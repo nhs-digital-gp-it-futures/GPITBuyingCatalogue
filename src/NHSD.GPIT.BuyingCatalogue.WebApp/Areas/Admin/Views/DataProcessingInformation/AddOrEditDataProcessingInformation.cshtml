@@ -1,0 +1,34 @@
+@model AddEditDataProcessingInformationModel
+
+<partial name="Partials/_BackLink" model="@Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+
+        <nhs-page-title title="General data processing information"
+                        caption="@Model.SolutionName"
+                        advice="Let buyers know how your Catalogue Solution processes data."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="SolutionName"/>
+
+            <nhs-textarea label-text="Subject matter of the processing" asp-for="Subject"/>
+
+            <nhs-textarea label-text="Duration of the processing" asp-for="Duration"/>
+
+            <nhs-textarea label-text="Nature and purposes of processing" asp-for="ProcessingNature"/>
+
+            <nhs-textarea label-text="Types of personal data" asp-for="PersonalDataTypes"/>
+
+            <nhs-textarea label-text="Categories of data subjects" asp-for="DataSubjectCategories"/>
+
+            <nhs-textarea label-text="Location of data processing" asp-for="ProcessingLocation"/>
+
+            <nhs-textarea label-text="Additional jurisdiction if processing data outside of the UK (optional)" asp-for="AdditionalJurisdiction"/>
+
+            <nhs-submit-button/>
+        </form>
+    </div>
+</div>

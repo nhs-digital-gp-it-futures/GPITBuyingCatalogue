@@ -2,24 +2,6 @@
 
 public class DataProcessingDetails
 {
-    public DataProcessingDetails()
-    {
-    }
-
-    public DataProcessingDetails(
-        string subject,
-        string duration,
-        string processingNature,
-        string personalDataTypes,
-        string dataSubjectCategories)
-    {
-        Subject = subject;
-        Duration = duration;
-        ProcessingNature = processingNature;
-        PersonalDataTypes = personalDataTypes;
-        DataSubjectCategories = dataSubjectCategories;
-    }
-
     public int Id { get; set; }
 
     public string Subject { get; set; }

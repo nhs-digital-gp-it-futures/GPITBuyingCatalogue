@@ -12,7 +12,7 @@ public class DataProcessingLocationEntityTypeConfiguration : IEntityTypeConfigur
 
         builder.HasKey(x => x.DataProcessingInfoId);
 
-        builder.Property(x => x.Location)
+        builder.Property(x => x.ProcessingLocation)
             .IsRequired()
             .HasMaxLength(2000);
 

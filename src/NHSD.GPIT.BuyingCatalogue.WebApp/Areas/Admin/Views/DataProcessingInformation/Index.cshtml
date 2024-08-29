@@ -1,5 +1,12 @@
 @model DataProcessingInformationModel
 
+@{
+    var hasDataProcessing = Model.Solution.DataProcessingInformation?.Details is not null && Model.Solution.DataProcessingInformation?.Location is not null;
+    var hasDataProtectionOfficer = Model.Solution.DataProcessingInformation?.Officer is not null;
+
+    var dataProcessingInfoUrl = Url.Action(nameof(DataProcessingInformationController.AddOrEditDataProcessingInformation), typeof(DataProcessingInformationController).ControllerName(), new { solutionId = Model.Solution.CatalogueItemId });
+}
+
 <partial name="Partials/_BackLink" model="@Model"/>
 
 <div class="nhsuk-grid-row">
@@ -9,11 +16,7 @@
                         advice="This is the data processing information for this Catalogue Solution."/>
 
         <nhs-card-v2>
-            @{
-                var hasDataProcessing = Model.Solution.DataProcessingInformation?.Details is not null && Model.Solution.DataProcessingInformation?.Location is not null;
-            }
             <nhs-card-content title="General data processing information">
-
                 @if (hasDataProcessing)
                 {
                     <nhs-summary-list>
@@ -33,11 +36,14 @@
                             @Model.Solution.DataProcessingInformation.Details.DataSubjectCategories
                         </nhs-summary-list-row>
                         <nhs-summary-list-row label-text="Location of data processing" style="word-break: break-word">
-                            @Model.Solution.DataProcessingInformation.Location.Location
+                            @Model.Solution.DataProcessingInformation.Location.ProcessingLocation
                         </nhs-summary-list-row>
-                        <nhs-summary-list-row label-text="Additional jurisdiction if processing data outside of the UK (optional)" style="word-break: break-word">
-                            @Model.Solution.DataProcessingInformation.Location.AdditionalJurisdiction
-                        </nhs-summary-list-row>
+                        @if (!string.IsNullOrWhiteSpace(Model.Solution.DataProcessingInformation.Location.AdditionalJurisdiction))
+                        {
+                            <nhs-summary-list-row label-text="Additional jurisdiction if processing data outside of the UK (optional)" style="word-break: break-word">
+                                @Model.Solution.DataProcessingInformation.Location.AdditionalJurisdiction
+                            </nhs-summary-list-row>
+                        }
                     </nhs-summary-list>
                 }
                 else
@@ -52,7 +58,7 @@
                 @if (hasDataProcessing)
                 {
                     <p>
-                        <a class="nhsuk-link--no-visited-state" href="#">
+                        <a class="nhsuk-link--no-visited-state" href="@dataProcessingInfoUrl">
                             <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                             Change data processing information
                         </a>
@@ -61,7 +67,7 @@
                 else
                 {
                     <p class="nhsuk-body-m">
-                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="#">
+                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@dataProcessingInfoUrl">
                             <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>Add data processing information
                         </a>
                     </p>
@@ -70,9 +76,6 @@
         </nhs-card-v2>
 
         <nhs-card-v2>
-            @{
-                var hasDataProtectionOfficer = Model.Solution.DataProcessingInformation?.Officer is not null;
-            }
             <nhs-card-content title="Data Protection Officer details">
                 @if (hasDataProtectionOfficer)
                 {
