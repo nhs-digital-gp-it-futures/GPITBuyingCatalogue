@@ -851,7 +851,7 @@ public static class CompetitionHubControllerTests
     {
         serviceRecipients.ForEach(x => x.InputQuantity = x.Quantity.ToString());
 
-        model.SubLocations.First().ServiceRecipients = serviceRecipients;
+        model.SubLocations = new SubLocationModel[] { new SubLocationModel("Location One", serviceRecipients), };
 
         _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, solutionId, model);
 
@@ -876,7 +876,7 @@ public static class CompetitionHubControllerTests
     {
         serviceRecipients.ForEach(x => x.InputQuantity = x.Quantity.ToString());
 
-        model.SubLocations.First().ServiceRecipients = serviceRecipients;
+        model.SubLocations = new SubLocationModel[] { new SubLocationModel("Location One", serviceRecipients), };
 
         _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, solutionId, model, serviceId);
 
@@ -900,7 +900,7 @@ public static class CompetitionHubControllerTests
     {
         serviceRecipients.ForEach(x => x.InputQuantity = x.Quantity.ToString());
 
-        model.SubLocations.First().ServiceRecipients = serviceRecipients;
+        model.SubLocations = new SubLocationModel[] { new SubLocationModel("Location One", serviceRecipients), };
 
         var result = (await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, solutionId, model))
             .As<RedirectToActionResult>();

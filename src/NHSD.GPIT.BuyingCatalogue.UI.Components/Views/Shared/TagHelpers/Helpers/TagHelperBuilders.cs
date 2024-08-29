@@ -81,12 +81,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             if (containsHiddenContent)
             {
                 var message = TagHelperFunctions.GetInnerHtml(builder);
-                var regex = new Regex("&lt;(.*?)&gt;");
-                var newMessage = regex.Replace(message, string.Empty);
-                var hiddenMessage = regex.Match(message).Groups[1].Value;
-                var hiddenSpan = GetHiddenContentBuilder(hiddenMessage);
-                builder.InnerHtml.Clear();
-                builder.InnerHtml.AppendHtml(newMessage).AppendHtml(hiddenSpan);
+                var (visibleContent, hiddenContent) = TagHelperFunctions.ExtractHiddenContent(message);
+
+                builder.InnerHtml.Clear()
+                    .AppendHtml(visibleContent)
+                    .AppendHtml(GetHiddenContentBuilder(hiddenContent));
             }
 
             return builder;
