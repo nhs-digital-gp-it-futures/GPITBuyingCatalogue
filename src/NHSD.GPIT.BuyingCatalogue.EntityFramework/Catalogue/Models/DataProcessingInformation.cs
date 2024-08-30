@@ -9,7 +9,7 @@ public class DataProcessingInformation
 
     public CatalogueItemId SolutionId { get; set; }
 
-    public int DataProcessingDetailsId { get; set; }
+    public int? DataProcessingDetailsId { get; set; }
 
     public DataProcessingDetails Details { get; set; }
 

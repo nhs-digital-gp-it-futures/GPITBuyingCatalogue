@@ -12,4 +12,8 @@ public interface IDataProcessingInformationService
     Task SetDataProcessingInformation(
         CatalogueItemId solutionId,
         SetDataProcessingInformationModel model);
+
+    Task SetDataProtectionOfficer(
+        CatalogueItemId solutionId,
+        SetDataProtectionOfficerModel model);
 }

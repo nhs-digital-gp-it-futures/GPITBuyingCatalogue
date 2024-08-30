@@ -5,6 +5,7 @@
     var hasDataProtectionOfficer = Model.Solution.DataProcessingInformation?.Officer is not null;
 
     var dataProcessingInfoUrl = Url.Action(nameof(DataProcessingInformationController.AddOrEditDataProcessingInformation), typeof(DataProcessingInformationController).ControllerName(), new { solutionId = Model.Solution.CatalogueItemId });
+    var dataProtectionOfficerUrl = Url.Action(nameof(DataProcessingInformationController.AddOrEditDataProtectionOfficer), typeof(DataProcessingInformationController).ControllerName(), new { solutionId = Model.Solution.CatalogueItemId });
 }
 
 <partial name="Partials/_BackLink" model="@Model"/>
@@ -109,7 +110,7 @@
                 @if (hasDataProtectionOfficer)
                 {
                     <p>
-                        <a class="nhsuk-link--no-visited-state" href="#">
+                        <a class="nhsuk-link--no-visited-state" href="@dataProtectionOfficerUrl">
                             <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                             Change data protection officer details
                         </a>
@@ -118,7 +119,7 @@
                 else
                 {
                     <p class="nhsuk-body-m">
-                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="#">
+                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@dataProtectionOfficerUrl">
                             <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>Add data protection officer details
                         </a>
                     </p>

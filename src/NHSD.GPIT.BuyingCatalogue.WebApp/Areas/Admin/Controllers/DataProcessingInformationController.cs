@@ -13,7 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 [Authorize(Policy = "AdminOnly")]
 [Area("Admin")]
 [Route("admin/catalogue-solutions/{solutionId}/data-processing")]
-public class DataProcessingInformationController(IDataProcessingInformationService dataProcessingInformationService) : Controller
+public class DataProcessingInformationController(IDataProcessingInformationService dataProcessingInformationService)
+    : Controller
 {
     private readonly IDataProcessingInformationService dataProcessingInformationService =
         dataProcessingInformationService ?? throw new ArgumentNullException(nameof(dataProcessingInformationService));
@@ -66,6 +67,38 @@ public class DataProcessingInformationController(IDataProcessingInformationServi
                 model.DataSubjectCategories,
                 model.ProcessingLocation,
                 model.AdditionalJurisdiction));
+
+        return RedirectToAction(nameof(Index), new { solutionId });
+    }
+
+    [HttpGet("data-protection-officer")]
+    public async Task<IActionResult> AddOrEditDataProtectionOfficer(
+        CatalogueItemId solutionId)
+    {
+        var solution = await dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solutionId);
+
+        var model = new AddEditDataProtectionOfficerModel(solution)
+        {
+            BackLink = Url.Action(nameof(Index), new { solutionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("data-protection-officer")]
+    public async Task<IActionResult> AddOrEditDataProtectionOfficer(
+        CatalogueItemId solutionId,
+        AddEditDataProtectionOfficerModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        await dataProcessingInformationService.SetDataProtectionOfficer(
+            solutionId,
+            new SetDataProtectionOfficerModel(
+                model.Name,
+                model.EmailAddress,
+                model.PhoneNumber));
 
         return RedirectToAction(nameof(Index), new { solutionId });
     }

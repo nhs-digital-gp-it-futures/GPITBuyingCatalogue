@@ -54,4 +54,24 @@ public class DataProcessingInformationService(BuyingCatalogueDbContext dbContext
 
         await dbContext.SaveChangesAsync();
     }
+
+    public async Task SetDataProtectionOfficer(CatalogueItemId solutionId, SetDataProtectionOfficerModel model)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+
+        var solution = await dbContext
+            .Solutions
+            .Include(x => x.DataProcessingInformation)
+            .Include(x => x.DataProcessingInformation.Officer)
+            .FirstOrDefaultAsync(x => x.CatalogueItemId == solutionId);
+
+        var dataProcessingInformation = solution.DataProcessingInformation ??= new DataProcessingInformation();
+        var dataProtectionOfficer = dataProcessingInformation.Officer ??= new DataProtectionOfficer();
+
+        dataProtectionOfficer.Name = model.Name;
+        dataProtectionOfficer.EmailAddress = model.EmailAddress;
+        dataProtectionOfficer.PhoneNumber = model.PhoneNumber;
+
+        await dbContext.SaveChangesAsync();
+    }
 }

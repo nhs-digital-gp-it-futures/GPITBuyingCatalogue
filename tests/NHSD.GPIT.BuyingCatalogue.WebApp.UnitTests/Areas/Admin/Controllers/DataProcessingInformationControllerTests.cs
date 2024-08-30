@@ -88,4 +88,50 @@ public static class DataProcessingInformationControllerTests
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
     }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task AddOrEditDataProtectionOfficer_ReturnsViewWithModel(
+        Solution solution,
+        [Frozen] IDataProcessingInformationService dataProcessingInformationService,
+        DataProcessingInformationController controller)
+    {
+        dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId)
+            .Returns(solution);
+
+        var expectedModel = new AddEditDataProtectionOfficerModel(solution);
+
+        var result = (await controller.AddOrEditDataProtectionOfficer(solution.CatalogueItemId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task AddOrEditDataProtectionOfficer_InvalidModel_ReturnsView(
+        CatalogueItemId catalogueItemId,
+        AddEditDataProtectionOfficerModel model,
+        DataProcessingInformationController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.AddOrEditDataProtectionOfficer(catalogueItemId, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().Be(model);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task AddOrEditDataProtectionOfficer_ValidModel_Redirects(
+        CatalogueItemId catalogueItemId,
+        AddEditDataProtectionOfficerModel model,
+        DataProcessingInformationController controller)
+    {
+        var result = (await controller.AddOrEditDataProtectionOfficer(catalogueItemId, model)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
 }

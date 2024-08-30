@@ -110,4 +110,70 @@ public static class DataProcessingInformationServiceTests
         updatedSolution.DataProcessingInformation.Location.ProcessingLocation.Should().Be(model.ProcessingLocation);
         updatedSolution.DataProcessingInformation.Location.AdditionalJurisdiction.Should().Be(model.AdditionalJurisdiction);
     }
+
+    [Theory]
+    [MockAutoData]
+    public static Task SetDataProtectionOfficer_NullModel_ThrowsArgumentNullException(
+        CatalogueItemId solutionId,
+        DataProcessingInformationService service) => FluentActions
+        .Awaiting(() => service.SetDataProtectionOfficer(solutionId, null))
+        .Should()
+        .ThrowAsync<ArgumentNullException>();
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task SetDataProtectionOfficer_NullInformation_SetsInformation(
+        SetDataProtectionOfficerModel model,
+        Solution solution,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        DataProcessingInformationService service)
+    {
+        solution.DataProcessingInformation = null;
+
+        dbContext.Solutions.Add(solution);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        await service.SetDataProtectionOfficer(solution.CatalogueItemId, model);
+
+        var updatedSolution = await service.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId);
+
+        updatedSolution.DataProcessingInformation.Should().NotBeNull();
+        updatedSolution.DataProcessingInformation.Officer.Should().NotBeNull();
+
+        updatedSolution.DataProcessingInformation.Officer.Name.Should().Be(model.Name);
+        updatedSolution.DataProcessingInformation.Officer.EmailAddress.Should().Be(model.EmailAddress);
+        updatedSolution.DataProcessingInformation.Officer.PhoneNumber.Should().Be(model.PhoneNumber);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task SetDataProtectionOfficer_ExistingInformation_SetsInformation(
+        SetDataProtectionOfficerModel model,
+        DataProcessingInformation information,
+        DataProtectionOfficer officer,
+        Solution solution,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        DataProcessingInformationService service)
+    {
+        information.Officer = officer;
+        solution.DataProcessingInformation = information;
+
+        dbContext.Solutions.Add(solution);
+
+        await dbContext.SaveChangesAsync();
+        dbContext.ChangeTracker.Clear();
+
+        await service.SetDataProtectionOfficer(solution.CatalogueItemId, model);
+
+        var updatedSolution = await service.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId);
+
+        updatedSolution.DataProcessingInformation.Should().NotBeNull();
+        updatedSolution.DataProcessingInformation.Officer.Should().NotBeNull();
+
+        updatedSolution.DataProcessingInformation.Officer.Name.Should().Be(model.Name);
+        updatedSolution.DataProcessingInformation.Officer.EmailAddress.Should().Be(model.EmailAddress);
+        updatedSolution.DataProcessingInformation.Officer.PhoneNumber.Should().Be(model.PhoneNumber);
+    }
 }
