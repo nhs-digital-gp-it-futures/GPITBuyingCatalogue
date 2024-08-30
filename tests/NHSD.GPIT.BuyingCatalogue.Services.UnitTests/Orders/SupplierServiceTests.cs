@@ -391,7 +391,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var associatedService = associatedServices.First();
             var supplier = suppliers.First();
 
-            solution.CatalogueItem.SupplierServiceAssociations.Add(new(solution.CatalogueItemId, associatedService.CatalogueItemId));
+            solution.CatalogueItem.SupplierServiceAssociations =
+                new List<SupplierServiceAssociation>
+                {
+                    new(solution.CatalogueItemId, associatedService.CatalogueItemId),
+                };
+
             solution.CatalogueItem.Supplier = supplier;
             associatedService.CatalogueItem.Supplier = supplier;
             associatedService.PracticeReorganisationType = orderType.ToPracticeReorganisationType;
