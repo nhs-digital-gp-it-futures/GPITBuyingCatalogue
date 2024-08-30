@@ -109,7 +109,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             if (ColourMode == ExpanderColourMode.BlackAndWhite)
                 classAttribute += $" {ExpanderBlackAndWhite}";
             if (CatchesErrors && For is not null && TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, For))
-                classAttribute += $" {TagHelperConstants.NhsValidationSummary}";
+                classAttribute += $" {TagHelperConstants.NhsExpanderError}";
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, classAttribute));
             if (For is not null)

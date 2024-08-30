@@ -75,9 +75,8 @@
                         <nhs-table-column>ODS code</nhs-table-column>
                         <nhs-table-column>@Model.QuantityColumnTitle</nhs-table-column>
 
-                        @foreach (var recipient in Model.SubLocations[i].ServiceRecipients)
+                        @for (var index=0; index < Model.SubLocations[i].ServiceRecipients.Length; index++)
                         {
-                            var index = Array.FindIndex(Model.SubLocations[i].ServiceRecipients, x => x.OdsCode.Contains(recipient.OdsCode));
                             <nhs-table-row-container>
                                 <nhs-table-cell>
                                     <input type="hidden" asp-for="@Model.SubLocations[i].ServiceRecipients[index].Name" />
