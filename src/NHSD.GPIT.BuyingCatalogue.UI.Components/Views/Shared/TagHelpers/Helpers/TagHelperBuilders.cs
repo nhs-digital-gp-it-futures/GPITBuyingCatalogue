@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return builder;
         }
 
-        public static TagBuilder GetValidationBuilder(ViewContext viewContext, ModelExpression aspFor, IHtmlGenerator htmlGenerator, bool containsHiddenContent = false)
+        public static TagBuilder GetValidationBuilder(ViewContext viewContext, ModelExpression aspFor, IHtmlGenerator htmlGenerator, string hiddenContent = null)
         {
             if (!TagHelperFunctions.CheckIfModelStateHasErrors(viewContext, aspFor))
                 return null;
@@ -78,14 +78,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             builder.GenerateId($"{aspFor.Name}-error", "_");
 
-            if (containsHiddenContent)
+            if (!string.IsNullOrEmpty(hiddenContent))
             {
-                var message = TagHelperFunctions.GetInnerHtml(builder);
-                var (visibleContent, hiddenContent) = TagHelperFunctions.ExtractHiddenContent(message);
-
-                builder.InnerHtml.Clear()
-                    .AppendHtml(visibleContent)
-                    .AppendHtml(GetHiddenContentBuilder(hiddenContent));
+                builder.InnerHtml.AppendHtml(GetHiddenContentBuilder(hiddenContent));
             }
 
             return builder;

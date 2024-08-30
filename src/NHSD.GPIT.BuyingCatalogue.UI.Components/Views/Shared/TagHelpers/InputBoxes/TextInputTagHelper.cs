@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         public int? MaximumCharacterLength { get; set; }
 
         [HtmlAttributeName(VisuallyHiddenErrorName)]
-        public bool VisuallyHiddenError { get; set; } = false;
+        public string VisuallyHiddenError { get; set; } = null;
 
         private int DefaultMaxLength => MaximumCharacterLength ?? 500;
 

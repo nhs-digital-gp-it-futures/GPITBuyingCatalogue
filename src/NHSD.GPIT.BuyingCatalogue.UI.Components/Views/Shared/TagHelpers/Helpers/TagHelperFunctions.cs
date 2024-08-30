@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Helpers;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -179,24 +178,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 return false;
 
             return true;
-        }
-
-        public static string GetInnerHtml(TagBuilder builder)
-        {
-            if (builder is null || !builder.HasInnerHtml) return string.Empty;
-
-            using var writer = new System.IO.StringWriter();
-            builder.InnerHtml.WriteTo(writer, System.Text.Encodings.Web.HtmlEncoder.Default);
-            return writer.ToString();
-        }
-
-        public static (string VisibleContent, string HiddenContent) ExtractHiddenContent(string message)
-        {
-            if (string.IsNullOrEmpty(message)) return (string.Empty, string.Empty);
-
-            var visibleContent = TagHelperRegex.HiddenContentRegex().Replace(message, string.Empty);
-            var hiddenContent = TagHelperRegex.HiddenContentRegex().Match(message).Groups[1].Value;
-            return (visibleContent, hiddenContent);
         }
     }
 }
