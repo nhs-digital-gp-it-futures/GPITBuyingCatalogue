@@ -1,12 +1,16 @@
 @model AddEditDataProcessingInformationModel
 
+@{
+    ViewBag.Title = "General data processing information";
+}
+
 <partial name="Partials/_BackLink" model="@Model"/>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary />
 
-        <nhs-page-title title="General data processing information"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
                         advice="Let buyers know how your Catalogue Solution processes data."/>
 

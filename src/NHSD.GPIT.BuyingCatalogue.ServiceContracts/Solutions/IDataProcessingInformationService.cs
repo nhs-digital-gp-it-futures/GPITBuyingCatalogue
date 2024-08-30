@@ -16,4 +16,16 @@ public interface IDataProcessingInformationService
     Task SetDataProtectionOfficer(
         CatalogueItemId solutionId,
         SetDataProtectionOfficerModel model);
+
+    Task AddSubProcessor(
+        CatalogueItemId solutionId,
+        SetSubProcessorModel model);
+
+    Task EditSubProcessor(
+        CatalogueItemId solutionId,
+        SetSubProcessorModel model);
+
+    Task DeleteSubProcessor(
+        CatalogueItemId solutionId,
+        int subProcessorId);
 }

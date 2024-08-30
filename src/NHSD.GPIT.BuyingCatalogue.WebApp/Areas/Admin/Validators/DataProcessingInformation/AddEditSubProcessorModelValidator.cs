@@ -3,10 +3,19 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DataProcessingInformat
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DataProcessingInformation;
 
-public sealed class AddEditDataProcessingInformationModelValidator : AbstractValidator<AddEditDataProcessingInformationModel>
+public sealed class AddEditSubProcessorModelValidator : AbstractValidator<AddEditSubProcessorModel>
 {
-    public AddEditDataProcessingInformationModelValidator()
+    internal const string OrganisationNameError = "Enter a sub-processor organisation name";
+
+    internal const string PostProcessingPlanError =
+        "Enter plan for return and destruction of data once processing is complete";
+
+    public AddEditSubProcessorModelValidator()
     {
+        RuleFor(x => x.OrganisationName)
+            .NotEmpty()
+            .WithMessage(OrganisationNameError);
+
         RuleFor(x => x.Subject)
             .NotEmpty()
             .WithMessage(SharedErrorMessages.SubjectMatterError);
@@ -27,8 +36,8 @@ public sealed class AddEditDataProcessingInformationModelValidator : AbstractVal
             .NotEmpty()
             .WithMessage(SharedErrorMessages.DataSubjectCategoriesError);
 
-        RuleFor(x => x.ProcessingLocation)
+        RuleFor(x => x.PostProcessingPlan)
             .NotEmpty()
-            .WithMessage(SharedErrorMessages.ProcessingLocationError);
+            .WithMessage(PostProcessingPlanError);
     }
 }

@@ -1,6 +1,8 @@
 @model DataProcessingInformationModel
 
 @{
+    ViewBag.Title = "Data processing information";
+
     var hasDataProcessing = Model.Solution.DataProcessingInformation?.Details is not null && Model.Solution.DataProcessingInformation?.Location is not null;
     var hasDataProtectionOfficer = Model.Solution.DataProcessingInformation?.Officer is not null;
 
@@ -12,7 +14,7 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-page-title title="Data processing information"
+        <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Solution.CatalogueItem.Name"
                         advice="This is the data processing information for this Catalogue Solution."/>
 
@@ -131,7 +133,29 @@
             <nhs-card-content title="Sub-processors added">
                 @if (Model.Solution.DataProcessingInformation?.SubProcessors.Count > 0)
                 {
-                    <nhs-table></nhs-table>
+                    <nhs-table>
+                        <nhs-table-column>Organisation name</nhs-table-column>
+                        <nhs-table-column>Subject matter of the processing</nhs-table-column>
+                        <nhs-table-column>
+                            <span class="nhsuk-u-visually-hidden">Action</span>
+                        </nhs-table-column>
+
+                        @foreach (var subProcessor in Model.Solution.DataProcessingInformation.SubProcessors)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell style="word-break: break-word;">@subProcessor.OrganisationName</nhs-table-cell>
+                                <nhs-table-cell style="word-break: break-word;">@subProcessor.Details.Subject</nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a asp-action="@(nameof(DataProcessingInformationController.EditSubProcessor))"
+                                       asp-controller="@(typeof(DataProcessingInformationController).ControllerName())"
+                                       asp-route-solutionId="@Model.Solution.CatalogueItemId"
+                                       asp-route-subProcessorId="@subProcessor.Id">
+                                        Edit
+                                    </a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
                 }
                 else
                 {
@@ -143,7 +167,10 @@
             </nhs-card-content>
             <nhs-card-footer>
                 <p class="nhsuk-body-m">
-                    <a class="nhsuk-link nhsuk-link--no-visited-state" href="#">
+                    <a class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@(nameof(DataProcessingInformationController.AddSubProcessor))"
+                       asp-controller="@(typeof(DataProcessingInformationController).ControllerName())"
+                       asp-area="@(typeof(DataProcessingInformationController).AreaName())"
+                       asp-route-solutionId="@Model.Solution.CatalogueItemId">
                         <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>Add a sub-processor
                     </a>
                 </p>

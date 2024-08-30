@@ -1,0 +1,45 @@
+@model AddEditSubProcessorModel
+
+@{
+    ViewBag.Title = "Sub-processor details";
+}
+
+<partial name="Partials/_BackLink" model="@Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary/>
+
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SolutionName"
+                        advice="Provide information about your sub-processor."/>
+
+        <form method="post">
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="NumberOfSubProcessors"/>
+            <input type="hidden" asp-for="PublicationStatus"/>
+            <input type="hidden" asp-for="SubProcessorId"/>
+            <input type="hidden" asp-for="SolutionName"/>
+
+            <nhs-textarea label-text="Sub-processor organisation name" asp-for="OrganisationName"/>
+
+            <nhs-textarea label-text="Subject matter of the processing" asp-for="Subject"/>
+
+            <nhs-textarea label-text="Duration of the processing" asp-for="Duration"/>
+
+            <nhs-textarea label-text="Nature and purposes of processing" asp-for="ProcessingNature"/>
+
+            <nhs-textarea label-text="Types of personal data" asp-for="PersonalDataTypes"/>
+
+            <nhs-textarea label-text="Categories of data subjects" asp-for="DataSubjectCategories"/>
+
+            <nhs-textarea label-text="Plan for return and destruction of data once processing is complete" asp-for="PostProcessingPlan"/>
+
+            <nhs-submit-button/>
+        </form>
+        @if (Model.CanDelete)
+        {
+            <vc:nhs-delete-button url="@(Url.Action(nameof(DataProcessingInformationController.DeleteSubProcessor), typeof(DataProcessingInformationController).ControllerName(), new { solutionId = Model.SolutionId, subProcessorId = Model.SubProcessorId }))" text="Delete sub-processor"/>
+        }
+    </div>
+</div>

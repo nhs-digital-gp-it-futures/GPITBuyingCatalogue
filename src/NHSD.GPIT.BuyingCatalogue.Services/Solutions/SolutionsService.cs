@@ -147,26 +147,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         HostingType = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid()
                             ? TaskProgress.Completed
                             : TaskProgress.NotStarted,
-                        DataProcessing = (ci.Solution.DataProcessingInformation != null && (ci.Solution
-                                .DataProcessingInformation.Location != null && !string.IsNullOrWhiteSpace(
-                                ci.Solution
-                                    .DataProcessingInformation.Location.ProcessingLocation))
+                        DataProcessing = (ci.Solution.DataProcessingInformation != null
                             && (ci.Solution.DataProcessingInformation.Details != null
-                                && !string.IsNullOrWhiteSpace(ci.Solution.DataProcessingInformation.Details.Subject)
-                                && !string.IsNullOrWhiteSpace(ci.Solution.DataProcessingInformation.Details.Duration)
-                                && !string.IsNullOrWhiteSpace(
-                                    ci.Solution.DataProcessingInformation.Details.ProcessingNature)
-                                && !string.IsNullOrWhiteSpace(
-                                    ci.Solution.DataProcessingInformation.Details.PersonalDataTypes)
-                                && !string.IsNullOrWhiteSpace(
-                                    ci.Solution.DataProcessingInformation.Details.DataSubjectCategories))
-                            && (ci.Solution.DataProcessingInformation.Officer != null
-                                && !string.IsNullOrWhiteSpace(ci.Solution.DataProcessingInformation.Officer.Name)
-                                && (!string.IsNullOrWhiteSpace(
-                                        ci.Solution.DataProcessingInformation.Officer.EmailAddress)
-                                    || !string.IsNullOrWhiteSpace(
-                                        ci.Solution.DataProcessingInformation.Officer.PhoneNumber)))
-                            && ci.Solution.DataProcessingInformation.SubProcessors.Any())
+                                && ci.Solution.DataProcessingInformation.Location != null
+                                && ci.Solution.DataProcessingInformation.Officer != null))
                             ? TaskProgress.Completed
                             : (ci.Solution.DataProcessingInformation != null
                                 && (ci.Solution.DataProcessingInformation.Details != null

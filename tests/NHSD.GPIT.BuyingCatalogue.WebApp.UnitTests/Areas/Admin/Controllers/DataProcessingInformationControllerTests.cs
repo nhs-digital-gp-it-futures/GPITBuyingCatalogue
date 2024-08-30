@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
@@ -130,6 +131,162 @@ public static class DataProcessingInformationControllerTests
         DataProcessingInformationController controller)
     {
         var result = (await controller.AddOrEditDataProtectionOfficer(catalogueItemId, model)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task AddSubProcessor_ReturnsViewWithModel(
+        Solution solution,
+        [Frozen] IDataProcessingInformationService dataProcessingInformationService,
+        DataProcessingInformationController controller)
+    {
+        dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId)
+            .Returns(solution);
+
+        var expectedModel = new AddEditSubProcessorModel(solution);
+
+        var result = (await controller.AddSubProcessor(solution.CatalogueItemId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task AddSubProcessor_InvalidModel_ReturnsView(
+        CatalogueItemId catalogueItemId,
+        AddEditSubProcessorModel model,
+        DataProcessingInformationController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.AddSubProcessor(catalogueItemId, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().Be(model);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task AddSubProcessor_ValidModel_Redirects(
+        CatalogueItemId catalogueItemId,
+        AddEditSubProcessorModel model,
+        DataProcessingInformationController controller)
+    {
+        var result = (await controller.AddSubProcessor(catalogueItemId, model)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task EditSubProcessor_ReturnsViewWithModel(
+        Solution solution,
+        DataProtectionSubProcessor subProcessor,
+        [Frozen] IDataProcessingInformationService dataProcessingInformationService,
+        DataProcessingInformationController controller)
+    {
+        solution.DataProcessingInformation = new DataProcessingInformation()
+        {
+            SubProcessors = new List<DataProtectionSubProcessor> { subProcessor },
+        };
+
+        dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId)
+            .Returns(solution);
+
+        var expectedModel = new AddEditSubProcessorModel(solution, subProcessor);
+
+        var result = (await controller.EditSubProcessor(solution.CatalogueItemId, subProcessor.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task EditSubProcessor_InvalidModel_ReturnsView(
+        CatalogueItemId catalogueItemId,
+        int subProcessorId,
+        AddEditSubProcessorModel model,
+        DataProcessingInformationController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.EditSubProcessor(catalogueItemId, subProcessorId, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().Be(model);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task EditSubProcessor_ValidModel_Redirects(
+        CatalogueItemId catalogueItemId,
+        int subProcessorId,
+        AddEditSubProcessorModel model,
+        DataProcessingInformationController controller)
+    {
+        var result = (await controller.EditSubProcessor(catalogueItemId, subProcessorId, model)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task DeleteSubProcessor_InvalidSubProcessor_Redirects(
+        Solution solution,
+        int subProcessorId,
+        [Frozen] IDataProcessingInformationService dataProcessingInformationService,
+        DataProcessingInformationController controller)
+    {
+        dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId)
+            .Returns(solution);
+
+        var result = (await controller.DeleteSubProcessor(solution.CatalogueItemId, subProcessorId)).As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task DeleteSubProcessor_ValidSubProcessor_ReturnsViewWithModel(
+        Solution solution,
+        DataProtectionSubProcessor subProcessor,
+        [Frozen] IDataProcessingInformationService dataProcessingInformationService,
+        DataProcessingInformationController controller)
+    {
+        solution.DataProcessingInformation = new DataProcessingInformation()
+        {
+            SubProcessors = new List<DataProtectionSubProcessor> { subProcessor },
+        };
+
+        dataProcessingInformationService.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId)
+            .Returns(solution);
+
+        var expectedModel = new DeleteSubProcessorModel(subProcessor);
+
+        var result = (await controller.DeleteSubProcessor(solution.CatalogueItemId, subProcessor.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task DeleteSubProcessor_Redirects(
+        CatalogueItemId solutionId,
+        int subProcessorId,
+        DeleteSubProcessorModel model,
+        DataProcessingInformationController controller)
+    {
+        var result =
+            (await controller.DeleteSubProcessor(solutionId, subProcessorId, model)).As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));

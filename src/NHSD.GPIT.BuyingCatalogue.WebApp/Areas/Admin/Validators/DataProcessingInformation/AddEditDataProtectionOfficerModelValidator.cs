@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DataProcessingInformat
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DataProcessingInformation;
 
-public class AddEditDataProtectionOfficerModelValidator : AbstractValidator<AddEditDataProtectionOfficerModel>
+public sealed class AddEditDataProtectionOfficerModelValidator : AbstractValidator<AddEditDataProtectionOfficerModel>
 {
     internal const string NameError = "Enter the name of your Data Protection Officer";
 

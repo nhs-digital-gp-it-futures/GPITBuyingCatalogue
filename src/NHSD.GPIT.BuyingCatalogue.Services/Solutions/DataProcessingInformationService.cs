@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -71,6 +72,88 @@ public class DataProcessingInformationService(BuyingCatalogueDbContext dbContext
         dataProtectionOfficer.Name = model.Name;
         dataProtectionOfficer.EmailAddress = model.EmailAddress;
         dataProtectionOfficer.PhoneNumber = model.PhoneNumber;
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task AddSubProcessor(CatalogueItemId solutionId, SetSubProcessorModel model)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+
+        var solution = await dbContext
+            .Solutions
+            .Include(x => x.DataProcessingInformation)
+            .Include(x => x.DataProcessingInformation.SubProcessors)
+            .ThenInclude(x => x.Details)
+            .FirstOrDefaultAsync(x => x.CatalogueItemId == solutionId);
+
+        var dataProcessingInformation = solution.DataProcessingInformation ??= new DataProcessingInformation();
+
+        var subProcessor = new DataProtectionSubProcessor
+        {
+            OrganisationName = model.OrganisationName,
+            PostProcessingPlan = model.PostProcessingPlan,
+            Details = new DataProcessingDetails
+            {
+                Subject = model.Subject,
+                Duration = model.Duration,
+                ProcessingNature = model.ProcessingNature,
+                PersonalDataTypes = model.PersonalDataTypes,
+                DataSubjectCategories = model.DataSubjectCategories,
+            },
+        };
+
+        dataProcessingInformation.SubProcessors.Add(subProcessor);
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task EditSubProcessor(CatalogueItemId solutionId, SetSubProcessorModel model)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+
+        if (!model.SubProcessorId.HasValue) throw new ArgumentException("Invalid Sub-processor ID");
+
+        var solution = await dbContext
+            .Solutions
+            .Include(x => x.DataProcessingInformation)
+            .Include(x => x.DataProcessingInformation.SubProcessors)
+            .ThenInclude(x => x.Details)
+            .FirstOrDefaultAsync(x => x.CatalogueItemId == solutionId);
+
+        var dataProcessingInformation = solution.DataProcessingInformation;
+
+        var subProcessor = dataProcessingInformation?.SubProcessors.FirstOrDefault(x => x.Id == model.SubProcessorId);
+        if (subProcessor is null) throw new InvalidOperationException("Invalid Sub-processor");
+
+        var subProcessorDetails = subProcessor.Details ??= new DataProcessingDetails();
+
+        subProcessorDetails.Subject = model.Subject;
+        subProcessorDetails.Duration = model.Duration;
+        subProcessorDetails.ProcessingNature = model.ProcessingNature;
+        subProcessorDetails.PersonalDataTypes = model.PersonalDataTypes;
+        subProcessorDetails.DataSubjectCategories = model.DataSubjectCategories;
+        subProcessor.OrganisationName = model.OrganisationName;
+        subProcessor.PostProcessingPlan = model.PostProcessingPlan;
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteSubProcessor(CatalogueItemId solutionId, int subProcessorId)
+    {
+        var solution = await dbContext
+            .Solutions
+            .Include(x => x.DataProcessingInformation)
+            .Include(x => x.DataProcessingInformation.SubProcessors)
+            .ThenInclude(x => x.Details)
+            .FirstOrDefaultAsync(x => x.CatalogueItemId == solutionId);
+
+        var dataProcessingInformation = solution.DataProcessingInformation;
+
+        var subProcessor = dataProcessingInformation?.SubProcessors.FirstOrDefault(x => x.Id == subProcessorId);
+        if (subProcessor is null) return;
+
+        dataProcessingInformation.SubProcessors.Remove(subProcessor);
 
         await dbContext.SaveChangesAsync();
     }
