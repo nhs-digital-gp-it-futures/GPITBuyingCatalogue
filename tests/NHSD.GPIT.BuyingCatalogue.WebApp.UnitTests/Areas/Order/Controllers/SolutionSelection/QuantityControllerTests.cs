@@ -243,7 +243,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 orderItem.OrderItemPrice,
                 recipients,
                 null);
-            expected.ServiceRecipients.ForEach(x => x.InputQuantity = string.Empty);
+            expected.SubLocations.ForEach(x => x.ServiceRecipients.ForEach(y => y.InputQuantity = string.Empty));
 
             model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
@@ -302,7 +302,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 orderItem.OrderItemPrice,
                 recipients,
                 null);
-            expected.ServiceRecipients.ForEach(x => x.InputQuantity = $"{NumberOfPatients}");
+            expected.SubLocations.ForEach(x => x.ServiceRecipients.ForEach(y => y.InputQuantity = $"{NumberOfPatients}"));
 
             model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
@@ -362,7 +362,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 recipients,
                 null);
 
-            expected.ServiceRecipients.ForEach(x => x.InputQuantity = $"{NumberOfPatients}");
+            expected.SubLocations.ForEach(x => x.ServiceRecipients.ForEach(y => y.InputQuantity = $"{NumberOfPatients}"));
 
             model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
         }
@@ -414,13 +414,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockRoutingService.GetRoute(RoutingPoint.SelectQuantity, orderWrapper, Arg.Any<RouteValues>()).Returns(Route(internalOrgId, callOffId));
 
-            model.ServiceRecipients.ForEach(x => x.InputQuantity = x.Quantity > 0 ? string.Empty : "1");
+            model.SubLocations.ForEach(x => x.ServiceRecipients.ForEach(y => y.InputQuantity = y.Quantity > 0 ? string.Empty : "1"));
 
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, model);
 
             foreach (var dto in actual)
             {
-                model.ServiceRecipients
+                model.SubLocations.SelectMany(x => x.ServiceRecipients)
                     .First(x => x.OdsCode == dto.OdsCode)
                     .Quantity.Should().Be(dto.Quantity == 0 ? 1 : dto.Quantity);
             }

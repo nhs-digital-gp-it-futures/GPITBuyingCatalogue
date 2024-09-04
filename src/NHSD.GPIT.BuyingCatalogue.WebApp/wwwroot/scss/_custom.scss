@@ -1,9 +1,13 @@
 .nhsuk-expander-index .nhsuk-details__summary .nhsuk-details__summary-text {
-  white-space: pre-line;
+    white-space: pre-line;
+}
+
+.nhsuk-error-expander {
+   border: 4px solid #d5281b;
 }
 
 .nhsuk-checkboxes__subhint {
-  font-size: 1rem;
+    font-size: 1rem;
 }
 
 .nhsuk-section:nth-of-type(2n) {

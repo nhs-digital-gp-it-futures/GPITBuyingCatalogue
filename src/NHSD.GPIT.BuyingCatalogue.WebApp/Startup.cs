@@ -62,6 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
                 options.Filters.Add(new BadRequestActionFilter());
 
                 options.ModelBinderProviders.Insert(0, new NewlinesNormalizingModelBinderProvider());
+                options.MaxModelValidationErrors = 1000;
             }).AddControllersAsServices();
 
             services.AddFluentValidation();

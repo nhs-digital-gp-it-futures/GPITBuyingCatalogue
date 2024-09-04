@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
@@ -21,12 +23,17 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         private const string ExpanderClass = "nhsuk-expander";
         private const string ExpanderIndexClass = "nhsuk-expander-index";
         private const string ExpanderBlackAndWhite = "nhsuk-expander-black-and-white";
+        private const string CatchErrorsName = "catches-errors";
 
         public enum ExpanderColourMode
         {
             Normal = 0,
             BlackAndWhite = 1,
         }
+
+        [ViewContext]
+        [HtmlAttributeNotBound]
+        public ViewContext ViewContext { get; set; }
 
         [HtmlAttributeName(TagHelperConstants.HeadingTextName)]
         public string HeadingText { get; set; }
@@ -60,6 +67,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
 
         [HtmlAttributeName(DetailsAndExpanderTagHelperBuilders.BoldTitle)]
         public bool BoldTitle { get; set; }
+
+        [HtmlAttributeName(CatchErrorsName)]
+        public bool CatchesErrors { get; set; } = false;
+
+        [HtmlAttributeName(TagHelperConstants.For)]
+        public ModelExpression For { get; set; }
 
         public override void Init(TagHelperContext context)
         {
@@ -95,8 +108,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             var classAttribute = $"{DetailsAndExpanderTagHelperBuilders.DetailsClass} {ExpanderClass} {ExpanderIndexClass}";
             if (ColourMode == ExpanderColourMode.BlackAndWhite)
                 classAttribute += $" {ExpanderBlackAndWhite}";
+            if (CatchesErrors && For is not null && TagHelperFunctions.CheckIfModelStateHasErrors(ViewContext, For))
+                classAttribute += $" {TagHelperConstants.NhsExpanderError}";
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, classAttribute));
+            if (For is not null)
+                output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Id, TagBuilder.CreateSanitizedId($"{For.Name}", "_")));
 
             textItem.InnerHtml.AppendHtml(children);
 
