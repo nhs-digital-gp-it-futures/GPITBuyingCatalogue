@@ -33,9 +33,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
             model.Advice.Should().Be(expectedAdvice);
             model.OrderType.Should().BeNull();
             model.PracticeReorganisationRecipient.Should().BeNull();
-            model.ServiceRecipients.Length.Should().Be(serviceRecipients.Count);
 
-            foreach (var serviceRecipient in model.ServiceRecipients)
+            var srs = model.SubLocations.SelectMany(x => x.ServiceRecipients);
+            srs.Count().Should().Be(serviceRecipients.Count);
+
+            foreach (var serviceRecipient in srs)
             {
                 var recipient = serviceRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
 
@@ -54,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
 
             var model = new SelectServiceRecipientQuantityModel(item.CatalogueItem, item.OrderItemPrice, null);
 
-            model.ServiceRecipients.Length.Should().Be(0);
+            model.SubLocations.SelectMany(x => x.ServiceRecipients).Count().Should().Be(0);
         }
 
         [Theory]
@@ -73,9 +75,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
             model.Caption.Should().Be(item.CatalogueItem.Name);
             model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextPatient);
             model.OrderType.Should().Be(orderType);
-            model.ServiceRecipients.Length.Should().Be(serviceRecipients.Count);
+            model.SubLocations.SelectMany(x => x.ServiceRecipients).Count().Should().Be(serviceRecipients.Count);
 
-            foreach (var serviceRecipient in model.ServiceRecipients)
+            foreach (var serviceRecipient in model.SubLocations.SelectMany(x => x.ServiceRecipients))
             {
                 var recipient = serviceRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
 
@@ -103,9 +105,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
             model.Advice.Should().Be(SelectServiceRecipientQuantityModel.AdviceTextMergerSplit);
             model.OrderType.Should().Be(orderType);
             model.PracticeReorganisationRecipient.Should().Be($"{organisation.Name} ({organisation.Id})");
-            model.ServiceRecipients.Length.Should().Be(serviceRecipients.Count);
+            model.SubLocations.SelectMany(x => x.ServiceRecipients).Count().Should().Be(serviceRecipients.Count);
 
-            foreach (var serviceRecipient in model.ServiceRecipients)
+            foreach (var serviceRecipient in model.SubLocations.SelectMany(x => x.ServiceRecipients))
             {
                 var recipient = serviceRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
 

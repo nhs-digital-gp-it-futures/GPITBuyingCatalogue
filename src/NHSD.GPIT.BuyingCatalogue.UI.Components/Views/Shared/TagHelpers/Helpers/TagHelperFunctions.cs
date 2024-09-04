@@ -24,42 +24,54 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             where T : Attribute
         {
             return aspFor?.Metadata?
-            .ContainerType?
-            .GetProperty(aspFor.Name[(aspFor.Name.LastIndexOf('.') + 1)..])?
-            .GetCustomAttribute<T>();
+                .ContainerType?
+                .GetProperty(aspFor.Name[(aspFor.Name.LastIndexOf('.') + 1)..])
+                ?
+                .GetCustomAttribute<T>();
         }
 
         public static IEnumerable<T> GetCustomAttributes<T>(ModelExpression aspFor)
             where T : Attribute
         {
             return aspFor?.Metadata?
-            .ContainerType?
-            .GetProperty(aspFor.Name[(aspFor.Name.LastIndexOf('.') + 1)..])?
-            .GetCustomAttributes<T>();
+                .ContainerType?
+                .GetProperty(aspFor.Name[(aspFor.Name.LastIndexOf('.') + 1)..])
+                ?
+                .GetCustomAttributes<T>();
         }
 
         public static bool IsCounterDisabled(ModelExpression aspFor, bool htmlAttributeEnableCharacterCounter)
         {
             return htmlAttributeEnableCharacterCounter == false
-                   || GetCustomAttribute<PasswordAttribute>(aspFor) != null;
+                || GetCustomAttribute<PasswordAttribute>(aspFor) != null;
         }
 
-        public static bool CheckIfModelStateHasAnyErrors(ViewContext viewContext, params ModelExpression[] modelExpressions)
+        public static bool CheckIfModelStateHasAnyErrors(
+            ViewContext viewContext,
+            params ModelExpression[] modelExpressions)
         {
             return modelExpressions.Any(me => CheckIfModelStateHasErrors(viewContext, me));
         }
 
-        public static bool CheckIfModelStateHasErrors(ViewContext viewContext, ModelExpression aspFor, string validationName = null)
+        public static bool CheckIfModelStateHasErrors(
+            ViewContext viewContext,
+            ModelExpression aspFor,
+            string validationName = null)
         {
             var modelState = viewContext.ViewData?.ModelState;
-            return !(modelState?[aspFor?.Name ?? validationName] is null) && modelState[aspFor?.Name ?? validationName].Errors.Any();
+            return !(modelState?[aspFor?.Name ?? validationName] is null)
+                && modelState[aspFor?.Name ?? validationName].Errors.Any();
         }
 
-        public static string GetErrorMessageFromModelState(ViewContext viewContext, ModelExpression aspFor, string validationName = null)
+        public static string GetErrorMessageFromModelState(
+            ViewContext viewContext,
+            ModelExpression aspFor,
+            string validationName = null)
         {
             var modelState = viewContext.ViewData?.ModelState;
 
-            if (modelState?[aspFor?.Name ?? validationName] is not null && modelState[aspFor?.Name ?? validationName].Errors.Any())
+            if (modelState?[aspFor?.Name ?? validationName] is not null
+                && modelState[aspFor?.Name ?? validationName].Errors.Any())
                 return modelState?[aspFor?.Name ?? validationName].Errors.FirstOrDefault().ErrorMessage;
 
             return string.Empty;
@@ -67,7 +79,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         public static string GetModelKebabNameFromFor(ModelExpression aspFor)
         {
-            string name = aspFor.Model is null || !string.IsNullOrWhiteSpace(aspFor.Name) ? aspFor.Name : aspFor.Model.GetType().Name;
+            string name = aspFor.Model is null || !string.IsNullOrWhiteSpace(aspFor.Name)
+                ? aspFor.Name
+                : aspFor.Model.GetType().Name;
 
             // removes the word Model from the end of the Model, e.g SolutionDescriptionModel becomes SolutionDescription
             if (name.Contains("Model", StringComparison.OrdinalIgnoreCase))
@@ -77,7 +91,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return string.Join("-", pattern.Matches(name)).ToLower();
         }
 
-        public static void TellParentTagIfThisTagIsInError(ViewContext viewContext, TagHelperContext context, ModelExpression model, string validationName = null)
+        public static void TellParentTagIfThisTagIsInError(
+            ViewContext viewContext,
+            TagHelperContext context,
+            ModelExpression model,
+            string validationName = null)
         {
             if (CheckIfModelStateHasErrors(viewContext, model, validationName))
             {
@@ -127,7 +145,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             TellParentThisHasConditionalChildContent(context);
         }
 
-        public static string BuildCssClassForConditionalContentOutput(TagHelperContext context, ConditionalContext conditionalContext, string baseClass, string additionalClass)
+        public static string BuildCssClassForConditionalContentOutput(
+            TagHelperContext context,
+            ConditionalContext conditionalContext,
+            string baseClass,
+            string additionalClass)
         {
             var stringBuilder = new StringBuilder();
 
@@ -141,7 +163,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return stringBuilder.ToString();
         }
 
-        public static bool ShouldIncludeClassForConditionalContent(TagHelperContext context, ConditionalContext conditionalContext)
+        public static bool ShouldIncludeClassForConditionalContent(
+            TagHelperContext context,
+            ConditionalContext conditionalContext)
         {
             // only apply to self if this is the parent container
             if (!context.Items.TryGetValue(TagHelperConstants.ConditionalContextName, out object value))

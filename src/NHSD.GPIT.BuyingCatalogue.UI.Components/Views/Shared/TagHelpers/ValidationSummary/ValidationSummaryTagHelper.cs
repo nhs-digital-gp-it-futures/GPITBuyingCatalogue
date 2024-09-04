@@ -20,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         private const string NhsValidationSummaryList = "nhsuk-error-summary__list";
 
         private const string RadioIdName = "RadioId";
+        private const string ExcludeChildErrorsName = "exclude-child-errors";
 
         private const string DefaultTitle = "There is a problem";
 
@@ -32,6 +33,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
         [HtmlAttributeName(RadioIdName)]
         public string RadioId { get; set; }
+
+        [HtmlAttributeName(ExcludeChildErrorsName)]
+        public bool ExcludeChildErrors { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
@@ -109,7 +113,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 throw new InvalidOperationException();
 
             var propertyNames = viewType.GetProperties().Select(i => i.Name).ToList();
-            var orderedStates = ViewContext.ViewData.ModelState
+
+            var states = ViewContext.ViewData.ModelState.ToList();
+
+            if (ExcludeChildErrors)
+                states = states.Where(x => x.Key.Count(f => f == '[') <= 1).ToList();
+
+            var orderedStates = states
                 .OrderBy(d =>
                 {
                     var key = d.Key.Contains('[')

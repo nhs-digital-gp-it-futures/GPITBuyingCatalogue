@@ -12,9 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
         public SelectServiceRecipientQuantityModelValidatorTests()
         {
             validator = new SelectServiceRecipientQuantityModelValidator();
-            validator.RuleForEach(x => x.ServiceRecipients)
-                     .Cascade(CascadeMode.Continue)
-                     .SetValidator(new ServiceRecipientQuantityModelValidator());
+            validator.RuleForEach(x => x.SubLocations).Cascade(CascadeMode.Continue).SetValidator(new SubLocationModelValidator());
         }
 
         [Theory]
@@ -28,11 +26,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Quantity
 #pragma warning disable SA1413
             var model = new SelectServiceRecipientQuantityModel
             {
-                ServiceRecipients = new ServiceRecipientQuantityModel[]
+                SubLocations = new SubLocationModel[]
                 {
-                    new ServiceRecipientQuantityModel
+                    new SubLocationModel
                     {
-                        InputQuantity = quantity
+                        ServiceRecipients = new ServiceRecipientQuantityModel[]
+                        {
+                            new ServiceRecipientQuantityModel
+                            {
+                                InputQuantity = quantity
+                            }
+                        }
                     }
                 }
             };

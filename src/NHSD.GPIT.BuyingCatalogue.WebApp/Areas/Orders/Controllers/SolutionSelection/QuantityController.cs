@@ -193,7 +193,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var orderWrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
             var order = orderWrapper.Order;
-            var quantities = model.ServiceRecipients
+            var quantities = model.SubLocations.SelectMany(x => x.ServiceRecipients)
                 .Select(x => new OrderItemRecipientQuantityDto
                 {
                     OdsCode = x.OdsCode,
@@ -270,40 +270,43 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model, OrderItem solution = null, ICollection<OrderRecipient> recipients = null)
         {
-            var odsCodes = model.ServiceRecipients.Where(x => x.Quantity == 0).Select(x => x.OdsCode).ToArray();
+            var odsCodes = model.SubLocations.SelectMany(x => x.ServiceRecipients).Where(x => x.Quantity == 0).Select(x => x.OdsCode).ToArray();
             var practiceSizes =
                 (await gpPracticeService.GetNumberOfPatients(odsCodes)).ToDictionary(
                     x => x.OdsCode,
                     x => x.NumberOfPatients);
 
-            foreach (var serviceRecipient in model.ServiceRecipients)
+            foreach ((SubLocationModel location, var index) in model.SubLocations.Select((x, i) => (x, i)))
             {
-                if (serviceRecipient.Quantity > 0)
+                foreach (var serviceRecipient in location.ServiceRecipients)
                 {
-                    continue;
-                }
-
-                var existing = recipients
-                    ?.FirstOrDefault(x => x.OdsCode == serviceRecipient.OdsCode)
-                    ?.GetQuantityForItem(solution.CatalogueItemId);
-
-                if (existing.HasValue)
-                {
-                    serviceRecipient.InputQuantity = $"{existing.Value}";
-                }
-                else
-                {
-                    if (practiceSizes.TryGetValue(serviceRecipient.OdsCode, out var quantity))
+                    if (serviceRecipient.Quantity > 0)
                     {
-                        serviceRecipient.InputQuantity = $"{quantity}";
+                        continue;
+                    }
+
+                    var existing = recipients
+                        ?.FirstOrDefault(x => x.OdsCode == serviceRecipient.OdsCode)
+                        ?.GetQuantityForItem(solution.CatalogueItemId);
+
+                    if (existing.HasValue)
+                    {
+                        serviceRecipient.InputQuantity = $"{existing.Value}";
+                    }
+                    else
+                    {
+                        if (practiceSizes.TryGetValue(serviceRecipient.OdsCode, out var quantity))
+                        {
+                            serviceRecipient.InputQuantity = $"{quantity}";
+                        }
                     }
                 }
-            }
 
-            model.ServiceRecipients = model.ServiceRecipients
-                .OrderBy(x => x.Quantity == 0 ? 0 : 1)
-                .ThenBy(x => x.Name)
-                .ToArray();
+                model.SubLocations[index].ServiceRecipients = model.SubLocations[index].ServiceRecipients
+                    .OrderBy(x => x.Quantity == 0 ? 0 : 1)
+                    .ThenBy(x => x.Name)
+                    .ToArray();
+            }
         }
     }
 }

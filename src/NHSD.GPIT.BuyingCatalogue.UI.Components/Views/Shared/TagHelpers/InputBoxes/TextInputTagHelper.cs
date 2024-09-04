@@ -15,6 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
     {
         public const string TagHelperName = "nhs-input";
         public const string InputWidthName = "input-width";
+        public const string VisuallyHiddenErrorName = "visually-hidden-error";
 
         private readonly IHtmlGenerator htmlGenerator;
 
@@ -57,6 +58,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         [HtmlAttributeName(TagHelperConstants.MaxCharacterLength)]
         public int? MaximumCharacterLength { get; set; }
 
+        [HtmlAttributeName(VisuallyHiddenErrorName)]
+        public string VisuallyHiddenError { get; set; } = null;
+
         private int DefaultMaxLength => MaximumCharacterLength ?? 500;
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
@@ -69,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
             var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
-            var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
+            var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator, VisuallyHiddenError);
             var input = GetInputBuilder();
             var counter = TagHelperBuilders.GetCounterBuilder(For, DefaultMaxLength, CharacterCountEnabled);
 
