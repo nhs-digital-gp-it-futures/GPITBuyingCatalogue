@@ -40,6 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 
         public ServiceLevelAgreements ServiceLevelAgreement { get; set; }
 
+        public DataProcessingInformation DataProcessingInformation { get; set; }
+
         public ICollection<AdditionalService> AdditionalServices { get; set; } = new HashSet<AdditionalService>();
 
         public ICollection<FrameworkSolution> FrameworkSolutions { get; set; } = new HashSet<FrameworkSolution>();

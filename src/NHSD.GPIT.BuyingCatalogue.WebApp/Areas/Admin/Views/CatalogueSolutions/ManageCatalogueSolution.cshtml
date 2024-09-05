@@ -141,6 +141,18 @@
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
+                    <nhs-table-cell>Data processing information</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    <nhs-table-cell>
+                        <nhs-tag status-enum="@Model.DataProcessingStatus" />
+                    </nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-action="@nameof(DataProcessingInformationController.Index)"
+                           asp-controller="@(typeof(DataProcessingInformationController).ControllerName())"
+                           asp-route-solutionId="@Model.SolutionId">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
                     <nhs-table-cell>List price</nhs-table-cell>
                     <nhs-table-cell>Yes</nhs-table-cell>
                     <nhs-table-cell>

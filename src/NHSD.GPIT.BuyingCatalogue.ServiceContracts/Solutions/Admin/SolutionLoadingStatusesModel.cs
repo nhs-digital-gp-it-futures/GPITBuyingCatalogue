@@ -20,6 +20,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin
 
         public TaskProgress HostingType { get; init; }
 
+        public TaskProgress DataProcessing { get; init; }
+
         public TaskProgress Implementation { get; init; }
 
         public TaskProgress Interoperability { get; init; }
