@@ -147,18 +147,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         HostingType = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid()
                             ? TaskProgress.Completed
                             : TaskProgress.NotStarted,
-                        DataProcessing = (ci.Solution.DataProcessingInformation != null
-                            && (ci.Solution.DataProcessingInformation.Details != null
-                                && ci.Solution.DataProcessingInformation.Location != null
-                                && ci.Solution.DataProcessingInformation.Officer != null))
-                            ? TaskProgress.Completed
-                            : (ci.Solution.DataProcessingInformation != null
+                        DataProcessing = ci.Solution.DataProcessingInformation != null
+                            && ci.Solution.DataProcessingInformation.Details != null
+                            && ci.Solution.DataProcessingInformation.Location != null
+                            && ci.Solution.DataProcessingInformation.Officer != null
+                                ? TaskProgress.Completed
+                                : ci.Solution.DataProcessingInformation != null
                                 && (ci.Solution.DataProcessingInformation.Details != null
                                     || ci.Solution.DataProcessingInformation.Location != null
                                     || ci.Solution.DataProcessingInformation.Officer != null
-                                    || ci.Solution.DataProcessingInformation.SubProcessors.Any()))
-                                ? TaskProgress.InProgress
-                                : TaskProgress.NotStarted,
+                                    || ci.Solution.DataProcessingInformation.SubProcessors.Any())
+                                    ? TaskProgress.InProgress
+                                    : TaskProgress.NotStarted,
                         DevelopmentPlans = ci.Solution.WorkOffPlans.Any()
                             ? TaskProgress.Completed
                             : TaskProgress.Optional,

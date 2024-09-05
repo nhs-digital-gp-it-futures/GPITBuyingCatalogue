@@ -9,26 +9,26 @@ public sealed class AddEditDataProcessingInformationModelValidator : AbstractVal
     {
         RuleFor(x => x.Subject)
             .NotEmpty()
-            .WithMessage(SharedErrorMessages.SubjectMatterError);
+            .WithMessage(DataProcessingValidationErrors.SubjectMatterError);
 
         RuleFor(x => x.Duration)
             .NotEmpty()
-            .WithMessage(SharedErrorMessages.DurationError);
+            .WithMessage(DataProcessingValidationErrors.DurationError);
 
         RuleFor(x => x.ProcessingNature)
             .NotEmpty()
-            .WithMessage(SharedErrorMessages.ProcessingNatureError);
+            .WithMessage(DataProcessingValidationErrors.ProcessingNatureError);
 
         RuleFor(x => x.PersonalDataTypes)
             .NotEmpty()
-            .WithMessage(SharedErrorMessages.PersonalDataTypesError);
+            .WithMessage(DataProcessingValidationErrors.PersonalDataTypesError);
 
         RuleFor(x => x.DataSubjectCategories)
             .NotEmpty()
-            .WithMessage(SharedErrorMessages.DataSubjectCategoriesError);
+            .WithMessage(DataProcessingValidationErrors.DataSubjectCategoriesError);
 
         RuleFor(x => x.ProcessingLocation)
             .NotEmpty()
-            .WithMessage(SharedErrorMessages.ProcessingLocationError);
+            .WithMessage(DataProcessingValidationErrors.ProcessingLocationError);
     }
 }

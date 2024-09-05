@@ -20,7 +20,7 @@ public static class AddEditDataProcessingInformationModelValidatorTests
         var result = validator.TestValidate(model);
 
         result.ShouldHaveValidationErrorFor(x => x.Subject)
-            .WithErrorMessage(SharedErrorMessages.SubjectMatterError);
+            .WithErrorMessage(DataProcessingValidationErrors.SubjectMatterError);
     }
 
     [Theory]
@@ -36,7 +36,7 @@ public static class AddEditDataProcessingInformationModelValidatorTests
         var result = validator.TestValidate(model);
 
         result.ShouldHaveValidationErrorFor(x => x.Duration)
-            .WithErrorMessage(SharedErrorMessages.DurationError);
+            .WithErrorMessage(DataProcessingValidationErrors.DurationError);
     }
 
     [Theory]
@@ -52,7 +52,7 @@ public static class AddEditDataProcessingInformationModelValidatorTests
         var result = validator.TestValidate(model);
 
         result.ShouldHaveValidationErrorFor(x => x.ProcessingNature)
-            .WithErrorMessage(SharedErrorMessages.ProcessingNatureError);
+            .WithErrorMessage(DataProcessingValidationErrors.ProcessingNatureError);
     }
 
     [Theory]
@@ -68,7 +68,7 @@ public static class AddEditDataProcessingInformationModelValidatorTests
         var result = validator.TestValidate(model);
 
         result.ShouldHaveValidationErrorFor(x => x.PersonalDataTypes)
-            .WithErrorMessage(SharedErrorMessages.PersonalDataTypesError);
+            .WithErrorMessage(DataProcessingValidationErrors.PersonalDataTypesError);
     }
 
     [Theory]
@@ -84,7 +84,7 @@ public static class AddEditDataProcessingInformationModelValidatorTests
         var result = validator.TestValidate(model);
 
         result.ShouldHaveValidationErrorFor(x => x.DataSubjectCategories)
-            .WithErrorMessage(SharedErrorMessages.DataSubjectCategoriesError);
+            .WithErrorMessage(DataProcessingValidationErrors.DataSubjectCategoriesError);
     }
 
     [Theory]
@@ -100,7 +100,7 @@ public static class AddEditDataProcessingInformationModelValidatorTests
         var result = validator.TestValidate(model);
 
         result.ShouldHaveValidationErrorFor(x => x.ProcessingLocation)
-            .WithErrorMessage(SharedErrorMessages.ProcessingLocationError);
+            .WithErrorMessage(DataProcessingValidationErrors.ProcessingLocationError);
     }
 
     [Theory]

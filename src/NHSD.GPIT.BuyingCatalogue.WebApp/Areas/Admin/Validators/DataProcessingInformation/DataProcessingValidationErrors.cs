@@ -1,6 +1,6 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.DataProcessingInformation;
 
-public static class SharedErrorMessages
+public static class DataProcessingValidationErrors
 {
     internal const string SubjectMatterError = "Enter information about the subject matter of the processing";
     internal const string DurationError = "Enter information about the duration of the processing";
