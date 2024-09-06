@@ -1,0 +1,25 @@
+@model DeleteSubProcessorModel
+
+@{
+    ViewBag.Title = "Delete this sub-processor?";
+}
+
+<partial name="Partials/_BackLink" model="@Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.OrganisationName" advice="The sub-processor will be deleted from the data processing information."/>
+
+        <nhs-warning-callout label-text="Deleting a sub-processor">
+            Deleting a sub-processor is permanent and all information previously added will be lost.
+        </nhs-warning-callout>
+
+        <form method="post">
+            <nhs-submit-button text="Delete sub-processor"></nhs-submit-button>
+        </form>
+
+        <div>
+            <a href="@Model.BackLink">Cancel</a>
+        </div>
+    </div>
+</div>

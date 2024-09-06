@@ -37,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
             ImplementationStatus = solutionLoadingStatuses.Implementation;
             ApplicationTypeStatus = solutionLoadingStatuses.ApplicationType;
             HostingTypeStatus = solutionLoadingStatuses.HostingType;
+            DataProcessingStatus = solutionLoadingStatuses.DataProcessing;
             ListPriceStatus = solutionLoadingStatuses.ListPrice;
             CapabilitiesStatus = solutionLoadingStatuses.CapabilitiesAndEpics;
             RoadmapStatus = solutionLoadingStatuses.DevelopmentPlans;
@@ -72,6 +73,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
         public TaskProgress RoadmapStatus { get; init; }
 
         public TaskProgress HostingTypeStatus { get; init; }
+
+        public TaskProgress DataProcessingStatus { get; init; }
 
         public TaskProgress ApplicationTypeStatus { get; init; }
 
