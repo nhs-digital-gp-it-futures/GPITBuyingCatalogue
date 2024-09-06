@@ -144,3 +144,11 @@
 .nhs-grid-row__no-padding {
   padding-left: 0px;
 }
+
+.nhsuk-checkboxes--js-only {
+    display: none;
+}
+
+.js-enabled .nhsuk-checkboxes--js-only {
+    display: inline-block;
+}

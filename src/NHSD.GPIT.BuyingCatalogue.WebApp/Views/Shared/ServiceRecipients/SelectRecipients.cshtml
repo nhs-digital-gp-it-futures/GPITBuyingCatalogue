@@ -44,7 +44,7 @@
                 <vc:nhs-secondary-button url="@Url.Action(null, values: new { selectionMode = SelectionMode.None })"
                                      text="Deselect all"
                                      type="Secondary" />
-                <button id="show-dialog" class="nhsuk-button nhsuk-button--secondary bc-u-float-right">
+                <button id="show-dialog" class="nhsuk-button nhsuk-button--secondary bc-u-float-right nhsuk-button--js-only">
                     <vc:nhs-search-icon/>
                     Search for Service Recipients
                 </button>
@@ -73,14 +73,15 @@
 
                         <nhs-table id="sr-table">
                             <nhs-table-column>
-                                <div class="nhsuk-checkboxes__item">
+                                <div class="nhsuk-checkboxes__item  nhsuk-checkboxes--js-only">
                                     <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll@(lIndex)" id="selectAll@(lIndex)" />
                                     <label for="selectAll@(lIndex)" class="nhsuk-label nhsuk-checkboxes__label bold-label">
                                         Organisation
                                     </label>
                                 </div>
+                                <div class="nhsuk-label bold-label non-js-only">Organisation</div>
                             </nhs-table-column>
-              <nhs-table-column>ODS code</nhs-table-column>
+                            <nhs-table-column>ODS code</nhs-table-column>
                             @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
                             {
                                 <nhs-table-row-container id="@item.OdsCode">
