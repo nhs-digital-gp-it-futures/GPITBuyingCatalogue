@@ -19,7 +19,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                 .Without(c => c.CategoryId)
                 .Without(c => c.Epics)
                 .Without(c => c.CapabilityEpics)
-                .Without(c => c.FrameworkCapabilities)
                 .Without(c => c.StandardCapabilities)
                 .Without(c => c.Id);
 
