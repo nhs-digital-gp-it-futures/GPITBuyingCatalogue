@@ -1,7 +1,10 @@
 var updateRecipients = (function (): () => void {
     window.onload = async () => {
         const expanders = document.querySelectorAll('details.nhsuk-expander');
-        expanders.forEach((expander) => expander.addEventListener('change', (event) => handleChange(event, expander), false));
+        expanders.forEach((expander) => {
+            updateSublocationSelectAll(expander);
+            expander.addEventListener('change', (event) => handleChange(event, expander), false);
+        });
     }
 
     function handleChange(event: Event, expander: Element) {
@@ -21,6 +24,38 @@ var updateRecipients = (function (): () => void {
         if (summary !== null) {
             summary.innerText = `${count} `;
         }
+
+        updateSublocationSelectAll(expander);
+    }
+
+    function updateSublocationSelectAll(expander: Element) {
+
+        let checkboxes = expander.querySelectorAll('input[type="checkbox"]:not([name^=selectAll])');
+        let totalCount = checkboxes.length;
+        let selectedCount = Array.from(checkboxes).filter(cb => (cb as HTMLInputElement).checked).length;
+
+        //Multiple select all checkboxes due to responsive table
+        //TODO replace with single element when checkbox moved into own column
+        let selectAllCheckboxes = expander.querySelectorAll('input[type="checkbox"][name^="selectAll"]');
+
+        if (!selectAllCheckboxes) return;
+
+        if (selectedCount === totalCount) {
+            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).checked = true);
+            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).indeterminate = false);
+            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).classList.remove("nhsuk-checkboxes__input_select-all"));
+        }
+        else if (selectedCount > 0) {
+            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).checked = false);
+            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).indeterminate = true);
+            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).classList.add("nhsuk-checkboxes__input_select-all"));
+        }
+        else {
+            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).checked = false);
+            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).indeterminate = false);
+            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).classList.remove("nhsuk-checkboxes__input_select-all"));
+        }
+        
     }
 
     //Function called on submit modal
