@@ -30,15 +30,14 @@ var updateRecipients = (function (): () => void {
 
     function updateSublocationSelectAll(expander: Element) {
 
-        let checkboxes = expander.querySelectorAll('input[type="checkbox"]:not([name^=selectAll])');
-        let totalCount = checkboxes.length;
-        let selectedCount = Array.from(checkboxes).filter(cb => (cb as HTMLInputElement).checked).length;
-
         //Multiple select all checkboxes due to responsive table
         //TODO replace with single element when checkbox moved into own column
         let selectAllCheckboxes = expander.querySelectorAll('input[type="checkbox"][name^="selectAll"]');
-
         if (!selectAllCheckboxes) return;
+
+        let checkboxes = expander.querySelectorAll('input[type="checkbox"]:not([name^=selectAll])');
+        let totalCount = checkboxes.length;
+        let selectedCount = Array.from(checkboxes).filter(cb => (cb as HTMLInputElement).checked).length;
 
         var isChecked = selectedCount === totalCount ? true : false;
         var isIndeterminate = !isChecked && selectedCount > 0 ? true : false;
