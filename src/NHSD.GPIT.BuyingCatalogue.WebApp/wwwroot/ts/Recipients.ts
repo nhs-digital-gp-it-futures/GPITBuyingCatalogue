@@ -40,22 +40,15 @@ var updateRecipients = (function (): () => void {
 
         if (!selectAllCheckboxes) return;
 
-        if (selectedCount === totalCount) {
-            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).checked = true);
-            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).indeterminate = false);
-            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).classList.remove("nhsuk-checkboxes__input_select-all"));
-        }
-        else if (selectedCount > 0) {
-            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).checked = false);
-            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).indeterminate = true);
-            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).classList.add("nhsuk-checkboxes__input_select-all"));
-        }
-        else {
-            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).checked = false);
-            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).indeterminate = false);
-            selectAllCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).classList.remove("nhsuk-checkboxes__input_select-all"));
-        }
-        
+        var isChecked = selectedCount === totalCount ? true : false;
+        var isIndeterminate = !isChecked && selectedCount > 0 ? true : false;
+
+        selectAllCheckboxes.forEach((checkbox) => {
+            (checkbox as HTMLInputElement).checked = isChecked;
+            (checkbox as HTMLInputElement).indeterminate = isIndeterminate;
+            isIndeterminate ? (checkbox as HTMLInputElement).classList.add("nhsuk-checkboxes__input_select-all") :
+                (checkbox as HTMLInputElement).classList.remove("nhsuk-checkboxes__input_select-all");
+        });
     }
 
     //Function called on submit modal
