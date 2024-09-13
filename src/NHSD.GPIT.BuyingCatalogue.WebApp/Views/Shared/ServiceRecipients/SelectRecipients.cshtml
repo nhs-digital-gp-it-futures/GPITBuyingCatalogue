@@ -84,13 +84,13 @@
                             <nhs-table-column>ODS code</nhs-table-column>
                             @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
                             {
-                                <nhs-table-row-container id="@item.OdsCode">
+                                <nhs-table-row-container id="@item.OdsCode" class="recipient">
                                     <nhs-table-cell>
                                         <nhs-checkbox-container>
                                             <nhs-checkbox asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Selected"
-                                              label-text="@item.Name"
-                                              hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" 
-                                              checkbox-class="main-srs gather-data"/>
+                                                          label-text="@item.Name"
+                                                          hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" 
+                                                          checkbox-class="main-srs gather-data"/>
                                         </nhs-checkbox-container>
                                     </nhs-table-cell>
                                     <nhs-table-cell>
@@ -100,6 +100,7 @@
                                 </nhs-table-row-container>
                             }
                         </nhs-table>
+                        <div class="total nhsuk-details__summary-text_secondary"></div>
                     </nhs-expander>
                 }
                 <br />

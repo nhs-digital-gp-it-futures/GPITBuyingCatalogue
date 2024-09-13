@@ -1,0 +1,14 @@
+#sr-table {
+    counter-reset: recipients 0;
+}
+
+tr.recipient .nhsuk-checkboxes input:checked {
+    counter-increment: recipients;
+}
+
+.total:before {
+    content: counter(recipients) " recipients selected";
+    float: right;
+    color: #005eb8;
+    margin: -10px;
+}
