@@ -13,7 +13,3 @@ output "appgateway_pip_ipaddress" {
     description = "The Application Gateway Public IP Address"
     value = var.core_env != "dev" ? azurerm_public_ip.pip_app_gateway[0].ip_address : null
 }
-
-output "appgateway_site_URL" {
-    value = var.core_url
-}

@@ -172,14 +172,10 @@ jobs:
       vmImage: 'ubuntu-latest'
 
     steps:
-      - task: CopyFiles@2
-        displayName: Build Artifact - Terraform
-        inputs:
-          SourceFolder: 'terraform/webapp'
-          Contents: '**'
-          TargetFolder: '$(build.artifactStagingDirectory)/terraform/webapp'
-          CleanTargetFolder: false
-          OverWrite: true
-
-      - publish: $(build.artifactStagingDirectory)/terraform/webapp
+      - publish: terraform/webapp
+        displayName: Publish Terraform - WebApp
         artifact: build-artifact
+
+      - publish: terraform/core
+        displayName: Publish Terraform - Core
+        artifact: core-terraform
