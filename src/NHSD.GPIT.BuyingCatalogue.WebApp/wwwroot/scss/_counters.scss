@@ -10,7 +10,7 @@ tr.recipient .nhsuk-checkboxes input:checked {
     content: counter(recipients) " recipients selected";
     float: right;
     color: #005eb8;
-    margin-right: 50px;
+    margin-right: 30px;
 }
 
 #recipients-expander {
@@ -20,5 +20,5 @@ tr.recipient .nhsuk-checkboxes input:checked {
 .total {
     position: absolute;
     top: 26px;
-    width: 100%;
+    right: 0%
 }
