@@ -37,7 +37,3 @@ variable "sqladmins" {
 variable "bjssvpn" {
   type = string
 }
-
-variable "log_analytics_workspace_id" {
-  type = string
-}
