@@ -1,0 +1,184 @@
+@model DataProcessingInformationModel
+
+@{
+    ViewBag.Title = "Data processing information";
+
+    var hasDataProcessing = Model.Solution.DataProcessingInformation?.Details is not null && Model.Solution.DataProcessingInformation?.Location is not null;
+    var hasDataProtectionOfficer = Model.Solution.DataProcessingInformation?.Officer is not null;
+
+    var dataProcessingInfoUrl = Url.Action(nameof(DataProcessingInformationController.AddOrEditDataProcessingInformation), typeof(DataProcessingInformationController).ControllerName(), new { solutionId = Model.Solution.CatalogueItemId });
+    var dataProtectionOfficerUrl = Url.Action(nameof(DataProcessingInformationController.AddOrEditDataProtectionOfficer), typeof(DataProcessingInformationController).ControllerName(), new { solutionId = Model.Solution.CatalogueItemId });
+}
+
+<partial name="Partials/_BackLink" model="@Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.Solution.CatalogueItem.Name"
+                        advice="This is the data processing information for this Catalogue Solution."/>
+
+        <nhs-card-v2>
+            <nhs-card-content title="General data processing information">
+                @if (hasDataProcessing)
+                {
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Subject matter of the processing" style="word-break: break-word">
+                            @Model.Solution.DataProcessingInformation.Details.Subject
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Duration of the processing" style="word-break: break-word">
+                            @Model.Solution.DataProcessingInformation.Details.Duration
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Nature and purposes of processing" style="word-break: break-word">
+                            @Model.Solution.DataProcessingInformation.Details.ProcessingNature
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Types of personal data" style="word-break: break-word">
+                            @Model.Solution.DataProcessingInformation.Details.PersonalDataTypes
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Categories of data subjects" style="word-break: break-word">
+                            @Model.Solution.DataProcessingInformation.Details.DataSubjectCategories
+                        </nhs-summary-list-row>
+                        <nhs-summary-list-row label-text="Location of data processing" style="word-break: break-word">
+                            @Model.Solution.DataProcessingInformation.Location.ProcessingLocation
+                        </nhs-summary-list-row>
+                        @if (!string.IsNullOrWhiteSpace(Model.Solution.DataProcessingInformation.Location.AdditionalJurisdiction))
+                        {
+                            <nhs-summary-list-row label-text="Additional jurisdiction if processing data outside of the UK (optional)" style="word-break: break-word">
+                                @Model.Solution.DataProcessingInformation.Location.AdditionalJurisdiction
+                            </nhs-summary-list-row>
+                        }
+                    </nhs-summary-list>
+                }
+                else
+                {
+                    <p>
+                        <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px"/>
+                        No data processing information has been added.
+                    </p>
+                }
+            </nhs-card-content>
+            <nhs-card-footer>
+                @if (hasDataProcessing)
+                {
+                    <p>
+                        <a class="nhsuk-link--no-visited-state" href="@dataProcessingInfoUrl">
+                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                            Change data processing information
+                        </a>
+                    </p>
+                }
+                else
+                {
+                    <p class="nhsuk-body-m">
+                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@dataProcessingInfoUrl">
+                            <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>Add data processing information
+                        </a>
+                    </p>
+                }
+            </nhs-card-footer>
+        </nhs-card-v2>
+
+        <nhs-card-v2>
+            <nhs-card-content title="Data Protection Officer details">
+                @if (hasDataProtectionOfficer)
+                {
+                    <nhs-summary-list>
+                        <nhs-summary-list-row label-text="Name">
+                            @Model.Solution.DataProcessingInformation.Officer.Name
+                        </nhs-summary-list-row>
+                        @if (!string.IsNullOrWhiteSpace(Model.Solution.DataProcessingInformation.Officer.PhoneNumber))
+                        {
+                            <nhs-summary-list-row label-text="Phone number">
+                                @Model.Solution.DataProcessingInformation.Officer.PhoneNumber
+                            </nhs-summary-list-row>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.Solution.DataProcessingInformation.Officer.EmailAddress))
+                        {
+                            <nhs-summary-list-row label-text="Email address">
+                                @Model.Solution.DataProcessingInformation.Officer.EmailAddress
+                            </nhs-summary-list-row>
+                        }
+                    </nhs-summary-list>
+                }
+                else
+                {
+                    <p>
+                        <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px"/>
+                        Data Protection Officer details have not been added.
+                    </p>
+                }
+            </nhs-card-content>
+            <nhs-card-footer>
+                @if (hasDataProtectionOfficer)
+                {
+                    <p>
+                        <a class="nhsuk-link--no-visited-state" href="@dataProtectionOfficerUrl">
+                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                            Change data protection officer details
+                        </a>
+                    </p>
+                }
+                else
+                {
+                    <p class="nhsuk-body-m">
+                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@dataProtectionOfficerUrl">
+                            <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>Add data protection officer details
+                        </a>
+                    </p>
+                }
+            </nhs-card-footer>
+        </nhs-card-v2>
+
+        <nhs-card-v2>
+            <nhs-card-content title="Sub-processors added">
+                @if (Model.Solution.DataProcessingInformation?.SubProcessors.Count > 0)
+                {
+                    <nhs-table>
+                        <nhs-table-column>Organisation name</nhs-table-column>
+                        <nhs-table-column>Subject matter of the processing</nhs-table-column>
+                        <nhs-table-column>
+                            <span class="nhsuk-u-visually-hidden">Action</span>
+                        </nhs-table-column>
+
+                        @foreach (var subProcessor in Model.Solution.DataProcessingInformation.SubProcessors)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell style="word-break: break-word;">@subProcessor.OrganisationName</nhs-table-cell>
+                                <nhs-table-cell style="word-break: break-word;">@subProcessor.Details.Subject</nhs-table-cell>
+                                <nhs-table-cell>
+                                    <a asp-action="@(nameof(DataProcessingInformationController.EditSubProcessor))"
+                                       asp-controller="@(typeof(DataProcessingInformationController).ControllerName())"
+                                       asp-route-solutionId="@Model.Solution.CatalogueItemId"
+                                       asp-route-subProcessorId="@subProcessor.Id">
+                                        Change
+                                    </a>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                        }
+                    </nhs-table>
+                }
+                else
+                {
+                    <p>
+                        <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px"/>
+                        No sub-processors have been added for this Catalogue Solution.
+                    </p>
+                }
+            </nhs-card-content>
+            <nhs-card-footer>
+                <p class="nhsuk-body-m">
+                    <a class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@(nameof(DataProcessingInformationController.AddSubProcessor))"
+                       asp-controller="@(typeof(DataProcessingInformationController).ControllerName())"
+                       asp-area="@(typeof(DataProcessingInformationController).AreaName())"
+                       asp-route-solutionId="@Model.Solution.CatalogueItemId">
+                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>Add a sub-processor
+                    </a>
+                </p>
+            </nhs-card-footer>
+        </nhs-card-v2>
+
+        <vc:nhs-secondary-button text="Save and continue"
+                                 type="Primary"
+                                 url="@Model.BackLink"/>
+    </div>
+</div>

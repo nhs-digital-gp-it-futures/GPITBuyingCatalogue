@@ -14,7 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
             Epics = new HashSet<Epic>();
             CapabilityEpics = new HashSet<CapabilityEpic>();
             StandardCapabilities = new HashSet<StandardCapability>();
-            FrameworkCapabilities = new HashSet<FrameworkCapability>();
         }
 
         public int Id { get; set; }
@@ -42,8 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public CapabilityCategory Category { get; set; }
-
-        public ICollection<FrameworkCapability> FrameworkCapabilities { get; set; }
 
         public ICollection<Epic> Epics { get; set; }
 

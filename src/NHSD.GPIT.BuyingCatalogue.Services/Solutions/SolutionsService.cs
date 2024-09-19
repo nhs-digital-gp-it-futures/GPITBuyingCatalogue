@@ -112,60 +112,74 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             var solution = await dbContext.CatalogueItems
                 .AsNoTracking()
                 .Where(ci => ci.Id == solutionId)
-                .Select(ci => new SolutionLoadingStatusesModel
-                {
-                    Description = (!string.IsNullOrWhiteSpace(ci.Solution.Summary))
-                        ? TaskProgress.Completed
-                        : TaskProgress.NotStarted,
-                    AdditionalServices = ci.Solution.AdditionalServices
-                        .Any(add => add.CatalogueItem.PublishedStatus == PublicationStatus.Published)
-                        ? TaskProgress.Completed
-                        : ci.Solution.AdditionalServices.Any()
-                            ? TaskProgress.InProgress
-                            : TaskProgress.Optional,
-                    AssociatedServices = ci.SupplierServiceAssociations.Any()
-                        ? TaskProgress.Completed
-                        : TaskProgress.Optional,
-                    Features = !string.IsNullOrWhiteSpace(ci.Solution.Features)
-                        ? TaskProgress.Completed
-                        : TaskProgress.Optional,
-                    Interoperability = ci.Solution.Integrations.Count > 0
-                        ? TaskProgress.Completed
-                        : TaskProgress.Optional,
-                    Implementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail)
-                        ? TaskProgress.Completed
-                        : TaskProgress.Optional,
-                    ListPrice = ci.CataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published)
-                        ? TaskProgress.Completed
-                        : ci.CataloguePrices.Any()
-                            ? TaskProgress.InProgress
+                .Select(
+                    ci => new SolutionLoadingStatusesModel
+                    {
+                        Description = (!string.IsNullOrWhiteSpace(ci.Solution.Summary))
+                            ? TaskProgress.Completed
                             : TaskProgress.NotStarted,
-                    ApplicationType = ci.Solution.ApplicationTypeDetail != null
-                        ? TaskProgress.Completed
-                        : TaskProgress.NotStarted,
-                    HostingType = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid()
-                        ? TaskProgress.Completed
-                        : TaskProgress.NotStarted,
-                    DevelopmentPlans = ci.Solution.WorkOffPlans.Any()
-                        ? TaskProgress.Completed
-                        : TaskProgress.Optional,
-                    CapabilitiesAndEpics = ci.CatalogueItemCapabilities.Any()
-                        ? TaskProgress.Completed
-                        : TaskProgress.NotStarted,
-                    SupplierDetails = ci.CatalogueItemContacts.Any()
-                        ? TaskProgress.Completed
-                        : TaskProgress.NotStarted,
-                    ServiceLevelAgreement = (ci.Solution.ServiceLevelAgreement != null &&
-                                             ci.Solution.ServiceLevelAgreement.Contacts.Any() &&
-                                             ci.Solution.ServiceLevelAgreement.ServiceHours.Any() &&
-                                             ci.Solution.ServiceLevelAgreement.ServiceLevels.Any())
-                        ? TaskProgress.Completed
-                        : (ci.Solution.ServiceLevelAgreement.Contacts.Any() ||
-                           ci.Solution.ServiceLevelAgreement.ServiceHours.Any() ||
-                           ci.Solution.ServiceLevelAgreement.ServiceLevels.Any())
-                           ? TaskProgress.InProgress
-                           : TaskProgress.NotStarted,
-                }).FirstOrDefaultAsync();
+                        AdditionalServices = ci.Solution.AdditionalServices
+                            .Any(add => add.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                            ? TaskProgress.Completed
+                            : ci.Solution.AdditionalServices.Any()
+                                ? TaskProgress.InProgress
+                                : TaskProgress.Optional,
+                        AssociatedServices = ci.SupplierServiceAssociations.Any()
+                            ? TaskProgress.Completed
+                            : TaskProgress.Optional,
+                        Features = !string.IsNullOrWhiteSpace(ci.Solution.Features)
+                            ? TaskProgress.Completed
+                            : TaskProgress.Optional,
+                        Interoperability = ci.Solution.Integrations.Count > 0
+                            ? TaskProgress.Completed
+                            : TaskProgress.Optional,
+                        Implementation = !string.IsNullOrWhiteSpace(ci.Solution.ImplementationDetail)
+                            ? TaskProgress.Completed
+                            : TaskProgress.Optional,
+                        ListPrice = ci.CataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published)
+                            ? TaskProgress.Completed
+                            : ci.CataloguePrices.Any()
+                                ? TaskProgress.InProgress
+                                : TaskProgress.NotStarted,
+                        ApplicationType = ci.Solution.ApplicationTypeDetail != null
+                            ? TaskProgress.Completed
+                            : TaskProgress.NotStarted,
+                        HostingType = ci.Solution.Hosting != null && ci.Solution.Hosting.IsValid()
+                            ? TaskProgress.Completed
+                            : TaskProgress.NotStarted,
+                        DataProcessing = ci.Solution.DataProcessingInformation != null
+                            && ci.Solution.DataProcessingInformation.Details != null
+                            && ci.Solution.DataProcessingInformation.Location != null
+                            && ci.Solution.DataProcessingInformation.Officer != null
+                                ? TaskProgress.Completed
+                                : ci.Solution.DataProcessingInformation != null
+                                && (ci.Solution.DataProcessingInformation.Details != null
+                                    || ci.Solution.DataProcessingInformation.Location != null
+                                    || ci.Solution.DataProcessingInformation.Officer != null
+                                    || ci.Solution.DataProcessingInformation.SubProcessors.Any())
+                                    ? TaskProgress.InProgress
+                                    : TaskProgress.NotStarted,
+                        DevelopmentPlans = ci.Solution.WorkOffPlans.Any()
+                            ? TaskProgress.Completed
+                            : TaskProgress.Optional,
+                        CapabilitiesAndEpics = ci.CatalogueItemCapabilities.Any()
+                            ? TaskProgress.Completed
+                            : TaskProgress.NotStarted,
+                        SupplierDetails = ci.CatalogueItemContacts.Any()
+                            ? TaskProgress.Completed
+                            : TaskProgress.NotStarted,
+                        ServiceLevelAgreement = (ci.Solution.ServiceLevelAgreement != null &&
+                            ci.Solution.ServiceLevelAgreement.Contacts.Any() &&
+                            ci.Solution.ServiceLevelAgreement.ServiceHours.Any() &&
+                            ci.Solution.ServiceLevelAgreement.ServiceLevels.Any())
+                            ? TaskProgress.Completed
+                            : (ci.Solution.ServiceLevelAgreement.Contacts.Any() ||
+                                ci.Solution.ServiceLevelAgreement.ServiceHours.Any() ||
+                                ci.Solution.ServiceLevelAgreement.ServiceLevels.Any())
+                                ? TaskProgress.InProgress
+                                : TaskProgress.NotStarted,
+                    })
+                .FirstOrDefaultAsync();
 
             return solution;
         }
@@ -182,7 +196,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .FirstOrDefaultAsync();
         }
 
-        // checks to see if this catalogue solutions' name is globally unique
         public Task<bool> CatalogueSolutionExistsWithName(string solutionName, CatalogueItemId currentCatalogueItemId = default) =>
             dbContext
                 .CatalogueItems

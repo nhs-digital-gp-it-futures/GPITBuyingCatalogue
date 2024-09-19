@@ -11,7 +11,6 @@ using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
-using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
@@ -44,7 +43,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             var desiredCapabilties = capabilties.Select(s => s.Id.Value).ToList();
             var toExpire = await dbContext
                 .Capabilities
-                .Where(s => !desiredCapabilties.Any(d => d == s.Id))
+                .Where(s => desiredCapabilties.All(d => d != s.Id))
                 .ToListAsync();
 
             ProcessExpired(toExpire, log);
@@ -67,7 +66,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             csv.ReadHeader();
             while (await csv.ReadAsync())
             {
-                // ID,Name,Capability Category,URL,Description,Framework
+                // ID,Name,Capability Category,URL,Description
                 var capability = Map(csv);
                 capabilities.Add(capability);
             }
@@ -97,46 +96,24 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
                 Category = csv.GetField<string>("Capability Category"),
                 Url = csv.GetField<string>("URL"),
                 Description = csv.GetField<string>("Description"),
-                Framework = ParseFrameworks(csv.GetField<string>("Framework")),
             };
         }
 
         private async Task Process(BuyingCatalogueDbContext dbContext, CapabilityCsv capability, List<string> log)
         {
             var existing = await dbContext.Capabilities
-                .Include(c => c.FrameworkCapabilities)
                 .FirstOrDefaultAsync(c => c.Id == capability.Id.Value);
 
             CapabilityCategory capabilityCategory = await EnsureCategroy(dbContext, capability.Category, log);
-            List<Framework> desiredFrameworks = ValidateFrameworks(dbContext, capability);
 
             if (existing == null)
             {
-                await Add(dbContext, capability, capabilityCategory, desiredFrameworks, log);
+                await Add(dbContext, capability, capabilityCategory, log);
             }
             else
             {
-                Update(dbContext, capability, existing, capabilityCategory, desiredFrameworks, log);
+                Update(dbContext, capability, existing, capabilityCategory, log);
             }
-        }
-
-        private List<Framework> ValidateFrameworks(BuyingCatalogueDbContext dbContext, CapabilityCsv capability)
-        {
-            var desiredFrameworks = dbContext.Frameworks
-                .Where(f => capability.Framework.Contains(f.ShortName))
-                .ToList();
-
-            var missing = capability.Framework.Except(desiredFrameworks.Select(f => f.ShortName));
-
-            if (missing.Any())
-            {
-                logger.LogWarning(
-                    "Missing framework(s) {frameworks} for capability {capability}",
-                    missing.Aggregate((a, b) => $"{a},{b}"),
-                    capability.Id.Value);
-            }
-
-            return desiredFrameworks;
         }
 
         private static async Task<CapabilityCategory> EnsureCategroy(BuyingCatalogueDbContext dbContext, string categoryName, List<string> log)
@@ -159,7 +136,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             BuyingCatalogueDbContext dbContext,
             CapabilityCsv capability,
             CapabilityCategory capabilityCategory,
-            List<Framework> desiredFrameworks,
             List<string> log)
         {
             var newCapability = new Capability()
@@ -172,11 +148,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
                 Status = CapabilityStatus.Effective,
             };
 
-            foreach (var frameworkToAdd in desiredFrameworks)
-            {
-                newCapability.FrameworkCapabilities.Add(new FrameworkCapability(frameworkToAdd.Id, capability.Id.Value));
-            }
-
             await dbContext.Capabilities.AddAsync(newCapability);
             log.Add($"New Capability {newCapability.Id} {newCapability.Name}");
         }
@@ -186,7 +157,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             CapabilityCsv capability,
             Capability existing,
             CapabilityCategory capabilityCategory,
-            List<Framework> desiredFrameworks,
             List<string> log)
         {
             existing.Name = capability.Name;
@@ -194,25 +164,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             existing.SourceUrl = capability.Url;
             existing.CategoryId = capabilityCategory.Id;
             existing.Status = CapabilityStatus.Effective;
-
-            var desiredFrameworkIds = desiredFrameworks.Select(f => f.Id);
-
-            var existingFrameworkIds = existing.FrameworkCapabilities.Select(f => f.FrameworkId);
-
-            var toAdd = desiredFrameworkIds.Except(existingFrameworkIds);
-            var toRemove = existingFrameworkIds.Except(desiredFrameworkIds);
-
-            toAdd.Select(f => new FrameworkCapability(f, existing.Id))
-                 .ForEach(f => existing.FrameworkCapabilities.Add(f));
-
-            existing.FrameworkCapabilities
-                .Where(f => toRemove.Contains(f.FrameworkId))
-                .ForEach(f =>
-                {
-                    existing.FrameworkCapabilities.Remove(f);
-                    dbContext.FrameworkCapabilities.Remove(f);
-                });
-
 
             var status = dbContext.Entry(existing);
             if (status.State == EntityState.Modified)
@@ -226,13 +177,5 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             return properties.Where(p => p.IsModified)
                 .Aggregate("", (a, b) => $"{a}{b.Metadata.Name}, ");
         }
-
-        private static List<string> ParseFrameworks(string frameworks)
-        {
-            ArgumentNullException.ThrowIfNull(frameworks);
-
-            return frameworks.Split('|', StringSplitOptions.RemoveEmptyEntries).ToList();
-        }
     }
-
 }
