@@ -161,8 +161,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
                 labelSpanBuilder.InnerHtml.AppendHtml("&nbsp");
             }
 
-            var summaryClass = secondaryUrlTitle is not null ? SummaryTextSecondaryUrlClass :
-                jsOnly ? $"{SummaryTextSecondaryClass} {TagHelperConstants.NhsJsOnly}" : SummaryTextSecondaryClass;
+            var summaryClass = secondaryUrlTitle is not null ? SummaryTextSecondaryUrlClass : SummaryTextSecondaryClass;
+
+            if (jsOnly)
+                summaryClass += $" {TagHelperConstants.NhsJsOnly}";
 
             var secondarySpanBuilder = new TagBuilder(TagHelperConstants.Span);
             secondarySpanBuilder.AddCssClass(summaryClass);

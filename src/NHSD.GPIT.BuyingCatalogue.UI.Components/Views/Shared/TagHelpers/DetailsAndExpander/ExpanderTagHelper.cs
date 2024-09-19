@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         public const string SecondaryTextName = "secondary-text";
         public const string SecondaryUrlTitleName = "secondary-url-title";
         public const string SecondaryUrlName = "secondary-url";
+        public const string SecondaryJsOnlyName = "secondary-js-only";
         public const string OpenName = "open";
         public const string ContentOnlyName = "content-only";
 
@@ -24,7 +25,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         private const string ExpanderIndexClass = "nhsuk-expander-index";
         private const string ExpanderBlackAndWhite = "nhsuk-expander-black-and-white";
         private const string CatchErrorsName = "catches-errors";
-        private const string JsOnlyName = "js-only";
 
         public enum ExpanderColourMode
         {
@@ -60,6 +60,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         [HtmlAttributeName(SecondaryUrlName)]
         public string SecondaryUrl { get; set; }
 
+        [HtmlAttributeName(SecondaryJsOnlyName)]
+        public bool SecondaryJsOnly { get; set; } = false;
+
         [HtmlAttributeName(OpenName)]
         public bool Open { get; set; }
 
@@ -71,9 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
 
         [HtmlAttributeName(CatchErrorsName)]
         public bool CatchesErrors { get; set; } = false;
-
-        [HtmlAttributeName(JsOnlyName)]
-        public bool JsOnly { get; set; } = false;
 
         [HtmlAttributeName(TagHelperConstants.For)]
         public ModelExpression For { get; set; }
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
 
             var summary = string.IsNullOrWhiteSpace(SecondaryTextTitle) && string.IsNullOrWhiteSpace(SecondaryUrlTitle)
                 ? DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilder(HeadingText, LabelText, BoldTitle, AddedSticker)
-                : DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilderWithSecondaryInformation(LabelText, SecondaryTextTitle, SecondaryText, SecondaryUrlTitle, SecondaryUrl, BoldTitle, AddedSticker, JsOnly);
+                : DetailsAndExpanderTagHelperBuilders.GetSummaryLabelBuilderWithSecondaryInformation(LabelText, SecondaryTextTitle, SecondaryText, SecondaryUrlTitle, SecondaryUrl, BoldTitle, AddedSticker, SecondaryJsOnly);
 
             var textItem = DetailsAndExpanderTagHelperBuilders.GetTextItem();
 

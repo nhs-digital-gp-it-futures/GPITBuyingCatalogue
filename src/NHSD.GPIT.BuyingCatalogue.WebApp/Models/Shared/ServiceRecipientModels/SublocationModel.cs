@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
@@ -17,4 +18,6 @@ public class SublocationModel
     public string Name { get; set; }
 
     public List<ServiceRecipientModel> ServiceRecipients { get; set; }
+
+    public bool SelectAll => ServiceRecipients?.Count == ServiceRecipients?.Count(x => x.Selected);
 }
