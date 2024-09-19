@@ -19,6 +19,12 @@ var updateRecipients = (function (): () => void {
             }
         }
 
+        var count = expander.querySelectorAll('input[type="checkbox"]:checked:not([name^=selectAll])').length;
+        let summary = expander.querySelector('summary > span.nhsuk-details__summary-text_secondary > b') as HTMLElement;
+        if (summary !== null) {
+            summary.innerText = `${count} `;
+        }
+
         updateSublocationSelectAll(expander);
     }
 
@@ -59,6 +65,14 @@ var updateRecipients = (function (): () => void {
                 // Set the checkbox to checked
                 checkbox.checked = true;
             }
+        });
+        var expanders = document.querySelectorAll('.nhsuk-expander');
+        expanders.forEach(function (container) {
+            var checks = container.querySelectorAll('.main-srs:checked:not(.sub-sr-selector)');
+            var checkboxCount = checks.length;
+
+            var countBox = container.querySelector('.nhsuk-details__summary-text_secondary b');
+            countBox.innerHTML = checkboxCount + " ";
         });
     }
 })();

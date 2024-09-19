@@ -69,7 +69,7 @@
                     var expandWhenNotValid = !ViewData.ModelState.IsValid && lIndex == 0;
 
                     <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
-                    <nhs-expander id="recipients-expander" label-text="@location.Name"  bold-title="true" open="@(expandWhenNotValid || Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))">
+                    <nhs-expander id="recipients-expander" label-text="@location.Name" secondary-text-title="@(location.ServiceRecipients.Count(r => r.Selected)) " secondary-text="recipients selected" bold-title="true" open="@(expandWhenNotValid || Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))" js-only="true">
 
                         <nhs-table id="sr-table">
                             <nhs-table-column>
@@ -100,7 +100,7 @@
                                 </nhs-table-row-container>
                             }
                         </nhs-table>
-                        <div class="total"></div>
+                        <div class="total non-js-only"></div>
                     </nhs-expander>
                 }
                 <br />

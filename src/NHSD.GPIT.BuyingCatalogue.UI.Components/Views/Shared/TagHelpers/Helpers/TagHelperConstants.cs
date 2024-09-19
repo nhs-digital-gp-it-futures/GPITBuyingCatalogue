@@ -99,6 +99,7 @@
         internal const string NhsIconArrowRight = "nhsuk-icon__arrow-right";
         internal const string NhsIconArrowLeft = "nhsuk-icon__arrow-left";
         internal const string NhsIconChevronLeft = "nhsuk-icon__chevron-left";
+        internal const string NhsJsOnly = "nhsuk-content--js-only";
         internal const string NhsMarginTop = "nhsuk-u-margin-top";
         internal const string NhsMarginBottom = "nhsuk-u-margin-bottom";
         internal const string NhsMarginRight = "nhsuk-u-margin-right";
