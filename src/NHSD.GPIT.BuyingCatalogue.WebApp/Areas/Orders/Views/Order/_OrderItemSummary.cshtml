@@ -8,7 +8,6 @@
 @model AmendOrderItemModel
 
 @{
-    var totalCost = ((IPrice)Model.OrderItemPrice).CostForBillingPeriod(Model.RolledUpTotalQuantity);
     var hasServiceRecipientQuantities = ((IPrice)Model.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
     var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
 }
