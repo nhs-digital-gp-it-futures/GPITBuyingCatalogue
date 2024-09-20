@@ -10,6 +10,7 @@ module "sql_databases_pri" {
   enable_replica        = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
   rg_replica_name       = azurerm_resource_group.sql-server.name
   sqlsvr_replica_name   = "${var.project}-${var.environment}-sql-secondary"
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics.id
   
   core_env              = local.core_env
 

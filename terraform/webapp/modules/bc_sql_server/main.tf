@@ -34,3 +34,8 @@ resource "azurerm_mssql_firewall_rule" "sql_bjss_vpn" {
   start_ip_address    = var.bjssvpn
   end_ip_address      = var.bjssvpn
 }
+
+resource "azurerm_mssql_server_extended_auditing_policy" "auditing" {
+  server_id              = azurerm_mssql_server.sql_server.id 
+  log_monitoring_enabled = true
+}
