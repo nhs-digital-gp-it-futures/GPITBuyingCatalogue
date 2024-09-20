@@ -16,15 +16,12 @@ variable "ag_capacity" {
 variable "ag_subnet_id" {
   type = string
 }
-variable "core_url" {
-  type = string
-}
 variable "ssl_cert_name" {
   type = string
 }
 variable "ssl_cert_secret_id" {
   type = string
-}   
+}
 variable "dns_name" {
   type = string
 }
