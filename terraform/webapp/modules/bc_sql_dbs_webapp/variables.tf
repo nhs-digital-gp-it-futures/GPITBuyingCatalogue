@@ -29,3 +29,7 @@ variable "server_id" {
 variable "core_env" {
   type = string
 }
+
+variable "log_analytics_workspace_id" {
+  type = string
+}
