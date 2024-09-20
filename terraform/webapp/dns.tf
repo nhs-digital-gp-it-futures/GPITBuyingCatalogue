@@ -18,7 +18,7 @@ resource "azurerm_dns_cname_record" "alias" {
 
 resource "azurerm_dns_txt_record" "verification" {
   count               = local.core_env == "dev" || local.environment_identifier == "preprod" ? 1 : 0
-  name                = "asuid"
+  name                = "asuid.${var.environment}"
   zone_name           = local.dns_resource_name
   resource_group_name = local.dns_resource_group_name
   ttl                 = 3600
