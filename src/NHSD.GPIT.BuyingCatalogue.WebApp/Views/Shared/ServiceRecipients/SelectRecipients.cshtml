@@ -44,7 +44,7 @@
                 <vc:nhs-secondary-button url="@Url.Action(null, values: new { selectionMode = SelectionMode.None })"
                                      text="Deselect all"
                                      type="Secondary" />
-                <button id="show-dialog" class="nhsuk-button nhsuk-button--secondary bc-u-float-right">
+                <button id="show-dialog" class="nhsuk-button nhsuk-button--secondary bc-u-float-right nhsuk-button--js-only">
                     <vc:nhs-search-icon/>
                     Search for Service Recipients
                 </button>
@@ -69,27 +69,28 @@
                     var expandWhenNotValid = !ViewData.ModelState.IsValid && lIndex == 0;
 
                     <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
-                    <nhs-expander label-text="@location.Name" secondary-text-title="@(location.ServiceRecipients.Count(r => r.Selected)) " secondary-text="recipients selected" bold-title="true" open="@(expandWhenNotValid || Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))">
+                    <nhs-expander id="recipients-expander" label-text="@location.Name" secondary-text-title="@(location.ServiceRecipients.Count(r => r.Selected)) " secondary-text="recipients selected" bold-title="true" open="@(expandWhenNotValid || Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))" secondary-js-only="true">
 
                         <nhs-table id="sr-table">
                             <nhs-table-column>
-                                <div class="nhsuk-checkboxes__item">
-                                    <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll@(lIndex)" id="selectAll@(lIndex)" />
+                                <div class="nhsuk-checkboxes__item  nhsuk-content--js-only">
+                                    <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll@(lIndex)" id="selectAll@(lIndex)" checked="@Model.SubLocations[lIndex].AllRecipientsSelected" />
                                     <label for="selectAll@(lIndex)" class="nhsuk-label nhsuk-checkboxes__label bold-label">
                                         Organisation
                                     </label>
                                 </div>
+                                <div class="nhsuk-label bold-label non-js-only">Organisation</div>
                             </nhs-table-column>
-              <nhs-table-column>ODS code</nhs-table-column>
+                            <nhs-table-column>ODS code</nhs-table-column>
                             @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
                             {
-                                <nhs-table-row-container id="@item.OdsCode">
+                                <nhs-table-row-container id="@item.OdsCode" class="recipient">
                                     <nhs-table-cell>
                                         <nhs-checkbox-container>
                                             <nhs-checkbox asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Selected"
-                                              label-text="@item.Name"
-                                              hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name" 
-                                              checkbox-class="main-srs gather-data"/>
+                                                          label-text="@item.Name"
+                                                          hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name"
+                                                          checkbox-class="main-srs gather-data"/>
                                         </nhs-checkbox-container>
                                     </nhs-table-cell>
                                     <nhs-table-cell>
