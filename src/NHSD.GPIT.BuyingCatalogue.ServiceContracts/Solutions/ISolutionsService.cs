@@ -26,6 +26,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItem> GetSolutionWithCataloguePrice(CatalogueItemId solutionId);
 
+        Task<CatalogueItem> GetSolutionWithDataProcessingInformation(CatalogueItemId solutionId);
+
         Task<SolutionLoadingStatusesModel> GetSolutionLoadingStatuses(CatalogueItemId solutionId);
 
         Task<CatalogueItem> GetSolutionByName(string solutionName);

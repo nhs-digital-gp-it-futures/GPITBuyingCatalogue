@@ -83,6 +83,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 .Include(ci => ci.Supplier)
                 .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
+        public async Task<CatalogueItem> GetSolutionWithDataProcessingInformation(CatalogueItemId solutionId) =>
+            await dbContext
+            .CatalogueItems
+            .Include(x => x.Solution)
+            .Include(x => x.Solution.DataProcessingInformation)
+            .Include(x => x.Solution.DataProcessingInformation.Details)
+            .Include(x => x.Solution.DataProcessingInformation.Location)
+            .Include(x => x.Solution.DataProcessingInformation.Officer)
+            .Include(x => x.Solution.DataProcessingInformation.SubProcessors)
+            .ThenInclude(x => x.Details)
+            .Include(x => x.Solution.FrameworkSolutions).ThenInclude(x => x.Framework)
+            .Include(x => x.Supplier)
+            .AsNoTracking()
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x => x.Id == solutionId);
+
         public async Task<CatalogueItem> GetSolutionWithSupplierDetails(CatalogueItemId solutionId) =>
             await dbContext.CatalogueItems.AsNoTracking()
                 .Include(ci => ci.Solution)
