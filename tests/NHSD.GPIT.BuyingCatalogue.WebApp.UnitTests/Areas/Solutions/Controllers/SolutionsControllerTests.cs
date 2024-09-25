@@ -991,6 +991,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [MockAutoData]
+        public static async Task Get_DataProcessingInformation_SuspendedSolution_ReturnsExpectedViewResult(
+            Solution solution,
+            [Frozen] ISolutionsService solutionsServiceMock,
+            SolutionsController controller)
+        {
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = PublicationStatus.Suspended;
+
+            solutionsServiceMock.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId).Returns(catalogueItem);
+
+            var actual = (await controller.DataProcessingInformation(solution.CatalogueItemId)).As<RedirectToActionResult>();
+
+            actual.Should().NotBeNull();
+            actual.ActionName.Should().Be(nameof(controller.Description));
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Get_DataProcessingInformation_ValidSolutionForId_ReturnsExpectedViewResult(
             Solution solution,
             [Frozen] ISolutionsService solutionsServiceMock,
