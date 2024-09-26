@@ -6,6 +6,26 @@
    border: 4px solid #d5281b;
 }
 
+.nhsuk-expander-footer {
+    margin-top: 16px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    padding-right: 32px;
+    padding-left: 32px;
+    background-color: #fafafa;
+    padding-top: 0px;
+}
+
+.nhsuk-expander .nhsuk-expander-footer i {
+    margin-right: 8px;
+}
+
+.nhsuk-expander .nhsuk-expander-footer p {
+    margin-bottom: 16px !important;
+    margin-top: 16px !important;
+}
+
 .nhsuk-checkboxes__subhint {
     font-size: 1rem;
 }

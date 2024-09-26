@@ -60,78 +60,88 @@
                                          new { Model.InternalOrgId, Model.CallOffId })" />
         }
 
-        <nhs-expander label-text="Order details"
-                      open="true">
-            <nhs-summary-list>
-                <nhs-summary-list-row label-text="Order ID" data-test-id="order-id-summary">
-                    @Model.Order.CallOffId
-                </nhs-summary-list-row>
-
-                <nhs-summary-list-row label-text="Description" data-test-id="order-description-summary">
-                    @Model.Order.Description
-                </nhs-summary-list-row>
-
-                <nhs-summary-list-row label-text="Date created" data-test-id="date-created-summary">
-                    @($"{Model.Order.Created:d MMMM yyyy}")
-                </nhs-summary-list-row>
-
-                @if (Model.Order.OrderingParty != null
-                     && Model.Order.OrderingPartyContact != null)
-                {
-                    <nhs-summary-list-row label-text="Call-off Ordering Party" data-test-id="ordering-party-summary">
-                        @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br />
-                        @Model.Order.OrderingParty.Name<br />
-                        @Model.Order.OrderingParty.ExternalIdentifier<br />
-                        <vc:nhs-address address="@Model.Order.OrderingParty.Address" />
+        <nhs-expander-v2 open="true">
+            <nhs-expander-summary label-text="Order details" bold-title="true"></nhs-expander-summary>
+            <nhs-expander-content>
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Order ID" data-test-id="order-id-summary">
+                        @Model.Order.CallOffId
                     </nhs-summary-list-row>
-                }
 
-                @if (Model.Order.Supplier != null
-                     && Model.Order.SupplierContact != null)
-                {
-                    @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
+                    <nhs-summary-list-row label-text="Description" data-test-id="order-description-summary">
+                        @Model.Order.Description
+                    </nhs-summary-list-row>
+
+                    <nhs-summary-list-row label-text="Date created" data-test-id="date-created-summary">
+                        @($"{Model.Order.Created:d MMMM yyyy}")
+                    </nhs-summary-list-row>
+
+                    @if (Model.Order.OrderingParty != null
+                         && Model.Order.OrderingPartyContact != null)
                     {
-                        <nhs-summary-list-row label-text="Supplier legal name" data-test-id="supplier-legal-name">
-                            @Model.Order.Supplier.LegalName<br />
+                        <nhs-summary-list-row label-text="Call-off Ordering Party" data-test-id="ordering-party-summary">
+                            @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
+                            @Model.Order.OrderingParty.Name<br/>
+                            @Model.Order.OrderingParty.ExternalIdentifier<br/>
+                            <vc:nhs-address address="@Model.Order.OrderingParty.Address"/>
                         </nhs-summary-list-row>
                     }
-                    <nhs-summary-list-row label-text="Supplier" data-test-id="supplier-summary">
-                        @($"{Model.Order.SupplierContact.FirstName} {Model.Order.SupplierContact.LastName}")<br />
-                        @Model.Order.Supplier.Name<br />
-                        <vc:nhs-address address="@Model.Order.Supplier.Address" />
-                    </nhs-summary-list-row>
-                }
 
-                @if (Model.Order.CommencementDate.HasValue)
-                {
-                    <nhs-summary-list-row label-text="Commencement date" data-test-id="start-date-summary">
-                        @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
-                    </nhs-summary-list-row>
-                }
+                    @if (Model.Order.Supplier != null
+                         && Model.Order.SupplierContact != null)
+                    {
+                        @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            <nhs-summary-list-row label-text="Supplier legal name" data-test-id="supplier-legal-name">
+                                @Model.Order.Supplier.LegalName<br/>
+                            </nhs-summary-list-row>
+                        }
 
-                @if (Model.Order.InitialPeriod.HasValue)
-                {
-                    <nhs-summary-list-row label-text="Initial period" data-test-id="initial-period-summary">
-                        @($"{Model.Order.InitialPeriod} months")
-                    </nhs-summary-list-row>
-                }
+                        <nhs-summary-list-row label-text="Supplier" data-test-id="supplier-summary">
+                            @($"{Model.Order.SupplierContact.FirstName} {Model.Order.SupplierContact.LastName}")<br/>
+                            @Model.Order.Supplier.Name<br/>
+                            <vc:nhs-address address="@Model.Order.Supplier.Address"/>
+                        </nhs-summary-list-row>
+                    }
 
-                @if (Model.Order.MaximumTerm.HasValue)
-                {
-                    <nhs-summary-list-row label-text="Maximum duration" data-test-id="maximum-term-summary">
-                        @($"{Model.Order.MaximumTerm} months")
-                    </nhs-summary-list-row>
-                }
+                    @if (Model.Order.CommencementDate.HasValue)
+                    {
+                        <nhs-summary-list-row label-text="Commencement date" data-test-id="start-date-summary">
+                            @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
+                        </nhs-summary-list-row>
+                    }
 
-                @if (Model.Order.CommencementDate.HasValue
-                     && Model.Order.MaximumTerm.HasValue)
-                {
-                    <nhs-summary-list-row label-text="End date" data-test-id="end-date-summary">
-                        @Model.Order.EndDate.DisplayValue
-                    </nhs-summary-list-row>
-                }
-            </nhs-summary-list>
-        </nhs-expander>
+                    @if (Model.Order.InitialPeriod.HasValue)
+                    {
+                        <nhs-summary-list-row label-text="Initial period" data-test-id="initial-period-summary">
+                            @($"{Model.Order.InitialPeriod} months")
+                        </nhs-summary-list-row>
+                    }
+
+                    @if (Model.Order.MaximumTerm.HasValue)
+                    {
+                        <nhs-summary-list-row label-text="Maximum duration" data-test-id="maximum-term-summary">
+                            @($"{Model.Order.MaximumTerm} months")
+                        </nhs-summary-list-row>
+                    }
+
+                    @if (Model.Order.CommencementDate.HasValue
+                         && Model.Order.MaximumTerm.HasValue)
+                    {
+                        <nhs-summary-list-row label-text="End date" data-test-id="end-date-summary">
+                            @Model.Order.EndDate.DisplayValue
+                        </nhs-summary-list-row>
+                    }
+                </nhs-summary-list>
+            </nhs-expander-content>
+            <nhs-expander-footer>
+                <p>
+                    <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit order details
+                    </a>
+                </p>
+            </nhs-expander-footer>
+        </nhs-expander-v2>
 
         @if (Model.Order.OrderStatus == OrderStatus.Terminated)
         {
@@ -183,26 +193,34 @@
             {
                 <h2 id="milestones-title">Milestones and payment triggers for Catalogue Solution and Additional Services</h2>
 
-                <nhs-expander label-text="Milestones and payment triggers"
-                              open="true">
-                
-                <div class="nhsuk-u-margin-bottom-9">
-                    <partial name="MilestoneTable" model="new MilestoneTableModel(Model.DefaultMilestoneLabelText, Model.DefaultPlan?.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
-                </div>
+                <nhs-expander-v2 open="true">
+                    <nhs-expander-summary label-text="Milestones and payment triggers" bold-title="true"></nhs-expander-summary>
+                    <nhs-expander-content>
+                        <div class="nhsuk-u-margin-bottom-9">
+                            <partial name="MilestoneTable" model="new MilestoneTableModel(Model.DefaultMilestoneLabelText, Model.DefaultPlan?.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
+                        </div>
 
-                @if (Model.HasBespokeMilestones)
-                {
-                    <div class="nhsuk-u-margin-bottom-9">
-                        <partial name="MilestoneTable" model="new MilestoneTableModel(Model.BespokeMilestoneLabelText, Model.BespokePlan.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
-                    </div>
-                }
-                else
-                {
-                    <div class="nhsuk-u-margin-bottom-9">
-                            <p>No bespoke milestones have been added for Catalogue Solution or Additional Services.</p>
-                    </div>
-                }
-                </nhs-expander>
+                        @if (Model.HasBespokeMilestones)
+                        {
+                            <div class="nhsuk-u-margin-bottom-9">
+                                <partial name="MilestoneTable" model="new MilestoneTableModel(Model.BespokeMilestoneLabelText, Model.BespokePlan.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="nhsuk-u-margin-bottom-9">
+                                    <p>No bespoke milestones have been added for Catalogue Solution or Additional Services.</p>
+                            </div>
+                        }
+                    </nhs-expander-content>
+                    <nhs-expander-footer>
+                        <p>
+                            <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit milestones and payment triggers
+                            </a>
+                        </p>
+                    </nhs-expander-footer>
+                </nhs-expander-v2>
             }
 
             @if (associatedServices.Any())
@@ -229,8 +247,9 @@
 
                 <h2 id="as-milestones-title">Milestones and payment triggers for Associated Services</h2>
 
-                <nhs-expander label-text="Milestones and payment triggers"
-                              open="true">
+                <nhs-expander-v2 open="true">
+                <nhs-expander-summary label-text="Milestones and payment triggers" bold-title="true"></nhs-expander-summary>
+                <nhs-expander-content>
                 <h3>Default milestones and payment triggers</h3>
 
                 <p>
@@ -259,7 +278,15 @@
                 {
                         <p>No specific requirements have been added for Associated Services.</p>
                 }
-                </nhs-expander>
+                </nhs-expander-content>
+                <nhs-expander-footer>
+                    <p>
+                        <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit milestones and payment triggers
+                        </a>
+                    </p>
+                </nhs-expander-footer>
+                </nhs-expander-v2>
             }
             
                 <h2>Data processing information</h2>
@@ -382,7 +409,7 @@
             @if (Model.Order.OrderStatus == OrderStatus.InProgress
             && Model.OrderWrapper.CanComplete())
             {
-                <h3>Complete order</h3>
+                <h2>Complete order</h2>
                 <p>Make sure you are happy with the order before marking it as complete.</p>
                 <form method="post">
                     <nhs-button-group>
@@ -393,7 +420,7 @@
                                                           nameof(OrderController.Download),
                                                           typeof(OrderController).ControllerName(),
                                                           new { Model.InternalOrgId, Model.CallOffId })" />
-                        <a href="@Url.Action(
+                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(
                                      nameof(DashboardController.Organisation),
                                      typeof(DashboardController).ControllerName(),
                                      new { Model.InternalOrgId })">Save for later</a>

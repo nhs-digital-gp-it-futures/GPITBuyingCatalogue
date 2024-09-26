@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 item,
                 Previous?.OrderItem(item.CatalogueItemId),
                 Order.IsAmendment,
-                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)));
+                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId))) { InternalOrgId = InternalOrgId };
         }
 
         public OrderTotalModel BuildOrderTotals()

@@ -1,8 +1,10 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Extensions;
 @model AmendOrderItemModel
@@ -12,11 +14,9 @@
     var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
 }
 
-<nhs-expander label-text="@Model.CatalogueItem.Name"
-              added-sticker="@(Model.IsAmendment && Model.IsOrderItemAdded)"
-              open="true"
-              bold-title="true">
-
+<nhs-expander-v2 open="true">
+    <nhs-expander-summary label-text="@Model.CatalogueItem.Name" added-sticker="@(Model.IsAmendment && Model.IsOrderItemAdded)" bold-title="true"></nhs-expander-summary>
+    <nhs-expander-content>
     @if (Model.OrderType.MergerOrSplit)
     {
         <nhs-table label-text="@Model.OrderType.GetPracticeReorganisationRecipientTitle()" catches-errors="false">
@@ -145,4 +145,12 @@
     {
         <partial name="_OrderTotal" model="@Model.OrderTotals" />
     }
-</nhs-expander>
+    </nhs-expander-content>
+    <nhs-expander-footer>
+        <p>
+            <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit details for @Model.CatalogueItem.Name
+            </a>
+        </p>
+    </nhs-expander-footer>
+</nhs-expander-v2>
