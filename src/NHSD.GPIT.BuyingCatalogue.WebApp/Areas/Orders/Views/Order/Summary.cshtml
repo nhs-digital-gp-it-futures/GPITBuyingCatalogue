@@ -18,7 +18,6 @@
     var orderSolution = Model.Order.OrderType.AssociatedServicesOnly ? Model.Order.AssociatedServicesOnlyDetails.Solution : Model.Order.GetSolutionOrderItem()?.CatalogueItem;
     var frameworks = orderSolution != null ? orderSolution?.Solution?.FrameworkSolutions?.Select(x => x.Framework).Distinct().ToList() : Enumerable.Empty<NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.Framework>().ToList();
 
-    var contractTerm = Model.Order.MaximumTerm.HasValue ? $" ({Model.Order.MaximumTerm} months)" : " (estimated)";
     var pdfButton = Model.Order.OrderStatus == OrderStatus.Terminated ? "Download summary (PDF)" : "Download order (PDF)";
     var totalDisplayed = false;
     var caption = Model.Order.OrderType.MergerOrSplit && associatedServices.Count == 1
@@ -134,13 +133,16 @@
                     }
                 </nhs-summary-list>
             </nhs-expander-content>
-            <nhs-expander-footer>
-                <p>
-                    <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit order details
-                    </a>
-                </p>
-            </nhs-expander-footer>
+            @if (Model.Order.OrderStatus != OrderStatus.Completed)
+            {
+                <nhs-expander-footer>
+                    <p>
+                        <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit order details
+                        </a>
+                    </p>
+                </nhs-expander-footer>
+            }
         </nhs-expander-v2>
 
         @if (Model.Order.OrderStatus == OrderStatus.Terminated)
@@ -209,17 +211,20 @@
                         else
                         {
                             <div class="nhsuk-u-margin-bottom-9">
-                                    <p>No bespoke milestones have been added for Catalogue Solution or Additional Services.</p>
+                                <p>No bespoke milestones have been added for Catalogue Solution or Additional Services.</p>
                             </div>
                         }
                     </nhs-expander-content>
-                    <nhs-expander-footer>
-                        <p>
-                            <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit milestones and payment triggers
-                            </a>
-                        </p>
-                    </nhs-expander-footer>
+                    @if (Model.Order.OrderStatus != OrderStatus.Completed)
+                    {
+                        <nhs-expander-footer>
+                            <p>
+                                <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit milestones and payment triggers
+                                </a>
+                            </p>
+                        </nhs-expander-footer>
+                    }
                 </nhs-expander-v2>
             }
 
@@ -250,42 +255,45 @@
                 <nhs-expander-v2 open="true">
                 <nhs-expander-summary label-text="Milestones and payment triggers" bold-title="true"></nhs-expander-summary>
                 <nhs-expander-content>
-                <h3>Default milestones and payment triggers</h3>
+                    <h3>Default milestones and payment triggers</h3>
 
-                <p>
-                    The delivery date is the default milestone for an Associated Service and triggers the requirement that payment is made 30 days later.
-                    However, you can add bespoke milestones that you've agreed with the supplier to act as payment triggers for this order.
-                </p>
-                <p>
-                    The default milestone will apply to any Associated Services not assigned a bespoke milestone.
-                </p>
-
-                @if (Model.HasBespokeBilling)
-                {
-                    <partial name="ContractBillingItemTable" model="new ContractBillingItemTableModel(Model.BespokeBillingLabelText, Model.BespokeBilling.ContractBillingItems, false, Model.CallOffId, Model.InternalOrgId)" />
-                }
-                else
-                {
-                        <p>No bespoke milestones have been added for Associated Services.</p>
-                }
-
-                <h2 id="requirements-title">Associated Service specific requirements</h2>
-                @if (Model.HasSpecificRequirements)
-                {
-                    <partial name="RequirementTable" model="new RequirementTableModel(Model.RequirementLabelText, Model.BespokeBilling.Requirements, false, Model.CallOffId, Model.InternalOrgId)" />
-                }
-                else
-                {
-                        <p>No specific requirements have been added for Associated Services.</p>
-                }
-                </nhs-expander-content>
-                <nhs-expander-footer>
                     <p>
-                        <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit milestones and payment triggers
-                        </a>
+                        The delivery date is the default milestone for an Associated Service and triggers the requirement that payment is made 30 days later.
+                        However, you can add bespoke milestones that you've agreed with the supplier to act as payment triggers for this order.
                     </p>
-                </nhs-expander-footer>
+                    <p>
+                        The default milestone will apply to any Associated Services not assigned a bespoke milestone.
+                    </p>
+
+                    @if (Model.HasBespokeBilling)
+                    {
+                        <partial name="ContractBillingItemTable" model="new ContractBillingItemTableModel(Model.BespokeBillingLabelText, Model.BespokeBilling.ContractBillingItems, false, Model.CallOffId, Model.InternalOrgId)" />
+                    }
+                    else
+                    {
+                        <p>No bespoke milestones have been added for Associated Services.</p>
+                    }
+
+                    <h2 id="requirements-title">Associated Service specific requirements</h2>
+                    @if (Model.HasSpecificRequirements)
+                    {
+                        <partial name="RequirementTable" model="new RequirementTableModel(Model.RequirementLabelText, Model.BespokeBilling.Requirements, false, Model.CallOffId, Model.InternalOrgId)" />
+                    }
+                    else
+                    {
+                        <p>No specific requirements have been added for Associated Services.</p>
+                    }
+                </nhs-expander-content>
+                @if (Model.Order.OrderStatus != OrderStatus.Completed)
+                {
+                    <nhs-expander-footer>
+                        <p>
+                            <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit milestones and payment triggers
+                            </a>
+                        </p>
+                    </nhs-expander-footer>
+                }
                 </nhs-expander-v2>
             }
             

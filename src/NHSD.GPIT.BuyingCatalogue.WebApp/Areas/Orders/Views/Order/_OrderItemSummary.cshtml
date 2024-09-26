@@ -2,6 +2,7 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
@@ -17,140 +18,143 @@
 <nhs-expander-v2 open="true">
     <nhs-expander-summary label-text="@Model.CatalogueItem.Name" added-sticker="@(Model.IsAmendment && Model.IsOrderItemAdded)" bold-title="true"></nhs-expander-summary>
     <nhs-expander-content>
-    @if (Model.OrderType.MergerOrSplit)
-    {
-        <nhs-table label-text="@Model.OrderType.GetPracticeReorganisationRecipientTitle()" catches-errors="false">
-            <nhs-table-row-container>
-                <nhs-table-cell>@Model.PracticeReorganisationName</nhs-table-cell>
-            </nhs-table-row-container>
-        </nhs-table>
-    }
-
-    @if (Model.RolledUpRecipientsForItem.Any())
-    {
-
-        var labelText = Model.OrderType.GetServiceRecipientsTitle();
-
-        <br />
-        <nhs-table label-text="@labelText" catches-errors="false">
-            @if (Model.IsAmendment)
-            {
-                <nhs-table-column>Status</nhs-table-column>
-            }
-            <nhs-table-column>Organisation (ODS code)</nhs-table-column>
-            <nhs-table-column>Item ID</nhs-table-column>
-            <nhs-table-column>Planned delivery date</nhs-table-column>
-            <nhs-table-column>Quantity</nhs-table-column>
-
-            @foreach (var serviceRecipient in Model.RolledUpRecipientsForItem)
-            {
-                var quantity = serviceRecipient.GetQuantityForItem(Model.CatalogueItem.Id);
-                var deliveryDate = serviceRecipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
-                var deliveryDateText = deliveryDate.HasValue
-                ? $"{deliveryDate.Value:d MMM yyyy}"
-                : "No date entered";
-
+        @if (Model.OrderType.MergerOrSplit)
+        {
+            <nhs-table label-text="@Model.OrderType.GetPracticeReorganisationRecipientTitle()" catches-errors="false">
                 <nhs-table-row-container>
-                    @if (Model.IsAmendment)
-                    {
-                        <nhs-table-cell style="width: 50px;">
-                            @if (Model.IsServiceRecipientAdded(serviceRecipient.OdsCode))
+                    <nhs-table-cell>@Model.PracticeReorganisationName</nhs-table-cell>
+                </nhs-table-row-container>
+            </nhs-table>
+        }
+
+        @if (Model.RolledUpRecipientsForItem.Any())
+        {
+
+            var labelText = Model.OrderType.GetServiceRecipientsTitle();
+
+            <br />
+            <nhs-table label-text="@labelText" catches-errors="false">
+                @if (Model.IsAmendment)
+                {
+                    <nhs-table-column>Status</nhs-table-column>
+                }
+                <nhs-table-column>Organisation (ODS code)</nhs-table-column>
+                <nhs-table-column>Item ID</nhs-table-column>
+                <nhs-table-column>Planned delivery date</nhs-table-column>
+                <nhs-table-column>Quantity</nhs-table-column>
+
+                @foreach (var serviceRecipient in Model.RolledUpRecipientsForItem)
+                {
+                    var quantity = serviceRecipient.GetQuantityForItem(Model.CatalogueItem.Id);
+                    var deliveryDate = serviceRecipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
+                    var deliveryDateText = deliveryDate.HasValue
+                        ? $"{deliveryDate.Value:d MMM yyyy}"
+                        : "No date entered";
+
+                    <nhs-table-row-container>
+                        @if (Model.IsAmendment)
+                        {
+                            <nhs-table-cell style="width: 50px;">
+                                @if (Model.IsServiceRecipientAdded(serviceRecipient.OdsCode))
+                                {
+                                    <div class="bc-c-task-list__task-status">
+                                        <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span aria-label="Existing"></span>
+                                }
+                            </nhs-table-cell>
+                        }
+                        <nhs-table-cell>@serviceRecipient.OdsOrganisation.Name (@serviceRecipient.OdsCode)</nhs-table-cell>
+                        <nhs-table-cell>@($"{Model.CallOffId}-{serviceRecipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")</nhs-table-cell>
+                        <nhs-table-cell>@deliveryDateText</nhs-table-cell>
+                        <nhs-table-cell>
+                            @if (hasServiceRecipientQuantities)
                             {
-                                <div class="bc-c-task-list__task-status">
-                                    <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
-                                </div>
+                                @(quantity.HasValue ? $"{quantity:N0}" : "-")
                             }
                             else
                             {
-                                <span aria-label="Existing"></span>
+                                @("N/A")
                             }
                         </nhs-table-cell>
-                    }
-                    <nhs-table-cell>@serviceRecipient.OdsOrganisation.Name (@serviceRecipient.OdsCode)</nhs-table-cell>
-                    <nhs-table-cell>@($"{Model.CallOffId}-{serviceRecipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")</nhs-table-cell>
-                    <nhs-table-cell>@deliveryDateText</nhs-table-cell>
-                    <nhs-table-cell>
-                        @if (hasServiceRecipientQuantities)
-                        {
-                            @(quantity.HasValue ? $"{quantity:N0}" : "-")
-                        }
-                        else
-                        {
-                            @("N/A")
-                        }
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
-    }
-
-    @if (Model.OrderItemPrice?.OrderItemPriceTiers.Any() ?? false)
-    {
-        var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? "one-off";
-
-        <br />
-        <nhs-table label-text="Pricing and quantities" catches-errors="false">
-            @if (hasTieredPricing)
-            {
-                <nhs-table-column>Pricing tier</nhs-table-column>
-            }
-            <nhs-table-column>Price per unit</nhs-table-column>
-            @if (Model.IsAmendment)
-            {
-                <nhs-table-column>Old quantity</nhs-table-column>
-                <nhs-table-column>New quantity</nhs-table-column>
-                <nhs-table-column>Old price</nhs-table-column>
-                <nhs-table-column>New price</nhs-table-column>
-            }
-            else
-            {
-                <nhs-table-column>Quantity</nhs-table-column>
-                <nhs-table-column>Total cost (@billingPeriod)</nhs-table-column>
-            }
-            @{
-                var rolledUpCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
-                var previousCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.PreviousTotalQuantity);
-                @for (var i = 0; i < rolledUpCosts.Count; i++)
-                {
-                    <nhs-table-row-container>
-                        @if (hasTieredPricing)
-                        {
-                            <nhs-table-cell>Tier @rolledUpCosts[i].Id</nhs-table-cell>
-                        }
-                        <nhs-table-cell>£@rolledUpCosts[i].Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</nhs-table-cell>
-
-                        @if (Model.IsAmendment)
-                        {
-                            <nhs-table-cell>@($"{previousCosts[i].Quantity:N0}")</nhs-table-cell>
-                            <nhs-table-cell>@($"{rolledUpCosts[i].Quantity:N0}")</nhs-table-cell>
-                            <nhs-table-cell>£@previousCosts[i].Cost.ToString("N2")</nhs-table-cell>
-                            <nhs-table-cell>£@rolledUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
-                        }
-                        else
-                        {
-                            <nhs-table-cell>@($"{rolledUpCosts[i].Quantity:N0}")</nhs-table-cell>
-                            <nhs-table-cell>£@rolledUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
-                        }
                     </nhs-table-row-container>
                 }
-            }
-        </nhs-table>
-    }
+            </nhs-table>
+        }
 
-    <p>
-        <b>@Model.FundingTypeDescription</b>
-    </p>
+        @if (Model.OrderItemPrice?.OrderItemPriceTiers.Any() ?? false)
+        {
+            var billingPeriod = Model.OrderItemPrice.BillingPeriod?.Description() ?? "one-off";
 
-    @if (Model.OrderTotals != null)
-    {
-        <partial name="_OrderTotal" model="@Model.OrderTotals" />
-    }
-    </nhs-expander-content>
-    <nhs-expander-footer>
+            <br />
+            <nhs-table label-text="Pricing and quantities" catches-errors="false">
+                @if (hasTieredPricing)
+                {
+                    <nhs-table-column>Pricing tier</nhs-table-column>
+                }
+                <nhs-table-column>Price per unit</nhs-table-column>
+                @if (Model.IsAmendment)
+                {
+                    <nhs-table-column>Old quantity</nhs-table-column>
+                    <nhs-table-column>New quantity</nhs-table-column>
+                    <nhs-table-column>Old price</nhs-table-column>
+                    <nhs-table-column>New price</nhs-table-column>
+                }
+                else
+                {
+                    <nhs-table-column>Quantity</nhs-table-column>
+                    <nhs-table-column>Total cost (@billingPeriod)</nhs-table-column>
+                }
+                @{
+                    var rolledUpCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
+                    var previousCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.PreviousTotalQuantity);
+                    @for (var i = 0; i < rolledUpCosts.Count; i++)
+                    {
+                        <nhs-table-row-container>
+                            @if (hasTieredPricing)
+                            {
+                                <nhs-table-cell>Tier @rolledUpCosts[i].Id</nhs-table-cell>
+                            }
+                            <nhs-table-cell>£@rolledUpCosts[i].Price.ToString("N4") @Model.OrderItemPrice.ToPriceUnitString()</nhs-table-cell>
+
+                            @if (Model.IsAmendment)
+                            {
+                                <nhs-table-cell>@($"{previousCosts[i].Quantity:N0}")</nhs-table-cell>
+                                <nhs-table-cell>@($"{rolledUpCosts[i].Quantity:N0}")</nhs-table-cell>
+                                <nhs-table-cell>£@previousCosts[i].Cost.ToString("N2")</nhs-table-cell>
+                                <nhs-table-cell>£@rolledUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
+                            }
+                            else
+                            {
+                                <nhs-table-cell>@($"{rolledUpCosts[i].Quantity:N0}")</nhs-table-cell>
+                                <nhs-table-cell>£@rolledUpCosts[i].Cost.ToString("N2")</nhs-table-cell>
+                            }
+                        </nhs-table-row-container>
+                    }
+                }
+            </nhs-table>
+        }
+
         <p>
-            <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit details for @Model.CatalogueItem.Name
-            </a>
+            <b>@Model.FundingTypeDescription</b>
         </p>
-    </nhs-expander-footer>
+
+        @if (Model.OrderTotals != null)
+        {
+            <partial name="_OrderTotal" model="@Model.OrderTotals" />
+        }
+    </nhs-expander-content>
+    @if (Model.CanEdit)
+    {
+        <nhs-expander-footer>
+            <p>
+                <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit details for @Model.CatalogueItem.Name
+                </a>
+            </p>
+        </nhs-expander-footer>
+    }
 </nhs-expander-v2>

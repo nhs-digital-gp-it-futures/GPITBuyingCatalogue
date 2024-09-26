@@ -40,6 +40,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public bool IsAmendment { get; }
 
+        public bool CanEdit { get; set; }
+
         public bool IsOrderItemAdded { get; }
 
         public OrderItemPrice OrderItemPrice => OrderItem.OrderItemPrice;
