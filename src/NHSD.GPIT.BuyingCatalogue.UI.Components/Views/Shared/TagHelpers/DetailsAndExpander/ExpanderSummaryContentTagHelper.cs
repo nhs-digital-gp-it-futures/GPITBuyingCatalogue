@@ -17,6 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         public const string TextName = "text";
         public const string UrlTitleName = "url-title";
         public const string UrlName = "url";
+        public const string JsOnlyName = "js-only";
 
         [HtmlAttributeName(TitleName)]
         public string Title { get; set; }
@@ -30,6 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         [HtmlAttributeName(UrlName)]
         public string Url { get; set; }
 
+        [HtmlAttributeName(JsOnlyName)]
+        public bool JsOnly { get; set; } = false;
+
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             if (string.IsNullOrWhiteSpace(Text) != string.IsNullOrWhiteSpace(Title))
@@ -39,6 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
                 throw new ArgumentException($"you must set both {UrlName} and {UrlTitleName} or set neither.");
 
             var summaryClass = UrlTitle is not null ? TagHelperConstants.NhsSummaryTextSecondaryUrlClass : TagHelperConstants.NhsSummaryTextSecondaryClass;
+            if (JsOnly)
+                summaryClass += $" {TagHelperConstants.NhsJsOnly}";
 
             output.TagName = TagHelperConstants.Span;
             output.TagMode = TagMode.StartTagAndEndTag;
