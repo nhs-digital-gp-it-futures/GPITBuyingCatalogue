@@ -164,3 +164,16 @@
 .nhs-grid-row__no-padding {
   padding-left: 0px;
 }
+
+.nhsuk-checkboxes__input_select-all {
+    opacity: 1!important;
+    margin: 1.8px;
+}
+
+.nhsuk-content--js-only {
+    display: none;
+}
+
+.js-enabled .nhsuk-content--js-only {
+    display: inline-block;
+}

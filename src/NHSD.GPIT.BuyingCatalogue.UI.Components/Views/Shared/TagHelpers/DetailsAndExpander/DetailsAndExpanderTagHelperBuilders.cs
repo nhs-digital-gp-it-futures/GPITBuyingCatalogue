@@ -133,7 +133,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
         }
 
         // ToDo: This function can be removed once moved across to V2 of the expander
-        public static TagBuilder GetSummaryLabelBuilderWithSecondaryInformation(string labelText, string secondaryTextTitle, string secondaryText, string secondaryUrlTitle, string secondaryUrl, bool bold, bool addedSticker = false)
+        public static TagBuilder GetSummaryLabelBuilderWithSecondaryInformation(string labelText, string secondaryTextTitle, string secondaryText, string secondaryUrlTitle, string secondaryUrl, bool bold, bool addedSticker = false, bool jsOnly = false)
         {
             var summaryBuilder = new TagBuilder("summary");
             summaryBuilder.AddCssClass(DetailsSummaryClass);
@@ -164,6 +164,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             }
 
             var summaryClass = secondaryUrlTitle is not null ? SummaryTextSecondaryUrlClass : SummaryTextSecondaryClass;
+
+            if (jsOnly)
+                summaryClass += $" {TagHelperConstants.NhsJsOnly}";
+
             var secondarySpanBuilder = new TagBuilder(TagHelperConstants.Span);
             secondarySpanBuilder.AddCssClass(summaryClass);
 
