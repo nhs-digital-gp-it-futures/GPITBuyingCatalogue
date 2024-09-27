@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Detail
             return summaryBuilder;
         }
 
-        //ToDo: HeadingText doesnt appear to be used anywhere so once moved over to V2 expander this can be removed
+        // ToDo: HeadingText doesnt appear to be used anywhere so once moved over to V2 expander this can be removed
         public static TagBuilder GetSummaryLabelBuilder(string headingText, string labelText, bool bold, bool addedSticker = false)
         {
             var summaryBuilder = new TagBuilder("summary");
