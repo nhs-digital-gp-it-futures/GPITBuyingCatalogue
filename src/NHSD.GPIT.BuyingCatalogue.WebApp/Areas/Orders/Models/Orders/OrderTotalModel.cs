@@ -36,5 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public decimal TotalCost { get; }
 
         public bool OneOffCostOnly { get; }
+
+        public bool Inverted { get; set; }
     }
 }

@@ -133,7 +133,7 @@
                     }
                 </nhs-summary-list>
             </nhs-expander-content>
-            @if (Model.Order.OrderStatus != OrderStatus.Completed)
+            @if (Model.Order.OrderStatus == OrderStatus.InProgress)
             {
                 <nhs-expander-footer>
                     <p>
@@ -148,16 +148,21 @@
         @if (Model.Order.OrderStatus == OrderStatus.Terminated)
         {
             <h2>Termination details</h2>
-            <nhs-summary-list>
-                <nhs-summary-list-row label-text="Reason for termination" data-test-id="termination-reason-summary">
-                    @Model.Order.OrderTermination.Reason
-                </nhs-summary-list-row>
+            <nhs-card-v2>
+            <nhs-card-content>
 
-                <nhs-summary-list-row label-text="Date of termination" data-test-id="termination-date-summary">
-                    @($"{Model.Order.OrderTermination.DateOfTermination:d MMMM yyyy}")
-                </nhs-summary-list-row>
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Reason for termination" data-test-id="termination-reason-summary">
+                        @Model.Order.OrderTermination.Reason
+                    </nhs-summary-list-row>
 
-            </nhs-summary-list>
+                    <nhs-summary-list-row label-text="Date of termination" data-test-id="termination-date-summary">
+                        @($"{Model.Order.OrderTermination.DateOfTermination:d MMMM yyyy}")
+                    </nhs-summary-list-row>
+
+                </nhs-summary-list>
+            </nhs-card-content>
+            </nhs-card-v2>
         }
 
         @if (!(Model.Order.OrderItems?.Any() ?? false))
@@ -215,7 +220,7 @@
                             </div>
                         }
                     </nhs-expander-content>
-                    @if (Model.Order.OrderStatus != OrderStatus.Completed)
+                    @if (Model.Order.OrderStatus == OrderStatus.InProgress)
                     {
                         <nhs-expander-footer>
                             <p>
@@ -244,7 +249,9 @@
                         if (associatedServices.Count == 1)
                         {
                             totalDisplayed = true;
-                            itemModel.OrderTotals = Model.BuildOrderTotals();
+                            var orderTotals = Model.BuildOrderTotals();
+                            orderTotals.Inverted = true;
+                            itemModel.OrderTotals = orderTotals;
                         }
                     }
                     <partial name="_OrderItemSummary" model="@itemModel" />
@@ -284,7 +291,7 @@
                         <p>No specific requirements have been added for Associated Services.</p>
                     }
                 </nhs-expander-content>
-                @if (Model.Order.OrderStatus != OrderStatus.Completed)
+                    @if (Model.Order.OrderStatus == OrderStatus.InProgress)
                 {
                     <nhs-expander-footer>
                         <p>
@@ -298,19 +305,22 @@
             }
             
                 <h2>Data processing information</h2>
-
-                <nhs-expander label-text="Data processing"
-                              open="true">
-                    <p id="bespoke-data-processing">
-                        Data processing information will be captured in a separate template
+                <nhs-card-v2>
+                    <nhs-card-content>
+                        <p id="bespoke-data-processing">
+                            Data processing information will be captured in a separate template
                             that must be included with this Call-off Order Form. <a href="https://gpitbjss.atlassian.net/wiki/spaces/BG/pages/12207980954/Order+form+template+Data+processing+information" target="_blank">Download data processing template (opens in a new tab)</a>
-                    </p>
-                </nhs-expander>
+                        </p>
+                    </nhs-card-content>
+                </nhs-card-v2>
+
             @if (totalDisplayed == false)
             {
                 if (Model.Order.IsAmendment)
                 {
-                    <nhs-table id="review-solutions-amended-indicative-costs" label-text="Total indicative costs excluding VAT">
+                   <nhs-card-v2>
+                    <nhs-card-content title="Total indicative costs excluding VAT"> 
+                    <nhs-table id="review-solutions-amended-indicative-costs">
                         <nhs-table-column>Cost type</nhs-table-column>
                         <nhs-table-column numeric="true">Previous cost</nhs-table-column>
                         <nhs-table-column numeric="true">Difference</nhs-table-column>
@@ -372,7 +382,8 @@
                             </nhs-table-cell>
                         </nhs-table-row-container>
                     </nhs-table>
-
+                    </nhs-card-content>
+                   </nhs-card-v2>
                 }
                 else
                 {
@@ -382,81 +393,67 @@
                 }
             }
         }
-        @if (Model.Order.OrderStatus != OrderStatus.InProgress)
-        {
-            <div class="nhsuk-u-margin-top-9">
-            
-                @if (Model.Order.OrderStatus == OrderStatus.Terminated)
-                {
-                    <h3>Download summary</h3>
-                    <p>You can download a summary of this terminated contract for your records.</p>
-                }
-                else 
-                {
-                    <h3>Order summary</h3>
-                    <p>You can download and review your order summary here.</p>
-                }
 
-                <vc:nhs-secondary-button text="@pdfButton"
-                                         type="Secondary"
-                                         url="@Url.Action(
-                                                  nameof(OrderController.Download),
-                                                  typeof(OrderController).ControllerName(),
-                                                  new { Model.InternalOrgId, Model.CallOffId })" />
-            </div>
-        }
-
-        @if (Model.CanBeTerminated)
-        {
-            <div class="nhsuk-u-margin-top-3">
-                <vc:nhs-delete-button url="@Url.Action(nameof(OrderController.TerminateOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })" text="Terminate this contract" />
-            </div>
-        }
 
         <div class="nhsuk-u-margin-top-3">
-            @if (Model.Order.OrderStatus == OrderStatus.InProgress
-            && Model.OrderWrapper.CanComplete())
+            @switch (Model.Order.OrderStatus)
             {
-                <h2>Complete order</h2>
-                <p>Make sure you are happy with the order before marking it as complete.</p>
-                <form method="post">
-                    <nhs-button-group>
-                        <nhs-submit-button text="Complete order" />
-                        <vc:nhs-secondary-button text="@pdfButton"
-                                                 type="Secondary"
-                                                 url="@Url.Action(
-                                                          nameof(OrderController.Download),
-                                                          typeof(OrderController).ControllerName(),
-                                                          new { Model.InternalOrgId, Model.CallOffId })" />
-                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(
-                                     nameof(DashboardController.Organisation),
-                                     typeof(DashboardController).ControllerName(),
-                                     new { Model.InternalOrgId })">Save for later</a>
-                        </nhs-button-group>
-                </form>
-
+                case OrderStatus.InProgress when Model.OrderWrapper.CanComplete():
+                    <h2>Complete order</h2>
+                    <p>Make sure you are happy with the order before marking it as complete.</p>
+                    break;
+                case OrderStatus.Terminated:
+                    <h3>Download summary</h3>
+                    <p>You can download a summary of this terminated contract for your records.</p>
+                    break;
+                default:
+                    <h3>Order summary</h3>
+                    <p>You can download and review your order summary here.</p>
+                    break;
             }
-            else
-            {
-                if (Model.Order.OrderStatus == OrderStatus.InProgress)
-                {
-                    <vc:nhs-secondary-button text="Save and continue"
-                                             type="Primary"
-                                             url="@Url.Action(
-                                                      nameof(OrderController.Order),
-                                                      typeof(OrderController).ControllerName(),
-                                                      new { Model.InternalOrgId, Model.CallOffId })" />
-                }
-                else
-                {
-                    <vc:nhs-secondary-button text="Save and continue"
+            <form method="post">
+                <nhs-button-group>
+                    @if (Model.Order.OrderStatus == OrderStatus.InProgress)
+                    {
+                        if (Model.OrderWrapper.CanComplete())
+                        {
+                            <nhs-submit-button text="Complete order" />
+                        }
+                        else
+                        {
+                            <vc:nhs-secondary-button text="Save and continue"
+                                                     type="Primary"
+                                                     url="@Url.Action(
+                                                              nameof(OrderController.Order),
+                                                              typeof(OrderController).ControllerName(),
+                                                              new { Model.InternalOrgId, Model.CallOffId })" />
+                        }
+                    }
+                    else
+                    {
+                        <vc:nhs-secondary-button text="Save and continue"
                                              type="Primary"
                                              url="@Url.Action(
                                                       nameof(DashboardController.Organisation),
                                                       typeof(DashboardController).ControllerName(),
                                                       new { Model.InternalOrgId })" />
-                }
-            }
+                    }
+
+                    <vc:nhs-secondary-button text="@pdfButton"
+                                             type="Secondary"
+                                             url="@Url.Action(nameof(OrderController.Download), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"/>
+                    
+                    @if (Model.CanBeTerminated)
+                    {
+                       <vc:nhs-delete-button url="@Url.Action(nameof(OrderController.TerminateOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })" text="Terminate this contract" />
+                    }
+
+                    @if (Model.Order.OrderStatus == OrderStatus.InProgress && Model.OrderWrapper.CanComplete())
+                    {
+                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(DashboardController.Organisation), typeof(DashboardController).ControllerName(), new { Model.InternalOrgId })">Save for later</a>                        
+                    }
+                </nhs-button-group>
+                </form>
         </div>
     </div>
 </div>
