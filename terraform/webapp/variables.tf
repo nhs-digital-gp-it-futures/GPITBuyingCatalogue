@@ -65,6 +65,10 @@ variable "acr_subscription_id" {
   type = string
 }
 
+variable "dns_subscription_id" {
+  type = string
+}
+
 variable "notify_api_key" {
   type = string
 }
