@@ -82,7 +82,6 @@
         internal const string NhsExpanderError = "nhsuk-error-expander";
         internal const string NhsExpanderFooter = "nhsuk-expander-footer";
         internal const string NhsSummaryTextSecondaryClass = "nhsuk-details__summary-text_secondary";
-        internal const string NhsSummaryTextSecondaryUrlClass = "nhsuk-details__summary-text_secondary_url";
         internal const string NhsInput = "nhsuk-input";
         internal const string NhsLabel = "nhsuk-label";
         internal const string BoldLabel = "bold-label";

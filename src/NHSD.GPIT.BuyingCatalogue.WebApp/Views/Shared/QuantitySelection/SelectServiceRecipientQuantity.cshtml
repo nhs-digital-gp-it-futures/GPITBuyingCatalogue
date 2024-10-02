@@ -70,9 +70,7 @@
                 <input type="hidden" asp-for="@Model.SubLocations[i].Name" />
 
                 <nhs-expander-v2 asp-for="@Model.SubLocations[i]" open="true" catches-errors="true">
-                    <nhs-expander-summary label-text="@Model.SubLocations[i].Name" bold-title="true">
-                        <nhs-expander-summary-content title="@Model.SubLocations[i].ServiceRecipients.Length.ToString()" text=" recipients added" />
-                    </nhs-expander-summary>
+                    <nhs-expander-summary label-text="@Model.SubLocations[i].Name" bold-title="true" secondary-text-title="@Model.SubLocations[i].ServiceRecipients.Length.ToString()" secondary-text=" recipients added" />
                     <nhs-expander-content>
                     <nhs-table data-test-id="additional-service-dashboard-table">
                         <nhs-table-column>Organisation </nhs-table-column>
