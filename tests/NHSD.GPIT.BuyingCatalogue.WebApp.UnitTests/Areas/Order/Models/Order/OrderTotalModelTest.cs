@@ -32,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.TotalAnnualCost.Should().Be(totalAnnualCost);
             model.TotalCost.Should().Be(totalCost);
             model.OneOffCostOnly.Should().BeFalse();
+            model.Inverted.Should().BeFalse();
         }
 
         [Theory]
@@ -57,6 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.TotalAnnualCost.Should().Be(0M);
             model.TotalCost.Should().Be(totalCost);
             model.OneOffCostOnly.Should().BeTrue();
+            model.Inverted.Should().BeFalse();
         }
     }
 }
