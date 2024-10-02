@@ -145,9 +145,17 @@
   padding-left: 0px;
 }
 
-.nhsuk-checkboxes__input_select-all {
-    opacity: 1!important;
-    margin: 1.8px;
+.nhsuk-checkboxes__input_select-all + .nhsuk-checkboxes__label::after {
+  border-radius: 2px;
+  height: 0px;
+  top: 20px;
+  -ms-transform: rotate(0deg);
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.nhsuk-checkboxes__input_select-all:indeterminate + .nhsuk-checkboxes__label::after {
+  opacity: 1;
 }
 
 .nhsuk-content--js-only {
