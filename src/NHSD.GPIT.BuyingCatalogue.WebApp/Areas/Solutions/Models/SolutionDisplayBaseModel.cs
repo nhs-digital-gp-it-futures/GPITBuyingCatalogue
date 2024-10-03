@@ -228,6 +228,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 },
                 new()
                 {
+                    Action = nameof(SolutionsController.DataProcessingInformation),
+                    Controller = ControllerName,
+                    Name = "Data processing information",
+                    Show = CatalogueItemContentStatus.ShowDataProcessingInformation,
+                    RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
+                },
+                new()
+                {
                     Action = nameof(SolutionsController.Standards),
                     Controller = ControllerName,
                     Name = "Standards",

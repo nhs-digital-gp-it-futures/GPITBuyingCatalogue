@@ -1,0 +1,95 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.DataProcessingInformationModel
+
+<article>
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+            <partial name="_solutionSummary" model="Model"/>
+
+            @if (Model.Information?.Details is null || Model.Information?.Officer is null)
+            {
+                <p>This information is not yet available.</p>
+            }
+            else
+            {
+                <h2>General data processing information</h2>
+                <nhs-expander label-text="View general data processing information">
+                    <h3>Subject matter of the processing</h3>
+                    <p>@Model.Information.Details.Subject</p>
+
+                    <h3>Duration of the processing</h3>
+                    <p>@Model.Information.Details.Duration</p>
+
+                    <h3>Nature and purposes of processing</h3>
+                    <p>@Model.Information.Details.ProcessingNature</p>
+
+                    <h3>Types of personal data</h3>
+                    <p>@Model.Information.Details.PersonalDataTypes</p>
+
+                    <h3>Categories of data subjects</h3>
+                    <p>@Model.Information.Details.DataSubjectCategories</p>
+
+                    <h3>Location of data processing</h3>
+                    <p>@Model.Information.Location.ProcessingLocation</p>
+                    @if (!string.IsNullOrWhiteSpace(Model.Information.Location.AdditionalJurisdiction))
+                    {
+                        <span>
+                            <h3>Subject matter of the processing</h3>
+                            <p>@Model.Information.Location.AdditionalJurisdiction</p>
+                        </span>
+                    }
+                </nhs-expander>
+
+                <h2>Data protection officer</h2>
+                <nhs-card-v2>
+                    <nhs-card-content>
+                        <nhs-summary-list>
+                            <nhs-summary-list-row label-text="Name">
+                                <p>@Model.Information.Officer.Name</p>
+                            </nhs-summary-list-row>
+                            @if (!string.IsNullOrWhiteSpace(Model.Information.Officer.PhoneNumber))
+                            {
+                                <nhs-summary-list-row label-text="Phone number">
+                                    <p>@Model.Information.Officer.PhoneNumber</p>
+                                </nhs-summary-list-row>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.Information.Officer.EmailAddress))
+                            {
+                                <nhs-summary-list-row label-text="Email address">
+                                    <p>@Model.Information.Officer.EmailAddress</p>
+                                </nhs-summary-list-row>
+                            }
+                        </nhs-summary-list>
+                    </nhs-card-content>
+                </nhs-card-v2>
+
+                if (Model.Information.SubProcessors.Count > 0)
+                {
+                    <h2>Sub-processors</h2>
+
+                    foreach (var subProcessor in Model.Information.SubProcessors)
+                    {
+                        <nhs-expander label-text="@subProcessor.OrganisationName">
+                            <h3>Subject matter of the processing</h3>
+                            <p>@subProcessor.Details.Subject</p>
+
+                            <h3>Duration of the processing</h3>
+                            <p>@subProcessor.Details.Duration</p>
+
+                            <h3>Nature and purposes of processing</h3>
+                            <p>@subProcessor.Details.ProcessingNature</p>
+
+                            <h3>Types of personal data</h3>
+                            <p>@subProcessor.Details.PersonalDataTypes</p>
+
+                            <h3>Categories of data subjects</h3>
+                            <p>@subProcessor.Details.DataSubjectCategories</p>
+
+                            <h3>Plan for return and destruction of data once processing is complete</h3>
+                            <p>@subProcessor.PostProcessingPlan</p>
+                        </nhs-expander>
+                    }
+                }
+            }
+        </div>
+    </div>
+</article>
