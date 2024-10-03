@@ -6,6 +6,7 @@ locals {
 }
 
 resource "azurerm_dns_cname_record" "alias" {
+  provider            = azurerm.dns
   count               = local.core_env == "dev" || local.environment_identifier == "preprod" ? 1 : 0
   name                = var.environment
   zone_name           = local.dns_resource_name
@@ -17,6 +18,7 @@ resource "azurerm_dns_cname_record" "alias" {
 }
 
 resource "azurerm_dns_txt_record" "verification" {
+  provider            = azurerm.dns
   count               = local.core_env == "dev" || local.environment_identifier == "preprod" ? 1 : 0
   name                = "asuid.${var.environment}"
   zone_name           = local.dns_resource_name
