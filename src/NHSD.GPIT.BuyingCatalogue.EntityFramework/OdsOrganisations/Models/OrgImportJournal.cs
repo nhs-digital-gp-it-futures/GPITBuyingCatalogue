@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 public class OrgImportJournal
 {
+    [ExcludeFromCodeCoverage]
     public OrgImportJournal()
     {
     }
