@@ -437,6 +437,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             return View(new HostingTypesModel(item, contentStatus));
         }
 
+        [HttpGet("{solutionId}/data-processing-information")]
+        public async Task<IActionResult> DataProcessingInformation(CatalogueItemId solutionId)
+        {
+            var item = await solutionsService.GetSolutionWithDataProcessingInformation(solutionId);
+            if (item is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            if (item.PublishedStatus == PublicationStatus.Suspended)
+                return RedirectToAction(nameof(Description), new { solutionId });
+
+            var contentStatus = await solutionsService.GetContentStatusForCatalogueItem(solutionId);
+
+            return View(new DataProcessingInformationModel(item, contentStatus));
+        }
+
         [HttpGet("{solutionId}/implementation")]
         public async Task<IActionResult> Implementation(CatalogueItemId solutionId)
         {

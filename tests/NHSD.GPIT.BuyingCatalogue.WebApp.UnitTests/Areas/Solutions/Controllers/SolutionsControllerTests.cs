@@ -956,6 +956,80 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [MockAutoData]
+        public static async Task Get_DataProcessingInformation_ValidId_GetsSolutionFromService(
+            Solution solution,
+            [Frozen] ISolutionsService mockService,
+            SolutionsController controller,
+            CatalogueItemContentStatus contentStatus)
+        {
+            var id = solution.CatalogueItemId;
+
+            mockService.GetSolutionWithDataProcessingInformation(id).Returns(solution.CatalogueItem);
+
+            mockService.GetContentStatusForCatalogueItem(id).Returns(contentStatus);
+
+            await controller.DataProcessingInformation(id);
+
+            await mockService.Received().GetSolutionWithDataProcessingInformation(id);
+            await mockService.Received().GetContentStatusForCatalogueItem(id);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_DataProcessingInformation_NullSolutionForId_ReturnsBadRequestResult(
+            CatalogueItemId id,
+            [Frozen] ISolutionsService mockService,
+            SolutionsController controller)
+        {
+            mockService.GetSolutionWithDataProcessingInformation(id).Returns(default(CatalogueItem));
+
+            var actual = (await controller.DataProcessingInformation(id)).As<BadRequestObjectResult>();
+
+            actual.Should().NotBeNull();
+            actual.Value.Should().Be($"No Catalogue Item found for Id: {id}");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_DataProcessingInformation_SuspendedSolution_ReturnsExpectedViewResult(
+            Solution solution,
+            [Frozen] ISolutionsService solutionsServiceMock,
+            SolutionsController controller)
+        {
+            var catalogueItem = solution.CatalogueItem;
+            catalogueItem.PublishedStatus = PublicationStatus.Suspended;
+
+            solutionsServiceMock.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId).Returns(catalogueItem);
+
+            var actual = (await controller.DataProcessingInformation(solution.CatalogueItemId)).As<RedirectToActionResult>();
+
+            actual.Should().NotBeNull();
+            actual.ActionName.Should().Be(nameof(controller.Description));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Get_DataProcessingInformation_ValidSolutionForId_ReturnsExpectedViewResult(
+            Solution solution,
+            [Frozen] ISolutionsService solutionsServiceMock,
+            SolutionsController controller,
+            CatalogueItemContentStatus contentStatus)
+        {
+            var catalogueItem = solution.CatalogueItem;
+            var expectedModel = new DataProcessingInformationModel(catalogueItem, contentStatus);
+            solutionsServiceMock.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId).Returns(catalogueItem);
+
+            solutionsServiceMock.GetContentStatusForCatalogueItem(solution.CatalogueItemId).Returns(contentStatus);
+
+            var actual = (await controller.DataProcessingInformation(solution.CatalogueItemId)).As<ViewResult>();
+
+            actual.Should().NotBeNull();
+            actual.ViewName.Should().BeNullOrEmpty();
+            actual.Model.Should().BeEquivalentTo(expectedModel);
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Get_ImplementationTimescales_ValidId_GetsSolutionFromService(
             [Frozen] Solution solution,
             [Frozen] ISolutionsService mockService,

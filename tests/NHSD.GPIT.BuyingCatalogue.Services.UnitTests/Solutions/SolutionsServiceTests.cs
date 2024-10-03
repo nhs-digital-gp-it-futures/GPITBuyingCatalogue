@@ -178,6 +178,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [MockInMemoryDbAutoData]
+        public static async Task GetSolutionWithDataProcessingInformation_Valid_Returns(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext dbContext,
+            SolutionsService service)
+        {
+            dbContext.CatalogueItems.Add(solution.CatalogueItem);
+            dbContext.SaveChanges();
+
+            var result = await service.GetSolutionWithDataProcessingInformation(solution.CatalogueItemId);
+
+            result.Should().NotBeNull();
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionWithCapabilities_Valid_Returns(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext dbContext,
