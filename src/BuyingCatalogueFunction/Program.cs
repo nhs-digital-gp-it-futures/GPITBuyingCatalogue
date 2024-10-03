@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Interfaces;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Services;
@@ -8,6 +9,9 @@ using BuyingCatalogueFunction.Notifications.Interfaces;
 using BuyingCatalogueFunction.Notifications.PasswordExpiry.Interfaces;
 using BuyingCatalogueFunction.Notifications.PasswordExpiry.Services;
 using BuyingCatalogueFunction.Notifications.Services;
+using BuyingCatalogueFunction.OrganisationImport.Interfaces;
+using BuyingCatalogueFunction.OrganisationImport.Models;
+using BuyingCatalogueFunction.OrganisationImport.Services;
 using BuyingCatalogueFunction.Services;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Functions.Worker;
@@ -15,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Notifications.Models;
@@ -48,8 +53,14 @@ public static class Program
             .ConfigureServices((context, services) =>
             {
                 var configuration = context.Configuration;
-                services.Configure<TemplateOptions>(configuration.GetSection("template"));
 
+                services.Configure<TrudApiOptions>(options =>
+                {
+                    options.ApiKey = configuration.GetValue<string>("TrudApi:ApiKey");
+                    options.ItemId = configuration.GetValue<string>("TrudApi:ItemId");
+                    options.ApiUrl = configuration.GetValue<string>("TrudApi:ApiUrl");
+                });
+                services.Configure<TemplateOptions>(configuration.GetSection("template"));
                 services.Configure<QueueOptions>(options =>
                 {
                     options.SendEmailNotifications = configuration.GetValue<string>("QUEUE:SEND_EMAIL_NOTIFICATION");
@@ -71,6 +82,19 @@ public static class Program
                 services.AddTransient<IStandardCapabilityService, StandardCapabilityService>();
                 services.AddTransient<IPasswordExpiryService, PasswordExpiryService>();
                 services.AddTransient<IEmailPreferenceService, EmailPreferenceService>();
+
+                services.AddTransient<IHttpService, HttpService>();
+                services.AddTransient<ITrudApiService, TrudApiService>();
+                services.AddTransient<ITrudService, TrudService>();
+                services.AddTransient<IZipService, ZipService>();
+
+                services
+                    .AddHttpClient<TrudApiService>((provider, client) =>
+                {
+                    var options = provider.GetRequiredService<IOptions<TrudApiOptions>>();
+
+                    client.BaseAddress = new Uri(options.Value.ApiUrl);
+                });
 
                 services.AddDbContext<BuyingCatalogueDbContext>((_, options) =>
                 {

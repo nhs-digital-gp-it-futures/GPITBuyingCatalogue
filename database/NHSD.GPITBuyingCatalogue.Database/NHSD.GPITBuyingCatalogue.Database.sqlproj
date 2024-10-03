@@ -157,6 +157,8 @@
     <Folder Include="Notifications\" />
     <Folder Include="Notifications\Tables\" />
     <Folder Include="Notifications\TemporalTables\" />
+    <Folder Include="OdsOrganisations\Tables\Staging" />
+    <Folder Include="OdsOrganisations\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.Dacpacs.Azure.Master" Version="160.0.0">

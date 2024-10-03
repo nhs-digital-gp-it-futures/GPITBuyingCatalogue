@@ -3,11 +3,11 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
+using BuyingCatalogueFunction.OrganisationImport.Services;
 using FluentAssertions;
-using OrganisationImporter.Services;
 using Xunit;
 
-namespace OrganisationImporterTests.Services;
+namespace BuyingCatalogueFunctionTests.OrganisationImport.Services;
 
 public static class HttpServiceTests
 {

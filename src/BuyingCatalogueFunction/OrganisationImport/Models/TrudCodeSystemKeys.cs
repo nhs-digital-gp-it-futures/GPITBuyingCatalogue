@@ -1,4 +1,4 @@
-﻿namespace OrganisationImporter.Models;
+﻿namespace BuyingCatalogueFunction.OrganisationImport.Models;
 
 public static class TrudCodeSystemKeys
 {

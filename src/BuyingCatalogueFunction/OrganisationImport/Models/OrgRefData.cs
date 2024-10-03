@@ -1,7 +1,7 @@
-﻿
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace OrganisationImporter.Models;
+namespace BuyingCatalogueFunction.OrganisationImport.Models;
 
 [XmlRoot(ElementName="PublicationType")]
 public class PublicationType {

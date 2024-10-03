@@ -25,3 +25,11 @@ variable "nhsd_network_range" {
 variable "notify_api_key" {
   type = string
 }
+
+variable "trud_api_key" {
+  type = string
+}
+
+variable "trud_item_id" {
+  type = string
+}

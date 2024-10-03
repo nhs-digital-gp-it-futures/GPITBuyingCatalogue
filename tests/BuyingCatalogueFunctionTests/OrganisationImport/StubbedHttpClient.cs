@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OrganisationImporterTests;
+namespace BuyingCatalogueFunctionTests.OrganisationImport;
 
 public class StubbedHttpClient : HttpClient
 {

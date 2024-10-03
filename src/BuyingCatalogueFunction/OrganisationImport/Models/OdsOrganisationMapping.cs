@@ -1,11 +1,15 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
-namespace OrganisationImporter.Models;
+namespace BuyingCatalogueFunction.OrganisationImport.Models;
 
 public class OdsOrganisationMapping
 {
     public OdsOrganisationMapping(
+        DateTime releaseDate,
         OrgRefData trudData,
         ILogger logger)
     {
@@ -32,12 +36,15 @@ public class OdsOrganisationMapping
 
         logger.LogInformation("Mapped {Count} number of organisation roles", mappedRoles.Count.ToString("#,##"));
 
+        ReleaseDate = releaseDate;
         RoleTypes = roleTypes.ToList();
         RelationshipTypes = relationshipTypes.ToList();
         OdsOrganisations = mappedOrganisations.Values;
         OrganisationRelationships = mappedRelationships;
         OrganisationRoles = mappedRoles;
     }
+
+    public DateTime ReleaseDate { get; }
 
     public IReadOnlyCollection<RoleType> RoleTypes { get; }
 

@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace OrganisationImporterTests;
+namespace BuyingCatalogueFunctionTests.OrganisationImport;
 
 public static class TestExtensions
 {

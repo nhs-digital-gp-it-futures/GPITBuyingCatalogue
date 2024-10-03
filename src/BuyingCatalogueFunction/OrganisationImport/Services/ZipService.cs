@@ -1,20 +1,19 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Extensions.Logging;
-using OrganisationImporter.Interfaces;
+using BuyingCatalogueFunction.OrganisationImport.Interfaces;
 
-namespace OrganisationImporter.Services;
+namespace BuyingCatalogueFunction.OrganisationImport.Services;
 
-public class ZipService : IZipService
+public class ZipService(ILogger<ZipService> logger) : IZipService
 {
     private const string NestedZipFileName = "fullfile.zip";
     private const string XmlFileExtension = ".xml";
 
-    private readonly ILogger<ZipService> _logger;
-
-    public ZipService(ILogger<ZipService> logger)
-    {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
+    private readonly ILogger<ZipService> logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async Task<Stream> GetTrudDataFileAsync(Stream zipStream)
     {
@@ -24,13 +23,13 @@ public class ZipService : IZipService
         var nestedZipFile = zipFile.GetEntry(NestedZipFileName);
         if (nestedZipFile is null)
         {
-            _logger.LogError("Couldn't find {NestedZipFileName} in {ParentZipFileName}", NestedZipFileName,
+            logger.LogError("Couldn't find {NestedZipFileName} in {ParentZipFileName}", NestedZipFileName,
                 zipFile.Name);
 
             return null;
         }
 
-        _logger.LogInformation("Retrieved nested zip file {NestedZipFileName}", nestedZipFile.Name);
+        logger.LogInformation("Retrieved nested zip file {NestedZipFileName}", nestedZipFile.Name);
 
         // Open the nested Zip and get the first XML file.
         // The file name isn't predictable and so GetEntry can't be used
@@ -43,7 +42,7 @@ public class ZipService : IZipService
 
         if (zipEntries.Length > 1)
         {
-            _logger.LogError("Nested archive contains more than one XML file. {@Files}",
+            logger.LogError("Nested archive contains more than one XML file. {@Files}",
                 zipEntries.Select(x => x.Name));
 
             return null;
@@ -52,7 +51,7 @@ public class ZipService : IZipService
         var dataset = zipEntries.First();
         await using var fullFileInputStream = fullFileZip.GetInputStream(dataset);
 
-        _logger.LogInformation("Retrieved TRUD dataset file {DataSetFileName}", dataset.Name);
+        logger.LogInformation("Retrieved TRUD dataset file {DataSetFileName}", dataset.Name);
 
         var memoryStream = new MemoryStream();
         await fullFileInputStream.CopyToAsync(memoryStream);

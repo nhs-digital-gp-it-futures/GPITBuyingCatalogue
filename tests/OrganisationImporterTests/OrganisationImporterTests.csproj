@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\OrganisationImporter\OrganisationImporter.csproj" />
     <ProjectReference Include="..\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework\NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.csproj" />
   </ItemGroup>
 

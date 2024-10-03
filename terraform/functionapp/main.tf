@@ -62,6 +62,8 @@ resource "azurerm_windows_function_app" "function_app" {
     NOTIFY_API_KEY                          = var.notify_api_key
     QUEUE__SEND_EMAIL_NOTIFICATION          = local.send_notification
     QUEUE__COMPLETE_EMAIL_NOTIFICATION      = local.complete_notification
+    TRUDAPI__APIKEY                         = var.trud_api_key
+    TRUDAPI_ITEMID                          = var.trud_item_id
     OrganisationUri                         = "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations"
     RelationshipsUri                        = "https://directory.spineservices.nhs.uk/ORD/2-0-0/rels"
     RolesUri                                = "https://directory.spineservices.nhs.uk/ORD/2-0-0/roles"

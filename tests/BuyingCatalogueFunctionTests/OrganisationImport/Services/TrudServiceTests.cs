@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
+using BuyingCatalogueFunction.OrganisationImport.Interfaces;
+using BuyingCatalogueFunction.OrganisationImport.Models;
+using BuyingCatalogueFunction.OrganisationImport.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using OrganisationImporter.Interfaces;
-using OrganisationImporter.Models;
-using OrganisationImporter.Services;
 using Xunit;
 
-namespace OrganisationImporterTests.Services;
+namespace BuyingCatalogueFunctionTests.OrganisationImport.Services;
 
 public static class TrudServiceTests
 {
@@ -65,32 +65,5 @@ public static class TrudServiceTests
         var result = await trudService.GetTrudDataAsync(url);
 
         result.Should().BeEquivalentTo(trudData);
-    }
-
-    [Theory(Skip = "Currently fails with 'Object reference not set to an instance of an object.' because the Sqlite provider doesn't support JSON columns. Re-evaluate with EF 8")]
-    [MockInMemoryDbAutoData]
-    public static async Task SaveTrudData_ValidRequest_SavesData(
-        OrgRefData trudData,
-        [Frozen] ILogger<TrudService> logger,
-        [Frozen] BuyingCatalogueDbContext dbContext,
-        TrudService trudService)
-    {
-        MapRoleIds(trudData);
-        var mappedData = new OdsOrganisationMapping(trudData, logger);
-        await trudService.SaveTrudDataAsync(mappedData);
-
-        dbContext.OdsOrganisations.Count().Should().Be(mappedData.OdsOrganisations.Count);
-    }
-
-    private static void MapRoleIds(OrgRefData trudData)
-    {
-        trudData.OrganisationsRoot.Organisations.ForEach(x =>
-        {
-            x.RolesRoot.Roles.ForEach(y =>
-            {
-                y.Id = trudData.CodeSystems.CodeSystem
-                    .First(z => string.Equals(z.Name, TrudCodeSystemKeys.RolesKey)).Concept.First().Id;
-            });
-        });
     }
 }
