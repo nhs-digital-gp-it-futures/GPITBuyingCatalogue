@@ -18,7 +18,6 @@
     var orderSolution = Model.Order.OrderType.AssociatedServicesOnly ? Model.Order.AssociatedServicesOnlyDetails.Solution : Model.Order.GetSolutionOrderItem()?.CatalogueItem;
     var frameworks = orderSolution != null ? orderSolution?.Solution?.FrameworkSolutions?.Select(x => x.Framework).Distinct().ToList() : Enumerable.Empty<NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models.Framework>().ToList();
 
-    var pdfButton = Model.Order.OrderStatus == OrderStatus.Terminated ? "Download summary (PDF)" : "Download order (PDF)";
     var totalDisplayed = false;
     var caption = Model.Order.OrderType.MergerOrSplit && associatedServices.Count == 1
         ? associatedServices.First().CatalogueItem.Name
@@ -48,15 +47,6 @@
                                               new { Model.InternalOrgId, Model.CallOffId })">cancel the amendment for Order @Model.CallOffId</a> before you can terminate this contract.
                 </p>
             </nhs-inset-text>
-        }
-
-        @if (Model.CanBeAmended)
-        {
-            <vc:nhs-action-link text="Amend this order"
-                                url="@Url.Action(
-                                         nameof(OrderController.AmendOrder),
-                                         typeof(OrderController).ControllerName(),
-                                         new { Model.InternalOrgId, Model.CallOffId })" />
         }
 
         <nhs-expander-v2 open="true">
@@ -429,23 +419,25 @@
                                                               new { Model.InternalOrgId, Model.CallOffId })" />
                         }
                     }
-                    else
-                    {
-                        <vc:nhs-secondary-button text="Save and continue"
-                                             type="Primary"
-                                             url="@Url.Action(
-                                                      nameof(DashboardController.Organisation),
-                                                      typeof(DashboardController).ControllerName(),
-                                                      new { Model.InternalOrgId })" />
-                    }
 
-                    <vc:nhs-secondary-button text="@pdfButton"
+                    <vc:nhs-secondary-button text="Download order (PDF)"
                                              type="Secondary"
                                              url="@Url.Action(nameof(OrderController.Download), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"/>
                     
+                    
+                    @if (Model.CanBeAmended)
+                    {
+                        <vc:nhs-secondary-button text="Amend contract"
+                                                 type="Secondary"
+                                                 url="@Url.Action(
+                                                          nameof(OrderController.AmendOrder),
+                                                          typeof(OrderController).ControllerName(),
+                                                          new { Model.InternalOrgId, Model.CallOffId })"/>
+                    }
+                    
                     @if (Model.CanBeTerminated)
                     {
-                       <vc:nhs-delete-button url="@Url.Action(nameof(OrderController.TerminateOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })" text="Terminate this contract" />
+                        <vc:nhs-delete-button url="@Url.Action(nameof(OrderController.TerminateOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })" text="Terminate contract" />
                     }
 
                     @if (Model.Order.OrderStatus == OrderStatus.InProgress && Model.OrderWrapper.CanComplete())
@@ -453,7 +445,19 @@
                         <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(DashboardController.Organisation), typeof(DashboardController).ControllerName(), new { Model.InternalOrgId })">Save for later</a>                        
                     }
                 </nhs-button-group>
-                </form>
+                
+                @if (Model.Order.OrderStatus != OrderStatus.InProgress)
+                {
+                    <nhs-button-group>
+                        <vc:nhs-secondary-button text="Return to orders"
+                                         type="Primary"
+                                         url="@Url.Action(
+                                                  nameof(DashboardController.Organisation),
+                                                  typeof(DashboardController).ControllerName(),
+                                                  new { Model.InternalOrgId })" />
+                    </nhs-button-group>
+                }
+            </form>
         </div>
     </div>
 </div>
