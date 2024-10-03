@@ -18,6 +18,8 @@
 
         public static bool ShowSupplierDetails => true;
 
+        public static bool ShowDataProcessingInformation => true;
+
         public bool ShowHosting { get; init; }
 
         public bool ShowFeatures { get; init; }
