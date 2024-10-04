@@ -3,6 +3,8 @@ resource "azurerm_application_gateway" "app_gateway" {
   location            = var.region
   resource_group_name = var.rg_name
   count               = var.core_env != "dev" ? 1 : 0
+  firewall_policy_id  = var.firewall_policy_id
+
   sku {
     name     = "WAF_v2"
     tier     = "WAF_v2"
@@ -112,7 +114,7 @@ resource "azurerm_application_gateway" "app_gateway" {
       rule_sequence = 2
       condition {
         variable = "http_resp_Location"
-        pattern = "(https?):.*azurewebsites.net(.*)$"                   
+        pattern = "(https?):.*azurewebsites.net(.*)$"
         ignore_case = true
       }
 
@@ -142,49 +144,6 @@ resource "azurerm_application_gateway" "app_gateway" {
     timeout                                   = 30
     unhealthy_threshold                       = 3
     protocol                                  = "Http"
-  }
-
-  waf_configuration {
-    enabled                   = true
-    firewall_mode             = "Prevention"
-    rule_set_type             = "OWASP"
-    rule_set_version          = "3.2"
-    request_body_check        = true
-    max_request_body_size_kb  = 128
-
-    disabled_rule_group {
-       rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
-       rules           = [
-        942380,
-        942430,
-        942400,
-        942440,
-        942450,
-        942130
-       ]
-    }
-
-    disabled_rule_group {
-       rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
-       rules           = [ 920230 ]
-    }
-
-    disabled_rule_group {
-      rule_group_name = "REQUEST-931-APPLICATION-ATTACK-RFI"
-      rules           = [ 931130 ]
-    }
-
-    exclusion {
-      match_variable          = "RequestCookieNames"
-      selector_match_operator = "Equals"
-      selector                = "buyingcatalogue-cookie-consent"
-    }
-
-    exclusion {
-      match_variable          = "RequestArgNames"
-      selector_match_operator = "Equals"
-      selector                = "__RequestVerificationToken"
-    }
   }
 
   tags = {
