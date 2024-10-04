@@ -54,12 +54,8 @@ public static class Program
             {
                 var configuration = context.Configuration;
 
-                services.Configure<TrudApiOptions>(options =>
-                {
-                    options.ApiKey = configuration.GetValue<string>("TrudApi:ApiKey");
-                    options.ItemId = configuration.GetValue<string>("TrudApi:ItemId");
-                    options.ApiUrl = configuration.GetValue<string>("TrudApi:ApiUrl");
-                });
+                services.Configure<TrudApiOptions>(configuration.GetSection("trudApi"));
+                services.Configure<TrudBatchOptions>(configuration.GetSection("batchOptions"));
                 services.Configure<TemplateOptions>(configuration.GetSection("template"));
                 services.Configure<QueueOptions>(options =>
                 {

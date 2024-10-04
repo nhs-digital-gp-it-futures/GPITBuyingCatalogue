@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using BuyingCatalogueFunction.OrganisationImport.Interfaces;
 using BuyingCatalogueFunction.OrganisationImport.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
 using MoreLinq;
 
 namespace BuyingCatalogueFunction.OrganisationImport.Services;
@@ -22,7 +23,8 @@ public class TrudService(
     BuyingCatalogueDbContext dbContext,
     IHttpService httpService,
     IZipService zipService,
-    ILogger<TrudService> logger)
+    ILogger<TrudService> logger,
+    IOptions<TrudBatchOptions> batchOptions)
     : ITrudService
 {
     private readonly BuyingCatalogueDbContext dbContext =
@@ -31,6 +33,9 @@ public class TrudService(
     private readonly IHttpService httpService = httpService ?? throw new ArgumentNullException(nameof(httpService));
     private readonly IZipService zipService = zipService ?? throw new ArgumentNullException(nameof(zipService));
     private readonly ILogger<TrudService> logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+    private readonly TrudBatchOptions batchOptions =
+        batchOptions.Value;
 
     public async Task<bool> HasImportedLatestRelease(DateTime latestReleaseDate)
         => await dbContext.OrgImportJournal.AnyAsync(x => x.ImportDate >= latestReleaseDate);
@@ -53,8 +58,6 @@ public class TrudService(
     [ExcludeFromCodeCoverage(Justification = "Can't unit test due to dependency on relational database")]
     public async Task SaveTrudDataAsync(OdsOrganisationMapping mappedData)
     {
-        await using var transaction = await dbContext.Database.BeginTransactionAsync();
-
         try
         {
             await BulkWriteToDatabase(mappedData.RoleTypes);
@@ -63,13 +66,12 @@ public class TrudService(
             await BulkWriteToDatabase(mappedData.OrganisationRoles);
             await BulkWriteToDatabase(mappedData.OrganisationRelationships);
 
+            dbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(batchOptions.DatabaseTimeoutMinutes));
             await dbContext.Database.ExecuteSqlRawAsync("EXEC ods_organisations.MergeTrudData");
 
             dbContext.OrgImportJournal.Add(new OrgImportJournal(mappedData.ReleaseDate));
 
             await dbContext.SaveChangesAsync();
-
-            await transaction.CommitAsync();
 
             logger.LogInformation("Committed TRUD changes to database");
         }
@@ -77,7 +79,7 @@ public class TrudService(
         {
             logger.LogError("Error occurred when updating database {@Exception}", ex);
 
-            await transaction.RollbackAsync();
+            throw;
         }
     }
 
@@ -91,9 +93,12 @@ public class TrudService(
 
         var dataTable = MapToDataTable(entities, entityProperties);
 
-        using var bulkCopy = new SqlBulkCopy(dbContext.Database.GetConnectionString());
+        using var bulkCopy =
+            new SqlBulkCopy(dbContext.Database.GetConnectionString());
 
+        bulkCopy.BatchSize = batchOptions.BatchSize;
         bulkCopy.ColumnMappings.Clear();
+
         entityProperties.ForEach(x => bulkCopy.ColumnMappings.Add(x, x));
 
         var tableName = entityType.GetSchemaQualifiedTableName();

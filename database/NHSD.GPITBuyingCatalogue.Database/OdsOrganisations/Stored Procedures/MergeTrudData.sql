@@ -7,8 +7,7 @@ AS
         using ods_organisations.RoleTypes_Staging AS SOURCE
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
-          UPDATE SET TARGET.[Id] = SOURCE.[Id],
-                     TARGET.[Description] = SOURCE.[Description]
+          UPDATE SET TARGET.[Description] = SOURCE.[Description]
         WHEN NOT MATCHED BY TARGET THEN
           INSERT ([Id],
                   [Description])
@@ -20,8 +19,7 @@ AS
         using ods_organisations.RelationshipTypes_Staging AS SOURCE
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
-          UPDATE SET TARGET.[Id] = SOURCE.[Id],
-                     TARGET.[Description] = SOURCE.[Description]
+          UPDATE SET TARGET.[Description] = SOURCE.[Description]
         WHEN NOT MATCHED BY TARGET THEN
           INSERT ([Id],
                   [Description])
@@ -33,8 +31,7 @@ AS
         using ods_organisations.OdsOrganisations_Staging AS SOURCE
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
-          UPDATE SET TARGET.[Id]           = SOURCE.[Id],
-                     TARGET.[Name]         = SOURCE.[Name],
+          UPDATE SET TARGET.[Name]         = SOURCE.[Name],
                      TARGET.[AddressLine1] = SOURCE.[AddressLine1],
                      TARGET.[AddressLine2] = SOURCE.[AddressLine2],
                      TARGET.[AddressLine3] = SOURCE.[AddressLine3],
@@ -61,8 +58,7 @@ AS
         using ods_organisations.OrganisationRoles_Staging AS SOURCE
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
-          UPDATE SET TARGET.[Id]                = SOURCE.[Id],
-                     TARGET.[OrganisationId]    = SOURCE.[OrganisationId],
+          UPDATE SET TARGET.[OrganisationId]    = SOURCE.[OrganisationId],
                      TARGET.[RoleId]            = SOURCE.[RoleId],
                      TARGET.[IsPrimaryRole]     = SOURCE.[IsPrimaryRole]
         WHEN NOT MATCHED BY TARGET THEN
@@ -77,8 +73,7 @@ AS
         using ods_organisations.OrganisationRelationships_Staging AS SOURCE
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
-          UPDATE SET TARGET.[Id]                    = SOURCE.[Id],
-                     TARGET.[RelationshipTypeId]    = SOURCE.[RelationshipTypeId],
+          UPDATE SET TARGET.[RelationshipTypeId]    = SOURCE.[RelationshipTypeId],
                      TARGET.[TargetOrganisationId]  = SOURCE.[TargetOrganisationId],
                      TARGET.[OwnerOrganisationId]   = SOURCE.[OwnerOrganisationId]
         WHEN NOT MATCHED BY TARGET THEN
