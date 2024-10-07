@@ -2,6 +2,8 @@ resource "azurerm_linux_web_app_slot" "slot" {
   name           = "staging"
   count          = var.create_slot
   app_service_id = azurerm_linux_web_app.webapp.id
+  ftp_publish_basic_authentication_enabled       = false
+  webdeploy_publish_basic_authentication_enabled = false
 
   app_settings = {
     # Main Settings
@@ -10,11 +12,6 @@ resource "azurerm_linux_web_app_slot" "slot" {
     ASPNETCORE_HTTP_PORTS               = "80"
 
     APPINSIGHTS_INSTRUMENTATIONKEY = var.instrumentation_key
-
-    # Settings for Container Registy  
-    DOCKER_REGISTRY_SERVER_URL      = "https://${var.docker_registry_server_url}"
-    DOCKER_REGISTRY_SERVER_USERNAME = var.docker_registry_server_username
-    DOCKER_REGISTRY_SERVER_PASSWORD = var.docker_registry_server_password
 
     DOMAIN_NAME = var.app_dns_url
 
@@ -38,6 +35,13 @@ resource "azurerm_linux_web_app_slot" "slot" {
     ip_restriction_default_action = "Deny"
     ftps_state = "Disabled"
     http2_enabled = true
+
+    application_stack {
+      docker_image_name        = "${var.repository_name}:latest"
+      docker_registry_url      = "https://${var.docker_registry_server_url}"
+      docker_registry_username = var.docker_registry_server_username
+      docker_registry_password = var.docker_registry_server_password
+    }
 
     ip_restriction {
       name       = "APP_GATEWAY_ACCESS"
