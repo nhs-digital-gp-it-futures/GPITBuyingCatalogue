@@ -50,6 +50,8 @@ resource "azurerm_linux_web_app" "webapp" {
     always_on           = var.always_on
     minimum_tls_version = "1.2"
     ip_restriction_default_action = "Deny"
+    ftps_state = "Disabled"
+    http2_enabled = true
 
     dynamic "ip_restriction" {
       for_each = var.app_gateway_ip == null ? [] : tolist([var.app_gateway_ip])

@@ -36,6 +36,8 @@ resource "azurerm_linux_web_app_slot" "slot" {
     always_on           = var.always_on
     minimum_tls_version = "1.2"
     ip_restriction_default_action = "Deny"
+    ftps_state = "Disabled"
+    http2_enabled = true
 
     ip_restriction {
       name       = "APP_GATEWAY_ACCESS"
