@@ -7,8 +7,8 @@ resource "azurerm_storage_account" "storage_account" {
   account_kind             = "StorageV2"
   account_replication_type = "GRS"
 
-  min_tls_version           = "TLS1_2"
-  https_traffic_only_enabled = true
+  min_tls_version               = "TLS1_2"
+  https_traffic_only_enabled    = true
 
   tags = {
     environment  = var.environment,
