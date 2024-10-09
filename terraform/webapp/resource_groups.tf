@@ -44,6 +44,16 @@ resource "azurerm_resource_group" "virtualnet" {
   }
 }
 
+resource "azurerm_resource_group" "waf-policy" {
+  name     = "${var.project}-${var.environment}-rg-waf-policy"
+  location = var.region
+
+  tags = {
+    environment  = var.environment,
+    architecture = "new"
+  }
+}
+
 resource "azurerm_resource_group" "app-gateway" {
   name     = "${var.project}-${var.environment}-rg-appgateway"
   location = var.region

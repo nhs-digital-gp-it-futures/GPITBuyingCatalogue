@@ -43,3 +43,7 @@ variable "core_env" {
 variable "log_analytics_workspace_id" {
   type = string
 }
+
+variable "firewall_policy_id" {
+  type = string
+}
