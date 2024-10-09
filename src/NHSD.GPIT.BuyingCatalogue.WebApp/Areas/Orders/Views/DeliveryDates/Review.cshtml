@@ -78,13 +78,16 @@
 
             foreach (var date in Model.OrderItemDates(catalogueItemId))
             {
-                <nhs-expander label-text="@itemName"
-                              secondary-text-title="Planned delivery date: "
-                              secondary-text="@GetFormattedDate(date)"
-                              secondary-url-title="Change date"
-                              secondary-url="@url"
-                              bold-title="true"
-                              open="true">
+                <nhs-expander-v2 open="true">
+                    <nhs-expander-summary label-text="@itemName" bold-title="true">
+                        <span class="nhsuk-details__summary-text_secondary_url">
+                            <b>Planned delivery date: </b>
+                            @GetFormattedDate(date)
+                            <br />
+                            <a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@url">Change date</a>
+                        </span>
+                    </nhs-expander-summary>
+                    <nhs-expander-content>
                     <nhs-table>
                         <nhs-table-column>Organisation</nhs-table-column>
                         <nhs-table-column>ODS code</nhs-table-column>
@@ -96,7 +99,8 @@
                             </nhs-table-row-container>
                         }
                     </nhs-table>
-                </nhs-expander>
+                   </nhs-expander-content>
+                </nhs-expander-v2>
             }
         }
 
@@ -114,13 +118,16 @@
 
                 foreach (var date in Model.OrderItemDates(catalogueItemId))
                 {
-                    <nhs-expander label-text="@itemName"
-                                  secondary-text-title="Planned delivery date: "
-                                  secondary-text="@GetFormattedDate(date)"
-                                  secondary-url-title="Change date"
-                                  secondary-url="@url"
-                                  bold-title="true"
-                                  open="true">
+                    <nhs-expander-v2 open="true">
+                        <nhs-expander-summary label-text="@itemName" bold-title="true">
+                            <span class="nhsuk-details__summary-text_secondary_url">
+                                <b>Planned delivery date: </b>
+                                @GetFormattedDate(date)
+                                <br />
+                                <a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@url">Change date</a>
+                            </span>
+                        </nhs-expander-summary>
+                        <nhs-expander-content>
                         <nhs-table>
                             <nhs-table-column>Organisation</nhs-table-column>
                             <nhs-table-column>ODS code</nhs-table-column>
@@ -132,7 +139,8 @@
                                 </nhs-table-row-container>
                             }
                         </nhs-table>
-                    </nhs-expander>
+                        </nhs-expander-content>
+                    </nhs-expander-v2>
                 }
             }
         }
@@ -157,23 +165,19 @@
                         ? $"Planned delivery date: {GetFormattedDate(date)}"
                         : itemName;
 
-                    var secondaryTitle = string.Empty;
-                    var secondaryText = string.Empty;
-                    var secondaryUrlTitle = $"Change date";
-                    var secondaryUrl = url;
-
-                    if (!mergerSplit)
-                    {
-                        secondaryTitle = $"Planned delivery date: ";
-                        secondaryText = GetFormattedDate(date);
-                    }
-                    <nhs-expander label-text="@label"
-                                  secondary-text-title="@secondaryTitle"
-                                  secondary-text="@secondaryText"
-                                  secondary-url-title="@secondaryUrlTitle"
-                                  secondary-url="@secondaryUrl"
-                                  bold-title="true"
-                                  open="true">
+                    <nhs-expander-v2 open="true">
+                        <nhs-expander-summary label-text="@label" bold-title="true">
+                            <span class="nhsuk-details__summary-text_secondary_url">
+                                @if (!mergerSplit)
+                                {
+                                    <b>Planned delivery date: </b>
+                                    @GetFormattedDate(date)
+                                    <br />
+                                }
+                                <a class="nhsuk-link nhsuk-link--no-visited-state" style="float: right;" href="@url">Change date</a>
+                            </span>
+                        </nhs-expander-summary>
+                        <nhs-expander-content>
                         <nhs-table>
                             <nhs-table-column>Organisation</nhs-table-column>
                             <nhs-table-column>ODS code</nhs-table-column>
@@ -185,7 +189,8 @@
                                 </nhs-table-row-container>
                             }
                         </nhs-table>
-                    </nhs-expander>
+                        </nhs-expander-content>
+                    </nhs-expander-v2>
                 }
             }
         }

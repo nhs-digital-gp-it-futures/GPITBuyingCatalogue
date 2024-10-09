@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using FluentAssertions;
+using LinqKit;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Calculations;
@@ -160,6 +162,84 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             result.TotalMonthlyCost.Should().Be(order.TotalMonthlyCost(null));
             result.TotalAnnualCost.Should().Be(order.TotalAnnualCost(null));
             result.TotalCost.Should().Be(wrapper.TotalCost());
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Buttons_InProgressOrder_PropertiesCorrectlySet(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            SetInProgressOrder(order);
+            var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
+
+            model.ButtonLabelText.Should().Be("Complete order");
+            model.ButtonAdviceText.Should().Be("Make sure you are happy with the order before marking it as complete.");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Buttons_InProgressAmendOrder_PropertiesCorrectlySet(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            SetInProgressOrder(order);
+            order.Revision = 2;
+            var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
+
+            model.ButtonLabelText.Should().Be("Complete order");
+            model.ButtonAdviceText.Should().Be("Make sure you are happy with the order before marking it as complete.");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Buttons_TerminatedOrder_PropertiesCorrectlySet(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            order.IsTerminated = true;
+            var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
+
+            model.ButtonLabelText.Should().Be("Download summary");
+            model.ButtonAdviceText.Should().Be("You can download a summary of this terminated contract for your records.");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Buttons_Incomplete_PropertiesCorrectlySet(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            SetInProgressOrder(order);
+            order.Contract = null;
+            var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
+
+            model.ButtonLabelText.Should().Be("Order summary");
+            model.ButtonAdviceText.Should().Be("You can download and review your order summary here.");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Buttons_Deleted_PropertiesCorrectlySet(
+            string internalOrgId,
+            EntityFramework.Ordering.Models.Order order)
+        {
+            order.IsTerminated = false;
+            order.IsDeleted = true;
+            var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
+
+            model.ButtonLabelText.Should().Be("Order summary");
+            model.ButtonAdviceText.Should().Be("You can download and review your order summary here.");
+        }
+
+        private static void SetInProgressOrder(EntityFramework.Ordering.Models.Order order)
+        {
+            order.Contract = new Contract() { ContractBilling = new ContractBilling(), ImplementationPlan = new ImplementationPlan(), };
+            order.ContractFlags.UseDefaultDataProcessing = true;
+            order.Completed = null;
+            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+            order.IsTerminated = false;
         }
     }
 }
