@@ -3,8 +3,6 @@
 @{
     var contractTerm = Model.MaximumTerm.HasValue ? $" ({Model.MaximumTerm} months)" : " (estimated)";
 }
-<nhs-card-v2 inverted="@Model.Inverted">
-    <nhs-card-content title="Total indicative costs excluding VAT">
     <nhs-summary-list>
         <nhs-summary-list-row label-text="Total one-off cost:" data-test-id="one-off-cost-summary">
             £@($"{Model.TotalOneOffCost:N2}")
@@ -42,5 +40,3 @@
             </nhs-summary-list-row>
         }
     </nhs-summary-list>
-    </nhs-card-content>
-</nhs-card-v2>

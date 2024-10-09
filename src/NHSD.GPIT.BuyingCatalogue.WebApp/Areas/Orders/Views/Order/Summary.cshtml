@@ -199,15 +199,12 @@
 
                         @if (Model.HasBespokeMilestones)
                         {
-                            <div class="nhsuk-u-margin-bottom-9">
-                                <partial name="MilestoneTable" model="new MilestoneTableModel(Model.BespokeMilestoneLabelText, Model.BespokePlan.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
-                            </div>
+                            <partial name="MilestoneTable" model="new MilestoneTableModel(Model.BespokeMilestoneLabelText, Model.BespokePlan.Milestones, false, Model.CallOffId, Model.InternalOrgId)" />
                         }
                         else
                         {
-                            <div class="nhsuk-u-margin-bottom-9">
-                                <p>No bespoke milestones have been added for Catalogue Solution or Additional Services.</p>
-                            </div>
+                            <h3>@Model.BespokeMilestoneLabelText</h3>
+                            <p>No bespoke milestones have been added for Catalogue Solution or Additional Services.</p>
                         }
                     </nhs-expander-content>
                     @if (Model.Order.OrderStatus == OrderStatus.InProgress)
@@ -239,9 +236,7 @@
                         if (associatedServices.Count == 1)
                         {
                             totalDisplayed = true;
-                            var orderTotals = Model.BuildOrderTotals();
-                            orderTotals.Inverted = true;
-                            itemModel.OrderTotals = orderTotals;
+                            itemModel.OrderTotals = Model.BuildOrderTotals();
                         }
                     }
                     <partial name="_OrderItemSummary" model="@itemModel" />
@@ -268,10 +263,11 @@
                     }
                     else
                     {
+                        <h3>@Model.BespokeBillingLabelText</h3>
                         <p>No bespoke milestones have been added for Associated Services.</p>
                     }
 
-                    <h2 id="requirements-title">Associated Service specific requirements</h2>
+                    <h3 id="requirements-title">Associated Service specific requirements</h3>
                     @if (Model.HasSpecificRequirements)
                     {
                         <partial name="RequirementTable" model="new RequirementTableModel(Model.RequirementLabelText, Model.BespokeBilling.Requirements, false, Model.CallOffId, Model.InternalOrgId)" />
@@ -306,155 +302,133 @@
 
             @if (totalDisplayed == false)
             {
-                if (Model.Order.IsAmendment)
-                {
+                <h2 id="costs-title">Cost of order</h2>
                    <nhs-card-v2>
-                    <nhs-card-content title="Total indicative costs excluding VAT"> 
-                    <nhs-table id="review-solutions-amended-indicative-costs">
-                        <nhs-table-column>Cost type</nhs-table-column>
-                        <nhs-table-column numeric="true">Previous cost</nhs-table-column>
-                        <nhs-table-column numeric="true">Difference</nhs-table-column>
-                        <nhs-table-column numeric="true">New cost</nhs-table-column>
-                        <nhs-table-row-container>
-                            <nhs-table-cell>
-                                <strong>Total one-off cost:</strong>
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.Previous.TotalOneOffCost(null, true):N2}")
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.RolledUp.TotalOneOffCost(null, true) - Model.Previous.TotalOneOffCost(null, true):N2}")
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.RolledUp.TotalOneOffCost(null, true):N2}")
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                        <nhs-table-row-container>
-                            <nhs-table-cell>
-                                <strong>Total monthly cost:</strong>
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.Previous.TotalMonthlyCost(null, true):N2}")
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.RolledUp.TotalMonthlyCost(null, true) - Model.Previous.TotalMonthlyCost(null, true):N2}")
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.RolledUp.TotalMonthlyCost(null, true):N2}")
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                        <nhs-table-row-container>
-                            <nhs-table-cell>
-                                <strong>Total cost for one year:</strong>
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.Previous.TotalAnnualCost(null, true):N2}")
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.RolledUp.TotalAnnualCost(null, true) - Model.Previous.TotalAnnualCost(null, true):N2}")
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.RolledUp.TotalAnnualCost(null, true):N2}")
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                        <nhs-table-row-container>
-                            <nhs-table-cell>
-                                <strong>Total cost of contract:</strong>
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.OrderWrapper.TotalPreviousCost(true):N2}")
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.OrderWrapper.TotalCost(true) - Model.OrderWrapper.TotalPreviousCost(true):N2}")
-                            </nhs-table-cell>
-                            <nhs-table-cell numeric="true">
-                                £@($"{Model.OrderWrapper.TotalCost(true):N2}")
-                            </nhs-table-cell>
-                        </nhs-table-row-container>
-                    </nhs-table>
-                    </nhs-card-content>
+                       <nhs-card-content title="Total indicative costs excluding VAT">
+                           @if (Model.Order.IsAmendment)
+                           {
+                           <nhs-table id="review-solutions-amended-indicative-costs">
+                               <nhs-table-column>Cost type</nhs-table-column>
+                               <nhs-table-column numeric="true">Previous cost</nhs-table-column>
+                               <nhs-table-column numeric="true">Difference</nhs-table-column>
+                               <nhs-table-column numeric="true">New cost</nhs-table-column>
+                               <nhs-table-row-container>
+                                   <nhs-table-cell>
+                                       <strong>Total one-off cost:</strong>
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.Previous.TotalOneOffCost(null, true):N2}")
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.RolledUp.TotalOneOffCost(null, true) - Model.Previous.TotalOneOffCost(null, true):N2}")
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.RolledUp.TotalOneOffCost(null, true):N2}")
+                                   </nhs-table-cell>
+                               </nhs-table-row-container>
+                               <nhs-table-row-container>
+                                   <nhs-table-cell>
+                                       <strong>Total monthly cost:</strong>
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.Previous.TotalMonthlyCost(null, true):N2}")
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.RolledUp.TotalMonthlyCost(null, true) - Model.Previous.TotalMonthlyCost(null, true):N2}")
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.RolledUp.TotalMonthlyCost(null, true):N2}")
+                                   </nhs-table-cell>
+                               </nhs-table-row-container>
+                               <nhs-table-row-container>
+                                   <nhs-table-cell>
+                                       <strong>Total cost for one year:</strong>
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.Previous.TotalAnnualCost(null, true):N2}")
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.RolledUp.TotalAnnualCost(null, true) - Model.Previous.TotalAnnualCost(null, true):N2}")
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.RolledUp.TotalAnnualCost(null, true):N2}")
+                                   </nhs-table-cell>
+                               </nhs-table-row-container>
+                               <nhs-table-row-container>
+                                   <nhs-table-cell>
+                                       <strong>Total cost of contract:</strong>
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.OrderWrapper.TotalPreviousCost(true):N2}")
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.OrderWrapper.TotalCost(true) - Model.OrderWrapper.TotalPreviousCost(true):N2}")
+                                   </nhs-table-cell>
+                                   <nhs-table-cell numeric="true">
+                                       £@($"{Model.OrderWrapper.TotalCost(true):N2}")
+                                   </nhs-table-cell>
+                               </nhs-table-row-container>
+                           </nhs-table>
+                           }
+                           else
+                           {
+                               var totalModel = Model.BuildOrderTotals();
+                               <partial name="_OrderTotal" model="@totalModel" />
+                           }
+                       </nhs-card-content>
                    </nhs-card-v2>
-                }
-                else
-                {
-                    <h2 id="costs-title">Cost of order</h2>
-                    var totalModel = Model.BuildOrderTotals();
-                    <partial name="_OrderTotal" model="@totalModel" />
-                }
             }
         }
 
-
         <div class="nhsuk-u-margin-top-3">
-            @switch (Model.Order.OrderStatus)
-            {
-                case OrderStatus.InProgress when Model.OrderWrapper.CanComplete():
-                    <h2>Complete order</h2>
-                    <p>Make sure you are happy with the order before marking it as complete.</p>
-                    break;
-                case OrderStatus.Terminated:
-                    <h3>Download summary</h3>
-                    <p>You can download a summary of this terminated contract for your records.</p>
-                    break;
-                default:
-                    <h3>Order summary</h3>
-                    <p>You can download and review your order summary here.</p>
-                    break;
-            }
+            <h2>@Model.ButtonLabelText</h2>
+            <p>@Model.ButtonAdviceText</p>
+
             <form method="post">
                 <nhs-button-group>
                     @if (Model.Order.OrderStatus == OrderStatus.InProgress)
                     {
                         if (Model.OrderWrapper.CanComplete())
                         {
-                            <nhs-submit-button text="Complete order" />
+                            <nhs-submit-button text="Complete order"/>
                         }
                         else
                         {
                             <vc:nhs-secondary-button text="Save and continue"
                                                      type="Primary"
-                                                     url="@Url.Action(
-                                                              nameof(OrderController.Order),
-                                                              typeof(OrderController).ControllerName(),
-                                                              new { Model.InternalOrgId, Model.CallOffId })" />
+                                                     url="@Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"/>
                         }
                     }
 
                     <vc:nhs-secondary-button text="Download order (PDF)"
                                              type="Secondary"
                                              url="@Url.Action(nameof(OrderController.Download), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"/>
-                    
-                    
+
+
                     @if (Model.CanBeAmended)
                     {
                         <vc:nhs-secondary-button text="Amend contract"
                                                  type="Secondary"
-                                                 url="@Url.Action(
-                                                          nameof(OrderController.AmendOrder),
-                                                          typeof(OrderController).ControllerName(),
-                                                          new { Model.InternalOrgId, Model.CallOffId })"/>
+                                                 url="@Url.Action(nameof(OrderController.AmendOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"/>
                     }
-                    
+
                     @if (Model.CanBeTerminated)
                     {
-                        <vc:nhs-delete-button url="@Url.Action(nameof(OrderController.TerminateOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })" text="Terminate contract" />
+                        <vc:nhs-delete-button url="@Url.Action(nameof(OrderController.TerminateOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })" text="Terminate contract"/>
                     }
 
                     @if (Model.Order.OrderStatus == OrderStatus.InProgress && Model.OrderWrapper.CanComplete())
                     {
-                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(DashboardController.Organisation), typeof(DashboardController).ControllerName(), new { Model.InternalOrgId })">Save for later</a>                        
+                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(DashboardController.Organisation), typeof(DashboardController).ControllerName(), new { Model.InternalOrgId })">Save for later</a>
                     }
                 </nhs-button-group>
-                
+
                 @if (Model.Order.OrderStatus != OrderStatus.InProgress)
                 {
                     <nhs-button-group>
                         <vc:nhs-secondary-button text="Return to orders"
-                                         type="Primary"
-                                         url="@Url.Action(
-                                                  nameof(DashboardController.Organisation),
-                                                  typeof(DashboardController).ControllerName(),
-                                                  new { Model.InternalOrgId })" />
+                                                 type="Primary"
+                                                 url="@Url.Action(nameof(DashboardController.Organisation), typeof(DashboardController).ControllerName(), new { Model.InternalOrgId })"/>
                     </nhs-button-group>
                 }
             </form>

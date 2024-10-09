@@ -144,6 +144,7 @@
 
         @if (Model.OrderTotals != null)
         {
+            <h3>Total indicative costs excluding VAT</h3>
             <partial name="_OrderTotal" model="@Model.OrderTotals" />
         }
     </nhs-expander-content>
