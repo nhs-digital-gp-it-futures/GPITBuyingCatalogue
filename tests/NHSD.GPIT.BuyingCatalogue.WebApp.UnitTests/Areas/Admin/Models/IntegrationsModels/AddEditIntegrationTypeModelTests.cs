@@ -50,7 +50,9 @@ public static class AddEditIntegrationTypeModelTests
     {
         var model = new AddEditIntegrationTypeModel
         {
-            IntegrationId = integrationId, IntegrationTypeId = integrationTypeId, IsReferenced = isReferenced,
+            IntegrationId = integrationId,
+            IntegrationTypeId = integrationTypeId,
+            IsReferenced = isReferenced,
         };
 
         model.ShouldShowFilterLink.Should().Be(expected);
@@ -61,7 +63,8 @@ public static class AddEditIntegrationTypeModelTests
     {
         var model = new AddEditIntegrationTypeModel
         {
-            IntegrationId = SupportedIntegrations.Im1, IntegrationTypeId = 5,
+            IntegrationId = SupportedIntegrations.Im1,
+            IntegrationTypeId = 5,
         };
 
         model.FilterQueryString.Should().Be("0.5");

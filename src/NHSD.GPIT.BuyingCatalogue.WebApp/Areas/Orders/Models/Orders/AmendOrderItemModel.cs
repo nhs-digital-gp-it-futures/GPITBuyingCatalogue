@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
-    public class AmendOrderItemModel
+    public class AmendOrderItemModel : OrderingBaseModel
     {
         public AmendOrderItemModel(
             CallOffId callOffId,
@@ -39,6 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public OrderType OrderType { get; }
 
         public bool IsAmendment { get; }
+
+        public bool CanEdit { get; set; }
 
         public bool IsOrderItemAdded { get; }
 

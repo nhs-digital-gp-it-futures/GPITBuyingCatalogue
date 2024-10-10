@@ -94,7 +94,7 @@ public record OrderType(OrderTypeEnum Value) : IParsable<OrderType>
     {
         OrderTypeEnum.AssociatedServiceSplit => "Service Recipients to receive patients",
         OrderTypeEnum.AssociatedServiceMerger => "Service Recipients to be merged",
-        _ => "Service Recipients",
+        _ => "Service Recipients, planned delivery dates and quantities",
     };
 
     public static OrderType Parse(string s, IFormatProvider provider)

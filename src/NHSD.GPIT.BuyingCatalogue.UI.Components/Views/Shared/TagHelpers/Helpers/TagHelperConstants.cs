@@ -77,7 +77,11 @@
         internal const string NhsFormGroup = "nhsuk-form-group";
         internal const string NhsFormGroupError = "nhsuk-form-group--error";
         internal const string NhsValidationSummary = "nhsuk-error-summary";
+        internal const string NhsExpanderClass = "nhsuk-expander";
+        internal const string NhsExpanderIndexClass = "nhsuk-expander-index";
         internal const string NhsExpanderError = "nhsuk-error-expander";
+        internal const string NhsExpanderFooter = "nhsuk-expander-footer";
+        internal const string NhsSummaryTextSecondaryClass = "nhsuk-details__summary-text_secondary";
         internal const string NhsInput = "nhsuk-input";
         internal const string NhsLabel = "nhsuk-label";
         internal const string BoldLabel = "bold-label";
