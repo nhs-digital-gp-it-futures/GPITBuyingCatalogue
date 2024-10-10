@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
+﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities
 {
     public class SubLocationModel
     {
