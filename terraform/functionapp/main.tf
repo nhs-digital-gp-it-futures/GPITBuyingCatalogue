@@ -25,7 +25,7 @@ resource "azurerm_service_plan" "function_app_plan" {
   name                = "${local.project_environment}-functionapp-service-plan"
   location            = azurerm_resource_group.function_app_rg.location
   resource_group_name = azurerm_resource_group.function_app_rg.name
-  sku_name            = "P1v2"
+  sku_name            = "P2v2"
   os_type             = "Windows"
 }
 
@@ -44,28 +44,30 @@ resource "azurerm_storage_container" "function_app_container" {
 }
 
 resource "azurerm_storage_queue" "send_email_queue" {
-  name                  = local.send_notification
-  storage_account_name  = azurerm_storage_account.function_app_storage.name
+  name                 = local.send_notification
+  storage_account_name = azurerm_storage_account.function_app_storage.name
 }
 
 resource "azurerm_storage_queue" "complete_email_queue" {
-  name                  = local.complete_notification
-  storage_account_name  = azurerm_storage_account.function_app_storage.name
+  name                 = local.complete_notification
+  storage_account_name = azurerm_storage_account.function_app_storage.name
 }
 
 resource "azurerm_windows_function_app" "function_app" {
   name = "${local.project_environment}-functionapp"
 
   app_settings = {
-    APPLICATIONINSIGHTS_CONNECTION_STRING   = data.azurerm_application_insights.app_insights.connection_string
-    BUYINGCATALOGUECONNECTIONSTRING         = "Server=tcp:${data.azurerm_mssql_server.buyingcataloguedb.fully_qualified_domain_name},1433;Initial Catalog=${var.database_catalog};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.sqladminusername.value};Password=${data.azurerm_key_vault_secret.sqladminpassword.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-    NOTIFY_API_KEY                          = var.notify_api_key
-    QUEUE__SEND_EMAIL_NOTIFICATION          = local.send_notification
-    QUEUE__COMPLETE_EMAIL_NOTIFICATION      = local.complete_notification
-    OrganisationUri                         = "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations"
-    RelationshipsUri                        = "https://directory.spineservices.nhs.uk/ORD/2-0-0/rels"
-    RolesUri                                = "https://directory.spineservices.nhs.uk/ORD/2-0-0/roles"
-    SearchUri                               = "https://directory.spineservices.nhs.uk/ORD/2-0-0/sync"
+    APPLICATIONINSIGHTS_CONNECTION_STRING = data.azurerm_application_insights.app_insights.connection_string
+    BUYINGCATALOGUECONNECTIONSTRING       = "Server=tcp:${data.azurerm_mssql_server.buyingcataloguedb.fully_qualified_domain_name},1433;Initial Catalog=${var.database_catalog};Persist Security Info=False;User ID=${data.azurerm_key_vault_secret.sqladminusername.value};Password=${data.azurerm_key_vault_secret.sqladminpassword.value};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    NOTIFY_API_KEY                        = var.notify_api_key
+    QUEUE__SEND_EMAIL_NOTIFICATION        = local.send_notification
+    QUEUE__COMPLETE_EMAIL_NOTIFICATION    = local.complete_notification
+    TRUDAPI__APIKEY                       = var.trud_api_key
+    TRUDAPI__ITEMID                       = var.trud_item_id
+    OrganisationUri                       = "https://directory.spineservices.nhs.uk/ORD/2-0-0/organisations"
+    RelationshipsUri                      = "https://directory.spineservices.nhs.uk/ORD/2-0-0/rels"
+    RolesUri                              = "https://directory.spineservices.nhs.uk/ORD/2-0-0/roles"
+    SearchUri                             = "https://directory.spineservices.nhs.uk/ORD/2-0-0/sync"
   }
 
   identity {
@@ -81,9 +83,10 @@ resource "azurerm_windows_function_app" "function_app" {
   enabled                    = true
 
   site_config {
-    always_on     = true
-    ftps_state    = "Disabled"
-    http2_enabled = true
+    always_on         = true
+    ftps_state        = "Disabled"
+    http2_enabled     = true
+    use_32_bit_worker = false
 
     ip_restriction {
       ip_address = var.primary_vpn
