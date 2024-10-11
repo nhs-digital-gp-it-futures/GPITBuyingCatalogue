@@ -1,3 +1,5 @@
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 @model JustifySolutionsModel
 
 @{
@@ -6,50 +8,29 @@
 
 <partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-column-full">
         <nhs-validation-summary/>
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CompetitionName"/>
-        <nhs-card-v2>
-            <nhs-card-content title="Justify exclusions">
-                
-                <p>Provide a justification for why you’ve not included these solutions in your competition shortlist.</p>
-                <p><b>All links open in a new tab.</b></p>
-                <form method="post">
-                    <input type="hidden" asp-for="BackLink"/>
-                    <input type="hidden" asp-for="CompetitionName"/>
+        <form method="post">
+            <nhs-card-v2>
+                <nhs-card-content>
+                    
+                        <input type="hidden" asp-for="BackLink"/>
+                        <input type="hidden" asp-for="CompetitionName"/>
+                        
+                        <nhs-fieldset-form-label asp-for="Solutions"
+                                                 label-text="Justify exclusions"
+                                                 label-hint="Provide a justification for why you've not included these solutions in your competition shortlist.">
+                            <p><b>All links open in a new tab.</b></p>
 
-                    @for (var i = 0; i < Model.Solutions.Count; i++)
-                    {
-                        <input type="hidden" asp-for="@Model.Solutions[i].SolutionId"/>
-                        <input type="hidden" asp-for="@Model.Solutions[i].SolutionName"/>
-                        <input type="hidden" asp-for="@Model.Solutions[i].SupplierName"/>
+                            <partial name="_JustifySolutionsInput" model="Model" />
 
-                        <nhs-card-v2 inverted="true">
-                            <nhs-card-content>
-                                <h3 class="nhsuk-card__heading">
-                                    <a href="@Url.Action(
-                                                 nameof(SolutionsController.Description),
-                                                 typeof(SolutionsController).ControllerName(),
-                                                 new { Area = typeof(SolutionsController).AreaName(), solutionId = @Model.Solutions[i].SolutionId})" class="nhsuk-link" target="_blank">@Model.Solutions[i].SolutionName</a>
-                                    <span class="nhsuk-caption-m nhsuk-caption--bottom">
-                                        @Model.Solutions[i].SupplierName
-                                    </span>
-                                </h3>
-                                <nhs-fieldset-form-label asp-for="@Model.Solutions[i]">
-                                    <nhs-textarea asp-for="@Model.Solutions[i].Justification"
-                                                  label-text="Why has this solution not been included in your shortlist?"
-                                                  label-hint="For example, it may not adequately meet your requirements or take too long to implement."/>
-                                </nhs-fieldset-form-label>
-
-                                <hr/>
-                            </nhs-card-content>
-                        </nhs-card-v2>
-                    }
-
-                    <nhs-submit-button/>
-                </form>
-            </nhs-card-content>
-        </nhs-card-v2>
+                        </nhs-fieldset-form-label>
+                    
+                </nhs-card-content>
+            </nhs-card-v2>
+            <nhs-submit-button />
+        </form>
     </div>
 </div>
