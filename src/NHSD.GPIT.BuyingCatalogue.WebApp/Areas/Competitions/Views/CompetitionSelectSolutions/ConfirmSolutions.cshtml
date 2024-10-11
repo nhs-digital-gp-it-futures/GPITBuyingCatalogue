@@ -8,12 +8,10 @@
 <partial name="Partials/_BackLink" model="Model"/>
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-column-full">
         <nhs-validation-summary/>
         <nhs-page-title title="@ViewBag.Title" caption="@Model.CompetitionName" advice="Review the solutions you’ve included in your shortlist and take them into a competition."/>
-    </div>
-
-    <div class="nhsuk-grid-column-full">
+    
         <form method="post">
             <input type="hidden" asp-for="BackLink" />
             <nhs-card-v2>

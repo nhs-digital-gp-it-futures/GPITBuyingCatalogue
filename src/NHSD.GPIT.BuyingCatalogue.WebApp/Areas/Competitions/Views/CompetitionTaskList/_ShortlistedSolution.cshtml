@@ -1,0 +1,21 @@
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared.SolutionModel
+
+<nhs-card-v2 inverted="true">
+<nhs-card-content>
+    <h3 class="nhsuk-heading-s">
+        <a asp-action="@nameof(SolutionsController.Description)"
+           asp-controller="@typeof(SolutionsController).ControllerName()"
+           asp-area="@typeof(SolutionsController).AreaName()"
+           asp-route-solutionId="@Model.SolutionId"
+           target="_blank">
+            @Model.SolutionName (opens in a new tab)
+        </a>
+        <span class="nhsuk-caption-m nhsuk-caption--bottom">
+            @Model.SupplierName
+        </span>
+    </h3>
+    <h4 class="nhsuk-heading-xs nhsuk-u-margin-bottom-2">Additional Services required:</h4>
+    <p class="nhsuk-body">@Model.GetAdditionalServicesList()</p>
+
+</nhs-card-content>
+</nhs-card-v2>

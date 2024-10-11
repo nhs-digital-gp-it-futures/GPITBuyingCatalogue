@@ -7,35 +7,31 @@
 <partial name="Partials/_BackLink" model="Model"/>
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-column-full">
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CompetitionName"
                         advice="These are the solutions you added to your shortlist for this competition."/>
 
+            <nhs-card-v2>
+                <nhs-card-content>
+                        
+                    <nhs-fieldset-form-label asp-for="Solutions"
+                                             label-text="Your shortlisted solutions">
+                        <p><b>All links open in a new tab.</b></p>
+                    </nhs-fieldset-form-label>
 
-        <h2>Your shortlisted solutions</h2>
-        <br/>
-        @foreach (var solution in Model.Solutions)
-        {
-            <h3 class="nhsuk-heading-s">
-                <a asp-action="@nameof(SolutionsController.Description)"
-                   asp-controller="@typeof(SolutionsController).ControllerName()"
-                   asp-area="@typeof(SolutionsController).AreaName()"
-                   asp-route-solutionId="@solution.SolutionId"
-                   target="_blank">
-                    @solution.SolutionName (opens in a new tab)
-                </a>
-                <span class="nhsuk-caption-m nhsuk-caption--bottom">
-                    @solution.SupplierName
-                </span>
-            </h3>
-            <h4 class="nhsuk-heading-xs nhsuk-u-margin-bottom-2">Additional Services required:</h4>
-            <p class="nhsuk-body">@solution.GetAdditionalServicesList()</p>
-            <hr/>
-        }
+                        @foreach (var solution in Model.Solutions)
+                        {
+                            <partial name="_ShortlistedSolution" model="solution" />
+                        }
+                 
+                </nhs-card-content>
+            </nhs-card-v2>
 
-        <vc:nhs-secondary-button text="Save and continue"
-                                 type="Primary"
-                                 url="@Model.BackLink"/>
+            <vc:nhs-secondary-button text="Save and continue"
+                                     type="Primary"
+                                     url="@Model.BackLink"/>
+
+        
     </div>
 </div>
