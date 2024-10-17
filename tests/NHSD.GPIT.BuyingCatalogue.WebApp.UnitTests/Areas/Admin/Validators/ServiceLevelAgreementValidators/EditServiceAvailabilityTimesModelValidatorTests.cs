@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using AutoFixture.Xunit2;
 using FluentValidation.TestHelper;
 using MoreLinq;
@@ -23,7 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         {
             var model = new EditServiceAvailabilityTimesModel
             {
-                From = DateTime.UtcNow, Until = DateTime.UtcNow.AddMinutes(5),
+                From = DateTime.UtcNow,
+                Until = DateTime.UtcNow.AddMinutes(5),
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -43,7 +43,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         {
             var model = new EditServiceAvailabilityTimesModel
             {
-                SupportType = "Service hours", Until = DateTime.UtcNow,
+                SupportType = "Service hours",
+                Until = DateTime.UtcNow,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);
@@ -63,7 +64,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Serv
         {
             var model = new EditServiceAvailabilityTimesModel
             {
-                SupportType = "Service hours", From = DateTime.UtcNow,
+                SupportType = "Service hours",
+                From = DateTime.UtcNow,
             };
 
             service.GetServiceLevelAgreementForSolution(model.SolutionId).Returns(serviceLevelAgreement);

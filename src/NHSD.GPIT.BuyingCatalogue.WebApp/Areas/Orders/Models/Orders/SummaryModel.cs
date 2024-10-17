@@ -53,6 +53,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public string RequirementLabelText => "Specific requirements";
 
+        public string ButtonLabelText => Order.OrderStatus == OrderStatus.InProgress && OrderWrapper.CanComplete()
+            ? "Complete order"
+            : Order.OrderStatus == OrderStatus.Terminated
+                ? "Download summary"
+                : "Order summary";
+
+        public string ButtonAdviceText => Order.OrderStatus == OrderStatus.InProgress && OrderWrapper.CanComplete()
+            ?
+            "Make sure you are happy with the order before marking it as complete."
+            : Order.OrderStatus == OrderStatus.Terminated
+                ? "You can download a summary of this terminated contract for your records."
+                : "You can download and review your order summary here.";
+
         public AmendOrderItemModel BuildAmendOrderItemModel(OrderItem item)
         {
             return new AmendOrderItemModel(
@@ -63,7 +76,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 item,
                 Previous?.OrderItem(item.CatalogueItemId),
                 Order.IsAmendment,
-                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)));
+                new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)))
+            { InternalOrgId = InternalOrgId, CanEdit = Order.OrderStatus == OrderStatus.InProgress };
         }
 
         public OrderTotalModel BuildOrderTotals()

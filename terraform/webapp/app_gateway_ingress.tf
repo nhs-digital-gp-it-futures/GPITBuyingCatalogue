@@ -1,7 +1,7 @@
 module "waf_policy" {
   source              = "./modules/waf_policy"
   count               = local.core_env != "dev" ? 1 : 0
-  resource_group_name = azurerm_resource_group.waf-policy.name
+  resource_group_name = azurerm_resource_group.app-gateway.name
   project_name        = var.project
   environment         = var.environment
   location            = var.region

@@ -42,13 +42,13 @@
                                   label-text="I confirm I want to terminate this contract"/>
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>
+            
+            <nhs-button-group>
+                <nhs-submit-button text="Terminate contract"/>
 
-            <nhs-submit-button text="Terminate contract"/>
-
-            <p>
                 <a href="@Url.Action( nameof(DashboardController.Organisation), typeof(DashboardController).ControllerName(), new { Model.InternalOrgId })">Cancel</a>
-            </p>
-        </form>
+            </nhs-button-group>
+            </form>
 
     </div>
 </div>
