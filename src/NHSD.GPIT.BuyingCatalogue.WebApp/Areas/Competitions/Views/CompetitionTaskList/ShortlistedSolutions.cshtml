@@ -18,13 +18,12 @@
                     <nhs-fieldset-form-label asp-for="Solutions"
                                              label-text="Your shortlisted solutions">
                         <p><b>All links open in a new tab.</b></p>
-                    </nhs-fieldset-form-label>
 
                         @foreach (var solution in Model.Solutions)
                         {
-                            <partial name="_ShortlistedSolution" model="solution" />
+                        <partial name="_ShortlistedSolution" model="new ShortlistedSolutionModel(solution, Model.FrameworkName)" />
                         }
-                 
+                </nhs-fieldset-form-label>
                 </nhs-card-content>
             </nhs-card-v2>
 

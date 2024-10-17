@@ -20,5 +20,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
             result.ShouldHaveValidationErrorFor(x => x.ConfirmShortlist)
                 .WithErrorMessage(ConfirmSolutionsModelValidator.ConfirmShortlistError);
         }
+
+        [Theory]
+        [MockAutoData]
+        public static void Validate_ConfirmSolutionsValid_NoModelErrors(
+            ConfirmSolutionsModel model,
+            ConfirmSolutionsModelValidator systemUnderTest)
+        {
+            model.ConfirmShortlist = true;
+
+            var result = systemUnderTest.TestValidate(model);
+
+            result.ShouldNotHaveAnyValidationErrors();
+        }
     }
 }
