@@ -9,9 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card;
 [RestrictChildren(CardContentTagHelper.TagHelperName, CardFooterTagHelper.TagHelperName)]
 public class CardV2TagHelper : TagHelper
 {
-    private CardContext cardContext;
-
     public const string TagHelperName = "nhs-card-v2";
+
+    private CardContext cardContext;
 
     public bool HorizontalAlign { get; set; }
 
