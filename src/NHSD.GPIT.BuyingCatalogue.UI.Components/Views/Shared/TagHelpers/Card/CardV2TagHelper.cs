@@ -9,17 +9,30 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card;
 [RestrictChildren(CardContentTagHelper.TagHelperName, CardFooterTagHelper.TagHelperName)]
 public class CardV2TagHelper : TagHelper
 {
+    private CardContext cardContext;
+
     public const string TagHelperName = "nhs-card-v2";
 
     public bool HorizontalAlign { get; set; }
 
     public bool Inverted { get; set; }
 
+    public override void Init(TagHelperContext context)
+    {
+        cardContext = new CardContext { HorizontalAlign = HorizontalAlign };
+
+        if (context.Items.TryGetValue(typeof(CardV2TagHelper), out _))
+        {
+            context.Items[typeof(CardV2TagHelper)] = cardContext;
+        }
+        else
+        {
+            context.Items.Add(typeof(CardV2TagHelper), cardContext);
+        }
+    }
+
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-        var cardContext = new CardContext { HorizontalAlign = HorizontalAlign };
-        context.Items.Add(typeof(CardV2TagHelper), cardContext);
-
         _ = await output.GetChildContentAsync();
 
         output.TagMode = TagMode.StartTagAndEndTag;

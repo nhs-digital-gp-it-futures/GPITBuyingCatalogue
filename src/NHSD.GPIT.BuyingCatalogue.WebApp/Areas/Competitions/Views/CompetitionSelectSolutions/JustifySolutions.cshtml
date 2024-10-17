@@ -16,20 +16,44 @@
             <nhs-card-v2>
                 <nhs-card-content>
                     
-                        <input type="hidden" asp-for="BackLink"/>
-                        <input type="hidden" asp-for="CompetitionName"/>
+                    <input type="hidden" asp-for="BackLink"/>
+                    <input type="hidden" asp-for="CompetitionName"/>
                         
-                        <nhs-fieldset-form-label asp-for="Solutions"
-                                                 label-text="Justify exclusions"
-                                                 label-hint="Provide a justification for why you've not included these solutions in your competition shortlist.">
-                            <p><b>All links open in a new tab.</b></p>
-                        </nhs-fieldset-form-label>
+                    <nhs-fieldset-form-label asp-for="Solutions"
+                                             label-text="Justify exclusions"
+                                             label-hint="Provide a justification for why you've not included these solutions in your competition shortlist.">
+                        <p><b>All links open in a new tab.</b></p>
+                    </nhs-fieldset-form-label>
 
-                        <partial name="_JustifySolutionsInput" model="Model" />
+                    @for (var i = 0; i < Model.Solutions.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.Solutions[i].SolutionId"/>
+                        <input type="hidden" asp-for="@Model.Solutions[i].SolutionName"/>
+                        <input type="hidden" asp-for="@Model.Solutions[i].SupplierName"/>
 
+                        <nhs-card-v2 inverted="true">
+                            <nhs-card-content>
+                                <h3 class="nhsuk-card__heading">
+                                    <a href="@GetSolutionMarketingPageUrl(Model.Solutions[i].SolutionId)" class="nhsuk-link" target="_blank">@Model.Solutions[i].SolutionName</a>
+                                    <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                                        @Model.Solutions[i].SupplierName
+                                    </span>
+                                </h3>
+                                <nhs-fieldset-form-label asp-for="@Model.Solutions[i]">
+                                    <nhs-textarea asp-for="@Model.Solutions[i].Justification"
+                                                  label-text="Why has this solution not been included in your shortlist?"
+                                                  label-hint="For example, it may not adequately meet your requirements or take too long to implement."/>
+                                </nhs-fieldset-form-label>
+                            </nhs-card-content>
+                        </nhs-card-v2>
+                    }
                 </nhs-card-content>
             </nhs-card-v2>
             <nhs-submit-button />
         </form>
     </div>
 </div>
+
+@{
+    string GetSolutionMarketingPageUrl(CatalogueItemId catalogueItemId) => Url.Action(nameof(SolutionsController.Description), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName(), solutionId = catalogueItemId });
+}
