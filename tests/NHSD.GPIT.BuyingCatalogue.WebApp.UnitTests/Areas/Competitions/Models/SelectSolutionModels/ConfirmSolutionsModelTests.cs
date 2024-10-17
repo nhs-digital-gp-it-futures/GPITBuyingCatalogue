@@ -29,4 +29,16 @@ public sealed class ConfirmSolutionsModelTests
         model.ShortlistedSolutions.Should().BeEquivalentTo(shortlistedSolutions);
         model.NonShortlistedSolutions.Should().BeEquivalentTo(nonShortlistedSolutions);
     }
+
+    [Theory]
+    [MockAutoData]
+    public static void Construct_NullSolutions_SetsProperties(
+        string competitionName)
+    {
+        var model = new ConfirmSolutionsModel(competitionName, null);
+
+        model.CompetitionSolutions.Should().BeNull();
+        model.ShortlistedSolutions.Should().BeNull();
+        model.NonShortlistedSolutions.Should().BeNull();
+    }
 }
