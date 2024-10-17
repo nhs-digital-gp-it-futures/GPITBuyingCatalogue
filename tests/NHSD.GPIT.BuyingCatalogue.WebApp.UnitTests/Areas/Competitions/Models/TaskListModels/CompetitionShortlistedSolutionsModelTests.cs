@@ -16,6 +16,7 @@ public static class CompetitionShortlistedSolutionsModelTests
     public static void Construct_SetsProperties(
         Solution solution,
         Competition competition,
+        string frameworkName,
         AdditionalService requiredService,
         List<CompetitionSolution> competitionSolutions,
         List<SolutionService> requiredServices)
@@ -35,9 +36,10 @@ public static class CompetitionShortlistedSolutionsModelTests
 
         competition.CompetitionSolutions = competitionSolutions;
 
-        var model = new CompetitionShortlistedSolutionsModel(competition);
+        var model = new CompetitionShortlistedSolutionsModel(competition, frameworkName);
 
         model.CompetitionName.Should().Be(competition.Name);
+        model.FrameworkName.Should().Be(frameworkName);
         model.Solutions.Should().BeEquivalentTo(competitionSolutions.Select(x => new SolutionModel(x)));
     }
 }

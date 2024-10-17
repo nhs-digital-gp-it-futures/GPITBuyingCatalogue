@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -59,13 +60,17 @@ public static class CompetitionTaskListControllerTests
     public static async Task ShortlistedSolutions_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
+        EntityFramework.Catalogue.Models.Framework framework,
         [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IFrameworkService frameworkService,
         CompetitionTaskListController controller)
     {
         competitionsService.GetCompetitionWithSolutions(organisation.InternalIdentifier, competition.Id)
             .Returns(competition);
 
-        var expectedModel = new CompetitionShortlistedSolutionsModel(competition);
+        frameworkService.GetFramework(competition.FrameworkId).Returns(framework);
+
+        var expectedModel = new CompetitionShortlistedSolutionsModel(competition, framework.ShortName);
 
         var result = (await controller.ShortlistedSolutions(organisation.InternalIdentifier, competition.Id))
             .As<ViewResult>();

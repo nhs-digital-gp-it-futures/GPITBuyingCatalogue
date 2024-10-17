@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
@@ -18,12 +19,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 public class CompetitionTaskListController(
     IOrganisationsService organisationsService,
     ICompetitionsService competitionsService,
-    IIntegrationsService integrationsService)
+    IIntegrationsService integrationsService,
+    IFrameworkService frameworkService)
     : Controller
 {
     private readonly IOrganisationsService organisationsService = organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
     private readonly ICompetitionsService competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
     private readonly IIntegrationsService integrationsService = integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
+    private readonly IFrameworkService frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
 
     [HttpGet]
     public async Task<IActionResult> Index(string internalOrgId, int competitionId)
@@ -46,8 +49,9 @@ public class CompetitionTaskListController(
     public async Task<IActionResult> ShortlistedSolutions(string internalOrgId, int competitionId)
     {
         var competition = await competitionsService.GetCompetitionWithSolutions(internalOrgId, competitionId);
+        var framework = await frameworkService.GetFramework(competition.FrameworkId);
 
-        var model = new CompetitionShortlistedSolutionsModel(competition)
+        var model = new CompetitionShortlistedSolutionsModel(competition, framework.ShortName)
         {
             BackLink = Url.Action(
                 nameof(Index),

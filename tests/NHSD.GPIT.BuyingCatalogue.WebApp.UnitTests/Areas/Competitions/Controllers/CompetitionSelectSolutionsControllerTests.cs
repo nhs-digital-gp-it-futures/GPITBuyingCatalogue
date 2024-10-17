@@ -416,6 +416,28 @@ public static class CompetitionSelectSolutionsControllerTests
 
     [Theory]
     [MockAutoData]
+    public static async Task Post_ConfirmSolutions_InvalidModel_ReturnsViewWithModel(
+        Organisation organisation,
+        Competition competition,
+        ConfirmSolutionsModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionSelectSolutionsController controller)
+    {
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        competitionsService.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, false)
+            .Returns(Task.FromResult(competition));
+
+        var result = (await controller.ConfirmSolutions(organisation.InternalIdentifier, competition.Id, model))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.As<ConfirmSolutionsModel>().CompetitionSolutions.Should().BeEquivalentTo(competition.CompetitionSolutions.ToList());
+        result.Model.Should().BeEquivalentTo(model, x => x.Excluding(y => y.CompetitionSolutions));
+    }
+
+    [Theory]
+    [MockAutoData]
     public static async Task Post_ConfirmSolutions_Redirects(
         Organisation organisation,
         int competitionId,
