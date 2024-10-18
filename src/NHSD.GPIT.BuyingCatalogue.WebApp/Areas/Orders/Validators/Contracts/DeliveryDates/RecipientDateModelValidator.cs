@@ -7,7 +7,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.Del
 {
     public class RecipientDateModelValidator : AbstractValidator<RecipientDateModel>
     {
-        public const string DeliveryDateInThePastErrorMessage = "Date for {0} must be in the future";
         public const string DeliveryDateBeforeCommencementDateErrorMessage = "Date for {0} must be on or after your commencement date ({1})";
 
         public RecipientDateModelValidator()
@@ -15,9 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.Contracts.Del
             Include(new DateInputModelValidator());
 
             RuleFor(x => x)
-                .Must(x => x.Date > DateTime.UtcNow.Date)
-                .Unless(x => !x.IsValid)
-                .WithMessage(x => string.Format(DeliveryDateInThePastErrorMessage, x.Description))
                 .Must(x => x.Date >= x.CommencementDate)
                 .Unless(x => !x.IsValid)
                 .WithMessage(x => CommencementDateErrorMessage(x.Description, x.CommencementDate))
