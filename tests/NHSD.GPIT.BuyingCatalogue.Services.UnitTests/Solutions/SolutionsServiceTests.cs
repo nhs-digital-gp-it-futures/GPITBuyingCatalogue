@@ -327,6 +327,33 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         }
 
         [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetSolutionStandardsForEditing_ReturnsStandardsForSolution(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            context.Solutions.Add(solution);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var expected = context.CatalogueItems
+                .Where(ci => ci.Id == solution.CatalogueItemId)
+                .SelectMany(ci => ci.CatalogueItemCapabilities)
+                .Select(cic => cic.Capability)
+                .SelectMany(c => c.StandardCapabilities)
+                .Select(sc => sc.Standard)
+                .Distinct()
+                .Union(context.Standards)
+                .ToList();
+
+            var result = await service.GetSolutionStandardsForEditing(solution.CatalogueItemId);
+
+            result.Should().HaveCount(expected.Count);
+        }
+
+        [Theory]
         [MockAutoData]
         public static async Task SaveSupplierContacts_ModelNull_ThrowsException(SolutionsService service)
         {

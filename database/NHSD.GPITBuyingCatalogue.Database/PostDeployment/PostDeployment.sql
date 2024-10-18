@@ -67,10 +67,4 @@
 :r ./TestData/Competitions/InsertCompetitions.sql
 :r ./TestData/Solutions/InsertServiceLevels.sql
 
-:r ./MigrateEpics.sql
-:r ./MigrateEpicCompliancyLevel.sql
-:r ./MigrateContracts.sql
-:r ./MigrateOrderItemRecipients.sql
-:r ./MigrateMergersAndSplits.sql
-:r ./MigrateOrderType.sql
-:r ./MigrateFrameworks.sql
+:r ./MigrateStandards.sql
