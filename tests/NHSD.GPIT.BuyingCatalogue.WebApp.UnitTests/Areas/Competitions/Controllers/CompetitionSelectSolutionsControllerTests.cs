@@ -360,7 +360,11 @@ public static class CompetitionSelectSolutionsControllerTests
         competitionsService.GetCompetitionWithServices(organisation.InternalIdentifier, competition.Id, false)
             .Returns(Task.FromResult(competition));
 
-        var expectedModel = new ConfirmSolutionsModel(competition.Name, competitionSolutions);
+        var expectedModel = new ConfirmSolutionsModel(competition.Name, competitionSolutions)
+        {
+            CompetitionId = competition.Id,
+            InternalOrgId = organisation.InternalIdentifier,
+        };
 
         var result =
             (await controller.ConfirmSolutions(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
