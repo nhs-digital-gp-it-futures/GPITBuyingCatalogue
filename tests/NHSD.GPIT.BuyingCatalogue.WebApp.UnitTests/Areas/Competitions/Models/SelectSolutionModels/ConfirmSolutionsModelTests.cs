@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -21,10 +21,24 @@ public sealed class ConfirmSolutionsModelTests
         shortlistedSolutions.ForEach(x => x.IsShortlisted = true);
         nonShortlistedSolutions.ForEach(x => x.IsShortlisted = false);
 
-        var model = new ConfirmSolutionsModel(competitionName, shortlistedSolutions.Concat(nonShortlistedSolutions).ToList());
+        var solutions = shortlistedSolutions.Concat(nonShortlistedSolutions).ToList();
+        var model = new ConfirmSolutionsModel(competitionName, solutions);
 
         model.CompetitionName.Should().Be(competitionName);
+        model.CompetitionSolutions.Should().BeEquivalentTo(solutions);
         model.ShortlistedSolutions.Should().BeEquivalentTo(shortlistedSolutions);
         model.NonShortlistedSolutions.Should().BeEquivalentTo(nonShortlistedSolutions);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void Construct_NullSolutions_SetsProperties(
+        string competitionName)
+    {
+        var model = new ConfirmSolutionsModel(competitionName, null);
+
+        model.CompetitionSolutions.Should().BeNull();
+        model.ShortlistedSolutions.Should().BeNull();
+        model.NonShortlistedSolutions.Should().BeNull();
     }
 }
