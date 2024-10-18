@@ -27,7 +27,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
                 Encoding.UTF8.GetBytes(
                     new StringBuilder()
                         .AppendLine("ID,Name,Type,URL,Description,Framework")
-                        .AppendLine("S49,StandardName,Context Specific Standard,https://test.com,\"Description\",GP IT Futures|Tech Innovation")
+                        .AppendLine("S49,StandardName,Standard,https://test.com,\"Description\",GP IT Futures|Tech Innovation")
                         .ToString())
             );
 
@@ -38,7 +38,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.Should().NotBeNull();
             result!.Id.Should().Be("S49");
             result.Name.Should().Be("StandardName");
-            result.StandardType.Should().Be(StandardType.ContextSpecific);
+            result.StandardType.Should().Be(StandardType.Other);
             result.Url.Should().Be("https://test.com");
             result.Description.Should().Be("Description");
         }

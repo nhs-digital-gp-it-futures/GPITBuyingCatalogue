@@ -151,10 +151,8 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
         {
             return value.Trim() switch
             {
-                "Capability Specific Standard" => StandardType.Capability,
-                "Interop Standard" => StandardType.Interoperability,
+                "Standard" => StandardType.Other,
                 "Overarching Standard" => StandardType.Overarching,
-                "Context Specific Standard" => StandardType.ContextSpecific,
                 { } val => throw new InvalidOperationException($"Invalid standard type specified: {val}")
             };
         }
