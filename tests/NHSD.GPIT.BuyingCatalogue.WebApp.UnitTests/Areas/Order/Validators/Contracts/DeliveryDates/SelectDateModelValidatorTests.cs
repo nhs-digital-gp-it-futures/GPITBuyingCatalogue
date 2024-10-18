@@ -10,27 +10,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
     public static class SelectDateModelValidatorTests
     {
         [Theory]
-        [MockInlineAutoData(0)]
-        [MockInlineAutoData(-1)]
-        [MockInlineAutoData(-10)]
-        public static void Validate_PresentOrPastDate_ThrowsValidationError(
-            int daysToAdd,
-            SelectDateModel model,
-            SelectDateModelValidator validator)
-        {
-            var date = DateTime.UtcNow.AddDays(daysToAdd);
-
-            model.Day = $"{date.Day}";
-            model.Month = $"{date.Month}";
-            model.Year = $"{date.Year}";
-
-            var result = validator.TestValidate(model);
-
-            result.ShouldHaveValidationErrorFor(x => x.Day)
-                .WithErrorMessage(SelectDateModelValidator.DeliveryDateInThePastErrorMessage);
-        }
-
-        [Theory]
         [MockAutoData]
         public static void Validate_DateBeforeCommencementDate_ThrowsValidationError(
             SelectDateModel model,

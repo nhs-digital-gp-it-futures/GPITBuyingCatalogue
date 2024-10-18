@@ -9,30 +9,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
     public static class RecipientDateModelValidatorTests
     {
         [Theory]
-        [MockInlineAutoData(0)]
-        [MockInlineAutoData(-1)]
-        [MockInlineAutoData(-10)]
-        public static void Validate_PresentOrPastDate_ThrowsValidationError(
-            int daysToAdd,
-            RecipientDateModel model,
-            RecipientDateModelValidator validator)
-        {
-            var date = DateTime.UtcNow.AddDays(daysToAdd);
-
-            model.Day = $"{date.Day}";
-            model.Month = $"{date.Month}";
-            model.Year = $"{date.Year}";
-
-            var result = validator.TestValidate(model);
-            var errorMessage = string.Format(
-                RecipientDateModelValidator.DeliveryDateInThePastErrorMessage,
-                model.Description);
-
-            result.ShouldHaveValidationErrorFor(x => x.Day)
-                .WithErrorMessage(errorMessage);
-        }
-
-        [Theory]
         [MockAutoData]
         public static void Validate_DateBeforeCommencementDate_ThrowsValidationError(
             RecipientDateModel model,
@@ -59,14 +35,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.Cont
         [MockInlineAutoData(1)]
         [MockInlineAutoData(10)]
         [MockInlineAutoData(100)]
-        public static void Validate_FutureDate_NoErrors(
+        public static void Validate_ValidDate_NoErrors(
             int daysToAdd,
             RecipientDateModel model,
             RecipientDateModelValidator validator)
         {
-            var date = DateTime.UtcNow.AddDays(daysToAdd);
+            var date = model.CommencementDate.AddDays(daysToAdd);
 
-            model.CommencementDate = date.AddDays(-1);
             model.Day = $"{date.Day}";
             model.Month = $"{date.Month}";
             model.Year = $"{date.Year}";

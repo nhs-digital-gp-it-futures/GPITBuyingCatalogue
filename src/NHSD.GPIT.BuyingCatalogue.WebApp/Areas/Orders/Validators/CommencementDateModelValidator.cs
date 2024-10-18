@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators
 {
     public sealed class CommencementDateModelValidator : AbstractValidator<CommencementDateModel>
     {
-        public const string CommencementDateInThePastErrorMessage = "Commencement date must be in the future";
+        public const string CommencementDateInThePastErrorMessage = "Commencement date must be no more than 3 months in the past";
         public const string InitialPeriodMissingErrorMessage = "Enter an initial period";
         public const string InitialPeriodNotANumberErrorMessage = "Initial period must be a number";
         public const string InitialPeriodTooLowErrorMessage = "Initial period must be greater than zero";
@@ -24,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators
             Include(new DateInputModelValidator());
 
             RuleFor(x => x.Date)
-                .Must(x => x > DateTime.UtcNow.Date)
+                .Must(x => x >= DateTime.UtcNow.Date.AddMonths(-3))
                 .Unless(x => x.Date == null)
                 .WithMessage(CommencementDateInThePastErrorMessage)
                 .OverridePropertyName(x => x.Day);
