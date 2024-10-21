@@ -149,19 +149,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var suppliers = await suppliersService.GetAllActiveSuppliers();
 
-            var model = new SolutionModel(solution).WithSelectListItems(suppliers).WithEditSolution();
+            var model = new SolutionModel(solution).WithSelectListItems(suppliers);
 
             model.Frameworks = (await solutionsService.GetAllFrameworks())
-                .Select(f =>
-                {
-                    FrameworkSolution sol = solution.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId == f.Id);
-                    return new FrameworkModel
+                .Select(
+                    f =>
                     {
-                        Name = $"{f.ShortName} Framework",
-                        FrameworkId = f.Id,
-                        Selected = sol is not null,
-                    };
-                }).ToList();
+                        FrameworkSolution sol =
+                            solution.Solution.FrameworkSolutions.FirstOrDefault(fs => fs.FrameworkId == f.Id);
+                        return new FrameworkModel
+                        {
+                            Name = $"{f.ShortName} Framework", FrameworkId = f.Id, Selected = sol is not null,
+                        };
+                    })
+                .ToList();
 
             return View(model);
         }
@@ -174,16 +175,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 var suppliers = await suppliersService.GetAllActiveSuppliers();
 
                 model.Frameworks = (await solutionsService.GetAllFrameworks())
-                .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id }).ToList();
+                    .Select(f => new FrameworkModel { Name = $"{f.ShortName} Framework", FrameworkId = f.Id })
+                    .ToList();
 
-                return View(model.WithSelectListItems(suppliers).WithEditSolution());
+                return View(model.WithSelectListItems(suppliers));
             }
 
             await solutionsService.SaveSolutionDetails(
                 solutionId,
                 model.SolutionName,
-                model.SupplierId ?? default,
+                model.SupplierId.GetValueOrDefault(),
                 model.IsPilotSolution,
+                model.SelectedCategory,
                 model.Frameworks);
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
