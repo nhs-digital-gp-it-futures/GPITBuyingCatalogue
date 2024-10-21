@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItemContentStatus> GetContentStatusForCatalogueItem(CatalogueItemId solutionId);
 
-        Task SaveSolutionDetails(CatalogueItemId id, string solutionName, int supplierId, bool isPilotSolution, IList<FrameworkModel> selectedFrameworks);
+        Task SaveSolutionDetails(CatalogueItemId id, string solutionName, int supplierId, bool isPilotSolution, SolutionCategory? solutionCategory, IList<FrameworkModel> selectedFrameworks);
 
         Task SaveSolutionDescription(CatalogueItemId solutionId, string summary, string description, string link);
 

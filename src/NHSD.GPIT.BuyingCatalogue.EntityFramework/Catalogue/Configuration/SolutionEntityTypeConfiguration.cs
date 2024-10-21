@@ -21,6 +21,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
+            builder.Property(x => x.Category)
+                .HasConversion<int>();
+
             builder.Property(s => s.AboutUrl).HasMaxLength(1000);
             builder.Property(s => s.FullDescription).HasMaxLength(3000);
             builder.Property(s => s.ImplementationDetail).HasMaxLength(1100);

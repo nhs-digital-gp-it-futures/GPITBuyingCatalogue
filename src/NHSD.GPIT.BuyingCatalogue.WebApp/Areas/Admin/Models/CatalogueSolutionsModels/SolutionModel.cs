@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -10,6 +12,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
 {
     public sealed class SolutionModel : NavBaseModel
     {
+        internal const string AddHeading = "Add a solution";
+        internal const string EditHeading = "Details";
+
+        internal const string AddDescription = "Provide the following information about your Catalogue Solution.";
+        internal const string EditDescription = "These are the current details for this Catalogue Solution.";
+
         public SolutionModel()
         {
         }
@@ -21,6 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
             SolutionName = catalogueItem.Name;
             SolutionDisplayName = catalogueItem.Name;
             IsPilotSolution = catalogueItem.Solution.IsPilotSolution;
+            SelectedCategory = catalogueItem.Solution.Category;
         }
 
         public CatalogueItemId? SolutionId { get; set; }
@@ -33,13 +42,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
 
         public int? SupplierId { get; set; }
 
+        public SolutionCategory? SelectedCategory { get; set; }
+
         public IList<FrameworkModel> Frameworks { get; set; }
 
         public IEnumerable<SelectOption<string>> SuppliersSelectList { get; set; } = new List<SelectOption<string>>();
 
-        public string Heading { get; set; }
+        public IEnumerable<SelectOption<SolutionCategory>> SolutionCategories => Enum.GetValues<SolutionCategory>()
+            .Select(x => new SelectOption<SolutionCategory>(x.Description(), x));
 
-        public string Description { get; set; }
+        public string Heading => SolutionId is not null ? EditHeading : AddHeading;
+
+        public string Description => SolutionId is not null ? EditDescription : AddDescription;
 
         public SolutionModel WithSelectListItems(IList<Supplier> suppliers)
         {
@@ -47,20 +61,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
                 ? Enumerable.Empty<SelectOption<string>>()
                 : suppliers.Select(s => new SelectOption<string>($"{s.Name} ({s.Id})", $"{s.Id}"));
 
-            return this;
-        }
-
-        public SolutionModel WithAddSolution()
-        {
-            Heading = "Add a solution";
-            Description = "Provide the following information about your Catalogue Solution.";
-            return this;
-        }
-
-        public SolutionModel WithEditSolution()
-        {
-            Heading = "Details";
-            Description = "These are the current details for this Catalogue Solution.";
             return this;
         }
     }
