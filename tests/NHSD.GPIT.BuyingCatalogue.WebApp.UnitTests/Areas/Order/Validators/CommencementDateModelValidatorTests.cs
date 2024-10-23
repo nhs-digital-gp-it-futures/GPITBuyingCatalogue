@@ -9,10 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
     public static class CommencementDateModelValidatorTests
     {
         [Theory]
-        [MockInlineAutoData(-59)]
-        [MockInlineAutoData(-20)]
-        [MockInlineAutoData(-1)]
-        [MockInlineAutoData(0)]
+        [MockInlineAutoData(-93)]
+        [MockInlineAutoData(-150)]
+        [MockInlineAutoData(-200)]
         public static void Validate_CommencementDateOutsideThreshold_ThrowsValidationError(
             int days,
             CommencementDateModel model,
@@ -31,6 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         }
 
         [Theory]
+        [MockInlineAutoData(-59)]
+        [MockInlineAutoData(-20)]
+        [MockInlineAutoData(-1)]
+        [MockInlineAutoData(0)]
         [MockInlineAutoData(1)]
         [MockInlineAutoData(20)]
         [MockInlineAutoData(60)]
