@@ -226,7 +226,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .Include(i => i.Solution)
                     .ThenInclude(
                         s => s.AdditionalServices
-                            .Where(adit => AllowedPublicationStatuses.Contains(adit.CatalogueItem.PublishedStatus) || itemPredicate.Invoke(adit.CatalogueItem)))
+                            .Where(adit => AllowedPublicationStatuses.Contains(adit.CatalogueItem.PublishedStatus) && itemPredicate.Invoke(adit.CatalogueItem)))
                     .ThenInclude(adit => adit.CatalogueItem)
                     .ThenInclude(ci => ci.CatalogueItemCapabilities)
                     .ThenInclude(cic => cic.Capability)
@@ -240,7 +240,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                             i.CatalogueItemType == CatalogueItemType.Solution
                             && AllowedPublicationStatuses.Contains(i.PublishedStatus)
                             && i.Supplier.IsActive
-                            && itemPredicate.Invoke(i)),
+                            && (itemPredicate.Invoke(i) || i.Solution.AdditionalServices.Any(y => itemPredicate.Invoke(y.CatalogueItem)))),
                 capabilitiesAndCount);
         }
 

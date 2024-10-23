@@ -18,7 +18,8 @@ public class CardV2TagHelper : TagHelper
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
         var cardContext = new CardContext { HorizontalAlign = HorizontalAlign };
-        context.Items.Add(typeof(CardV2TagHelper), cardContext);
+
+        context.Items[typeof(CardV2TagHelper)] = cardContext;
 
         _ = await output.GetChildContentAsync();
 
