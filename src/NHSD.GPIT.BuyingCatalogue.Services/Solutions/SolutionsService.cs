@@ -249,8 +249,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task<IList<Standard>> GetSolutionStandardsForEditing(CatalogueItemId catalogueItemId)
         {
-            var requiredandCapabilityStandards = dbContext.Standards.Where(s => s.StandardType != StandardType.Interoperability);
-
             return await dbContext.CatalogueItems
                .Where(ci => ci.Id == catalogueItemId)
                .SelectMany(ci => ci.CatalogueItemCapabilities)
@@ -258,7 +256,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                .SelectMany(c => c.StandardCapabilities)
                .Select(sc => sc.Standard)
                .Distinct()
-               .Union(requiredandCapabilityStandards)
+               .Union(dbContext.Standards)
                .ToListAsync();
         }
 

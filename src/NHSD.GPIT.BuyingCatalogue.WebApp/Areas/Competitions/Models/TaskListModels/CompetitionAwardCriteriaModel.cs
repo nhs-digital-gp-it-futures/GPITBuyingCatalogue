@@ -33,9 +33,9 @@ public class CompetitionAwardCriteriaModel : NavBaseModel
 
     public override string Title => HasReviewedCriteria
         ? "Award criteria"
-        : "What award criteria do you want to use for this competition?";
+        : "What criteria do you want to use to compare solutions?";
 
     public override string Advice => HasReviewedCriteria
         ? "This is the award criteria you selected to help you compare your shortlisted solutions."
-        : "Select if you want to use price only or price and non-price elements.";
+        : "Select if you want to compare using price only or price and non-price elements such as features, implementation, interoperability or service levels.";
 }
