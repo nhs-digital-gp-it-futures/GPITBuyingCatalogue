@@ -49,16 +49,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
             context.ChangeTracker.Clear();
 
             var result = await service.GetFilteredAndNonFilteredQueryResults(null);
-            result.CatalogueItems.Count().Should().Be(1);
+            result.CatalogueItems.Should().HaveCount(1);
             result.CapabilitiesAndCount.Should().BeEmpty();
         }
 
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task Filtering_By_Capability_Finds_Solution(
+            Solution solution,
             [Frozen] BuyingCatalogueDbContext context,
-            SolutionsFilterService service,
-            Solution solution)
+            SolutionsFilterService service)
         {
             solution.FrameworkSolutions.ForEach(f => f.Framework.IsExpired = false);
             context.Solutions.Add(solution);
@@ -69,8 +69,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             var filter = new Dictionary<int, string[]>() { { capability.Id, null } };
             var result = await service.GetFilteredAndNonFilteredQueryResults(filter);
-            result.CatalogueItems.Count().Should().Be(1);
-            result.CapabilitiesAndCount.Count().Should().Be(1);
+            result.CatalogueItems.Should().HaveCount(1);
+            result.CapabilitiesAndCount.Should().HaveCount(1);
             result.CapabilitiesAndCount.Should().BeEquivalentTo(new List<CapabilitiesAndCountModel>
             {
                 new()
@@ -85,10 +85,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task Filtering_By_Capability_Does_Not_Find_Solution(
-            [Frozen] BuyingCatalogueDbContext context,
-            SolutionsFilterService service,
             Capability capability,
-            Solution solution)
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsFilterService service)
         {
             solution.FrameworkSolutions.ForEach(f => f.Framework.IsExpired = false);
             context.Solutions.Add(solution);
@@ -99,8 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             var filter = new Dictionary<int, string[]>() { { capability.Id, null } };
             var result = await service.GetFilteredAndNonFilteredQueryResults(filter);
-            result.CatalogueItems.Count().Should().Be(0);
-            result.CapabilitiesAndCount.Count().Should().Be(1);
+            result.CatalogueItems.Should().HaveCount(0);
+            result.CapabilitiesAndCount.Should().HaveCount(1);
             result.CapabilitiesAndCount.Should().BeEquivalentTo(new List<CapabilitiesAndCountModel>
             {
                 new()
@@ -115,9 +115,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task Filtering_By_Capability_And_Epic_Finds_Solution(
+            Solution solution,
             [Frozen] BuyingCatalogueDbContext context,
-            SolutionsFilterService service,
-            Solution solution)
+            SolutionsFilterService service)
         {
             solution.FrameworkSolutions.ForEach(f => f.Framework.IsExpired = false);
             var capability = solution.CatalogueItem.CatalogueItemCapabilities.First().Capability;
@@ -134,8 +134,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             var filter = new Dictionary<int, string[]>() { { capability.Id, new string[] { epic.Id } } };
             var result = await service.GetFilteredAndNonFilteredQueryResults(filter);
-            result.CatalogueItems.Count().Should().Be(1);
-            result.CapabilitiesAndCount.Count().Should().Be(1);
+            result.CatalogueItems.Should().HaveCount(1);
+            result.CapabilitiesAndCount.Should().HaveCount(1);
             result.CapabilitiesAndCount.Should().BeEquivalentTo(new List<CapabilitiesAndCountModel>
             {
                 new()
@@ -150,10 +150,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task Filtering_By_Capability_And_Epic_Does_Not_Find_Solution(
-            [Frozen] BuyingCatalogueDbContext context,
-            SolutionsFilterService service,
             Solution solution,
-            Epic epic)
+            Epic epic,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsFilterService service)
         {
             solution.FrameworkSolutions.ForEach(f => f.Framework.IsExpired = false);
             var capability = solution.CatalogueItem.CatalogueItemCapabilities.First().Capability;
@@ -165,8 +165,157 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             var filter = new Dictionary<int, string[]>() { { capability.Id, new string[] { epic.Id } } };
             var result = await service.GetFilteredAndNonFilteredQueryResults(filter);
-            result.CatalogueItems.Count().Should().Be(0);
-            result.CapabilitiesAndCount.Count().Should().Be(1);
+            result.CatalogueItems.Should().HaveCount(0);
+            result.CapabilitiesAndCount.Should().HaveCount(1);
+            result.CapabilitiesAndCount.Should().BeEquivalentTo(new List<CapabilitiesAndCountModel>
+            {
+                new()
+                {
+                    CapabilityId = capability.Id,
+                    CapabilityName = capability.Name,
+                    CountOfEpics = 1,
+                },
+            });
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task Filtering_By_Capability_Finds_AdditionalService(
+            Solution solution,
+            AdditionalService additionalService,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsFilterService service)
+        {
+            additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            additionalService.SolutionId = solution.CatalogueItemId;
+            additionalService.Solution = solution;
+
+            solution.AdditionalServices.Add(additionalService);
+            context.Solutions.Add(solution);
+
+            var capability = additionalService.CatalogueItem.CatalogueItemCapabilities.First().Capability;
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var filter = new Dictionary<int, string[]>() { { capability.Id, null } };
+            var result = await service.GetFilteredAndNonFilteredQueryResults(filter);
+            result.CatalogueItems.Should().HaveCount(1);
+            result.CapabilitiesAndCount.Should().HaveCount(1);
+            result.CapabilitiesAndCount.Should().BeEquivalentTo(new List<CapabilitiesAndCountModel>
+            {
+                new()
+                {
+                    CapabilityId = capability.Id,
+                    CapabilityName = capability.Name,
+                    CountOfEpics = 0,
+                },
+            });
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task Filtering_By_Capability_Does_Not_Find_AdditionalService(
+            Capability capability,
+            Solution solution,
+            AdditionalService additionalService,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsFilterService service)
+        {
+            additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            additionalService.SolutionId = solution.CatalogueItemId;
+            additionalService.Solution = solution;
+
+            solution.AdditionalServices.Add(additionalService);
+            context.Solutions.Add(solution);
+            context.Capabilities.Add(capability);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var filter = new Dictionary<int, string[]>() { { capability.Id, null } };
+            var result = await service.GetFilteredAndNonFilteredQueryResults(filter);
+            result.CatalogueItems.Should().HaveCount(0);
+            result.CapabilitiesAndCount.Should().HaveCount(1);
+            result.CapabilitiesAndCount.Should().BeEquivalentTo(new List<CapabilitiesAndCountModel>
+            {
+                new()
+                {
+                    CapabilityId = capability.Id,
+                    CapabilityName = capability.Name,
+                    CountOfEpics = 0,
+                },
+            });
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task Filtering_By_Capability_And_Epic_Finds_AdditionalService(
+            Solution solution,
+            AdditionalService additionalService,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsFilterService service)
+        {
+            additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            additionalService.SolutionId = solution.CatalogueItemId;
+            additionalService.Solution = solution;
+
+            var capability = additionalService.CatalogueItem.CatalogueItemCapabilities.First().Capability;
+            var epic = capability.Epics.First();
+
+            additionalService.CatalogueItem.CatalogueItemEpics.Add(new CatalogueItemEpic()
+            {
+                CapabilityId = capability.Id,
+                EpicId = epic.Id,
+            });
+
+            solution.AdditionalServices.Add(additionalService);
+            context.Solutions.Add(solution);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var filter = new Dictionary<int, string[]>() { { capability.Id, new string[] { epic.Id } } };
+            var result = await service.GetFilteredAndNonFilteredQueryResults(filter);
+            result.CatalogueItems.Should().HaveCount(1);
+            result.CapabilitiesAndCount.Should().HaveCount(1);
+            result.CapabilitiesAndCount.Should().BeEquivalentTo(new List<CapabilitiesAndCountModel>
+            {
+                new()
+                {
+                    CapabilityId = capability.Id,
+                    CapabilityName = capability.Name,
+                    CountOfEpics = 1,
+                },
+            });
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task Filtering_By_Capability_And_Epic_Does_Not_Find_AdditionalService(
+            Solution solution,
+            AdditionalService additionalService,
+            Epic epic,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsFilterService service)
+        {
+            additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Published;
+            additionalService.SolutionId = solution.CatalogueItemId;
+            additionalService.Solution = solution;
+
+            var capability = solution.CatalogueItem.CatalogueItemCapabilities.First().Capability;
+
+            capability.Epics.Add(epic);
+            solution.AdditionalServices.Add(additionalService);
+            context.Solutions.Add(solution);
+
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var filter = new Dictionary<int, string[]>() { { capability.Id, new string[] { epic.Id } } };
+            var result = await service.GetFilteredAndNonFilteredQueryResults(filter);
+            result.CatalogueItems.Should().HaveCount(0);
+            result.CapabilitiesAndCount.Should().HaveCount(1);
             result.CapabilitiesAndCount.Should().BeEquivalentTo(new List<CapabilitiesAndCountModel>
             {
                 new()
