@@ -1,4 +1,3 @@
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.WarningCallout
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @model ConfirmSolutionsModel
 
@@ -9,68 +8,93 @@
 <partial name="Partials/_BackLink" model="Model"/>
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
-        <nhs-page-title title="@ViewBag.Title" caption="@Model.CompetitionName" advice="Confirm the solutions you want to include as part of this competition."/>
-
-        <nhs-warning-callout label-text="Confirming your shortlist">
-            Once you’ve confirmed that these are the solutions you want to shortlist for this competition, you’ll no longer be able to make changes.
-        </nhs-warning-callout>
-    </div>
     <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary/>
+        <nhs-page-title title="@ViewBag.Title" caption="@Model.CompetitionName" advice="Review the solutions you’ve included in your shortlist and take them into a competition."/>
+    
         <form method="post">
-            <nhs-table label-text="Your shortlisted solutions">
-                <nhs-table-column>Solution and supplier</nhs-table-column>
-                <nhs-table-column>Additional Services required</nhs-table-column>
+            <input type="hidden" asp-for="BackLink" />
+            <nhs-card-v2>
+                <nhs-card-content>
+                    <nhs-table label-text="Your shortlisted solutions">
+                        <nhs-table-column>Solution and supplier</nhs-table-column>
+                        <nhs-table-column>Additional Services required</nhs-table-column>
 
-                @foreach (var solution in Model.ShortlistedSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>
-                            @solution.Solution.CatalogueItem.Name
-                            <br/>
-                            <span class="nhsuk-caption-m nhsuk-caption--bottom">@solution.Solution.CatalogueItem.Supplier.LegalName</span>
-                        </nhs-table-cell>
-                        @if (solution.SolutionServices.Any())
+                        @foreach (var solution in Model.ShortlistedSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
                         {
-                            <nhs-table-cell>
-                                <ul>
-                                    @foreach (var item in solution.SolutionServices)
-                                    {
-                                        <li>@item.Service.Name</li>
-                                    }
-                                </ul>
-                            </nhs-table-cell>
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    @solution.Solution.CatalogueItem.Name
+                                    <br/>
+                                    <span class="nhsuk-caption-m nhsuk-caption--bottom">@solution.Solution.CatalogueItem.Supplier.LegalName</span>
+                                </nhs-table-cell>
+                                @if (solution.SolutionServices.Any())
+                                {
+                                    <nhs-table-cell>
+                                        <ul>
+                                            @foreach (var item in solution.SolutionServices)
+                                            {
+                                                <li>@item.Service.Name</li>
+                                            }
+                                        </ul>
+                                    </nhs-table-cell>
+                                }
+                                else
+                                {
+                                    <nhs-table-cell>None</nhs-table-cell>
+                                }
+                            </nhs-table-row-container>
                         }
-                        else
-                        {
-                            <nhs-table-cell>None</nhs-table-cell>
-                        }
-                    </nhs-table-row-container>
-                }
-            </nhs-table>
+                    </nhs-table>
+                </nhs-card-content>
+                <nhs-card-footer>
+                    <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionSelectSolutionsController.SelectSolutions), typeof(CompetitionSelectSolutionsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })">
+                        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                        Change shortlisted solutions
+                    </a>
+                </nhs-card-footer>
+            </nhs-card-v2>
 
             <br/>
             @if (Model.NonShortlistedSolutions.Any())
             {
-                <nhs-table label-text="Solutions not included">
-                    <nhs-table-column>Solution and supplier</nhs-table-column>
-                    <nhs-table-column>Justification</nhs-table-column>
+                <nhs-card-v2>
+                    <nhs-card-content>
+                        <nhs-table label-text="Solutions not included">
+                            <nhs-table-column>Solution and supplier</nhs-table-column>
+                            <nhs-table-column>Justification</nhs-table-column>
 
-                    @foreach (var solution in Model.NonShortlistedSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
-                    {
-                        <nhs-table-row-container>
-                            <nhs-table-cell>
-                                @solution.Solution.CatalogueItem.Name
-                                <br/>
-                                <span class="nhsuk-caption-m nhsuk-caption--bottom">@solution.Solution.CatalogueItem.Supplier.LegalName</span>
-                            </nhs-table-cell>
-                            <nhs-table-cell>@solution.Justification</nhs-table-cell>
-                        </nhs-table-row-container>
-                    }
-                </nhs-table>
+                            @foreach (var solution in Model.NonShortlistedSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>
+                                        @solution.Solution.CatalogueItem.Name
+                                        <br/>
+                                        <span class="nhsuk-caption-m nhsuk-caption--bottom">@solution.Solution.CatalogueItem.Supplier.LegalName</span>
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>@solution.Justification</nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
+                    </nhs-card-content>
+                    <nhs-card-footer>
+                        <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionSelectSolutionsController.JustifySolutions), typeof(CompetitionSelectSolutionsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })">
+                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                            Change justifications
+                        </a>
+                    </nhs-card-footer>
+                </nhs-card-v2>
             }
 
-            <nhs-submit-button/>
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Confirm shortlist" label-hint="Once you’ve confirmed your shortlist for this competition, you’ll no longer be able to make changes." size="Small">
+                <nhs-checkbox-container>
+                    <nhs-checkbox label-text="I want to continue with this shortlist" asp-for="@Model.ConfirmShortlist"/>
+                </nhs-checkbox-container>
+
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button text="Confirm shortlist"/>
         </form>
     </div>
 </div>

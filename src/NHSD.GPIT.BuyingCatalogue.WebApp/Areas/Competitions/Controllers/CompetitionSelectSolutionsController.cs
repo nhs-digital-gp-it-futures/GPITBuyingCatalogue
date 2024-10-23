@@ -148,6 +148,8 @@ public class CompetitionSelectSolutionsController : Controller
         var model = new ConfirmSolutionsModel(competition.Name, competition.CompetitionSolutions.ToList())
         {
             BackLink = Url.Action(backlink, new { internalOrgId, competitionId }),
+            CompetitionId = competitionId,
+            InternalOrgId = internalOrgId,
         };
 
         return View(model);
@@ -156,7 +158,12 @@ public class CompetitionSelectSolutionsController : Controller
     [HttpPost("confirm-solutions")]
     public async Task<IActionResult> ConfirmSolutions(string internalOrgId, int competitionId, ConfirmSolutionsModel model)
     {
-        _ = model;
+        if (!ModelState.IsValid)
+        {
+            var competition = await competitionsService.GetCompetitionWithServices(internalOrgId, competitionId);
+            model.CompetitionSolutions = competition.CompetitionSolutions.ToList();
+            return View(model);
+        }
 
         await competitionsService.AcceptShortlist(internalOrgId, competitionId);
 
