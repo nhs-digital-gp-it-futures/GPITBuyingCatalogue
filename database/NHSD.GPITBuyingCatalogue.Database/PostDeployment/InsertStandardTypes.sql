@@ -2,9 +2,7 @@
 USING (
 VALUES
     (1, 'Overarching'),
-    (2, 'Interoperability'),
-    (3, 'Capability'),
-    (4, 'Context Specific')
+    (5, 'Other')
 )
 AS SOURCE([Id], [Name])
 ON TARGET.[Id] = SOURCE.[Id]

@@ -9,16 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         [Display(Name = "Overarching")]
         Overarching = 1,
 
-        [Description("Interoperability")]
-        [Display(Name = "Interoperability")]
-        Interoperability = 2,
-
-        [Description("Capability")]
-        [Display(Name = "Capability")]
-        Capability = 3,
-
-        [Description("Context Specific")]
-        [Display(Name = "Context Specific")]
-        ContextSpecific = 4,
+        [Description("Other")]
+        [Display(Name = "Other")]
+        Other = 5,
     }
 }
