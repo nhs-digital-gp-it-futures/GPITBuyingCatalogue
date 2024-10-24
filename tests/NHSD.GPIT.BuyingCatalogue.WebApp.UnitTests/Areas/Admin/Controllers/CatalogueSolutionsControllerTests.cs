@@ -589,7 +589,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             await mockSolutionService
                 .Received()
-                .SaveSolutionDetails(id, model.SolutionName, model.SupplierId ?? default, model.IsPilotSolution, model.Frameworks);
+                .SaveSolutionDetails(id, model.SolutionName, model.SupplierId ?? default, model.IsPilotSolution, model.SelectedCategory, model.Frameworks);
         }
 
         [Theory]
