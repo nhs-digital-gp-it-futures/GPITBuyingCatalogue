@@ -46,6 +46,7 @@
             }
 
             <nhs-fieldset-form-label label-text="What is the category of this solution? (optional)"
+                                     label-hint="This categorisation is assigned by NHS England and is based on the solution's capabilities, operational characteristics, and associated risks."
                                      asp-for="SelectedCategory">
                 <nhs-radio-buttons asp-for="SelectedCategory"
                                    values="@Model.SolutionCategories.Cast<object>()"
