@@ -18,7 +18,7 @@ public class SelectInteroperabilityCriteriaModel : NonPriceElementBase
     {
         CompetitionName = competition.Name;
 
-        CanDelete = competition.NonPriceElements?.IntegrationTypes?.Count == 0;
+        CanDelete = competition.NonPriceElements?.IntegrationTypes?.Count != 0;
 
         Integrations = integrations
             .Select(

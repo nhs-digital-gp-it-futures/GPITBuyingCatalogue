@@ -1,0 +1,47 @@
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsDeleteButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared.Partials.FeaturesPartialModel
+
+<nhs-table>
+    <nhs-table-column>Requirement details</nhs-table-column>
+    <nhs-table-column>Type</nhs-table-column>
+    @if (Model.ShowChange)
+    {
+        <nhs-table-column>
+            <span class="nhsuk-u-visually-hidden">Change action</span>
+        </nhs-table-column>
+    }
+    @if (Model.ShowDelete)
+    {
+    <nhs-table-column>
+            <span class="nhsuk-u-visually-hidden">Delete action</span>
+        </nhs-table-column>
+    }
+    @foreach (var requirement in Model.Requirements)
+    {
+        <nhs-table-row-container>
+            <nhs-table-cell style="word-break:break-all">
+            @requirement.Requirements
+            </nhs-table-cell>
+            <nhs-table-cell>
+                @requirement.Compliance
+            </nhs-table-cell>
+            @if (Model.ShowChange)
+            {
+                <nhs-table-cell>
+                    <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeature), typeof(CompetitionNonPriceElementsController).ControllerName(), new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, requirementId = requirement.Id })">
+                        Change
+                    </a>
+                </nhs-table-cell>
+            }
+            @if (Model.ShowDelete)
+            {
+            <nhs-table-cell>
+                <vc:nhs-delete-button url="@Url.Action(nameof(CompetitionNonPriceElementsController.DeleteFeature), typeof(CompetitionNonPriceElementsController).ControllerName(), new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, requirementId = requirement.Id })"
+                                      text="Delete"/>
+            </nhs-table-cell>
+            }
+        </nhs-table-row-container>
+    }
+</nhs-table>
+              

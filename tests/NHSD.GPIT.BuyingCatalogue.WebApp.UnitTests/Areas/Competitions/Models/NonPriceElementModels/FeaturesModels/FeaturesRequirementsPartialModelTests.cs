@@ -4,6 +4,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared.Partials;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
@@ -23,12 +24,10 @@ public static class FeaturesRequirementsPartialModelTests
         shouldFeature.Compliance = CompliancyLevel.Should;
         mustFeature.Compliance = CompliancyLevel.Must;
 
-        var model = new FeaturesRequirementsPartialModel(internalOrgId, competitionId, featuresCriteria);
+        var model = new FeaturesPartialModel(internalOrgId, competitionId, featuresCriteria);
 
         model.InternalOrgId.Should().Be(internalOrgId);
         model.CompetitionId.Should().Be(competitionId);
-        model.MustRequirements.Should().Contain(mustFeature);
-        model.ShouldRequirements.Should().Contain(shouldFeature);
     }
 
     [Theory]
@@ -39,12 +38,10 @@ public static class FeaturesRequirementsPartialModelTests
         List<FeaturesCriteria> featuresCriteria,
         bool hasReviewedCriteria)
     {
-        var model = new FeaturesRequirementsPartialModel(
+        var model = new FeaturesPartialModel(
             internalOrgId,
             competitionId,
             featuresCriteria,
             hasReviewedCriteria);
-
-        model.HasReviewedCriteria.Should().Be(hasReviewedCriteria);
     }
 }

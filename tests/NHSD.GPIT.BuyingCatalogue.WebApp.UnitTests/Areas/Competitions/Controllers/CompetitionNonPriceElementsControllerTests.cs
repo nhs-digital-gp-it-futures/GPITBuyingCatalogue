@@ -6,13 +6,10 @@ using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -24,26 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controll
 
 public static class CompetitionNonPriceElementsControllerTests
 {
-    public static IEnumerable<object[]> GetRedirectNonPriceElementTestData => new[]
-    {
-        new object[]
-        {
-            new[]
-            {
-                NonPriceElement.Implementation,
-                NonPriceElement.Interoperability,
-                NonPriceElement.ServiceLevel,
-            },
-            NonPriceElement.Implementation,
-        },
-        new object[]
-        {
-            new[] { NonPriceElement.Interoperability, NonPriceElement.ServiceLevel },
-            NonPriceElement.Interoperability,
-        },
-        new object[] { new[] { NonPriceElement.ServiceLevel }, NonPriceElement.ServiceLevel, },
-    };
-
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
@@ -280,7 +257,7 @@ public static class CompetitionNonPriceElementsControllerTests
     {
         competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id).Returns(competition);
 
-        var expectedModel = new FeaturesRequirementModel(competition);
+        var expectedModel = new FeatureModel(competition);
 
         var result = (await controller.Feature(internalOrgId, competition.Id)).As<ViewResult>();
 
@@ -293,7 +270,7 @@ public static class CompetitionNonPriceElementsControllerTests
     public static async Task Feature_InvalidModel_ReturnsViewWithModel(
         string internalOrgId,
         int competitionId,
-        FeaturesRequirementModel model,
+        FeatureModel model,
         CompetitionNonPriceElementsController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
@@ -309,7 +286,7 @@ public static class CompetitionNonPriceElementsControllerTests
     public static async Task Feature_ValidModel_AddsFeatureRequirement(
         string internalOrgId,
         int competitionId,
-        FeaturesRequirementModel model,
+        FeatureModel model,
         [Frozen] ICompetitionNonPriceElementsService competitionNonPriceElementsService,
         CompetitionNonPriceElementsController controller)
     {
@@ -328,7 +305,7 @@ public static class CompetitionNonPriceElementsControllerTests
     public static async Task FeatureRequirement_WithoutReturnUrl_ReturnsRedirectToActionResult(
         string internalOrgId,
         int competitionId,
-        FeaturesRequirementModel model,
+        FeatureModel model,
         CompetitionNonPriceElementsController controller)
     {
         var result = (await controller.Feature(internalOrgId, competitionId, model))
@@ -373,7 +350,7 @@ public static class CompetitionNonPriceElementsControllerTests
 
         var requirement = featuresCriteria.First();
 
-        var expectedModel = new FeaturesRequirementModel(competition, requirement)
+        var expectedModel = new FeatureModel(competition, requirement)
         {
             InternalOrgId = internalOrgId, IsAdding = false,
         };
@@ -391,7 +368,7 @@ public static class CompetitionNonPriceElementsControllerTests
         string internalOrgId,
         int competitionId,
         int requirementId,
-        FeaturesRequirementModel model,
+        FeatureModel model,
         CompetitionNonPriceElementsController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
@@ -409,7 +386,7 @@ public static class CompetitionNonPriceElementsControllerTests
         string internalOrgId,
         int competitionId,
         int requirementId,
-        FeaturesRequirementModel model,
+        FeatureModel model,
         [Frozen] ICompetitionNonPriceElementsService competitionNonPriceElementsService,
         CompetitionNonPriceElementsController controller)
     {
@@ -430,7 +407,7 @@ public static class CompetitionNonPriceElementsControllerTests
         string internalOrgId,
         int competitionId,
         int requirementId,
-        FeaturesRequirementModel model,
+        FeatureModel model,
         CompetitionNonPriceElementsController controller)
     {
         var result = (await controller.EditFeature(internalOrgId, competitionId, requirementId, model))
@@ -546,13 +523,22 @@ public static class CompetitionNonPriceElementsControllerTests
     [MockAutoData]
     public static void Delete_ReturnsViewWithModel(
         string internalOrgId,
-        int competitionId,
         NonPriceElement nonPriceElement,
+        Competition competition,
+        IEnumerable<Integration> integrations,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IIntegrationsService integrationsService,
         CompetitionNonPriceElementsController controller)
     {
-        var expectedModel = new DeleteNonPriceElementModel(nonPriceElement);
+        competition.Organisation.InternalIdentifier = internalOrgId;
+        competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id)
+            .Returns(competition);
 
-        var result = controller.Delete(internalOrgId, competitionId, nonPriceElement).As<ViewResult>();
+        integrationsService.GetIntegrations().Returns(integrations);
+
+        var expectedModel = new DeleteNonPriceElementModel(nonPriceElement, competition, integrations);
+
+        var result = controller.Delete(internalOrgId, competition.Id, nonPriceElement).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));

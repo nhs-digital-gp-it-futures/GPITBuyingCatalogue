@@ -1,4 +1,4 @@
-@model FeaturesRequirementModel
+@model FeatureModel
 
 @{
     ViewBag.Title = "Features requirements";
@@ -36,12 +36,10 @@
                           label-hint="For example, you may need the winning solution to provide certain functionality to meet your business needs."/>
 
             <br/>
-            <div>
+            <nhs-button-group>
                 <nhs-submit-button/>
-            </div>
-            <div>
                 <a href="@Model.BackLink">Cancel</a>
-            </div>
+            </nhs-button-group>
             @if (Model.CanDelete)
             {
                 <div>

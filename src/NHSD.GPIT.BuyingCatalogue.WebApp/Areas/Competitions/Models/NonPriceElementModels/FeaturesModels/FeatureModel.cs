@@ -7,20 +7,20 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
 
-public class FeaturesRequirementModel : NavBaseModel
+public class FeatureModel : NavBaseModel
 {
-    public FeaturesRequirementModel()
+    public FeatureModel()
     {
     }
 
-    public FeaturesRequirementModel(
+    public FeatureModel(
         Competition competition)
     {
         CompetitionId = competition.Id;
         CompetitionName = competition.Name;
     }
 
-    public FeaturesRequirementModel(
+    public FeatureModel(
         Competition competition,
         FeaturesCriteria featureCriteria)
         : this(competition)
@@ -37,8 +37,6 @@ public class FeaturesRequirementModel : NavBaseModel
     public int? FeaturesCriteriaId { get; set; }
 
     public string CompetitionName { get; set; }
-
-    public string SelectedNonPriceElements { get; set; }
 
     public bool CanDelete => FeaturesCriteriaId is not null;
 

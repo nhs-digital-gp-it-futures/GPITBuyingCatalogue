@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElement
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators.NonPriceElements;
 
-public class FeaturesRequirementModelValidator : AbstractValidator<FeaturesRequirementModel>
+public class FeaturesRequirementModelValidator : AbstractValidator<FeatureModel>
 {
     internal const string MissingRequirementsError = "Enter feature requirements";
     internal const string MissingComplianceError = "Select if this is a must or should requirement";

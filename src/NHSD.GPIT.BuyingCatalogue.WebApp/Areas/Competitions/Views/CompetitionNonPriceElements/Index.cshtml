@@ -1,10 +1,12 @@
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared.Partials
 @model NonPriceElementsModel
 
 @{
     ViewBag.Title = "Non-price elements";
     var routeValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId };
-    var editRouteValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId };
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -19,36 +21,7 @@
             <nhs-card-content title="Features">
                 @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Features))
                 {
-                    <nhs-table>
-                        <nhs-table-column>Requirement details</nhs-table-column>
-                        <nhs-table-column>Type</nhs-table-column>
-                        <nhs-table-column>
-                            <span class="nhsuk-u-visually-hidden">Change action</span>
-                        </nhs-table-column>
-                        <nhs-table-column>
-                            <span class="nhsuk-u-visually-hidden">Delete action</span>
-                        </nhs-table-column>
-                        @foreach (var requirement in Model.NonPriceElements.Features)
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell style="word-break:break-all">
-                                <p>@requirement.Requirements</p>
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    @requirement.Compliance
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.Feature), typeof(CompetitionNonPriceElementsController).ControllerName(), new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, requirementId = requirement.Id })">
-                                        Change
-                                    </a>
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    <vc:nhs-delete-button url="@Url.Action(nameof(CompetitionNonPriceElementsController.DeleteFeature), typeof(CompetitionNonPriceElementsController).ControllerName(), new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, requirementId = requirement.Id })"
-                                                          text="Delete" />
-                                </nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
+                    <partial name="Partials/_Features" model="@(new FeaturesPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features))" />
                 }
                 else
                 {
@@ -69,16 +42,7 @@
             <nhs-card-content title="Implementation">
                 @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Implementation))
                 {
-                    <nhs-table>
-                        <nhs-table-column>Implementation details</nhs-table-column>
-                            <nhs-table-row-container>
-                                <nhs-table-cell style="word-break:break-all">
-                                    <p>
-                                        @Model.NonPriceElements.Implementation.Requirements
-                                    </p>
-                                </nhs-table-cell>
-                            </nhs-table-row-container>
-                    </nhs-table>
+                    <partial name="Partials/_Implementation" model="@Model.NonPriceElements.Implementation.Requirements" />
                 }
                 else
                 {
@@ -111,37 +75,7 @@
             <nhs-card-content title="Interoperability">
                 @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Interoperability))
                 {
-                    <p>
-                        <nhs-table>
-                            <nhs-table-column>Integration</nhs-table-column>
-                            <nhs-table-column>Type</nhs-table-column>
-                            @foreach (var integration in Model.AvailableIntegrations.OrderBy(x => x.Key))
-                            {
-                                var selectedIntegrationTypes = Model.NonPriceElements.IntegrationTypes.Where(x => x.IntegrationId == integration.Key).OrderBy(x => x.Name).ToList();
-
-                                <nhs-table-row-container>
-                                    <nhs-table-cell style="word-break:break-all">
-                                        <p>@(integration.Value) integrations</p>
-                                    </nhs-table-cell>
-                                    <nhs-table-cell>
-                                        @if (!selectedIntegrationTypes.Any())
-                                        {
-                                            <span>None selected</span>
-                                        }
-                                        else
-                                        {
-                                            <ul>
-                                                @foreach (var selectedIntegration in selectedIntegrationTypes.OrderBy(x => x.Name))
-                                                {
-                                                    <li>@selectedIntegration.Name</li>
-                                                }
-                                            </ul>
-                                        }
-                                    </nhs-table-cell>
-                                </nhs-table-row-container>
-                            }
-                        </nhs-table>
-                    </p>
+                    <partial name="Partials/_Interoperability" model="@(new InteroperabilityPartialModel(Model.AvailableIntegrations, Model.NonPriceElements.IntegrationTypes))" />
                 }
                 else
                 {
@@ -174,22 +108,7 @@
             <nhs-card-content title="Service levels">
                 @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.ServiceLevel))
                 {
-                    <nhs-summary-list>
-                        <nhs-summary-list-row label-text="Core support hours">
-                            @($"{Model.NonPriceElements.ServiceLevel.TimeFrom:HH:mm} to {Model.NonPriceElements.ServiceLevel.TimeUntil:HH:mm}")
-                        </nhs-summary-list-row>
-                        <nhs-summary-list-row label-text="Applicable days">
-                            <ul>
-                                @foreach (var day in Model.NonPriceElements.ServiceLevel.ApplicableDays)
-                                {
-                                    <li>@day.ToString()</li>
-                                }
-                            </ul>
-                        </nhs-summary-list-row>
-                        <nhs-summary-list-row label-text="Including Bank Holidays?">
-                            @Model.NonPriceElements.ServiceLevel.IncludesBankHolidays.ToYesNo()
-                        </nhs-summary-list-row>
-                    </nhs-summary-list>
+                    <partial name="Partials/_ServiceLevels" model="@Model.NonPriceElements.ServiceLevel" />
                 }
                 else
                 {
