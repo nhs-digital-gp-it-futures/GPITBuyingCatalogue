@@ -16,7 +16,8 @@ public static class FeaturesRequirementsPartialModelTests
     public static void Construct_SetsPropertiesAsExpected(
         string internalOrgId,
         int competitionId,
-        List<FeaturesCriteria> featuresCriteria)
+        List<FeaturesCriteria> featuresCriteria,
+        bool hasReviewedCriteria)
     {
         var shouldFeature = featuresCriteria.First();
         var mustFeature = featuresCriteria.Skip(1).First();
@@ -24,7 +25,7 @@ public static class FeaturesRequirementsPartialModelTests
         shouldFeature.Compliance = CompliancyLevel.Should;
         mustFeature.Compliance = CompliancyLevel.Must;
 
-        var model = new FeaturesPartialModel(internalOrgId, competitionId, featuresCriteria);
+        var model = new FeaturesPartialModel(internalOrgId, competitionId, featuresCriteria, hasReviewedCriteria);
 
         model.InternalOrgId.Should().Be(internalOrgId);
         model.CompetitionId.Should().Be(competitionId);

@@ -16,14 +16,13 @@ public class FeaturesPartialModel
         string internalOrgId,
         int competitionId,
         ICollection<FeaturesCriteria> featuresRequirements,
-        bool showChange = true,
-        bool showDelete = true)
+        bool hasReviewedCriteria,
+        bool showAction = true)
     {
         InternalOrgId = internalOrgId;
         CompetitionId = competitionId;
-
-        ShowChange = showChange;
-        ShowDelete = showDelete;
+        HasReviewedCriteria = hasReviewedCriteria;
+        ShowAction = showAction;
         Requirements = featuresRequirements.ToList();
     }
 
@@ -31,9 +30,13 @@ public class FeaturesPartialModel
 
     public int CompetitionId { get; set; }
 
-    public bool ShowChange { get; set; }
+    public bool HasReviewedCriteria { get; set; }
 
-    public bool ShowDelete { get; set; }
+    public bool ShowAction { get; set; }
+
+    public string ReturnUrl { get; set; }
 
     public List<FeaturesCriteria> Requirements { get; set; }
+
+    public bool CanDelete => ReturnUrl is null || Requirements?.Count > 1;
 }

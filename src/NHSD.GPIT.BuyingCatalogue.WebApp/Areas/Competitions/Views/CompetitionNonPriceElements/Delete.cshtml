@@ -3,7 +3,7 @@
 @model DeleteNonPriceElementModel
 
 @{
-    ViewBag.Title = "Delete " + @Model.SingleElementDisplay.ToLower() + " requirement?";
+    ViewBag.Title = "Delete " + Model.SingleElementDisplay.ToLower() + " requirement?";
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -20,7 +20,7 @@
             @switch (Model.NonPriceElement)
             {
                 case NonPriceElement.Features:
-                    <partial name="Partials/_Features" model="@(new FeaturesPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features, false, false))"/>
+                    <partial name="Partials/_Features" model="@(new FeaturesPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features, Model.HasReviewedCriteria, false))" />
                     break;
                 case NonPriceElement.Implementation:
                     <partial name="Partials/_Implementation" model="@Model.NonPriceElements.Implementation.Requirements"/>

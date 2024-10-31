@@ -20,7 +20,7 @@ public class DeleteNonPriceElementModel : NavBaseModel
         CompetitionId = competition.Id;
 
         CompetitionName = competition.Name;
-
+        HasReviewedCriteria = competition.HasReviewedCriteria;
         NonPriceElement = nonPriceElement;
         NonPriceElements = featureId == 0 ? competition.NonPriceElements : new NonPriceElements() { Features = competition.NonPriceElements.Features.Where(x => x.Id == featureId).ToList() };
         AvailableIntegrations = availableIntegrations?.ToDictionary(x => x.Id, x => x.Name);
@@ -31,6 +31,8 @@ public class DeleteNonPriceElementModel : NavBaseModel
     public int CompetitionId { get; set; }
 
     public string CompetitionName { get; set; }
+
+    public bool HasReviewedCriteria { get; set; }
 
     public NonPriceElement NonPriceElement { get; set; }
 

@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Filters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
 
@@ -51,31 +52,37 @@ public class CompetitionNonPriceElementsController(
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add/interoperability")]
     public async Task<IActionResult> Interoperability(
         string internalOrgId,
-        int competitionId)
+        int competitionId,
+        string returnUrl = null)
     {
+        _ = returnUrl;
+
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
         var integrations = await integrationsService.GetIntegrationsWithTypes();
 
         var model = new SelectInteroperabilityCriteriaModel(competition, integrations)
         {
-            BackLink = Url.Action(
-                nameof(Index),
-                new { internalOrgId, competitionId }),
+            BackLink = GetBackLink(internalOrgId, competitionId, returnUrl),
             InternalOrgId = internalOrgId,
             CompetitionId = competitionId,
         };
 
+        model.CanDelete &= returnUrl is null;
+
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("add/interoperability")]
     public async Task<IActionResult> Interoperability(
         string internalOrgId,
         int competitionId,
-        SelectInteroperabilityCriteriaModel model)
+        SelectInteroperabilityCriteriaModel model,
+        string returnUrl = null)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -87,66 +94,78 @@ public class CompetitionNonPriceElementsController(
             competitionId,
             integrations);
 
-        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+        return GetRedirect(internalOrgId, competitionId, returnUrl);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add/implementation")]
     public async Task<IActionResult> Implementation(
         string internalOrgId,
-        int competitionId)
+        int competitionId,
+        string returnUrl = null)
     {
+        _ = returnUrl;
+
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
 
         var model = new AddImplementationCriteriaModel(competition)
         {
-            BackLink = Url.Action(
-                nameof(Index),
-                new { internalOrgId, competitionId }),
+            BackLink = GetBackLink(internalOrgId, competitionId, returnUrl),
             InternalOrgId = internalOrgId,
             CompetitionId = competitionId,
         };
 
+        model.CanDelete &= returnUrl is null;
+
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("add/implementation")]
     public async Task<IActionResult> Implementation(
         string internalOrgId,
         int competitionId,
-        AddImplementationCriteriaModel model)
+        AddImplementationCriteriaModel model,
+        string returnUrl = null)
     {
         if (!ModelState.IsValid)
             return View(model);
 
         await competitionsService.SetImplementationCriteria(internalOrgId, competitionId, model.Requirements);
 
-        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+        return GetRedirect(internalOrgId, competitionId, returnUrl);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add/service-level")]
     public async Task<IActionResult> ServiceLevel(
         string internalOrgId,
-        int competitionId)
+        int competitionId,
+        string returnUrl = null)
     {
+        _ = returnUrl;
+
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
 
         var model = new AddServiceLevelCriteriaModel(competition)
         {
-            BackLink = Url.Action(
-                nameof(Index),
-                new { internalOrgId, competitionId }),
+            BackLink = GetBackLink(internalOrgId, competitionId, returnUrl),
             InternalOrgId = internalOrgId,
             CompetitionId = competitionId,
         };
 
+        model.CanDelete &= returnUrl is null;
+
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("add/service-level")]
     public async Task<IActionResult> ServiceLevel(
         string internalOrgId,
         int competitionId,
-        AddServiceLevelCriteriaModel model)
+        AddServiceLevelCriteriaModel model,
+        string returnUrl = null)
     {
         if (!ModelState.IsValid)
             return View(model);
@@ -159,9 +178,10 @@ public class CompetitionNonPriceElementsController(
             model.ApplicableDays.Where(x => x.Selected).Select(x => x.Value),
             model.IncludesBankHolidays!.Value);
 
-        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+        return GetRedirect(internalOrgId, competitionId, returnUrl);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add/feature")]
     public async Task<IActionResult> Feature(
         string internalOrgId,
@@ -177,6 +197,7 @@ public class CompetitionNonPriceElementsController(
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("add/feature")]
     public async Task<IActionResult> Feature(
         string internalOrgId,
@@ -195,12 +216,16 @@ public class CompetitionNonPriceElementsController(
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("edit/feature/{requirementId:int}")]
     public async Task<IActionResult> EditFeature(
         string internalOrgId,
         int competitionId,
-        int requirementId)
+        int requirementId,
+        string returnUrl = null)
     {
+        _ = returnUrl;
+
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
         var requirement = competition.NonPriceElements.Features.FirstOrDefault(x => x.Id == requirementId);
 
@@ -209,21 +234,21 @@ public class CompetitionNonPriceElementsController(
 
         var model = new FeatureModel(competition, requirement)
         {
-            BackLink = Url.Action(
-                nameof(Index),
-                new { internalOrgId, competitionId }),
+            BackLink = GetBackLink(internalOrgId, competitionId, returnUrl),
             InternalOrgId = internalOrgId,
         };
 
         return View("Feature", model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("edit/feature/{requirementId:int}")]
     public async Task<IActionResult> EditFeature(
         string internalOrgId,
         int competitionId,
         int requirementId,
-        FeatureModel model)
+        FeatureModel model,
+        string returnUrl = null)
     {
         if (!ModelState.IsValid)
             return View("Feature", model);
@@ -235,35 +260,37 @@ public class CompetitionNonPriceElementsController(
             model.Requirements,
             model.SelectedCompliance!.Value);
 
-        return RedirectToAction(
-            nameof(Index),
-            new { internalOrgId, competitionId });
+        return GetRedirect(internalOrgId, competitionId, returnUrl);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("add/feature/{requirementId:int}/delete")]
     public async Task<IActionResult> DeleteFeature(
         string internalOrgId,
         int competitionId,
-        int requirementId)
+        int requirementId,
+        string returnUrl = null)
     {
+        _ = returnUrl;
+
         var competition = await competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competitionId);
 
         var model = new DeleteNonPriceElementModel(NonPriceElement.Features, competition, featureId: requirementId)
         {
-            BackLink = Url.Action(
-                nameof(Index),
-                new { internalOrgId, competitionId }),
+            BackLink = GetBackLink(internalOrgId, competitionId, returnUrl),
         };
 
         return View("Delete", model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("add/feature/{requirementId:int}/delete")]
     public async Task<IActionResult> DeleteFeature(
         string internalOrgId,
         int competitionId,
         int requirementId,
-        DeleteNonPriceElementModel model)
+        DeleteNonPriceElementModel model,
+        string returnUrl = null)
     {
         _ = model;
 
@@ -286,9 +313,10 @@ public class CompetitionNonPriceElementsController(
                 NonPriceElement.Features);
         }
 
-        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+        return GetRedirect(internalOrgId, competitionId, returnUrl);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("weights")]
     public async Task<IActionResult> Weights(
         string internalOrgId,
@@ -308,6 +336,7 @@ public class CompetitionNonPriceElementsController(
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("weights")]
     public async Task<IActionResult> Weights(
         string internalOrgId,
@@ -334,6 +363,7 @@ public class CompetitionNonPriceElementsController(
                 new { internalOrgId, competitionId });
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpGet("delete/{nonPriceElement}")]
     public async Task<IActionResult> Delete(
         string internalOrgId,
@@ -357,6 +387,7 @@ public class CompetitionNonPriceElementsController(
         return View(model);
     }
 
+    [CriteriaReviewedGuardFilter]
     [HttpPost("delete/{nonPriceElement}")]
     public async Task<IActionResult> Delete(
         string internalOrgId,
@@ -367,6 +398,25 @@ public class CompetitionNonPriceElementsController(
         _ = model;
 
         await competitionNonPriceElementsService.DeleteNonPriceElement(internalOrgId, competitionId, nonPriceElement);
+
+        return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+    }
+
+    internal string GetBackLink(
+        string internalOrgId,
+        int competitionId,
+        string returnUrl)
+    {
+        return returnUrl ?? Url.Action(nameof(Index), new { internalOrgId, competitionId });
+    }
+
+    internal IActionResult GetRedirect(
+        string internalOrgId,
+        int competitionId,
+        string returnUrl)
+    {
+        if (!string.IsNullOrWhiteSpace(returnUrl))
+            return Redirect(returnUrl);
 
         return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
     }

@@ -21,7 +21,7 @@
             <nhs-card-content title="Features">
                 @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Features))
                 {
-                    <partial name="Partials/_Features" model="@(new FeaturesPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features))" />
+                    <partial name="Partials/_Features" model="@(new FeaturesPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features, hasReviewedCriteria: Model.HasReviewedCriteria))" />
                 }
                 else
                 {
@@ -30,13 +30,16 @@
                     </p>
                 }
             </nhs-card-content>
-            <nhs-card-footer>
-                <p class="nhsuk-body-m">
-                    <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Feature), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" /> Add feature requirements
-                    </a>
-                </p>
-            </nhs-card-footer>
+        @if (!Model.HasReviewedCriteria)
+            {
+                <nhs-card-footer>
+                    <p class="nhsuk-body-m">
+                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Feature), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
+                            <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/> Add feature requirements
+                        </a>
+                    </p>
+                </nhs-card-footer>
+            }
         </nhs-card-v2>
         <nhs-card-v2>
             <nhs-card-content title="Implementation">
@@ -51,25 +54,28 @@
                     </p>
                 }
             </nhs-card-content>
-            <nhs-card-footer>
-                @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Implementation))
-                {
-                    <p>
-                        <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                            Change implementation requirements
-                        </a>
-                    </p>
-                }
-                else
-                {
-                    <p class="nhsuk-body-m">
-                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                            <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" /> Add implementation requirements
-                        </a>
-                    </p>
-                }
-            </nhs-card-footer>
+        @if (!Model.HasReviewedCriteria)
+            {
+                <nhs-card-footer>
+                    @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Implementation))
+                    {
+                        <p>
+                            <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
+                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                Change implementation requirements
+                            </a>
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="nhsuk-body-m">
+                            <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
+                                <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/> Add implementation requirements
+                            </a>
+                        </p>
+                    }
+                </nhs-card-footer>
+            }
         </nhs-card-v2>
         <nhs-card-v2>
             <nhs-card-content title="Interoperability">
@@ -84,25 +90,28 @@
                     </p>
                 }
             </nhs-card-content>
-            <nhs-card-footer>
-                @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Interoperability))
-                {
-                    <p>
-                        <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                            Change interoperability requirements
-                        </a>
-                    </p>
-                }
-                else
-                {
-                    <p class="nhsuk-body-m">
-                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                            <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" /> Add interoperability requirements
-                        </a>
-                    </p>
-                }
-            </nhs-card-footer>
+        @if (!Model.HasReviewedCriteria)
+            {
+                <nhs-card-footer>
+                    @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Interoperability))
+                    {
+                        <p>
+                            <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
+                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                Change interoperability requirements
+                            </a>
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="nhsuk-body-m">
+                            <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
+                                <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/> Add interoperability requirements
+                            </a>
+                        </p>
+                    }
+                </nhs-card-footer>
+            }
         </nhs-card-v2>
         <nhs-card-v2>
             <nhs-card-content title="Service levels">
@@ -117,25 +126,28 @@
                     </p>
                 }
             </nhs-card-content>
-            <nhs-card-footer>
-                @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.ServiceLevel))
-                {
-                    <p>
-                        <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                            Change service level requirements
-                        </a>
-                    </p>
-                }
-                else
-                {
-                    <p class="nhsuk-body-m">
-                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                            <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" /> Add service level requirements
-                        </a>
-                    </p>
-                }
-            </nhs-card-footer>
+        @if (!Model.HasReviewedCriteria)
+            {
+                <nhs-card-footer>
+                    @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.ServiceLevel))
+                    {
+                        <p>
+                            <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
+                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                                Change service level requirements
+                            </a>
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="nhsuk-body-m">
+                            <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
+                                <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/> Add service level requirements
+                            </a>
+                        </p>
+                    }
+                </nhs-card-footer>
+            }
         </nhs-card-v2>
         <br/>
         <vc:nhs-secondary-button type="Primary" text="Save and continue" url="@Model.BackLink"/>

@@ -5,17 +5,17 @@
 <nhs-table>
     <nhs-table-column>Requirement details</nhs-table-column>
     <nhs-table-column>Type</nhs-table-column>
-    @if (Model.ShowChange)
+    @if (Model.ShowAction && !Model.HasReviewedCriteria)
     {
         <nhs-table-column>
             <span class="nhsuk-u-visually-hidden">Change action</span>
         </nhs-table-column>
-    }
-    @if (Model.ShowDelete)
-    {
-    <nhs-table-column>
-            <span class="nhsuk-u-visually-hidden">Delete action</span>
-        </nhs-table-column>
+        @if (Model.CanDelete)
+        {
+            <nhs-table-column>
+                <span class="nhsuk-u-visually-hidden">Delete action</span>
+            </nhs-table-column>
+        }
     }
     @foreach (var requirement in Model.Requirements)
     {
@@ -26,20 +26,20 @@
             <nhs-table-cell>
                 @requirement.Compliance
             </nhs-table-cell>
-            @if (Model.ShowChange)
+            @if (Model.ShowAction && !Model.HasReviewedCriteria)
             {
                 <nhs-table-cell>
-                    <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeature), typeof(CompetitionNonPriceElementsController).ControllerName(), new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, requirementId = requirement.Id })">
+                    <a href="@Url.Action(nameof(CompetitionNonPriceElementsController.EditFeature), typeof(CompetitionNonPriceElementsController).ControllerName(), new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, requirementId = requirement.Id, returnUrl = Model.ReturnUrl })">
                         Change
                     </a>
                 </nhs-table-cell>
-            }
-            @if (Model.ShowDelete)
-            {
-            <nhs-table-cell>
-                <vc:nhs-delete-button url="@Url.Action(nameof(CompetitionNonPriceElementsController.DeleteFeature), typeof(CompetitionNonPriceElementsController).ControllerName(), new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, requirementId = requirement.Id })"
-                                      text="Delete"/>
-            </nhs-table-cell>
+                @if (Model.CanDelete)
+                {
+                    <nhs-table-cell>
+                        <vc:nhs-delete-button url="@Url.Action(nameof(CompetitionNonPriceElementsController.DeleteFeature), typeof(CompetitionNonPriceElementsController).ControllerName(), new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, requirementId = requirement.Id, returnUrl = Model.ReturnUrl })"
+                                              text="Delete"/>
+                    </nhs-table-cell>
+                }
             }
         </nhs-table-row-container>
     }

@@ -40,12 +40,12 @@
                 <nhs-submit-button/>
                 <a href="@Model.BackLink">Cancel</a>
             </nhs-button-group>
-            @if (Model.CanDelete)
+@*             @if (Model.CanDelete)
             {
                 <div>
                     <vc:nhs-delete-button text="Delete this requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.DeleteFeature), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = Model.FeaturesCriteriaId })"/>
                 </div>
-            }
+            } *@
         </form>
 
     </div>
