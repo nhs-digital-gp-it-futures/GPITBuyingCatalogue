@@ -209,7 +209,14 @@ public class CompetitionTaskListController(
         int competitionId,
         CompetitionReviewCriteriaModel model)
     {
-        _ = model;
+        if (!ModelState.IsValid)
+        {
+            var competition = await competitionsService.GetCompetitionCriteriaReview(internalOrgId, competitionId);
+            var integrations = await integrationsService.GetIntegrations();
+
+            model.SetupProperties(competition, integrations);
+            return View(model);
+        }
 
         await competitionsService.SetCriteriaReviewed(internalOrgId, competitionId);
 

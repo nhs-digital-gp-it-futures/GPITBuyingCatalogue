@@ -58,16 +58,16 @@
     <nhs-card-content title="Service levels">
         <partial name="Partials/_ServiceLevels" model="@Model.NonPriceElements.ServiceLevel" />
     </nhs-card-content>
-@if (!Model.HasReviewedCriteria)
-{
-    <nhs-card-footer>
-        <p>
-            <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                Change service level requirements
-            </a>
-        </p>
-    </nhs-card-footer>
-}
+    @if (!Model.HasReviewedCriteria)
+    {
+        <nhs-card-footer>
+            <p>
+                <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
+                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                    Change service level requirements
+                </a>
+            </p>
+        </nhs-card-footer>
+    }
 </nhs-card-v2>
 }
