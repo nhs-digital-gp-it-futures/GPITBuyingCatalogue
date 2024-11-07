@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -214,7 +215,10 @@ public class CompetitionTaskListController(
             var competition = await competitionsService.GetCompetitionCriteriaReview(internalOrgId, competitionId);
             var integrations = await integrationsService.GetIntegrations();
 
-            model.SetupProperties(competition, integrations);
+            model.CompetitionWeights = competition.Weightings;
+            model.NonPriceElements = competition.NonPriceElements;
+            model.AvailableIntegrations = integrations.ToDictionary(x => x.Id, x => x.Name);
+
             return View(model);
         }
 

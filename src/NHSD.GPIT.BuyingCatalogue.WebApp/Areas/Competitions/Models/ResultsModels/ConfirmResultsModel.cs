@@ -33,4 +33,6 @@ public class ConfirmResultsModel : NavBaseModel
     public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
 
     public string PdfUrl { get; set; }
+
+    public bool CompleteCompetition { get; set; }
 }

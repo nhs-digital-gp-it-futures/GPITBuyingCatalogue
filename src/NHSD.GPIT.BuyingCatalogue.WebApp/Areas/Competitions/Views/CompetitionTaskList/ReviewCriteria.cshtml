@@ -65,7 +65,11 @@
         <br/>
 
         <form method="post">
+            <input type="hidden" asp-for="InternalOrgId" />
+            <input type="hidden" asp-for="CompetitionId" />
+            <input type="hidden" asp-for="CompetitionName" />
             <input type="hidden" asp-for="HasReviewedCriteria" />
+
             @if (!Model.HasReviewedCriteria)
             {
                 <nhs-fieldset-form-label asp-for="@Model"

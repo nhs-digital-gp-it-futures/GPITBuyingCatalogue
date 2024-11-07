@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Pdf;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.Services.Integrations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels.OrderingInformationModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
@@ -71,7 +72,15 @@ public class CompetitionResultsController : Controller
         int competitionId,
         ConfirmResultsModel model)
     {
-        _ = model;
+        if (!ModelState.IsValid)
+        {
+            var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+
+            model.CompetitionSolutions = competition.CompetitionSolutions;
+            model.NonPriceElements = competition.NonPriceElements.GetNonPriceElements().ToList();
+
+            return View(model);
+        }
 
         await competitionsService.CompleteCompetition(internalOrgId, competitionId);
 

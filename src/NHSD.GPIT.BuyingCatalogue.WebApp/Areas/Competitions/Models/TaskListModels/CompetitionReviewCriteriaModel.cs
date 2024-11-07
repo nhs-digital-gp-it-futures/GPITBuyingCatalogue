@@ -17,7 +17,15 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
         Competition competition,
         IEnumerable<Integration> availableIntegrations)
     {
-        SetupProperties(competition, availableIntegrations);
+        InternalOrgId = competition.Organisation.InternalIdentifier;
+        CompetitionId = competition.Id;
+
+        CompetitionName = competition.Name;
+        CompetitionWeights = competition.Weightings;
+        NonPriceElements = competition.NonPriceElements;
+        HasReviewedCriteria = competition.HasReviewedCriteria;
+
+        AvailableIntegrations = availableIntegrations.ToDictionary(x => x.Id, x => x.Name);
     }
 
     public string InternalOrgId { get; set; }
@@ -40,22 +48,7 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
 
     public NonPriceElements NonPriceElements { get; set; }
 
-    public Dictionary<NonPriceElement, int?> NonPriceWeights { get; set; }
-
-    internal void SetupProperties(Competition competition, IEnumerable<Integration> availableIntegrations)
-    {
-        InternalOrgId = competition.Organisation.InternalIdentifier;
-        CompetitionId = competition.Id;
-
-        CompetitionName = competition.Name;
-        CompetitionWeights = competition.Weightings;
-        NonPriceElements = competition.NonPriceElements;
-        HasReviewedCriteria = competition.HasReviewedCriteria;
-
-        NonPriceWeights = competition.NonPriceElements.GetNonPriceElements()
-            .OrderBy(x => x.ToString())
-            .ToDictionary(x => x, x => competition.NonPriceElements.GetNonPriceWeight(x));
-
-        AvailableIntegrations = availableIntegrations.ToDictionary(x => x.Id, x => x.Name);
-    }
+    public Dictionary<NonPriceElement, int?> NonPriceWeights => NonPriceElements.GetNonPriceElements()
+        .OrderBy(x => x.ToString())
+        .ToDictionary(x => x, x => NonPriceElements.GetNonPriceWeight(x));
 }

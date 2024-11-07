@@ -1,4 +1,5 @@
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
 @model NonPriceElementScoresDashboardModel
 
 @{
@@ -13,11 +14,8 @@
                         advice="Compare and score shortlisted solutions based on the non-price elements you’ve added."
                         caption="@Model.CompetitionName"/>
 
-        <nhs-inset-text>
-            <p>You should work with colleagues involved in the procurement process to collaboratively score your shortlisted solutions.</p>
-
-            <p>Once you’ve reached agreement, the final scores can be inputted along with your justification for them.</p>
-        </nhs-inset-text>
+        <nhs-card-v2>
+        <nhs-card-content title="Compare and score">
 
         @if (!Model.NonPriceElements.Any())
         {
@@ -25,10 +23,12 @@
         }
         else
         {
+            <p>You should work with colleagues involved in the procurement process to collaboratively score your shortlisted solutions. Once you’ve reached agreement, the final scores can be inputted along with your justification for them.</p>
+
             <nhs-table>
                 <nhs-table-column>Non-price element</nhs-table-column>
                 <nhs-table-column>Status</nhs-table-column>
-                <nhs-table-column>Action</nhs-table-column>
+                <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
 
                 @foreach (var nonPriceElement in Model.NonPriceElements.OrderBy(x => x.Key.EnumMemberName()))
                 {
@@ -38,13 +38,14 @@
                             <nhs-tag status-enum="@nonPriceElement.Value"/>
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            <a href="@Url.Action(nonPriceElement.Key.ToString(), typeof(CompetitionScoringController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })">Edit</a>
+                            <a href="@Url.Action(nonPriceElement.Key.ToString(), typeof(CompetitionScoringController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })">@GetLinkName(nonPriceElement.Value)</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
                 }
             </nhs-table>
         }
-
+        </nhs-card-content>
+        </nhs-card-v2>
         <br/>
 
         <nhs-button-group>
@@ -53,3 +54,7 @@
         </nhs-button-group>
     </div>
 </div>
+
+@{
+    string GetLinkName(TaskProgress progress) => progress == TaskProgress.Completed ? "Change" : "Start";
+}
