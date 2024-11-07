@@ -65,7 +65,7 @@
         <br/>
 
         <form method="post">
-
+            <input type="hidden" asp-for="HasReviewedCriteria" />
             @if (!Model.HasReviewedCriteria)
             {
                 <nhs-fieldset-form-label asp-for="@Model"
