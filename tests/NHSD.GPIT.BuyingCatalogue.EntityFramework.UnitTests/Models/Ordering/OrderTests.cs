@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering;
@@ -33,6 +35,14 @@ public static class OrderTests
         var order = new Order();
 
         order.OrderStatus.Should().Be(OrderStatus.InProgress);
+    }
+
+    [Fact]
+    public static void OrderStatus_Expired()
+    {
+        var order = new Order(){CommencementDate = new(2023, 02, 04), MaximumTerm = 6};
+
+        order.OrderStatus.Should().Be(OrderStatus.Expired);
     }
 
     [Theory]
