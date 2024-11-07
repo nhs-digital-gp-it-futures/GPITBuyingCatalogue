@@ -121,6 +121,7 @@
 @{
     NhsTagsTagHelper.TagColour TagColour(OrderStatus orderStatus) => orderStatus switch
     {
+        OrderStatus.Expired => NhsTagsTagHelper.TagColour.Orange,
         OrderStatus.Terminated => NhsTagsTagHelper.TagColour.Red,
         OrderStatus.Completed => NhsTagsTagHelper.TagColour.Green,
         OrderStatus.InProgress => NhsTagsTagHelper.TagColour.Blue,

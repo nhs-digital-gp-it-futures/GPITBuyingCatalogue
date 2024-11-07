@@ -76,6 +76,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             get
             {
+                if (ContractExpired)
+                    return OrderStatus.Expired;
+
                 if (IsTerminated)
                     return OrderStatus.Terminated;
 

@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                     new { internalOrgId });
             }
 
-            if (order.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated)
+            if (order.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated or OrderStatus.Expired)
             {
                 return RedirectToAction(
                     nameof(Summary),
@@ -275,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             return order.OrderStatus switch
             {
                 OrderStatus.Terminated => "This contract has been terminated, but you can still view the details.",
-                OrderStatus.Completed when order.ContractExpired => $"This order expired on {order.EndDate.DisplayValue}, but you can still view the details.",
+                OrderStatus.Expired => $"This order expired on {order.EndDate.DisplayValue}, but you can still view the details.",
                 OrderStatus.Completed when order.OrderType.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
                 OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend or terminate the contract if needed.",
                 OrderStatus.Completed => "There is an amendment currently in progress for this contract.",
