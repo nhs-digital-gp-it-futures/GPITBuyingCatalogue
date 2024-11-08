@@ -47,8 +47,7 @@
                         <nhs-table-cell>@order.Created.ToString("d MMM yyyy")</nhs-table-cell>
                         <nhs-table-cell>
                             <span style="white-space: nowrap">
-                                <nhs-tag colour="@TagColour(order.OrderStatus)"
-                                         text="@order.OrderStatus.AsString(EnumFormat.EnumMemberValue)" />
+                                <nhs-tag status-enum="@order.OrderStatus"/>
                             </span>
                         </nhs-table-cell>
                         <nhs-table-cell>
@@ -117,14 +116,3 @@
         }
     </nhs-card-content>
 </nhs-card-v2>
-
-@{
-    NhsTagsTagHelper.TagColour TagColour(OrderStatus orderStatus) => orderStatus switch
-    {
-        OrderStatus.Expired => NhsTagsTagHelper.TagColour.Orange,
-        OrderStatus.Terminated => NhsTagsTagHelper.TagColour.Red,
-        OrderStatus.Completed => NhsTagsTagHelper.TagColour.Green,
-        OrderStatus.InProgress => NhsTagsTagHelper.TagColour.Blue,
-        _ => throw new ArgumentOutOfRangeException(nameof(orderStatus)),
-    };
-}
