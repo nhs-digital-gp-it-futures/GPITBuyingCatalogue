@@ -190,6 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var fileName = order.OrderStatus switch
             {
+                OrderStatus.Expired => $"order-summary-terminated-{callOffId}.pdf",
                 OrderStatus.Terminated => $"order-summary-terminated-{callOffId}.pdf",
                 OrderStatus.Completed => $"order-summary-completed-{callOffId}.pdf",
                 _ => $"order-summary-in-progress-{callOffId}.pdf",
