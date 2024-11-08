@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using EnumsNET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -188,13 +189,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var result = await pdfService.CreateOrderSummaryPdf(order);
 
-            var fileName = order.OrderStatus switch
-            {
-                OrderStatus.Expired => $"order-summary-terminated-{callOffId}.pdf",
-                OrderStatus.Terminated => $"order-summary-terminated-{callOffId}.pdf",
-                OrderStatus.Completed => $"order-summary-completed-{callOffId}.pdf",
-                _ => $"order-summary-in-progress-{callOffId}.pdf",
-            };
+            var orderStatus = order.OrderStatus.AsString(EnumFormat.EnumMemberValue)?.Replace(" ", "-", StringComparison.InvariantCulture).ToLowerInvariant() ?? "unknown-status";
+
+            var fileName = $"order-summary-{orderStatus}-{callOffId}.pdf";
 
             return File(result.ToArray(), "application/pdf", fileName);
         }

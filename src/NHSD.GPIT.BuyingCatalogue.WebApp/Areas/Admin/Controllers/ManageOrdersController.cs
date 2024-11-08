@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using EnumsNET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -125,9 +126,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var result = await pdfService.CreateOrderSummaryPdf(order);
 
-            var fileName = order.OrderStatus == OrderStatus.Completed
-                ? $"order-summary-completed-{callOffId}.pdf"
-                : $"order-summary-in-progress-{callOffId}.pdf";
+            var orderStatus = order.OrderStatus.AsString(EnumFormat.EnumMemberValue)?.Replace(" ", "-", StringComparison.InvariantCulture).ToLowerInvariant() ?? "unknown-status";
+
+            var fileName = $"order-summary-{orderStatus}-{callOffId}.pdf";
 
             return File(result.ToArray(), "application/pdf", fileName);
         }

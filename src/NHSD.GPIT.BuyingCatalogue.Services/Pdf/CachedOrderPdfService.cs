@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
@@ -28,17 +29,22 @@ public class CachedOrderPdfService : IOrderPdfService
     {
         if (order == null) throw new ArgumentNullException(nameof(order));
 
-        if (order.OrderStatus != OrderStatus.Completed && order.OrderStatus != OrderStatus.Terminated)
+        if (order.OrderStatus == OrderStatus.InProgress)
             return await orderPdfService.CreateOrderSummaryPdf(order);
 
-        var blobDocument = order.OrderStatus == OrderStatus.Completed ? $"{order.CallOffId.ToString()}.pdf" : $"{order.CallOffId.ToString()}-terminated.pdf";
-        var cachedPdf = await azureBlobStorageService.DownloadAsync(new(settings.OrderPdfContainerName, blobDocument));
+        var callOffId = order.CallOffId.ToString();
+
+        var orderStatus = order.OrderStatus.AsString(EnumFormat.EnumMemberValue)?.Replace(" ", "-", StringComparison.InvariantCulture).ToLowerInvariant() ?? "unknown-status";
+
+        var fileName = $"order-summary-{orderStatus}-{callOffId}.pdf";
+
+        var cachedPdf = await azureBlobStorageService.DownloadAsync(new(settings.OrderPdfContainerName, fileName));
         if (cachedPdf != null)
             return cachedPdf;
 
         var file = await orderPdfService.CreateOrderSummaryPdf(order);
 
-        await azureBlobStorageService.UploadAsync(new(settings.OrderPdfContainerName, blobDocument), file);
+        await azureBlobStorageService.UploadAsync(new(settings.OrderPdfContainerName, fileName), file);
 
         return file;
     }
