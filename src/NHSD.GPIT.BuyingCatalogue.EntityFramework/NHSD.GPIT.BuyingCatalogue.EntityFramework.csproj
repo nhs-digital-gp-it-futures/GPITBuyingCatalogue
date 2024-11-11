@@ -38,6 +38,7 @@
     </PackageReference>
     <PackageReference Include="Enums.NET" Version="4.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="130.0.6723.11600" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
