@@ -292,6 +292,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             return order.OrderStatus switch
             {
                 OrderStatus.Terminated => "Terminated contract details",
+                OrderStatus.Expired => "Expired contract details",
                 OrderStatus.Completed => "Order confirmed",
                 _ => orderWrapper.CanComplete()
                     ? "Review and complete order"
