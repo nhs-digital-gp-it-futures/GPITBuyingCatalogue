@@ -289,7 +289,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Driver.FindElement(By.ClassName("nhsuk-lede-text")).Text.FormatForComparison();
 
         public string HintText() =>
-            Driver.FindElement(By.CssSelector(".nhsuk-hint.nhsuk-u-margin-bottom-5")).Text.FormatForComparison();
+            Driver.FindElement(By.CssSelector(".nhsuk-hint")).Text.FormatForComparison();
 
         public string InsetText() =>
             Driver.FindElement(By.ClassName("nhsuk-inset-text")).Text.FormatForComparison();

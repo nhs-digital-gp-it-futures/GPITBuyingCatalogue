@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCr
 
         public void SolutionNotIncludedInShortlisting()
         {
-            CommonActions.HintText().Should().Be("Provide a justification for why these solutions were not included in your shortlist.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Provide a justification for why you've not included these solutions in your competition shortlist.".FormatForComparison());
 
             var textInput = TextGenerators.TextInput(100);
             CommonActions.EnterTextInTextBoxes(textInput);
@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCr
 
         public void ConfirmSolutions()
         {
-            CommonActions.HintText().Should().Be("Confirm the solutions you want to include as part of this competition.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Review the solutions you’ve included in your shortlist and take them into a competition.".FormatForComparison());
             CommonActions.ClickSave();
         }
     }
