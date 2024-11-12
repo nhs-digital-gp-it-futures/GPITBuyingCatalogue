@@ -8,6 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers
 {
     public sealed class BrowserFactory : IDisposable
     {
+        private const bool RunHeadless = true;
         private const string DefaultHubUrl = "http://localhost:4444/wd/hub";
 
         public BrowserFactory(string browser)
@@ -24,12 +25,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Browsers
         {
             return new ChromeDriver(                
                 GetChromeDriverService(),
-                GetChromeOptions(!Debugger.IsAttached));
+                GetChromeOptions(!Debugger.IsAttached && RunHeadless));
         }
 
         private static IWebDriver GetChromeDriver(string hubURL)
         {
-            return new RemoteWebDriver(new Uri(hubURL), GetChromeOptions(true));
+            return new RemoteWebDriver(new Uri(hubURL), GetChromeOptions(RunHeadless));
         }
 
         private static IWebDriver GetFirefoxDriver(string hubURL)
