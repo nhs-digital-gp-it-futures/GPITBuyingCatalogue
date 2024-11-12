@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five
                 nameof(OrderController.Summary))
                 .Should().BeTrue();
 
-            CommonActions.ClickLinkElement(OrderSummaryObjects.AmendThisOrder);
+            CommonActions.ClickLinkElement(OrderSummaryObjects.AmendContract);
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderController),
