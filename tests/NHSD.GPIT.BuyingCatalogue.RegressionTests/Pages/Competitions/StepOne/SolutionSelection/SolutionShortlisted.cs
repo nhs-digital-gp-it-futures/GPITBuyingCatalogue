@@ -26,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepOneCr
         public void ConfirmSolutions()
         {
             CommonActions.HintText().Should().Be("Review the solutions you’ve included in your shortlist and take them into a competition.".FormatForComparison());
+            CommonActions.ClickCheckboxByLabel("I want to continue with this shortlist");
             CommonActions.ClickSave();
         }
     }
