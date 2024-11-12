@@ -102,7 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal IWebDriver Driver { get; }
 
-        public void StepOnePrepareCompetition(FilterType filterType, string competitionName, ServiceRecipientSelectionMode recipients = ServiceRecipientSelectionMode.None)
+        public void StepOnePrepareCompetition(FilterType filterType, string competitionName, ServiceRecipientSelectionMode recipients = ServiceRecipientSelectionMode.None, bool excludedSolutions = true)
         {
             int selectedFilter = (int)filterType;
             SelectFilter.SelectFilterForNewCompetition(selectedFilter);
@@ -125,7 +125,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 ReviewFilter.ReviewYourFilterMultipleSolutions();
                 StartCompetition.CreateCompetition(competitionName);
                 SelectSolutions.AddSolutions(solutions);
-                SolutionShortlisted.SolutionNotIncludedInShortlisting();
+                if (excludedSolutions)
+                {
+                    SolutionShortlisted.SolutionNotIncludedInShortlisting();
+                }
+
                 SolutionShortlisted.ConfirmSolutions();
 
                 CompetitionTaskList.CompetitionServiceRecipientsTask();
