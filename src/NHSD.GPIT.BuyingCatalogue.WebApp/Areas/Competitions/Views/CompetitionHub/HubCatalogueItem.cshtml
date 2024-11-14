@@ -81,5 +81,10 @@
 
 @{
     decimal CalculateTotalCost() => ((IPrice)Model.Price).CalculateCostPerMonth(quantity) * Model.ContractLength.GetValueOrDefault();
-    string GetLinkName(TaskProgress progress) => progress == TaskProgress.Completed ? "Change" : "Start";
+    string GetLinkName(TaskProgress progress) => progress switch
+    {
+        TaskProgress.NotStarted => "Start",
+        TaskProgress.InProgress => "Continue",
+        _ => "Change",
+    };
 }

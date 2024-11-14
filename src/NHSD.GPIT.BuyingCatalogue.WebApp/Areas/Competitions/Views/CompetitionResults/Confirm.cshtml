@@ -42,6 +42,12 @@
                                 </nhs-table-row-container>
                             }
                         </nhs-table>
+                        
+                        <nhs-summary-list>
+                            <nhs-summary-list-row label-text="Price">
+                                @($"£{competitionSolution.CalculateTotalPrice(Model.ContractLength):N2}")
+                            </nhs-summary-list-row>
+                        </nhs-summary-list>
                     </nhs-card-content>
                 </nhs-card-v2>
             }
@@ -58,6 +64,7 @@
                 <input type="hidden" asp-for="PdfUrl"/>
                 <input type="hidden" asp-for="IncludesNonPriceElements"/>
                 <input type="hidden" asp-for="CompetitionName"/>
+                <input type="hidden" asp-for="ContractLength" />
 
                 <p>Viewing your results means you’ll no longer be able to make any changes to the information you’ve provided and this competition will be complete. You can then order your winning solution.</p>
                 <p>However, the result is non-binding so you are under no obligation to place an order for the solution if you don’t want to.</p>

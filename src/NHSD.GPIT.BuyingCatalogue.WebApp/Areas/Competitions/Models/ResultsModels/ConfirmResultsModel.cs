@@ -18,7 +18,7 @@ public class ConfirmResultsModel : NavBaseModel
         CompetitionName = competition.Name;
         CompetitionSolutions = competition.CompetitionSolutions;
         NonPriceElements = competition.NonPriceElements.GetNonPriceElements().ToList();
-
+        ContractLength = competition.ContractLength.GetValueOrDefault();
         IncludesNonPriceElements = competition.IncludesNonPrice.GetValueOrDefault();
     }
 
@@ -35,4 +35,6 @@ public class ConfirmResultsModel : NavBaseModel
     public string PdfUrl { get; set; }
 
     public bool CompleteCompetition { get; set; }
+
+    public int ContractLength { get; set; }
 }
