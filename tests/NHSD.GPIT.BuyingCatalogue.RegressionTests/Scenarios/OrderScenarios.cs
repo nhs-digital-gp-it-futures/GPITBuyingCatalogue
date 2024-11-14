@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 {
-    public partial class OrderScenarios : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    public class OrderScenarios : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
     {
         private const string InternalOrgId = "IB-QWO";
         private const string FileName = "valid_service_recipients.csv";
