@@ -34,7 +34,7 @@ public class CachedOrderPdfService : IOrderPdfService
 
         var callOffId = order.CallOffId.ToString();
 
-        var orderStatus = order.OrderStatus.AsString(EnumFormat.EnumMemberValue)?.Replace(" ", "-", StringComparison.InvariantCulture).ToLowerInvariant() ?? "unknown-status";
+        var orderStatus = order.OrderStatus.AsFormattedString();
 
         var fileName = $"order-summary-{orderStatus}-{callOffId}.pdf";
 

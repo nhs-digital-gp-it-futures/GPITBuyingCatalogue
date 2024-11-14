@@ -38,7 +38,10 @@ public static class OrderTests
     [Fact]
     public static void OrderStatus_Expired()
     {
-        var order = new Order(){CommencementDate = new(2023, 02, 04), MaximumTerm = 6};
+        var order = new Order()
+        {
+            CommencementDate = new(2023, 02, 04), MaximumTerm = 6,
+        };
 
         order.OrderStatus.Should().Be(OrderStatus.Expired);
     }

@@ -189,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var result = await pdfService.CreateOrderSummaryPdf(order);
 
-            var orderStatus = order.OrderStatus.AsString(EnumFormat.EnumMemberValue)?.Replace(" ", "-", StringComparison.InvariantCulture).ToLowerInvariant() ?? "unknown-status";
+            var orderStatus = order.OrderStatus.AsFormattedString();
 
             var fileName = $"order-summary-{orderStatus}-{callOffId}.pdf";
 
