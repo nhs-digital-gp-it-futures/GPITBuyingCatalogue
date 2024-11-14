@@ -16,13 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
 
         public void SelectAndConfirmSupplier(string supplierName)
         {
-            CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, supplierName);
-
-            CommonActions.ClickSave();
-
             CommonActions.PageLoadedCorrectGetIndex(
-               typeof(SupplierController),
-               nameof(SupplierController.SelectSupplier)).Should().BeTrue();
+                typeof(SupplierController),
+                nameof(SupplierController.SelectSupplier)).Should().BeTrue();
+
+            CommonActions.AutoCompleteAddValue(SupplierObjects.SupplierAutoComplete, supplierName);
 
             CommonActions.ClickSave();
 

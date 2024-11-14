@@ -212,6 +212,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         {
             Driver.FindElement(targetElement).Click();
             Driver.FindElement(targetElement).SendKeys(value);
+            Driver.FindElement(targetElement).SendKeys(Keys.Enter);
         }
 
         public void ElementAddValue(By targetElement, string value)
