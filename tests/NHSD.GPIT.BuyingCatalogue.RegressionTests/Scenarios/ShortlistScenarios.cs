@@ -1,8 +1,6 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionApplicationType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.SolutionHostingType;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Shortlist;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -11,19 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
     public class ShortlistScenarios(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
         : BuyerTestBase(
             factory,
-            typeof(BuyerDashboardController),
-            nameof(BuyerDashboardController.Index),
-            Parameters,
             testOutputHelper), IClassFixture<LocalWebApplicationFactory>
     {
-        private const string InternalOrgId = "IB-QWO";
-
-        private static readonly Dictionary<string, string> Parameters =
-            new()
-            {
-                { nameof(InternalOrgId), InternalOrgId },
-            };
-
         [Fact]
         [Trait("Shortlist", "Create shortlist")]
         public void CreateNewShortlistForFoundationCapabilities()

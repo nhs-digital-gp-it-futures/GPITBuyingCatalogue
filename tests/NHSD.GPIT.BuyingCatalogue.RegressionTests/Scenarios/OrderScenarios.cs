@@ -2,13 +2,13 @@
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 {
-    public class OrderScenarios : BuyerTestBase, IClassFixture<LocalWebApplicationFactory>
+    public class OrderScenarios(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
+        : BuyerTestBase(factory, testOutputHelper), IClassFixture<LocalWebApplicationFactory>
     {
         private const string InternalOrgId = "IB-QWO";
         private const string FileName = "valid_service_recipients.csv";
@@ -26,17 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         private const string NewAdditionalServiceName = "EMIS Mobile";
         private const string NewAssociatedServiceName = "Automated Arrivals – Specialist Cabling";
         private const string AssociatedServiceNameForWebGP = "Installation";
-
-        private static readonly Dictionary<string, string> Parameters =
-            new()
-            {
-                { nameof(InternalOrgId), InternalOrgId },
-            };
-
-        public OrderScenarios(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
-           : base(factory, typeof(BuyerDashboardController), nameof(BuyerDashboardController.Index), Parameters, testOutputHelper)
-        {
-        }
 
         [Fact]
         [Trait("Order Journey", "Order")]
