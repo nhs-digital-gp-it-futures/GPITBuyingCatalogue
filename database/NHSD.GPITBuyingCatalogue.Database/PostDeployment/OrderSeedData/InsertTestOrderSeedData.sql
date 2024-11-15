@@ -191,15 +191,15 @@ BEGIN
     @AssociatedServicesOnly, 
     1);
 
-        -------------------------------------------------------
-    --EXPIRED Order with description, ordering party contact, supplier with it's contact and timescales
+    -------------------------------------------------------
+    --Expired order
     -------------------------------------------------------
 
     INSERT INTO ordering.Contacts (FirstName, LastName, Email, Phone, LastUpdated, LastUpdatedBy)
     SELECT
     FirstName, LastName, Email, Phone, SYSDATETIME(), @sueId
     FROM @TestOrdersContacts
-    WHERE Id = 1 -- buyer contact id
+    WHERE Id = 2
 
     SELECT @LastBuyerContactId = IDENT_CURRENT('ordering.Contacts');
 
@@ -207,31 +207,14 @@ BEGIN
     SELECT
     FirstName, LastName, Email, Phone, SYSDATETIME(), @sueId
     FROM @TestOrdersContacts
-    WHERE Id = 2 -- supplier contact id
+    WHERE Id = 1
 
     SELECT @LastSupplierContactId = IDENT_CURRENT('ordering.Contacts');
 
     INSERT INTO ordering.Orders
-    (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate,
-        Created, LastUpdated, LastUpdatedBy, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly, OrderTypeId)
+    (OrderNumber, Revision, Description, OrderingPartyId, OrderingPartyContactId, SupplierId, SupplierContactId, CommencementDate, Created, LastUpdated, LastUpdatedBy, IsDeleted, InitialPeriod, MaximumTerm, AssociatedServicesOnly, OrderTypeId)
     VALUES
-    (
-    44,
-    1,
-    'Expired order with description, ordering party contact and supplier with contact and timescales',
-    @OrderingParty,
-    @LastBuyerContactId,
-    @SupplierId,
-    @LastSupplierContactId,
-    DATEADD(day, -120, SYSDATETIME()),
-    SYSDATETIME(),
-    SYSDATETIME(),
-    @sueId,
-    0,
-    1,
-    3,
-    @AssociatedServicesOnly, 
-    1);
+    (7, 1, 'Expired order', @OrderingParty, @LastBuyerContactId, @SupplierId, @LastSupplierContactId, DATEADD(day, -120, SYSDATETIME()), SYSDATETIME(), SYSDATETIME(), @sueId, 0, 1, 3, @AssociatedServicesOnly, 1);
 
     -------------------------------------------------------
     -- order with catalogue solution and additional service
