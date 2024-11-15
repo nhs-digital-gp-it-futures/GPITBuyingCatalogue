@@ -4,16 +4,7 @@ using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 {
-    public abstract class BuyerTestBase(
-        LocalWebApplicationFactory factory,
-        ITestOutputHelper? testOutputHelper = null)
-        : TestBase(
-            factory,
-            testOutputHelper,
-            UrlGenerator.GenerateUrlFromMethod(
-                typeof(BuyerDashboardController),
-                nameof(BuyerDashboardController.Index),
-                Parameters))
+    public abstract class BuyerTestBase : TestBase
     {
         private const string InternalOrgId = "IB-QWO";
 
@@ -22,5 +13,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             {
                 { nameof(InternalOrgId), InternalOrgId },
             };
+
+        protected BuyerTestBase(
+            LocalWebApplicationFactory factory,
+            ITestOutputHelper? testOutputHelper = null)
+            : base(
+                factory,
+                testOutputHelper,
+                UrlGenerator.GenerateUrlFromMethod(
+                    typeof(BuyerDashboardController),
+                    nameof(BuyerDashboardController.Index),
+                    Parameters))
+        {
+            BuyerLogin();
+        }
     }
 }
