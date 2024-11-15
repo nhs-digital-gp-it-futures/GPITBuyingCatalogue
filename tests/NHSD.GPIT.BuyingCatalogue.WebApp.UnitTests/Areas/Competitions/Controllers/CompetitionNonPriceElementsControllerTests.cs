@@ -317,7 +317,7 @@ public static class CompetitionNonPriceElementsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task EditFeature_InvalidRequirementId_ReturnsRedirect(
+    public static async Task GetEditFeature_InvalidRequirementId_ReturnsRedirect(
         string internalOrgId,
         Competition competition,
         int requirementId,
@@ -337,7 +337,7 @@ public static class CompetitionNonPriceElementsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task EditFeatureRequirement_ValidRequirementId_ReturnsViewWithModel(
+    public static async Task GetEditFeature_ValidRequirementId_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,
         List<FeaturesCriteria> featuresCriteria,
@@ -352,13 +352,14 @@ public static class CompetitionNonPriceElementsControllerTests
 
         var expectedModel = new FeatureModel(competition, requirement)
         {
-            InternalOrgId = internalOrgId, IsAdding = false,
+            InternalOrgId = internalOrgId,
         };
 
         var result = (await controller.EditFeature(internalOrgId, competition.Id, requirement.Id))
             .As<ViewResult>();
 
         result.Should().NotBeNull();
+        result.ViewName.Should().Be("Feature");
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
     }
 
@@ -419,12 +420,46 @@ public static class CompetitionNonPriceElementsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task DeleteFeature_IsAdding_MoreThanOneFeature_RedirectsToFeaturesReview(
+    public static async Task Get_DeleteFeature_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        Organisation organisation,
+        FeaturesCriteria firstCriteria,
+        FeaturesCriteria secondCriteria,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.Organisation = organisation;
+        competition.NonPriceElements = new()
+        {
+            Features = new List<FeaturesCriteria> { firstCriteria, secondCriteria, },
+        };
+
+        competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id).Returns(competition);
+
+        var expectedModel = new DeleteNonPriceElementModel(
+            NonPriceElement.Features,
+            competition,
+            featureId: firstCriteria.Id);
+
+        var result = (await controller.DeleteFeature(internalOrgId, competition.Id, firstCriteria.Id))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.ViewName.Should().Be("Delete");
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(x => x.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task PostDeleteFeature_MoreThanOneFeature_DeletesSingleFeature(
         FeaturesCriteria firstCriteria,
         FeaturesCriteria secondCriteria,
         string internalOrgId,
         Competition competition,
+        DeleteNonPriceElementModel model,
         [Frozen] ICompetitionsService competitionsService,
+        [Frozen] ICompetitionNonPriceElementsService competitionNonPriceElementsService,
         CompetitionNonPriceElementsController controller)
     {
         competition.NonPriceElements = new()
@@ -437,27 +472,128 @@ public static class CompetitionNonPriceElementsControllerTests
         var result = (await controller.DeleteFeature(
                 internalOrgId,
                 competition.Id,
-                firstCriteria.Id))
+                firstCriteria.Id,
+                model))
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
+
+        await competitionNonPriceElementsService.Received()
+            .DeleteFeatureRequirement(
+                internalOrgId,
+                competition.Id,
+                firstCriteria.Id);
     }
 
     [Theory]
     [MockAutoData]
-    public static async Task Post_DeleteFeatureRequirement_Redirects(
+    public static async Task PostDeleteFeature_WithReturn_MoreThanOneFeature_DeletesSingleFeature(
+        string returnUrl,
+        FeaturesCriteria firstCriteria,
+        FeaturesCriteria secondCriteria,
         string internalOrgId,
-        int competitionId,
-        int requirementId,
+        Competition competition,
         DeleteNonPriceElementModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] ICompetitionNonPriceElementsService competitionNonPriceElementsService,
         CompetitionNonPriceElementsController controller)
     {
-        var result = (await controller.DeleteFeature(internalOrgId, competitionId, requirementId, model))
+        competition.NonPriceElements = new()
+        {
+            Features = new List<FeaturesCriteria> { firstCriteria, secondCriteria, },
+        };
+
+        competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id).Returns(competition);
+
+        var result = (await controller.DeleteFeature(
+                internalOrgId,
+                competition.Id,
+                firstCriteria.Id,
+                model,
+                returnUrl))
+            .As<RedirectResult>();
+
+        result.Should().NotBeNull();
+        result.Url.Should().Be(returnUrl);
+
+        await competitionNonPriceElementsService.Received()
+            .DeleteFeatureRequirement(
+                internalOrgId,
+                competition.Id,
+                firstCriteria.Id);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task PostDeleteFeature_OneFeature_DeletesFeatureNonPriceElement(
+        FeaturesCriteria firstCriteria,
+        string internalOrgId,
+        Competition competition,
+        DeleteNonPriceElementModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] ICompetitionNonPriceElementsService competitionNonPriceElementsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.NonPriceElements = new()
+        {
+            Features = new List<FeaturesCriteria> { firstCriteria },
+        };
+
+        competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id).Returns(competition);
+
+        var result = (await controller.DeleteFeature(
+                internalOrgId,
+                competition.Id,
+                firstCriteria.Id,
+                model))
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.Index));
+
+        await competitionNonPriceElementsService.Received()
+            .DeleteNonPriceElement(
+                internalOrgId,
+                competition.Id,
+                NonPriceElement.Features);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task PostDeleteFeature_WithReturn_OneFeature_DeletesFeatureNonPriceElement(
+        string returnUrl,
+        FeaturesCriteria firstCriteria,
+        string internalOrgId,
+        Competition competition,
+        DeleteNonPriceElementModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] ICompetitionNonPriceElementsService competitionNonPriceElementsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.NonPriceElements = new()
+        {
+            Features = new List<FeaturesCriteria> { firstCriteria },
+        };
+
+        competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id).Returns(competition);
+
+        var result = (await controller.DeleteFeature(
+                internalOrgId,
+                competition.Id,
+                firstCriteria.Id,
+                model,
+                returnUrl))
+            .As<RedirectResult>();
+
+        result.Should().NotBeNull();
+        result.Url.Should().Be(returnUrl);
+
+        await competitionNonPriceElementsService.Received()
+            .DeleteNonPriceElement(
+                internalOrgId,
+                competition.Id,
+                NonPriceElement.Features);
     }
 
     [Theory]
@@ -520,25 +656,23 @@ public static class CompetitionNonPriceElementsControllerTests
     }
 
     [Theory]
-    [MockAutoData]
-    public static void Delete_ReturnsViewWithModel(
-        string internalOrgId,
+    [MockInlineAutoData(NonPriceElement.Implementation)]
+    [MockInlineAutoData(NonPriceElement.Features)]
+    [MockInlineAutoData(NonPriceElement.ServiceLevel)]
+    public static async Task GetDelete_ReturnsViewWithModel(
         NonPriceElement nonPriceElement,
+        Organisation organisation,
         Competition competition,
-        IEnumerable<Integration> integrations,
         [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IIntegrationsService integrationsService,
         CompetitionNonPriceElementsController controller)
     {
-        competition.Organisation.InternalIdentifier = internalOrgId;
-        competitionsService.GetCompetitionWithNonPriceElements(internalOrgId, competition.Id)
+        competition.Organisation = organisation;
+        competitionsService.GetCompetitionWithNonPriceElements(organisation.InternalIdentifier, competition.Id)
             .Returns(competition);
 
-        integrationsService.GetIntegrations().Returns(integrations);
+        var expectedModel = new DeleteNonPriceElementModel(nonPriceElement, competition, new List<Integration>());
 
-        var expectedModel = new DeleteNonPriceElementModel(nonPriceElement, competition, integrations);
-
-        var result = controller.Delete(internalOrgId, competition.Id, nonPriceElement).As<ViewResult>();
+        var result = (await controller.Delete(organisation.InternalIdentifier, competition.Id, nonPriceElement)).As<ViewResult>();
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
@@ -546,7 +680,31 @@ public static class CompetitionNonPriceElementsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task Delete_Redirects(
+    public static async Task GetDelete_Interoperability_ReturnsViewWithModel(
+        Organisation organisation,
+        Competition competition,
+        IEnumerable<Integration> integrations,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IIntegrationsService integrationsService,
+        CompetitionNonPriceElementsController controller)
+    {
+        competition.Organisation = organisation;
+        competitionsService.GetCompetitionWithNonPriceElements(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
+
+        integrationsService.GetIntegrationsWithTypes().Returns(integrations);
+
+        var expectedModel = new DeleteNonPriceElementModel(NonPriceElement.Interoperability, competition, integrations);
+
+        var result = (await controller.Delete(organisation.InternalIdentifier, competition.Id, NonPriceElement.Interoperability)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task PostDelete_Redirects(
         string internalOrgId,
         int competitionId,
         NonPriceElement nonPriceElement,

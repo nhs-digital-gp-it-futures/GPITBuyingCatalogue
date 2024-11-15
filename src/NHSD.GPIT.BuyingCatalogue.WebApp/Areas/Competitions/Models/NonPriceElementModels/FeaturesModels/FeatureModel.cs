@@ -38,8 +38,6 @@ public class FeatureModel : NavBaseModel
 
     public string CompetitionName { get; set; }
 
-    //public bool CanDelete => FeaturesCriteriaId is not null;
-
     public bool? IsAdding { get; set; }
 
     public string ReturnUrl { get; set; }

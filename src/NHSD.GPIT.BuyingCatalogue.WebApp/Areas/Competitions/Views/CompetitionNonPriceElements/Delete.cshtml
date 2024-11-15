@@ -17,19 +17,19 @@
 
         <form method="post">
             <h3>@Model.SingleElementDisplay requirement</h3>
-            @switch (Model.NonPriceElement)
+            @switch (Model.NonPriceElementType)
             {
                 case NonPriceElement.Features:
-                    <partial name="Partials/_Features" model="@(new FeaturesPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElements.Features, Model.HasReviewedCriteria, false))" />
+                    <partial name="Partials/_Features" model="@(new FeaturesPartialModel(Model.InternalOrgId, Model.CompetitionId, Model.NonPriceElementDetails.Features, Model.HasReviewedCriteria, false))" />
                     break;
                 case NonPriceElement.Implementation:
-                    <partial name="Partials/_Implementation" model="@Model.NonPriceElements.Implementation.Requirements"/>
+                    <partial name="Partials/_Implementation" model="@Model.NonPriceElementDetails.Implementation.Requirements" />
                     break;
                 case NonPriceElement.Interoperability:
-                    <partial name="Partials/_Interoperability" model="@(new InteroperabilityPartialModel(Model.AvailableIntegrations, Model.NonPriceElements.IntegrationTypes))"/>
+                    <partial name="Partials/_Interoperability" model="@(new InteroperabilityPartialModel(Model.AvailableIntegrations, Model.NonPriceElementDetails.IntegrationTypes))" />
                     break;
                 case NonPriceElement.ServiceLevel:
-                    <partial name="Partials/_ServiceLevels" model="@Model.NonPriceElements.ServiceLevel"/>
+                    <partial name="Partials/_ServiceLevels" model="@Model.NonPriceElementDetails.ServiceLevel" />
                     break;
             }
             <br/>
