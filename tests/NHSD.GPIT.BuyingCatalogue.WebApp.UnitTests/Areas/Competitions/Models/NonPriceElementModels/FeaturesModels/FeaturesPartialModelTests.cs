@@ -3,13 +3,12 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared.Partials;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
 
-public static class FeaturesRequirementsPartialModelTests
+public static class FeaturesPartialModelTests
 {
     [Theory]
     [MockAutoData]
@@ -44,5 +43,64 @@ public static class FeaturesRequirementsPartialModelTests
             competitionId,
             featuresCriteria,
             hasReviewedCriteria);
+    }
+
+    [Fact]
+    [MockAutoData]
+    public static void CanDelete_NullReturnUrl_NullRequirements_True()
+    {
+        var model = new FeaturesPartialModel();
+        model.CanDelete.Should().BeTrue();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void CanDelete_ReturnUrl_MultipleRequirements_True(
+        string returnUrl,
+        FeaturesCriteria featuresCriteria1,
+        FeaturesCriteria featuresCriteria2)
+    {
+        var model = new FeaturesPartialModel
+        {
+            ReturnUrl = returnUrl,
+            Requirements =
+            [
+                featuresCriteria1,
+                featuresCriteria2,
+            ],
+        };
+
+        model.CanDelete.Should().BeTrue();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void CanDelete_ReturnUrl_SingleRequirement_False(
+        string returnUrl,
+        FeaturesCriteria featuresCriteria1)
+    {
+        var model = new FeaturesPartialModel
+        {
+            ReturnUrl = returnUrl,
+            Requirements =
+            [
+                featuresCriteria1,
+            ],
+        };
+
+        model.CanDelete.Should().BeFalse();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void CanDelete_ReturnUrl_NullRequirement_False(
+        string returnUrl)
+    {
+        var model = new FeaturesPartialModel
+        {
+            ReturnUrl = returnUrl,
+        };
+
+        model.CanDelete.Should().BeFalse();
     }
 }

@@ -26,6 +26,7 @@ public static class CompetitionReviewCriteriaModelTests
         competition.Weightings = weightings;
 
         var expectedNonPriceWeights = competition.NonPriceElements.GetNonPriceElements()
+            .OrderBy(x => x.ToString())
             .ToDictionary(x => x, x => competition.NonPriceElements.GetNonPriceWeight(x));
 
         var model = new CompetitionReviewCriteriaModel(competition, integrations);

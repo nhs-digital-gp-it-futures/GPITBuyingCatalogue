@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
@@ -53,6 +54,30 @@ public static class CompetitionResultsControllerTests
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink).Excluding(m => m.PdfUrl));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Confirm_Post_InvalidModelState_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        ConfirmResultsModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionResultsController controller)
+    {
+        competitionsService.GetCompetitionForResults(internalOrgId, competition.Id)
+            .Returns(competition);
+
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.Confirm(internalOrgId, competition.Id, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.ViewName.Should().BeNull();
+        var resultModel = result.Model.As<ConfirmResultsModel>();
+        resultModel.Should().NotBeNull();
+        resultModel.CompetitionSolutions.Should().BeEquivalentTo(competition.CompetitionSolutions);
+        resultModel.NonPriceElements.Should().BeEquivalentTo(competition.NonPriceElements.GetNonPriceElements().ToList());
     }
 
     [Theory]
