@@ -14,11 +14,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validato
             CompetitionReviewCriteriaModelValidator systemUnderTest)
         {
             model.ConfirmCriteria = false;
+            model.HasReviewedCriteria = false;
 
             var result = systemUnderTest.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(x => x.ConfirmCriteria)
                 .WithErrorMessage(CompetitionReviewCriteriaModelValidator.ConfirmCriteriaError);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Validate_ValuesMissing_HasReviewedCriteria_DoesNotThrowError(
+            CompetitionReviewCriteriaModel model,
+            CompetitionReviewCriteriaModelValidator systemUnderTest)
+        {
+            model.ConfirmCriteria = false;
+            model.HasReviewedCriteria = true;
+
+            var result = systemUnderTest.TestValidate(model);
+
+            result.ShouldNotHaveValidationErrorFor(x => x.ConfirmCriteria);
         }
 
         [Theory]
