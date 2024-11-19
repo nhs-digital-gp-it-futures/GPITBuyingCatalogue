@@ -22,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 
         private readonly Uri uri;
 
+        private readonly string providedUrl;
+
         private readonly ITestOutputHelper? testOutputHelper;
 
         public TestBase(
@@ -32,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             Factory = factory;
             Driver = factory.Driver;
             this.testOutputHelper = testOutputHelper;
+            providedUrl = urlArea;
 
             AuthorizationPages = new AuthorizationPages(Driver).PageActions;
             CommonActions = new Actions.Common.CommonActions(Driver);
@@ -67,25 +70,20 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 
         internal void AuthorityLogin()
         {
-            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
-                return;
-            AuthorizationPages.LoginActions.Login(adminUsername, adminPassword);
+            Login(adminUsername, adminPassword);
         }
 
         internal void BuyerLogin()
         {
-            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
-                return;
-
-            AuthorizationPages.LoginActions.Login(buyerUsername, buyerPassword);
+            Login(buyerUsername, buyerPassword);
         }
 
-        internal void BuyerLogin(string buyerEmail)
+        private void Login(string username, string password)
         {
-            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
+            if (UserAlreadyLoggedIn())
                 return;
 
-            AuthorizationPages.LoginActions.Login(buyerEmail, buyerPassword);
+            AuthorizationPages.LoginActions.Login(username, password);
         }
 
         internal BuyingCatalogueDbContext GetEndToEndDbContext()
@@ -93,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             return Factory.DbContext;
         }
 
-        protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null;
+        protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed();
 
         protected void NavigateToUrl(string relativeUrl)
         {
