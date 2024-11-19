@@ -74,7 +74,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo
 
             for (int i = 0; i < subLocations; i++)
             {
-
                 for (int j = 0; j < inputFields; j++)
                 {
                     TextGenerators.NumberInputAddRandomNumber(QuantityObjects.InputQuantityInput(i, j), 50, 1000);

@@ -78,14 +78,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             Login(buyerUsername, buyerPassword);
         }
 
-        private void Login(string username, string password)
-        {
-            if (UserAlreadyLoggedIn())
-                return;
-
-            AuthorizationPages.LoginActions.Login(username, password);
-        }
-
         internal BuyingCatalogueDbContext GetEndToEndDbContext()
         {
             return Factory.DbContext;
@@ -111,6 +103,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             IDictionary<string, string>? queryParameters = null)
         {
             NavigateToUrl(new Uri(UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters), UriKind.Relative));
+        }
+
+        private void Login(string username, string password)
+        {
+            if (UserAlreadyLoggedIn())
+                return;
+
+            AuthorizationPages.LoginActions.Login(username, password);
         }
     }
 }
