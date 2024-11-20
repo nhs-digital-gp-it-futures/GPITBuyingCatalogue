@@ -126,7 +126,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 StartCompetition.CreateCompetition(competitionName);
                 SelectSolutions.AddSolutions(solutions);
                 SolutionShortlisted.SolutionNotIncludedInShortlisting();
-
                 SolutionShortlisted.ConfirmSolutions();
 
                 CompetitionTaskList.CompetitionServiceRecipientsTask();
