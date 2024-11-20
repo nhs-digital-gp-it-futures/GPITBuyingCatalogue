@@ -302,15 +302,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
         private string GetBackLink(string internalOrgId, CallOffId callOffId, Order order)
         {
-            return order.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated
-                                ? Url.Action(
-                                    nameof(DashboardController.Organisation),
-                                    typeof(DashboardController).ControllerName(),
-                                    new { internalOrgId })
-                                : Url.Action(
-                                    nameof(Order),
-                                    typeof(OrderController).ControllerName(),
-                                    new { internalOrgId, callOffId });
+            return order.OrderStatus is OrderStatus.InProgress
+                ? Url.Action(
+                    nameof(Order),
+                    typeof(OrderController).ControllerName(),
+                    new { internalOrgId, callOffId })
+
+                : Url.Action(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { internalOrgId });
         }
     }
 }
