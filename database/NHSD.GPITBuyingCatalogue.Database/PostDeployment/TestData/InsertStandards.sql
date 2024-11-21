@@ -30,8 +30,8 @@ BEGIN
     
     -- Supplementary Care Standards
     INSERT INTO @Standards(Id,[Name],[Description],[Url],[StandardTypeId],[Version],[IsDeleted])
-        VALUES
-    ('SCS1', 'Community Pharmacy Clinical Services', 'Supports Referrals to Community Pharmacy and the management of Community Pharmacy Consultations. Also supports the submission of data to the NHS Business Services Authority (NHSBSA) for payment purposes.', 'https://nhse-dsic.atlassian.net/wiki/spaces/DCSDCS/pages/12667027525/Community+Pharmacy+Clinical+Services', 2, '2.0.0', 0),
+    VALUES
+    ('SCS1', 'Community Pharmacy Clinical Services', 'Supports Referrals to Community Pharmacy and the management of Community Pharmacy Consultations. Also supports the submission of data to the NHS Business Services Authority (NHSBSA) for payment purposes.', 'https://nhse-dsic.atlassian.net/wiki/spaces/DCSDCS/pages/12667027525/Community+Pharmacy+Clinical+Services', 2, '2.0.0', 0)
 
 
     --Interoperability Standards
