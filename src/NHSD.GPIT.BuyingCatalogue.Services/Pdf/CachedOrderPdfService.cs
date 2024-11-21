@@ -34,17 +34,15 @@ public class CachedOrderPdfService : IOrderPdfService
 
         var callOffId = order.CallOffId.ToString();
 
-        var orderStatus = order.OrderStatus.AsFormattedString();
+        var blobDocument = order.OrderStatus == OrderStatus.Completed ? $"{callOffId}.pdf" : $"{callOffId}-terminated.pdf";
 
-        var fileName = $"order-summary-{orderStatus}-{callOffId}.pdf";
-
-        var cachedPdf = await azureBlobStorageService.DownloadAsync(new(settings.OrderPdfContainerName, fileName));
+        var cachedPdf = await azureBlobStorageService.DownloadAsync(new(settings.OrderPdfContainerName, blobDocument));
         if (cachedPdf != null)
             return cachedPdf;
 
         var file = await orderPdfService.CreateOrderSummaryPdf(order);
 
-        await azureBlobStorageService.UploadAsync(new(settings.OrderPdfContainerName, fileName), file);
+        await azureBlobStorageService.UploadAsync(new(settings.OrderPdfContainerName, blobDocument), file);
 
         return file;
     }
