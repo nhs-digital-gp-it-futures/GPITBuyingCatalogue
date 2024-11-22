@@ -5,9 +5,11 @@
 
 @{
     var overarchingStandards = Model.Standards.Where(s => s.StandardType == StandardType.Overarching).OrderBy(s => s.Name).ToList();
+    var supplementaryCareStandards = Model.Standards.Where(s => s.StandardType == StandardType.SupplementaryCare).OrderBy(s => s.Name).ToList();
     var otherStandards = Model.Standards.Where(s => s.StandardType == StandardType.Other).OrderBy(s => s.Name).ToList();
 
     var shouldShowOverarchingAction = overarchingStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
+    var shouldShowSupplementaryCareStandardsAction = supplementaryCareStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
     var shouldShowOtherStandardsAction = otherStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
 }
 <partial name="_solutionSummary" model="Model" />
@@ -45,9 +47,9 @@
                     <nhs-table-cell><nhs-tag colour="Yellow" text="In&nbsp;Progress" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(SolutionsController.DevelopmentPlans)"
-                            asp-controller="@typeof(SolutionsController).ControllerName()"
-                            asp-route-solutionId="@Model.SolutionId"
-                            asp-fragment="@standard.Id">View&nbsp;details</a>
+                           asp-controller="@typeof(SolutionsController).ControllerName()"
+                           asp-route-solutionId="@Model.SolutionId"
+                           asp-fragment="@standard.Id">View&nbsp;details</a>
                     </nhs-table-cell>
                 }
                 else
@@ -59,6 +61,49 @@
         }
     </nhs-table>
 </nhs-expander>
+
+@if (supplementaryCareStandards.Count > 0)
+{
+    <nhs-expander label-text="Supplementary Care Standards" open="false">
+        <p>The requirements in a Supplementary Care Standard describe a care domain specific service, feature or operating capability that a Catalogue Solution must meet.</p>
+
+        <nhs-table data-test-id="supplemetary-standards-table">
+            <nhs-table-column>Standard</nhs-table-column>
+            <nhs-table-column>Description</nhs-table-column>
+            <nhs-table-column>Status</nhs-table-column>
+            @if (shouldShowSupplementaryCareStandardsAction)
+            {
+                <nhs-table-column>Action</nhs-table-column>
+            }
+            else
+            {
+                <nhs-table-column></nhs-table-column>
+            }
+            @foreach (var standard in supplementaryCareStandards)
+            {
+                <nhs-table-row-container>
+                    <nhs-table-cell>@standard.Name</nhs-table-cell>
+                    <nhs-table-cell>@standard.Description <p><a href="@standard.Url" target="_blank">More information about this Standard (opens in a new tab)</a></p></nhs-table-cell>
+                    @if (Model.StandardsWithWorkOffPlans.Any(swp => swp == standard.Id))
+                    {
+                        <nhs-table-cell><nhs-tag colour="Yellow" text="In&nbsp;Progress" /></nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@nameof(SolutionsController.DevelopmentPlans)"
+                               asp-controller="@typeof(SolutionsController).ControllerName()"
+                               asp-route-solutionId="@Model.SolutionId"
+                               asp-fragment="@standard.Id">View&nbsp;details</a>
+                        </nhs-table-cell>
+                    }
+                    else
+                    {
+                        <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
+                        <nhs-table-cell></nhs-table-cell>
+                    }
+                </nhs-table-row-container>
+            }
+        </nhs-table>
+    </nhs-expander>
+}
 
 @if (otherStandards.Count > 0)
 {
