@@ -66,5 +66,6 @@
 :r ./TestData/InsertFilters.sql
 :r ./TestData/Competitions/InsertCompetitions.sql
 :r ./TestData/Solutions/InsertServiceLevels.sql
+:r ./TestData/InsertWorkOffPlans.sql
 
 :r ./MigrateStandards.sql
