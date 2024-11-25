@@ -153,6 +153,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             {
                 "Standard" => StandardType.Other,
                 "Overarching Standard" => StandardType.Overarching,
+                "Supplementary Care Standard" => StandardType.SupplementaryCare,
                 { } val => throw new InvalidOperationException($"Invalid standard type specified: {val}")
             };
         }
