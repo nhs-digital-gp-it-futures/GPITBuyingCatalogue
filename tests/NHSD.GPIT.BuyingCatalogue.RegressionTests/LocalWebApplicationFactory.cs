@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.SqlClient;
@@ -119,6 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests
                 webHost.UseStartup<Startup>();
                 webHost.ConfigureTestServices(services =>
                 {
+                    services.Configure<SecurityStampValidatorOptions>(o => o.ValidationInterval = TimeSpan.FromHours(5));
                     services.AddSingleton<IUrlValidator, StubbedUrlValidator>();
                 });
                 webHost.UseUrls($"{LocalhostBaseAddress}:0");
