@@ -22,6 +22,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 
         private readonly Uri uri;
 
+        private readonly string providedUrl;
+
         private readonly ITestOutputHelper? testOutputHelper;
 
         public TestBase(
@@ -32,6 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             Factory = factory;
             Driver = factory.Driver;
             this.testOutputHelper = testOutputHelper;
+            providedUrl = urlArea;
 
             AuthorizationPages = new AuthorizationPages(Driver).PageActions;
             CommonActions = new Actions.Common.CommonActions(Driver);
@@ -67,25 +70,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 
         internal void AuthorityLogin()
         {
-            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
-                return;
-            AuthorizationPages.LoginActions.Login(adminUsername, adminPassword);
+            Login(adminUsername, adminPassword);
         }
 
         internal void BuyerLogin()
         {
-            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
-                return;
-
-            AuthorizationPages.LoginActions.Login(buyerUsername, buyerPassword);
-        }
-
-        internal void BuyerLogin(string buyerEmail)
-        {
-            if (UserAlreadyLoggedIn() || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed())
-                return;
-
-            AuthorizationPages.LoginActions.Login(buyerEmail, buyerPassword);
+            Login(buyerUsername, buyerPassword);
         }
 
         internal BuyingCatalogueDbContext GetEndToEndDbContext()
@@ -93,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             return Factory.DbContext;
         }
 
-        protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null;
+        protected bool UserAlreadyLoggedIn() => Driver.Manage().Cookies.GetCookieNamed("user-session") != null || !AuthorizationPages.LoginActions.EmailAddressInputDisplayed();
 
         protected void NavigateToUrl(string relativeUrl)
         {
@@ -113,6 +103,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
             IDictionary<string, string>? queryParameters = null)
         {
             NavigateToUrl(new Uri(UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters, queryParameters), UriKind.Relative));
+        }
+
+        private void Login(string username, string password)
+        {
+            if (UserAlreadyLoggedIn())
+                return;
+
+            AuthorizationPages.LoginActions.Login(username, password);
         }
     }
 }

@@ -47,11 +47,16 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo
         {
             CommonActions.HintText().Should().Be("We’ve included the latest practice list sizes published by the NHS.".FormatForComparison());
 
-            var count = CommonActions.NumberOfElementsDisplayed(QuantityObjects.InputQuantityPracticeListSize);
+            var subLocations = CommonActions.NumberOfElementsDisplayed(QuantityObjects.DetailsQuantity);
 
-            for (int i = 0; i < count; i++)
+            var inputFieldCount = CommonActions.NumberOfElementsDisplayed(QuantityObjects.InputQuantityPracticeListSize);
+
+            for (int i = 0; i < subLocations; i++)
             {
-                TextGenerators.NumberInputAddRandomNumber(QuantityObjects.InputQuantityInput(i), 50, 1000);
+                for (int j = 0; j < inputFieldCount; j++)
+                {
+                    TextGenerators.NumberInputAddRandomNumber(QuantityObjects.InputQuantityInput(i, j), 50, 1000);
+                }
             }
 
             CommonActions.ClickSave();
