@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new SolutionModel()
             {
                 BackLink = Url.Action(nameof(CatalogueSolutionsController.Index), typeof(CatalogueSolutionsController).ControllerName()),
-            }.WithSelectListItems(suppliers).WithAddSolution();
+            }.WithSelectListItems(suppliers);
 
             model.Frameworks = await GetFrameworks();
 
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
                 model.Frameworks = await GetFrameworks();
 
-                return View("Details", model.WithSelectListItems(suppliers).WithAddSolution());
+                return View("Details", model.WithSelectListItems(suppliers));
             }
 
             var catalogueItemId = await solutionsService.AddCatalogueSolution(new CreateSolutionModel
