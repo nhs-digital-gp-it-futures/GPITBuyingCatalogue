@@ -24,6 +24,7 @@ INSERT [filtering].[FilterHostingTypes] ([Id], [FilterId], [HostingTypeId]) VALU
 INSERT [filtering].[FilterHostingTypes] ([Id], [FilterId], [HostingTypeId]) VALUES (2, 3, 3)
 INSERT [filtering].[FilterHostingTypes] ([Id], [FilterId], [HostingTypeId]) VALUES (3, 3, 1)
 INSERT [filtering].[FilterHostingTypes] ([Id], [FilterId], [HostingTypeId]) VALUES (4, 3, 0)
+INSERT [filtering].[FilterHostingTypes] ([Id], [FilterId], [HostingTypeId]) VALUES (5, 1, 0)
 
 SET IDENTITY_INSERT [filtering].[FilterHostingTypes] OFF
 

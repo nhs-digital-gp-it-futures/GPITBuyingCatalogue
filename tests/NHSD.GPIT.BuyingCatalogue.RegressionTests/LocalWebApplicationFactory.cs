@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.SqlClient;
@@ -33,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests
 
         // Need to find a better way of doing this
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
-        private const string BC_DB_CONNECTION = "Server=localhost,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false;TrustServerCertificate=true";
+        private const string BC_DB_CONNECTION = "Server=127.0.0.1,1432;Database=GPITBuyingCatalogue;User=SA;password=Abc123Abc123;Integrated Security=false;TrustServerCertificate=true";
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore", Justification = "This name is used by the Webapp, so needs to be kept")]
         private const string DOMAIN_NAME = "127.0.0.1";
@@ -119,6 +120,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests
                 webHost.UseStartup<Startup>();
                 webHost.ConfigureTestServices(services =>
                 {
+                    services.Configure<SecurityStampValidatorOptions>(o => o.ValidationInterval = TimeSpan.FromHours(5));
                     services.AddSingleton<IUrlValidator, StubbedUrlValidator>();
                 });
                 webHost.UseUrls($"{LocalhostBaseAddress}:0");

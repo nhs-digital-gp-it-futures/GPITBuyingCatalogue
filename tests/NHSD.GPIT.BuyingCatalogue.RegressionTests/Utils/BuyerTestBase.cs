@@ -1,37 +1,31 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.UrlGenerators;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Controllers;
 using Xunit.Abstractions;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils
 {
     public abstract class BuyerTestBase : TestBase
     {
-        protected BuyerTestBase(
-            LocalWebApplicationFactory factory,
-            Type controller,
-            string methodName,
-            IDictionary<string, string>? parameters = null,
-            ITestOutputHelper? testOutputHelper = null)
-            : base(
-                  factory,
-                  testOutputHelper,
-                  UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters))
-        {
-            BuyerLogin();
-        }
+        private const string InternalOrgId = "IB-QWO";
+
+        private static readonly Dictionary<string, string> Parameters =
+            new()
+            {
+                { nameof(InternalOrgId), InternalOrgId },
+            };
 
         protected BuyerTestBase(
             LocalWebApplicationFactory factory,
-            Type controller,
-            string methodName,
-            IDictionary<string, string> parameters,
-            string buyerEmail,
             ITestOutputHelper? testOutputHelper = null)
             : base(
-                  factory,
-                  testOutputHelper,
-                  UrlGenerator.GenerateUrlFromMethod(controller, methodName, parameters))
+                factory,
+                testOutputHelper,
+                UrlGenerator.GenerateUrlFromMethod(
+                    typeof(BuyerDashboardController),
+                    nameof(BuyerDashboardController.Index),
+                    Parameters))
         {
-            BuyerLogin(buyerEmail);
+            BuyerLogin();
         }
     }
 }
