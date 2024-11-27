@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using EnumsNET;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -53,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                     new { internalOrgId });
             }
 
-            if (order.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated)
+            if (order.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated or OrderStatus.Expired)
             {
                 return RedirectToAction(
                     nameof(Summary),
@@ -188,12 +189,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var result = await pdfService.CreateOrderSummaryPdf(order);
 
-            var fileName = order.OrderStatus switch
-            {
-                OrderStatus.Terminated => $"order-summary-terminated-{callOffId}.pdf",
-                OrderStatus.Completed => $"order-summary-completed-{callOffId}.pdf",
-                _ => $"order-summary-in-progress-{callOffId}.pdf",
-            };
+            var orderStatus = order.OrderStatus.AsFormattedString();
+
+            var fileName = $"order-summary-{orderStatus}-{callOffId}.pdf";
 
             return File(result.ToArray(), "application/pdf", fileName);
         }
@@ -275,7 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             return order.OrderStatus switch
             {
                 OrderStatus.Terminated => "This contract has been terminated, but you can still view the details.",
-                OrderStatus.Completed when order.ContractExpired => $"This order expired on {order.EndDate.DisplayValue}, but you can still view the details.",
+                OrderStatus.Expired => $"This order expired on {order.EndDate.DisplayValue}, but you can still view the details.",
                 OrderStatus.Completed when order.OrderType.AssociatedServicesOnly => "This order has already been completed, but you can terminate the contract if needed.",
                 OrderStatus.Completed when latestOrder => "This order has already been completed, but you can amend or terminate the contract if needed.",
                 OrderStatus.Completed => "There is an amendment currently in progress for this contract.",
@@ -294,6 +292,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             return order.OrderStatus switch
             {
                 OrderStatus.Terminated => "Terminated contract details",
+                OrderStatus.Expired => "Expired contract details",
                 OrderStatus.Completed => "Order confirmed",
                 _ => orderWrapper.CanComplete()
                     ? "Review and complete order"
@@ -303,15 +302,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
         private string GetBackLink(string internalOrgId, CallOffId callOffId, Order order)
         {
-            return order.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated
-                                ? Url.Action(
-                                    nameof(DashboardController.Organisation),
-                                    typeof(DashboardController).ControllerName(),
-                                    new { internalOrgId })
-                                : Url.Action(
-                                    nameof(Order),
-                                    typeof(OrderController).ControllerName(),
-                                    new { internalOrgId, callOffId });
+            return order.OrderStatus is OrderStatus.InProgress
+                ? Url.Action(
+                    nameof(Order),
+                    typeof(OrderController).ControllerName(),
+                    new { internalOrgId, callOffId })
+
+                : Url.Action(
+                    nameof(DashboardController.Organisation),
+                    typeof(DashboardController).ControllerName(),
+                    new { internalOrgId });
         }
     }
 }

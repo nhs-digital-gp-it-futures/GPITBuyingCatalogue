@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By OrderIdSummary => ByExtensions.DataTestId("order-id-summary");
 
-        public static By AmendThisOrder => By.ClassName("nhsuk-action-link__text");
+        public static By AmendContract => By.LinkText("Amend contract");
 
         public static By OrderDescriptionSummary => ByExtensions.DataTestId("order-description-summary");
 

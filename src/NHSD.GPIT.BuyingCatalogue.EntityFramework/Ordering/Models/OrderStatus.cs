@@ -15,5 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         [EnumMember(Value = "Terminated")]
         Terminated = 4,
+
+        [EnumMember(Value = "Expired")]
+        Expired = 5,
     }
 }

@@ -5,6 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Common;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using ArgumentException = System.ArgumentException;
 
 namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
 {
@@ -212,6 +213,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         {
             Driver.FindElement(targetElement).Click();
             Driver.FindElement(targetElement).SendKeys(value);
+            Driver.FindElement(targetElement).SendKeys(Keys.Enter);
         }
 
         public void ElementAddValue(By targetElement, string value)
@@ -289,7 +291,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             Driver.FindElement(By.ClassName("nhsuk-lede-text")).Text.FormatForComparison();
 
         public string HintText() =>
-            Driver.FindElement(By.CssSelector(".nhsuk-hint.nhsuk-u-margin-bottom-5")).Text.FormatForComparison();
+            Driver.FindElement(By.CssSelector(".nhsuk-hint")).Text.FormatForComparison();
 
         public string InsetText() =>
             Driver.FindElement(By.ClassName("nhsuk-inset-text")).Text.FormatForComparison();
@@ -382,13 +384,20 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
             var actionUrl = new Uri("https://www.fake.com/" + absoluteRoute, UriKind.Absolute);
 
             if (driverUrl.Segments.Length != actionUrl.Segments.Length)
-                return false;
+                throw new ArgumentException("Expected url length doesn't match actual, expected similar to: " + actionUrl + " actual: " + driverUrl);
 
             // checks every segment in actionUrl, that doesn't start with a "{" (%7B) against the same positioned element in driverUrl.
             // if any don't match, will return false, else true.
-            return !actionUrl.Segments
+            var checkSegments = !actionUrl.Segments
                 .Where((t, i) => !t.StartsWith("%7B") && driverUrl.Segments[i].ToLower() != t.ToLower())
                 .Any();
+
+            if (!checkSegments)
+            {
+                throw new ArgumentException("Url content does not match, expected similar to " + actionUrl + "actual: " + driverUrl);
+            }
+
+            return true;
         }
 
         public void WaitUntilElementExists(By element) => Wait.Until(d => d.FindElement(element));
