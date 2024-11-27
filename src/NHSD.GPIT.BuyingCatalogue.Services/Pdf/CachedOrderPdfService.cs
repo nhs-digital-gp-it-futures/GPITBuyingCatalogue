@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using EnumsNET;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Storage;
@@ -28,10 +29,13 @@ public class CachedOrderPdfService : IOrderPdfService
     {
         if (order == null) throw new ArgumentNullException(nameof(order));
 
-        if (order.OrderStatus != OrderStatus.Completed && order.OrderStatus != OrderStatus.Terminated)
+        if (order.OrderStatus == OrderStatus.InProgress)
             return await orderPdfService.CreateOrderSummaryPdf(order);
 
-        var blobDocument = order.OrderStatus == OrderStatus.Completed ? $"{order.CallOffId.ToString()}.pdf" : $"{order.CallOffId.ToString()}-terminated.pdf";
+        var callOffId = order.CallOffId.ToString();
+
+        var blobDocument = order.OrderStatus == OrderStatus.Completed ? $"{callOffId}.pdf" : $"{callOffId}-terminated.pdf";
+
         var cachedPdf = await azureBlobStorageService.DownloadAsync(new(settings.OrderPdfContainerName, blobDocument));
         if (cachedPdf != null)
             return cachedPdf;

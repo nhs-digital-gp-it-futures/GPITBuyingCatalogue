@@ -53,13 +53,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public string RequirementLabelText => "Specific requirements";
 
-        public string ButtonLabelText => Order.OrderStatus == OrderStatus.InProgress && OrderWrapper.CanComplete()
+        public string ButtonLabelText => OrderWrapper.CanComplete()
             ? "Complete order"
             : Order.OrderStatus == OrderStatus.Terminated
                 ? "Download summary"
                 : "Order summary";
 
-        public string ButtonAdviceText => Order.OrderStatus == OrderStatus.InProgress && OrderWrapper.CanComplete()
+        public string ButtonAdviceText => OrderWrapper.CanComplete()
             ?
             "Make sure you are happy with the order before marking it as complete."
             : Order.OrderStatus == OrderStatus.Terminated
