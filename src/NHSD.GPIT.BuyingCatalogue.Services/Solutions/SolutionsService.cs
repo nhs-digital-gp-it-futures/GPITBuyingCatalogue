@@ -310,6 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             string solutionName,
             int supplierId,
             bool isPilotSolution,
+            SolutionCategory? solutionCategory,
             IList<FrameworkModel> selectedFrameworks)
         {
             var data = await GetCatalogueItem(id);
@@ -317,6 +318,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             data.Name = solutionName;
             data.SupplierId = supplierId;
             data.Solution.IsPilotSolution = isPilotSolution;
+            data.Solution.Category = solutionCategory;
 
             var frameworks = data.Solution.FrameworkSolutions.ToList();
             frameworks.RemoveAll(f => selectedFrameworks.Any(sf => f.FrameworkId == sf.FrameworkId && sf.Selected == false));

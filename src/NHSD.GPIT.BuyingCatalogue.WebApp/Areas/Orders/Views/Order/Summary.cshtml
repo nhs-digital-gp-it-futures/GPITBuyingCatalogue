@@ -417,7 +417,7 @@
                         <vc:nhs-delete-button url="@Url.Action(nameof(OrderController.TerminateOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })" text="Terminate contract"/>
                     }
 
-                    @if (Model.Order.OrderStatus == OrderStatus.InProgress && Model.OrderWrapper.CanComplete())
+                    @if (Model.OrderWrapper.CanComplete())
                     {
                         <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(nameof(DashboardController.Organisation), typeof(DashboardController).ControllerName(), new { Model.InternalOrgId })">Save for later</a>
                     }

@@ -82,6 +82,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 if (IsDeleted)
                     return OrderStatus.Deleted;
 
+                if (ContractExpired)
+                    return OrderStatus.Expired;
+
                 return Completed.HasValue
                     ? OrderStatus.Completed
                     : OrderStatus.InProgress;
