@@ -12,7 +12,7 @@ public static class FeaturesRequirementModelTests
     public static void Construct_SetsPropertiesAsExpected(
         Competition competition)
     {
-        var model = new FeaturesRequirementModel(competition);
+        var model = new FeatureModel(competition);
 
         model.CompetitionName.Should().Be(competition.Name);
     }
@@ -23,7 +23,7 @@ public static class FeaturesRequirementModelTests
         Competition competition,
         FeaturesCriteria featuresCriteria)
     {
-        var model = new FeaturesRequirementModel(competition, featuresCriteria);
+        var model = new FeatureModel(competition, featuresCriteria);
 
         model.CompetitionName.Should().Be(competition.Name);
         model.FeaturesCriteriaId.Should().Be(featuresCriteria.Id);

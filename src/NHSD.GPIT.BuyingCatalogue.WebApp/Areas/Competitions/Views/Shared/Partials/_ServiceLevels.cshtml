@@ -1,0 +1,18 @@
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
+@model NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models.ServiceLevelCriteria
+<nhs-summary-list>
+    <nhs-summary-list-row label-text="Core support hours">
+        @($"{Model.TimeFrom:HH:mm} to {Model.TimeUntil:HH:mm}")
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="Applicable days">
+        <ul>
+            @foreach (var day in Model.ApplicableDays)
+            {
+                <li>@day.ToString()</li>
+            }
+        </ul>
+    </nhs-summary-list-row>
+    <nhs-summary-list-row label-text="Including Bank Holidays?">
+        @Model.IncludesBankHolidays.ToYesNo()
+    </nhs-summary-list-row>
+</nhs-summary-list>

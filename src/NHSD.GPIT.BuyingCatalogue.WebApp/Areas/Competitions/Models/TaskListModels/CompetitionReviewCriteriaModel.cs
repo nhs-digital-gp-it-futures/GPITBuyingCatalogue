@@ -25,10 +25,6 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
         NonPriceElements = competition.NonPriceElements;
         HasReviewedCriteria = competition.HasReviewedCriteria;
 
-        NonPriceWeights = competition.NonPriceElements.GetNonPriceElements()
-            .OrderBy(x => x.ToString())
-            .ToDictionary(x => x, x => competition.NonPriceElements.GetNonPriceWeight(x));
-
         AvailableIntegrations = availableIntegrations.ToDictionary(x => x.Id, x => x.Name);
     }
 
@@ -44,11 +40,15 @@ public class CompetitionReviewCriteriaModel : NavBaseModel
         ? "Continue"
         : "Confirm competition criteria";
 
+    public bool ConfirmCriteria { get; set; }
+
     public Dictionary<SupportedIntegrations, string> AvailableIntegrations { get; set; }
 
     public Weightings CompetitionWeights { get; set; }
 
     public NonPriceElements NonPriceElements { get; set; }
 
-    public Dictionary<NonPriceElement, int?> NonPriceWeights { get; set; }
+    public Dictionary<NonPriceElement, int?> NonPriceWeights => NonPriceElements.GetNonPriceElements()
+        .OrderBy(x => x.ToString())
+        .ToDictionary(x => x, x => NonPriceElements.GetNonPriceWeight(x));
 }

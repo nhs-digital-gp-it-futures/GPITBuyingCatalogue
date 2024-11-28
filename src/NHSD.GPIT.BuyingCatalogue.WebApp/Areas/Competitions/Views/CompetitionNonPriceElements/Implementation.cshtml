@@ -23,16 +23,14 @@
             <input type="hidden" asp-for="BackLink"/>
 
             <nhs-textarea asp-for="Requirements"
-                          label-text="Implementation requirements"
-                          label-hint="For example, how quickly you’ll need the solution to be up and running, or anything else you need from the supplier during implementation."/>
+                          label-text="What implementation requirements do you have?"
+                          label-hint="For example, how quickly you'll need the solution to be up and running, or anything else you need from the supplier during implementation." />
 
             <br/>
-            <div>
+            <nhs-button-group>
                 <nhs-submit-button/>
-            </div>
-            <div>
                 <a href="@Model.BackLink">Cancel</a>
-            </div>
+            </nhs-button-group>
             @if (Model.CanDelete)
             {
                 <br/>

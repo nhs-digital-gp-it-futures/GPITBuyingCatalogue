@@ -65,7 +65,7 @@ public static class SelectInteroperabilityCriteriaModelTests
 
     [Theory]
     [MockAutoData]
-    public static void CanDelete_NoIntegrationTypes_ReturnsTrue(
+    public static void CanDelete_NoIntegrationTypes_ReturnsFalse(
         Competition competition,
         List<Integration> integrations)
     {
@@ -73,12 +73,12 @@ public static class SelectInteroperabilityCriteriaModelTests
 
         var model = new SelectInteroperabilityCriteriaModel(competition, integrations);
 
-        model.CanDelete.Should().BeTrue();
+        model.CanDelete.Should().BeFalse();
     }
 
     [Theory]
     [MockAutoData]
-    public static void CanDelete_WithIntegrationTypes_ReturnsFalse(
+    public static void CanDelete_WithIntegrationTypes_ReturnsTrue(
         List<IntegrationType> integrationTypes,
         Competition competition,
         List<Integration> integrations)
@@ -87,6 +87,6 @@ public static class SelectInteroperabilityCriteriaModelTests
 
         var model = new SelectInteroperabilityCriteriaModel(competition, integrations);
 
-        model.CanDelete.Should().BeFalse();
+        model.CanDelete.Should().BeTrue();
     }
 }

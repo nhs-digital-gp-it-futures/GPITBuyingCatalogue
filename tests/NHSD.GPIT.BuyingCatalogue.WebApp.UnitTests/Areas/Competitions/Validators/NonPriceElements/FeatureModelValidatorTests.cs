@@ -6,12 +6,12 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Validators.NonPriceElements;
 
-public static class FeaturesRequirementModelValidatorTests
+public static class FeatureModelValidatorTests
 {
     [Theory]
     [MockAutoData]
     public static void Validate_MissingRequirements_SetsModelError(
-        FeaturesRequirementModel model,
+        FeatureModel model,
         FeaturesRequirementModelValidator validator)
     {
         model.Requirements = null;
@@ -25,7 +25,7 @@ public static class FeaturesRequirementModelValidatorTests
     [Theory]
     [MockAutoData]
     public static void Validate_MissingCompliance_SetsModelError(
-        FeaturesRequirementModel model,
+        FeatureModel model,
         FeaturesRequirementModelValidator validator)
     {
         model.SelectedCompliance = null;
@@ -41,7 +41,7 @@ public static class FeaturesRequirementModelValidatorTests
     public static void Validate_Valid_NoModelErrors(
         string requirements,
         CompliancyLevel selectedCompliance,
-        FeaturesRequirementModel model,
+        FeatureModel model,
         FeaturesRequirementModelValidator validator)
     {
         model.Requirements = requirements;

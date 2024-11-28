@@ -37,8 +37,6 @@ public class NonPriceElementsPartialModel
 
     public object RouteValues { get; set; }
 
-    public bool IsReviewScreen { get; set; }
-
     public bool HasReviewedCriteria { get; set; }
 
     public Dictionary<SupportedIntegrations, string> AvailableIntegrations { get; set; }

@@ -34,7 +34,7 @@
 <nhs-table>
     <nhs-table-column>Item</nhs-table-column>
     <nhs-table-column>Status</nhs-table-column>
-    <nhs-table-column>Action</nhs-table-column>
+    <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
 
     <nhs-table-row-container>
         <nhs-table-cell>Price</nhs-table-cell>
@@ -42,7 +42,7 @@
             <nhs-tag status-enum="@Model.PriceProgress"></nhs-tag>
         </nhs-table-cell>
         <nhs-table-cell>
-            <a href="@priceUrl">Edit</a>
+            <a href="@priceUrl">@GetLinkName(Model.PriceProgress)</a>
         </nhs-table-cell>
     </nhs-table-row-container>
 
@@ -54,7 +54,7 @@
         <nhs-table-cell>
             @if (Model.QuantityProgress != TaskProgress.CannotStart)
             {
-                <a href="@quantityUrl">Edit</a>
+                <a href="@quantityUrl">@GetLinkName(Model.QuantityProgress)</a>
             }
         </nhs-table-cell>
     </nhs-table-row-container>
@@ -81,4 +81,10 @@
 
 @{
     decimal CalculateTotalCost() => ((IPrice)Model.Price).CalculateCostPerMonth(quantity) * Model.ContractLength.GetValueOrDefault();
+    string GetLinkName(TaskProgress progress) => progress switch
+    {
+        TaskProgress.NotStarted => "Start",
+        TaskProgress.InProgress => "Continue",
+        _ => "Change",
+    };
 }

@@ -25,7 +25,6 @@ public static class NonPriceElementsPartialModelTests
         model.CompetitionId.Should().Be(competitionId);
         model.NonPriceElements.Should().Be(nonPriceElements);
         model.RouteValues.Should().Be(routeValues);
-        model.IsReviewScreen.Should().BeFalse();
     }
 
     [Theory]
