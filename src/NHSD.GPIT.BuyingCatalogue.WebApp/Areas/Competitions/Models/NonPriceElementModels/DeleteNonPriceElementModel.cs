@@ -1,4 +1,9 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels;
@@ -9,10 +14,34 @@ public class DeleteNonPriceElementModel : NavBaseModel
     {
     }
 
-    public DeleteNonPriceElementModel(NonPriceElement nonPriceElement)
+    public DeleteNonPriceElementModel(NonPriceElement nonPriceElementType, Competition competition, IEnumerable<Integration> availableIntegrations = null, int featureId = 0)
     {
-        NonPriceElement = nonPriceElement;
+        InternalOrgId = competition.Organisation?.InternalIdentifier;
+        CompetitionId = competition.Id;
+
+        CompetitionName = competition.Name;
+        HasReviewedCriteria = competition.HasReviewedCriteria;
+        NonPriceElementType = nonPriceElementType;
+        NonPriceElementDetails = featureId == 0 ? competition.NonPriceElements : new NonPriceElements() { Features = competition.NonPriceElements?.Features.Where(x => x.Id == featureId).ToList() };
+        AvailableIntegrations = availableIntegrations?.ToDictionary(x => x.Id, x => x.Name);
     }
 
-    public NonPriceElement NonPriceElement { get; set; }
+    public string InternalOrgId { get; set; }
+
+    public int CompetitionId { get; set; }
+
+    public string CompetitionName { get; set; }
+
+    public bool HasReviewedCriteria { get; set; }
+
+    public NonPriceElement NonPriceElementType { get; set; }
+
+    public NonPriceElements NonPriceElementDetails { get; set; }
+
+    public Dictionary<SupportedIntegrations, string> AvailableIntegrations { get; set; }
+
+    public string SingleElementDisplay => NonPriceElementType == NonPriceElement.Features ? "Feature" : NonPriceElementType.EnumMemberName();
+
+    public override string Advice => NonPriceElementType == NonPriceElement.Features ? "If you delete all your features requirements, features will be removed as a non-price element." :
+        "Deleting this requirement will remove " + NonPriceElementType.EnumMemberName().ToLower() + " as a non-price element.";
 }

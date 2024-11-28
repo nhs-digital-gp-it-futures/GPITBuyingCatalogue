@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
@@ -305,6 +306,35 @@ public static class CompetitionTaskListControllerTests
 
         result.Should().NotBeNull();
         result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task ReviewCriteria_InvalidModelState_ReturnsViewWithModel(
+        Organisation organisation,
+        Competition competition,
+        List<Integration> integrations,
+        CompetitionReviewCriteriaModel model,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IIntegrationsService integrationsService,
+        CompetitionTaskListController controller)
+    {
+        competitionsService.GetCompetitionCriteriaReview(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
+
+        integrationsService.GetIntegrations().Returns(integrations);
+
+        controller.ModelState.AddModelError("some-key", "some-error");
+
+        var result = (await controller.ReviewCriteria(organisation.InternalIdentifier, competition.Id, model)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.ViewName.Should().BeNull();
+        var resultModel = result.Model.As<CompetitionReviewCriteriaModel>();
+        resultModel.Should().NotBeNull();
+        resultModel.CompetitionWeights.Should().BeEquivalentTo(competition.Weightings);
+        resultModel.NonPriceElements.Should().BeEquivalentTo(competition.NonPriceElements);
+        resultModel.AvailableIntegrations.Should().BeEquivalentTo(integrations.ToDictionary(x => x.Id, x => x.Name));
     }
 
     [Theory]

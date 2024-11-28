@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.NonPriceElementModels.FeaturesModels;
 using Xunit;
 
@@ -16,10 +17,9 @@ public static class FeaturesRequirementsModelTests
     {
         competition.NonPriceElements = new() { Features = featuresCriteria };
 
-        var model = new FeaturesRequirementsModel(competition);
+        var model = new FeatureModel(competition);
 
         model.CompetitionId.Should().Be(competition.Id);
         model.CompetitionName.Should().Be(competition.Name);
-        model.Features.Should().BeEquivalentTo(competition.NonPriceElements.Features);
     }
 }

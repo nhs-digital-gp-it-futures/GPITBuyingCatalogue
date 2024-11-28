@@ -71,7 +71,15 @@ public class CompetitionResultsController : Controller
         int competitionId,
         ConfirmResultsModel model)
     {
-        _ = model;
+        if (!ModelState.IsValid)
+        {
+            var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+
+            model.CompetitionSolutions = competition.CompetitionSolutions;
+            model.NonPriceElements = competition.NonPriceElements.GetNonPriceElements().ToList();
+
+            return View(model);
+        }
 
         await competitionsService.CompleteCompetition(internalOrgId, competitionId);
 

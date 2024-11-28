@@ -2,7 +2,6 @@
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.WarningCallout
 @model ConfirmResultsModel
 
 @{
@@ -12,13 +11,9 @@
 <partial name="Partials/_BackLink" model="Model"/>
 
 <div class="nhsuk-grid-row">
-    <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title" caption="@Model.CompetitionName" advice="Review the information you’ve added for this competition. If you’re happy, you can view your results and see your winning solution."/>
-
-        <nhs-warning-callout label-text="Viewing your results">
-            <p>Viewing your results means you’ll no longer be able to make any changes to the information you’ve provided and this competition will be complete. You can then order your winning solution.</p>
-            <p>However, the result is non-binding so you are under no obligation to place an order for the solution if you don’t want to.</p>
-        </nhs-warning-callout>
 
         @if (Model.IncludesNonPriceElements)
         {
@@ -26,39 +21,66 @@
 
             @foreach (var competitionSolution in Model.CompetitionSolutions.OrderBy(x => x.Solution.CatalogueItem.Name))
             {
-                <nhs-card>
-                    <h3>
-                        @competitionSolution.Solution.CatalogueItem.Name
-                        <span class="nhsuk-caption-m nhsuk-caption--bottom">
-                            @competitionSolution.Solution.CatalogueItem.Supplier.Name
-                        </span>
-                    </h3>
+                <nhs-card-v2>
+                    <nhs-card-content>
+                        <h3>
+                            @competitionSolution.Solution.CatalogueItem.Name
+                            <span class="nhsuk-caption-m nhsuk-caption--bottom">
+                                @competitionSolution.Solution.CatalogueItem.Supplier.Name
+                            </span>
+                        </h3>
 
-                    <nhs-table label-text="Non-price element scoring">
-                        <nhs-table-column>Non-price element</nhs-table-column>
-                        <nhs-table-column>Score</nhs-table-column>
+                        <nhs-table label-text="Non-price element scoring">
+                            <nhs-table-column>Non-price element</nhs-table-column>
+                            <nhs-table-column>Score</nhs-table-column>
 
-                        @foreach (var nonPriceElement in Model.NonPriceElements)
-                        {
-                            <nhs-table-row-container>
-                                <nhs-table-cell>@nonPriceElement.EnumMemberName()</nhs-table-cell>
-                                <nhs-table-cell>@(competitionSolution.GetScoreByType(nonPriceElement.AsScoreType())?.Score)</nhs-table-cell>
-                            </nhs-table-row-container>
-                        }
-                    </nhs-table>
-                </nhs-card>
+                            @foreach (var nonPriceElement in Model.NonPriceElements)
+                            {
+                                <nhs-table-row-container>
+                                    <nhs-table-cell>@nonPriceElement.EnumMemberName()</nhs-table-cell>
+                                    <nhs-table-cell>@(competitionSolution.GetScoreByType(nonPriceElement.AsScoreType())?.Score)</nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
+                        
+                        <nhs-summary-list>
+                            <nhs-summary-list-row label-text="Price">
+                                @($"£{competitionSolution.CalculateTotalPrice(Model.ContractLength):N2}")
+                            </nhs-summary-list-row>
+                        </nhs-summary-list>
+                    </nhs-card-content>
+                </nhs-card-v2>
             }
         }
 
         <p>You can <a href="@Model.BackLink">return to your competition tasklist</a> if you need to make any changes to the information you’ve provided. By continuing you’ll no longer be able to make any changes.</p>
 
         <form method="post">
+            <nhs-fieldset-form-label asp-for="@Model"
+                                     label-text="Complete competition" size="Small">
+
+                <input type="hidden" asp-for="BackLink"/>
+                <input type="hidden" asp-for="InternalOrgId"/>
+                <input type="hidden" asp-for="PdfUrl"/>
+                <input type="hidden" asp-for="IncludesNonPriceElements"/>
+                <input type="hidden" asp-for="CompetitionName"/>
+                <input type="hidden" asp-for="ContractLength" />
+
+                <p>Viewing your results means you’ll no longer be able to make any changes to the information you’ve provided and this competition will be complete. You can then order your winning solution.</p>
+                <p>However, the result is non-binding so you are under no obligation to place an order for the solution if you don’t want to.</p>
+
+                <nhs-checkbox-container>
+                    <nhs-checkbox label-text="I confirm I want to complete the competition and view the results" asp-for="@Model.CompleteCompetition"/>
+                </nhs-checkbox-container>
+
+            </nhs-fieldset-form-label>
+
             <nhs-button-group>
                 <nhs-submit-button text="View results"/>
                 <vc:nhs-secondary-button type="Secondary" text="Save for later" url="@Url.Action(nameof(CompetitionsDashboardController.Index), typeof(CompetitionsDashboardController).ControllerName(), new { internalOrgId = Model.InternalOrgId })"/>
                 <vc:nhs-secondary-button text="Download summary (PDF)"
                                          url="@Model.PdfUrl"
-                                         type="Secondary" />
+                                         type="Secondary"/>
             </nhs-button-group>
         </form>
     </div>

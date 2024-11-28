@@ -19,9 +19,11 @@
         <div id="SolutionDetails" class="nhsuk-u-margin-bottom-9">
             <h2>Catalogue Solution</h2>
 
-            <div class="nhsuk-u-margin-bottom-9">
+            <nhs-card-v2>
+            <nhs-card-content>
                 <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(Model.SolutionId)"/>
-            </div>
+            </nhs-card-content>
+            </nhs-card-v2>
         </div>
 
         @if (additionalServices.Any())
@@ -32,9 +34,11 @@
 
                 @foreach (var item in additionalServices)
                 {
-                    <div class="nhsuk-u-margin-bottom-9">
+                    <nhs-card-v2>
+                    <nhs-card-content>
                         <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
-                    </div>
+                    </nhs-card-content>
+                    </nhs-card-v2>
                 }
             </div>
         }
@@ -43,26 +47,33 @@
         {
             <div id="AssociatedServiceDetails" class="nhsuk-u-margin-bottom-9">
                 <h2>Associated Services</h2>
-                <p>You can add Associated Services to help implement your solution, for example training or data migration.</p>
+                <nhs-card-v2>
+                    <nhs-card-content>
+                        @if (!associatedServices.Any())
+                        {
+                            <p>No Associated Services have been added for this Catalogue Solution.</p>
+                        }
+                        else
+                        {
+                            <p>You can add Associated Services to help implement your solution, for example training or data migration.</p>
+                            @foreach (var item in associatedServices)
+                            {
+                                <div class="nhsuk-u-margin-bottom-9">
+                                    <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
+                                </div>
+                            }
+                        }
+                    </nhs-card-content>
+                    <nhs-card-footer>
+                        <p class="nhsuk-body-m">
+                            <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Model.AssociatedServicesUrl">
+                                <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" /> @Model.AssociatedServicesActionText
+                            </a>
+                        </p>
+                    </nhs-card-footer>
+                </nhs-card-v2>
 
-                <span data-test-id="associated-services-action">
-                    <vc:nhs-action-link text="@Model.AssociatedServicesActionText"
-                                        url="@Model.AssociatedServicesUrl"/>
-                </span>
-
-                @if (!associatedServices.Any())
-                {
-                    <p>No Associated Services have been added for this Catalogue Solution.</p>
-                }
-                else
-                {
-                    @foreach (var item in associatedServices)
-                    {
-                        <div class="nhsuk-u-margin-bottom-9">
-                            <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
-                        </div>
-                    }
-                }
+                
             </div>
         }
 

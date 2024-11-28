@@ -1,3 +1,8 @@
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @model PricingDashboardModel
 
 @{
@@ -12,11 +17,13 @@
                         advice="Provide information to calculate the price for each of your shortlisted solutions. The calculation will be based on the quantity you want to order and the length of the contract."
                         caption="@Model.CompetitionName"/>
 
-        <nhs-table label-text="Indicative costs not including VAT">
+        <nhs-card-v2>
+            <nhs-card-content title="Indicative costs excluding VAT">
+        <nhs-table>
             <nhs-table-column>Catalogue Solution</nhs-table-column>
             <nhs-table-column>Price</nhs-table-column>
             <nhs-table-column>Status</nhs-table-column>
-            <nhs-table-column>Action</nhs-table-column>
+                    <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
 
             @foreach (var solution in Model.SolutionPrices.OrderBy(x => x.Name))
             {
@@ -27,13 +34,22 @@
                         <nhs-tag status-enum="@solution.Progress"/>
                     </nhs-table-cell>
                     <nhs-table-cell>
-                        <a href="@Url.Action(nameof(CompetitionHubController.Hub), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = solution.CatalogueItemId })">Edit</a>
+                                <a href="@Url.Action(nameof(CompetitionHubController.Hub), typeof(CompetitionHubController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, solutionId = solution.CatalogueItemId })">@GetLinkName(@solution.Progress)</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
             }
         </nhs-table>
-
+            </nhs-card-content>
+        </nhs-card-v2>
         <br/>
         <vc:nhs-secondary-button type="Primary" text="Save and continue" url="@Model.BackLink"/>
     </div>
 </div>
+@{
+    string GetLinkName(TaskProgress progress) => progress switch
+    {
+        TaskProgress.NotStarted => "Start",
+        TaskProgress.InProgress => "Continue",
+        _ => "Change",
+    };
+}
