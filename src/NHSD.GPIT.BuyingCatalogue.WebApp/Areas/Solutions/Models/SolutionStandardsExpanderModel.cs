@@ -7,8 +7,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     public class SolutionStandardsExpanderModel
     {
         public SolutionStandardsExpanderModel(
-            string title, string content, string testId, IEnumerable<Standard> standards, IEnumerable<string> standardsWithWorkOffPlans, CatalogueItemId solutionId, bool showAction
-        )
+            string title,
+            string content,
+            string testId,
+            IEnumerable<Standard> standards,
+            IEnumerable<string> standardsWithWorkOffPlans,
+            CatalogueItemId solutionId,
+            bool showAction)
         {
             Title = title;
             Content = content;
