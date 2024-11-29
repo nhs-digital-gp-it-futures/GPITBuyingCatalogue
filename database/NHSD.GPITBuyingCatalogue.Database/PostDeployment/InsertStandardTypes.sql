@@ -2,6 +2,7 @@
 USING (
 VALUES
     (1, 'Overarching'),
+    (2, 'SupplementaryCare'),
     (5, 'Other')
 )
 AS SOURCE([Id], [Name])

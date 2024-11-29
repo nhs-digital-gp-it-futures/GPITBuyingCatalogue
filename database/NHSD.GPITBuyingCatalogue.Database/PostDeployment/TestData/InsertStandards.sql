@@ -28,6 +28,12 @@ BEGIN
     ('S69', 'Testing', 'Ensures that�Suppliers'' software delivery test processes are of sufficient quality and rigour.', 'https://gpitbjss.atlassian.net/wiki/spaces/DCSDCS/pages/1391133583/Testing', 1, '1.0.2', 0),
     ('S81', 'Primary Care Technology Innovation Standard', 'As part of our move to modernise core clinical systems for Primary Care, NHS Digital have been engaging Suppliers around our Modern Technology Standards. These standards and the NHS Architecture Principles lay out the future ways of working and technology we want to see developing to serve the needs of Primary Care and simplify the complexity of healthcare systems provision.', 'https://gpitbjss.atlassian.net/wiki/spaces/DCSDCS/pages/11969953793/Primary+Care+Technology+Innovation+Standard', 1, '1.0.1', 0)
     
+    -- Supplementary Care Standards
+    INSERT INTO @Standards(Id,[Name],[Description],[Url],[StandardTypeId],[Version],[IsDeleted])
+    VALUES
+    ('SCS1', 'Community Pharmacy Clinical Services', 'Supports Referrals to Community Pharmacy and the management of Community Pharmacy Consultations. Also supports the submission of data to the NHS Business Services Authority (NHSBSA) for payment purposes.', 'https://nhse-dsic.atlassian.net/wiki/spaces/DCSDCS/pages/12667027525/Community+Pharmacy+Clinical+Services', 2, '2.0.0', 0)
+
+
     --Interoperability Standards
     INSERT INTO @Standards(Id,[Name],[Description],[Url],[StandardTypeId],[Version],[IsDeleted])
     VALUES
