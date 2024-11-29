@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         [Display(Name = "Overarching")]
         Overarching = 1,
 
-        [Description("SupplementaryCare")]
+        [Description("Supplementary Care")]
         [Display(Name = "Supplementary Care")]
         SupplementaryCare = 2,
 

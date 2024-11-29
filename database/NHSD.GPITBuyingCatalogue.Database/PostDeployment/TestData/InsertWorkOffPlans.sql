@@ -1,4 +1,4 @@
--- IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE'
+IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE'
 BEGIN
     DECLARE 
         @CatalogueSolution1Id NVARCHAR(14) = '99998-98', -- NotSystmOne
@@ -40,6 +40,6 @@ BEGIN
         WHEN NOT MATCHED THEN
         INSERT (Id, [SolutionId], [StandardId], [Details], [CompletionDate])
         VALUES(SOURCE.Id, SOURCE.[SolutionId], SOURCE.[StandardId], SOURCE.[Details], SOURCE.[CompletionDate]);
-    
+
     SET IDENTITY_INSERT catalogue.WorkOffPlans OFF
 END
