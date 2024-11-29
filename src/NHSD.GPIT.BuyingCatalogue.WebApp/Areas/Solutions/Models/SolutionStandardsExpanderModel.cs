@@ -36,6 +36,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
         public CatalogueItemId SolutionId { get; }
 
         public bool ShowAction { get; }
-
     }
 }
