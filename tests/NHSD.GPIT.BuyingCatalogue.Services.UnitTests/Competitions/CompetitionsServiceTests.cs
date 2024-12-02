@@ -2038,7 +2038,74 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task SetAssociatedServices_UpdatesAssociatedServices(
+    public static async Task AddAssociatedServices_NoExistingServices_AddsAssociatedServices(
+        Organisation organisation,
+        Supplier supplier,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        Solution solution,
+        List<AssociatedService> associatedServices,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        supplier.CatalogueItems = null;
+
+        solution.CatalogueItem.Supplier = null;
+        solution.CatalogueItem.SupplierId = supplier.Id;
+
+        associatedServices.ForEach(
+            x =>
+            {
+                x.CatalogueItem.Supplier = null;
+                x.CatalogueItem.SupplierId = supplier.Id;
+            });
+
+        var supplierServiceAssociations = associatedServices.Select(
+            x => new SupplierServiceAssociation(solution.CatalogueItemId, x.CatalogueItemId));
+
+        competition.OrganisationId = organisation.Id;
+        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+
+        competitionSolution.IsShortlisted = true;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.SolutionServices = new List<SolutionService>();
+
+        var serviceIds = associatedServices.Select(x => x.CatalogueItemId).ToList();
+
+        context.Organisations.Add(organisation);
+        context.Suppliers.Add(supplier);
+        context.Solutions.Add(solution);
+        context.AssociatedServices.AddRange(associatedServices);
+        context.SupplierServiceAssociations.AddRange(supplierServiceAssociations);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        await service.AddAssociatedServices(
+            organisation.InternalIdentifier,
+            competition.Id,
+            solution.CatalogueItemId,
+            serviceIds);
+
+        var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Service)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == organisation.InternalIdentifier && x.Id == competition.Id);
+
+        var updatedCompetitionSolution =
+            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+
+        var solutionServices = updatedCompetitionSolution.SolutionServices.ToList();
+
+        solutionServices.Should().HaveCount(associatedServices.Count);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task AddAssociatedServices_ExistingService_DoesNotRemoveExistingService(
         Organisation organisation,
         Supplier supplier,
         Competition competition,
@@ -2089,7 +2156,7 @@ public static class CompetitionsServiceTests
 
         context.ChangeTracker.Clear();
 
-        await service.SetAssociatedServices(
+        await service.AddAssociatedServices(
             organisation.InternalIdentifier,
             competition.Id,
             solution.CatalogueItemId,
@@ -2105,7 +2172,78 @@ public static class CompetitionsServiceTests
 
         var solutionServices = updatedCompetitionSolution.SolutionServices.ToList();
 
-        solutionServices.Should().HaveCount(serviceIds.Count);
+        solutionServices.Should().HaveCount(associatedServices.Count);
+        solutionServices.Should().Contain(x => x.ServiceId == existingService.CatalogueItemId);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task RemoveAssociatedService_ValidService_RemovesService(
+        Organisation organisation,
+        Supplier supplier,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        Solution solution,
+        List<AssociatedService> associatedServices,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        supplier.CatalogueItems = null;
+
+        solution.CatalogueItem.Supplier = null;
+        solution.CatalogueItem.SupplierId = supplier.Id;
+
+        associatedServices.ForEach(
+            x =>
+            {
+                x.CatalogueItem.Supplier = null;
+                x.CatalogueItem.SupplierId = supplier.Id;
+            });
+
+        var supplierServiceAssociations = associatedServices.Select(
+            x => new SupplierServiceAssociation(solution.CatalogueItemId, x.CatalogueItemId));
+
+        var existingService = associatedServices.First();
+
+        competition.OrganisationId = organisation.Id;
+        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+
+        competitionSolution.IsShortlisted = true;
+        competitionSolution.CompetitionId = competition.Id;
+        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.SolutionServices = new List<SolutionService>
+        {
+            new(competition.Id, solution.CatalogueItemId, existingService.CatalogueItemId, false),
+        };
+
+        context.Organisations.Add(organisation);
+        context.Suppliers.Add(supplier);
+        context.Solutions.Add(solution);
+        context.AssociatedServices.AddRange(associatedServices);
+        context.SupplierServiceAssociations.AddRange(supplierServiceAssociations);
+        context.Competitions.Add(competition);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        await service.RemoveAssociatedService(
+            organisation.InternalIdentifier,
+            competition.Id,
+            solution.CatalogueItemId,
+            existingService.CatalogueItemId);
+
+        var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Service)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == organisation.InternalIdentifier && x.Id == competition.Id);
+
+        var updatedCompetitionSolution =
+            updatedCompetition.CompetitionSolutions.First(x => x.SolutionId == solution.CatalogueItemId);
+
+        var solutionServices = updatedCompetitionSolution.SolutionServices.ToList();
+
+        solutionServices.Should().BeEmpty();
         solutionServices.Should().NotContain(x => x.ServiceId == existingService.CatalogueItemId);
     }
 

@@ -111,9 +111,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 ? Url.Action(nameof(TaskListController.TaskList), typeof(TaskListController).ControllerName(), new { internalOrgId, callOffId })
                 : Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { internalOrgId, callOffId });
 
-            return new SelectServicesModel(
-                wrapper.Previous?.GetServices(catalogueItemType) ?? Enumerable.Empty<CatalogueItem>(),
-                order.GetServices(catalogueItemType),
+            var currentItems = order.GetServices(catalogueItemType) ?? Enumerable.Empty<CatalogueItem>();
+
+            return new SelectAdditionalServicesModel(
+                currentItems.ToList(),
                 additionalServices)
             {
                 BackLink = backLink,

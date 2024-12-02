@@ -1,9 +1,9 @@
 ﻿using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelection.RemoveService;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators.SolutionSelection.RemoveService
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
 {
     public static class RemoveServiceModelValidatorTests
     {

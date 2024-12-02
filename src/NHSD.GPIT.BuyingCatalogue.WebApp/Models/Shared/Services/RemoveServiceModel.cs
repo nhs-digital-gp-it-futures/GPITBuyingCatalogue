@@ -2,9 +2,8 @@
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
 {
     public class RemoveServiceModel : NavBaseModel
     {
@@ -28,6 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
         public string ServiceType { get; set; }
 
         public string ServiceName { get; set; }
+
+        public string EntityType { get; set; } = "Order";
 
         public bool? ConfirmRemoveService { get; set; }
     }

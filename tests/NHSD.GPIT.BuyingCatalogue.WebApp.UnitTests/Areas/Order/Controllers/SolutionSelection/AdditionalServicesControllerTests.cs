@@ -63,12 +63,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
 
-            var previousItems = orderWrapper.Previous?.GetAssociatedServices().Select(x => x.CatalogueItem)
-                ?? Enumerable.Empty<CatalogueItem>();
-            var currentItems = orderWrapper.Order?.GetAssociatedServices().Select(x => x.CatalogueItem)
+            var excludedItems = orderWrapper.Previous?.GetAssociatedServices().Select(x => x.CatalogueItem)
                 ?? Enumerable.Empty<CatalogueItem>();
 
-            var expected = new SelectServicesModel(previousItems, currentItems, services)
+            var expected = new SelectServicesModel(excludedItems, services)
             {
                 InternalOrgId = internalOrgId,
                 AssociatedServicesOnly = order.OrderType.AssociatedServicesOnly,
