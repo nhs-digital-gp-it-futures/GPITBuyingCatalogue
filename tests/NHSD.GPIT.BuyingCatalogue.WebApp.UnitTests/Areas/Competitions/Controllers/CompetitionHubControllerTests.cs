@@ -98,6 +98,28 @@ public static class CompetitionHubControllerTests
 
     [Theory]
     [MockAutoData]
+    public static async Task Hub_InvalidSolutionId_ReturnsViewWithModel(
+        string internalOrgId,
+        CatalogueItemId solutionId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        Solution solution,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionSolution.Solution = solution;
+        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+
+        var result = (await controller.Hub(internalOrgId, competition.Id, solutionId)).As<BadRequestResult>();
+
+        result.Should().NotBeNull();
+    }
+
+    [Theory]
+    [MockAutoData]
     public static async Task Hub_NoAssociatedServicesRemaining_ReturnsViewWithModel(
         string internalOrgId,
         Competition competition,

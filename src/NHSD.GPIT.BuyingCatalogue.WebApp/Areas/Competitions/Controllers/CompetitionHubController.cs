@@ -88,6 +88,8 @@ public class CompetitionHubController : Controller
     {
         var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
         var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        if (solution is null) return BadRequest();
+
         var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId, PracticeReorganisationTypeEnum.None);
         var selectedAssociatedServices = solution.GetAssociatedServices();
 
