@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using System.Runtime.CompilerServices;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
@@ -115,10 +116,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
 
         public void StepOnePrepareOrder(
             string supplierName,
-            string orderDescription,
             bool addNewSupplierContact = false,
-            EntityFramework.Catalogue.Models.CatalogueItemType itemType = EntityFramework.Catalogue.Models.CatalogueItemType.Solution,
-            AssociatedServiceType associatedServiceType = AssociatedServiceType.AssociatedServiceOther)
+            CatalogueItemType itemType = CatalogueItemType.Solution,
+            AssociatedServiceType associatedServiceType = AssociatedServiceType.AssociatedServiceOther,
+            [CallerMemberName] string orderDescription = "")
         {
             TaskList.OrderDescriptionTask();
             OrderingStepOne.AddOrderDescription(orderDescription);

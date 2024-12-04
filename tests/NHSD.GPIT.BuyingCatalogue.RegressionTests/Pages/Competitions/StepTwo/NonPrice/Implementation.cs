@@ -16,16 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void AddImplementation()
         {
-            CommonActions.ClickCheckboxByLabel("Implementation");
-            CommonActions.ClickSave();
+            CommonActions.ClickLinkElement(NonPriceObjects.AddImplementationLink);
 
-            CommonActions.HintText().Should().Be("Explain your requirements for when the winning solution is implemented.".FormatForComparison());
-            TextGenerators.TextInputAddText(NonPriceObjects.ElementRequirements, 100);
-            CommonActions.ClickSave();
-        }
-
-        public void AddImplementationForAllNonPriceElements()
-        {
             CommonActions.HintText().Should().Be("Explain your requirements for when the winning solution is implemented.".FormatForComparison());
             TextGenerators.TextInputAddText(NonPriceObjects.ElementRequirements, 100);
             CommonActions.ClickSave();

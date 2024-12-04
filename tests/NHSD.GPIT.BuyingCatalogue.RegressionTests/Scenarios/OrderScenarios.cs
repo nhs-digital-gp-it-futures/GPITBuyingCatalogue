@@ -10,13 +10,9 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
     public class OrderScenarios(LocalWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
         : BuyerTestBase(factory, testOutputHelper), IClassFixture<LocalWebApplicationFactory>
     {
-        private const string InternalOrgId = "IB-QWO";
         private const string FileName = "valid_service_recipients.csv";
         private const string SupplierName = "EMIS Health";
-        private const string FrameWorkTechInnovation = "Tech Innovation";
-        private const string FrameWorkDFOCVC = "DFOCVC";
         private const string SolutionName = "Anywhere Consult";
-        private const string SolutionWithMultipleFrameworks = "Video Consult";
         private const string SolutionForLocalfundingonly = "Online and Video Consult";
         private const string AssociatedServiceName = "Anywhere Consult – Integrated Device";
         private const string AssociatedServiceMerger = "Practice Merge";
@@ -31,13 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionUnder40K()
         {
-            string orderDescription = "OrderWithSolutionUnder40K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -50,13 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Framework", "Order")]
         public void LocalFundingOnlyFrameworksOrderWithSolutionUnder40K()
         {
-            string orderDescription = "LocalFundingOnlyFrameworksOrderWithSolutionUnder40K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.DFOCVC, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.DFOCVC);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionForLocalfundingonly);
 
@@ -69,13 +61,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
@@ -88,13 +78,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
@@ -107,13 +95,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -126,17 +112,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void EditPlannedDeliveryDateOrderWithSolutionAdditionalAndAssociatedServiceUnder40K()
         {
-            string orderDescription = "EditPlannedDeliveryDateOrderWithSolutionAdditionalAndAssociatedServiceUnder40K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
-            OrderingPages.EditPlannedDeliveryDate("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day", true);
+            OrderingPages.EditPlannedDeliveryDate("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
             OrderingPages.StepThreeCompleteContract();
 
@@ -147,13 +131,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void CatalogueSolutionOnlyBetween40KTo250K()
         {
-            string orderDescription = "CatalogueSolutionOnlyBetween40KTo250K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -168,13 +150,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Amend Order Journey", "Order")]
         public void Amend_CatalogueSolution()
         {
-            string orderDescription = "Amend_CatalogueSolution";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -191,13 +171,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Amend Order Journey", "Order")]
         public void Amend_CatalogueSolution_multiple_servicereceipients()
         {
-            string orderDescription = "Amend_CatalogueSolution_multiple_servicereceipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -214,13 +192,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Amend Order Journey", "Order")]
         public void Amend_CatalogueSolution_import_servicereceipients()
         {
-            string orderDescription = "Amend_CatalogueSolution_import_servicereceipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -240,13 +216,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Amend Order Journey", "Order")]
         public void AmendCatalogueSolutionsAndAdditionalService()
         {
-            string orderDescription = "AmendCatalogueSolutionsAndAdditionalService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
@@ -263,13 +237,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Amend Order Journey", "Order")]
         public void AmendMultipleAdditionalService()
         {
-            string orderDescription = "AmendMultipleAdditionalService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -292,13 +264,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void CatalogueSolutionOnlyWithNewSupplierContactBetween40KTo250K()
         {
-            string orderDescription = "CatalogueSolutionOnlyWithNewSupplierContactBetween40KTo250K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, true);
+            OrderingPages.StepOnePrepareOrder(SupplierName, true);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -311,13 +281,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceBetween40Kand250K()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceBetween40Kand250K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
@@ -330,13 +298,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceBetween40Kand250KStepThreeCustomRoute()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceBetween40Kand250K StepThreeCustomRoute";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
@@ -349,13 +315,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceBetween40Kand250K()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceBetween40Kand250K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
@@ -368,13 +332,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250K()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -387,13 +349,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250KStepThreeCustomRoute()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceBetween40Kand250K StepThreeCustomRoute";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -406,13 +366,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void CatalogueSolutionOnlyOver250K_AllserviceRecipients()
         {
-            string orderDescription = "CatalogueSolutionOnlyOver250K_AllserviceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName, allServiceRecipients: true);
 
@@ -425,13 +383,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void CatalogueSolutionOnlyOver250K()
         {
-            string orderDescription = "CatalogueSolutionOnlyOver250K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -444,13 +400,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void CatalogueSolutionOnlyOver250KStepThreeCustomRoute()
         {
-            string orderDescription = "CatalogueSolutionOnlyOver250K Step Three Custom Route";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -463,13 +417,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceOver250K()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceOver250K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
@@ -482,13 +434,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceOver250K()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceOver250K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals");
 
@@ -501,13 +451,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceOver250K()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceOver250K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices("Emis Web GP", additionalService: "Automated Arrivals", associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -520,13 +468,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly()
         {
-            string orderDescription = "OrderAssociatedServiceOnly";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceOther);
+            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
@@ -539,13 +485,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Associated Service Only Journey", "Split Order")]
         public void OrderSplitAssociatedServiceOnly()
         {
-            string orderDescription = "OrderSplitAssociatedServiceOnly";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceSplit);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceSplit);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceSplit);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceSplit, multipleServiceRecipients: 3);
 
@@ -558,13 +502,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Associated Service Only Journey", "Merger Order")]
         public void OrderMergerAssociatedServiceOnly()
         {
-            string orderDescription = "OrderMergerAssociatedServiceOnly";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService, AssociatedServiceType.AssociatedServiceMerger);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceMerger);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService, associatedServiceType: AssociatedServiceType.AssociatedServiceMerger);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceMerger, multipleServiceRecipients: 3);
 
@@ -577,17 +519,15 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Associated Service Only Journey", "Order")]
         public void EditPlannedDeliveryDateOrderAssociatedServiceOnly()
         {
-            string orderDescription = "EditPlannedDeliveryDateOrderAssociatedServiceOnly";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
-            OrderingPages.EditPlannedDeliveryDate("Anywhere Consult", "Anywhere Consult – Integrated Device", " ", true);
+            OrderingPages.EditPlannedDeliveryDate("Anywhere Consult", "Anywhere Consult – Integrated Device", " ");
 
             OrderingPages.StepThreeContractAssociatedServices();
 
@@ -598,13 +538,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnlyWithStepThreeCustomRoute()
         {
-            string orderDescription = "OrderAssociatedServiceOnlyWithStepThreeCustomRoute";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
@@ -617,13 +555,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -638,13 +574,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditCatalogueSolution()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditCatalogueSolution";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -659,13 +593,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditCatalogueSolution()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditCatalogueSolution";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -680,13 +612,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditCatalogueSolution()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditCatalogueSolution";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -701,13 +631,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderAssociatedServiceOnly_EditCatalogueSolution()
         {
-            string orderDescription = "OrderAssociatedServiceOnly_EditCatalogueSolution";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
@@ -722,13 +650,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionUnder40K_SolutionDoesNotHaveAdditionalService_EditAdditionalService()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_SolutionDoesNotHaveAdditionalService_EditAdditionalService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -743,13 +669,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionUnder40K_EditAdditionalService()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditAdditionalService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -764,13 +688,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, AdditionalServiceName);
 
@@ -785,13 +707,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAdditionalService()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAdditionalService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
@@ -806,13 +726,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAdditionalService()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAdditionalService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, AdditionalServiceName, NewAssociatedServiceName);
 
@@ -827,13 +745,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionUnder40K_EditAssociatedService()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditAssociatedService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -848,13 +764,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAssociatedService()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAssociatedService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
@@ -869,13 +783,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: AssociatedServiceNameForWebGP);
 
@@ -890,13 +802,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAssociatedService()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAssociatedService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName, AssociatedServiceNameForWebGP);
 
@@ -911,13 +821,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedService()
         {
-            string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: AssociatedServiceNameForWebGP);
 
@@ -932,13 +840,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolutionServiceRecipient()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionServiceRecipient";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -953,13 +859,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolutionPrice()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionPrice";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -974,13 +878,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolutionQuantity()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolutionQuantity";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -995,13 +897,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceRecipient()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceRecipient";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
@@ -1016,13 +916,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServicePrice()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServicePrice";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
@@ -1037,13 +935,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceQuantity()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalServiceQuantity";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, NewAdditionalServiceName);
 
@@ -1058,13 +954,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceRecipient()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceRecipient";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
@@ -1079,13 +973,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServicePrice()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServicePrice";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
@@ -1100,13 +992,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceQuantity()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedServiceQuantity";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: NewAssociatedServiceName);
 
@@ -1121,13 +1011,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedServiceRecipients()
         {
-            string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
 
@@ -1142,13 +1030,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedServicePrice()
         {
-            string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServicePrice";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
 
@@ -1163,13 +1049,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Order Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedServiceQuantity()
         {
-            string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedServiceQuantity";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: NewAssociatedServiceName);
 
@@ -1184,13 +1068,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServicesUnder40K_MultipleAdditionalServices()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServicesUnder40K_MultipleAdditionalServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1209,13 +1091,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServicesUnder40K_MultipleAdditionalServices_OneAssociatedService()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServicesUnder40K_MultipleAdditionalServices_OneAssociatedService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1235,13 +1115,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAssociatedServices_OneAdditionalService()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAssociatedServices_OneAdditionalService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1257,13 +1135,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_MultipleAssociatedServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1279,13 +1155,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditionalServices_MultipleAssociatedServices()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleAdditionalServices_MultipleAssociatedServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1305,13 +1179,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Associated Service Only Journey", "Order")]
         public void OrderWithAssociatedServiceOnly_MultipleAssociatedServices()
         {
-            string orderDescription = "OrderWithAssociatedServiceOnly_MultipleAssociatedServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1327,13 +1199,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionUnder40K_MultipleServiceRecipients()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_MultipleServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1348,13 +1218,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionUnder40K_ImportServiceRecipients()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_ImportServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1370,13 +1238,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_MultipleServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1392,13 +1258,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_ImportServiceRecipients()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_ImportServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1415,13 +1279,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly_ImportServiceRecipients()
         {
-            string orderDescription = "OrderAssociatedServiceOnly_ImportServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: SolutionName,
@@ -1438,13 +1300,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_MultipleServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1460,13 +1320,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_ImportServiceRecipients()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_ImportServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1483,13 +1341,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Order Journey", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleServiceRecipients()
         {
-            string orderDescription = "OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_MultipleServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1506,13 +1362,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Associated Service Only Journey", "Order")]
         public void OrderWithAssociatedServiceOnly_MultipleServiceRecipients()
         {
-            string orderDescription = "OrderWithAssociatedServiceOnly_MultipleServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: NewSolutionName,
@@ -1528,13 +1382,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices()
         {
-            string orderDescription = "OrderAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: SolutionName, associatedService: AssociatedServiceName);
 
@@ -1549,13 +1401,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1570,13 +1420,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1591,13 +1439,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditional_AddultipleAssociatedServices()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditional_AddultipleAssociatedServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1612,13 +1458,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleServiceRecipients()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1633,13 +1477,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_MultipleServiceRecipients()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_MultipleServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1654,13 +1496,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices_MultipleServiceRecipients()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices_MultipleServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1675,13 +1515,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddMultipleAssociatedServices_AddMultipleServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1696,13 +1534,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
         {
-            string orderDescription = "OrderWithAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices_AddMultipleServiceRecipients";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(
                 solutionName: SolutionName,
@@ -1720,13 +1556,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Catalogue Solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddOneAssociatedService()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddOneAssociatedService";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(SolutionName);
 
@@ -1741,13 +1575,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionUnder40K_EditAdditionalService_AddMultipleAdditionalServices()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditAdditionalService_AddMultipleAdditionalServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -1762,13 +1594,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Additional Service", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService_MultipleAdditionalServices()
         {
-            string orderDescription = "OrderWithSolutionAndAdditionalServiceUnder40K_EditAdditionalService_MultipleAdditionalServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, "Document Management", multipleServiceRecipients: 0);
 
@@ -1783,13 +1613,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
         {
-            string orderDescription = "OrderWithSolutionUnder40K_EditAssociatedService_AddMultipleAssociatedServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -1804,13 +1632,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Associated Service", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
         {
-            string orderDescription = "OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService_AddMultipleAssociatedServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName, associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -1825,13 +1651,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Edit Associated Service Only Journey", "Order")]
         public void OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices()
         {
-            string orderDescription = "OrderAssociatedServiceOnly_EditAssociatedService_AddMultipleAssociatedServices";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
             OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.AssociatedService);
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false, itemType: CatalogueItemType.AssociatedService);
+            OrderingPages.StepOnePrepareOrder(SupplierName, itemType: CatalogueItemType.AssociatedService);
 
             OrderingPages.StepTwoAddSolutionsAndServices(solutionName: NewSolutionName, associatedService: "Automated Arrivals – Engineering Half Day");
 
@@ -1846,13 +1670,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Amend Order Journey", "Order")]
         public void OrderAmendCatalogueSolutionGreaterThan250K()
         {
-            string orderDescription = "CatalogueSolutionOver250K";
-
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, EntityFramework.Catalogue.Models.CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 
@@ -1869,15 +1691,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Amend Order Journey", "Order")]
         public void OrderAmendCatalogueSolutionAmendDescription()
         {
-            string orderDescription = "Amend_CatalogueSolution";
-
             string amendOrderDescription = "AmendedOrder_CatalogueSolution";
 
             OrderingPages.OrderingDashboard.CreateNewOrder();
 
-            OrderingPages.OrderType.ChooseOrderType(FrameworkType.Tech_Innovation, CatalogueItemType.Solution);
+            OrderingPages.OrderType.ChooseOrderType();
 
-            OrderingPages.StepOnePrepareOrder(SupplierName, orderDescription, false);
+            OrderingPages.StepOnePrepareOrder(SupplierName);
 
             OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
 

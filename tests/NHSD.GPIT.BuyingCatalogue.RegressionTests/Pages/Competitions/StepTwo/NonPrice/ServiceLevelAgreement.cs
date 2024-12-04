@@ -14,15 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void AddServiceLevelAgreement()
         {
-            CommonActions.ClickCheckboxByLabel("Service levels");
-            CommonActions.ClickSave();
-            CoreHours();
-            ApplicableDays();
-            BankHolidays();
-        }
+            CommonActions.ClickLinkElement(NonPriceObjects.AddServiceLevelsLink);
 
-        public void AddServiceLevelAgreementForAllNonPriceElements()
-        {
             CoreHours();
             ApplicableDays();
             BankHolidays();

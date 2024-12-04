@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void ServiceLevelAgreementWeightings(int weightings)
         {
-            Driver.FindElement(NonPriceObjects.ServieLevelWeightings).SendKeys(weightings.ToString());
+            Driver.FindElement(NonPriceObjects.ServiceLevelWeightings).SendKeys(weightings.ToString());
             CommonActions.ClickSave();
         }
 
@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
             Driver.FindElement(NonPriceObjects.FeatureWeighting).SendKeys(weightings.ToString());
             Driver.FindElement(NonPriceObjects.ImplementationWeighting).SendKeys(weightings.ToString());
             Driver.FindElement(NonPriceObjects.InteroperabilityWeightings).SendKeys(weightings.ToString());
-            Driver.FindElement(NonPriceObjects.ServieLevelWeightings).SendKeys(weightings.ToString());
+            Driver.FindElement(NonPriceObjects.ServiceLevelWeightings).SendKeys(weightings.ToString());
             CommonActions.ClickSave();
         }
 

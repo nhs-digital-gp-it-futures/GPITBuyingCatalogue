@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Competitions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using OpenQA.Selenium;
@@ -15,16 +16,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void AddInteroperability()
         {
-            CommonActions.ClickCheckboxByLabel("Interoperability");
-            CommonActions.ClickSave();
+            CommonActions.ClickLinkElement(NonPriceObjects.AddInteroperabilityLink);
 
-            CommonActions.HintText().Should().Be("Select which integrations your winning solution needs to work with.".FormatForComparison());
-            CommonActions.ClickAllCheckboxes();
-            CommonActions.ClickSave();
-        }
-
-        public void AddInteroperabilityForAllNonPriceElements()
-        {
             CommonActions.HintText().Should().Be("Select which integrations your winning solution needs to work with.".FormatForComparison());
             CommonActions.ClickAllCheckboxes();
             CommonActions.ClickSave();

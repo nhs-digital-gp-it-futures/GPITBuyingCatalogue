@@ -14,52 +14,44 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Further Competition", "Multiple Results")]
         public void CompetitionForMultipleResultFilter()
         {
-            string competitionName = "CompetitionForMultipleResultFilter";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Multiple);
         }
 
         [Fact]
         [Trait("Further Competition", "No Results")]
         public void CompetitionForNoResultFilter()
         {
-            string competitionName = "CompetitionForNoResultFilter";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.NoResults, competitionName);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.NoResults);
         }
 
         [Fact]
         [Trait("Further Competition", "Single Results")]
         public void CompetitionForSingleResultFilter()
         {
-            string competitionName = "CompetitionForSingleResultFilter";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.SingleResult, competitionName);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.SingleResult);
         }
 
         [Fact]
         [Trait("Further Competition", "Price Only")]
         public void CompetitionPriceOnly()
         {
-            string competitionName = "CompetitionPriceOnly";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
@@ -70,13 +62,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Further Competition", "Competition to Order")]
         public void CompetitionOrderFromPriceOnlyCompetition()
         {
-            string competitionName = "CompetitionOrderFromPriceOnlyCompetition";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
@@ -91,15 +81,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
         [Fact]
         [Trait("Further Competition", "Competition to Order")]
-        public void CompetitionOrderFromPricAndNonPriceCompetition()
+        public void CompetitionOrderFromPriceAndNonPriceCompetition()
         {
-            string competitionName = "CompetitionOrderFromPricAndNonPriceCompetition";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Feature);
 
@@ -116,13 +104,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Further Competition", "Competition to Order")]
         public void CompetitionOrderForPriceOnlyMultipleResults()
         {
-            string competitionName = "CompetitionOrderForPriceOnlyMultipleResults";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Multiple);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
@@ -139,13 +125,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Further Competition", "Price Only")]
         public void CompetitionPriceOnlyMultipleRecipients()
         {
-            string competitionName = "CompetitionPriceOnlyMultipleRecipients";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Multiple);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
@@ -156,13 +140,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Further Competition", "Price Only")]
         public void CompetitionPriceOnlyMultipleResults()
         {
-            string competitionName = "CompetitionPriceOnlyMultipleResults";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Multiple);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Multiple);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
@@ -173,13 +155,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Further Competition", "Price Only")]
         public void CompetitionPriceOnlyAllICBRecipients()
         {
-            string competitionName = "CompetitionPriceOnlyAllICBRecipients";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.All);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.All);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceOnly);
 
@@ -188,15 +168,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
         [Fact]
         [Trait("Further Competition", "Price And Non Price")]
-        public void CompetitionPricAndNonPriceElementFeature()
+        public void CompetitionPriceAndNonPriceElementFeature()
         {
-            string competitionName = "CompetitionPricAndNonPriceElementFeature";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Feature);
 
@@ -205,15 +183,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
         [Fact]
         [Trait("Further Competition", "Price And Non Price")]
-        public void CompetitionPricAndNonPriceElementImplementation()
+        public void CompetitionPriceAndNonPriceElementImplementation()
         {
-            string competitionName = "CompetitionPricAndNonPriceElementImplementation";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Implementation);
 
@@ -222,15 +198,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
         [Fact]
         [Trait("Further Competition", "Price And Non Price")]
-        public void CompetitionPricAndNonPriceElementInteroperability()
+        public void CompetitionPriceAndNonPriceElementInteroperability()
         {
-            string competitionName = "CompetitionPricAndNonPriceElementInteroperability";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.Interoperability);
 
@@ -239,15 +213,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
         [Fact]
         [Trait("Further Competition", "Price And Non Price")]
-        public void CompetitionPricAndNonPriceElementServiceLevelAgreement()
+        public void CompetitionPriceAndNonPriceElementServiceLevelAgreement()
         {
-            string competitionName = "CompetitionPricAndNonPriceElementServiceLevelAgreement";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.ServiceLevelAgreement);
 
@@ -258,13 +230,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Further Competition", "Price And Non Price")]
         public void CompetitionAllNonPriceElements()
         {
-            string competitionName = "CompetitionAllNonPriceElements";
-
             CompetitionPages.CompetitionDashboard.CompetitionTriage();
 
             CompetitionPages.BeforeYouStart.ReadyToStart();
 
-            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, competitionName, ServiceRecipientSelectionMode.Single);
+            CompetitionPages.StepOnePrepareCompetition(FilterType.MultipleResults, ServiceRecipientSelectionMode.Single);
 
             CompetitionPages.StepTwoDefineCompetitionCriteria(CompetitionType.PriceAndNonPriceElement, NonPriceElementType.All);
 
