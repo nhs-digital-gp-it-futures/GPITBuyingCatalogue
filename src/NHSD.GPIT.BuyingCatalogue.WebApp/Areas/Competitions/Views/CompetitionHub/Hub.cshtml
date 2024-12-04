@@ -58,9 +58,7 @@
                             <p>You can add Associated Services to help implement your solution, for example training or data migration.</p>
                             @foreach (var item in associatedServices)
                             {
-                                <div class="nhsuk-u-margin-bottom-9">
-                                    <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
-                                </div>
+                                <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
                             }
                         }
                     </nhs-card-content>
