@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
+﻿using System.Runtime.CompilerServices;
+using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.CompetitionToOrder;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard;
@@ -102,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
 
         internal IWebDriver Driver { get; }
 
-        public void StepOnePrepareCompetition(FilterType filterType, string competitionName, ServiceRecipientSelectionMode recipients = ServiceRecipientSelectionMode.None)
+        public void StepOnePrepareCompetition(FilterType filterType, ServiceRecipientSelectionMode recipients = ServiceRecipientSelectionMode.None, [CallerMemberName] string competitionName = "")
         {
             int selectedFilter = (int)filterType;
             SelectFilter.SelectFilterForNewCompetition(selectedFilter);
