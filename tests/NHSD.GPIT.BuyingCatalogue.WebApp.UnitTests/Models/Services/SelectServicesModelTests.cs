@@ -46,23 +46,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Services
             List<CatalogueItem> services)
         {
             var existingItem = order.OrderItems.First();
+            var existingService = services.First();
 
-            existingItem.CatalogueItem.Id = services.First().Id;
+            existingItem.CatalogueItem.Id = existingService.Id;
             existingItem.CatalogueItem.CatalogueItemType = catalogueItemType;
 
             var currentItems = order.OrderItems.Select(x => x.CatalogueItem);
+            var expectedServices = services.Skip(1).ToList();
 
             var model = new SelectServicesModel(currentItems, services);
 
-            model.ExistingServices.Should().BeEmpty();
-            model.Services.Count.Should().Be(services.Count);
+            model.Services.Count.Should().Be(expectedServices.Count);
 
-            for (var i = 0; i < services.Count; i++)
+            foreach (var expectedService in expectedServices)
             {
-                model.Services.Should().Contain(x => x.CatalogueItemId == services[i].Id && x.Description == services[i].Name);
+                model.Services.Should().Contain(x => x.CatalogueItemId == expectedService.Id && x.Description == expectedService.Name);
             }
 
-            model.Services.First(x => x.CatalogueItemId == existingItem.CatalogueItem.Id).IsSelected.Should().BeTrue();
+            model.Services.Should().NotContain(x => x.CatalogueItemId == existingService.Id && x.Description == existingService.Name);
         }
     }
 }

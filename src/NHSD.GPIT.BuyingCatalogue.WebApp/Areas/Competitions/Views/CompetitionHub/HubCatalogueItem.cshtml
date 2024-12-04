@@ -60,6 +60,16 @@
     </nhs-table-row-container>
 </nhs-table>
 
+@if (Model.CatalogueItemType is CatalogueItemType.AssociatedService)
+{
+    <vc:nhs-delete-button url="@Url.Action(
+                                   nameof(CompetitionHubController.RemoveAssociatedService),
+                                   typeof(CompetitionHubController).ControllerName(),
+                                   new { Model.InternalOrgId, Model.CompetitionId, Model.SolutionId, serviceId = Model.CatalogueItemId })"
+                          text="Remove @Model.CatalogueItemName" />
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+}
+
 @if (Model.PriceProgress is TaskProgress.Completed && Model.QuantityProgress is TaskProgress.Completed)
 {
     <nhs-summary-list>

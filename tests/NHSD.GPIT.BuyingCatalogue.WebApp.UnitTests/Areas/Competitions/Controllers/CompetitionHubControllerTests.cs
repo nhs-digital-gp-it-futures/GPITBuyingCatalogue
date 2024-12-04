@@ -83,6 +83,70 @@ public static class CompetitionHubControllerTests
 
         var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
         {
+            AssociatedServicesRemaining = true,
+            AssociatedServicesAvailable = associatedServices.Any(),
+        };
+
+        var result = (await controller.Hub(internalOrgId, competition.Id, solution.CatalogueItemId)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.BackLink).Excluding(m => m.AssociatedServicesUrl));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Hub_InvalidSolutionId_ReturnsViewWithModel(
+        string internalOrgId,
+        CatalogueItemId solutionId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        Solution solution,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionSolution.Solution = solution;
+        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+
+        var result = (await controller.Hub(internalOrgId, competition.Id, solutionId)).As<BadRequestResult>();
+
+        result.Should().NotBeNull();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Hub_NoAssociatedServicesRemaining_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        Solution solution,
+        List<AssociatedService> associatedServices,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IAssociatedServicesService associatedServicesService,
+        CompetitionHubController controller)
+    {
+        competitionSolution.Solution = solution;
+        competitionSolution.SolutionId = solution.CatalogueItemId;
+        competitionSolution.SolutionServices = associatedServices.Select(
+                x => new SolutionService(competition.Id, solution.CatalogueItemId, x.CatalogueItemId, false)
+                {
+                    Service = x.CatalogueItem,
+                })
+            .ToList();
+        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+
+        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+
+        var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
+        {
+            AssociatedServicesRemaining = false,
             AssociatedServicesAvailable = associatedServices.Any(),
         };
 
@@ -1004,53 +1068,6 @@ public static class CompetitionHubControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task SelectAssociatedServices_ExistingServicesNotSelected_Redirects(
-        string internalOrgId,
-        Competition competition,
-        CompetitionSolution competitionSolution,
-        List<SolutionService> solutionServices,
-        Solution solution,
-        List<AssociatedService> associatedServices,
-        AssociatedService existingService,
-        [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IAssociatedServicesService associatedServicesService,
-        CompetitionHubController controller)
-    {
-        solutionServices.ForEach(
-            x =>
-            {
-                x.IsRequired = false;
-                x.Service = existingService.CatalogueItem;
-            });
-
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = solutionServices;
-
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
-
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
-
-        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
-
-        var model = new SelectServicesModel(
-            solutionServices.Select(x => x.Service).ToList(),
-            associatedServices.Select(x => x.CatalogueItem).ToList())
-        {
-            EntityType = "Competition",
-            SolutionName = solution.CatalogueItem.Name,
-            InternalOrgId = internalOrgId,
-        };
-
-        var result = (await controller.SelectAssociatedServices(internalOrgId, competition.Id, solution.CatalogueItemId, model))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.ConfirmAssociatedServiceChanges));
-    }
-
-    [Theory]
-    [MockAutoData]
     public static async Task SelectAssociatedServices_Valid_Redirects(
         string internalOrgId,
         Competition competition,
@@ -1098,177 +1115,143 @@ public static class CompetitionHubControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task ConfirmAssociatedServiceChanges_InvalidSolution_ReturnsBadRequest(
+    public static async Task RemoveAssociatedService_IncorrectCompetitionId_ReturnsBadRequestResult(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId serviceId,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId).Returns((Competition)null);
+
+        var result = await controller.RemoveAssociatedService(internalOrgId, competitionId, solutionId, serviceId);
+
+        result.Should().BeOfType<BadRequestResult>();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAssociatedService_IncorrectSolutionId_ReturnsBadRequestResult(
         string internalOrgId,
         Competition competition,
         CatalogueItemId solutionId,
-        string serviceIds,
+        CatalogueItemId serviceId,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        var result =
-            (await controller.ConfirmAssociatedServiceChanges(internalOrgId, competition.Id, solutionId, serviceIds))
-            .As<BadRequestResult>();
+        var result = await controller.RemoveAssociatedService(internalOrgId, competition.Id, solutionId, serviceId);
 
-        result.Should().NotBeNull();
+        result.Should().BeOfType<BadRequestResult>();
     }
 
     [Theory]
     [MockAutoData]
-    public static async Task ConfirmAssociatedServiceChanges_ReturnsViewWithModel(
+    public static async Task RemoveAssociatedService_IncorrectServiceId_ReturnsBadRequestResult(
         string internalOrgId,
         Competition competition,
         CompetitionSolution competitionSolution,
-        List<SolutionService> solutionServices,
-        Solution solution,
-        List<AssociatedService> associatedServices,
-        AssociatedService existingService,
+        CatalogueItemId serviceId,
         [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IAssociatedServicesService associatedServicesService,
         CompetitionHubController controller)
     {
-        solutionServices.ForEach(
-            x =>
-            {
-                x.IsRequired = false;
-                x.Service = existingService.CatalogueItem;
-                x.ServiceId = existingService.CatalogueItemId;
-            });
-
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = solutionServices;
-
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Concat(new[] { existingService }).Select(x => x.CatalogueItem).ToList());
+        var result = await controller.RemoveAssociatedService(internalOrgId, competition.Id, competitionSolution.SolutionId, serviceId);
 
-        var expectedModel = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.AssociatedService)
-        {
-            ToAdd = associatedServices.Select(
-                    x => new ServiceModel { CatalogueItemId = x.CatalogueItemId, Description = x.CatalogueItem.Name })
-                .ToList(),
-            ToRemove = solutionServices.Select(
-                    x => new ServiceModel { CatalogueItemId = x.ServiceId, Description = x.Service.Name })
-                .ToList(),
-            Caption = solution.CatalogueItem.Name,
-            EntityType = "Competition",
-        };
-
-        var result = (await controller.ConfirmAssociatedServiceChanges(
-            internalOrgId,
-            competition.Id,
-            solution.CatalogueItemId,
-            string.Join(',', associatedServices.Select(x => x.CatalogueItemId)))).As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+        result.Should().BeOfType<BadRequestResult>();
     }
 
     [Theory]
     [MockAutoData]
-    public static async Task ConfirmAssociatedServiceChanges_InvalidModel_ReturnsViewWithModel(
+    public static async Task RemoveAssociatedService_Valid_ReturnsViewWithModel(
+        string internalOrgId,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        SolutionService solutionService,
+        AssociatedService associatedService,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionHubController controller)
+    {
+        solutionService.IsRequired = false;
+        solutionService.ServiceId = associatedService.CatalogueItemId;
+        solutionService.Service = associatedService.CatalogueItem;
+
+        competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
+        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
+
+        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+
+        var expectedModel = new RemoveServiceModel(solutionService.Service) { EntityType = "Competition" };
+
+        var result = await controller.RemoveAssociatedService(internalOrgId, competition.Id, competitionSolution.SolutionId, solutionService.ServiceId);
+
+        var viewResult = result.Should().BeOfType<ViewResult>();
+        viewResult.Subject.Model.Should().BeEquivalentTo(expectedModel, opt => opt.Excluding(m => m.BackLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveAssociatedService_InvalidModel_ReturnsViewWithModel(
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
-        ConfirmServiceChangesModel model,
+        CatalogueItemId serviceId,
+        RemoveServiceModel model,
         CompetitionHubController controller)
     {
         controller.ModelState.AddModelError("some-key", "some-error");
 
-        var result = (await controller.ConfirmAssociatedServiceChanges(internalOrgId, competitionId, solutionId, model))
-            .As<ViewResult>();
+        var result = await controller.RemoveAssociatedService(internalOrgId, competitionId, solutionId, serviceId, model);
 
-        result.Should().NotBeNull();
-        result.Model.Should().Be(model);
+        var viewResult = result.Should().BeOfType<ViewResult>();
+
+        viewResult.Subject.Model.Should().BeEquivalentTo(model);
     }
 
     [Theory]
     [MockAutoData]
-    public static async Task ConfirmAssociatedServiceChanges_ConfirmChangesFalse_Redirects(
+    public static async Task RemoveAssociatedService_Confirmed_RemovesAssociatedService(
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
-        ConfirmServiceChangesModel model,
+        CatalogueItemId serviceId,
+        RemoveServiceModel model,
+        [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
     {
-        model.ConfirmChanges = false;
+        model.ConfirmRemoveService = true;
 
-        var result = (await controller.ConfirmAssociatedServiceChanges(internalOrgId, competitionId, solutionId, model))
-            .As<RedirectToActionResult>();
+        var result = await controller.RemoveAssociatedService(internalOrgId, competitionId, solutionId, serviceId, model);
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.Hub));
+        await competitionsService.Received()
+            .RemoveAssociatedService(internalOrgId, competitionId, solutionId, serviceId);
     }
 
     [Theory]
-    [MockAutoData]
-    public static async Task Post_ConfirmAssociatedServiceChanges_InvalidSolution_ReturnsBadRequest(
+    [MockInlineAutoData(true)]
+    [MockInlineAutoData(false)]
+    public static async Task RemoveAssociatedService_RedirectsToHub(
+        bool confirmed,
         string internalOrgId,
-        Competition competition,
+        int competitionId,
         CatalogueItemId solutionId,
-        ConfirmServiceChangesModel model,
-        [Frozen] ICompetitionsService competitionsService,
+        CatalogueItemId serviceId,
+        RemoveServiceModel model,
         CompetitionHubController controller)
     {
-        model.ConfirmChanges = true;
+        model.ConfirmRemoveService = confirmed;
 
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
+        var result = await controller.RemoveAssociatedService(internalOrgId, competitionId, solutionId, serviceId, model);
 
-        var result =
-            (await controller.ConfirmAssociatedServiceChanges(internalOrgId, competition.Id, solutionId, model))
-            .As<BadRequestResult>();
+        var redirectResult = result.Should().BeOfType<RedirectToActionResult>();
 
-        result.Should().NotBeNull();
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task ConfirmAssociatedServiceChanges_Valid_Redirects(
-        string internalOrgId,
-        Competition competition,
-        CompetitionSolution competitionSolution,
-        List<SolutionService> solutionServices,
-        Solution solution,
-        List<AssociatedService> associatedServices,
-        AssociatedService existingService,
-        ConfirmServiceChangesModel model,
-        [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IAssociatedServicesService associatedServicesService,
-        CompetitionHubController controller)
-    {
-        model.ConfirmChanges = true;
-
-        solutionServices.ForEach(
-            x =>
-            {
-                x.IsRequired = false;
-                x.Service = existingService.CatalogueItem;
-                x.ServiceId = existingService.CatalogueItemId;
-            });
-
-        competitionSolution.Solution = solution;
-        competitionSolution.SolutionId = solution.CatalogueItemId;
-        competitionSolution.SolutionServices = solutionServices;
-
-        competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
-
-        competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
-
-        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Concat(new[] { existingService }).Select(x => x.CatalogueItem).ToList());
-
-        var result = (await controller.ConfirmAssociatedServiceChanges(
-            internalOrgId,
-            competition.Id,
-            solution.CatalogueItemId,
-            model)).As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.Hub));
+        redirectResult.Subject.ActionName.Should().Be(nameof(controller.Hub));
     }
 
     [Theory]

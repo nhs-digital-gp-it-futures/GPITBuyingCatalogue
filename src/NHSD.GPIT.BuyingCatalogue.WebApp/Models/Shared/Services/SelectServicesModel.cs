@@ -12,34 +12,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
         }
 
         public SelectServicesModel(
-            IEnumerable<CatalogueItem> currentServices,
+            IEnumerable<CatalogueItem> excludedServices,
             IEnumerable<CatalogueItem> allServices)
         {
-            var currentServiceIds = currentServices.Select(x => x.Id).ToList();
+            var previousServiceIds = excludedServices.Select(x => x.Id).ToList();
 
             Services = allServices
+                .Where(x => !previousServiceIds.Contains(x.Id))
                 .Select(
                     x => new ServiceModel
                     {
                         CatalogueItemId = x.Id,
                         Description = x.Name,
-                        IsSelected = currentServiceIds.Contains(x.Id),
                     })
                 .ToList();
-        }
-
-        public SelectServicesModel(
-            IEnumerable<CatalogueItem> previousServices,
-            IEnumerable<CatalogueItem> currentServices,
-            IEnumerable<CatalogueItem> allServices)
-            : this(currentServices, allServices)
-        {
-            var enumeratedServices = previousServices.ToList();
-
-            var previousServiceIds = enumeratedServices.Select(x => x.Id).ToList();
-
-            Services = Services.Where(x => !previousServiceIds.Contains(x.CatalogueItemId)).ToList();
-            ExistingServices = enumeratedServices.Select(x => x.Name).ToList();
         }
 
         public string EntityType { get; set; } = "Order";
@@ -53,8 +39,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services
         public string SolutionName { get; set; }
 
         public CatalogueItemId? SolutionId { get; set; }
-
-        public List<string> ExistingServices { get; set; } = Enumerable.Empty<string>().ToList();
 
         public List<ServiceModel> Services { get; set; }
     }

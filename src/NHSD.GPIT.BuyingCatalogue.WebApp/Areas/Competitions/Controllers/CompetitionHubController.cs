@@ -88,11 +88,15 @@ public class CompetitionHubController : Controller
     {
         var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
         var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        if (solution is null) return BadRequest();
+
         var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId, PracticeReorganisationTypeEnum.None);
+        var selectedAssociatedServices = solution.GetAssociatedServices();
 
         var model = new CompetitionSolutionHubModel(internalOrgId, solution, competition)
         {
             BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+            AssociatedServicesRemaining = associatedServices.Any(x => selectedAssociatedServices.All(y => x.Id != y.ServiceId)),
             AssociatedServicesAvailable = associatedServices.Any(),
             AssociatedServicesUrl = Url.Action(
                 nameof(SelectAssociatedServices),
@@ -395,117 +399,51 @@ public class CompetitionHubController : Controller
             .Select(x => x.CatalogueItemId)
             .ToArray() ?? Array.Empty<CatalogueItemId>();
 
-        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
-        var solution = competition.CompetitionSolutions.First(x => x.SolutionId == solutionId);
-        var existingServices = solution.GetAssociatedServices();
-
-        if (existingServices.Any(x => !serviceIds.Contains(x.ServiceId)))
-        {
-            return RedirectToAction(
-                nameof(ConfirmAssociatedServiceChanges),
-                new { internalOrgId, competitionId, solutionId, serviceIds = string.Join(',', serviceIds) });
-        }
-
-        await competitionsService.SetAssociatedServices(internalOrgId, competitionId, solutionId, serviceIds);
+        await competitionsService.AddAssociatedServices(internalOrgId, competitionId, solutionId, serviceIds);
 
         return RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId });
     }
 
-    [HttpGet("{solutionId}/associated-services/confirm")]
-    public async Task<IActionResult> ConfirmAssociatedServiceChanges(
+    [HttpGet("{solutionId}/associated-services/{serviceId}/remove")]
+    public async Task<IActionResult> RemoveAssociatedService(
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
-        string serviceIds)
+        CatalogueItemId serviceId)
     {
         var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
-        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var solution = competition?.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
         if (solution == null) return BadRequest();
 
-        var associatedServices =
-            await associatedServicesService.GetPublishedAssociatedServicesForSolution(solutionId, PracticeReorganisationTypeEnum.None);
+        var service = solution.GetAssociatedServices().FirstOrDefault(x => x.ServiceId == serviceId);
+        if (service == null) return BadRequest();
 
-        var existingServiceIds = solution.GetAssociatedServices()
-            .Select(x => x.ServiceId)
-            .ToList();
-
-        var selectedServiceIds = serviceIds?.Split(',')
-            .Select(CatalogueItemId.ParseExact)
-            .ToArray() ?? Array.Empty<CatalogueItemId>();
-
-        var toAdd = selectedServiceIds
-            .Where(x => !existingServiceIds.Contains(x))
-            .Select(
-                x => new ServiceModel
-                {
-                    CatalogueItemId = x,
-                    Description = associatedServices.FirstOrDefault(s => s.Id == x)?.Name,
-                });
-
-        var toRemove = existingServiceIds
-            .Where(x => !selectedServiceIds.Contains(x))
-            .Select(
-                x => new ServiceModel
-                {
-                    CatalogueItemId = x,
-                    Description = associatedServices.FirstOrDefault(s => s.Id == x)?.Name,
-                });
-
-        var model = new ConfirmServiceChangesModel(internalOrgId, CatalogueItemType.AssociatedService)
+        var model = new RemoveServiceModel(service.Service)
         {
-            BackLink = Url.Action(
-                nameof(SelectAssociatedServices),
-                new { internalOrgId, competitionId, solutionId }),
-            ToAdd = toAdd.ToList(),
-            ToRemove = toRemove.ToList(),
-            Caption = solution.Solution.CatalogueItem.Name,
+            BackLink = Url.Action(nameof(Hub), new { internalOrgId, competitionId, solutionId }),
             EntityType = "Competition",
         };
 
-        return View("Services/ConfirmChanges", model);
+        return View("Services/RemoveService", model);
     }
 
-    [HttpPost("{solutionId}/associated-services/confirm")]
-    public async Task<IActionResult> ConfirmAssociatedServiceChanges(
+    [HttpPost("{solutionId}/associated-services/{serviceId}/remove")]
+    public async Task<IActionResult> RemoveAssociatedService(
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
-        ConfirmServiceChangesModel model)
+        CatalogueItemId serviceId,
+        RemoveServiceModel model)
     {
         if (!ModelState.IsValid)
+            return View("Services/RemoveService", model);
+
+        if (model.ConfirmRemoveService.GetValueOrDefault())
         {
-            return View("Services/ConfirmChanges", model);
+            await competitionsService.RemoveAssociatedService(internalOrgId, competitionId, solutionId, serviceId);
         }
 
-        if (model.ConfirmChanges is false)
-        {
-            return RedirectToAction(
-                nameof(Hub),
-                new { internalOrgId, competitionId, solutionId });
-        }
-
-        var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
-        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
-        if (solution == null) return BadRequest();
-
-        var associatedServices = solution.GetAssociatedServices();
-        var associatedServiceIds = associatedServices.Select(x => x.ServiceId);
-
-        var servicesToAdd = model.ToAdd?.Select(x => x.CatalogueItemId) ?? Enumerable.Empty<CatalogueItemId>();
-        var serviceToRemove = model.ToRemove?.Select(x => x.CatalogueItemId) ?? Enumerable.Empty<CatalogueItemId>();
-
-        var serviceIds = associatedServiceIds.Concat(servicesToAdd)
-            .Except(serviceToRemove);
-
-        await competitionsService.SetAssociatedServices(
-            internalOrgId,
-            competitionId,
-            solutionId,
-            serviceIds);
-
-        return RedirectToAction(
-            nameof(Hub),
-            new { internalOrgId, competitionId, solutionId });
+        return RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId });
     }
 
     internal async Task<IEnumerable<ServiceRecipientDto>> GetRecipientQuantities(

@@ -46,7 +46,6 @@ public static class FeaturesPartialModelTests
     }
 
     [Fact]
-    [MockAutoData]
     public static void CanDelete_NullReturnUrl_NullRequirements_True()
     {
         var model = new FeaturesPartialModel();

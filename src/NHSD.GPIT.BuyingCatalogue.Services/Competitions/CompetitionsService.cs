@@ -572,7 +572,7 @@ public class CompetitionsService : ICompetitionsService
             await dbContext.SaveChangesAsync();
     }
 
-    public async Task SetAssociatedServices(
+    public async Task AddAssociatedServices(
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
@@ -591,27 +591,38 @@ public class CompetitionsService : ICompetitionsService
         var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
         if (solution == null) return;
 
-        var existingAssociatedServices = solution.SolutionServices.Where(
-            x => !x.IsRequired && x.Service.CatalogueItemType is CatalogueItemType.AssociatedService);
-
-        var selectedAssociatedServices = associatedServices.ToList();
-
-        var toAdd = selectedAssociatedServices.Where(x => existingAssociatedServices.All(y => y.ServiceId != x))
-            .Select(x => new SolutionService(competitionId, solutionId, x, false))
+        var selectedAssociatedServices = associatedServices.Select(x => new SolutionService(competitionId, solutionId, x, false))
             .ToList();
 
-        var toRemove = existingAssociatedServices.Where(x => !selectedAssociatedServices.Contains(x.ServiceId))
-            .ToList();
+        selectedAssociatedServices.ForEach(x => solution.SolutionServices.Add(x));
 
-        var pricesToRemove = toRemove.Where(x => x.Price != null).Select(x => x.Price).ToList();
-        if (pricesToRemove.Count != 0)
-            dbContext.RemoveRange(pricesToRemove);
+        await dbContext.SaveChangesAsync();
+    }
 
-        toRemove.ForEach(x => solution.SolutionServices.Remove(x));
-        toAdd.ForEach(x => solution.SolutionServices.Add(x));
+    public async Task RemoveAssociatedService(
+        string internalOrgId,
+        int competitionId,
+        CatalogueItemId solutionId,
+        CatalogueItemId serviceId)
+    {
+        var competition = await dbContext.Competitions.Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Service)
+            .Include(competition => competition.CompetitionSolutions)
+            .ThenInclude(competitionSolution => competitionSolution.SolutionServices)
+            .ThenInclude(solutionService => solutionService.Price)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-        if (dbContext.ChangeTracker.HasChanges())
-            await dbContext.SaveChangesAsync();
+        var solution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
+        var associatedService = solution?.GetAssociatedServices().FirstOrDefault(x => x.ServiceId == serviceId);
+        if (associatedService == null) return;
+
+        if (associatedService.Price is not null)
+            dbContext.RemoveRange(associatedService.Price);
+
+        solution.SolutionServices.Remove(associatedService);
+
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task<int> AddCompetition(int organisationId, int filterId, string frameworkId, string name, string description)

@@ -58,22 +58,27 @@
                             <p>You can add Associated Services to help implement your solution, for example training or data migration.</p>
                             @foreach (var item in associatedServices)
                             {
-                                <div class="nhsuk-u-margin-bottom-9">
-                                    <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
-                                </div>
+                                <partial name="HubCatalogueItem" model="@Model.GetCatalogueItem(item.CatalogueItemId)"/>
                             }
                         }
                     </nhs-card-content>
                     <nhs-card-footer>
-                        <p class="nhsuk-body-m">
-                            <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Model.AssociatedServicesUrl">
-                                <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" /> @Model.AssociatedServicesActionText
-                            </a>
-                        </p>
+                        @if (Model.AssociatedServicesRemaining)
+                        {
+                            <p class="nhsuk-body-m">
+                                <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Model.AssociatedServicesUrl">
+                                    <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/> Add Associated Services
+                                </a>
+                            </p>
+                        }
+                        else
+                        {
+                            <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>All the Associated Services available for this Catalogue Solution have already been added.</p>
+                        }
                     </nhs-card-footer>
                 </nhs-card-v2>
 
-                
+
             </div>
         }
 

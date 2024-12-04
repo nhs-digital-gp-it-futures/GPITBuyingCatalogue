@@ -1,7 +1,7 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Shared.RemoveServiceModel;
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.RemoveServiceModel;
 
 @{
-    ViewBag.Title = "Remove Additional Service";
+    ViewBag.Title = $"Remove {Model.ServiceType}";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -11,7 +11,7 @@
         <nhs-validation-summary RadioId="ConfirmRemoveService" />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.ServiceName"
-                        advice="Confirm you want to remove this @Model.ServiceType from your order." />
+                        advice="Confirm you want to remove this @Model.ServiceType from your @Model.EntityType.ToLowerInvariant()." />
 
         <nhs-warning-callout label-text="Removing an @Model.ServiceType">
             <p>Removing an @Model.ServiceType will also remove any quantities and prices you've previously entered for it.</p>
@@ -20,6 +20,7 @@
         <form method="post">
             <input type="hidden" asp-for="@Model.ServiceName" />
             <input type="hidden" asp-for="@Model.ServiceType" />
+            <input type="hidden" asp-for="@Model.EntityType" />
             <input type="hidden" asp-for="BackLink" />
             <nhs-fieldset-form-label asp-for="@Model" label-text="Remove @Model.ServiceName">
                 <nhs-radio-buttons asp-for="ConfirmRemoveService"

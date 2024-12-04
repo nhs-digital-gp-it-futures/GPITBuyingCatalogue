@@ -60,9 +60,9 @@ public class CompetitionSolutionHubModel : NavBaseModel
 
     public bool AssociatedServicesAvailable { get; set; }
 
-    public string AssociatedServicesUrl { get; set; }
+    public bool AssociatedServicesRemaining { get; set; }
 
-    public string AssociatedServicesActionText => $"{(AssociatedServices?.Any() ?? false ? "Change" : "Add")} Associated Services";
+    public string AssociatedServicesUrl { get; set; }
 
     public List<CatalogueItemHubModel> CatalogueItems { get; set; }
 

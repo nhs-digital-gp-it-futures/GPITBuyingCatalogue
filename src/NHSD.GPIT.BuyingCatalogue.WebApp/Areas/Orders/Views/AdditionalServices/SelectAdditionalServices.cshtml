@@ -1,5 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.SelectServicesModel
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.SelectAdditionalServicesModel
 @{
     ViewBag.Title = "Add Additional Services";
 
@@ -9,8 +9,6 @@
     var advice = Model.IsAmendment && !Model.Services.Any()
         ? "All the Additional Services available with this Catalogue Solution have already been added to this order."
         : "Select the Additional Services that you want to add to your order.";
-
-    Model.Services.RemoveAll(x => x.IsSelected);
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -22,7 +20,7 @@
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
                         advice="@advice"/>
-        
+
         <form method="post" autocomplete="off">
             @if (Model.Services.Any())
             {
@@ -57,12 +55,12 @@
                     </div>
                 }
             }
-            
+
             @if (Model.ExistingServices.Any())
             {
                 <div id="existing-services" class="nhsuk-u-margin-top-9">
                     <h3>Additional Services already added</h3>
-                    
+
                     <ul>
                         @foreach (var (service, i) in Model.ExistingServices.Select((x, i) => (x, i)))
                         {

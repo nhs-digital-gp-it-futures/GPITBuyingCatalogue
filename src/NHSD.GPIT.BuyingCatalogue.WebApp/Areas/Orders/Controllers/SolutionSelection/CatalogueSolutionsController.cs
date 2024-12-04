@@ -412,7 +412,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     new { internalOrgId, callOffId }),
             };
 
-            return View(model);
+            return View("Services/RemoveService", model);
         }
 
         [HttpPost("remove-service/{catalogueItemId}")]
@@ -420,7 +420,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("Services/RemoveService", model);
             }
 
             if (model.ConfirmRemoveService ?? false)
