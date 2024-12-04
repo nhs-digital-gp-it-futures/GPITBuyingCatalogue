@@ -16,49 +16,30 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void AddFeature()
         {
-            CommonActions.ClickCheckboxByLabel("Features");
-            CommonActions.ClickSave();
-
-            CommonActions.HintText().Should().Be("Explain your requirements for features provided by the winning solution. You can add more features requirements later if needed.".FormatForComparison());
-
             MustFeature();
-            ReviewFeatureAddAnotherRequirement();
             ShouldFeature();
-            ReviewFeature();
         }
 
-        public void AddFeatureForAllNonPriceElements()
+        private void MustFeature()
         {
-            MustFeature();
-            ReviewFeatureAddAnotherRequirement();
-            ShouldFeature();
-            ReviewFeature();
-        }
-
-        public void MustFeature()
-        {
+            AddFeatureRequirement();
             CommonActions.ClickRadioButtonWithValue("Must");
             TextGenerators.TextInputAddText(NonPriceObjects.ElementRequirements, 100);
             CommonActions.ClickSave();
         }
 
-        public void ReviewFeatureAddAnotherRequirement()
+        private void ShouldFeature()
         {
-            CommonActions.HintText().Should().Be("Review the information you’ve provided and add any more features requirements if needed.".FormatForComparison());
-            CommonActions.ClickLinkElement(NonPriceObjects.AddAnotherRequirementLink);
-        }
-
-        public void ShouldFeature()
-        {
+            AddFeatureRequirement();
             CommonActions.ClickRadioButtonWithValue("Should");
             TextGenerators.TextInputAddText(NonPriceObjects.ElementRequirements, 100);
             CommonActions.ClickSave();
         }
 
-        public void ReviewFeature()
+        private void AddFeatureRequirement()
         {
-            CommonActions.HintText().Should().Be("Review the information you’ve provided and add any more features requirements if needed.".FormatForComparison());
-            CommonActions.ClickSave();
+            CommonActions.ClickLinkElement(NonPriceObjects.AddFeaturesLink);
+            CommonActions.HintText().Should().Be("Explain your requirements for features provided by the winning solution. You can add more features requirements later if needed.".FormatForComparison());
         }
     }
 }

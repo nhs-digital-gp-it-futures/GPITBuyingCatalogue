@@ -137,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
             }
         }
 
-        public void StepTwoDefineCompetitionCriteria(CompetitionType competitiontype, NonPriceElementType elementtype = NonPriceElementType.Null)
+        public void StepTwoDefineCompetitionCriteria(CompetitionType competitiontype, NonPriceElementType elementType = NonPriceElementType.Null)
         {
             int competitionId = CompetitionId();
 
@@ -155,23 +155,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions
                 CompetitionTaskList.AwardCriteriaWeightings();
                 AwardCriteriaWeightings.PriceNonPriceAwardCriteriaWeightings();
                 CompetitionTaskList.NonPriceElements();
-                CompetitionNonPriceElements.AddNonPriceElements(elementtype);
-                switch (elementtype)
-                {
-                    case NonPriceElementType.All:
-                        CompetitionNonPriceElements.AllNonPriceElementsReview();
-                        break;
-                    default:
-                        CompetitionNonPriceElements.AddNonPriceElement();
-                        break;
-                }
+                CompetitionNonPriceElements.AddNonPriceElements(elementType);
 
                 CompetitionTaskList.NonPriceWeightings();
-                NonPriceWeightings.Weightings(elementtype);
+                NonPriceWeightings.Weightings(elementType);
                 CompetitionTaskList.ReviewCompetitionCriteria();
                 ReviewCompetitionCriteria.ReviewCriteria();
                 CompetitionTaskList.CompareAndScoreLink();
-                CompareAndScore.CompareAndScoreShortlistedSolutions(elementtype);
+                CompareAndScore.CompareAndScoreShortlistedSolutions(elementType);
             }
 
             CompetitionTaskList.CalculatePriceTask();

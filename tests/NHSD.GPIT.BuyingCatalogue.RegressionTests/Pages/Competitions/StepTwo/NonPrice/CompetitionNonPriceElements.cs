@@ -28,8 +28,6 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
 
         public void AddNonPriceElements(NonPriceElementType elementType)
         {
-            AddElements();
-
             switch (elementType)
             {
                 case NonPriceElementType.Feature:
@@ -45,64 +43,35 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.StepTwo.N
                     ServiceLevelAgreement.AddServiceLevelAgreement();
                     break;
                 case NonPriceElementType.All:
-                    SelectAllNonPriceElements();
                     AddAllNonPriceElements();
                     break;
                 case NonPriceElementType.Multiple:
-                    SelectMultipleNonPriceElements();
                     AddMultipleNonPriceElements();
                     break;
                 default:
                     break;
             }
-        }
 
-        public void AddElements()
-        {
-            CommonActions.ClickLinkElement(NonPriceObjects.AddNonPriceElementLink);
-            CommonActions.HintText().Should().Be("You can add any or all optional non-price elements to help you score your shortlisted solutions.".FormatForComparison());
-        }
+            var content = elementType is NonPriceElementType.All
+                ? "All available non-price elements have been added for this competition."
+                : "Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.";
 
-        public void AddNonPriceElement()
-        {
-                CommonActions.HintText().Should().Be("Add at least 1 optional non-price element to help you score your shortlisted solutions, for example features, implementation, interoperability or service levels.".FormatForComparison());
-                CommonActions.ClickSaveAndContinue();
-        }
-
-        public void AllNonPriceElementsReview()
-        {
-            CommonActions.HintText().Should().Be("All available non-price elements have been added for this competition.".FormatForComparison());
+            CommonActions.HintText().Should().Be(content.FormatForComparison());
             CommonActions.ClickSaveAndContinue();
-        }
-
-        public void SelectAllNonPriceElements()
-        {
-            CommonActions.ClickCheckboxByLabel("Features");
-            CommonActions.ClickCheckboxByLabel("Implementation");
-            CommonActions.ClickCheckboxByLabel("Interoperability");
-            CommonActions.ClickCheckboxByLabel("Service levels");
-            CommonActions.ClickSave();
         }
 
         public void AddAllNonPriceElements()
         {
-            Features.AddFeatureForAllNonPriceElements();
-            Implementation.AddImplementationForAllNonPriceElements();
-            Interoperability.AddInteroperabilityForAllNonPriceElements();
-            ServiceLevelAgreement.AddServiceLevelAgreementForAllNonPriceElements();
-        }
-
-        public void SelectMultipleNonPriceElements()
-        {
-            CommonActions.ClickCheckboxByLabel("Features");
-            CommonActions.ClickCheckboxByLabel("Implementation");
-            CommonActions.ClickSave();
+            Features.AddFeature();
+            Implementation.AddImplementation();
+            Interoperability.AddInteroperability();
+            ServiceLevelAgreement.AddServiceLevelAgreement();
         }
 
         public void AddMultipleNonPriceElements()
         {
-            Features.AddFeatureForAllNonPriceElements();
-            Implementation.AddImplementationForAllNonPriceElements();
+            Features.AddFeature();
+            Implementation.AddImplementation();
         }
     }
 }
