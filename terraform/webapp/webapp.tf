@@ -14,6 +14,7 @@ module "webapp" {
   aspnet_environment              = var.environment
   instrumentation_key             = azurerm_application_insights.appinsights.instrumentation_key
   primary_vpn                     = var.primary_vpn
+  secondary_vpn                   = var.secondary_vpn
   app_gateway_ip                  = module.appgateway.appgateway_pip_ipaddress
   app_dns_url                     = var.app_url
   docker_registry_server_url      = data.azurerm_container_registry.acr.login_server

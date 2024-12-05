@@ -50,6 +50,10 @@ variable "primary_vpn" {
   type = string
 }
 
+variable "secondary_vpn" {
+  type = list(string)
+}
+
 variable "app_gateway_ip" {
   type = string
 }
