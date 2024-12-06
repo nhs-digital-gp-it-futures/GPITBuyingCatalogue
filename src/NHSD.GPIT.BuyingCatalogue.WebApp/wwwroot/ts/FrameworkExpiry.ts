@@ -5,23 +5,23 @@ window.addEventListener('load', function () {
     const container: HTMLElement = warningCallout.querySelector('div[class="container"]');
     container.style.display = 'none';
 
-    const link: HTMLAnchorElement = document.createElement('a');
-    link.text = 'Show more';
-    link.href = '#';
-    link.style.color = '#000';
+    const button: HTMLButtonElement = document.createElement('button');
+    button.textContent = 'Show more';
+    button.setAttribute('type', "button");
 
-    link.addEventListener('click', _ => {
+    button.addEventListener('click', _ => {
         const container: HTMLElement = warningCallout.querySelector('div[class="container"]');
         const isHidden: boolean = container.style.display === 'none';
 
         if (isHidden) {
-            link.text = 'Show less';
+            button.textContent = 'Show less';
             container.style.display = null;
         } else {
-            link.text = 'Show more';
+            container.focus();
+            button.textContent = 'Show more';
             container.style.display = 'none';
         }
     });
 
-    warningCallout.appendChild(link);
+    warningCallout.appendChild(button);
 });
