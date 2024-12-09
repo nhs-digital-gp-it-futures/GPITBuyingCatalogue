@@ -6,6 +6,8 @@ window.addEventListener('load', function () {
     container.style.display = 'none';
 
     const button: HTMLButtonElement = document.createElement('button');
+    button.setAttribute('style', 'unset');
+    button.setAttribute('class', 'disabled');
     button.textContent = 'Show more';
     button.setAttribute('type', "button");
 
