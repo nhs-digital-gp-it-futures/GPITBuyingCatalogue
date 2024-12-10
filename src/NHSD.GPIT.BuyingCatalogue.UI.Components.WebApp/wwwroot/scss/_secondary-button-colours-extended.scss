@@ -1,0 +1,31 @@
+﻿$nhsuk-button--delete: $color_nhsuk-red;
+$nhsuk-button--delete-active: shade($nhsuk-button--delete, 50%);
+$nhsuk-button--delete-shadow: shade($nhsuk-button--delete, 50%);
+
+
+.nhsuk-button--delete {
+    background-color: $nhsuk-button--delete;
+    box-shadow: 0 $button-shadow-size 0 $nhsuk-button--delete-shadow;
+
+    &:hover {
+        background-color: darken($nhsuk-button--delete, 10%);
+    }
+
+    &:focus {
+        background: $nhsuk-focus-color;
+        box-shadow: 0 $button-shadow-size 0 $nhsuk-focus-text-color;
+        color: $nhsuk-focus-text-color;
+        outline: $nhsuk-focus-width solid transparent;
+    }
+
+    &:active {
+        background: $nhsuk-button--delete-active;
+        box-shadow: none;
+        color: $nhsuk-button-text-color;
+        top: $button-shadow-size;
+    }
+
+    &.nhsuk-button--disabled {
+        background-color: $nhsuk-button--delete;
+    }
+}

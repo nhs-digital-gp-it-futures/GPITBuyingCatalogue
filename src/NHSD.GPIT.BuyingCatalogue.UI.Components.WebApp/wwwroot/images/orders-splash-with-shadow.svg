@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="280px" height="280px" viewBox="0 0 280 280" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>orders-splash</title>
+    <defs>
+        <rect id="path-1" x="53" y="55" width="174" height="170" rx="5"></rect>
+        <filter x="-7.2%" y="-6.8%" width="114.4%" height="114.7%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.257614456 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <rect id="path-4" x="0" y="0" width="130" height="28" rx="1"></rect>
+        <rect id="path-6" x="0" y="0" width="130" height="28" rx="1"></rect>
+        <rect id="path-8" x="0" y="0" width="130" height="28" rx="1"></rect>
+        <rect id="path-10" x="0" y="0" width="130" height="28" rx="1"></rect>
+        <rect id="path-12" x="0" y="33" width="30" height="68" rx="1"></rect>
+        <rect id="path-14" x="34" y="33" width="130" height="18" rx="1"></rect>
+        <rect id="path-16" x="0" y="0" width="122" height="7" rx="1.5"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Large" transform="translate(-569, -286)">
+            <g id="orders-splash" transform="translate(569, 286)">
+                <circle id="Oval" stroke="#C3C3C3" fill="#F5F5F5" cx="140" cy="140" r="139.5"></circle>
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Rectangle">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-1"></use>
+                    <rect stroke="#979797" stroke-width="1" stroke-linejoin="square" fill-opacity="0.1" fill="#FFFFFF" fill-rule="evenodd" x="53.5" y="55.5" width="173" height="169" rx="5"></rect>
+                </g>
+                <g id="contents" mask="url(#mask-2)">
+                    <g transform="translate(58, 55)">
+                        <rect id="Rectangle" stroke="none" fill="#979797" fill-rule="evenodd" x="0" y="20" width="27" height="6"></rect>
+                        <rect id="Rectangle-Copy-2" stroke="none" fill="#979797" fill-rule="evenodd" x="3" y="38" width="24" height="3"></rect>
+                        <g id="Group-4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(34, 55)">
+                            <rect id="Rectangle-Copy-10" fill="#979797" x="4" y="4" width="30" height="3"></rect>
+                            <rect id="Rectangle-Copy-11" fill="#979797" x="4" y="10" width="113" height="3"></rect>
+                            <rect id="Rectangle-Copy-12" fill="#979797" x="4" y="16" width="118" height="3"></rect>
+                            <rect id="Rectangle-Copy-13" fill="#979797" x="4" y="21" width="110" height="3"></rect>
+                            <mask id="mask-5" fill="white">
+                                <use xlink:href="#path-4"></use>
+                            </mask>
+                            <rect stroke="#979797" x="0.5" y="0.5" width="129" height="27" rx="1"></rect>
+                        </g>
+                        <g id="Group-4-Copy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(34, 87)">
+                            <rect id="Rectangle-Copy-10" fill="#979797" x="4" y="4" width="30" height="3"></rect>
+                            <rect id="Rectangle-Copy-11" fill="#979797" x="4" y="10" width="113" height="3"></rect>
+                            <rect id="Rectangle-Copy-12" fill="#979797" x="4" y="16" width="118" height="3"></rect>
+                            <rect id="Rectangle-Copy-13" fill="#979797" x="4" y="21" width="110" height="3"></rect>
+                            <mask id="mask-7" fill="white">
+                                <use xlink:href="#path-6"></use>
+                            </mask>
+                            <rect stroke="#979797" x="0.5" y="0.5" width="129" height="27" rx="1"></rect>
+                        </g>
+                        <g id="Group-4-Copy-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(34, 119)">
+                            <rect id="Rectangle-Copy-10" fill="#979797" x="4" y="4" width="30" height="3"></rect>
+                            <rect id="Rectangle-Copy-11" fill="#979797" x="4" y="10" width="113" height="3"></rect>
+                            <rect id="Rectangle-Copy-12" fill="#979797" x="4" y="16" width="118" height="3"></rect>
+                            <rect id="Rectangle-Copy-13" fill="#979797" x="4" y="21" width="110" height="3"></rect>
+                            <mask id="mask-9" fill="white">
+                                <use xlink:href="#path-8"></use>
+                            </mask>
+                            <rect stroke="#979797" x="0.5" y="0.5" width="129" height="27" rx="1"></rect>
+                        </g>
+                        <g id="Group-4-Copy-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(34, 151)">
+                            <rect id="Rectangle-Copy-10" fill="#979797" x="4" y="4" width="30" height="3"></rect>
+                            <rect id="Rectangle-Copy-11" fill="#979797" x="4" y="10" width="113" height="3"></rect>
+                            <rect id="Rectangle-Copy-12" fill="#979797" x="4" y="16" width="118" height="3"></rect>
+                            <rect id="Rectangle-Copy-13" fill="#979797" x="4" y="21" width="110" height="3"></rect>
+                            <mask id="mask-11" fill="white">
+                                <use xlink:href="#path-10"></use>
+                            </mask>
+                            <rect stroke="#979797" x="0.5" y="0.5" width="129" height="27" rx="1"></rect>
+                        </g>
+                        <g id="Group-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(3, 44)">
+                            <rect id="Rectangle-Copy-5" fill="#979797" x="5" y="0" width="19" height="3"></rect>
+                            <rect id="Rectangle-Copy-6" fill="#979797" x="5" y="6" width="19" height="3"></rect>
+                            <circle id="Oval" fill="#979797" cx="1.5" cy="1.5" r="1.5"></circle>
+                            <circle id="Oval-Copy-3" fill="#979797" cx="1.5" cy="7.5" r="1.5"></circle>
+                        </g>
+                        <g id="Group-3-Copy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(3, 62)">
+                            <rect id="Rectangle-Copy-5" fill="#979797" x="5" y="0" width="19" height="3"></rect>
+                            <rect id="Rectangle-Copy-6" fill="#979797" x="5" y="6" width="19" height="3"></rect>
+                            <circle id="Oval" fill="#979797" cx="1.5" cy="1.5" r="1.5"></circle>
+                            <circle id="Oval-Copy-3" fill="#979797" cx="1.5" cy="7.5" r="1.5"></circle>
+                        </g>
+                        <g id="Group-3-Copy-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(3, 80)">
+                            <rect id="Rectangle-Copy-5" fill="#979797" x="5" y="0" width="19" height="3"></rect>
+                            <rect id="Rectangle-Copy-6" fill="#979797" x="5" y="6" width="19" height="3"></rect>
+                            <circle id="Oval" fill="#979797" cx="1.5" cy="1.5" r="1.5"></circle>
+                            <circle id="Oval-Copy-3" fill="#979797" cx="1.5" cy="7.5" r="1.5"></circle>
+                        </g>
+                        <rect id="Rectangle-Copy-3" stroke="none" fill="#979797" fill-rule="evenodd" x="3" y="56" width="24" height="3"></rect>
+                        <rect id="Rectangle-Copy-4" stroke="none" fill="#979797" fill-rule="evenodd" x="3" y="74" width="24" height="3"></rect>
+                        <rect id="Rectangle-Copy-7" stroke="none" fill="#979797" fill-rule="evenodd" x="3" y="92" width="24" height="3"></rect>
+                        <rect id="Rectangle-Copy" stroke="none" fill="#979797" fill-rule="evenodd" x="30" y="20" width="27" height="6"></rect>
+                        <mask id="mask-13" fill="white">
+                            <use xlink:href="#path-12"></use>
+                        </mask>
+                        <rect stroke="#979797" stroke-width="1" x="0.5" y="33.5" width="29" height="67" rx="1"></rect>
+                        <mask id="mask-15" fill="white">
+                            <use xlink:href="#path-14"></use>
+                        </mask>
+                        <rect stroke="#979797" stroke-width="1" x="34.5" y="33.5" width="129" height="17" rx="1"></rect>
+                        <g id="Rectangle" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(38, 38)">
+                            <mask id="mask-17" fill="white">
+                                <use xlink:href="#path-16"></use>
+                            </mask>
+                            <rect stroke="#979797" x="0.5" y="0.5" width="121" height="6" rx="1.5"></rect>
+                            <rect fill="#979797" mask="url(#mask-17)" x="107" y="-2" width="14" height="11"></rect>
+                        </g>
+                    </g>
+                </g>
+                <rect id="Rectangle" fill="#979797" mask="url(#mask-2)" x="51" y="55" width="178" height="14"></rect>
+                <g id="Group-2" mask="url(#mask-2)" fill="#FFFFFF">
+                    <g transform="translate(58, 60)">
+                        <circle id="Oval" cx="2" cy="2" r="2"></circle>
+                        <circle id="Oval-Copy" cx="8" cy="2" r="2"></circle>
+                        <circle id="Oval-Copy-2" cx="14" cy="2" r="2"></circle>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

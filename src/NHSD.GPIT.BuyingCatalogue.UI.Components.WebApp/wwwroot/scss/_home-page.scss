@@ -1,0 +1,74 @@
+.nhsuk-hero--image {
+  background-image: url(/images/home-page-image.png);
+  min-height: 370px;
+
+  .nhsuk-hero__overlay {
+    min-height: 370px;
+  }
+}
+
+.app-section__content {
+  padding-bottom: 40px;
+  padding-top: 40px;
+}
+
+.card-title-min-height {
+  min-height: 96px;
+}
+
+.card-min-content-height {
+  min-height: 130px;
+}
+
+.app-homepage {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.logout-link {
+  font-weight: bold;
+}
+
+.nhsuk-header__logo {
+  float: left;
+}
+
+.nhsuk-header__content::after {
+  clear: both;
+  content: "";
+  display: block;
+}
+
+@media (min-width: 40.0625em) {
+  .nhsuk-header__content {
+    float: right;
+  }
+}
+
+@media (max-width: 40.0625em) {
+  .nhsuk-hero--image {
+    min-height: 200px;
+
+    .nhsuk-hero__overlay {
+      min-height: 200px;
+    }
+  }
+
+  .card-title-min-height {
+    min-height: 50px;
+  }
+
+  .card-min-content-height {
+    min-height: 65px;
+  }
+}
+
+@media (min-width: 794px) {
+  .nhs-card__min-height {
+    min-height: 380px;
+
+    .nhsuk-card__heading {
+      min-height: 60px;
+    }
+  }
+}
