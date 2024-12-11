@@ -11,14 +11,14 @@ module "documentstorageaccount" {
 
 resource "azurerm_storage_container" "order_pdf_container" {
   name                  = "orderpdfs"
-  storage_account_id    = module.documentstorageaccount.storage_account_id
+  storage_account_name  = module.documentstorageaccount.storage_account_name
   container_access_type = "container"
   depends_on            = [module.documentstorageaccount]
 }
 
 resource "azurerm_storage_container" "public_documents_container" {
   name                  = "publicdocs"
-  storage_account_id    = module.documentstorageaccount.storage_account_id
+  storage_account_name  = module.documentstorageaccount.storage_account_name
   container_access_type = "container"
   depends_on            = [module.documentstorageaccount]
 }
