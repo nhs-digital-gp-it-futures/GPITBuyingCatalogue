@@ -39,7 +39,7 @@ resource "azurerm_storage_account" "function_app_storage" {
 
 resource "azurerm_storage_container" "function_app_container" {
   name                  = "capabilities-update"
-  storage_account_name  = azurerm_storage_account.function_app_storage.name
+  storage_account_id    = azurerm_storage_account.function_app_storage.id
   container_access_type = "container"
 }
 
@@ -74,13 +74,16 @@ resource "azurerm_windows_function_app" "function_app" {
     type = "SystemAssigned"
   }
 
-  service_plan_id            = azurerm_service_plan.function_app_plan.id
-  location                   = azurerm_resource_group.function_app_rg.location
-  resource_group_name        = azurerm_resource_group.function_app_rg.name
-  storage_account_name       = azurerm_storage_account.function_app_storage.name
-  storage_account_access_key = azurerm_storage_account.function_app_storage.primary_access_key
-  https_only                 = true
-  enabled                    = true
+  ftp_publish_basic_authentication_enabled       = false
+  webdeploy_publish_basic_authentication_enabled = false
+  service_plan_id                                = azurerm_service_plan.function_app_plan.id
+  location                                       = azurerm_resource_group.function_app_rg.location
+  resource_group_name                            = azurerm_resource_group.function_app_rg.name
+  storage_account_name                           = azurerm_storage_account.function_app_storage.name
+  storage_account_access_key                     = azurerm_storage_account.function_app_storage.primary_access_key
+  https_only                                     = true
+  enabled                                        = true
+  public_network_access_enabled                  = false
 
   site_config {
     always_on         = true
