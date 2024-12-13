@@ -1,6 +1,6 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
 {
-    public sealed class NhsSecondaryButtonModel
+    public sealed class NhsAnchorButtonModel
     {
         public string Url { get; set; }
 

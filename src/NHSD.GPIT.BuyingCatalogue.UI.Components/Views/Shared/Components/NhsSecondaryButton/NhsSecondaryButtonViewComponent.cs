@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSec
 
         public async Task<IViewComponentResult> InvokeAsync(string text, string url, ButtonType type)
         {
-            var model = new NhsSecondaryButtonModel
+            var model = new NhsAnchorButtonModel
             {
                 Text = text,
                 Url = url,
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSec
                 _ => throw new ArgumentException($"{nameof(model.ButtonClass)} has an incorrect value of {model.ButtonClass}"),
             };
 
-            return await Task.FromResult(View("NhsSecondaryButton", model));
+            return await Task.FromResult(View("NhsAnchorButton", model));
         }
     }
 }
