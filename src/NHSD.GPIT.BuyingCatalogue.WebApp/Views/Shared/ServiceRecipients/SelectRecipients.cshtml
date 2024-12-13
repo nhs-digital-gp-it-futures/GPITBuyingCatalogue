@@ -38,16 +38,18 @@
                 </nhs-inset-text>
             }
             <div class="bc-u-max-width-full">
-                <vc:nhs-anchor-button url="@Url.Action(null, values: new { selectionMode = SelectionMode.All })"
-                                     text="Select all"
-                                     type="Secondary" />
-                <vc:nhs-anchor-button url="@Url.Action(null, values: new { selectionMode = SelectionMode.None })"
-                                     text="Deselect all"
-                                     type="Secondary" />
-                <button id="show-dialog" class="nhsuk-button nhsuk-button--secondary bc-u-float-right nhsuk-button--js-only">
-                    <vc:nhs-search-icon/>
-                    Search for Service Recipients
-                </button>
+                <nhs-button-group>
+                    <vc:nhs-anchor-button url="@Url.Action(null, values: new { selectionMode = SelectionMode.All })"
+                                          text="Select all"
+                                          type="Secondary"/>
+                    <vc:nhs-anchor-button url="@Url.Action(null, values: new { selectionMode = SelectionMode.None })"
+                                          text="Deselect all"
+                                          type="Secondary"/>
+                    <button id="show-dialog" class="nhsuk-button nhsuk-button--secondary bc-u-float-right nhsuk-button--js-only">
+                        <vc:nhs-search-icon/>
+                        Search for Service Recipients
+                    </button>
+                </nhs-button-group>
             </div>
         }
 
