@@ -1,5 +1,5 @@
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared.Partials
 @model NonPriceElementsModel
@@ -141,6 +141,6 @@
             }
         </nhs-card-v2>
         <br/>
-        <vc:nhs-secondary-button type="Primary" text="Save and continue" url="@Model.BackLink"/>
+        <vc:nhs-anchor-button type="Primary" text="Save and continue" url="@Model.BackLink"/>
     </div>
 </div>
