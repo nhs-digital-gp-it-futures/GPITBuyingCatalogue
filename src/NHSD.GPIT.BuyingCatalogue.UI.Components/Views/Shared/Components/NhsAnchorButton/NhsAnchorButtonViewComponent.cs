@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
 {
-    public sealed class NhsSecondaryButtonViewComponent : ViewComponent
+    public sealed class NhsAnchorButtonViewComponent : ViewComponent
     {
         private const string NhsSecondary = "nhsuk-button--secondary";
         private const string NhsDelete = "nhsuk-button--delete";
