@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.DeleteOrder.DeleteOrderModel;
 @{
-    ViewBag.Title = $"Are you sure you want to delete this {Model.OrderType}?";
+    ViewBag.Title = $"Delete {Model.OrderType}";
 }
 
 <div data-test-id="delete-order-page">
@@ -11,9 +11,8 @@
             <nhs-validation-summary RadioId="@nameof(Model.SelectedOption)" />
 
             <nhs-page-title title="@ViewBag.Title"
-                            caption="Order @Model.CallOffId"
-                            advice="@Model.Advice" />
-
+                            caption="Order @Model.CallOffId"/>
+            
             <nhs-warning-callout label-text="Deleting an @Model.OrderType"
                                  data-test-id="delete-warning-callout">
                 <p>@Model.Warning</p>
@@ -23,7 +22,7 @@
                 <input type="hidden" asp-for="BackLink" />
                 <input type="hidden" asp-for="IsAmendment" />
 
-                <nhs-fieldset-form-label asp-for="@Model">
+                <nhs-fieldset-form-label label-text="Are you sure you want to delete this @Model.OrderType?" asp-for="@Model">
                     <nhs-radio-buttons asp-for="SelectedOption" 
                                        values="Model.AvailableOptions.Cast<object>()"
                                        value-name="Value"
