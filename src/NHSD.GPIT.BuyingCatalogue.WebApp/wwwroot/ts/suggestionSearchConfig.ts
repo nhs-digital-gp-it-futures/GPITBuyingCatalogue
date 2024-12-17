@@ -31,7 +31,6 @@ class suggestionSearchConfig {
     ajaxUrl: string;
     queryParameterName: string;
     titleText: string;
-    placeholderText: string;
     currentPageUrl: string;
     form: HTMLFormElement;
     defaultInput: HTMLElement;
@@ -41,13 +40,11 @@ class suggestionSearchConfig {
                 ajaxUrl: string,
                 queryParameterName: string,
                 titleText: string,
-                currentPageUrl: string,
-                placeholderText: string) {
+                currentPageUrl: string) {
         this.modelId = modelId;
         this.ajaxUrl = ajaxUrl;
         this.queryParameterName = queryParameterName;
         this.titleText = titleText;
-        this.placeholderText = placeholderText;
         this.currentPageUrl = currentPageUrl;
         let form = document.getElementById(modelId.concat("-search-form"));
 
@@ -71,7 +68,6 @@ class suggestionSearchConfig {
             confirmOnBlur: false,
             onConfirm: this.onConfirm.bind(this),
             defaultValue: this.defaultValue(),
-            placeholder: this.placeholderText,
             minLength: 2,
             cssNamespace: "suggestion-search",
             templates: {
