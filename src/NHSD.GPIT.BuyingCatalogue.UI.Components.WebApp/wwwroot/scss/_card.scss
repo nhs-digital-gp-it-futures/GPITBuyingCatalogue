@@ -1,0 +1,53 @@
+.nhs-card-v2__content-with-footer {
+    padding-bottom: 0;
+}
+
+.header-with-detail {
+    text-align: left;
+    display: inline-block;
+    vertical-align: middle
+}
+
+.detail {
+    float: right;
+    vertical-align: middle
+}
+
+.card-content-icon {
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 8px
+}
+
+.card-content-text-with-icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 90%
+}
+
+.nhs-card-v2__content {
+    .nhsuk-pagination {
+        margin-bottom: 0;
+    }
+}
+
+.nhs-card-v2__footer p {
+    margin-bottom: 16px !important;
+    margin-top: 16px !important;
+}
+
+.nhs-card-v2__footer img {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.nhs-card-v2__footer {
+    margin-top: 16px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    padding-right: 32px;
+    padding-left: 32px;
+    background-color: #fafafa;
+    padding-top: 0px;
+}

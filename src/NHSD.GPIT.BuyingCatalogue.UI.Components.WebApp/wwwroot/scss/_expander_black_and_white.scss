@@ -1,0 +1,58 @@
+﻿.nhsuk-expander.nhsuk-expander-black-and-white .nhsuk-details__summary > span,
+.nhsuk-expander.nhsuk-expander-black-and-white .nhsuk-details__summary.nhsuk-details__summary-black-and-white .nhsuk-details__summary-text {
+    color: black;
+    text-decoration: none;
+}
+
+.nhsuk-expander.nhsuk-expander-black-and-white .nhsuk-details__summary .nhsuk-details__summary-text:before {
+    background: url("data:image/svg+xml,%3Csvg class='nhsuk-icon nhsuk-icon__plus' xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' aria-hidden='true'%3E%3Ccircle cx='12' cy='12' r='10' %3E%3C/circle%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M12 8v8M8 12h8'%3E%3C/path%3E%3C/svg%3E%0A") left -2px center no-repeat;
+}
+
+.nhsuk-expander[open].nhsuk-expander-black-and-white .nhsuk-details__summary .nhsuk-details__summary-text:before {
+    background: url("data:image/svg+xml,%3Csvg class='nhsuk-icon nhsuk-icon__minus' xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' aria-hidden='true'%3E%3Ccircle cx='12' cy='12' r='10' %3E%3C/circle%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M8 12h8'%3E%3C/path%3E%3C/svg%3E%0A") left -2px center no-repeat;
+}
+
+.nhsuk-expander.nhsuk-expander-black-and-white {
+    background: none;
+}
+
+.nhsuk-details__summary-text_secondary {
+    float: right;
+}
+
+.nhsuk-details__summary-text_secondary_url {
+    float: right;
+    color: #000 !important;
+    text-decoration: none;
+}
+
+.nhsuk-expander-index {
+    margin-bottom: 40px;
+}
+
+.nhsuk-expander-index .nhsuk-details__summary .nhsuk-details__summary-text {
+    text-decoration: none;
+}
+
+.nhsuk-expander-index .nhsuk-details__summary .nhsuk-details__summary-text__letter {
+    background-color: #005eb8;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    font-size: 2rem;
+    text-align: center;
+    line-height: 1.25;
+    position: absolute;
+    margin-bottom: 0;
+    top: -32px;
+    left: -1px;
+}
+
+.nhsuk-expander-index .nhsuk-details__summary .nhsuk-details__summary-text .nhsuk-details_summary-subtext {
+    color: #212b32;
+    display: block;
+}
+
+.nhsuk-expander-index .nhsuk-checkboxes__input + .nhsuk-checkboxes__label::before {
+    box-sizing: inherit;
+}
