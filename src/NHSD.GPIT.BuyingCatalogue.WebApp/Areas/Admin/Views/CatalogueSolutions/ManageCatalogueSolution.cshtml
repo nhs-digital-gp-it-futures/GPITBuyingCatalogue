@@ -41,7 +41,7 @@
             </nhs-summary-list>
         }
 
-        <vc:nhs-secondary-button url="@Url.Action(
+        <vc:nhs-anchor-button url="@Url.Action(
                                       nameof(SolutionsController.Description),
                                       typeof(SolutionsController).ControllerName(),
                                       new { solutionId = Model.SolutionId, area = "Solutions" })"

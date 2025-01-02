@@ -52,6 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             var statusTag = GetNhsTagBuilder(context);
             var labelHint = GetLabelHintBuilder();
             var breakRow = new TagBuilder("br") { TagRenderMode = TagRenderMode.SelfClosing };
+            breakRow.MergeAttribute("aria-hidden", "true");
 
             output.Content
                 .AppendHtml(taskNameSpan)

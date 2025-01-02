@@ -67,13 +67,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.
             CommonActions.ClickLinkElement(AssociatedServicesObjects.EditPriceLink(serviceId));
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{service} - List price".FormatForComparison());
+                .BeEquivalentTo($"{service}List price".FormatForComparison());
 
             CommonActions.ClickLinkElement(ManageListPricesObjects.AddPriceLink);
 
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{service} - List price type".FormatForComparison());
+                .BeEquivalentTo($"{service}List price type".FormatForComparison());
 
             if (priceType == ListPriceTypes.Flat_price.ToString())
             {

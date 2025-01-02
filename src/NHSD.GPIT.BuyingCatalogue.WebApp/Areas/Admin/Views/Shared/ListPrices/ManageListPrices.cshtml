@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
@@ -94,7 +94,7 @@
             </div>
         }
 
-        <vc:nhs-secondary-button text="Save and continue"
+        <vc:nhs-anchor-button text="Save and continue"
                                     type="Primary"
                                     url="@Model.BackLink" />
     </div>

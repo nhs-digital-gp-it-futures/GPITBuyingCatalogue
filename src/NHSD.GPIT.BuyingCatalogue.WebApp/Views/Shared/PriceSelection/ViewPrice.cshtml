@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.SummaryList
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing.ViewPriceModel
 @{
@@ -31,7 +31,7 @@
                      model="new PriceCalculationDetailsModel(Model.ItemType, Model.PriceType, Model.CalculationType)" />
         </div>
 
-        <vc:nhs-secondary-button type="Primary"
+        <vc:nhs-anchor-button type="Primary"
                                  text="Save and continue"
                                  url="@Model.OnwardLink"/>
 	</div>

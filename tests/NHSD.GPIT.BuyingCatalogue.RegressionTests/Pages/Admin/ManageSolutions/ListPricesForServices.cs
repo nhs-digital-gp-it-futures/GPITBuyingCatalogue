@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
             CommonActions.ClickSave();
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{service} - Add a flat list price".FormatForComparison());
+                .BeEquivalentTo($"{service}Add a flat list price".FormatForComparison());
 
             AddFlatPriceDetails(service);
         }
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
             CommonActions.ClickSave();
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{service} - List price".FormatForComparison());
+                .BeEquivalentTo($"{service}List price".FormatForComparison());
 
             CommonActions.ClickSaveAndContinue();
         }
@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
             CommonActions.ClickSave();
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{service} - Add a tiered list price".FormatForComparison());
+                .BeEquivalentTo($"{service}Add a tiered list price".FormatForComparison());
 
             AddTieredPriceDetails(service);
             AddTieredPriceTierDetails(service);
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
             CommonActions.ClickSave();
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{service} - Tiered list price information".FormatForComparison());
+                .BeEquivalentTo($"{service}Tiered list price information".FormatForComparison());
         }
 
         public void AddTieredPriceTierDetails(string service)
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
             CommonActions.ClickLinkElement(ListPriceObjects.AddTierLink);
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{service} - Add a pricing tier".FormatForComparison());
+                .BeEquivalentTo($"{service}Add a pricing tier".FormatForComparison());
 
             const decimal price = 3.14m;
             const int lowerRange = 1;
@@ -95,13 +95,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
             CommonActions.ClickSave();
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{service} - Tiered list price information".FormatForComparison());
+                .BeEquivalentTo($"{service}Tiered list price information".FormatForComparison());
 
             CommonActions.ClickLastRadio();
             CommonActions.ClickSave();
             CommonActions.PageTitle()
                 .Should()
-                .BeEquivalentTo($"{service} - List price".FormatForComparison());
+                .BeEquivalentTo($"{service}List price".FormatForComparison());
 
             CommonActions.ClickSaveAndContinue();
         }
