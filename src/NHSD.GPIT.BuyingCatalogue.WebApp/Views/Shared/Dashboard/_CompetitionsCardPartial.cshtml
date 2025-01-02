@@ -1,7 +1,7 @@
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers
 @using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.DashboardModels
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Dashboard.DashboardCardBaseModel<CompetitionDashboardItem>
@@ -80,7 +80,7 @@
                    asp-controller="@typeof(SolutionsController).ControllerName()"
                    asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a>.
             </p>
-            <vc:nhs-secondary-button text="Create new competition"
+            <vc:nhs-anchor-button text="Create new competition"
                                      url="@(Url.Action(nameof(CompetitionsDashboardController.BeforeYouStart), typeof(CompetitionsDashboardController).ControllerName(), new { area = typeof(CompetitionsDashboardController).AreaName(), internalOrgId = Model.InternalOrgId }))"
                                      type="Primary"/>
         }

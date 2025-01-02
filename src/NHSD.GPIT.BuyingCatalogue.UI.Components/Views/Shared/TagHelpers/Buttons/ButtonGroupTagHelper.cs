@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 
-namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Buttons
 {
     [HtmlTargetElement(TagHelperName)]
-    [RestrictChildren(SubmitButtonTagHelper.TagHelperName, "vc:nhs-secondary-button", TagHelperConstants.Anchor, "vc:nhs-delete-button")]
+    [RestrictChildren(SubmitButtonTagHelper.TagHelperName, "vc:nhs-anchor-button", TagHelperConstants.Anchor, "vc:nhs-delete-button", "button")]
     public class ButtonGroupTagHelper : TagHelper
     {
         public const string TagHelperName = "nhs-button-group";
