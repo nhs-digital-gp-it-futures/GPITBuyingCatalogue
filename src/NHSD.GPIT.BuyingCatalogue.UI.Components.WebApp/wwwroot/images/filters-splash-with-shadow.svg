@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="280px" height="280px" viewBox="0 0 280 280" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 7</title>
+    <defs>
+        <rect id="path-1" x="53" y="55" width="174" height="170" rx="5"></rect>
+        <filter x="-7.2%" y="-6.8%" width="114.4%" height="114.7%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.257614456 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <rect id="path-4" x="0" y="0" width="130" height="119" rx="1"></rect>
+        <rect id="path-6" x="0" y="0" width="111" height="28" rx="1"></rect>
+        <path d="M5.94377078,12.7936536 L0.256270753,7.1061536 C-0.0854235844,6.76445926 -0.0854235844,6.2104407 0.256270753,5.86871219 L1.49367799,4.63127078 C1.83537232,4.28954226 2.38942506,4.28954226 2.7311194,4.63127078 L6.56249149,8.46260868 L14.7688636,0.256270753 C15.1105579,-0.0854235844 15.6646107,-0.0854235844 16.006305,0.256270753 L17.2437122,1.49371217 C17.5854066,1.8354065 17.5854066,2.38942506 17.2437122,2.73115358 L7.18121219,12.7936878 C6.83948368,13.1353821 6.28546512,13.1353821 5.94377078,12.7936536 L5.94377078,12.7936536 Z" id="path-8"></path>
+        <rect id="path-10" x="0" y="0" width="111" height="28" rx="1"></rect>
+        <rect id="path-12" x="0" y="0" width="111" height="28" rx="1"></rect>
+        <path d="M5.94377078,12.7936536 L0.256270753,7.1061536 C-0.0854235844,6.76445926 -0.0854235844,6.2104407 0.256270753,5.86871219 L1.49367799,4.63127078 C1.83537232,4.28954226 2.38942506,4.28954226 2.7311194,4.63127078 L6.56249149,8.46260868 L14.7688636,0.256270753 C15.1105579,-0.0854235844 15.6646107,-0.0854235844 16.006305,0.256270753 L17.2437122,1.49371217 C17.5854066,1.8354065 17.5854066,2.38942506 17.2437122,2.73115358 L7.18121219,12.7936878 C6.83948368,13.1353821 6.28546512,13.1353821 5.94377078,12.7936536 L5.94377078,12.7936536 Z" id="path-14"></path>
+        <rect id="path-16" x="0" y="0" width="111" height="28" rx="1"></rect>
+        <path d="M5.94377078,12.7936536 L0.256270753,7.1061536 C-0.0854235844,6.76445926 -0.0854235844,6.2104407 0.256270753,5.86871219 L1.49367799,4.63127078 C1.83537232,4.28954226 2.38942506,4.28954226 2.7311194,4.63127078 L6.56249149,8.46260868 L14.7688636,0.256270753 C15.1105579,-0.0854235844 15.6646107,-0.0854235844 16.006305,0.256270753 L17.2437122,1.49371217 C17.5854066,1.8354065 17.5854066,2.38942506 17.2437122,2.73115358 L7.18121219,12.7936878 C6.83948368,13.1353821 6.28546512,13.1353821 5.94377078,12.7936536 L5.94377078,12.7936536 Z" id="path-18"></path>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Large" transform="translate(-520, -481)">
+            <g id="Group-7" transform="translate(520, 481)">
+                <circle id="Oval" stroke="#C3C3C3" fill="#F5F5F5" cx="140" cy="140" r="139.5"></circle>
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Rectangle">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-1"></use>
+                    <rect stroke="#979797" stroke-width="1" stroke-linejoin="square" fill-opacity="0.104982176" fill="#FFFFFF" fill-rule="evenodd" x="53.5" y="55.5" width="173" height="169" rx="5"></rect>
+                </g>
+                <rect id="Rectangle" fill="#979797" mask="url(#mask-2)" x="51" y="55" width="178" height="14"></rect>
+                <g id="Group-2" mask="url(#mask-2)" fill="#FFFFFF">
+                    <g transform="translate(58, 60)">
+                        <circle id="Oval" cx="2" cy="2" r="2"></circle>
+                        <circle id="Oval-Copy" cx="8" cy="2" r="2"></circle>
+                        <circle id="Oval-Copy-2" cx="14" cy="2" r="2"></circle>
+                    </g>
+                </g>
+                <rect id="Rectangle" fill="#979797" mask="url(#mask-2)" x="77" y="75" width="39" height="6"></rect>
+                <g id="Group-+-Group-Copy-+-Group-Copy-2-+-Group-Copy-3-Mask" mask="url(#mask-2)">
+                    <g transform="translate(77, 88)">
+                        <mask id="mask-5" fill="white">
+                            <use xlink:href="#path-4"></use>
+                        </mask>
+                        <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="129" height="118" rx="1"></rect>
+                        <g id="Group-5" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" mask="url(#mask-5)">
+                            <g transform="translate(10, 6)">
+                                <g id="Group-4">
+                                    <rect id="Rectangle-Copy-10" fill="#979797" x="32" y="6" width="24.2696629" height="3"></rect>
+                                    <rect id="Rectangle-Copy-11" fill="#979797" x="32" y="12" width="72" height="3"></rect>
+                                    <rect id="Rectangle-Copy-12" fill="#979797" x="32" y="18" width="72" height="3"></rect>
+                                    <mask id="mask-7" fill="white">
+                                        <use xlink:href="#path-6"></use>
+                                    </mask>
+                                    <rect stroke="#979797" x="0.5" y="0.5" width="110" height="27" rx="1"></rect>
+                                </g>
+                                <g id="check" transform="translate(6.75, 6.975)">
+                                    <mask id="mask-9" fill="white">
+                                        <use xlink:href="#path-8"></use>
+                                    </mask>
+                                    <g></g>
+                                    <g id="🎨-color" mask="url(#mask-9)" fill="#979797">
+                                        <g transform="translate(-1.75, -3.975)" id="🎨-Color">
+                                            <rect x="0" y="0" width="21" height="21"></rect>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                        <g id="Group-5-Copy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" mask="url(#mask-5)">
+                            <g transform="translate(10, 40)" id="Group-4">
+                                <rect id="Rectangle-Copy-10" fill="#979797" x="32" y="6" width="24.2696629" height="3"></rect>
+                                <rect id="Rectangle-Copy-11" fill="#979797" x="32" y="12" width="72" height="3"></rect>
+                                <rect id="Rectangle-Copy-12" fill="#979797" x="32" y="18" width="72" height="3"></rect>
+                                <mask id="mask-11" fill="white">
+                                    <use xlink:href="#path-10"></use>
+                                </mask>
+                                <rect stroke="#979797" x="0.5" y="0.5" width="110" height="27" rx="1"></rect>
+                            </g>
+                        </g>
+                        <g id="Group-5-Copy-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" mask="url(#mask-5)">
+                            <g transform="translate(10, 74)">
+                                <g id="Group-4">
+                                    <rect id="Rectangle-Copy-10" fill="#979797" x="32" y="6" width="24.2696629" height="3"></rect>
+                                    <rect id="Rectangle-Copy-11" fill="#979797" x="32" y="12" width="72" height="3"></rect>
+                                    <rect id="Rectangle-Copy-12" fill="#979797" x="32" y="18" width="72" height="3"></rect>
+                                    <mask id="mask-13" fill="white">
+                                        <use xlink:href="#path-12"></use>
+                                    </mask>
+                                    <rect stroke="#979797" x="0.5" y="0.5" width="110" height="27" rx="1"></rect>
+                                </g>
+                                <g id="check" transform="translate(6.75, 6.975)">
+                                    <mask id="mask-15" fill="white">
+                                        <use xlink:href="#path-14"></use>
+                                    </mask>
+                                    <g></g>
+                                    <g id="🎨-color" mask="url(#mask-15)" fill="#979797">
+                                        <g transform="translate(-1.75, -3.975)" id="🎨-Color">
+                                            <rect x="0" y="0" width="21" height="21"></rect>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                        <g id="Group-5-Copy-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" mask="url(#mask-5)">
+                            <g transform="translate(10, 108)">
+                                <g id="Group-4">
+                                    <rect id="Rectangle-Copy-10" fill="#979797" x="32" y="6" width="24.2696629" height="3"></rect>
+                                    <rect id="Rectangle-Copy-11" fill="#979797" x="32" y="12" width="72" height="3"></rect>
+                                    <rect id="Rectangle-Copy-12" fill="#979797" x="32" y="18" width="72" height="3"></rect>
+                                    <mask id="mask-17" fill="white">
+                                        <use xlink:href="#path-16"></use>
+                                    </mask>
+                                    <rect stroke="#979797" x="0.5" y="0.5" width="110" height="27" rx="1"></rect>
+                                </g>
+                                <g id="check" transform="translate(6.75, 6.975)">
+                                    <mask id="mask-19" fill="white">
+                                        <use xlink:href="#path-18"></use>
+                                    </mask>
+                                    <g></g>
+                                    <g id="🎨-color" mask="url(#mask-19)" fill="#979797">
+                                        <g transform="translate(-1.75, -3.975)" id="🎨-Color">
+                                            <rect x="0" y="0" width="21" height="21"></rect>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

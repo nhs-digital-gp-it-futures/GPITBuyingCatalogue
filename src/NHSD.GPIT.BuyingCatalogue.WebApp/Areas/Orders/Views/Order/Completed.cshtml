@@ -1,5 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSecondaryButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.CompletedModel
 
 @{
@@ -60,10 +60,10 @@
         </nhs-step-list>
 
         <nhs-button-group>
-            <vc:nhs-secondary-button text="Return to orders dashboard"
+            <vc:nhs-anchor-button text="Return to orders dashboard"
                                      type="Primary"
                                      url="@Model.BackLink" />
-            <vc:nhs-secondary-button text="Download order (PDF)"
+            <vc:nhs-anchor-button text="Download order (PDF)"
                                      type="Secondary"
                                      url="@Url.Action(
                                               nameof(OrderController.Download),

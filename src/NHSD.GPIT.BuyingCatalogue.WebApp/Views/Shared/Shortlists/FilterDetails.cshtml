@@ -28,7 +28,7 @@
                 {
                     <span class="bc-flex-container" style="justify-content: space-between">
                         <h3 class="header-with-detail">@Model.FilterDetails.Name (@Model.ResultsCount)</h3>
-                        <vc:nhs-secondary-button text="Download results (PDF)"
+                        <vc:nhs-anchor-button text="Download results (PDF)"
                                                  url="@Url.Action(nameof(ManageFiltersController.DownloadResults),
                                                                     typeof(ManageFiltersController).ControllerName(),
                                                                     new { Area = typeof(ManageFiltersController).AreaName(), filterId = Model.FilterDetails.Id })"
@@ -44,7 +44,7 @@
                         <hr class="nhsuk-u-padding-bottom-5 nhsuk-u-margin-bottom-5 nhsuk-u-margin-top-0">
                         <p>Due to changes on the Buying Catalogue, there are currently no results returned using the selected filters. This may change in future as a wider range of solutions are added.</p>
                         <div style="display: inline-block" class="nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-4">
-                            <vc:nhs-secondary-button url="@Model.BackLink"
+                            <vc:nhs-anchor-button url="@Model.BackLink"
                                                      type="Secondary"
                                                      text="Return to shortlists" />
                             @if (!Model.InCompetition)

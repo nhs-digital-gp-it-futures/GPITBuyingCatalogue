@@ -10,51 +10,47 @@
     @await RenderSectionAsync("Banner", false)
     @await RenderSectionAsync("Breadcrumbs", false)
 
-    <div class="nhsuk-width-container app-width-containter">
-        <main role="main" class="nhsuk-main-wrapper app-main-wrapper" id="maincontent">
+    <div class="nhsuk-width-container">
+        <main role="main" class="nhsuk-main-wrapper" id="maincontent">
             <div class="nhsuk-grid-row">
-                <div class="nhsuk-grid-column-full app-component-reading-width">
-                    <div class="app-pane">
-                        <div class="app-pane__side-bar">
-                            <nav class="app-side-nav">
-                                <h2 class="app-side-nav__heading">View Components</h2>
-                                <ul class="nhsuk-list app-side-nav__list">
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="action-link">Action Link</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="address">Address</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="breadcrumbs">Breadcrumbs</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="care-card">Care Card</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="buttons">Buttons</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="do-and-dont-list">Do and Don't Lists</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="images">Images</a></li>
-                                </ul>
-                                <h2 class="app-side-nav__heading">Tag Helpers</h2>
-                                <ul class="nhsuk-list app-side-nav__list">
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="checkboxes">CheckBoxes</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="page-title">Page Titles</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="date-input">Date Input</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="time-input">Time Input</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="details-and-expanders">Details and Expanders</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="end-note">End Note</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="fieldsets">Field Sets</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="text-input">Text Input</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="bookended-text-input">Bookended Text Input</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="text-area">Text Area</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="inset-text">Inset Text</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="radio-lists">Radio Lists</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="yes-no-radios">Yes No Radios</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="select-list">Select List</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="summary-list">Summary List</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="table">Table</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="tags">Tags</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="validation-summary">Validation Summary</a></li>
-                                    <li class="app-side-nav__item"><a class="app-side-nav__link" href="warning-callout">Warning Callout</a></li>
-                                </ul>
-                            </nav>
-                        </div>
-                        <div class="app-pane__main-content">
-                            @RenderBody()
-                        </div>
-                    </div>
+                <div class="nhsuk-grid-column-one-third sidebar">
+                    <nav class="side-nav">
+                        <h3>View Components</h3>
+                        <ul class="side-nav__component">
+                            <li class="side-nav__list"><a class="side-nav__link" href="action-link">Action Link</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="address">Address</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="breadcrumbs">Breadcrumbs</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="care-card">Care Card</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="buttons">Buttons</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="do-and-dont-list">Do and Don't Lists</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="images">Images</a></li>
+                        </ul>
+                        <h3>Tag Helpers</h3>
+                        <ul class="side-nav__component">
+                            <li class="side-nav__list"><a class="side-nav__link" href="checkboxes">CheckBoxes</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="page-title">Page Titles</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="date-input">Date Input</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="time-input">Time Input</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="details-and-expanders">Details and Expanders</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="end-note">End Note</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="fieldsets">Field Sets</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="text-input">Text Input</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="bookended-text-input">Bookended Text Input</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="text-area">Text Area</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="inset-text">Inset Text</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="radio-lists">Radio Lists</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="yes-no-radios">Yes No Radios</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="select-list">Select List</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="summary-list">Summary List</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="table">Table</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="tags">Tags</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="validation-summary">Validation Summary</a></li>
+                            <li class="side-nav__list"><a class="side-nav__link" href="warning-callout">Warning Callout</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="nhsuk-grid-column-two-thirds">
+                    @RenderBody()
                 </div>
             </div>
         </main>

@@ -394,20 +394,20 @@
                         }
                         else
                         {
-                            <vc:nhs-secondary-button text="Save and continue"
+                            <vc:nhs-anchor-button text="Save and continue"
                                                      type="Primary"
                                                      url="@Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"/>
                         }
                     }
 
-                    <vc:nhs-secondary-button text="Download order (PDF)"
+                    <vc:nhs-anchor-button text="Download order (PDF)"
                                              type="Secondary"
                                              url="@Url.Action(nameof(OrderController.Download), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"/>
 
 
                     @if (Model.CanBeAmended)
                     {
-                        <vc:nhs-secondary-button text="Amend contract"
+                        <vc:nhs-anchor-button text="Amend contract"
                                                  type="Secondary"
                                                  url="@Url.Action(nameof(OrderController.AmendOrder), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"/>
                     }
@@ -426,7 +426,7 @@
                 @if (Model.Order.OrderStatus != OrderStatus.InProgress)
                 {
                     <nhs-button-group>
-                        <vc:nhs-secondary-button text="Return to orders"
+                        <vc:nhs-anchor-button text="Return to orders"
                                                  type="Primary"
                                                  url="@Url.Action(nameof(DashboardController.Organisation), typeof(DashboardController).ControllerName(), new { Model.InternalOrgId })"/>
                     </nhs-button-group>

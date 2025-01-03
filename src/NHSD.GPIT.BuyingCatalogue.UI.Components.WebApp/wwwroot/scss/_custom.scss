@@ -1,0 +1,187 @@
+.nhsuk-expander-index .nhsuk-details__summary .nhsuk-details__summary-text {
+    white-space: pre-line;
+}
+
+.nhsuk-error-expander {
+   border: 4px solid #d5281b;
+}
+
+.nhsuk-expander-footer {
+    margin-top: 16px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    padding-right: 32px;
+    padding-left: 32px;
+    background-color: #fafafa;
+    padding-top: 0px;
+}
+
+.nhsuk-expander .nhsuk-expander-footer i {
+    margin-right: 8px;
+}
+
+.nhsuk-expander .nhsuk-expander-footer p {
+    margin-bottom: 16px !important;
+    margin-top: 16px !important;
+}
+
+.nhsuk-checkboxes__subhint {
+    font-size: 1rem;
+}
+
+.nhsuk-section:nth-of-type(2n) {
+  background: #fff;
+}
+
+.app-width-container--full {
+  margin: 0;
+  max-width: none;
+}
+
+.section-content {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.order-this-now {
+  margin-top: 16px;
+  min-height: 50px;
+  padding-right: 32px;
+  padding-left: 32px;
+  background-color: #fafafa;
+  padding-top: 8px;
+}
+
+.nhsuk-button .nhsuk-icon {
+    fill: #ffffff;
+    height: 28px;
+    width: 28px;
+    float: left;
+}
+
+.suggestion-search-search__submit .nhsuk-icon {
+    fill: #ffffff;
+    height: 38px;
+    width: 38px;
+}
+
+.app-search__submit .nhsuk-icon {
+    fill: #ffffff;
+}
+
+.nhsuk-button--secondary:focus .nhsuk-icon {
+    fill: #212b32;
+}
+
+.govuk-panel--confirmation--blue {
+  background-color: #005eb8;
+  color: #fff;
+}
+
+.govuk-panel--confirmation--grey {
+  background-color: #4c6272;
+  color: #fff;
+}
+
+.govuk-panel--confirmation {
+  padding-bottom: 45px;
+  padding-top: 45px;
+}
+
+.bc-text-light {
+    background: #ebebeb;
+    padding: 2px 5px 2px 5px;
+    display: inline-block;
+}
+
+.bc-account-switcher {
+  summary {
+    cursor: pointer;
+    outline: none;
+    position: relative;
+    padding-right: 20px;
+  }
+  summary::marker {
+    content: none !important;
+  }
+  summary::after {
+    content: '\f13a';
+    font-family: 'Font Awesome 6 Free';
+    color: #005eb8;
+    font-weight:900;
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+  }
+
+  background-color: #fff;
+  border-radius: 16px;
+  border: solid 1px #eee;
+  padding: 16px 24px;
+  margin-bottom: 24px;
+  .currentOrg {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #005eb8;
+  }
+  .currentOrg:hover {
+    text-decoration: underline;
+  }
+}
+.bc-account-switcher[open] summary::after {
+  transform: translateY(-50%) rotate(180deg);
+  transition: .5s transform ease;
+}
+
+.bold-label {
+    font-weight: bold !important;
+}
+
+.nhsuk-warning-callout--smaller {
+  margin-bottom: 32px;
+  padding: 12px;
+  background-color: #fff9c4;
+  color: #212b32;
+  border: 1px solid #ffeb3b;
+}
+
+.splash-intro-img {
+  width: 180px;
+  margin-bottom: 16px;
+}
+
+.nhsuk-header__navigation-link {
+  text-decoration: none;
+}
+
+.nhsuk-header__navigation-link:hover {
+  text-decoration: underline;
+}
+
+.nhs-grid-row__no-padding {
+  padding-left: 0px;
+}
+
+.nhsuk-checkboxes__input_select-all + .nhsuk-checkboxes__label::after {
+  border-radius: 2px;
+  height: 0px;
+  top: 20px;
+  -ms-transform: rotate(0deg);
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+
+.nhsuk-checkboxes__input_select-all:indeterminate + .nhsuk-checkboxes__label::after {
+  opacity: 1;
+}
+
+.nhsuk-content--js-only {
+    display: none;
+}
+
+.js-enabled .nhsuk-content--js-only {
+    display: inline-block;
+}
