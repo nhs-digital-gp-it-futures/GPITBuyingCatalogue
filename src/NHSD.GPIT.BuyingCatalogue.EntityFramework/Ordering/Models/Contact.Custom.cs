@@ -17,5 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && (Phone ?? string.Empty).Equals(other.Phone ?? string.Empty)
                 && (Department ?? string.Empty).Equals(other.Department ?? string.Empty);
         }
+
+        public string FullName => $"{FirstName} {LastName}".Trim();
+
+        public string NameOrDepartment => !string.IsNullOrWhiteSpace(FirstName) || !string.IsNullOrWhiteSpace(LastName)
+            ? FullName
+            : Department;
     }
 }

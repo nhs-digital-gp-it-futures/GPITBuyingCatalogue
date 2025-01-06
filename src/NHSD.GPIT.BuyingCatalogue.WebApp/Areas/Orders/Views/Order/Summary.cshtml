@@ -56,6 +56,16 @@
                     <nhs-table-column><span class="nhsuk-u-visually-hidden">Property</span></nhs-table-column>
                     <nhs-table-column><span class="nhsuk-u-visually-hidden">Value</span></nhs-table-column>
                     <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
+                    
+                    <nhs-table-row-container data-test-id="date-created-summary">
+                        <nhs-table-cell>
+                            <strong>Date created</strong>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            @($"{Model.Order.Created:d MMMM yyyy}")
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                    
                     <nhs-table-row-container data-test-id="order-id-summary">
                         <nhs-table-cell>
                             <strong>Order ID</strong>
@@ -79,25 +89,27 @@
                                asp-route-callOffId="@Model.Order.CallOffId">Change</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
-                    
-                    <nhs-table-row-container data-test-id="date-created-summary">
-                        <nhs-table-cell>
-                            <strong>Date created</strong>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            @($"{Model.Order.Created:d MMMM yyyy}")
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
 
-                    @if (Model.Order.OrderingParty != null
-                         && Model.Order.OrderingPartyContact != null)
+                    @if (Model.Order.OrderingPartyContact != null)
+                    {
+                        <nhs-table-row-container data-test-id="ordering-party-contact">
+                            <nhs-table-cell>
+                                <strong>Call-off ordering party contact</strong>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
+                                @($"{Model.Order.OrderingPartyContact.Email}")<br />
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                    
+                    @if (Model.Order.OrderingParty != null)
                     {
                         <nhs-table-row-container data-test-id="ordering-party-summary">
                             <nhs-table-cell>
                                 <strong>Call-off ordering party</strong>
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
                                 @Model.Order.OrderingParty.Name<br/>
                                 @Model.Order.OrderingParty.ExternalIdentifier<br/>
                                 <vc:nhs-address address="@Model.Order.OrderingParty.Address"/>
@@ -108,6 +120,16 @@
                     @if (Model.Order.Supplier != null
                          && Model.Order.SupplierContact != null)
                     {
+                        <nhs-table-row-container data-test-id="supplier-summary">
+                            <nhs-table-cell>
+                                <strong>Supplier contact</strong>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @($"{Model.Order.SupplierContact.NameOrDepartment}")<br/>
+                                @($"{Model.Order.SupplierContact.Email}")<br />
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+
                         @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             <nhs-table-row-container data-test-id="supplier-legal-name">
@@ -125,7 +147,6 @@
                                 <strong>Supplier</strong>
                             </nhs-table-cell>
                             <nhs-table-cell>
-                                @($"{Model.Order.SupplierContact.FirstName} {Model.Order.SupplierContact.LastName}")<br/>
                                 @Model.Order.Supplier.Name<br/>
                                 <vc:nhs-address address="@Model.Order.Supplier.Address"/>
                             </nhs-table-cell>
