@@ -102,7 +102,11 @@
                                 @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
                                 @($"{Model.Order.OrderingPartyContact.Email}")<br />
                             </nhs-table-cell>
-                            <nhs-table-cell><a title="Change ordering party contact" class="nhsuk-link nhsuk-link--no-visited-state">Change</a></nhs-table-cell>
+                            <nhs-table-cell>
+                                <a title="Change ordering party contact" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderingPartyController.OrderingParty)"
+                                   asp-controller="@typeof(OrderingPartyController).ControllerName()"
+                                   asp-route-internalOrgId="@Model.InternalOrgId"
+                                   asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
                         </nhs-table-row-container>
                     }
                     
@@ -131,7 +135,10 @@
                                 @($"{Model.Order.SupplierContact.NameOrDepartment}")<br/>
                                 @($"{Model.Order.SupplierContact.Email}")<br />
                             </nhs-table-cell>
-                            <nhs-table-cell><a title="Change supplier contact" class="nhsuk-link nhsuk-link--no-visited-state">Change</a></nhs-table-cell>
+                            <nhs-table-cell><a title="Change supplier contact" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(SupplierController.Supplier)"
+                                               asp-controller="@typeof(SupplierController).ControllerName()"
+                                               asp-route-internalOrgId="@Model.InternalOrgId"
+                                               asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
                         </nhs-table-row-container>
                     }
 
