@@ -273,7 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             {
                 Title = newContact == null
                     ? "Add a contact"
-                    : $"{newContact.FirstName} {newContact.LastName} details",
+                    : $"{newContact.NameOrDepartment} details",
                 BackLink = Url.Action(nameof(Supplier), new { internalOrgId, callOffId }),
                 FirstName = newContact?.FirstName,
                 LastName = newContact?.LastName,
