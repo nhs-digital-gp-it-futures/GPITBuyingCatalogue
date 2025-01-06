@@ -84,11 +84,10 @@
                         <nhs-table-cell>
                             @Model.Order.Description
                         </nhs-table-cell>
-                        <nhs-table-cell>
-                            <a title="Change order description" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderDescriptionController.OrderDescription)"
-                               asp-controller="@typeof(OrderDescriptionController).ControllerName()"
-                               asp-route-internalOrgId="@Model.InternalOrgId"
-                               asp-route-callOffId="@Model.Order.CallOffId">Change</a>
+                        <nhs-table-cell><a title="Change order description" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderDescriptionController.OrderDescription)"
+                                           asp-controller="@typeof(OrderDescriptionController).ControllerName()"
+                                           asp-route-internalOrgId="@Model.InternalOrgId"
+                                           asp-route-callOffId="@Model.Order.CallOffId">Change</a>
                         </nhs-table-cell>
                     </nhs-table-row-container>
 
@@ -102,11 +101,10 @@
                                 @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
                                 @($"{Model.Order.OrderingPartyContact.Email}")<br />
                             </nhs-table-cell>
-                            <nhs-table-cell>
-                                <a title="Change ordering party contact" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderingPartyController.OrderingParty)"
-                                   asp-controller="@typeof(OrderingPartyController).ControllerName()"
-                                   asp-route-internalOrgId="@Model.InternalOrgId"
-                                   asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
+                            <nhs-table-cell><a title="Change ordering party contact" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderingPartyController.OrderingParty)"
+                                               asp-controller="@typeof(OrderingPartyController).ControllerName()"
+                                               asp-route-internalOrgId="@Model.InternalOrgId"
+                                               asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
                         </nhs-table-row-container>
                     }
                     
