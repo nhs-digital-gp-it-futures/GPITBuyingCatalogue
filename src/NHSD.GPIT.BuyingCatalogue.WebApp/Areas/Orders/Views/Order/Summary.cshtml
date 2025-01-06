@@ -55,7 +55,7 @@
                 <nhs-table>
                     <nhs-table-column><span class="nhsuk-u-visually-hidden">Property</span></nhs-table-column>
                     <nhs-table-column><span class="nhsuk-u-visually-hidden">Value</span></nhs-table-column>
-                    <nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>
+                    @if(Model.CanBeAmended){<nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>} 
                     
                     <nhs-table-row-container data-test-id="date-created-summary">
                         <nhs-table-cell>
@@ -64,7 +64,10 @@
                         <nhs-table-cell>
                             @($"{Model.Order.Created:d MMMM yyyy}")
                         </nhs-table-cell>
-                        <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                    @if (Model.CanBeAmended)
+                        {
+                            <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                        }
                     </nhs-table-row-container>
                     
                     <nhs-table-row-container data-test-id="order-id-summary">
@@ -74,7 +77,10 @@
                         <nhs-table-cell>
                             @Model.Order.CallOffId
                         </nhs-table-cell>
-                        <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                    @if (Model.CanBeAmended)
+                        {
+                            <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                        }
                     </nhs-table-row-container>
                     
                     <nhs-table-row-container data-test-id="order-description-summary">
@@ -84,11 +90,15 @@
                         <nhs-table-cell>
                             @Model.Order.Description
                         </nhs-table-cell>
-                        <nhs-table-cell><a title="Change order description" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderDescriptionController.OrderDescription)"
-                                           asp-controller="@typeof(OrderDescriptionController).ControllerName()"
-                                           asp-route-internalOrgId="@Model.InternalOrgId"
-                                           asp-route-callOffId="@Model.Order.CallOffId">Change</a>
-                        </nhs-table-cell>
+                    @if (Model.CanBeAmended)
+                        {
+                            <nhs-table-cell>
+                                <a title="Change order description" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderDescriptionController.OrderDescription)"
+                                   asp-controller="@typeof(OrderDescriptionController).ControllerName()"
+                                   asp-route-internalOrgId="@Model.InternalOrgId"
+                                   asp-route-callOffId="@Model.Order.CallOffId">Change</a>
+                            </nhs-table-cell>
+                        }
                     </nhs-table-row-container>
 
                     @if (Model.Order.OrderingPartyContact != null)
@@ -101,10 +111,14 @@
                                 @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
                                 @($"{Model.Order.OrderingPartyContact.Email}")<br />
                             </nhs-table-cell>
-                            <nhs-table-cell><a title="Change ordering party contact" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderingPartyController.OrderingParty)"
-                                               asp-controller="@typeof(OrderingPartyController).ControllerName()"
-                                               asp-route-internalOrgId="@Model.InternalOrgId"
-                                               asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
+                        @if (Model.CanBeAmended)
+                        {
+                            <nhs-table-cell>
+                                <a title="Change ordering party contact" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderingPartyController.OrderingParty)"
+                                   asp-controller="@typeof(OrderingPartyController).ControllerName()"
+                                   asp-route-internalOrgId="@Model.InternalOrgId"
+                                   asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
+                        }
                         </nhs-table-row-container>
                     }
                     
@@ -119,7 +133,10 @@
                                 @Model.Order.OrderingParty.ExternalIdentifier<br/>
                                 <vc:nhs-address address="@Model.Order.OrderingParty.Address"/>
                             </nhs-table-cell>
+                        @if (Model.CanBeAmended)
+                        {
                             <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                        }
                         </nhs-table-row-container>
                     }
                     
@@ -133,10 +150,14 @@
                                 @($"{Model.Order.SupplierContact.NameOrDepartment}")<br/>
                                 @($"{Model.Order.SupplierContact.Email}")<br />
                             </nhs-table-cell>
-                            <nhs-table-cell><a title="Change supplier contact" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(SupplierController.Supplier)"
-                                               asp-controller="@typeof(SupplierController).ControllerName()"
-                                               asp-route-internalOrgId="@Model.InternalOrgId"
-                                               asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
+                        @if (Model.CanBeAmended)
+                        {
+                            <nhs-table-cell>
+                                <a title="Change supplier contact" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(SupplierController.Supplier)"
+                                   asp-controller="@typeof(SupplierController).ControllerName()"
+                                   asp-route-internalOrgId="@Model.InternalOrgId"
+                                   asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
+                        }
                         </nhs-table-row-container>
                     }
 
@@ -151,7 +172,10 @@
                                 <nhs-table-cell>
                                     @Model.Order.Supplier.LegalName
                                 </nhs-table-cell>
+                            @if (Model.CanBeAmended)
+                            {
                                 <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                            }
                             </nhs-table-row-container>
                         }
 
@@ -163,7 +187,10 @@
                                 @Model.Order.Supplier.Name<br/>
                                 <vc:nhs-address address="@Model.Order.Supplier.Address"/>
                             </nhs-table-cell>
+                        @if (Model.CanBeAmended)
+                        {
                             <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                        }
                         </nhs-table-row-container>
                     }
 
@@ -176,7 +203,10 @@
                             <nhs-table-cell>
                                 @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
                             </nhs-table-cell>
+                        @if (Model.CanBeAmended)
+                        {
                             <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                        }
                         </nhs-table-row-container>
                     }
 
@@ -189,6 +219,10 @@
                             <nhs-table-cell>
                                 @($"{Model.Order.InitialPeriod} months")
                             </nhs-table-cell>
+                            @if (Model.CanBeAmended)
+                            {
+                                <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                            }
                         </nhs-table-row-container>
                     }
 
@@ -201,6 +235,10 @@
                             <nhs-table-cell>
                                 @($"{Model.Order.MaximumTerm} months")
                             </nhs-table-cell>
+                            @if (Model.CanBeAmended)
+                            {
+                                <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                            }
                         </nhs-table-row-container>
                     }
 
@@ -214,6 +252,10 @@
                             <nhs-table-cell>
                                 @Model.Order.EndDate.DisplayValue
                             </nhs-table-cell>
+                            @if (Model.CanBeAmended)
+                            {
+                                <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                            }
                         </nhs-table-row-container>
                     }
                 </nhs-table>
