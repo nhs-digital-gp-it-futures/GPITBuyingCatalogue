@@ -50,7 +50,7 @@
         }
 
         <nhs-expander-v2 open="true">
-            <nhs-expander-summary label-text="Order details" bold-title="true"></nhs-expander-summary>
+            <nhs-expander-summary label-text="Order details old" bold-title="true"></nhs-expander-summary>
             <nhs-expander-content>
                 <nhs-summary-list>
                     <nhs-summary-list-row label-text="Order ID" data-test-id="order-id-summary">
@@ -116,6 +116,92 @@
 
                     @if (Model.Order.CommencementDate.HasValue
                          && Model.Order.MaximumTerm.HasValue)
+                    {
+                        <nhs-summary-list-row label-text="End date" data-test-id="end-date-summary">
+                            @Model.Order.EndDate.DisplayValue
+                        </nhs-summary-list-row>
+                    }
+                </nhs-summary-list>
+            </nhs-expander-content>
+            @if (Model.Order.OrderStatus == OrderStatus.InProgress)
+            {
+                <nhs-expander-footer>
+                    <p>
+                        <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
+                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit order details
+                        </a>
+                    </p>
+                </nhs-expander-footer>
+            }
+        </nhs-expander-v2>
+
+        <nhs-expander-v2 open="true">
+            <nhs-expander-summary label-text="Order details" bold-title="true"></nhs-expander-summary>
+            <nhs-expander-content>
+                <nhs-summary-list>
+                    <nhs-summary-list-row label-text="Order ID" data-test-id="order-id-summary">
+                        @Model.Order.CallOffId
+                    </nhs-summary-list-row>
+
+                    <nhs-summary-list-row label-text="Description" data-test-id="order-description-summary">
+                        @Model.Order.Description
+                    </nhs-summary-list-row>
+
+                    <nhs-summary-list-row label-text="Date created" data-test-id="date-created-summary">
+                        @($"{Model.Order.Created:d MMMM yyyy}")
+                    </nhs-summary-list-row>
+
+                    @if (Model.Order.OrderingParty != null
+                    && Model.Order.OrderingPartyContact != null)
+                    {
+                        <nhs-summary-list-row label-text="Call-off Ordering Party" data-test-id="ordering-party-summary">
+                            @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br />
+                            @Model.Order.OrderingParty.Name<br />
+                            @Model.Order.OrderingParty.ExternalIdentifier<br />
+                            <vc:nhs-address address="@Model.Order.OrderingParty.Address" />
+                        </nhs-summary-list-row>
+                    }
+
+                    @if (Model.Order.Supplier != null
+                    && Model.Order.SupplierContact != null)
+                    {
+                        @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            <nhs-summary-list-row label-text="Supplier legal name" data-test-id="supplier-legal-name">
+                                @Model.Order.Supplier.LegalName<br />
+                            </nhs-summary-list-row>
+                        }
+
+                        <nhs-summary-list-row label-text="Supplier" data-test-id="supplier-summary">
+                            @($"{Model.Order.SupplierContact.FirstName} {Model.Order.SupplierContact.LastName}")<br />
+                            @Model.Order.Supplier.Name<br />
+                            <vc:nhs-address address="@Model.Order.Supplier.Address" />
+                        </nhs-summary-list-row>
+                    }
+
+                    @if (Model.Order.CommencementDate.HasValue)
+                    {
+                        <nhs-summary-list-row label-text="Commencement date" data-test-id="start-date-summary">
+                            @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
+                        </nhs-summary-list-row>
+                    }
+
+                    @if (Model.Order.InitialPeriod.HasValue)
+                    {
+                        <nhs-summary-list-row label-text="Initial period" data-test-id="initial-period-summary">
+                            @($"{Model.Order.InitialPeriod} months")
+                        </nhs-summary-list-row>
+                    }
+
+                    @if (Model.Order.MaximumTerm.HasValue)
+                    {
+                        <nhs-summary-list-row label-text="Maximum duration" data-test-id="maximum-term-summary">
+                            @($"{Model.Order.MaximumTerm} months")
+                        </nhs-summary-list-row>
+                    }
+
+                    @if (Model.Order.CommencementDate.HasValue
+                    && Model.Order.MaximumTerm.HasValue)
                     {
                         <nhs-summary-list-row label-text="End date" data-test-id="end-date-summary">
                             @Model.Order.EndDate.DisplayValue
