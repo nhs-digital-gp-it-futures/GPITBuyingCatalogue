@@ -83,13 +83,14 @@ resource "azurerm_windows_function_app" "function_app" {
   storage_account_access_key                     = azurerm_storage_account.function_app_storage.primary_access_key
   https_only                                     = true
   enabled                                        = true
-  public_network_access_enabled                  = false
+  public_network_access_enabled                  = true
 
   site_config {
-    always_on         = true
-    ftps_state        = "Disabled"
-    http2_enabled     = true
-    use_32_bit_worker = false
+    always_on                       = true
+    ftps_state                      = "Disabled"
+    ip_restriction_default_action   = "Deny"
+    http2_enabled                   = true
+    use_32_bit_worker               = false
 
     ip_restriction {
       ip_address = var.primary_vpn
