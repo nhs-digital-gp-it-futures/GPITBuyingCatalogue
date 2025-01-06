@@ -72,6 +72,12 @@
                         <nhs-table-cell>
                             @Model.Order.Description
                         </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderDescriptionController.OrderDescription)"
+                               asp-controller="@typeof(OrderDescriptionController).ControllerName()"
+                               asp-route-internalOrgId="@Model.InternalOrgId"
+                               asp-route-callOffId="@Model.Order.CallOffId">Change</a>
+                        </nhs-table-cell>
                     </nhs-table-row-container>
                     
                     <nhs-table-row-container data-test-id="date-created-summary">
