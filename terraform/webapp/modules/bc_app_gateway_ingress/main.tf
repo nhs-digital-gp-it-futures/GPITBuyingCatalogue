@@ -143,7 +143,11 @@ resource "azurerm_application_gateway" "app_gateway" {
     interval                                  = 30
     timeout                                   = 30
     unhealthy_threshold                       = 3
+    port                                      = 80
     protocol                                  = "Http"
+    match {
+      status_code = [ "200" ]
+    }
   }
 
   tags = {

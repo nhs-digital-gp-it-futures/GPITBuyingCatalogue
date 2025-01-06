@@ -14,10 +14,11 @@ resource "azurerm_mssql_database" "sql_main_primary" {
   }
 
   long_term_retention_policy {
-    weekly_retention  = var.core_env != "dev" ? "P12W" : null
-    monthly_retention = var.core_env != "dev" ? "P12M" : null
-    yearly_retention  = var.core_env != "dev" ? "P6Y" : null
-    week_of_year      = 1
+    weekly_retention          = var.core_env != "dev" ? "P12W" : null
+    monthly_retention         = var.core_env != "dev" ? "P12M" : null
+    yearly_retention          = var.core_env != "dev" ? "P6Y" : null
+    week_of_year              = 1
+    immutable_backups_enabled = false
   }
   lifecycle {
     ignore_changes = [
