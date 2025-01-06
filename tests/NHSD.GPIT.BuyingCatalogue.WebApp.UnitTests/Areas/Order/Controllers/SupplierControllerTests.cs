@@ -687,6 +687,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
         [Theory]
         [MockAutoData]
+        public static async Task Get_NewContact_WithDepartmentName_ReturnsModelWithExpectedTitle(
+            string internalOrgId,
+            CallOffId callOffId,
+            int supplierId,
+            string supplierName,
+            EntityFramework.Ordering.Models.Order order,
+            SupplierContact supplierContact,
+            [Frozen] IOrderService mockOrderService,
+            [Frozen] ISupplierContactSessionService mockSessionService,
+            SupplierController systemUnderTest)
+        {
+            supplierContact.FirstName = supplierContact.LastName = null;
+            var model = new NewContactModel(callOffId, supplierId, supplierName)
+            {
+                Title = $"{supplierContact.Department} details",
+                FirstName = supplierContact.FirstName,
+                LastName = supplierContact.LastName,
+                Department = supplierContact.Department,
+                PhoneNumber = supplierContact.PhoneNumber,
+                Email = supplierContact.Email,
+            };
+
+            order.SupplierId = supplierId;
+            order.Supplier.Name = supplierName;
+
+            mockOrderService
+                .GetOrderWithSupplier(callOffId, internalOrgId)
+                .Returns(new OrderWrapper(order));
+
+            mockSessionService
+                .GetSupplierContact(callOffId, supplierId)
+                .Returns(supplierContact);
+
+            var result = await systemUnderTest.NewContact(internalOrgId, callOffId);
+
+            result.Should().BeOfType<ViewResult>();
+            result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(model, x => x.Excluding(m => m.BackLink));
+        }
+
+        [Theory]
+        [MockAutoData]
         public static void Post_NewContact_AddsContactToSession_RedirectsCorrectly(
             string internalOrgId,
             CallOffId callOffId,
