@@ -64,6 +64,7 @@
                         <nhs-table-cell>
                             @($"{Model.Order.Created:d MMMM yyyy}")
                         </nhs-table-cell>
+                        <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
                     </nhs-table-row-container>
                     
                     <nhs-table-row-container data-test-id="order-id-summary">
@@ -73,6 +74,7 @@
                         <nhs-table-cell>
                             @Model.Order.CallOffId
                         </nhs-table-cell>
+                        <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
                     </nhs-table-row-container>
                     
                     <nhs-table-row-container data-test-id="order-description-summary">
@@ -83,7 +85,7 @@
                             @Model.Order.Description
                         </nhs-table-cell>
                         <nhs-table-cell>
-                            <a class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderDescriptionController.OrderDescription)"
+                            <a title="Change order description" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderDescriptionController.OrderDescription)"
                                asp-controller="@typeof(OrderDescriptionController).ControllerName()"
                                asp-route-internalOrgId="@Model.InternalOrgId"
                                asp-route-callOffId="@Model.Order.CallOffId">Change</a>
@@ -100,6 +102,7 @@
                                 @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
                                 @($"{Model.Order.OrderingPartyContact.Email}")<br />
                             </nhs-table-cell>
+                            <nhs-table-cell><a title="Change ordering party contact" class="nhsuk-link nhsuk-link--no-visited-state">Change</a></nhs-table-cell>
                         </nhs-table-row-container>
                     }
                     
@@ -114,13 +117,13 @@
                                 @Model.Order.OrderingParty.ExternalIdentifier<br/>
                                 <vc:nhs-address address="@Model.Order.OrderingParty.Address"/>
                             </nhs-table-cell>
+                            <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
                         </nhs-table-row-container>
                     }
-
-                    @if (Model.Order.Supplier != null
-                         && Model.Order.SupplierContact != null)
+                    
+                    @if (Model.Order.SupplierContact != null)
                     {
-                        <nhs-table-row-container data-test-id="supplier-summary">
+                        <nhs-table-row-container data-test-id="supplier-contact">
                             <nhs-table-cell>
                                 <strong>Supplier contact</strong>
                             </nhs-table-cell>
@@ -128,8 +131,12 @@
                                 @($"{Model.Order.SupplierContact.NameOrDepartment}")<br/>
                                 @($"{Model.Order.SupplierContact.Email}")<br />
                             </nhs-table-cell>
+                            <nhs-table-cell><a title="Change supplier contact" class="nhsuk-link nhsuk-link--no-visited-state">Change</a></nhs-table-cell>
                         </nhs-table-row-container>
+                    }
 
+                    @if (Model.Order.Supplier != null)
+                    {
                         @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             <nhs-table-row-container data-test-id="supplier-legal-name">
@@ -139,6 +146,7 @@
                                 <nhs-table-cell>
                                     @Model.Order.Supplier.LegalName
                                 </nhs-table-cell>
+                                <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
                             </nhs-table-row-container>
                         }
 
@@ -150,6 +158,7 @@
                                 @Model.Order.Supplier.Name<br/>
                                 <vc:nhs-address address="@Model.Order.Supplier.Address"/>
                             </nhs-table-cell>
+                            <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
                         </nhs-table-row-container>
                     }
 
@@ -162,6 +171,7 @@
                             <nhs-table-cell>
                                 @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
                             </nhs-table-cell>
+                            <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
                         </nhs-table-row-container>
                     }
 
