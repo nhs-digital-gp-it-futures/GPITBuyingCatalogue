@@ -14,15 +14,24 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
         {
         }
 
-        public void AddOrderDescription(string orderDescription)
+        public void AddOrderDescription(string orderDescription, bool changeAfterOrderComplete = false)
         {
             Driver.FindElement(OrderDescription.DescriptionInput).SendKeys(orderDescription);
 
             CommonActions.ClickSave();
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.Order)).Should().BeTrue();
+            if (changeAfterOrderComplete)
+            {
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(OrderController),
+                    nameof(OrderController.Summary)).Should().BeTrue();
+            }
+            else
+            {
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(OrderController),
+                    nameof(OrderController.Order)).Should().BeTrue();
+            }
         }
 
         public void AddCallOffOrderingPartyContactDetails()

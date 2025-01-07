@@ -690,6 +690,12 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             Quantity.AddSolutionQuantity(solutionServieId);
         }
 
+        public void SummaryScreenChangeDescription(string newDescription)
+        {
+            AmendOrder.AmendOrderClickChangeDescription();
+            OrderingStepOne.AddOrderDescription(newDescription, true);
+        }
+
         private bool IsAssociatedServiceOnlyOrder(int orderId)
         {
             using var dbContext = Factory.DbContext;

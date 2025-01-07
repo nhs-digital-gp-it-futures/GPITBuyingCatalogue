@@ -93,7 +93,8 @@
                     @if (Model.CanBeAmended)
                         {
                             <nhs-table-cell>
-                                <a title="Change order description" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderDescriptionController.OrderDescription)"
+                                <a title="Change order description" class="nhsuk-link nhsuk-link--no-visited-state" data-test-id="change-order-description" 
+                                   asp-action="@nameof(OrderDescriptionController.OrderDescription)"
                                    asp-controller="@typeof(OrderDescriptionController).ControllerName()"
                                    asp-route-internalOrgId="@Model.InternalOrgId"
                                    asp-route-callOffId="@Model.Order.CallOffId">Change</a>
@@ -114,7 +115,8 @@
                         @if (Model.CanBeAmended)
                         {
                             <nhs-table-cell>
-                                <a title="Change ordering party contact" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(OrderingPartyController.OrderingParty)"
+                                <a title="Change ordering party contact" class="nhsuk-link nhsuk-link--no-visited-state" data-test-id="change-order-ordering-party-contact" 
+                                   asp-action="@nameof(OrderingPartyController.OrderingParty)"
                                    asp-controller="@typeof(OrderingPartyController).ControllerName()"
                                    asp-route-internalOrgId="@Model.InternalOrgId"
                                    asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
@@ -153,7 +155,8 @@
                         @if (Model.CanBeAmended)
                         {
                             <nhs-table-cell>
-                                <a title="Change supplier contact" class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@nameof(SupplierController.Supplier)"
+                                <a title="Change supplier contact" class="nhsuk-link nhsuk-link--no-visited-state" data-test-id="change-order-supplier-contact" 
+                                   asp-action="@nameof(SupplierController.Supplier)"
                                    asp-controller="@typeof(SupplierController).ControllerName()"
                                    asp-route-internalOrgId="@Model.InternalOrgId"
                                    asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>

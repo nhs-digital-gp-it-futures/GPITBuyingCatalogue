@@ -59,5 +59,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By BespokeDataProcessing => By.Id("bespoke-data-processing");
 
         public static By BespokeImplementationPlan => By.Id("bespoke-implementation-plan");
+        
+        public static By ChangeOrderDescription => ByExtensions.DataTestId("change-order-description");
+
+        public static By ChangeOrderOrderingPartyContact => ByExtensions.DataTestId("change-order-ordering-party-contact");
+
+        public static By ChangeOrderSupplierContact => ByExtensions.DataTestId("change-order-supplier-contact");
     }
 }
