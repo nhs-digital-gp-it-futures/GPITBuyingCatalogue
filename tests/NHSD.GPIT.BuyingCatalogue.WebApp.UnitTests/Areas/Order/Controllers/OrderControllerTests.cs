@@ -547,7 +547,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
                 .Should()
-                .Be("This order has already been completed, but you can amend or terminate the contract if needed.");
+                .Be("This order has already been completed, but you can amend or terminate the contract if needed. You can also change the order description, or change contact details for the call off party or supplier.");
         }
 
         [Theory]
