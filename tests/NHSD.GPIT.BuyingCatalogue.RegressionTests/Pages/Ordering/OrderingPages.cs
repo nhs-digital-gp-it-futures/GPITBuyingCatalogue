@@ -694,6 +694,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             AmendOrder.AmendOrderClickChangeDescription();
             OrderingStepOne.AddOrderDescription(newDescription, true);
+            AmendOrder.AmendOrderValidateChangedDescription(newDescription);
         }
 
         private bool IsAssociatedServiceOnlyOrder(int orderId)

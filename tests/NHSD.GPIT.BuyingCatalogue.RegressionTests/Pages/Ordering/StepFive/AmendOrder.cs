@@ -52,15 +52,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five
                 nameof(OrderDescriptionController.OrderDescription));
         }
 
-        // public void AmendOrderValidateChangedDescription(string expectedDescription)
-        // {
-        //     var order = MostRecentOrder();
-        //     Driver.Navigate().Refresh();
-        //
-        //     LoadOrderSummary(order);
-        //     
-        //     CommonActions.
-        // }
+        public void AmendOrderValidateChangedDescription(string expectedDescription)
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.Summary)).Should().BeTrue();
+
+            Driver.FindElement(OrderSummaryObjects.OrderDescriptionSummary).Text.Should().Contain(expectedDescription);
+        }
 
         private void LoadOrderSummary(Order order)
         {

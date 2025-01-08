@@ -16,7 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
 
         public void AddOrderDescription(string orderDescription, bool changeAfterOrderComplete = false)
         {
-            Driver.FindElement(OrderDescription.DescriptionInput).SendKeys(orderDescription);
+            var descriptionInput = Driver.FindElement(OrderDescription.DescriptionInput);
+
+            descriptionInput.Clear();
+
+            descriptionInput.SendKeys(orderDescription);
 
             CommonActions.ClickSave();
 
