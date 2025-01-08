@@ -1757,6 +1757,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Summary screen minor amendment", "Change supplier contact")]
         public void OrderNonAmendmentChangeOrderSupplierContact()
         {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.SummaryScreenChangeSupplierContact();
         }
-        }
+    }
 }

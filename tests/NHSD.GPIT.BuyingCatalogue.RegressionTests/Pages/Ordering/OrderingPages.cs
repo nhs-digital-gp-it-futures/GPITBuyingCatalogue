@@ -704,6 +704,13 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
             AmendOrder.AmendOrderValidateChangedOrderingPartyContact(expectedContact);
         }
 
+        public void SummaryScreenChangeSupplierContact()
+        {
+            AmendOrder.AmendOrderClickChangeSupplierContactDetails();
+            var expectedContact = SelectSupplier.ChangeSupplierContact();
+            AmendOrder.AmendOrderValidateChangedSupplierContactDetails(expectedContact);
+        }
+
         private bool IsAssociatedServiceOnlyOrder(int orderId)
         {
             using var dbContext = Factory.DbContext;

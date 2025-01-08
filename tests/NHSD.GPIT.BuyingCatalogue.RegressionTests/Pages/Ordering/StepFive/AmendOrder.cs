@@ -84,6 +84,29 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five
             Driver.FindElement(OrderSummaryObjects.OrderingPartyContact).Text.Should().Contain(contact.Email);
         }
 
+        public void AmendOrderClickChangeSupplierContactDetails()
+        {
+            var order = MostRecentOrder();
+            Driver.Navigate().Refresh();
+
+            LoadOrderSummary(order);
+            CommonActions.ClickLinkElement(OrderSummaryObjects.ChangeOrderSupplierContact);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(SupplierController),
+                nameof(SupplierController.Supplier)).Should().BeTrue();
+        }
+
+        public void AmendOrderValidateChangedSupplierContactDetails(Contact contact)
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.Summary)).Should().BeTrue();
+
+            Driver.FindElement(OrderSummaryObjects.SupplierContact).Text.Should().Contain(contact.FullName);
+            Driver.FindElement(OrderSummaryObjects.SupplierContact).Text.Should().Contain(contact.Email);
+        }
+
         private void LoadOrderSummary(Order order)
         {
             CommonActions.ClickLinkElement(ByExtensions.DataTestId($"link-{order.CallOffId}"));
