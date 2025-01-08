@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five
 
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(OrderDescriptionController),
-                nameof(OrderDescriptionController.OrderDescription));
+                nameof(OrderDescriptionController.OrderDescription)).Should().BeTrue();
         }
 
         public void AmendOrderValidateChangedDescription(string expectedDescription)
@@ -59,6 +59,29 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five
                 nameof(OrderController.Summary)).Should().BeTrue();
 
             Driver.FindElement(OrderSummaryObjects.OrderDescriptionSummary).Text.Should().Contain(expectedDescription);
+        }
+
+        public void AmendOrderClickChangeOrderingPartyContact()
+        {
+            var order = MostRecentOrder();
+            Driver.Navigate().Refresh();
+
+            LoadOrderSummary(order);
+            CommonActions.ClickLinkElement(OrderSummaryObjects.ChangeOrderOrderingPartyContact);
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderingPartyController),
+                nameof(OrderingPartyController.OrderingParty)).Should().BeTrue();
+        }
+
+        public void AmendOrderValidateChangedOrderingPartyContact(Contact contact)
+        {
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.Summary)).Should().BeTrue();
+
+            Driver.FindElement(OrderSummaryObjects.OrderingPartyContact).Text.Should().Contain(contact.FullName);
+            Driver.FindElement(OrderSummaryObjects.OrderingPartyContact).Text.Should().Contain(contact.Email);
         }
 
         private void LoadOrderSummary(Order order)

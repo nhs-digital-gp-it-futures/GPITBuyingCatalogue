@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
@@ -1737,6 +1738,19 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         [Trait("Summary screen minor amendment", "Change ordering party contact")]
         public void OrderNonAmendmentChangeOrderOrderingPartyContact()
         {
+            OrderingPages.OrderingDashboard.CreateNewOrder();
+
+            OrderingPages.OrderType.ChooseOrderType();
+
+            OrderingPages.StepOnePrepareOrder(SupplierName);
+
+            OrderingPages.StepTwoAddSolutionsAndServices(NewSolutionName);
+
+            OrderingPages.StepThreeCompleteContract();
+
+            OrderingPages.StepFourReviewAndCompleteOrder();
+
+            OrderingPages.SummaryScreenChangeOrderingPartyContact();
         }
 
         [Fact]
