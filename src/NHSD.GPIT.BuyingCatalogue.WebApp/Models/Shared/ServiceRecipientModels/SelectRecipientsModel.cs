@@ -18,6 +18,7 @@ public class SelectRecipientsModel : NavBaseModel
         IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
         IEnumerable<string> existingRecipients,
         IEnumerable<string> excludeRecipients,
+        IEnumerable<ServiceRecipientModel> previouslySelectedRecipients,
         IEnumerable<string> preSelectedRecipients,
         SelectionMode? selectionMode = null)
     {
@@ -25,8 +26,7 @@ public class SelectRecipientsModel : NavBaseModel
 
         OrganisationName = organisation.Name;
         OrganisationType = organisation.OrganisationType.GetValueOrDefault();
-
-        PreviouslySelected = excludeRecipients.ToList();
+        PreviouslySelected = previouslySelectedRecipients.ToList();
 
         SubLocations = possibleServiceRecipients
             .GroupBy(x => x.Location)
@@ -50,7 +50,7 @@ public class SelectRecipientsModel : NavBaseModel
 
     public bool HasImportedRecipients { get; set; }
 
-    public List<string> PreviouslySelected { get; set; }
+    public List<ServiceRecipientModel> PreviouslySelected { get; set; }
 
     public bool ShouldExpand { get; set; }
 

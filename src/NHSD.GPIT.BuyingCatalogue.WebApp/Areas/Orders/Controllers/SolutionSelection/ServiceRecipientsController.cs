@@ -106,12 +106,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             PageTitleModel title = GetSelectServiceRecipientsTitle(wrapper.Order.OrderType);
 
+            var previousRecipients = await odsService.GetServiceRecipientsById(internalOrgId, wrapper.PreviousRecipientsOdsCodes());
+            var previousRecipientsModel = MapToModel(previousRecipients, false);
+
             var model =
                 new SelectRecipientsModel(
                     organisation,
                     possibleServiceRecipients,
                     wrapper.AddedRecipientsOdsCodes(),
                     wrapper.PreviousRecipientsOdsCodes(),
+                    previousRecipientsModel,
                     importedRecipientCodes,
                     selectionMode)
                 {
