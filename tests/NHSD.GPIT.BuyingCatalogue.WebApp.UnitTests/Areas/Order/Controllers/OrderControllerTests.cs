@@ -534,7 +534,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
                 .Should()
-                .Be("This order has already been completed, but you can terminate the contract if needed.");
+                .Be("This order is complete. You can terminate the contract using the option at the bottom.");
         }
 
         [Theory]
@@ -547,7 +547,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
                 .Should()
-                .Be("This order has already been completed, but you can amend or terminate the contract if needed. You can also change the order description, or change contact details for the call off party or supplier.");
+                .Be("This order is complete, but you can still make amendments to the items with change next to them. Please note if you select to amend the order, it will generate a new order number. \n\nYou can also terminate the contract using the option at the bottom.");
         }
 
         [Theory]
