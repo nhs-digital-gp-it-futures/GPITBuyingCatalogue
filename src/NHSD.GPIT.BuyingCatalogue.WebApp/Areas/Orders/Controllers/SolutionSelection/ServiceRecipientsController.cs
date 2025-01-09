@@ -252,11 +252,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 selectedRecipients.Remove(practiceReorganisation);
             }
 
-            var previouslySelectedIds = wrapper.Previous?.OrderRecipients
-                ?.Select(x => x.OdsCode)
-                .ToList() ?? Enumerable.Empty<string>();
-
-            var previousRecipients = await odsService.GetServiceRecipientsById(internalOrgId, previouslySelectedIds);
+            var previousRecipients = await odsService.GetServiceRecipientsById(internalOrgId, wrapper.PreviousRecipientsOdsCodes());
 
             var title = GetConfirmRecipientsTitle(orderType, callOffId.IsAmendment);
             var model = new ConfirmChangesModel()
