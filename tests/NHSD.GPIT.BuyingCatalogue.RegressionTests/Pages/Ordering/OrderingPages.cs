@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepFive;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;

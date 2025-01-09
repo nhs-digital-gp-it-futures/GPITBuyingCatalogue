@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using OpenQA.Selenium;
 
-namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five
+namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepFive
 {
     internal class AmendOrder : PageBase
     {
