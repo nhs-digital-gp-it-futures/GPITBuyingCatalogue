@@ -14,11 +14,24 @@ data "azurerm_key_vault" "buyingcataloguekv" {
 }
 
 data "azurerm_key_vault_secret" "sqladminusername" {
-  name          = "${local.project_alt_code}${var.environment}sqladminusername"
-  key_vault_id  = data.azurerm_key_vault.buyingcataloguekv.id
+  name         = "${local.project_alt_code}${var.environment}sqladminusername"
+  key_vault_id = data.azurerm_key_vault.buyingcataloguekv.id
 }
 
 data "azurerm_key_vault_secret" "sqladminpassword" {
-  name          = "${local.project_alt_code}${var.environment}sqladminpassword"
-  key_vault_id  = data.azurerm_key_vault.buyingcataloguekv.id
+  name         = "${local.project_alt_code}${var.environment}sqladminpassword"
+  key_vault_id = data.azurerm_key_vault.buyingcataloguekv.id
+}
+
+data "azurerm_virtual_network" "infrastructure_vnet" {
+  name                = "${var.project}-infra-vnet"
+  resource_group_name = "${var.project}-rg-sa"
+  provider            = azurerm.infrastructure
+}
+
+data "azurerm_subnet" "default-subnet" {
+  resource_group_name  = data.azurerm_virtual_network.infrastructure_vnet.resource_group_name
+  virtual_network_name = data.azurerm_virtual_network.infrastructure_vnet.name
+  name                 = "default"
+  provider             = azurerm.infrastructure
 }
