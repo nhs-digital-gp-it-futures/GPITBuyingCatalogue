@@ -12,20 +12,39 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
         public const string TagHelperName = "nhs-table-cell";
 
         private const string CellRole = "cell";
+
+        private const string RowHeaderRole = "rowheader";
+        private const string RowHeaderScope = "row";
+
         private const string CellClass = "nhsuk-table__cell";
         private const string CellClassNumeric = "nhsuk-table__cell--numeric";
         private const string HeadingClass = "nhsuk-table-responsive__heading";
+
         private const string NumericName = "numeric";
+        private const string InlineHeaderName = "inline-header";
 
         [HtmlAttributeName(NumericName)]
         public bool Numeric { get; set; }
 
+        [HtmlAttributeName(InlineHeaderName)]
+        public bool InlineHeader { get; set; }
+
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            output.TagName = "td";
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Role, CellRole));
+            if (InlineHeader)
+            {
+                output.TagName = "th";
+                output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Role, RowHeaderRole));
+                output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Scope, RowHeaderScope));
+            }
+            else
+            {
+                output.TagName = "td";
+                output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Role, CellRole));
+            }
+
             if (Numeric)
             {
                 output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, CellClassNumeric));

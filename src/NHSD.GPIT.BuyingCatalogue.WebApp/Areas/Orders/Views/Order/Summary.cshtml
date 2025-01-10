@@ -55,112 +55,94 @@
                 <nhs-table label-text="Order details">
                     <nhs-table-column>Property</nhs-table-column>
                     <nhs-table-column>Value</nhs-table-column>
-                    @if(Model.CanBeAmended){<nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>} 
-                    
+                    @if(Model.CanBeAmended){<nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>}
+
                     <nhs-table-row-container data-test-id="date-created-summary">
-                        <nhs-table-cell>
-                            <strong>Date created</strong>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            @($"{Model.Order.Created:d MMMM yyyy}")
-                        </nhs-table-cell>
-                    @if (Model.CanBeAmended)
-                        {
-                            <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
-                        }
+                        <nhs-table-cell inline-header="true">Date created</nhs-table-cell>
+                        <nhs-table-cell>@($"{Model.Order.Created:d MMMM yyyy}")</nhs-table-cell>
+                        @if (Model.CanBeAmended)
+                            {
+                                <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                            }
                     </nhs-table-row-container>
-                    
+
                     <nhs-table-row-container data-test-id="order-id-summary">
-                        <nhs-table-cell>
-                            <strong>Order ID</strong>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            @Model.Order.CallOffId
-                        </nhs-table-cell>
-                    @if (Model.CanBeAmended)
-                        {
-                            <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
-                        }
+                        <nhs-table-cell inline-header="true">Order ID</nhs-table-cell>
+                        <nhs-table-cell>@Model.Order.CallOffId</nhs-table-cell>
+                        @if (Model.CanBeAmended)
+                            {
+                                <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                            }
                     </nhs-table-row-container>
-                    
+
                     <nhs-table-row-container data-test-id="order-description-summary">
-                        <nhs-table-cell>
-                            <strong>Description</strong>
-                        </nhs-table-cell>
-                        <nhs-table-cell>
-                            @Model.Order.Description
-                        </nhs-table-cell>
-                    @if (Model.CanBeAmended)
-                        {
-                            <nhs-table-cell>
-                                <a title="Change order description" class="nhsuk-link nhsuk-link--no-visited-state" data-test-id="change-order-description" 
-                                   asp-action="@nameof(OrderDescriptionController.OrderDescription)"
-                                   asp-controller="@typeof(OrderDescriptionController).ControllerName()"
-                                   asp-route-internalOrgId="@Model.InternalOrgId"
-                                   asp-route-callOffId="@Model.Order.CallOffId">Change</a>
-                            </nhs-table-cell>
-                        }
+                        <nhs-table-cell inline-header="true">Description</nhs-table-cell>
+                        <nhs-table-cell>@Model.Order.Description</nhs-table-cell>
+                        @if (Model.CanBeAmended)
+                            {
+                                <nhs-table-cell>
+                                    <a title="Change order description" class="nhsuk-link nhsuk-link--no-visited-state" data-test-id="change-order-description"
+                                       asp-action="@nameof(OrderDescriptionController.OrderDescription)"
+                                       asp-controller="@typeof(OrderDescriptionController).ControllerName()"
+                                       asp-route-internalOrgId="@Model.InternalOrgId"
+                                       asp-route-callOffId="@Model.Order.CallOffId">Change</a>
+                                </nhs-table-cell>
+                            }
                     </nhs-table-row-container>
 
                     @if (Model.Order.OrderingPartyContact != null)
                     {
                         <nhs-table-row-container data-test-id="ordering-party-contact">
-                            <nhs-table-cell>
-                                <strong>Call-off ordering party contact</strong>
-                            </nhs-table-cell>
+                            <nhs-table-cell inline-header="true">Call-off ordering party contact</nhs-table-cell>
                             <nhs-table-cell>
                                 @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
                                 @($"{Model.Order.OrderingPartyContact.Email}")<br />
                             </nhs-table-cell>
-                        @if (Model.CanBeAmended)
-                        {
-                            <nhs-table-cell>
-                                <a title="Change ordering party contact" class="nhsuk-link nhsuk-link--no-visited-state" data-test-id="change-order-ordering-party-contact" 
-                                   asp-action="@nameof(OrderingPartyController.OrderingParty)"
-                                   asp-controller="@typeof(OrderingPartyController).ControllerName()"
-                                   asp-route-internalOrgId="@Model.InternalOrgId"
-                                   asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
-                        }
+                            @if (Model.CanBeAmended)
+                            {
+                                <nhs-table-cell>
+                                    <a title="Change ordering party contact" class="nhsuk-link nhsuk-link--no-visited-state" data-test-id="change-order-ordering-party-contact"
+                                       asp-action="@nameof(OrderingPartyController.OrderingParty)"
+                                       asp-controller="@typeof(OrderingPartyController).ControllerName()"
+                                       asp-route-internalOrgId="@Model.InternalOrgId"
+                                       asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
+                            }
                         </nhs-table-row-container>
                     }
-                    
+
                     @if (Model.Order.OrderingParty != null)
                     {
                         <nhs-table-row-container data-test-id="ordering-party-summary">
-                            <nhs-table-cell>
-                                <strong>Call-off ordering party</strong>
-                            </nhs-table-cell>
+                            <nhs-table-cell inline-header="true">Call-off ordering party</nhs-table-cell>
                             <nhs-table-cell>
                                 @Model.Order.OrderingParty.Name<br/>
                                 @Model.Order.OrderingParty.ExternalIdentifier<br/>
                                 <vc:nhs-address address="@Model.Order.OrderingParty.Address"/>
                             </nhs-table-cell>
-                        @if (Model.CanBeAmended)
-                        {
-                            <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
-                        }
+                            @if (Model.CanBeAmended)
+                            {
+                                <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                            }
                         </nhs-table-row-container>
                     }
-                    
+
                     @if (Model.Order.SupplierContact != null)
                     {
                         <nhs-table-row-container data-test-id="supplier-contact">
-                            <nhs-table-cell>
-                                <strong>Supplier contact</strong>
-                            </nhs-table-cell>
+                            <nhs-table-cell inline-header="true">Supplier contact</nhs-table-cell>
                             <nhs-table-cell>
                                 @($"{Model.Order.SupplierContact.NameOrDepartment}")<br/>
                                 @($"{Model.Order.SupplierContact.Email}")<br />
                             </nhs-table-cell>
-                        @if (Model.CanBeAmended)
-                        {
-                            <nhs-table-cell>
-                                <a title="Change supplier contact" class="nhsuk-link nhsuk-link--no-visited-state" data-test-id="change-order-supplier-contact" 
-                                   asp-action="@nameof(SupplierController.Supplier)"
-                                   asp-controller="@typeof(SupplierController).ControllerName()"
-                                   asp-route-internalOrgId="@Model.InternalOrgId"
-                                   asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
-                        }
+                            @if (Model.CanBeAmended)
+                            {
+                                <nhs-table-cell>
+                                    <a title="Change supplier contact" class="nhsuk-link nhsuk-link--no-visited-state" data-test-id="change-order-supplier-contact"
+                                       asp-action="@nameof(SupplierController.Supplier)"
+                                       asp-controller="@typeof(SupplierController).ControllerName()"
+                                       asp-route-internalOrgId="@Model.InternalOrgId"
+                                       asp-route-callOffId="@Model.Order.CallOffId">Change</a></nhs-table-cell>
+                            }
                         </nhs-table-row-container>
                     }
 
@@ -169,59 +151,45 @@
                         @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             <nhs-table-row-container data-test-id="supplier-legal-name">
-                                <nhs-table-cell>
-                                    <strong>Supplier legal name</strong>
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    @Model.Order.Supplier.LegalName
-                                </nhs-table-cell>
-                            @if (Model.CanBeAmended)
-                            {
-                                <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
-                            }
+                                <nhs-table-cell inline-header="true">Supplier legal name</nhs-table-cell>
+                                <nhs-table-cell>@Model.Order.Supplier.LegalName</nhs-table-cell>
+                                @if (Model.CanBeAmended)
+                                {
+                                    <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                                }
                             </nhs-table-row-container>
                         }
 
                         <nhs-table-row-container data-test-id="supplier-summary">
-                            <nhs-table-cell>
-                                <strong>Supplier</strong>
-                            </nhs-table-cell>
+                            <nhs-table-cell inline-header="true">Supplier</nhs-table-cell>
                             <nhs-table-cell>
                                 @Model.Order.Supplier.Name<br/>
                                 <vc:nhs-address address="@Model.Order.Supplier.Address"/>
                             </nhs-table-cell>
-                        @if (Model.CanBeAmended)
-                        {
-                            <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
-                        }
+                            @if (Model.CanBeAmended)
+                            {
+                                <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                            }
                         </nhs-table-row-container>
                     }
 
                     @if (Model.Order.CommencementDate.HasValue)
                     {
                         <nhs-table-row-container data-test-id="start-date-summary">
-                            <nhs-table-cell>
-                                <strong>Commencement date</strong>
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                @($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")
-                            </nhs-table-cell>
-                        @if (Model.CanBeAmended)
-                        {
-                            <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
-                        }
+                            <nhs-table-cell inline-header="true">Commencement date</nhs-table-cell>
+                            <nhs-table-cell>@($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")</nhs-table-cell>
+                            @if (Model.CanBeAmended)
+                            {
+                                <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
+                            }
                         </nhs-table-row-container>
                     }
 
                     @if (Model.Order.InitialPeriod.HasValue)
                     {
                         <nhs-table-row-container data-test-id="initial-period-summary">
-                            <nhs-table-cell>
-                                <strong>Initial period</strong>
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                @($"{Model.Order.InitialPeriod} months")
-                            </nhs-table-cell>
+                            <nhs-table-cell inline-header="true">Initial period</nhs-table-cell>
+                            <nhs-table-cell>@($"{Model.Order.InitialPeriod} months")</nhs-table-cell>
                             @if (Model.CanBeAmended)
                             {
                                 <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
@@ -232,12 +200,8 @@
                     @if (Model.Order.MaximumTerm.HasValue)
                     {
                         <nhs-table-row-container data-test-id="maximum-term-summary">
-                            <nhs-table-cell>
-                                <strong>Maximum term</strong>
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                @($"{Model.Order.MaximumTerm} months")
-                            </nhs-table-cell>
+                            <nhs-table-cell inline-header="true">Maximum term</nhs-table-cell>
+                            <nhs-table-cell>@($"{Model.Order.MaximumTerm} months")</nhs-table-cell>
                             @if (Model.CanBeAmended)
                             {
                                 <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
@@ -249,12 +213,8 @@
                          && Model.Order.MaximumTerm.HasValue)
                     {
                         <nhs-table-row-container data-test-id="end-date-summary">
-                            <nhs-table-cell>
-                                <strong>End date</strong>
-                            </nhs-table-cell>
-                            <nhs-table-cell>
-                                @Model.Order.EndDate.DisplayValue
-                            </nhs-table-cell>
+                            <nhs-table-cell inline-header="true">End date</nhs-table-cell>
+                            <nhs-table-cell>@Model.Order.EndDate.DisplayValue</nhs-table-cell>
                             @if (Model.CanBeAmended)
                             {
                                 <nhs-table-cell><span class="nhsuk-u-visually-hidden">No action for this row</span></nhs-table-cell>
@@ -429,7 +389,7 @@
                 }
                 </nhs-expander-v2>
             }
-            
+
                 <h2>Data processing information</h2>
                 <nhs-card-v2>
                     <nhs-card-content>
