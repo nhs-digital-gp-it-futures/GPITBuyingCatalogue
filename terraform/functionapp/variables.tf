@@ -33,3 +33,7 @@ variable "trud_api_key" {
 variable "trud_item_id" {
   type = string
 }
+
+variable "infrastructure_subscription_id" {
+  type = string
+}
