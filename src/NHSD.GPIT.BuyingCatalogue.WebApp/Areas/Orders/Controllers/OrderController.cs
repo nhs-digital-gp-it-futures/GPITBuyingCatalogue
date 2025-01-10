@@ -275,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
                 OrderStatus.Terminated => "This contract has been terminated, but you can still view the details.",
                 OrderStatus.Expired => $"This order expired on {order.EndDate.DisplayValue}, but you can still view the details.",
                 OrderStatus.Completed when order.OrderType.AssociatedServicesOnly => "This order is complete. You can terminate the contract using the option at the bottom.",
-                OrderStatus.Completed when latestOrder => "This order is complete, but you can still make amendments to the items with change next to them. Please note if you select to amend the order, it will generate a new order number. \n\nYou can also terminate the contract using the option at the bottom.",
+                OrderStatus.Completed when latestOrder => "This order is complete, but you can still make amendments to the items with change next to them. \n\nPlease note if you select to amend the order, it will generate a new order number. You can also terminate the contract using the option at the bottom.",
                 OrderStatus.Completed => "There is an amendment currently in progress for this contract.",
                 _ => orderWrapper.CanComplete()
                     ? !order.OrderType.AssociatedServicesOnly
