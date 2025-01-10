@@ -7,33 +7,22 @@ using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 {
     [HtmlTargetElement(TagHelperName, ParentTag = TableRowContainerTagHelper.TagHelperName)]
-    public sealed class TableCellTagHelper : TagHelper
+    public sealed class TableRowHeaderCellTagHelper : TagHelper
     {
-        public const string TagHelperName = "nhs-table-cell";
+        private const string TagHelperName = "nhs-table-row-header-cell";
 
-        private const string CellRole = "cell";
-        private const string CellClass = "nhsuk-table__cell";
-        private const string CellClassNumeric = "nhsuk-table__cell--numeric";
+        private const string RowHeaderRole = "rowheader";
+        private const string RowHeaderScope = "row";
+
         private const string HeadingClass = "nhsuk-table-responsive__heading";
-        private const string NumericName = "numeric";
-
-        [HtmlAttributeName(NumericName)]
-        public bool Numeric { get; set; }
 
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            output.TagName = "td";
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Role, CellRole));
-            if (Numeric)
-            {
-                output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, CellClassNumeric));
-            }
-            else
-            {
-                output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, CellClass));
-            }
+            output.TagName = "th";
+            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Role, RowHeaderRole));
+            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Scope, RowHeaderScope));
 
             var heading = GetHeadingBuilder(context);
 

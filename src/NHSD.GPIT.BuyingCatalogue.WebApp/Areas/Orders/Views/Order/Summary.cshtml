@@ -58,7 +58,7 @@
                     @if(Model.CanBeAmended){<nhs-table-column><span class="nhsuk-u-visually-hidden">Action</span></nhs-table-column>}
 
                     <nhs-table-row-container data-test-id="date-created-summary">
-                        <nhs-table-cell inline-header="true">Date created</nhs-table-cell>
+                        <nhs-table-row-header-cell>Date created</nhs-table-row-header-cell>
                         <nhs-table-cell>@($"{Model.Order.Created:d MMMM yyyy}")</nhs-table-cell>
                         @if (Model.CanBeAmended)
                             {
@@ -67,7 +67,7 @@
                     </nhs-table-row-container>
 
                     <nhs-table-row-container data-test-id="order-id-summary">
-                        <nhs-table-cell inline-header="true">Order ID</nhs-table-cell>
+                        <nhs-table-row-header-cell>Order ID</nhs-table-row-header-cell>
                         <nhs-table-cell>@Model.Order.CallOffId</nhs-table-cell>
                         @if (Model.CanBeAmended)
                             {
@@ -76,7 +76,7 @@
                     </nhs-table-row-container>
 
                     <nhs-table-row-container data-test-id="order-description-summary">
-                        <nhs-table-cell inline-header="true">Description</nhs-table-cell>
+                        <nhs-table-row-header-cell>Description</nhs-table-row-header-cell>
                         <nhs-table-cell>@Model.Order.Description</nhs-table-cell>
                         @if (Model.CanBeAmended)
                             {
@@ -93,7 +93,7 @@
                     @if (Model.Order.OrderingPartyContact != null)
                     {
                         <nhs-table-row-container data-test-id="ordering-party-contact">
-                            <nhs-table-cell inline-header="true">Call-off ordering party contact</nhs-table-cell>
+                            <nhs-table-row-header-cell>Call-off ordering party contact</nhs-table-row-header-cell>
                             <nhs-table-cell>
                                 @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
                                 @($"{Model.Order.OrderingPartyContact.Email}")<br />
@@ -113,7 +113,7 @@
                     @if (Model.Order.OrderingParty != null)
                     {
                         <nhs-table-row-container data-test-id="ordering-party-summary">
-                            <nhs-table-cell inline-header="true">Call-off ordering party</nhs-table-cell>
+                            <nhs-table-row-header-cell>Call-off ordering party</nhs-table-row-header-cell>
                             <nhs-table-cell>
                                 @Model.Order.OrderingParty.Name<br/>
                                 @Model.Order.OrderingParty.ExternalIdentifier<br/>
@@ -129,7 +129,7 @@
                     @if (Model.Order.SupplierContact != null)
                     {
                         <nhs-table-row-container data-test-id="supplier-contact">
-                            <nhs-table-cell inline-header="true">Supplier contact</nhs-table-cell>
+                            <nhs-table-row-header-cell>Supplier contact</nhs-table-row-header-cell>
                             <nhs-table-cell>
                                 @($"{Model.Order.SupplierContact.NameOrDepartment}")<br/>
                                 @($"{Model.Order.SupplierContact.Email}")<br />
@@ -151,7 +151,7 @@
                         @if (!string.Equals(Model.Order.Supplier.LegalName, Model.Order.Supplier.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             <nhs-table-row-container data-test-id="supplier-legal-name">
-                                <nhs-table-cell inline-header="true">Supplier legal name</nhs-table-cell>
+                                <nhs-table-row-header-cell>Supplier legal name</nhs-table-row-header-cell>
                                 <nhs-table-cell>@Model.Order.Supplier.LegalName</nhs-table-cell>
                                 @if (Model.CanBeAmended)
                                 {
@@ -161,7 +161,7 @@
                         }
 
                         <nhs-table-row-container data-test-id="supplier-summary">
-                            <nhs-table-cell inline-header="true">Supplier</nhs-table-cell>
+                            <nhs-table-row-header-cell>Supplier</nhs-table-row-header-cell>
                             <nhs-table-cell>
                                 @Model.Order.Supplier.Name<br/>
                                 <vc:nhs-address address="@Model.Order.Supplier.Address"/>
@@ -176,7 +176,7 @@
                     @if (Model.Order.CommencementDate.HasValue)
                     {
                         <nhs-table-row-container data-test-id="start-date-summary">
-                            <nhs-table-cell inline-header="true">Commencement date</nhs-table-cell>
+                            <nhs-table-row-header-cell>Commencement date</nhs-table-row-header-cell>
                             <nhs-table-cell>@($"{Model.Order.CommencementDate.Value:d MMMM yyyy}")</nhs-table-cell>
                             @if (Model.CanBeAmended)
                             {
@@ -188,7 +188,7 @@
                     @if (Model.Order.InitialPeriod.HasValue)
                     {
                         <nhs-table-row-container data-test-id="initial-period-summary">
-                            <nhs-table-cell inline-header="true">Initial period</nhs-table-cell>
+                            <nhs-table-row-header-cell>Initial period</nhs-table-row-header-cell>
                             <nhs-table-cell>@($"{Model.Order.InitialPeriod} months")</nhs-table-cell>
                             @if (Model.CanBeAmended)
                             {
@@ -200,7 +200,7 @@
                     @if (Model.Order.MaximumTerm.HasValue)
                     {
                         <nhs-table-row-container data-test-id="maximum-term-summary">
-                            <nhs-table-cell inline-header="true">Maximum term</nhs-table-cell>
+                            <nhs-table-row-header-cell>Maximum term</nhs-table-row-header-cell>
                             <nhs-table-cell>@($"{Model.Order.MaximumTerm} months")</nhs-table-cell>
                             @if (Model.CanBeAmended)
                             {
@@ -213,7 +213,7 @@
                          && Model.Order.MaximumTerm.HasValue)
                     {
                         <nhs-table-row-container data-test-id="end-date-summary">
-                            <nhs-table-cell inline-header="true">End date</nhs-table-cell>
+                            <nhs-table-row-header-cell>End date</nhs-table-row-header-cell>
                             <nhs-table-cell>@Model.Order.EndDate.DisplayValue</nhs-table-cell>
                             @if (Model.CanBeAmended)
                             {
