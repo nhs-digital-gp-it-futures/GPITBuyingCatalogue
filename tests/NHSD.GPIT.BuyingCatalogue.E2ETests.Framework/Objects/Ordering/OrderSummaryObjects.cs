@@ -14,8 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By OrderDescriptionSummary => ByExtensions.DataTestId("order-description-summary");
 
         public static By DateCreatedSummary => ByExtensions.DataTestId("date-created-summary");
+        
+        public static By OrderingPartyContact => ByExtensions.DataTestId("ordering-party-contact");
 
         public static By OrderingPartySummary => ByExtensions.DataTestId("ordering-party-summary");
+
+        public static By SupplierContact => ByExtensions.DataTestId("supplier-contact");
 
         public static By SupplierSummary => ByExtensions.DataTestId("supplier-summary");
 
@@ -59,5 +63,11 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
         public static By BespokeDataProcessing => By.Id("bespoke-data-processing");
 
         public static By BespokeImplementationPlan => By.Id("bespoke-implementation-plan");
+        
+        public static By ChangeOrderDescription => ByExtensions.DataTestId("change-order-description");
+
+        public static By ChangeOrderOrderingPartyContact => ByExtensions.DataTestId("change-order-ordering-party-contact");
+
+        public static By ChangeOrderSupplierContact => ByExtensions.DataTestId("change-order-supplier-contact");
     }
 }

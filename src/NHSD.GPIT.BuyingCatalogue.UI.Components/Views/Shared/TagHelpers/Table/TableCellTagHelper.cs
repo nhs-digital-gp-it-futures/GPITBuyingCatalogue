@@ -35,31 +35,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
                 output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, CellClass));
             }
 
-            var heading = GetHeadingBuilder(context);
+            var heading = CellHeadingBuilder.GetHeadingBuilder(context);
 
             var children = await output.GetChildContentAsync();
 
             output.Content
                 .AppendHtml(heading)
                 .AppendHtml(children);
-        }
-
-        private static TagBuilder GetHeadingBuilder(TagHelperContext context)
-        {
-            if (!context.Items.TryGetValue(TagHelperConstants.CellColumnContextName, out object columnNames))
-                return null;
-
-            var columnNamesConverted = (Queue<TagHelperContent>)columnNames;
-
-            if (columnNamesConverted.Count == 0)
-                return null;
-
-            var builder = new TagBuilder(TagHelperConstants.Span);
-            builder.AddCssClass(HeadingClass);
-
-            builder.InnerHtml.AppendHtml(columnNamesConverted.Dequeue());
-
-            return builder;
         }
     }
 }

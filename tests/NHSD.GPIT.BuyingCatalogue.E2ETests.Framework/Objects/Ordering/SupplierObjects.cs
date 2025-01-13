@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By SupplierContactRadioErrorMessage => By.Id("supplier-error");
 
-        public static By CreateNewContactLink => By.ClassName("nhsuk-action-link__text");
+        public static By CreateNewContactLink => By.LinkText("Add a new contact");
 
         public static By SearchListBox => By.Id("SelectedSupplierId__listbox");
 

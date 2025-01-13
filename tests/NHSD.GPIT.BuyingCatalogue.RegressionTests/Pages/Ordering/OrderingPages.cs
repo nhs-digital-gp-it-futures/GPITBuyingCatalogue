@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType;
-using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Step_Five;
+using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepFive;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo;
@@ -688,6 +688,27 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering
         {
             SelectEditAndConfirmPrices.SelectCatalogueSolutionPrice(solutionServieId);
             Quantity.AddSolutionQuantity(solutionServieId);
+        }
+
+        public void SummaryScreenChangeDescription(string newDescription)
+        {
+            AmendOrder.AmendOrderClickChangeDescription();
+            OrderingStepOne.AddOrderDescription(newDescription, true);
+            AmendOrder.AmendOrderValidateChangedDescription(newDescription);
+        }
+
+        public void SummaryScreenChangeOrderingPartyContact()
+        {
+            AmendOrder.AmendOrderClickChangeOrderingPartyContact();
+            var expectedContact = OrderingStepOne.ChangeCallOffOrderingPartyContactDetails();
+            AmendOrder.AmendOrderValidateChangedOrderingPartyContact(expectedContact);
+        }
+
+        public void SummaryScreenChangeSupplierContact()
+        {
+            AmendOrder.AmendOrderClickChangeSupplierContactDetails();
+            var expectedContact = SelectSupplier.ChangeSupplierContact();
+            AmendOrder.AmendOrderValidateChangedSupplierContactDetails(expectedContact);
         }
 
         private bool IsAssociatedServiceOnlyOrder(int orderId)

@@ -16,6 +16,12 @@ provider "azurerm" {
   }
 }
 
+provider "azurerm" {
+  alias           = "infrastructure"
+  subscription_id = var.infrastructure_subscription_id
+  features {}
+}
+
 resource "azurerm_resource_group" "function_app_rg" {
   name     = "${local.project_environment}-rg-functionapp"
   location = var.region
@@ -86,11 +92,12 @@ resource "azurerm_windows_function_app" "function_app" {
   public_network_access_enabled                  = true
 
   site_config {
-    always_on                       = true
-    ftps_state                      = "Disabled"
-    ip_restriction_default_action   = "Deny"
-    http2_enabled                   = true
-    use_32_bit_worker               = false
+    always_on                         = true
+    ftps_state                        = "Disabled"
+    ip_restriction_default_action     = "Deny"
+    scm_ip_restriction_default_action = "Deny"
+    http2_enabled                     = true
+    use_32_bit_worker                 = false
 
     ip_restriction {
       ip_address = var.primary_vpn
@@ -98,6 +105,11 @@ resource "azurerm_windows_function_app" "function_app" {
 
     ip_restriction {
       ip_address = var.nhsd_network_range
+    }
+
+    scm_ip_restriction {
+      action = "Allow"
+      virtual_network_subnet_id = data.azurerm_subnet.default-subnet.id
     }
   }
 }
