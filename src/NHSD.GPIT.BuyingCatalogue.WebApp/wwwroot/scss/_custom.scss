@@ -185,3 +185,16 @@
 .js-enabled .nhsuk-content--js-only {
     display: inline-block;
 }
+
+.allow-paragraph-spacing{
+  white-space: pre-wrap;
+}
+
+
+.nhsuk-custom-table__row_header{
+  @media (max-width: 48.0525em) {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 0;
+  }
+}

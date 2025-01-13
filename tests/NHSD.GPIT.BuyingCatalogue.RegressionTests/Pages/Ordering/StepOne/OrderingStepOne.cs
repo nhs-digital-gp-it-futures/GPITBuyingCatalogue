@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common;
 using NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using OpenQA.Selenium;
@@ -14,15 +15,28 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
         {
         }
 
-        public void AddOrderDescription(string orderDescription)
+        public void AddOrderDescription(string orderDescription, bool changeAfterOrderComplete = false)
         {
-            Driver.FindElement(OrderDescription.DescriptionInput).SendKeys(orderDescription);
+            var descriptionInput = Driver.FindElement(OrderDescription.DescriptionInput);
+
+            descriptionInput.Clear();
+
+            descriptionInput.SendKeys(orderDescription);
 
             CommonActions.ClickSave();
 
-            CommonActions.PageLoadedCorrectGetIndex(
-                typeof(OrderController),
-                nameof(OrderController.Order)).Should().BeTrue();
+            if (changeAfterOrderComplete)
+            {
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(OrderController),
+                    nameof(OrderController.Summary)).Should().BeTrue();
+            }
+            else
+            {
+                CommonActions.PageLoadedCorrectGetIndex(
+                    typeof(OrderController),
+                    nameof(OrderController.Order)).Should().BeTrue();
+            }
         }
 
         public void AddCallOffOrderingPartyContactDetails()
@@ -37,6 +51,24 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepOne
             CommonActions.PageLoadedCorrectGetIndex(
                typeof(OrderController),
                nameof(OrderController.Order)).Should().BeTrue();
+        }
+
+        public Contact ChangeCallOffOrderingPartyContactDetails()
+        {
+            var newContact = new Contact();
+
+            newContact.FirstName = TextGenerators.FirstNameInputAddText(CalloffPartyInformation.FirstNameInput, 10);
+            newContact.LastName = TextGenerators.LastNameInputAddText(CalloffPartyInformation.LastNameInput, 10);
+            newContact.Phone = TextGenerators.PhoneNumberInputAddText(CalloffPartyInformation.PhoneNumberInput, 10);
+            newContact.Email = TextGenerators.EmailInputAddText(CalloffPartyInformation.EmailAddressInput, 20);
+
+            CommonActions.ClickSave();
+
+            CommonActions.PageLoadedCorrectGetIndex(
+                typeof(OrderController),
+                nameof(OrderController.Summary)).Should().BeTrue();
+
+            return newContact;
         }
 
         public void AddTimescaleForCallOffAgreement()

@@ -158,5 +158,13 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
 
             return phone;
         }
+
+        public string DepartmentInputAddText(By targetField, int numChars)
+        {
+            Driver.FindElement(targetField).Clear();
+            var department = Strings.RandomDepartment(numChars);
+            Driver.FindElement(targetField).SendKeys(department);
+            return department;
+        }
     }
 }

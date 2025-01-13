@@ -55,6 +55,12 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.RandomData
 
         }
 
+        public static string RandomDepartment(int numChars)
+        {
+            var faker = new Faker("en_GB");
+            return faker.Commerce.Department();
+        }
+
         public static string RandomPhoneNumber(int numChars)
         {
             var faker = new Faker("en_GB");
