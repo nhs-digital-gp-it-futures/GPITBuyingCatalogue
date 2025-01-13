@@ -547,7 +547,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
                 .Should()
-                .Be("This order is complete, but you can still make amendments to the items with change next to them. Please note if you select to amend the order, it will generate a new order number. \n\nYou can also terminate the contract using the option at the bottom.");
+                .Be("This order is complete, but you can still make amendments to the items with change next to them. \n\nPlease note if you select to amend the order, it will generate a new order number. You can also terminate the contract using the option at the bottom.");
         }
 
         [Theory]
