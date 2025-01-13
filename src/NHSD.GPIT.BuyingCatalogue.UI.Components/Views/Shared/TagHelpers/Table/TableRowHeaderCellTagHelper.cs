@@ -11,6 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
     {
         private const string TagHelperName = "nhs-table-row-header-cell";
 
+        private const string RowHeaderClass = "nhsuk-custom-table__row_header";
         private const string RowHeaderRole = "rowheader";
         private const string RowHeaderScope = "row";
 
@@ -19,6 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
             output.TagMode = TagMode.StartTagAndEndTag;
 
             output.TagName = "th";
+            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, RowHeaderClass));
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Role, RowHeaderRole));
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Scope, RowHeaderScope));
 
