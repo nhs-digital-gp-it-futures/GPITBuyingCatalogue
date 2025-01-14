@@ -42,9 +42,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         [HttpGet("select")]
         public async Task<IActionResult> SelectDate(string internalOrgId, CallOffId callOffId, string returnUrl = null, bool? setAllPDD = null)
         {
-            var order = (await orderService.GetOrderThin(callOffId, internalOrgId)).Order;
+            var orderWrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var model = new SelectDateModel(internalOrgId, callOffId, order, setAllPDD)
+            var originalOrder = orderWrapper.First;
+
+            var order = orderWrapper.Order;
+
+            var model = new SelectDateModel(internalOrgId, callOffId, order, setAllPDD, originalOrder?.DeliveryDate)
             {
                 BackLink = returnUrl ?? Url.Action(
                     nameof(OrderController.Order),
