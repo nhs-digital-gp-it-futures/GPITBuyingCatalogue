@@ -33,7 +33,7 @@
                 @if (Model.PreviouslySelected?.Any() ?? false)
                 {
                     <div id="previously-selected-service-recipients">
-                        <nhs-details label-text="View Service Recipients from the original order">
+                        <nhs-details label-text="View Service Recipients from the original order" data-test-id="existing-recipients-details">
                             <p>
                                 The original order had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
                             </p>
@@ -41,14 +41,11 @@
                             @foreach (var location in Model.PreviouslySelected.GroupBy(x => x.Location))
                             {
                                 <nhs-expander label-text="@location.Key"
-                                              bold-title="true">
+                                              bold-title="true"
+                                              data-test-id="existing-recipient-group-summary">
                                     <ul>
                                         @foreach (var item in location)
                                         {
-                                            var index = Model.PreviouslySelected.FindIndex(x => x.OdsCode.Contains(item.OdsCode));
-
-                                            <input type="hidden" asp-for="@Model.PreviouslySelected[index].Name" />
-                                            <input type="hidden" asp-for="@Model.PreviouslySelected[index].OdsCode" />
                                             <li>@item.Description</li>
                                         }
                                     </ul>
