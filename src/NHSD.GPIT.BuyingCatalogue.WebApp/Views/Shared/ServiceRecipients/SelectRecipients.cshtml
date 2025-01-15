@@ -1,6 +1,12 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSearchIcon
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Buttons
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectRecipientsModel;
 
 @{
@@ -30,7 +36,7 @@
                         </nhs-inset-text>
                     }
 
-                @if (Model.PreviouslySelected?.Any() ?? false)
+                @if (Model.IsAmendment && (Model.PreviouslySelected?.Any() ?? false))
                 {
                     <div id="previously-selected-service-recipients">
                         <nhs-details label-text="View Service Recipients from the original order" data-test-id="existing-recipients-details">
@@ -130,7 +136,16 @@
                     </nhs-expander-v2>
                 }
                 <br />
-                <nhs-submit-button />
+                <nhs-button-group>
+                    <nhs-submit-button />
+                    @if (Model.IsAmendment)
+                    {
+                        <vc:nhs-anchor-button type="Secondary" text="Cancel"
+                                              url="@Model.BackLink"/>
+                    }
+
+                </nhs-button-group>
+
             }
             else
             {

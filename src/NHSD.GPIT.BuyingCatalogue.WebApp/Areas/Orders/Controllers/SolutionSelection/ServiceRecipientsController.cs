@@ -114,7 +114,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     organisation,
                     possibleServiceRecipients,
                     wrapper.AddedRecipientsOdsCodes(),
-                    wrapper.PreviousRecipientsOdsCodes(),
                     previousRecipientsModel,
                     importedRecipientCodes,
                     selectionMode)

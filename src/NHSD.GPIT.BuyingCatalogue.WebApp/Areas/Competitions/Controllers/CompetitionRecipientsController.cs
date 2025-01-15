@@ -98,7 +98,6 @@ public class CompetitionRecipientsController : Controller
             recipients,
             competition.Recipients.Select(x => x.Id),
             [],
-            [],
             splitRecipientIds,
             selectionMode)
         {

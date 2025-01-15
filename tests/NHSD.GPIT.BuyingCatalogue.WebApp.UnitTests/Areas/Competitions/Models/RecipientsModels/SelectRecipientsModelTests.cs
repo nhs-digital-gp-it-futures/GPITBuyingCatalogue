@@ -22,7 +22,6 @@ public static class SelectRecipientsModelTests
             serviceRecipients,
             existingRecipients,
             [],
-            [],
             preSelectedRecipients);
 
         var groupedSubLocations = serviceRecipients.GroupBy(x => x.Location)
@@ -57,7 +56,6 @@ public static class SelectRecipientsModelTests
             serviceRecipients,
             existingRecipients,
             [],
-            [],
             preSelectedRecipients,
             selectionMode);
 
@@ -80,7 +78,6 @@ public static class SelectRecipientsModelTests
             serviceRecipients,
             existingRecipients,
             [],
-            [],
             preSelectedRecipients);
 
         model.GetSelectedServiceRecipients().Select(x => x.OdsCode).Should().BeEquivalentTo(preSelectedRecipients);
@@ -100,7 +97,6 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
-            [],
             [],
             preSelectedRecipients);
 
@@ -122,7 +118,6 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
-            [],
             [],
             preSelectedRecipients);
 

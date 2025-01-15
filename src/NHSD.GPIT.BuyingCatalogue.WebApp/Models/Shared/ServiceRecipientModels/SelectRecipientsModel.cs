@@ -17,10 +17,10 @@ public class SelectRecipientsModel : NavBaseModel
         Organisation organisation,
         IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
         IEnumerable<string> existingRecipients,
-        IEnumerable<string> excludeRecipients,
         IEnumerable<ServiceRecipientModel> previouslySelectedRecipients,
         IEnumerable<string> preSelectedRecipients,
-        SelectionMode? selectionMode = null)
+        SelectionMode? selectionMode = null,
+        bool isAmendment = false)
     {
         this.selectionMode = selectionMode;
 
@@ -33,9 +33,11 @@ public class SelectRecipientsModel : NavBaseModel
             .Select(
                 x => new SublocationModel(
                     x.Key,
-                    x.Where(x => !excludeRecipients.Contains(x.OdsCode)).OrderBy(y => y.Name).ToList()))
+                    x.Where(sr => PreviouslySelected.All(psr => psr.OdsCode != sr.OdsCode)).OrderBy(y => y.Name).ToList()))
             .OrderBy(x => x.Name)
             .ToArray();
+
+        IsAmendment = isAmendment;
 
         SelectServiceRecipients(existingRecipients, preSelectedRecipients);
     }
@@ -55,6 +57,8 @@ public class SelectRecipientsModel : NavBaseModel
     public bool ShouldExpand { get; set; }
 
     public int? SelectAtLeast { get; set; }
+
+    public bool IsAmendment { get; set; }
 
     public IEnumerable<ServiceRecipientModel> GetServiceRecipients()
     {
