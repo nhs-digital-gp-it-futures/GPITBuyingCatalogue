@@ -91,6 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 recipients,
                 order.AddedOrderRecipients(null).Select(r => r.OdsCode),
                 Enumerable.Empty<string>().ToList(),
+                Enumerable.Empty<ServiceRecipientModel>().ToList(),
                 new string[] { },
                 selectionMode)
             { };
@@ -155,7 +156,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 recipients,
                 order.AddedOrderRecipients(null).Select(r => r.OdsCode),
                 Enumerable.Empty<string>().ToList(),
+                Enumerable.Empty<ServiceRecipientModel>().ToList(),
                 new string[] { },
+
                 selectionMode)
             { SelectAtLeast = atLeast };
 

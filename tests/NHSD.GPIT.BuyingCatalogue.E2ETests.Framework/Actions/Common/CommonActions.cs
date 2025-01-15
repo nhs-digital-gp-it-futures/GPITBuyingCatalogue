@@ -63,8 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Actions.Common
         public void ClickFirstCheckbox() =>
             Driver.FindElements(By.CssSelector("input[type=checkbox][value=true]")).First().Click();
 
-        public void ClickFirstExpander() =>
-            Driver.FindElements(By.CssSelector("details.nhsuk-expander")).First().Click();
+        public void ClickRecipientsExpander() =>
+            Driver.FindElements(By.Id("recipients-expander")).First().Click();
 
         public void ClickFirstRadio() =>
             Driver.FindElements(By.CssSelector("input[type=radio]")).First().Click();
