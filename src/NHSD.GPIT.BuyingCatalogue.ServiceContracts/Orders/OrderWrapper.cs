@@ -88,10 +88,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             ? previous.Last()
             : null;
 
-        public Order First => previous.Any()
-            ? previous.First()
-            : null;
-
         public Order Order { get; set; }
 
         public Order Previous => previousLazy.Value;

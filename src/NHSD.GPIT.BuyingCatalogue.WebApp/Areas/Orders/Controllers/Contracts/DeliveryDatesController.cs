@@ -44,11 +44,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         {
             var orderWrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var originalOrder = orderWrapper.RolledUp;
+            var orderRollUp = orderWrapper.RolledUp;
 
             var order = orderWrapper.Order;
 
-            var model = new SelectDateModel(internalOrgId, callOffId, order, setAllPDD, originalOrder?.DeliveryDate)
+            var model = new SelectDateModel(internalOrgId, callOffId, order, setAllPDD, orderRollUp.DeliveryDate)
             {
                 BackLink = returnUrl ?? Url.Action(
                     nameof(OrderController.Order),
