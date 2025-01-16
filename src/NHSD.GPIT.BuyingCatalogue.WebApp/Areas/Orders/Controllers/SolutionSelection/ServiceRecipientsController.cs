@@ -116,7 +116,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     wrapper.AddedRecipientsOdsCodes(),
                     previousRecipientsModel,
                     importedRecipientCodes,
-                    selectionMode)
+                    selectionMode,
+                    wrapper.IsAmendment)
                 {
                     Title = title.Title,
                     Caption = $"Order {callOffId}",
