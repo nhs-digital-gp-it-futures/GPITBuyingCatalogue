@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         {
             var orderWrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var originalOrder = orderWrapper.First;
+            var originalOrder = orderWrapper.RolledUp;
 
             var order = orderWrapper.Order;
 
