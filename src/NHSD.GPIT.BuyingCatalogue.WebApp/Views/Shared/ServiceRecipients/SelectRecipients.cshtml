@@ -83,6 +83,8 @@
             <input type="hidden" asp-for="Advice" />
             <input type="hidden" asp-for="SelectAtLeast" />
             <input type="hidden" asp-for="OrganisationName" />
+            <input type="hidden" asp-for="IsAmendment" />
+
             @if (Model.SubLocations?.Any() ?? false)
             {
                 @if (Model.OrganisationType != OrganisationType.GP)
