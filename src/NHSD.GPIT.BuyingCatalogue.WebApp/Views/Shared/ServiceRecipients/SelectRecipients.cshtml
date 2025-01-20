@@ -39,9 +39,9 @@
                 @if (Model.IsAmendment && (Model.PreviouslySelected?.Any() ?? false))
                 {
                     <div id="previously-selected-service-recipients">
-                        <nhs-details label-text="View Service Recipients from the original order" data-test-id="existing-recipients-details">
+                        <nhs-details label-text="View Service Recipients from the previous revision" data-test-id="existing-recipients-details">
                             <p>
-                                The original order had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
+                                The previous revision had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
                             </p>
 
                             @foreach (var location in Model.PreviouslySelected.GroupBy(x => x.Location))
