@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             bool applyToAll)
         {
             FluentActions
-                .Invoking(() => new SelectDateModel(internalOrgId, callOffId, null, applyToAll))
+                .Invoking(() => new SelectDateModel(internalOrgId, callOffId, null, applyToAll, null))
                 .Should().Throw<ArgumentNullException>();
         }
 
@@ -29,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             DateTime date)
         {
             order.DeliveryDate = date;
-            var model = new SelectDateModel(internalOrgId, callOffId, order, null);
+            var model = new SelectDateModel(internalOrgId, callOffId, order, null, null);
 
             model.InternalOrgId.Should().Be(internalOrgId);
             model.CallOffId.Should().Be(callOffId);
@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order)
         {
-            var model = new SelectDateModel(internalOrgId, callOffId, order, null);
+            var model = new SelectDateModel(internalOrgId, callOffId, order, null, null);
 
             model.ContractEndDate.Should().NotBeNull();
 
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order)
         {
-            var model = new SelectDateModel(internalOrgId, callOffId, order, null);
+            var model = new SelectDateModel(internalOrgId, callOffId, order, null, null);
 
             var expected = order.CommencementDate!.Value
                 .AddMonths(order.MaximumTerm!.Value)
