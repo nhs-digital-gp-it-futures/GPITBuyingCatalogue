@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             await orderService.Received().GetOrderThin(callOffId, internalOrgId);
 
-            var expected = new SelectDateModel(internalOrgId, callOffId, order, setAllPDD, null);
+            var expected = new SelectDateModel(internalOrgId, callOffId, order, setAllPDD, order.DeliveryDate);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
