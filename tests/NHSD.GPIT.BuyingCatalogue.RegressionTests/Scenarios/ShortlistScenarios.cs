@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             factory,
             testOutputHelper), IClassFixture<LocalWebApplicationFactory>
     {
-        [Fact]
+        [SkippableFact]
         [Trait("Shortlist", "Create shortlist")]
         public void CreateNewShortlistForFoundationCapabilities()
         {
@@ -22,7 +22,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             ShortlistPages.CreateShortlistForFoundationCapabilities(shortlistName);
         }
 
-        [Fact]
+        [SkippableFact]
         [Trait("Shortlist", "Create shortlist")]
         public void CreateNewShortlistForFramework()
         {
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             ShortlistPages.CreateShortlistForFramework(shortlistName);
         }
 
-        [Fact]
+        [SkippableFact]
         [Trait("Shortlist", "Create shortlist")]
         public void CreateNewShortlistForApplicationTypes()
         {
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
             ShortlistPages.CreateShortlistForApplicationType(shortlistName, ApplicationTypes.Desktop);
         }
 
-        [Fact]
+        [SkippableFact]
         [Trait("Shortlist", "Create shortlist")]
         public void CreateNewShortlistForHostingTypes()
         {

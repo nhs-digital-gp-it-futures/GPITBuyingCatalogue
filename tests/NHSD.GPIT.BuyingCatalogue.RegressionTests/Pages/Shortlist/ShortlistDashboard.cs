@@ -7,6 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions.Solu
 using NHSD.GPIT.BuyingCatalogue.RegressionTests.Utils;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 using OpenQA.Selenium;
+using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Shortlist
 {
@@ -41,6 +42,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Shortlist
             CommonActions.PageLoadedCorrectGetIndex(
                 typeof(ManageFiltersController),
                 nameof(ManageFiltersController.MaximumShortlists)).Should().BeTrue();
+
+            Skip.If(true, "Max number of shortlists reached. Clear DB to run full test.");
         }
 
         public void FilterByFoundationCapabilities()
