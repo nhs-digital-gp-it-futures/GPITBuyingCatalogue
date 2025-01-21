@@ -100,7 +100,7 @@ BEGIN
             @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
+             VALUES (@solutionId, 'Maura', 'McGinn', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @bobUser
@@ -132,7 +132,7 @@ BEGIN
             @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Victoria', 'Sponge', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
+             VALUES (@solutionId, 'Bryn', 'Jones', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @bobUser
@@ -190,7 +190,7 @@ BEGIN
             @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Harry', 'Houdini', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
+             VALUES (@solutionId, 'Jocelyn', 'Dyer', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @bobUser
@@ -222,7 +222,7 @@ BEGIN
             @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Agent', 'M', '01234 567891', 'm@test.test', 'Sales', @now, @bobUser);
+             VALUES (@solutionId, 'Omer', 'Rose', '01234 567891', 'm@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @bobUser
@@ -251,7 +251,7 @@ BEGIN
             @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES ('100006-001', 'Timothy', 'Teabag', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
+             VALUES ('100006-001', 'Nancy', 'Hubbard', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT '100006-001', Id, 1, @now, @bobUser
@@ -280,7 +280,7 @@ BEGIN
             @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Betty', 'Banjo', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
+             VALUES (@solutionId, 'Marc', 'Meyers', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @bobUser
@@ -308,7 +308,7 @@ BEGIN
             @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Boston', 'Rocks', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
+             VALUES (@solutionId, 'Maja', 'Mueller', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @bobUser
@@ -370,7 +370,7 @@ Using EMIS Web, healthcare professionals can provide the best possible patient c
             @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, Email, PhoneNumber, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Eduardo', 'Eggbert', 'eddie@eggs.test', '01234 567891', 'Internal Sales Team', @now, @bobUser);
+             VALUES (@solutionId, 'Juliet', 'Wallace', 'julie@test.com', '01234 567891', 'Internal Sales Team', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities (CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
         VALUES
@@ -583,7 +583,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
             @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
+             VALUES (@solutionId, 'Azaan', 'Faulkner', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @bobUser
@@ -615,7 +615,7 @@ TPP maintain close contact with staff at the unit throughout these phases to ens
             @bobUser);
 
         INSERT INTO catalogue.MarketingContacts(SolutionId, FirstName, LastName, PhoneNumber, Email, Department, LastUpdated, LastUpdatedBy)
-             VALUES (@solutionId, 'Sam', 'Samosa', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
+             VALUES (@solutionId, 'Judith', 'Skinner', '01234 567891', 'sales@test.test', 'Sales', @now, @bobUser);
 
         INSERT INTO catalogue.CatalogueItemCapabilities(CatalogueItemId, CapabilityId, StatusId, LastUpdated, LastUpdatedBy)
              SELECT @solutionId, Id, 1, @now, @bobUser
