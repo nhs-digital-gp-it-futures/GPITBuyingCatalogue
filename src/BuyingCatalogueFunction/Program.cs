@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Interfaces;
@@ -34,25 +35,22 @@ public static class Program
 {
     public static async Task Main(string[] args)
     {
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-#if DEBUG
-            .WriteTo.Debug()
-            .WriteTo.Seq("http://localhost:5341")
-#endif
-            .WriteTo.ApplicationInsights(TelemetryConfiguration.CreateDefault(), TelemetryConverter.Traces)
-            .WriteTo.Console()
-            .CreateLogger();
-
         var host = Host.CreateDefaultBuilder(args)
-            .UseSerilog()
             .ConfigureFunctionsWorkerDefaults()
             .ConfigureServices((context, services) =>
             {
                 var configuration = context.Configuration;
+
+                var configureServicesType = typeof(IConfigureServices);
+                var configureServicesTypes = configureServicesType.Assembly.GetTypes()
+                    .Where(x => x.IsClass && configureServicesType.IsAssignableFrom(x))
+                    .Select(x => (IConfigureServices)Activator.CreateInstance(x))
+                    .Where(x => x != null);
+
+                foreach (var implementation in configureServicesTypes)
+                {
+                    implementation.ConfigureServices(services);
+                }
 
                 services.Configure<TrudApiOptions>(configuration.GetSection("trudApi"));
                 services.Configure<TrudBatchOptions>(configuration.GetSection("batchOptions"));
