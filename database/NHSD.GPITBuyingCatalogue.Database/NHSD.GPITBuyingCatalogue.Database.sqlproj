@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Sdk Name="Microsoft.Build.Sql" Version="0.1.10-preview" />
+  <Sdk Name="Microsoft.Build.Sql" Version="1.0.0-rc1" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -161,7 +161,7 @@
     <Folder Include="OdsOrganisations\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SqlServer.Dacpacs.Azure.Master" Version="160.0.0">
+    <PackageReference Include="Microsoft.SqlServer.Dacpacs.Azure.Master" Version="160.2.4">
       <GeneratePathProperty>true</GeneratePathProperty>
       <DacpacName>master</DacpacName>
     </PackageReference>
