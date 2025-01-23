@@ -97,7 +97,7 @@ public class CompetitionRecipientsController : Controller
             organisation,
             recipients,
             competition.Recipients.Select(x => x.Id),
-            Enumerable.Empty<string>(),
+            [],
             splitRecipientIds,
             selectionMode)
         {

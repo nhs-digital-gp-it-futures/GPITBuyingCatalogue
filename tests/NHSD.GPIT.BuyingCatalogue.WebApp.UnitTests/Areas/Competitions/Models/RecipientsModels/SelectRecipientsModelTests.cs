@@ -21,7 +21,7 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
-            Enumerable.Empty<string>(),
+            [],
             preSelectedRecipients);
 
         var groupedSubLocations = serviceRecipients.GroupBy(x => x.Location)
@@ -55,7 +55,7 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
-            Enumerable.Empty<string>(),
+            [],
             preSelectedRecipients,
             selectionMode);
 
@@ -77,7 +77,7 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
-            Enumerable.Empty<string>(),
+            [],
             preSelectedRecipients);
 
         model.GetSelectedServiceRecipients().Select(x => x.OdsCode).Should().BeEquivalentTo(preSelectedRecipients);
@@ -97,7 +97,7 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
-            Enumerable.Empty<string>(),
+            [],
             preSelectedRecipients);
 
         model.HasSelectedRecipients().Should().BeFalse();
@@ -118,7 +118,7 @@ public static class SelectRecipientsModelTests
             organisation,
             serviceRecipients,
             existingRecipients,
-            Enumerable.Empty<string>(),
+            [],
             preSelectedRecipients);
 
         model.GetSelectedServiceRecipients().Select(x => x.OdsCode).Should().BeEquivalentTo(preSelectedRecipients);

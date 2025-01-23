@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
         }
 
-        public SelectDateModel(string internalOrgId, CallOffId callOffId, Order order, bool? applyToAll)
+        public SelectDateModel(string internalOrgId, CallOffId callOffId, Order order, bool? applyToAll, DateTime? existingDeliveryDate)
         {
             if (order == null)
             {
@@ -28,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             MaximumTerm = order.MaximumTerm;
 
             IsAmend = order.IsAmendment;
+            ExistingDeliveryDate = existingDeliveryDate;
 
             SetDateFields(order.DeliveryDate);
 
@@ -43,6 +44,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         public int? MaximumTerm { get; set; }
 
         public bool IsAmend { get; set; }
+
+        public DateTime? ExistingDeliveryDate { get; set; }
 
         public bool? ApplyToAll { get; set; }
 

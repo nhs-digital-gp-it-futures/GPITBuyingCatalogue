@@ -17,25 +17,27 @@ public class SelectRecipientsModel : NavBaseModel
         Organisation organisation,
         IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
         IEnumerable<string> existingRecipients,
-        IEnumerable<string> excludeRecipients,
+        IEnumerable<ServiceRecipientModel> previouslySelectedRecipients,
         IEnumerable<string> preSelectedRecipients,
-        SelectionMode? selectionMode = null)
+        SelectionMode? selectionMode = null,
+        bool isAmendment = false)
     {
         this.selectionMode = selectionMode;
 
         OrganisationName = organisation.Name;
         OrganisationType = organisation.OrganisationType.GetValueOrDefault();
-
-        PreviouslySelected = excludeRecipients.ToList();
+        PreviouslySelected = previouslySelectedRecipients.ToList();
 
         SubLocations = possibleServiceRecipients
             .GroupBy(x => x.Location)
             .Select(
                 x => new SublocationModel(
                     x.Key,
-                    x.Where(x => !excludeRecipients.Contains(x.OdsCode)).OrderBy(y => y.Name).ToList()))
+                    x.Where(sr => PreviouslySelected.All(psr => psr.OdsCode != sr.OdsCode)).OrderBy(y => y.Name).ToList()))
             .OrderBy(x => x.Name)
             .ToArray();
+
+        IsAmendment = isAmendment;
 
         SelectServiceRecipients(existingRecipients, preSelectedRecipients);
     }
@@ -50,11 +52,13 @@ public class SelectRecipientsModel : NavBaseModel
 
     public bool HasImportedRecipients { get; set; }
 
-    public List<string> PreviouslySelected { get; set; }
+    public List<ServiceRecipientModel> PreviouslySelected { get; set; }
 
     public bool ShouldExpand { get; set; }
 
     public int? SelectAtLeast { get; set; }
+
+    public bool IsAmendment { get; set; }
 
     public IEnumerable<ServiceRecipientModel> GetServiceRecipients()
     {

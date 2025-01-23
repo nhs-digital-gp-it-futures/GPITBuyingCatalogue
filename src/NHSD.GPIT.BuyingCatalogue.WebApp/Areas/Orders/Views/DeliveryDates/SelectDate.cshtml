@@ -3,6 +3,12 @@
     ViewBag.Title = "Planned delivery date";
 }
 
+@{
+    var deliveryDateInPast = DateTime.UtcNow > Model.ExistingDeliveryDate;
+
+    var plannedDeliveryDateText = deliveryDateInPast ? "The planned delivery date for the original order was" : "The planned delivery date for the original order is";
+}
+
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
@@ -13,8 +19,14 @@
                         caption="Order @Model.CallOffId"
                         advice="Enter the date the solutions and services you’re ordering will start being used." />
 
+        @if (Model.IsAmend)
+        {
+            <nhs-inset-text>@plannedDeliveryDateText @Model.ExistingDeliveryDate?.ToString("d MMM yyyy")</nhs-inset-text>
+        }
+
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.ExistingDeliveryDate" />
             <input type="hidden" asp-for="@Model.CommencementDate"/>
             <input type="hidden" asp-for="@Model.MaximumTerm" />
             <input type="hidden" asp-for="@Model.IsAmend" />
@@ -26,7 +38,7 @@
                                          size="Small">
                     <nhs-date-input asp-for="@Model" day="Day" month="Month" year="Year" />
                 </nhs-fieldset-form-label>
-                
+
                 <nhs-fieldset-form-label asp-for="ApplyToAll"
                                          label-text="Do you want to use the same delivery date for all recipients?"
                                          label-hint="Selecting yes will apply the date you’ve entered to all recipients. If you select no, you’ll be able to change the dates for individual recipients."
@@ -34,7 +46,7 @@
                     <nhs-radio-buttons asp-for="ApplyToAll"
                                        values="@Model.ApplyToAllOptions.Cast<object>()"
                                        value-name="Value"
-                                       display-name="Text" 
+                                       display-name="Text"
                                        inline="true"/>
                 </nhs-fieldset-form-label>
             </div>

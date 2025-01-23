@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
             typeof(ServiceRecipientsController),
             nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
 
-            CommonActions.ClickFirstExpander();
+            CommonActions.ClickRecipientsExpander();
 
             if (multipleServiceRecipients == 0)
             {
