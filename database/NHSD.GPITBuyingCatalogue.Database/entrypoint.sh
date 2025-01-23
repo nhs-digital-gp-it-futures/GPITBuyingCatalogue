@@ -23,6 +23,8 @@ fi
 /sqlpackage/sqlpackage \
     /Action:publish \
     /SourceFile:NHSD.GPITBuyingCatalogue.Database.dacpac \
+    /TargetTrustServerCertificate:True \
+    /TargetEncryptConnection:False \
     /TargetServerName:$DB_SERVER,$PORT \
     /TargetDatabaseName:$DB_NAME \
     /TargetUser:$SA_USERNAME \
