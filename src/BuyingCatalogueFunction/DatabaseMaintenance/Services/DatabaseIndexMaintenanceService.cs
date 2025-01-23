@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using BuyingCatalogueFunction.DatabaseMaintenance.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 
 namespace BuyingCatalogueFunction.DatabaseMaintenance.Services;
 
+[ExcludeFromCodeCoverage(Justification = "Executes stored procedure")]
 public class DatabaseIndexMaintenanceService(
     BuyingCatalogueDbContext dbContext,
     ILogger<DatabaseIndexMaintenanceService> logger) : IDatabaseIndexMaintenanceService
