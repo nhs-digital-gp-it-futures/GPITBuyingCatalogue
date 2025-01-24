@@ -47,7 +47,7 @@
         else
         {
             <form method="post">
-                <input type="hidden" asp-for="@Model.MaxumimTermUpperLimit" />
+                <input type="hidden" asp-for="@Model.MaximumTermUpperLimit" />
                 <input type="hidden" asp-for="@Model.BackLink" />
                 <input type="hidden" asp-for="@Model.BackLinkText" />
 
@@ -70,7 +70,7 @@
                 <div class="nhsuk-u-margin-bottom-9">
                     <nhs-bookended-input asp-for="@Model.MaximumTerm"
                                          label-text="What is the Call-off Agreement duration (in months)?"
-                                         label-hint="This is the maximum length of time the Call-off Agreement can run for and begins on the date the first of your ordered items starts being used. It includes the initial period and cannot exceed @Model.MaxumimTermUpperLimit months."
+                                         label-hint="This is the maximum length of time the Call-off Agreement can run for and begins on the date the first of your ordered items starts being used. It includes the initial period and cannot exceed @Model.MaximumTermUpperLimit months."
                                          Suffix="months" />
                 </div>
 
