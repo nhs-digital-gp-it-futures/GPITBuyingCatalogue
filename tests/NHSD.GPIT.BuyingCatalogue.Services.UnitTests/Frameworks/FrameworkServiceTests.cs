@@ -207,7 +207,7 @@ public static class FrameworkServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task<ArgumentNullException> EditFramework_NullName_ThrowsException(
+    public static async Task EditFramework_NullName_ThrowsException(
         FrameworkService service,
         List<EntityFramework.Catalogue.Models.Framework> frameworks,
         [Frozen] BuyingCatalogueDbContext dbContext)
@@ -219,7 +219,8 @@ public static class FrameworkServiceTests
 
         dbContext.ChangeTracker.Clear();
 
-        return await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>(), 0));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => service.UpdateFramework(id, null, Enumerable.Empty<FundingType>(), 0));
+
     }
 
     [Theory]
