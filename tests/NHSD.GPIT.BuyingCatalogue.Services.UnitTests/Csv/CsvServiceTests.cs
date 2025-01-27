@@ -50,10 +50,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Buyer verification date (M2)",
             "Cease Date",
             "Framework",
-            "Initial Term",
-            "Contract Length (Months)",
             "Pricing Type",
             "Tiered Array",
+            "Initial Term",
+            "Contract Length (Months)",
         };
 
         private static IEnumerable<string> MergerFields => new[]
@@ -82,10 +82,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Buyer verification date (M2)",
             "Cease Date",
             "Framework",
-            "Initial Term",
-            "Contract Length (Months)",
             "Pricing Type",
             "Tiered Array",
+            "Initial Term",
+            "Contract Length (Months)",
         };
 
         private static IEnumerable<string> SplitFields => new[]
@@ -114,10 +114,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Buyer verification date (M2)",
             "Cease Date",
             "Framework",
-            "Initial Term",
-            "Contract Length (Months)",
             "Pricing Type",
             "Tiered Array",
+            "Initial Term",
+            "Contract Length (Months)",
         };
 
         [Fact]
