@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             CommencementDateModel model,
             CommencementDateModelValidator validator)
         {
-            model.MaxumimTermUpperLimit = 36;
+            model.MaximumTermUpperLimit = 36;
             model.MaximumTerm = "37";
 
             var result = validator.TestValidate(model);
@@ -175,13 +175,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
         [MockInlineAutoData(2, 1)]
         [MockInlineAutoData(2, 2)]
         public static void Validate_InvalidMaximumTerm_ThrowsValidationError(
-            string initialPeriod,
-            string maximumTerm,
+            int? initialPeriod,
+            int? maximumTerm,
             CommencementDateModel model,
             CommencementDateModelValidator validator)
         {
-            model.InitialPeriod = initialPeriod;
-            model.MaximumTerm = maximumTerm;
+            model.MaximumTermUpperLimit = maximumTerm.GetValueOrDefault() + 1;
+            model.InitialPeriod = initialPeriod.ToString();
+            model.MaximumTerm = maximumTerm.ToString();
 
             var result = validator.TestValidate(model);
 
@@ -196,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Validators
             CommencementDateModelValidator validator)
         {
             var validDate = DateTime.UtcNow.AddDays(20).Date;
-            model.MaxumimTermUpperLimit = 24;
+            model.MaximumTermUpperLimit = 24;
 
             model.Day = validDate.Day.ToString();
             model.Month = validDate.Month.ToString();

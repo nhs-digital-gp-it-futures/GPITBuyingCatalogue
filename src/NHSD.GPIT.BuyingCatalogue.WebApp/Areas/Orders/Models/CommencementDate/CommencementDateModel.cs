@@ -17,12 +17,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.CommencementDate
             IsAmendment = order.IsAmendment;
             InitialPeriod = $"{order.InitialPeriod}";
             MaximumTerm = $"{order.MaximumTerm}";
-            MaxumimTermUpperLimit = maximumTermUpperLimit;
+            MaximumTermUpperLimit = maximumTermUpperLimit;
 
             SetDateFields(order.CommencementDate);
         }
 
-        public int MaxumimTermUpperLimit { get; set; }
+        public int MaximumTermUpperLimit { get; set; }
 
         public string InternalOrgId { get; set; }
 

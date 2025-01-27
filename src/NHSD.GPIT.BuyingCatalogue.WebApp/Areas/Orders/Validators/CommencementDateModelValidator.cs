@@ -35,13 +35,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators
             RuleFor(x => x.MaximumTerm)
                 .IsNumericAndNonZero("maximum term")
                 .Must((model, _) => MaximumTermLessThanOrEqualToMaximum(model))
-                .WithMessage(model => string.Format(MaximumTermTooHighErrorMessage, model.MaxumimTermUpperLimit))
+                .WithMessage(model => string.Format(MaximumTermTooHighErrorMessage, model.MaximumTermUpperLimit))
                 .Must((model, _) => MaximumTermGreaterThanInitialPeriod(model))
                 .WithMessage(DurationInvalidErrorMessage);
         }
 
         private static bool MaximumTermLessThanOrEqualToMaximum(CommencementDateModel model)
-            => model.MaximumTermValue <= model.MaxumimTermUpperLimit;
+            => model.MaximumTermValue <= model.MaximumTermUpperLimit;
 
         private static bool MaximumTermGreaterThanInitialPeriod(CommencementDateModel model)
             => model.MaximumTermValue > model.InitialPeriodValue;

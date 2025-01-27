@@ -156,7 +156,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 order.AddedOrderRecipients(null).Select(r => r.OdsCode),
                 Enumerable.Empty<ServiceRecipientModel>().ToList(),
                 new string[] { },
-
                 selectionMode)
             { SelectAtLeast = atLeast };
 
