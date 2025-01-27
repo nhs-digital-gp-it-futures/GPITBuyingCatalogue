@@ -7,8 +7,14 @@ resource "azurerm_storage_account" "storage_account" {
   account_kind             = "StorageV2"
   account_replication_type = "GRS"
 
-  min_tls_version               = "TLS1_2"
-  https_traffic_only_enabled    = true
+  min_tls_version            = "TLS1_2"
+  https_traffic_only_enabled = true
+
+  network_rules {
+    default_action             = "Deny"
+    ip_rules                   = var.ip_rules
+    virtual_network_subnet_ids = var.subnet_ids
+  }
 
   tags = {
     environment  = var.environment,
