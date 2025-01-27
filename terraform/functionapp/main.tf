@@ -27,6 +27,34 @@ resource "azurerm_resource_group" "function_app_rg" {
   location = var.region
 }
 
+resource "azurerm_virtual_network" "function_app_vnet" {
+  name                = "${local.project_environment}-fa-vnet"
+  location            = var.region
+  resource_group_name = azurerm_resource_group.function_app_rg.name
+  address_space       = ["10.0.0.0/22"]
+
+  tags = {
+    environment = var.environment
+  }
+}
+
+resource "azurerm_subnet" "function_app_subnet" {
+  name                 = "default"
+  virtual_network_name = azurerm_virtual_network.function_app_vnet.name
+  resource_group_name  = azurerm_resource_group.function_app_rg.name
+  address_prefixes     = ["10.0.0.0/24"]
+  service_endpoints    = ["Microsoft.Storage"]
+  
+  delegation {
+    name = "functionapp-delegation"
+
+    service_delegation {
+      name = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
+}
+
 resource "azurerm_service_plan" "function_app_plan" {
   name                = "${local.project_environment}-functionapp-service-plan"
   location            = azurerm_resource_group.function_app_rg.location
@@ -41,6 +69,12 @@ resource "azurerm_storage_account" "function_app_storage" {
   resource_group_name      = azurerm_resource_group.function_app_rg.name
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  network_rules {
+    default_action             = "Deny"
+    ip_rules                   = [split("/", var.primary_vpn)[0]]
+    virtual_network_subnet_ids = [azurerm_subnet.function_app_subnet.id, data.azurerm_subnet.default-subnet.id]
+  }
 }
 
 resource "azurerm_storage_container" "function_app_container" {
@@ -60,7 +94,8 @@ resource "azurerm_storage_queue" "complete_email_queue" {
 }
 
 resource "azurerm_windows_function_app" "function_app" {
-  name = "${local.project_environment}-functionapp"
+  name                      = "${local.project_environment}-functionapp"
+  virtual_network_subnet_id = azurerm_subnet.function_app_subnet.id
 
   app_settings = {
     APPLICATIONINSIGHTS_CONNECTION_STRING = data.azurerm_application_insights.app_insights.connection_string
@@ -108,7 +143,7 @@ resource "azurerm_windows_function_app" "function_app" {
     }
 
     scm_ip_restriction {
-      action = "Allow"
+      action                    = "Allow"
       virtual_network_subnet_id = data.azurerm_subnet.default-subnet.id
     }
   }
