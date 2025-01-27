@@ -208,7 +208,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
         [Fact]
         [Trait("ManageUsers", "Users")]
-        public void AddNewOranisatinBuyerUser()
+        public void AddNewOrganisationBuyerUser()
         {
             AdminPages.AdminDashboard.ManageAllUsers();
 
@@ -228,7 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
         [Fact]
         [Trait("ManageSupplier", "Suppliers")]
-        public void AddNewOranisatinSupplier()
+        public void AddNewOrganisationSupplier()
         {
             AdminPages.AdminDashboard.ManageSupplier();
 

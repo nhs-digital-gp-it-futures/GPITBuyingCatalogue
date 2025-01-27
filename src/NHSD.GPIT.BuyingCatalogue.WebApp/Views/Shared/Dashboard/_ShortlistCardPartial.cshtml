@@ -2,6 +2,10 @@
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Dashboard.DashboardCardBaseModel<NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models.Filter>
 
+@{
+    const int maxShortlistsPerSolution = 10;
+}
+
 <nhs-card-v2>
     <nhs-card-content centre-alignment="@(!Model.HasItems)">
         @if (Model.HasItems)
@@ -11,7 +15,7 @@
                 <div class="header-with-detail">
                     <h3 class="nhsuk-heading-m">Total number of shortlists (@Model.NumberOfItems)</h3>
                 </div>
-                @if (Model.NumberOfItems < 10)
+                @if (Model.NumberOfItems < maxShortlistsPerSolution)
                 {
                     <div class="detail">
                         <a class="nhsuk-button nhsuk-u-margin-bottom-2" href="@Url.Action(
@@ -28,7 +32,7 @@
                     </div>
                 }
 
-                <p class="nhsuk-body-s nhsuk-u-margin-top-3" style="width: 80%">You can save a maximum of 10 shortlists for use by your organisation.<br />To delete a filter, use the relevant view link in the table.</p>
+                <p class="nhsuk-body-s nhsuk-u-margin-top-3" style="width: 80%">You can save a maximum of @maxShortlistsPerSolution shortlists for use by your organisation.<br />To delete a filter, use the relevant view link in the table.</p>
 
                 <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible nhsuk-u-padding-bottom-0 nhsuk-u-margin-bottom-0">
             }

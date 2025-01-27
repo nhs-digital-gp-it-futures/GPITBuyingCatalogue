@@ -67,13 +67,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
 
             services.AddFluentValidation();
 
-            services.AddApplicationInsightsTelemetry();
-
             services.ConfigureDbContexts(Configuration);
 
             if (!IsE2ETestEnvironment())
             {
                 services.ConfigureSession(Configuration);
+                services.AddApplicationInsightsTelemetry();
             }
 
             services.ConfigureIdentity(Configuration);
