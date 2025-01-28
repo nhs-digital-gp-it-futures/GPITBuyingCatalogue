@@ -41,7 +41,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.TieredArray).Index(25).Name(GetName(nameof(MergerOrderCsvModel.TieredArray)));
             Map(o => o.InitialTerm).Index(26).Name(GetName(nameof(MergerOrderCsvModel.InitialTerm)));
             Map(o => o.MaximumTerm).Index(27).Name(GetName(nameof(MergerOrderCsvModel.MaximumTerm)));
-
         }
     }
 }
