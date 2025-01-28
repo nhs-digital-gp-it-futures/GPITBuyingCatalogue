@@ -62,6 +62,10 @@ variable "dns_subscription_id" {
   type = string
 }
 
+variable "infrastructure_subscription_id" {
+  type = string
+}
+
 variable "notify_api_key" {
   type = string
 }

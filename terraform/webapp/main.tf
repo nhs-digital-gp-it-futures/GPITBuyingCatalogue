@@ -30,3 +30,10 @@ provider "azurerm" {
   features {
   }
 }
+
+provider "azurerm" {
+  alias = "infrastructure"
+  subscription_id = var.infrastructure_subscription_id
+  features {
+  }
+}
