@@ -30,10 +30,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             new(nameof(FullOrderCsvModel.VerficationDate), "Buyer verification date (M2)"),
             new(nameof(FullOrderCsvModel.CeaseDate), "Cease Date"),
             new(nameof(FullOrderCsvModel.Framework), "Framework"),
-            new(nameof(FullOrderCsvModel.InitialTerm), "Initial Term"),
-            new(nameof(FullOrderCsvModel.MaximumTerm), "Contract Length (Months)"),
             new(nameof(FullOrderCsvModel.PricingType), "Pricing Type"),
             new(nameof(FullOrderCsvModel.TieredArray), "Tiered Array"),
+            new(nameof(FullOrderCsvModel.InitialTerm), "Initial Term"),
+            new(nameof(FullOrderCsvModel.MaximumTerm), "Contract Length (Months)"),
         };
 
         public FullOrderCsvModelMap()
@@ -63,10 +63,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.VerficationDate).Index(21).Name(GetName(nameof(FullOrderCsvModel.VerficationDate)));
             Map(o => o.CeaseDate).Index(22).Name(GetName(nameof(FullOrderCsvModel.CeaseDate)));
             Map(o => o.Framework).Index(23).Name(GetName(nameof(FullOrderCsvModel.Framework)));
-            Map(o => o.InitialTerm).Index(24).Name(GetName(nameof(FullOrderCsvModel.InitialTerm)));
-            Map(o => o.MaximumTerm).Index(25).Name(GetName(nameof(FullOrderCsvModel.MaximumTerm)));
-            Map(o => o.PricingType).Index(26).Name(GetName(nameof(FullOrderCsvModel.PricingType)));
-            Map(o => o.TieredArray).Index(27).Name(GetName(nameof(FullOrderCsvModel.TieredArray)));
+            Map(o => o.PricingType).Index(24).Name(GetName(nameof(FullOrderCsvModel.PricingType)));
+            Map(o => o.TieredArray).Index(25).Name(GetName(nameof(FullOrderCsvModel.TieredArray)));
+            Map(o => o.InitialTerm).Index(26).Name(GetName(nameof(FullOrderCsvModel.InitialTerm)));
+            Map(o => o.MaximumTerm).Index(27).Name(GetName(nameof(FullOrderCsvModel.MaximumTerm)));
         }
     }
 }

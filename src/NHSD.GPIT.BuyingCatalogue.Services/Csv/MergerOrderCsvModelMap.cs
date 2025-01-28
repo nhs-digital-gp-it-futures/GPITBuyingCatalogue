@@ -37,10 +37,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.VerficationDate).Index(21).Name(GetName(nameof(MergerOrderCsvModel.VerficationDate)));
             Map(o => o.CeaseDate).Index(22).Name(GetName(nameof(MergerOrderCsvModel.CeaseDate)));
             Map(o => o.Framework).Index(23).Name(GetName(nameof(MergerOrderCsvModel.Framework)));
-            Map(o => o.InitialTerm).Index(24).Name(GetName(nameof(MergerOrderCsvModel.InitialTerm)));
-            Map(o => o.MaximumTerm).Index(25).Name(GetName(nameof(MergerOrderCsvModel.MaximumTerm)));
-            Map(o => o.PricingType).Index(26).Name(GetName(nameof(MergerOrderCsvModel.PricingType)));
-            Map(o => o.TieredArray).Index(27).Name(GetName(nameof(MergerOrderCsvModel.TieredArray)));
+            Map(o => o.PricingType).Index(24).Name(GetName(nameof(MergerOrderCsvModel.PricingType)));
+            Map(o => o.TieredArray).Index(25).Name(GetName(nameof(MergerOrderCsvModel.TieredArray)));
+            Map(o => o.InitialTerm).Index(26).Name(GetName(nameof(MergerOrderCsvModel.InitialTerm)));
+            Map(o => o.MaximumTerm).Index(27).Name(GetName(nameof(MergerOrderCsvModel.MaximumTerm)));
         }
     }
 }
