@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Integrations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
@@ -119,6 +120,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             var actual = (await controller.AddIm1Integration(catalogueItemId)).As<BadRequestObjectResult>();
 
             actual.Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_AddIm1Integration_InvalidModel_RedirectsToManageCatalogueSolution(
+            CatalogueItemId catalogueItemId,
+            AddEditIm1IntegrationModel model,
+            List<IntegrationType> integrationTypes,
+            [Frozen] IIntegrationsService mockIntegrationsService,
+            InteroperabilityController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            mockIntegrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.Im1)
+                .Returns(integrationTypes);
+
+            var actual = (await controller.AddIm1Integration(catalogueItemId, model)).As<ViewResult>();
+            var actualModel = actual?.Model as AddEditIm1IntegrationModel;
+
+            Assert.NotNull(actual);
+            Assert.NotNull(actualModel);
+            Assert.Equal(model, actualModel);
+            Assert.Equivalent(integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList(), actualModel.IntegrationTypes);
         }
 
         [Theory]
@@ -248,6 +272,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
             actual.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo($"No integration found for Id: {integrationId}");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_EditIm1Integration_InvalidModel_RedirectsToManageCatalogueSolution(
+            CatalogueItemId catalogueItemId,
+            int integrationId,
+            AddEditIm1IntegrationModel model,
+            List<IntegrationType> integrationTypes,
+            [Frozen] IIntegrationsService mockIntegrationsService,
+            InteroperabilityController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            mockIntegrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.Im1)
+                .Returns(integrationTypes);
+
+            var actual = (await controller.EditIm1Integration(catalogueItemId, integrationId, model)).As<ViewResult>();
+            var actualModel = actual?.Model as AddEditIm1IntegrationModel;
+
+            Assert.NotNull(actual);
+            Assert.NotNull(actualModel);
+            Assert.Equal(model, actualModel);
+            Assert.Equivalent(integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList(), actualModel.IntegrationTypes);
         }
 
         [Theory]
@@ -445,6 +493,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [MockAutoData]
+        public static async Task Post_AddGpConnectIntegration_InvalidModel_RedirectsToManageCatalogueSolution(
+            CatalogueItemId catalogueItemId,
+            AddEditGpConnectIntegrationModel model,
+            List<IntegrationType> integrationTypes,
+            [Frozen] IIntegrationsService mockIntegrationsService,
+            InteroperabilityController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            mockIntegrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.GpConnect)
+                .Returns(integrationTypes);
+
+            var actual = (await controller.AddGpConnectIntegration(catalogueItemId, model)).As<ViewResult>();
+            var actualModel = actual?.Model as AddEditGpConnectIntegrationModel;
+
+            Assert.NotNull(actual);
+            Assert.NotNull(actualModel);
+            Assert.Equal(model, actualModel);
+            Assert.Equivalent(integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList(), actualModel.IntegrationTypes);
+        }
+
+        [Theory]
+        [MockAutoData]
         public static async Task Get_EditGpConnectIntegration_ValidId_ReturnsViewWithExpectedModel(
             Solution solution,
             List<IntegrationType> integrationTypes,
@@ -558,6 +629,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             actual.Should().NotBeNull();
             actual.Should().BeOfType<BadRequestObjectResult>();
             actual.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo($"No integration found for Id: {integrationId}");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task Post_EditGpConnectIntegration_InvalidModel_RedirectsToManageCatalogueSolution(
+            CatalogueItemId catalogueItemId,
+            int integrationId,
+            AddEditGpConnectIntegrationModel model,
+            List<IntegrationType> integrationTypes,
+            [Frozen] IIntegrationsService mockIntegrationsService,
+            InteroperabilityController controller)
+        {
+            controller.ModelState.AddModelError("some-key", "some-error");
+
+            mockIntegrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.GpConnect)
+                .Returns(integrationTypes);
+
+            var actual = (await controller.EditGpConnectIntegration(catalogueItemId, integrationId, model)).As<ViewResult>();
+            var actualModel = actual?.Model as AddEditGpConnectIntegrationModel;
+
+            Assert.NotNull(actual);
+            Assert.NotNull(actualModel);
+            Assert.Equal(model, actualModel);
+            Assert.Equivalent(integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList(), actualModel.IntegrationTypes);
         }
 
         [Theory]

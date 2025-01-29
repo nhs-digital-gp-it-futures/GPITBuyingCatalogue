@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var integrationTypes =
-                    await integrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.GpConnect);
+                    await integrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.Im1);
 
                 return View("AddEditIm1Integration", model.WithIntegrationTypes(integrationTypes));
             }
@@ -138,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 var integrationTypes =
-                    await integrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.GpConnect);
+                    await integrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.Im1);
 
                 return View("AddEditIm1Integration", model.WithIntegrationTypes(integrationTypes));
             }
