@@ -85,7 +85,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> AddIm1Integration(CatalogueItemId solutionId, AddEditIm1IntegrationModel model)
         {
             if (!ModelState.IsValid)
-                return View("AddEditIm1Integration", model);
+            {
+                var integrationTypes =
+                    await integrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.GpConnect);
+
+                return View("AddEditIm1Integration", model.WithIntegrationTypes(integrationTypes));
+            }
 
             var integration = new SolutionIntegration
             {
@@ -132,7 +137,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("AddEditIm1Integration", model);
+                var integrationTypes =
+                    await integrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.GpConnect);
+
+                return View("AddEditIm1Integration", model.WithIntegrationTypes(integrationTypes));
             }
 
             var solution = await solutionsService.GetSolutionThin(solutionId);
@@ -228,7 +236,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> AddGpConnectIntegration(CatalogueItemId solutionId, AddEditGpConnectIntegrationModel model)
         {
             if (!ModelState.IsValid)
-                return View("AddEditGpConnectIntegration", model);
+            {
+                var integrationTypes =
+                    await integrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.GpConnect);
+
+                return View("AddEditGpConnectIntegration", model.WithIntegrationTypes(integrationTypes));
+            }
 
             var integration = new SolutionIntegration
             {
@@ -273,7 +286,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         public async Task<IActionResult> EditGpConnectIntegration(CatalogueItemId solutionId, int integrationId, AddEditGpConnectIntegrationModel model)
         {
             if (!ModelState.IsValid)
-                return View("AddEditGpConnectIntegration", model);
+            {
+                var integrationTypes =
+                    await integrationsService.GetIntegrationTypesByIntegration(SupportedIntegrations.GpConnect);
+
+                return View("AddEditGpConnectIntegration", model.WithIntegrationTypes(integrationTypes));
+            }
 
             var solution = await solutionsService.GetSolutionThin(solutionId);
 
