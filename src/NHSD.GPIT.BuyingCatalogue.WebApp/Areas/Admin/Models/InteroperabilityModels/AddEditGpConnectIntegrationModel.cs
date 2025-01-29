@@ -21,7 +21,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
         {
             SolutionName = solution.Name;
             SolutionId = solution.Id;
-            IntegrationTypes = integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList();
+
+            WithIntegrationTypes(integrationTypes);
         }
 
         public AddEditGpConnectIntegrationModel(
@@ -30,13 +31,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
             SolutionIntegration solutionIntegration)
             : this(solution, integrationTypes)
         {
-            IntegrationTypeId = solutionIntegration.IntegrationTypeId;
+            IntegrationId = solutionIntegration.Id;
             SelectedIntegrationType = solutionIntegration.IntegrationTypeId;
             IsConsumer = solutionIntegration.IsConsumer.GetValueOrDefault();
             AdditionalInformation = solutionIntegration.Description;
         }
 
-        public string SolutionName { get; }
+        public string SolutionName { get; set; }
 
         public List<SelectOption<string>> IntegrationTypes { get; set; }
 
@@ -53,8 +54,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.InteroperabilityMo
         [StringLength(1000)]
         public string AdditionalInformation { get; set; }
 
-        public CatalogueItemId SolutionId { get; init; }
+        public CatalogueItemId SolutionId { get; set; }
 
-        public int? IntegrationTypeId { get; set; }
+        public int? IntegrationId { get; set; }
+
+        public AddEditGpConnectIntegrationModel WithIntegrationTypes(IEnumerable<IntegrationType> integrationTypes)
+        {
+            IntegrationTypes = integrationTypes.Select(x => new SelectOption<string>(x.Name, x.Id.ToString())).ToList();
+
+            return this;
+        }
     }
 }
