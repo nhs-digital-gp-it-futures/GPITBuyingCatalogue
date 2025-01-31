@@ -9,15 +9,18 @@
         <div class="modal__overlay" tabindex="-1">
             <div class="modal__container" aria-modal="true" aria-labelledby="@title">
                 <header class="modal__header">
+                    <div>
                     <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="@title">
                         @Model.Title
                     </h2>
-                    <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-0" value="cancel">
-                        Close
-                    </button>
                     <p class="nhsuk-body">
                         @Model.Advice
                     </p>
+                    </div>
+
+                    <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-0" value="cancel">
+                        Close
+                    </button>
                 </header>
                 <main class="modal__content" id="@($"{Model.Id}-content")">
                     <div>
