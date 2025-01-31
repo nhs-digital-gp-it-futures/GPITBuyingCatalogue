@@ -18,6 +18,8 @@ mono_crash.*
 
 .idea/*
 **.idea/*
+**/.idea
+
 
 # Build results
 [Dd]ebug/
@@ -361,6 +363,7 @@ MigrationBackup/
 
 # Generated js files
 **/wwwroot/js/*.js
+**/wwwroot/js/*.min.js
 **/wwwroot/ts/*.js
 **/wwwroot/**/*.js.map
 **/wwwroot/**/*.min.js
