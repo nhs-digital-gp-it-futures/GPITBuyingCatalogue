@@ -15,11 +15,11 @@
                     <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-0" value="cancel">
                         Close
                     </button>
-                </header>
-                <main class="modal__content" id="@($"{Model.Id}-content")">
                     <p class="nhsuk-body">
                         @Model.Advice
                     </p>
+                </header>
+                <main class="modal__content" id="@($"{Model.Id}-content")">
                     <div>
                         <div class="app-search__contents">
                             <label class="c-search__label visually-hidden" for="@filter">@Model.Placeholder</label>
