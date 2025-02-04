@@ -18,6 +18,7 @@ resource "azurerm_linux_web_app" "webapp" {
   service_plan_id                                = azurerm_service_plan.webapp_sp.id
   ftp_publish_basic_authentication_enabled       = false
   webdeploy_publish_basic_authentication_enabled = false
+  virtual_network_subnet_id                      = var.backend_subnet_id
 
   app_settings = {
     # Main Settings
@@ -97,7 +98,6 @@ resource "azurerm_linux_web_app" "webapp" {
 
   lifecycle {
     ignore_changes = [
-      virtual_network_subnet_id,
       site_config[0].scm_minimum_tls_version,
       site_config[0].ftps_state,
       site_config[0].application_stack[0].docker_image_name,
