@@ -124,3 +124,7 @@ variable "recaptcha_site_key" {
 variable "recaptcha_secret_key" {
   type = string
 }
+
+variable "backend_subnet_id" {
+  type = string
+}
