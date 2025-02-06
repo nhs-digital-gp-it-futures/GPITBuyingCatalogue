@@ -1,0 +1,11 @@
+﻿IF '$(WEB_USER_ID)' IS NOT NULL AND '$(WEB_USER_ID)' <> ''
+BEGIN
+    DECLARE @security_id VARBINARY(16) = CAST(CAST('$(WEB_USER_ID)' AS UNIQUEIDENTIFIER) AS VARBINARY(16))
+
+    DROP USER IF EXISTS [BC-Web-App];
+
+    DECLARE @cmd NVARCHAR(MAX) = 'CREATE USER [BC-Web-App] WITH DEFAULT_SCHEMA=[dbo], SID = ' + CONVERT(VARCHAR(MAX), @security_id, 1) + ', TYPE = E;';
+    EXEC (@cmd);
+
+    ALTER ROLE [BuyingCatalogue] ADD MEMBER [BC-Web-App];
+END

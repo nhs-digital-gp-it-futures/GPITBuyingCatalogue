@@ -99,6 +99,11 @@
       <DefaultValue>True</DefaultValue>
       <Value>$(SqlCmdVar__11)</Value>
     </SqlCmdVariable>
+    <SqlCmdVariable Include="WEB_USER_ID">
+      <DefaultValue>
+      </DefaultValue>
+      <Value>$(SqlCmdVar__12)</Value>
+    </SqlCmdVariable>
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
