@@ -29,10 +29,13 @@ class modalSearchConfig {
             this.dialog.showModal();
         });
 
+        document.addEventListener("keypress", (event) => this.enterKeyEventListener(event))
+
         this.dialog.addEventListener('close', () => {
             if (this.dialog.returnValue === 'apply') { applyCallback() }
             if (shouldClearSearch) { this.clearSearch() }
             if (shouldClearSelection) { this.clearSelection() }
+            document.removeEventListener('keypress', (event) => this.enterKeyEventListener(event))
         });
 
         this.searchInput.addEventListener("input", () => this.tableSearch());
@@ -85,4 +88,11 @@ class modalSearchConfig {
             (item as HTMLInputElement).checked = false;
         });
     }
+
+    enterKeyEventListener(event: KeyboardEvent) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+        }
+    }
+
 }
