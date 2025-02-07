@@ -38,8 +38,8 @@
                                 <partial name="@Model.TablePartialView" model="@Model.TableData" />
                             }
                         </div>
-                        <div id="@($"{Model.Id}-no-records-found")" style="display: none;">
-                            <p class="nhsuk-body-m nhsuk-u-margin-top-3">@Model.NotFoundText</p>
+                        <div aria-live="assertive">
+                            <p id="@($"{Model.Id}-no-records-found")" class="nhsuk-body-m nhsuk-u-margin-top-3" style="display: none;">@Model.NotFoundText</p>
                         </div>
                     </div>
                 </main>

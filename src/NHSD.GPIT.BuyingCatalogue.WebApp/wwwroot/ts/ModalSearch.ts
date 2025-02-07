@@ -38,7 +38,7 @@ class modalSearchConfig {
             document.removeEventListener('keypress', (event) => this.enterKeyEventListener(event))
         });
 
-        this.searchInput.addEventListener("input", () => this.tableSearch());
+        this.searchInput.addEventListener("input", this.debounce(() => this.tableSearch(), 300));
     }
 
     tableSearch() {
@@ -93,6 +93,14 @@ class modalSearchConfig {
         if (event.key === "Enter") {
             event.preventDefault();
         }
+    }
+
+    debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
     }
 
 }
