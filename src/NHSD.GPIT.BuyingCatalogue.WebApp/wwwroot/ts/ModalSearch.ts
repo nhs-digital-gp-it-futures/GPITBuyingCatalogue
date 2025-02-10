@@ -6,6 +6,8 @@ class ModalSearchConfig {
     searchInput: HTMLInputElement;
     applyCallback: () => void;
     dialogId: string;
+    debounceTime: number = 300;
+
     constructor(dialogId: string,
         showDialogButtonId: string,
         applyCallback: () => void,
@@ -21,10 +23,10 @@ class ModalSearchConfig {
         this.recordsFound = document.getElementById(dialogId + "-records-found");
         this.notFoundText = notFoundText;
 
-        this.showDialogButton.addEventListener("click", async (event: Event) => {
+        this.showDialogButton.addEventListener("click", async () => {
             if (tableContent != null) {
-                var content = await tableContent();
-                var tableContainer = document.getElementById(this.dialogId + "-search-table");
+                const content = await tableContent();
+                const tableContainer = document.getElementById(this.dialogId + "-search-table");
                 tableContainer.innerHTML = content;
             }
 
@@ -40,14 +42,14 @@ class ModalSearchConfig {
             document.removeEventListener('keypress', (event) => this.enterKeyEventListener(event))
         });
 
-        this.searchInput.addEventListener("input", this.debounce(() => this.tableSearch(), 300));
+        this.searchInput.addEventListener("input", this.debounce(this.tableSearch, this.debounceTime));
     }
 
     tableSearch() {
-        var searchTerm = this.searchInput.value.toLowerCase();
-        var tableContainer = document.getElementById(this.dialogId + "-search-table");
-        var table = tableContainer.getElementsByTagName("table")[0];
-        var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+        const searchTerm = this.searchInput.value.toLowerCase();
+        const tableContainer = document.getElementById(this.dialogId + "-search-table");
+        const table = tableContainer.getElementsByTagName("table")[0];
+        const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
 
         let matches = 0;
 
@@ -87,8 +89,8 @@ class ModalSearchConfig {
     }
 
     clearSelection() {
-        var checkedboxes = document.querySelectorAll('.modal-checkbox:checked');
-        checkedboxes.forEach(function (item) {
+        let checkedBoxes = document.querySelectorAll('.modal-checkbox:checked');
+        checkedBoxes.forEach(function (item) {
             (item as HTMLInputElement).checked = false;
         });
     }
@@ -99,11 +101,12 @@ class ModalSearchConfig {
         }
     }
 
-    debounce(func, delay) {
-        let timeout;
-        return function (...args) {
+    debounce(func: () => void, delay: number) {
+        let timeout: ReturnType<typeof setTimeout>;
+
+        return () => {
             clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
+            timeout = setTimeout(() => func.apply(this), delay);
         };
     }
 
