@@ -39,7 +39,7 @@
                             }
                         </div>
                         <div aria-live="assertive">
-                            <p id="@($"{Model.Id}-no-records-found")" class="nhsuk-body-m nhsuk-u-margin-top-3" style="display: none;">@Model.NotFoundText</p>
+                            <p id="@($"{Model.Id}-records-found")" class="nhsuk-body-m nhsuk-u-margin-top-3" style="display: none;"># results found</p>
                         </div>
                     </div>
                 </main>
@@ -58,11 +58,12 @@
 
 <script type="text/javascript" src="@Url.Content("~/js/ModalSearch.min.js")" asp-append-version="true"></script>
 <script type="text/javascript">
-    new modalSearchConfig(
+    new ModalSearchConfig(
         '@Model.Id',
         '@Model.ShowDialogButton',
     @Model.CallbackFunction,
     @(JsonSerializer.Serialize(Model.ClearSearch)),
     @(JsonSerializer.Serialize(Model.ClearSelection)),
-    @(!string.IsNullOrWhiteSpace(Model.TableContentFunction) ? Model.TableContentFunction : "null"));
+    @(!string.IsNullOrWhiteSpace(Model.TableContentFunction) ? Model.TableContentFunction : "null"),
+    '@Model.NotFoundText');
 </script>

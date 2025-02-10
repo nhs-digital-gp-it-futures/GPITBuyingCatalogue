@@ -1,5 +1,6 @@
-class modalSearchConfig {
-    noRecordsFound: HTMLElement;
+class ModalSearchConfig {
+    recordsFound: HTMLElement;
+    notFoundText: string;
     dialog: HTMLDialogElement;
     showDialogButton: HTMLElement;
     searchInput: HTMLInputElement;
@@ -10,20 +11,21 @@ class modalSearchConfig {
         applyCallback: () => void,
         shouldClearSearch: boolean,
         shouldClearSelection: boolean,
-        tableContent: () => Promise<string>) {
+        tableContent: () => Promise<string>,
+        notFoundText: string) {
         this.dialogId = dialogId;
         this.dialog = document.getElementById(dialogId) as HTMLDialogElement;
         this.showDialogButton = document.getElementById(showDialogButtonId);
         this.applyCallback = applyCallback;
         this.searchInput = document.getElementById(dialogId + "-filter-term") as HTMLInputElement;
-        this.noRecordsFound = document.getElementById(dialogId + "-no-records-found");
+        this.recordsFound = document.getElementById(dialogId + "-records-found");
+        this.notFoundText = notFoundText;
 
         this.showDialogButton.addEventListener("click", async (event: Event) => {
             if (tableContent != null) {
                 var content = await tableContent();
                 var tableContainer = document.getElementById(this.dialogId + "-search-table");
                 tableContainer.innerHTML = content;
-                this.noRecordsFound.style.display = "none";
             }
 
             this.dialog.showModal();
@@ -47,7 +49,7 @@ class modalSearchConfig {
         var table = tableContainer.getElementsByTagName("table")[0];
         var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
 
-        let hasMatch = false;
+        let matches = 0;
 
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
@@ -64,16 +66,18 @@ class modalSearchConfig {
 
             if (rowMatch) {
                 row.style.display = "";
-                hasMatch = true;
+                matches++;
             } else {
                 row.style.display = "none";
             }
         }
 
-        if (hasMatch) {
-            this.noRecordsFound.style.display = "none";
+        this.recordsFound.style.display = "block";
+
+        if (matches > 0) {
+            this.recordsFound.innerText = `${matches} ${matches === 1 ? 'result' : 'results'} found`;
         } else {
-            this.noRecordsFound.style.display = "block";
+            this.recordsFound.innerText = this.notFoundText;
         }
     }
 
