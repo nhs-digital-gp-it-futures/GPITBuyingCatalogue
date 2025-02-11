@@ -18,11 +18,9 @@
                 }
 
                 <nhs-table-row-container>
-                    <nhs-table-cell>
-                        <strong>
-                            @capability.Name
-                        </strong>
-                    </nhs-table-cell>
+                    <nhs-table-row-header-cell>
+                        @capability.Name
+                    </nhs-table-row-header-cell>
                 </nhs-table-row-container>
 
                 @foreach (var epic in epics)

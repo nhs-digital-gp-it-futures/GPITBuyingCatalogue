@@ -55,6 +55,12 @@ class ModalSearchConfig {
 
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
+
+            let isHeader = row.getElementsByTagName("th").length !== 0;
+            if(isHeader) {
+                continue;
+            }
+
             const columns = row.getElementsByTagName("td");
             let rowMatch = false;
 

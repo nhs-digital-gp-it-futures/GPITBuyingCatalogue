@@ -12,11 +12,9 @@
                 <input type="hidden" asp-for="@Model.CapabilityGroups[i].Name" />
 
                 <nhs-table-row-container>
-                    <nhs-table-cell>
-                        <strong>
+                    <nhs-table-row-header-cell>
                             @category.Name
-                        </strong>
-                    </nhs-table-cell>
+                    </nhs-table-row-header-cell>
                 </nhs-table-row-container>
                 @foreach (var capability in capabilities)
                 {
