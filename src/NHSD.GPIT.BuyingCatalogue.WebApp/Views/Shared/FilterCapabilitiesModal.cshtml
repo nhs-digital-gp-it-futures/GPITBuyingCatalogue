@@ -13,24 +13,24 @@
 
                 <nhs-table-row-container>
                     <nhs-table-row-header-cell>
-                            @category.Name
+                        <span sub-group="@category.Name" style="">@category.Name</span>
                     </nhs-table-row-header-cell>
                 </nhs-table-row-container>
-                @foreach (var capability in capabilities)
-                {
-                    <nhs-table-row-container>
-                        <nhs-table-cell>
-                            <nhs-checkbox-container>
-                                <nhs-checkbox asp-for="CapabilitySelectionItems[index].Selected"
-                                              hidden-input="CapabilitySelectionItems[index].Id"
-                                              label-text="@capability"
-                                              sub-group="@category.Name" `
-                                              checkbox-class="modal-checkbox" />
-                            </nhs-checkbox-container>
-                        </nhs-table-cell>
-                    </nhs-table-row-container>
-                    index++;
-                }
+                        @foreach (var capability in capabilities)
+                        {
+                            <nhs-table-row-container>
+                                <nhs-table-cell>
+                                    <nhs-checkbox-container>
+                                        <nhs-checkbox asp-for="CapabilitySelectionItems[index].Selected"
+                                                      hidden-input="CapabilitySelectionItems[index].Id"
+                                                      label-text="@capability"
+                                                      sub-group="@category.Name" `
+                                                      checkbox-class="modal-checkbox" />
+                                    </nhs-checkbox-container>
+                                </nhs-table-cell>
+                            </nhs-table-row-container>
+                            index++;
+                        }
             }
         }
     </nhs-table>

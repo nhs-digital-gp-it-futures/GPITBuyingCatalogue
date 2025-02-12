@@ -87,6 +87,26 @@ class ModalSearchConfig {
         } else {
             this.recordsFound.innerText = this.notFoundText;
         }
+
+        let subGroups = document.querySelectorAll('[sub-group]')
+
+        subGroups.forEach( element =>{
+                let workingGroup = element.getAttribute("sub-group");
+                console.log("Working group", workingGroup)
+
+                let groups = document.querySelectorAll(`[sub-group=${workingGroup}]`)
+                console.log("groups", groups)
+
+                if (groups.length !== 1){
+                    document.getElementById(element.id).style.display = "none";
+                } else {
+                    groups.forEach( elementInGroup => {
+                        console.log("element in group", elementInGroup)
+                        document.getElementById(elementInGroup.id).style.display = "";
+                    })
+                }
+            }
+        )
     }
 
     clearSearch() {
