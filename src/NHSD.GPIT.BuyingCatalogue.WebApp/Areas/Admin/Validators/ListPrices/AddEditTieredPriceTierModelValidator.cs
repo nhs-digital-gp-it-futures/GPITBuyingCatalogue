@@ -8,6 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
     public class AddEditTieredPriceTierModelValidator : AbstractValidator<AddEditTieredPriceTierModel>
     {
         internal const string LowerRangeMissing = "Enter a lower range";
+        internal const string LowerRangeGreaterThanZero = "Lower range must be greater than zero";
         internal const string UpperRangeMissing = "Enter an upper range";
         internal const string RangeTypeMissing = "Select how you want to define the upper range";
         internal const string DuplicateListPriceTierError = "A tier with these details already exists";
@@ -23,7 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
 
             RuleFor(m => m.LowerRange)
                 .NotNull()
-                .WithMessage(LowerRangeMissing);
+                .WithMessage(LowerRangeMissing)
+                .GreaterThan(0)
+                .WithMessage(LowerRangeGreaterThanZero);
 
             RuleFor(m => m.UpperRange)
                 .NotNull()
