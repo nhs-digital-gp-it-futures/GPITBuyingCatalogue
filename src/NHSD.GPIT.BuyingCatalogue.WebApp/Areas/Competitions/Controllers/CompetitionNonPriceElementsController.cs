@@ -316,7 +316,6 @@ public class CompetitionNonPriceElementsController(
         return GetRedirect(internalOrgId, competitionId, returnUrl);
     }
 
-    [CriteriaReviewedGuardFilter]
     [HttpGet("weights")]
     public async Task<IActionResult> Weights(
         string internalOrgId,
