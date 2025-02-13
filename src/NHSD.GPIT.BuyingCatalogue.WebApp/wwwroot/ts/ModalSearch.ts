@@ -87,6 +87,10 @@ class ModalSearchConfig {
             this.recordsFound.innerText = this.notFoundText;
         }
 
+        this.hideEmptyHeaders();
+    }
+
+    hideEmptyHeaders = () => {
         let allSubGroupElements = document.querySelectorAll('[subgroup]')
 
         let subGroupSet: Array<string> = [];
@@ -98,17 +102,16 @@ class ModalSearchConfig {
             }
         })
 
-        subGroupSet.forEach(subGroupName =>{
+        subGroupSet.forEach(subGroupName => {
                 let elementsInSubgroup = document.querySelectorAll(`[subgroup=${subGroupName}]`);
 
-                let visibleElementsInSubgroup = Array.from(elementsInSubgroup).filter((el) =>
-                {
+                let visibleElementsInSubgroup = Array.from(elementsInSubgroup).filter((el) => {
                     return el.checkVisibility({checkVisibilityCSS: true});
                 });
 
                 console.log("Visible elements in subgroup", visibleElementsInSubgroup);
 
-                if (visibleElementsInSubgroup.length === 1){
+                if (visibleElementsInSubgroup.length === 1) {
                     console.log("Only one visible element in group", subGroupName)
 
                     let freshElement = document.getElementById(visibleElementsInSubgroup[0].id)
