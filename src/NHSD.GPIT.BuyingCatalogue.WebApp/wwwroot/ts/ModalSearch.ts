@@ -57,9 +57,6 @@ class ModalSearchConfig {
             const row = rows[i];
 
             let isHeader = row.getElementsByTagName("th").length !== 0;
-            if(isHeader) {
-                continue;
-            }
 
             const columns = row.getElementsByTagName("td");
             let rowMatch = false;
@@ -76,7 +73,9 @@ class ModalSearchConfig {
                 row.style.display = "";
                 matches++;
             } else {
-                row.style.display = "none";
+                if(!isHeader) {
+                    row.style.display = "none";
+                }
             }
         }
 
@@ -88,21 +87,37 @@ class ModalSearchConfig {
             this.recordsFound.innerText = this.notFoundText;
         }
 
-        let subGroups = document.querySelectorAll('[sub-group]')
+        let allSubGroupElements = document.querySelectorAll('[subgroup]')
 
-        subGroups.forEach( element =>{
-                let workingGroup = element.getAttribute("sub-group");
-                console.log("Working group", workingGroup)
+        let subGroupSet: Array<string> = [];
 
-                let groups = document.querySelectorAll(`[sub-group=${workingGroup}]`)
-                console.log("groups", groups)
+        allSubGroupElements.forEach(element => {
+            let elementSubgroup = element.getAttribute("subgroup");
+            if (!subGroupSet.includes(elementSubgroup)) {
+                subGroupSet.push(elementSubgroup);
+            }
+        })
 
-                if (groups.length !== 1){
-                    document.getElementById(element.id).style.display = "none";
+        subGroupSet.forEach(subGroupName =>{
+                let elementsInSubgroup = document.querySelectorAll(`[subgroup=${subGroupName}]`);
+
+                let visibleElementsInSubgroup = Array.from(elementsInSubgroup).filter((el) =>
+                {
+                    return el.checkVisibility({checkVisibilityCSS: true});
+                });
+
+                console.log("Visible elements in subgroup", visibleElementsInSubgroup);
+
+                if (visibleElementsInSubgroup.length === 1){
+                    console.log("Only one visible element in group", subGroupName)
+
+                    let freshElement = document.getElementById(visibleElementsInSubgroup[0].id)
+                    console.log("freshElement", freshElement)
+                    freshElement.parentElement.parentElement.style.display = "none";
                 } else {
-                    groups.forEach( elementInGroup => {
-                        console.log("element in group", elementInGroup)
-                        document.getElementById(elementInGroup.id).style.display = "";
+                    console.log("More than one visible element in group", subGroupName)
+                    elementsInSubgroup.forEach(el => {
+                        document.getElementById(el.id).parentElement.parentElement.style.display = "";
                     })
                 }
             }

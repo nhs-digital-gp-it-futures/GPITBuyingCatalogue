@@ -13,7 +13,7 @@
 
                 <nhs-table-row-container>
                     <nhs-table-row-header-cell>
-                        <span sub-group="@category.Name" style="">@category.Name</span>
+                        <span id="category-header-{@category.Name.Replace(" ", string.Empty)}" subgroup="@category.Name.Replace(" ", string.Empty)">@category.Name</span>
                     </nhs-table-row-header-cell>
                 </nhs-table-row-container>
                         @foreach (var capability in capabilities)
