@@ -103,25 +103,20 @@ class ModalSearchConfig {
         })
 
         subGroupSet.forEach(subGroupName => {
-                let elementsInSubgroup = document.querySelectorAll(`[subgroup=${subGroupName}]`);
+                let spanElementsInSubgroup = document.querySelectorAll(`span[subgroup=${subGroupName}]`);
 
-                let visibleElementsInSubgroup = Array.from(elementsInSubgroup).filter((el) => {
+                let inputElementsInSubgroup = document.querySelectorAll(`input[subgroup=${subGroupName}]`);
+
+                let visibleInputElementsInSubgroup = Array.from(inputElementsInSubgroup).filter((el) => {
                     return el.checkVisibility({checkVisibilityCSS: true});
                 });
 
-                console.log("Visible elements in subgroup", visibleElementsInSubgroup);
-
-                if (visibleElementsInSubgroup.length === 1) {
-                    console.log("Only one visible element in group", subGroupName)
-
-                    let freshElement = document.getElementById(visibleElementsInSubgroup[0].id)
-                    console.log("freshElement", freshElement)
+                if (visibleInputElementsInSubgroup.length === 0) {
+                    let freshElement = document.getElementById(spanElementsInSubgroup[0].id)
                     freshElement.parentElement.parentElement.style.display = "none";
                 } else {
-                    console.log("More than one visible element in group", subGroupName)
-                    elementsInSubgroup.forEach(el => {
-                        document.getElementById(el.id).parentElement.parentElement.style.display = "";
-                    })
+                    let freshElement = document.getElementById(spanElementsInSubgroup[0].id)
+                    freshElement.parentElement.parentElement.style.display = "";
                 }
             }
         )

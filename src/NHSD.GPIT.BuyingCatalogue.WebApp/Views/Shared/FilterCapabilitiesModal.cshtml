@@ -7,13 +7,15 @@
             var index = 0;
             foreach (var (category, i) in Model.CapabilityGroups.Select((value, i) => (value, i)))
             {
+                var formattedCategoryName = category.Name.ToLower().Replace(" ", string.Empty);
+
                 var capabilities = Model.Items(category.Id);
                 <input type="hidden" asp-for="@Model.CapabilityGroups[i].Id" />
                 <input type="hidden" asp-for="@Model.CapabilityGroups[i].Name" />
 
                 <nhs-table-row-container>
                     <nhs-table-row-header-cell>
-                        <span id="category-header-{@category.Name.Replace(" ", string.Empty)}" subgroup="@category.Name.Replace(" ", string.Empty)">@category.Name</span>
+                        <span id="category-header-@formattedCategoryName" subgroup="@formattedCategoryName">@category.Name</span>
                     </nhs-table-row-header-cell>
                 </nhs-table-row-container>
                         @foreach (var capability in capabilities)
@@ -24,7 +26,7 @@
                                         <nhs-checkbox asp-for="CapabilitySelectionItems[index].Selected"
                                                       hidden-input="CapabilitySelectionItems[index].Id"
                                                       label-text="@capability"
-                                                      sub-group="@category.Name" `
+                                                      sub-group="@formattedCategoryName" `
                                                       checkbox-class="modal-checkbox" />
                                     </nhs-checkbox-container>
                                 </nhs-table-cell>
