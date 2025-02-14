@@ -69,6 +69,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.List
 
         [Theory]
         [MockAutoData]
+        public static void Validate_LowerRangeEqualsZero_SetsModelError(
+            AddEditTieredPriceTierModel model,
+            AddEditTieredPriceTierModelValidator validator)
+        {
+            model.LowerRange = 0;
+            model.InputPrice = "3.14";
+
+            var result = validator.TestValidate(model);
+
+            result.ShouldHaveValidationErrorFor(m => m.LowerRange)
+                .WithErrorMessage(AddEditTieredPriceTierModelValidator.LowerRangeGreaterThanZero);
+        }
+
+        [Theory]
+        [MockAutoData]
         public static void Validate_UpperRangeMissing_SetsModelError(
             AddEditTieredPriceTierModel model,
             AddEditTieredPriceTierModelValidator validator)
