@@ -111,13 +111,9 @@ class ModalSearchConfig {
                     return el.checkVisibility({checkVisibilityCSS: true});
                 });
 
-                if (visibleInputElementsInSubgroup.length === 0) {
-                    let freshElement = document.getElementById(spanElementsInSubgroup[0].id)
-                    freshElement.parentElement.parentElement.style.display = "none";
-                } else {
-                    let freshElement = document.getElementById(spanElementsInSubgroup[0].id)
-                    freshElement.parentElement.parentElement.style.display = "";
-                }
+                let liveElement = document.getElementById(spanElementsInSubgroup[0].id)
+
+                liveElement.parentElement.parentElement.style.display = visibleInputElementsInSubgroup.length === 0 ? "none" : "";
             }
         )
     }
