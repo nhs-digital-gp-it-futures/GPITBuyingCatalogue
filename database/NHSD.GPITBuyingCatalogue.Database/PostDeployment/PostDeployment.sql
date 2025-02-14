@@ -1,4 +1,5 @@
-﻿:r ./InsertOrganisationTypes.sql
+﻿:r ./InfrastructureUsers.sql
+:r ./InsertOrganisationTypes.sql
 :r ./InsertRoles.sql
 
 :r ./OdsOrganisationsSeedData/InsertOdsOrganisations.sql
