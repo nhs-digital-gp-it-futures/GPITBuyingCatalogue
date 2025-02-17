@@ -4,35 +4,33 @@
     var title = $"{Model.Id}-title";
     var filter = $"{Model.Id}-filter-term";
 }
-<dialog class="modal modal-slide" id="@Model.Id" aria-hidden="true">
+<dialog class="modal modal-slide modal__container" id="@Model.Id">
     <form method="dialog">
         <div class="modal__overlay" tabindex="-1">
             <div class="modal__container" aria-modal="true" aria-labelledby="@title">
                 <header class="modal__header">
-                    <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="@title">
-                        @Model.Title
-                    </h2>
+                    <div>
+                        <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-0 nhsuk-u-margin-top-0" id="@title">
+                            @Model.Title
+                        </h2>
+                        <p class="nhsuk-body-m nhsuk-u-margin-bottom-0">
+                            @Model.Advice
+                        </p>
+                    </div>
+
                     <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-0" value="cancel">
                         Close
                     </button>
                 </header>
                 <main class="modal__content" id="@($"{Model.Id}-content")">
-                    <p class="nhsuk-body">
-                        @Model.Advice
-                    </p>
-                    <div>
-                        <div class="app-search__contents">
-                            <label class="c-search__label visually-hidden" for="@filter">@Model.Placeholder</label>
-                            <input class="app-search__input ui-autocomplete-input" id="@filter"
-                                   placeholder="@Model.Placeholder" autocomplete="off" name="query" type="search"
-                                   maxlength="50">
-
-                            <button type="button" class="app-search__submit" value="search">
-                                <vc:nhs-search-icon />
-                                <span class="nhsuk-u-visually-hidden">Search</span>
-                            </button>
-                        </div>
+                    <div class="app-search__contents">
+                        <label for="@filter" class="visually-hidden">@Model.Placeholder</label>
+                        <input class="app-search__input" id="@filter"
+                               autocomplete="off" name="query" type="search"
+                               placeholder="@Model.Placeholder"
+                               maxlength="50">
                     </div>
+
                     <div class="search-results-container">
                         <div id="@($"{Model.Id}-search-table")">
                             @if (!string.IsNullOrEmpty(Model.TablePartialView) && Model.TableData != null)
@@ -40,8 +38,8 @@
                                 <partial name="@Model.TablePartialView" model="@Model.TableData" />
                             }
                         </div>
-                        <div id="@($"{Model.Id}-no-records-found")" style="display: none;">
-                            <p class="nhsuk-body nhsuk-u-margin-top-3">@Model.NotFoundText</p>
+                        <div aria-live="assertive">
+                            <p id="@($"{Model.Id}-records-found")" class="nhsuk-body-m nhsuk-u-margin-top-3" style="display: none;"># results found</p>
                         </div>
                     </div>
                 </main>
@@ -60,11 +58,12 @@
 
 <script type="text/javascript" src="@Url.Content("~/js/ModalSearch.min.js")" asp-append-version="true"></script>
 <script type="text/javascript">
-    new modalSearchConfig(
+    new ModalSearchConfig(
         '@Model.Id',
         '@Model.ShowDialogButton',
     @Model.CallbackFunction,
     @(JsonSerializer.Serialize(Model.ClearSearch)),
     @(JsonSerializer.Serialize(Model.ClearSelection)),
-    @(!string.IsNullOrWhiteSpace(Model.TableContentFunction) ? Model.TableContentFunction : "null"));
+    @(!string.IsNullOrWhiteSpace(Model.TableContentFunction) ? Model.TableContentFunction : "null"),
+    '@Model.NotFoundText');
 </script>

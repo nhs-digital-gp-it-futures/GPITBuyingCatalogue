@@ -8,6 +8,8 @@
             var index = 0;
             @foreach (var (capability, i) in Model.EpicGroups.Select((value, i) => (value, i)))
             {
+                var formattedCapabilityName = capability.Name.ToLower().Replace(" ", string.Empty);
+
                 <input type="hidden" asp-for="@Model.EpicGroups[i].Id" />
                 <input type="hidden" asp-for="@Model.EpicGroups[i].Name" />
                 var epics = Model.Items(capability.Id);
@@ -18,11 +20,9 @@
                 }
 
                 <nhs-table-row-container>
-                    <nhs-table-cell>
-                        <strong>
-                            @capability.Name
-                        </strong>
-                    </nhs-table-cell>
+                    <nhs-table-row-header-cell>
+                        <span id="category-header-@formattedCapabilityName" subgroup="@formattedCapabilityName">@capability.Name</span>
+                    </nhs-table-row-header-cell>
                 </nhs-table-row-container>
 
                 @foreach (var epic in epics)
@@ -33,7 +33,7 @@
                                 <nhs-checkbox asp-for="EpicSelectionItems[index].Selected"
                                               hidden-input="EpicSelectionItems[index].Id"
                                               label-text="@epic.Name"
-                                              sub-group="@capability.Name"
+                                              sub-group="@formattedCapabilityName"
                                               checkbox-class="modal-checkbox" />
                             </nhs-checkbox-container>
                         </nhs-table-cell>
