@@ -98,11 +98,11 @@
     <nhs-fieldset label-text="Capabilities" size="ExtraSmall">
         <nhs-submit-button style="width:100%"
                            form="filters"
-                           text="Select Capabilities"
+                           text="Filter Capabilities"
                            class="nhsuk-button--secondary non-js-only nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3"
                            formaction="@Url.Action(nameof(SolutionsController.SelectCapabilities), typeof(SolutionsController).ControllerName())" />
         <button id="select-capabilities-button" class="nhsuk-button nhsuk-button--secondary nhsuk-button--js-only  nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3" style="width:100%">
-            Select Capabilities
+            Filter Capabilities
         </button>
         <br />
         <span>
@@ -122,11 +122,11 @@
         <nhs-submit-button style="width:100%"
                            form="filters"
                            disabled="@(Model.CapabilitiesCount==0)"
-                           text="Select Epics"
+                           text="Filter Epics"
                            class="nhsuk-button--secondary non-js-only nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3"
                            formaction="@Url.Action(nameof(SolutionsController.SelectEpics), typeof(SolutionsController).ControllerName())" />
         <button id="select-epics-button" disabled="@(Model.CapabilitiesCount==0)" class="nhsuk-button nhsuk-button--secondary nhsuk-button--js-only  nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3" style="width:100%">
-            Select Epics
+            Filter Epics
         </button>
         <br />
         <span>
