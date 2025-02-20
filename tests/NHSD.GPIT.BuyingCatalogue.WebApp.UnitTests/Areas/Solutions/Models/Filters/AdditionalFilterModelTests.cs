@@ -32,5 +32,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             model.CapabilitiesCount.Should().Be(filters.GetCapabilityAndEpicIds().Count);
             model.EpicsCount.Should().Be(filters.GetCapabilityAndEpicIds().Values.Sum(v => v.Length));
         }
+
+        [Theory]
+        [MockAutoData]
+        public static void GetIntegrationIds_Accepts_Inner_Selections(
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
+            RequestedFilters filters,
+            List<Integration> integrations,
+            List<IntegrationType> integrationTypes)
+        {
+            integrations.ForEach(x => x.IntegrationTypes = integrationTypes);
+
+            var model = new AdditionalFiltersModel(frameworks, filters, integrations);
+
+            var manualSelectedIntegrations = "";
+
+            RequestedFilters newFilters = filters with { SelectedIntegrations = manualSelectedIntegrations };
+
+            model.IntegrationOptions.ForEach(x => x.Selected = false);
+
+            var expectedCount = filters.GetIntegrationsAndTypes().Count();
+
+            var actualCount = model.GetIntegrationIds().Length;
+
+            actualCount.Should().Be(expectedCount);
+        }
     }
 }
