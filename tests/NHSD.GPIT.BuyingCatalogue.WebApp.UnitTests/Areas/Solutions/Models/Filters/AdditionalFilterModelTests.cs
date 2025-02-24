@@ -43,15 +43,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
         {
             integrations.ForEach(x => x.IntegrationTypes = integrationTypes);
 
-            var model = new AdditionalFiltersModel(frameworks, filters, integrations);
-
-            var manualSelectedIntegrations = "";
+            var manualSelectedIntegrations = "2.3|";
 
             RequestedFilters newFilters = filters with { SelectedIntegrations = manualSelectedIntegrations };
 
+            var model = new AdditionalFiltersModel(frameworks, newFilters, integrations);
+
             model.IntegrationOptions.ForEach(x => x.Selected = false);
 
-            var expectedCount = filters.GetIntegrationsAndTypes().Count();
+            var expectedCount = newFilters.GetIntegrationsAndTypes().Count();
 
             var actualCount = model.GetIntegrationIds().Length;
 
