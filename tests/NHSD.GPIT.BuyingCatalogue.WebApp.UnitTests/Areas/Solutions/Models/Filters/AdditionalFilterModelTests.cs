@@ -48,17 +48,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             IntegrationType selectedIntegrationType = selectedIntegration.IntegrationTypes.First();
 
             var integrationSelectionString = $"{selectedIntegration.Id}.{selectedIntegrationType.Id}|";
-
             RequestedFilters newFilters = filters with { SelectedIntegrations = integrationSelectionString };
+
             var model = new AdditionalFiltersModel(frameworks, newFilters, integrations);
             model.IntegrationOptions.ForEach(x => x.Selected = false);
 
-            var expectedIntegrationSelectionString =
-                $"{(int)selectedIntegration.Id}.{selectedIntegrationType.Id}|"; // output is int instead of enum name
+            var expectedSelectionIds =
+                $"{(int)selectedIntegration.Id}.{selectedIntegrationType.Id}|"; // output is enum value instead of enum name
 
-            var actualIds = model.GetIntegrationIds();
+            var actualSelectionIds = model.GetIntegrationIds();
 
-            Assert.Equal(expectedIntegrationSelectionString, actualIds);
+            Assert.Equal(expectedSelectionIds, actualSelectionIds);
         }
     }
 }
