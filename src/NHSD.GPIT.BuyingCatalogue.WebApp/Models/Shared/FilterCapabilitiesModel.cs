@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared
 
         public static readonly PageTitleModel FilterPageTitle = new()
         {
-            Title = "Select Capabilities",
+            Title = "Filter Capabilities",
             Advice = "Select Capabilities and apply them as a filter.",
         };
 
