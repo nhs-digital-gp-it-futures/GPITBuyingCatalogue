@@ -41,21 +41,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             List<Integration> integrations,
             List<IntegrationType> integrationTypes)
         {
-            integrations.ForEach(x => x.IntegrationTypes = integrationTypes);
+            integrations.ForEach(
+                x => x.IntegrationTypes = integrationTypes.Where(y => y.IntegrationId == x.Id).ToList());
 
-            var manualSelectedIntegrations = "2.3|";
+            Integration selectedIntegration = integrations[1];
+            IntegrationType selectedIntegrationType = selectedIntegration.IntegrationTypes.First();
 
-            RequestedFilters newFilters = filters with { SelectedIntegrations = manualSelectedIntegrations };
+            var integrationSelectionString = $"{selectedIntegration.Id}.{selectedIntegrationType.Id}|";
 
+            RequestedFilters newFilters = filters with { SelectedIntegrations = integrationSelectionString };
             var model = new AdditionalFiltersModel(frameworks, newFilters, integrations);
-
             model.IntegrationOptions.ForEach(x => x.Selected = false);
 
-            var expectedCount = newFilters.GetIntegrationsAndTypes().Count();
+            var expectedIntegrationSelectionString =
+                $"{(int)selectedIntegration.Id}.{selectedIntegrationType.Id}|"; // output is int instead of enum name
 
-            var actualCount = model.GetIntegrationIds().Length;
+            var actualIds = model.GetIntegrationIds();
 
-            actualCount.Should().Be(expectedCount);
+            Assert.Equal(expectedIntegrationSelectionString, actualIds);
         }
     }
 }
