@@ -8,6 +8,7 @@
 
     var dataProcessingInfoUrl = Url.Action(nameof(DataProcessingInformationController.AddOrEditDataProcessingInformation), typeof(DataProcessingInformationController).ControllerName(), new { solutionId = Model.Solution.CatalogueItemId });
     var dataProtectionOfficerUrl = Url.Action(nameof(DataProcessingInformationController.AddOrEditDataProtectionOfficer), typeof(DataProcessingInformationController).ControllerName(), new { solutionId = Model.Solution.CatalogueItemId });
+    var addSubProcessorUrl = Url.Action(action: nameof(DataProcessingInformationController.AddSubProcessor), controller: typeof(DataProcessingInformationController).ControllerName(), values: new { area = typeof(DataProcessingInformationController).AreaName(), solutionId = Model.Solution.CatalogueItemId });
 }
 
 <partial name="Partials/_BackLink" model="@Model"/>
@@ -66,11 +67,7 @@
                 }
                 else
                 {
-                    <p class="nhsuk-body-m">
-                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@dataProcessingInfoUrl">
-                            <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>Add data processing information
-                        </a>
-                    </p>
+                    <vc:add-a-new-item href="@dataProcessingInfoUrl" text="Add data processing information"/>
                 }
             </nhs-card-footer>
         </nhs-card-v2>
@@ -114,11 +111,7 @@
                 }
                 else
                 {
-                    <p class="nhsuk-body-m">
-                        <a class="nhsuk-link nhsuk-link--no-visited-state" href="@dataProtectionOfficerUrl">
-                            <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>Add data protection officer details
-                        </a>
-                    </p>
+                    <vc:add-a-new-item href="@dataProtectionOfficerUrl" text="Add data protection officer details" />
                 }
             </nhs-card-footer>
         </nhs-card-v2>
@@ -157,14 +150,7 @@
                 }
             </nhs-card-content>
             <nhs-card-footer>
-                <p class="nhsuk-body-m">
-                    <a class="nhsuk-link nhsuk-link--no-visited-state" asp-action="@(nameof(DataProcessingInformationController.AddSubProcessor))"
-                       asp-controller="@(typeof(DataProcessingInformationController).ControllerName())"
-                       asp-area="@(typeof(DataProcessingInformationController).AreaName())"
-                       asp-route-solutionId="@Model.Solution.CatalogueItemId">
-                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>Add a sub-processor
-                    </a>
-                </p>
+                <vc:add-a-new-item href="@addSubProcessorUrl" text="Add a sub-processor"/>
             </nhs-card-footer>
         </nhs-card-v2>
 
