@@ -1,4 +1,5 @@
-﻿using System.Text.Encodings.Web;
+﻿using System.Collections.Generic;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
@@ -64,10 +65,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             var labelTextBuilder = GetLabelTextBuilder(shouldIncludeLink);
             var labelHint = GetLabelHintBuilder();
 
+            var ariaAttributes = new List<string>(2);
             if (labelHint is not null)
-                labelTextBuilder.MergeAttribute(TagHelperConstants.AriaDescribedBy, GetLabelHintId());
+                ariaAttributes.Add(GetLabelHintId());
 
-            labelTextBuilder.MergeAttribute(TagHelperConstants.AriaDescribedBy, GetStatusId());
+            ariaAttributes.Add(GetStatusId());
+
+            builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, string.Join(' ', ariaAttributes));
 
             builder.InnerHtml
                 .AppendHtml(labelTextBuilder)
@@ -131,7 +135,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
                     _ => "Completed",
                 },
             };
-
             var attributeList = new TagHelperAttributeList { new(TagHelperConstants.Id, GetStatusId()), };
 
             var nhsTagOutput = new TagHelperOutput(
