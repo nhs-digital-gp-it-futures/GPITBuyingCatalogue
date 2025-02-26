@@ -56,19 +56,7 @@
                 }
             </nhs-card-content>
             <nhs-card-footer>
-                @if (hasDataProcessing)
-                {
-                    <p>
-                        <a class="nhsuk-link--no-visited-state" href="@dataProcessingInfoUrl">
-                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                            Change data processing information
-                        </a>
-                    </p>
-                }
-                else
-                {
-                    <vc:add-or-change href="@dataProcessingInfoUrl" text="Add data processing information"/>
-                }
+                <vc:add-or-change href="@dataProcessingInfoUrl" noun-phrase="data processing information" is-change="hasDataProcessing" />
             </nhs-card-footer>
         </nhs-card-v2>
 
@@ -100,19 +88,7 @@
                 }
             </nhs-card-content>
             <nhs-card-footer>
-                @if (hasDataProtectionOfficer)
-                {
-                    <p>
-                        <a class="nhsuk-link--no-visited-state" href="@dataProtectionOfficerUrl">
-                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                            Change data protection officer details
-                        </a>
-                    </p>
-                }
-                else
-                {
-                    <vc:add-or-change href="@dataProtectionOfficerUrl" text="Add data protection officer details" />
-                }
+                <vc:add-or-change href="@dataProtectionOfficerUrl" noun-phrase="data protection officer details" is-change="hasDataProtectionOfficer" />
             </nhs-card-footer>
         </nhs-card-v2>
 
@@ -150,7 +126,7 @@
                 }
             </nhs-card-content>
             <nhs-card-footer>
-                <vc:add-or-change href="@addSubProcessorUrl" text="Add a sub-processor" />
+                <vc:add-or-change href="@addSubProcessorUrl" noun-phrase="a sub-processor" />
             </nhs-card-footer>
         </nhs-card-v2>
 

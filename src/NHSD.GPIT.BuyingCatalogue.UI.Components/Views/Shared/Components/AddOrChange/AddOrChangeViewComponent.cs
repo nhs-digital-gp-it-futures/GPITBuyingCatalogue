@@ -5,9 +5,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.AddOrC
 
 public sealed class AddOrChangeViewComponent : ViewComponent
 {
-    public async Task<IViewComponentResult> InvokeAsync(string href, bool isChange, string text)
+    public async Task<IViewComponentResult> InvokeAsync(string href, string nounPhrase, bool isChange = false)
     {
-        var model = new AddOrChangeModel { Href = href, IsChange = isChange, Text = text };
+        var model = new AddOrChangeModel { Href = href, NounPhrase = nounPhrase, IsChange = isChange };
 
         return await Task.FromResult(View("AddOrChange", model));
     }

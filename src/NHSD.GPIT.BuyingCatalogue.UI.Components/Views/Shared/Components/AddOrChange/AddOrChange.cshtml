@@ -1,11 +1,13 @@
 @model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.AddOrChange.AddOrChangeModel
 
 @{
-    var iconUrl = Model.IsChange ? "/images/plus-icon.svg" : "/images/fa-pen-to-square.svg";
+    var iconUrl = Model.IsChange ? "/images/fa-pen-to-square.svg" : "/images/plus-icon.svg";
+
+    var verb = Model.IsChange ? "Change" : "Add";
 }
 
 <a class="nhsuk-link nhsuk-link--no-visited-state nhsuk-u-font-size-19" 
 style='background-image: url(@iconUrl); background-repeat: no-repeat; background-size: 23px; background-position: center left; padding-left: 32px;' 
 href="@Model.Href">
-    @Model.Text
+    @verb @Model.NounPhrase
 </a>
