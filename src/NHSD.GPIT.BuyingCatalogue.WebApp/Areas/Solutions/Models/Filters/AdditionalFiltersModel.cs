@@ -96,9 +96,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.Filters
                 SortBy);
         }
 
-        public string GetIntegrationIds() => IntegrationOptions.Where(x => x.Selected)
-            .ToDictionary(x => x.Id, x => x.IntegrationTypes.Where(y => y.Selected).Select(y => y.Value).ToArray())
-            .ToFilterString();
+        public string GetIntegrationIds()
+        {
+            return IntegrationOptions.Where(x => x.Selected || x.IntegrationTypes.Any(y => y.Selected))
+                .ToDictionary(x => x.Id, x => x.IntegrationTypes.Where(y => y.Selected).Select(y => y.Value).ToArray())
+                .ToFilterString();
+        }
 
         private static List<SelectOption<int>> SetEnumOptions<T>(string selection)
             where T : struct, Enum, IConvertible

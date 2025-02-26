@@ -10,5 +10,5 @@ public class Integration
 
     public bool RequiresDescription => Id is SupportedIntegrations.NhsApp;
 
-    public ICollection<IntegrationType> IntegrationTypes { get; set;  } = new HashSet<IntegrationType>();
+    public ICollection<IntegrationType> IntegrationTypes { get; set; } = new HashSet<IntegrationType>();
 }
