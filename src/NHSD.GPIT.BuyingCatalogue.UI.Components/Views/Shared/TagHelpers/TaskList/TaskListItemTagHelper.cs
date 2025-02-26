@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers;
@@ -15,10 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
         private const string ItemStatusName = "status";
         private const string ItemUrlName = "url";
 
-        private const string ItemSpanNameClass = "bc-c-task-list__task-name";
-        private const string ItemListItemClasses = "bc-c-task-list__item nhsuk-u-padding-top-3 nhsuk-u-padding-bottom-3";
-        private const string TagHelperContainerClass = "bc-c-task-list__task-status";
-
         [HtmlAttributeName(TagHelperConstants.LabelTextName)]
         public string LabelText { get; set; }
 
@@ -33,50 +32,71 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
+            const string itemListItemClass = "nhsuk-task-list__item";
+            const string itemListItemLinkClass = "nhsuk-task-list__item--with-link";
+
             output.TagName = "li";
             output.TagMode = TagMode.StartTagAndEndTag;
 
-            output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, ItemListItemClasses));
+            output.AddClass(itemListItemClass, HtmlEncoder.Default);
 
-            var taskNameSpan = GetTaskNameSpanBuilder();
+            var shouldIncludeLink = !string.IsNullOrWhiteSpace(Url)
+                && (Status is not TaskProgress.CannotStart and not TaskProgress.NotApplicable);
 
-            if (Status is TaskProgress.CannotStart or TaskProgress.NotApplicable)
-            {
-                taskNameSpan.InnerHtml.Append(LabelText);
-            }
-            else
-            {
-                taskNameSpan.InnerHtml.AppendHtml(GetLabelAnchorBuilder());
-            }
+            if (shouldIncludeLink)
+                output.AddClass(itemListItemLinkClass, HtmlEncoder.Default);
+
+            var labelTextBuilder = GetTaskListItemBuilder(shouldIncludeLink);
 
             var statusTag = GetNhsTagBuilder(context);
-            var labelHint = GetLabelHintBuilder();
-            var breakRow = new TagBuilder("br") { TagRenderMode = TagRenderMode.SelfClosing };
-            breakRow.MergeAttribute("aria-hidden", "true");
 
             output.Content
-                .AppendHtml(taskNameSpan)
-                .AppendHtml(statusTag)
-                .AppendHtml(breakRow)
-                .AppendHtml(labelHint);
+                .AppendHtml(labelTextBuilder)
+                .AppendHtml(statusTag);
         }
 
-        private static TagBuilder GetTaskNameSpanBuilder()
+        private TagBuilder GetTaskListItemBuilder(bool shouldIncludeLink)
         {
-            var builder = new TagBuilder(TagHelperConstants.Span);
+            const string labelTextClassName = "nhsuk-task-list__name-and-hint";
+            var builder = new TagBuilder(TagHelperConstants.Div);
 
-            builder.AddCssClass(ItemSpanNameClass);
+            builder.AddCssClass(labelTextClassName);
+
+            var labelTextBuilder = GetLabelTextBuilder(shouldIncludeLink);
+            var labelHint = GetLabelHintBuilder();
+
+            var ariaAttributes = new List<string>(2);
+            if (labelHint is not null)
+                ariaAttributes.Add(GetLabelHintId());
+
+            ariaAttributes.Add(GetStatusId());
+
+            builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, string.Join(' ', ariaAttributes));
+
+            builder.InnerHtml
+                .AppendHtml(labelTextBuilder)
+                .AppendHtml(labelHint!);
 
             return builder;
         }
 
-        private TagBuilder GetLabelAnchorBuilder()
+        private TagBuilder GetLabelTextBuilder(bool shouldIncludeLink)
         {
-            var builder = new TagBuilder(TagHelperConstants.Anchor);
+            TagBuilder builder;
 
-            builder.MergeAttribute("href", Url);
+            if (shouldIncludeLink)
+            {
+                const string labelTextLinkClassName = "nhsuk-link nhsuk-task-list__link";
 
-            builder.MergeAttribute(TagHelperConstants.AriaDescribedBy, TagBuilder.CreateSanitizedId($"{LabelText}-status", "_"));
+                builder = new TagBuilder(TagHelperConstants.Anchor);
+                builder.AddCssClass(labelTextLinkClassName);
+
+                builder.MergeAttribute("href", Url);
+            }
+            else
+            {
+                builder = new TagBuilder(TagHelperConstants.Div);
+            }
 
             builder
                 .InnerHtml
@@ -87,9 +107,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
 
         private TagBuilder GetNhsTagBuilder(TagHelperContext context)
         {
+            const string statusClass = "nhsuk-task-list__status";
+
             var builder = new TagBuilder(TagHelperConstants.Div);
 
-            builder.AddCssClass(TagHelperContainerClass);
+            builder.AddCssClass(statusClass);
 
             var nhsTag = new NhsTagsTagHelper
             {
@@ -102,7 +124,6 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
                     TaskProgress.Amended => NhsTagsTagHelper.TagColour.Orange,
                     _ => NhsTagsTagHelper.TagColour.Grey,
                 },
-
                 TagText = Status switch
                 {
                     TaskProgress.NotApplicable => "Not applicable",
@@ -114,11 +135,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
                     _ => "Completed",
                 },
             };
-
-            var attributeList = new TagHelperAttributeList
-            {
-                new(TagHelperConstants.Id, TagBuilder.CreateSanitizedId($"{LabelText}-status", "_")),
-            };
+            var attributeList = new TagHelperAttributeList { new(TagHelperConstants.Id, GetStatusId()), };
 
             var nhsTagOutput = new TagHelperOutput(
                 string.Empty,
@@ -137,15 +154,23 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             if (string.IsNullOrWhiteSpace(LabelHint))
                 return null;
 
-            var builder = new TagBuilder(TagHelperConstants.Span);
+            var builder = new TagBuilder(TagHelperConstants.Div);
 
-            const string textColour = "color: #4c6272";
-            builder.MergeAttribute(TagHelperConstants.Style, textColour);
-            builder.AddCssClass("bc-c-task-list__task-hint");
+            const string labelHintClassName = "nhsuk-task-list__hint";
+
+            builder.MergeAttribute(TagHelperConstants.Id, GetLabelHintId());
+            builder.AddCssClass(labelHintClassName);
 
             builder.InnerHtml.Append(LabelHint);
 
             return builder;
         }
+
+        private string GetLabelHintId() => GetSanitizedId("hint");
+
+        private string GetStatusId() => GetSanitizedId("status");
+
+        private string GetSanitizedId(string component) =>
+            TagBuilder.CreateSanitizedId($"{LabelText}-{component}", "_");
     }
 }
