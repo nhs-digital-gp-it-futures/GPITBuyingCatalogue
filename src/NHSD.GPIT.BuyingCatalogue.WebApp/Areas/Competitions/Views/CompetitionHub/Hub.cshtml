@@ -65,11 +65,7 @@
                     <nhs-card-footer>
                         @if (Model.AssociatedServicesRemaining)
                         {
-                            <p class="nhsuk-body-m">
-                                <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Model.AssociatedServicesUrl">
-                                    <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/> Add Associated Services
-                                </a>
-                            </p>
+                            <vc:add-a-new-item href="@Model.AssociatedServicesUrl" text="Add Associated Services" />
                         }
                         else
                         {
