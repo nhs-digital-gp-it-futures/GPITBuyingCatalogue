@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
@@ -46,24 +45,29 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             if (shouldIncludeLink)
                 output.AddClass(itemListItemLinkClass, HtmlEncoder.Default);
 
-            var taskNameSpan = GetTaskNameBuilder(shouldIncludeLink);
+            var labelTextBuilder = GetTaskListItemBuilder(shouldIncludeLink);
 
             var statusTag = GetNhsTagBuilder(context);
 
             output.Content
-                .AppendHtml(taskNameSpan)
+                .AppendHtml(labelTextBuilder)
                 .AppendHtml(statusTag);
         }
 
-        private TagBuilder GetTaskNameBuilder(bool shouldIncludeLink)
+        private TagBuilder GetTaskListItemBuilder(bool shouldIncludeLink)
         {
-            const string itemSpanNameClass = "nhsuk-task-list__name-and-hint";
+            const string labelTextClassName = "nhsuk-task-list__name-and-hint";
             var builder = new TagBuilder(TagHelperConstants.Div);
 
-            builder.AddCssClass(itemSpanNameClass);
+            builder.AddCssClass(labelTextClassName);
 
+            var labelTextBuilder = GetLabelTextBuilder(shouldIncludeLink);
             var labelHint = GetLabelHintBuilder();
-            var labelTextBuilder = GetLabelBuilder(shouldIncludeLink, labelHint is not null);
+
+            if (labelHint is not null)
+                labelTextBuilder.MergeAttribute(TagHelperConstants.AriaDescribedBy, GetLabelHintId());
+
+            labelTextBuilder.MergeAttribute(TagHelperConstants.AriaDescribedBy, GetStatusId());
 
             builder.InnerHtml
                 .AppendHtml(labelTextBuilder)
@@ -72,37 +76,23 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
             return builder;
         }
 
-        private TagBuilder GetLabelBuilder(bool shouldIncludeLink, bool hasHint)
+        private TagBuilder GetLabelTextBuilder(bool shouldIncludeLink)
         {
-            var labelTextBuilder = shouldIncludeLink ? GetLabelAnchorBuilder() : GetLabelBuilder();
+            TagBuilder builder;
 
-            var describedByIds = new List<string>();
+            if (shouldIncludeLink)
+            {
+                const string labelTextLinkClassName = "nhsuk-link nhsuk-task-list__link";
 
-            if (hasHint)
-                describedByIds.Add(GetLabelHintId());
+                builder = new TagBuilder(TagHelperConstants.Anchor);
+                builder.AddCssClass(labelTextLinkClassName);
 
-            describedByIds.Add(GetStatusId());
-
-            labelTextBuilder.MergeAttribute(TagHelperConstants.AriaDescribedBy, string.Join(' ', describedByIds));
-
-            return labelTextBuilder;
-        }
-
-        private TagBuilder GetLabelBuilder()
-        {
-            var builder = new TagBuilder(TagHelperConstants.Div);
-
-            builder.InnerHtml.Append(LabelText);
-
-            return builder;
-        }
-
-        private TagBuilder GetLabelAnchorBuilder()
-        {
-            var builder = new TagBuilder(TagHelperConstants.Anchor);
-            builder.AddCssClass("nhsuk-link nhsuk-task-list__link");
-
-            builder.MergeAttribute("href", Url);
+                builder.MergeAttribute("href", Url);
+            }
+            else
+            {
+                builder = new TagBuilder(TagHelperConstants.Div);
+            }
 
             builder
                 .InnerHtml
@@ -163,10 +153,10 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.TaskLi
 
             var builder = new TagBuilder(TagHelperConstants.Div);
 
-            const string textColour = "color: #4c6272";
+            const string labelHintClassName = "nhsuk-task-list__hint";
+
             builder.MergeAttribute(TagHelperConstants.Id, GetLabelHintId());
-            builder.MergeAttribute(TagHelperConstants.Style, textColour);
-            builder.AddCssClass("nhsuk-task-list__hint");
+            builder.AddCssClass(labelHintClassName);
 
             builder.InnerHtml.Append(LabelHint);
 
