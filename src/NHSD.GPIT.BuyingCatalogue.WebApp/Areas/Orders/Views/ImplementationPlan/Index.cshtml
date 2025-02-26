@@ -4,6 +4,11 @@
 
 @{
     ViewBag.Title = "Implementation milestones and payment triggers";
+
+    var addABespokeMilestoneLink = Url.Action(
+        nameof(ImplementationPlanController.AddMilestone),
+        typeof(ImplementationPlanController).ControllerName(),
+        new { Model.InternalOrgId, Model.CallOffId });
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -43,14 +48,9 @@
                 }
             </nhs-card-content>
             <nhs-card-footer>
-                <p class="nhsuk-body-m">
-                    <a class="nhsuk-link--no-visited-state" href="@Url.Action(
-                                    nameof(ImplementationPlanController.AddMilestone),
-                                    typeof(ImplementationPlanController).ControllerName(),
-                                    new { Model.InternalOrgId, Model.CallOffId })">
-                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add a bespoke milestone
-                    </a>
-                </p>
+                
+                <vc:add-a-new-item href="@addABespokeMilestoneLink" text="Add a bespoke milestone"/>
+
             </nhs-card-footer>
         </nhs-card-v2>
 

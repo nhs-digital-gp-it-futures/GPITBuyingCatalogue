@@ -4,6 +4,11 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement.RequirementModel
 @{
     ViewBag.Title = "Associated Service requirements";
+
+    var addARequirementLink = Url.Action(
+        nameof(RequirementController.AddRequirement),
+        typeof(RequirementController).ControllerName(),
+        new { Model.InternalOrgId, Model.CallOffId });
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -36,14 +41,7 @@
                 }
             </nhs-card-content>
             <nhs-card-footer>
-                <p class="nhsuk-body-m">
-                    <a class="nhsuk-link--no-visited-state" href="@Url.Action(
-                                                                      nameof(RequirementController.AddRequirement),
-                                                                      typeof(RequirementController).ControllerName(),
-                                                                      new { Model.InternalOrgId, Model.CallOffId })">
-                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add a requirement
-                    </a>
-                </p>
+                <vc:add-a-new-item href="@addARequirementLink" text="Add a requirement"/>
             </nhs-card-footer>
         </nhs-card-v2>
 
