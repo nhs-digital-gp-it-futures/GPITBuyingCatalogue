@@ -4,6 +4,16 @@
 
 @{
     ViewBag.Title = Model.Title;
+
+    var addAdditionalServicesLink = Url.Action(
+        nameof(AdditionalServicesController.SelectAdditionalServices),
+        typeof(AdditionalServicesController).ControllerName(),
+        new { Model.InternalOrgId, Model.CallOffId });
+    
+    var addAssociatedServicesLink = Url.Action(
+        nameof(AssociatedServicesController.SelectAssociatedServices), 
+        typeof(AssociatedServicesController).ControllerName(), 
+        new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList});
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -78,14 +88,7 @@
                     <nhs-card-footer>
                         @if (Model.UnselectedAdditionalServicesAvailable)
                         {
-                            <p class="nhsuk-body-m">
-                                <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(
-                                        nameof(AdditionalServicesController.SelectAdditionalServices),
-                                        typeof(AdditionalServicesController).ControllerName(),
-                                        new { Model.InternalOrgId, Model.CallOffId })">
-                                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add Additional Services
-                                </a>
-                            </p>
+                            <vc:add-a-new-item href="@addAdditionalServicesLink" text="Add Additional Services" />
                         }
                         else
                         {
@@ -149,9 +152,7 @@
                     else
                     {
                         <vc:add-a-new-item 
-                            href="@Url.Action(nameof(AssociatedServicesController.SelectAssociatedServices), 
-                                              typeof(AssociatedServicesController).ControllerName(), 
-                                              new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList})" 
+                            href="@addAssociatedServicesLink" 
                             text="Add Associated Services" />
                     }
                 </nhs-card-footer>
