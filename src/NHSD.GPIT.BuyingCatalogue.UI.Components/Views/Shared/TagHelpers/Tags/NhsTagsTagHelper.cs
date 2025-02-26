@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 
             var spanTagBuilder = new TagBuilder(TagHelperConstants.Span);
             spanTagBuilder.AddCssClass(TagHelperConstants.NhsVisuallyHidden);
-            spanTagBuilder.InnerHtml.Append($"Status:");
+            spanTagBuilder.InnerHtml.Append("Status");
 
             output.Content
                 .AppendHtml(spanTagBuilder)
