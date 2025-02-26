@@ -88,7 +88,7 @@
                     <nhs-card-footer>
                         @if (Model.UnselectedAdditionalServicesAvailable)
                         {
-                            <vc:add-a-new-item href="@addAdditionalServicesLink" text="Add Additional Services" />
+                            <vc:add-or-change href="@addAdditionalServicesLink" text="Add Additional Services" />
                         }
                         else
                         {
@@ -151,7 +151,7 @@
                     }
                     else
                     {
-                        <vc:add-a-new-item 
+                        <vc:add-or-change 
                             href="@addAssociatedServicesLink" 
                             text="Add Associated Services" />
                     }
