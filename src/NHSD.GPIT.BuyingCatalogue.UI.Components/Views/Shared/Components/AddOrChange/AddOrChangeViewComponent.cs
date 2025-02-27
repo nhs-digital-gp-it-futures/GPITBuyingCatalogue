@@ -9,11 +9,16 @@ public sealed class AddOrChangeViewComponent : ViewComponent
         string href,
         string nounPhrase,
         bool isChange = false,
-        string customVerb = "")
+        string customVerb = "",
+        string testId = "")
     {
         var model = new AddOrChangeModel
         {
-            Href = href, NounPhrase = nounPhrase, IsChange = isChange, CustomVerb = customVerb,
+            Href = href,
+            NounPhrase = nounPhrase,
+            IsChange = isChange,
+            CustomVerb = customVerb,
+            TestId = testId,
         };
 
         return await Task.FromResult(View("AddOrChange", model));
