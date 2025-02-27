@@ -7,4 +7,6 @@ public sealed class AddOrChangeModel
     public string NounPhrase { get; set; }
 
     public bool IsChange { get; set; }
+
+    public string CustomVerb { get; set; }
 }

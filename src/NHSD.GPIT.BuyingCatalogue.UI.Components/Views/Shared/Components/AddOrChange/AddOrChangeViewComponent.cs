@@ -5,9 +5,16 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.AddOrC
 
 public sealed class AddOrChangeViewComponent : ViewComponent
 {
-    public async Task<IViewComponentResult> InvokeAsync(string href, string nounPhrase, bool isChange = false)
+    public async Task<IViewComponentResult> InvokeAsync(
+        string href,
+        string nounPhrase,
+        bool isChange = false,
+        string customVerb = "")
     {
-        var model = new AddOrChangeModel { Href = href, NounPhrase = nounPhrase, IsChange = isChange };
+        var model = new AddOrChangeModel
+        {
+            Href = href, NounPhrase = nounPhrase, IsChange = isChange, CustomVerb = customVerb,
+        };
 
         return await Task.FromResult(View("AddOrChange", model));
     }

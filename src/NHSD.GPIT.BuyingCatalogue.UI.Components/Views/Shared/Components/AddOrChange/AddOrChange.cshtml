@@ -1,9 +1,10 @@
+@using Microsoft.IdentityModel.Tokens
 @model NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.AddOrChange.AddOrChangeModel
 
 @{
     var iconUrl = Model.IsChange ? "/images/fa-pen-to-square.svg" : "/images/plus-icon.svg";
 
-    var verb = Model.IsChange ? "Change" : "Add";
+    var verb = Model.CustomVerb.IsNullOrEmpty() ? (Model.IsChange ? "Change" : "Add") : Model.CustomVerb;
 }
 
 <a class="nhsuk-link nhsuk-link--no-visited-state nhsuk-u-font-size-19" 
