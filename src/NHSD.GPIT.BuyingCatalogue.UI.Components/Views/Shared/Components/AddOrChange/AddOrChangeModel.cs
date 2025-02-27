@@ -2,11 +2,13 @@
 
 public sealed class AddOrChangeModel
 {
-    public string Href { get; set; }
+    public string Href { get; init; }
 
-    public string NounPhrase { get; set; }
+    public string NounPhrase { get; init; }
 
-    public bool IsChange { get; set; }
+    public bool IsChange { get; init; }
 
-    public string CustomVerb { get; set; }
+    public string CustomVerb { get; init; }
+
+    public string TestId { get; init; }
 }
