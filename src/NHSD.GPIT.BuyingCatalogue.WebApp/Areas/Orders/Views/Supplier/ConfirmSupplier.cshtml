@@ -3,6 +3,8 @@
 @{
     var pageTitle = Model.GetPageTitle();
     ViewBag.Title = pageTitle.Title;
+
+    var changeSupplier = Url.Action(nameof(SupplierController.SelectSupplier), typeof(SupplierController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId });
 }
 
 <div data-test-id="supplier-page">
@@ -42,10 +44,7 @@
                         }
                         else
                         {
-                            <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(SupplierController.SelectSupplier), typeof(SupplierController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                                Change supplier
-                            </a>
+                            <vc:add-or-change href="@changeSupplier" noun-phrase="supplier" is-change="true" />
                         }
                     </p>
                 </nhs-card-footer>

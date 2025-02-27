@@ -9,11 +9,13 @@
         nameof(AdditionalServicesController.SelectAdditionalServices),
         typeof(AdditionalServicesController).ControllerName(),
         new { Model.InternalOrgId, Model.CallOffId });
-    
+
     var addAssociatedServicesLink = Url.Action(
         nameof(AssociatedServicesController.SelectAssociatedServices), 
         typeof(AssociatedServicesController).ControllerName(), 
         new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList});
+
+    var changeCatalogueSolutionLink = Url.Action(nameof(CatalogueSolutionsController.EditSolution), typeof(CatalogueSolutionsController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId });
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -44,12 +46,7 @@
                     {
                         if (Model.AlternativeSolutionsAvailable)
                         {
-                            <p>
-                                <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(CatalogueSolutionsController.EditSolution), typeof(CatalogueSolutionsController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                                    Change Catalogue Solution
-                                </a>
-                            </p>
+                            <vc:add-or-change href="@changeCatalogueSolutionLink" noun-phrase="catalogue solution" is-change="true" />
                         }
                         else
                         {
