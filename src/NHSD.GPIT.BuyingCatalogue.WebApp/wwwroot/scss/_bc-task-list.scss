@@ -10,7 +10,7 @@
 }
 
 .bc-c-task-list__task {
-    @include nhsuk-font(32, $weight: bold);
+    @include nhsuk-font(36, $weight: bold);
 
     span{
         display: inline;
@@ -50,26 +50,6 @@
     border-top: 1px solid $govuk-border-colour;
 }
 
-.bc-c-task-list__task-name {
-    display: block;
-
-    @include govuk-media-query($from: 450px) {
-        float: left;
-    }
-}
-
-.bc-c-task-list__task-status {
-    margin-bottom: nhsuk-spacing(1);
-    margin-top: nhsuk-spacing(2);
-
-    @include govuk-media-query($from: 450px) {
-        float: right;
-        margin-bottom: 0;
-        margin-top: 0;
-    }
-}
-
-.bc-c-task-list__task-hint{
-    display: inline-block;
-    max-width:75%;
+.nhsuk-task-list__status{
+  white-space: nowrap;
 }

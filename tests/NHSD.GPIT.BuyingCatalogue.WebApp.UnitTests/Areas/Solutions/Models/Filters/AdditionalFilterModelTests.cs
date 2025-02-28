@@ -32,5 +32,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models.Filt
             model.CapabilitiesCount.Should().Be(filters.GetCapabilityAndEpicIds().Count);
             model.EpicsCount.Should().Be(filters.GetCapabilityAndEpicIds().Values.Sum(v => v.Length));
         }
+
+        [Theory]
+        [MockAutoData]
+        public static void GetIntegrationIds_Accepts_Inner_Selections(
+            List<EntityFramework.Catalogue.Models.Framework> frameworks,
+            RequestedFilters filters,
+            List<Integration> integrations,
+            List<IntegrationType> integrationTypes)
+        {
+            integrations.ForEach(
+                x => x.IntegrationTypes = integrationTypes.Where(y => y.IntegrationId == x.Id).ToList());
+
+            Integration selectedIntegration = integrations[1];
+            IntegrationType selectedIntegrationType = selectedIntegration.IntegrationTypes.First();
+
+            var integrationSelectionString = $"{selectedIntegration.Id}.{selectedIntegrationType.Id}|";
+            RequestedFilters newFilters = filters with { SelectedIntegrations = integrationSelectionString };
+
+            var model = new AdditionalFiltersModel(frameworks, newFilters, integrations);
+            model.IntegrationOptions.ForEach(x => x.Selected = false);
+
+            var expectedSelectionIds =
+                $"{(int)selectedIntegration.Id}.{selectedIntegrationType.Id}|"; // output is enum value instead of enum name
+
+            var actualSelectionIds = model.GetIntegrationIds();
+
+            Assert.Equal(expectedSelectionIds, actualSelectionIds);
+        }
     }
 }

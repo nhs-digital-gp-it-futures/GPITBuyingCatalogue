@@ -363,7 +363,6 @@ MigrationBackup/
 
 # Generated js files
 **/wwwroot/js/*.js
-**/wwwroot/js/*.min.js
 **/wwwroot/ts/*.js
 **/wwwroot/**/*.js.map
 **/wwwroot/**/*.min.js

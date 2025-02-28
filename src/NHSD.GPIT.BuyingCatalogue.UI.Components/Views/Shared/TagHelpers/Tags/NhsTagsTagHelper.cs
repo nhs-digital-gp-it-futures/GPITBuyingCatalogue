@@ -1,5 +1,6 @@
 ﻿using System;
 using EnumsNET;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -88,7 +89,13 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 
             output.Attributes.Add(new TagHelperAttribute(TagHelperConstants.Class, $"{NhsTagClass} {selectedColourClass}"));
 
-            output.Content.AppendHtml(TagText);
+            var spanTagBuilder = new TagBuilder(TagHelperConstants.Span);
+            spanTagBuilder.AddCssClass(TagHelperConstants.NhsVisuallyHidden);
+            spanTagBuilder.InnerHtml.Append("Status");
+
+            output.Content
+                .AppendHtml(spanTagBuilder)
+                .AppendHtml(TagText);
         }
 
         private static (TagColour SelectedColourClass, string TagText) GetAccountStatus(AccountStatus status)
