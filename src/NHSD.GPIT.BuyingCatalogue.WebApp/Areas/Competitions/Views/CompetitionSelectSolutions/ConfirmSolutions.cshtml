@@ -3,6 +3,9 @@
 
 @{
     ViewBag.TItle = "Confirm shortlisted solutions";
+
+    var changeShortlistedSolutionsLink = Url.Action(nameof(CompetitionSelectSolutionsController.SelectSolutions), typeof(CompetitionSelectSolutionsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId });
+    var changeJustificationsLink = Url.Action(nameof(CompetitionSelectSolutionsController.JustifySolutions), typeof(CompetitionSelectSolutionsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId });
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -48,10 +51,7 @@
                     </nhs-table>
                 </nhs-card-content>
                 <nhs-card-footer>
-                    <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionSelectSolutionsController.SelectSolutions), typeof(CompetitionSelectSolutionsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })">
-                        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                        Change shortlisted solutions
-                    </a>
+                    <vc:add-or-change href="@changeShortlistedSolutionsLink" noun-phrase="shortlisted solutions" is-change="true" />
                 </nhs-card-footer>
             </nhs-card-v2>
 
@@ -78,10 +78,7 @@
                         </nhs-table>
                     </nhs-card-content>
                     <nhs-card-footer>
-                        <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionSelectSolutionsController.JustifySolutions), typeof(CompetitionSelectSolutionsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId })">
-                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                            Change justifications
-                        </a>
+                        <vc:add-or-change href="@changeJustificationsLink" noun-phrase="justifications" is-change="true"/>
                     </nhs-card-footer>
                 </nhs-card-v2>
             }

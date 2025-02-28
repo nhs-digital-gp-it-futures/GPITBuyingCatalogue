@@ -4,6 +4,11 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ContractBilling.ContractBillingModel
 @{
     ViewBag.Title = "Associated Service milestones and payment triggers";
+
+    var addAMilestoneLink = Url.Action(
+        nameof(ContractBillingController.AddMilestone),
+        typeof(ContractBillingController).ControllerName(),
+        new { Model.InternalOrgId, Model.CallOffId });
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -29,16 +34,11 @@
                 <p>No bespoke milestones have been added to this order.</p>
             }
         </nhs-card-content>
-            <nhs-card-footer>
-                <p class="nhsuk-body-m">
-                    <a class="nhsuk-link--no-visited-state" href="@Url.Action(
-                                                                      nameof(ContractBillingController.AddMilestone),
-                                                                      typeof(ContractBillingController).ControllerName(),
-                                                                      new { Model.InternalOrgId, Model.CallOffId })">
-                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add a milestone
-                    </a>
-                </p>
-            </nhs-card-footer>
+        <nhs-card-footer>
+
+                <vc:add-or-change href="@addAMilestoneLink" noun-phrase="a milestone" />
+
+        </nhs-card-footer>
         </nhs-card-v2>
 
         <form method="post">

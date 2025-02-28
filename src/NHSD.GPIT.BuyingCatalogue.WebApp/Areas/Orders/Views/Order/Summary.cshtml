@@ -22,6 +22,9 @@
     var caption = Model.Order.OrderType.MergerOrSplit && associatedServices.Count == 1
         ? associatedServices.First().CatalogueItem.Name
         : $"{Model.Order.CallOffId}";
+
+    var editOrderDetailsLink = Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId });
+    var editMilestonesAndPaymentTriggersLink = Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId });
 }
 
 <div class="nhsuk-grid-row">
@@ -226,11 +229,7 @@
             @if (Model.Order.OrderStatus == OrderStatus.InProgress)
             {
                 <nhs-expander-footer>
-                    <p>
-                        <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit order details
-                        </a>
-                    </p>
+                    <vc:add-or-change href="@editOrderDetailsLink" noun-phrase="order details" is-change="true" custom-verb="Edit"/>
                 </nhs-expander-footer>
             }
         </nhs-expander-v2>
@@ -310,11 +309,7 @@
                     @if (Model.Order.OrderStatus == OrderStatus.InProgress)
                     {
                         <nhs-expander-footer>
-                            <p>
-                                <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit milestones and payment triggers
-                                </a>
-                            </p>
+                            <vc:add-or-change href="@editMilestonesAndPaymentTriggersLink" noun-phrase="milestones and payment triggers" is-change="true" custom-verb="Edit"/>
                         </nhs-expander-footer>
                     }
                 </nhs-expander-v2>
@@ -380,11 +375,7 @@
                     @if (Model.Order.OrderStatus == OrderStatus.InProgress)
                 {
                     <nhs-expander-footer>
-                        <p>
-                            <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit milestones and payment triggers
-                            </a>
-                        </p>
+                            <vc:add-or-change href="@editMilestonesAndPaymentTriggersLink" noun-phrase="milestones and payment triggers" is-change="true" custom-verb="Edit" />
                     </nhs-expander-footer>
                 }
                 </nhs-expander-v2>

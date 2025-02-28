@@ -3,6 +3,11 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier.SupplierModel;
 @{
     ViewBag.Title = Model.Title;
+
+    var addNewContactLink = Url.Action(
+        nameof(SupplierController.NewContact),
+        typeof(SupplierController).ControllerName(),
+        new { Model.InternalOrgId, Model.CallOffId });
 }
 
 <div data-test-id="supplier-page">
@@ -86,19 +91,11 @@
                         <p>
                             @if (Model.TemporaryContact is null)
                             {
-
-                                        <a class="nhsuk-link--no-visited-state" href="@Url.Action(
-                                                                                          nameof(SupplierController.NewContact),
-                                                                                          typeof(SupplierController).ControllerName(),
-                                                                                          new { Model.InternalOrgId, Model.CallOffId })">
-                                            <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />
-                                            Add a new contact
-                                        </a>
-                                   
+                                <vc:add-or-change href="@addNewContactLink" noun-phrase="a new contact" />
                             }
                             else
                             {
-                                <img src="~/images/circle-info-solid.svg" width="20px" aria-hidden="true"> <p>New contact has already been added.</p>
+                                <vc:inline-information text="New contact has already been added." />
                             }
                         </p>
                     </nhs-card-footer>

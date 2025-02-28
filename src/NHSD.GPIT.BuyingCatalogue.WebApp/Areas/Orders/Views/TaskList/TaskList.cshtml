@@ -4,6 +4,18 @@
 
 @{
     ViewBag.Title = Model.Title;
+
+    var addAdditionalServicesLink = Url.Action(
+        nameof(AdditionalServicesController.SelectAdditionalServices),
+        typeof(AdditionalServicesController).ControllerName(),
+        new { Model.InternalOrgId, Model.CallOffId });
+
+    var addAssociatedServicesLink = Url.Action(
+        nameof(AssociatedServicesController.SelectAssociatedServices), 
+        typeof(AssociatedServicesController).ControllerName(), 
+        new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList});
+
+    var changeCatalogueSolutionLink = Url.Action(nameof(CatalogueSolutionsController.EditSolution), typeof(CatalogueSolutionsController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId });
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -34,21 +46,16 @@
                     {
                         if (Model.AlternativeSolutionsAvailable)
                         {
-                            <p>
-                                <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(CatalogueSolutionsController.EditSolution), typeof(CatalogueSolutionsController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                                    Change Catalogue Solution
-                                </a>
-                            </p>
+                            <vc:add-or-change href="@changeCatalogueSolutionLink" noun-phrase="catalogue solution" is-change="true" />
                         }
                         else
                         {
-                            <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px"/><p>There is only 1 solution offered by this supplier.</p>
+                            <vc:inline-information text="There is only 1 solution offered by this supplier." />
                         }
                     }
                     else
                     {
-                        <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px"/><p>You cannot change your Catalogue Solution when amending an order.</p>
+                        <vc:inline-information text="You cannot change your Catalogue Solution when amending an order." />
                     }
                 </nhs-card-footer>
 
@@ -78,25 +85,18 @@
                     <nhs-card-footer>
                         @if (Model.UnselectedAdditionalServicesAvailable)
                         {
-                            <p class="nhsuk-body-m">
-                                <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(
-                                        nameof(AdditionalServicesController.SelectAdditionalServices),
-                                        typeof(AdditionalServicesController).ControllerName(),
-                                        new { Model.InternalOrgId, Model.CallOffId })">
-                                        <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add Additional Services
-                                </a>
-                            </p>
+                            <vc:add-or-change href="@addAdditionalServicesLink" noun-phrase="Additional Services" />
                         }
                         else
                         {
-                            <img src="~/images/circle-info-solid.svg" width="20px" aria-hidden="true"> <p>All the Additional Services available for this Catalogue Solution have already been added.</p>
+                            <vc:inline-information text="All the Additional Services available for this Catalogue Solution have already been added." />
                         }
                     </nhs-card-footer>
                 }
                 else
                 {
                     <nhs-card-content>
-                        <img src="~/images/circle-info-solid.svg" width="20px" aria-hidden="true" class="card-content-icon" /><span class="card-content-text-with-icon nhsuk-body-m">There are no Additional Services available for this Catalogue Solution.</span>
+                        <vc:inline-information text="There are no Additional Services available for this Catalogue Solution." />
                     </nhs-card-content>
                 }
             </nhs-card-v2>
@@ -108,13 +108,13 @@
             @if (Model.IsAmendment && !Model.AssociatedServices.Any())
             {
                 <nhs-card-content>
-                    <img src="~/images/circle-info-solid.svg" class="card-content-icon" aria-hidden="true" width="20px" /><span class="card-content-text-with-icon nhsuk-body-m">You cannot add Associated Services when amending an order.</span>
+                    <vc:inline-information text="You cannot add Associated Services when amending an order." />
                 </nhs-card-content>
             }
             else if (!Model.AssociatedServicesAvailable)
             {
                 <nhs-card-content>
-                    <img src="~/images/circle-info-solid.svg" class="card-content-icon" aria-hidden="true" width="20px" /><span class="card-content-text-with-icon nhsuk-body-m">There are no Associated Services available for this Catalogue Solution.</span>
+                    <vc:inline-information text="There are no Associated Services available for this Catalogue Solution." />
                 </nhs-card-content>
             }
             else
@@ -136,26 +136,19 @@
                 <nhs-card-footer>
                     @if (Model.OrderType.MergerOrSplit)
                     {
-                            <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>Associated Services cannot be changed</p>
+                        <vc:inline-information text="Associated Services cannot be changed." />
                     }
                     else if (Model.IsAmendment)
                     {
-                        <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>You cannot add Associated Services or edit ones included in the original order when amending an order.</p>
+                        <vc:inline-information text="You cannot add Associated Services or edit ones included in the original order when amending an order." />
                     }
                     else if (!Model.UnselectedAssociatedServicesAvailable)
                     {
-                        <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>All the Associated Services available for this Catalogue Solution have already been added.</p>
+                        <vc:inline-information text="All the Associated Services available for this Catalogue Solution have already been added." />
                     }
                     else
                     {
-                        <p class="nhsuk-body-m">
-                            <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Url.Action(
-                                nameof(AssociatedServicesController.SelectAssociatedServices),
-                                typeof(AssociatedServicesController).ControllerName(),
-                                new { Model.InternalOrgId, Model.CallOffId, source = RoutingSource.TaskList })">
-                                <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true" />Add Associated Services
-                            </a>
-                        </p>
+                        <vc:add-or-change href="@addAssociatedServicesLink" noun-phrase="Associated Services" />
                     }
                 </nhs-card-footer>
             }
@@ -163,6 +156,6 @@
 
         <vc:nhs-anchor-button text="Save and continue"
                                  url="@Model.OnwardLink"
-                                 type="Primary" />
+                                 type="Primary" /> 
     </div>
 </div>

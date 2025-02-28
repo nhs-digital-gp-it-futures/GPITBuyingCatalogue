@@ -13,6 +13,8 @@
 @{
     var hasServiceRecipientQuantities = ((IPrice)Model.OrderItemPrice)?.IsPerServiceRecipient() ?? false;
     var hasTieredPricing = Model.OrderItemPrice?.CataloguePriceType is CataloguePriceType.Tiered;
+
+    var editOrderDetailsLink = Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId });
 }
 
 <nhs-expander-v2 open="true">
@@ -151,11 +153,7 @@
     @if (Model.CanEdit)
     {
         <nhs-expander-footer>
-            <p>
-                <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(OrderController.Order), typeof(OrderController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>Edit details for @Model.CatalogueItem.Name
-                </a>
-            </p>
+            <vc:add-or-change href="@editOrderDetailsLink" noun-phrase="details for @Model.CatalogueItem.Name" is-change="true" custom-verb="Edit" />
         </nhs-expander-footer>
     }
 </nhs-expander-v2>

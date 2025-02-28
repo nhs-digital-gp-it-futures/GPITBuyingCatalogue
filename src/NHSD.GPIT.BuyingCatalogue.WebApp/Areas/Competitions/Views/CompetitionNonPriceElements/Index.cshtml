@@ -7,6 +7,15 @@
 @{
     ViewBag.Title = "Non-price elements";
     var routeValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId };
+
+    var hasImplementationNonPriceElement = Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Implementation);
+    var hasInteroperabilityNonPriceElement = Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Interoperability);
+    var hasServiceLevelNonPriceElement = Model.NonPriceElements.HasNonPriceElement(NonPriceElement.ServiceLevel);
+
+    var featureRequirementsLink = Url.Action(nameof(CompetitionNonPriceElementsController.Feature), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues);
+    var implementationRequirementsLink = Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues);
+    var interoperabilityRequirementsLink = Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues);
+    var serviceLevelRequirements = Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues);
 }
 
 <partial name="Partials/_BackLink" model="Model"/>
@@ -33,11 +42,7 @@
             @if (!Model.HasReviewedCriteria)
             {
                 <nhs-card-footer>
-                    <p class="nhsuk-body-m">
-                        <a class="nhsuk-link nhsuk-link--no-visited-state" data-test-id="features-link" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Feature), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                            <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/> Add feature requirements
-                        </a>
-                    </p>
+                    <vc:add-or-change href="@featureRequirementsLink" noun-phrase="feature requirements" test-id="features-link" />
                 </nhs-card-footer>
             }
         </nhs-card-v2>
@@ -57,20 +62,7 @@
             @if (!Model.HasReviewedCriteria)
             {
                 <nhs-card-footer>
-                    <p>
-                        <a class="nhsuk-link--no-visited-state" data-test-id="implementation-link" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                            @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Implementation))
-                            {
-                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                                <span>Change implementation requirements</span>
-                            }
-                            else
-                            {
-                                <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>
-                                <span>Add implementation requirements</span>
-                            }
-                        </a>
-                    </p>
+                    <vc:add-or-change href="@implementationRequirementsLink" noun-phrase="implementation requirements" is-change="@hasImplementationNonPriceElement" test-id="implementation-link" />
                 </nhs-card-footer>
             }
         </nhs-card-v2>
@@ -90,20 +82,7 @@
             @if (!Model.HasReviewedCriteria)
             {
                 <nhs-card-footer>
-                    <p>
-                        <a class="nhsuk-link--no-visited-state" data-test-id="interoperability-link" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                            @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Interoperability))
-                            {
-                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                                <span>Change interoperability requirements</span>
-                            }
-                            else
-                            {
-                                <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>
-                                <span>Add interoperability requirements</span>
-                            }
-                        </a>
-                    </p>
+                    <vc:add-or-change href="@interoperabilityRequirementsLink" noun-phrase="interoperability requirements" is-change="@hasInteroperabilityNonPriceElement" test-id="interoperability-link" />
                 </nhs-card-footer>
             }
         </nhs-card-v2>
@@ -123,20 +102,7 @@
             @if (!Model.HasReviewedCriteria)
             {
                 <nhs-card-footer>
-                    <p>
-                        <a class="nhsuk-link--no-visited-state" data-test-id="service-levels-link" href="@Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                            @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.ServiceLevel))
-                            {
-                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                                <span>Change service level requirements</span>
-                            }
-                            else
-                            {
-                                <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/>
-                                <span>Add service level requirements</span>
-                            }
-                        </a>
-                    </p>
+                    <vc:add-or-change href="@serviceLevelRequirements" noun-phrase="service level requirements" is-change="@hasServiceLevelNonPriceElement" test-id="service-levels-link"/>
                 </nhs-card-footer>
             }
         </nhs-card-v2>

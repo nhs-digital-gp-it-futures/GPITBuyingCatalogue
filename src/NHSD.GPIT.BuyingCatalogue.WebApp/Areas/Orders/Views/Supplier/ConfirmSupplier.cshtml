@@ -3,6 +3,8 @@
 @{
     var pageTitle = Model.GetPageTitle();
     ViewBag.Title = pageTitle.Title;
+
+    var changeSupplier = Url.Action(nameof(SupplierController.SelectSupplier), typeof(SupplierController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId });
 }
 
 <div data-test-id="supplier-page">
@@ -38,14 +40,11 @@
                     <p>
                         @if (Model.OnlyOption)
                         {
-                            <img src="~/images/circle-info-solid.svg" width="20px" aria-hidden="true"> <p>This is the only supplier available for this framework and order type.</p> 
+                            <vc:inline-information text="This is the only supplier available for this framework and order type." />
                         }
                         else
                         {
-                            <a class="nhsuk-link--no-visited-state" href="@Url.Action( nameof(SupplierController.SelectSupplier), typeof(SupplierController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })">
-                                <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                                Change supplier
-                            </a>
+                            <vc:add-or-change href="@changeSupplier" noun-phrase="supplier" is-change="true" />
                         }
                     </p>
                 </nhs-card-footer>

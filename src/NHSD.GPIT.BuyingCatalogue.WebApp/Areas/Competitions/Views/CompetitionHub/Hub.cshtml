@@ -65,15 +65,13 @@
                     <nhs-card-footer>
                         @if (Model.AssociatedServicesRemaining)
                         {
-                            <p class="nhsuk-body-m">
-                                <a class="nhsuk-link nhsuk-link--no-visited-state" href="@Model.AssociatedServicesUrl">
-                                    <img src="~/images/plus-icon.svg" width="23px" aria-hidden="true"/> Add Associated Services
-                                </a>
-                            </p>
+                            <vc:add-or-change href="@Model.AssociatedServicesUrl" noun-phrase="Associated Services" />
                         }
                         else
                         {
-                            <img src="~/images/circle-info-solid.svg" aria-hidden="true" width="20px" /><p>All the Associated Services available for this Catalogue Solution have already been added.</p>
+                            <div class ="nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-3">
+                                <vc:inline-information text="All the Associated Services available for this Catalogue Solution have already been added." />
+                            </div>
                         }
                     </nhs-card-footer>
                 </nhs-card-v2>

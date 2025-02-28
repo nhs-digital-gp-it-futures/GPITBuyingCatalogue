@@ -29,12 +29,7 @@
             @if (!Model.HasReviewedCriteria)
             {
                 <nhs-card-footer>
-                    <p>
-                        <a class="nhsuk-link--no-visited-state" href="@editPriceWeightings">
-                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                            Change weightings
-                        </a>
-                    </p>
+                    <vc:add-or-change href="@editPriceWeightings" noun-phrase="weightings" is-change="true" />
                 </nhs-card-footer>
             }
         </nhs-card-v2>
@@ -50,12 +45,7 @@
             @if (!Model.HasReviewedCriteria)
             {
                 <nhs-card-footer>
-                    <p>
-                        <a class="nhsuk-link--no-visited-state" href="@editNonPriceElementWeightings">
-                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                            Change weightings
-                        </a>
-                    </p>
+                    <vc:add-or-change href="@editNonPriceElementWeightings" noun-phrase="weightings" is-change="true" />
                 </nhs-card-footer>
             }
         </nhs-card-v2>

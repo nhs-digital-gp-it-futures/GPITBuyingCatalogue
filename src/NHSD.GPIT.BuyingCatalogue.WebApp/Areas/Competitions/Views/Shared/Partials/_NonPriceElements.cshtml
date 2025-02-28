@@ -4,6 +4,10 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.Shared.NonPriceElementsPartialModel
 @{
     var routeValues = new { internalOrgId = Model.InternalOrgId, competitionId = Model.CompetitionId, returnUrl = Url.Action() };
+
+    var changeImplementationRequirementsLink = Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues);
+    var changeInteroperabilityRequirementsLink = Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues);
+    var changeServiceLevelRequirementsLink = Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues);
 }
 
 @if (Model.NonPriceElements.HasNonPriceElement(NonPriceElement.Features))
@@ -23,12 +27,7 @@
         @if (!Model.HasReviewedCriteria)
         {
             <nhs-card-footer>
-                <p>
-                    <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Implementation), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                        Change implementation requirements
-                    </a>
-                </p>
+                <vc:add-or-change href="@changeImplementationRequirementsLink" noun-phrase="implementation requirements" is-change="true" />
             </nhs-card-footer>
         }
     </nhs-card-v2>
@@ -42,12 +41,7 @@
     @if (!Model.HasReviewedCriteria)
     {
         <nhs-card-footer>
-            <p>
-                <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.Interoperability), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                    Change interoperability requirements
-                </a>
-            </p>
+            <vc:add-or-change href="@changeInteroperabilityRequirementsLink" noun-phrase="interoperability requirements" is-change="true" />
         </nhs-card-footer>
     }
     </nhs-card-v2>
@@ -61,12 +55,7 @@
     @if (!Model.HasReviewedCriteria)
     {
         <nhs-card-footer>
-            <p>
-                <a class="nhsuk-link--no-visited-state" href="@Url.Action(nameof(CompetitionNonPriceElementsController.ServiceLevel), typeof(CompetitionNonPriceElementsController).ControllerName(), routeValues)">
-                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-                    Change service level requirements
-                </a>
-            </p>
+            <vc:add-or-change href="@changeServiceLevelRequirementsLink" noun-phrase="service level requirements" is-change="true" />
         </nhs-card-footer>
     }
 </nhs-card-v2>
