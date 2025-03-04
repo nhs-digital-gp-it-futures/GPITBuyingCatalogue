@@ -5,5 +5,4 @@
     CONSTRAINT PK_CompetitionRecipients PRIMARY KEY ([CompetitionId], [OdsCode]),
     CONSTRAINT FK_CompetitionRecipients_Competition FOREIGN KEY ([CompetitionId]) REFERENCES [competitions].[Competitions] ([Id]),
     CONSTRAINT FK_CompetitionRecipients_ServiceRecipient FOREIGN KEY ([OdsCode]) REFERENCES [ods_organisations].[OdsOrganisations] ([Id]),
-    CONSTRAINT FK_CompetitionRecipients_CompetitionRecipientsComissionedBy FOREIGN KEY ([CompetitionId], [OdsCode]) REFERENCES [competitions].[CompetitonRecipientCommissionedBy] ([CompetitionId],[RecipientOdsCode])
 );
