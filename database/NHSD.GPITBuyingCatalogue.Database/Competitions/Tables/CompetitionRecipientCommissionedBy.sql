@@ -7,5 +7,5 @@ CREATE TABLE [competitions].[CompetitionRecipientCommissionedBy]
     CONSTRAINT FK_CompetitionRecipientCommissionedBy_Competitions FOREIGN KEY ([CompetitionId]) REFERENCES [competitions].[Competitions] ([Id]) ON DELETE CASCADE,
     CONSTRAINT FK_CompetitionRecipientsComissionedBy_CompetitionRecipients FOREIGN KEY ([CompetitionId], [RecipientOdsCode]) REFERENCES [competitions].[CompetitionRecipients] ([CompetitionId],[OdsCode]) ON DELETE CASCADE,
     CONSTRAINT FK_CompetitionRecipientCommissionedBy_OdsOrganisations_Recipient FOREIGN KEY ([RecipientOdsCode]) REFERENCES [ods_organisations].[OdsOrganisations]([Id]),
-    CONSTRAINT FK_CompetitionRecipientCommissionedBy_CompetitionSublocationOwners FOREIGN KEY ([CompetitionId], [CommissionedByOdsCode]) REFERENCES [competitions].[CompetitionSublocationOwners]([CompetitionId],[SublocationOdsCode])
+    CONSTRAINT FK_CompetitionRecipientCommissionedBy_CompetitionSublocations FOREIGN KEY ([CompetitionId], [CommissionedByOdsCode]) REFERENCES [competitions].[CompetitionSublocations]([CompetitionId],[SublocationOdsCode])
 )
