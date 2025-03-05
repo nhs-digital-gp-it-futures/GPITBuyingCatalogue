@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
 [Authorize("Buyer")]
 [Area("Competitions")]
-[Route("organisation/{internalOrgId}/competitions/{competitionId:int}")]
+[Route("organisation/{internalOrgId}/competitions/{competitionId:int}/select-recipients")]
 public class CompetitionRecipientsController : Controller
 {
     internal const string ConfirmRecipientsAdvice =
@@ -75,6 +75,7 @@ public class CompetitionRecipientsController : Controller
     }
 
     [HttpGet("select-recipients")]
+    [HttpGet]
     public async Task<IActionResult> Index(
         string internalOrgId,
         int competitionId,
@@ -114,7 +115,7 @@ public class CompetitionRecipientsController : Controller
         return View("ServiceRecipients/SelectRecipients", model);
     }
 
-    [HttpPost("select-recipients")]
+    [HttpPost]
     public IActionResult Index(string internalOrgId, int competitionId, SelectRecipientsModel model)
     {
         if (ModelState.IsValid)
