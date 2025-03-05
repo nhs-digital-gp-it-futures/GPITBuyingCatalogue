@@ -1,0 +1,19 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+
+public record CompetitionSublocation
+{
+    public int CompetitionId { get; set; }
+
+    [MaxLength(10)]
+    public string SublocationOdsCode { get; set; }
+
+    [MaxLength(10)]
+    public string OwnerOdsCode { get; set; }
+
+    public bool IsActive { get; set; }
+
+    public ICollection<CompetitionSublocationRecipient> SublocationRecipients { get; set; }
+}

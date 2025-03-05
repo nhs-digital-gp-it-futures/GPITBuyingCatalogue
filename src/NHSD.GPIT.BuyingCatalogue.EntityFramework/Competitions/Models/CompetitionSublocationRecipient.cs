@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
-public record CompetitionRecipientCommissionedBy
+public record CompetitionSublocationRecipient
 {
     public int CompetitionId { get; set; }
 
@@ -10,11 +10,9 @@ public record CompetitionRecipientCommissionedBy
     public string RecipientOdsCode { get; set; }
 
     [MaxLength(10)]
-    public string CommissionedByOdsCode { get; set; }
+    public string ParentSublocationOdsCode { get; set; }
 
     public Competition Competition { get; set; }
 
-    public CompetitionRecipient CompetitionRecipient { get; set; }
-
-    public CompetitionSublocations CommissionedByCompetitionSublocations { get; set; }
+    public CompetitionSublocation ParentSublocation { get; set; }
 }
