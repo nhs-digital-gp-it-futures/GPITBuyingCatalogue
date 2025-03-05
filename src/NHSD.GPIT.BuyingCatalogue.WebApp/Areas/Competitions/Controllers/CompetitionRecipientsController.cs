@@ -74,7 +74,14 @@ public class CompetitionRecipientsController : Controller
             new { internalOrgId, competitionId });
     }
 
-    [HttpGet("select-recipients")]
+    [HttpGet("review-sublocations")]
+    public async Task<IActionResult> ReviewSublocations()
+    {
+        var model = new ReviewSublocationsModel();
+
+        return View("ServiceRecipients/ReviewSublocations", model);
+    }
+
     [HttpGet]
     public async Task<IActionResult> Index(
         string internalOrgId,
