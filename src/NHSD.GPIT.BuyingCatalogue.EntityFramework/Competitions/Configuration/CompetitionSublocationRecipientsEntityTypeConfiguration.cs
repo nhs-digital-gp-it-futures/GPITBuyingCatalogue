@@ -27,7 +27,7 @@ public class
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.ParentSublocation)
-            .WithMany()
+            .WithMany(y => y.SublocationRecipients)
             .HasForeignKey(x => new { x.CompetitionId, x.ParentSublocationOdsCode })
             .HasConstraintName("FK_CompetitionSublocationRecipients_CompetitionSublocations")
             .OnDelete(DeleteBehavior.Cascade);
