@@ -83,5 +83,10 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
                     j.ToTable("CompetitionRecipients", Schemas.Competitions);
                     j.HasKey(x => new { x.CompetitionId, x.OdsCode });
                 });
+
+        builder.HasMany(x => x.CompetitionSublocations)
+            .WithOne(y => y.Competition)
+            .HasForeignKey(y => y.CompetitionId)
+            .HasConstraintName("FK_CompetitionSolutions_Competition");
     }
 }

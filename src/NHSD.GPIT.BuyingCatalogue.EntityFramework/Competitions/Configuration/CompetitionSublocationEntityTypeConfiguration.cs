@@ -20,6 +20,11 @@ public class CompetitionSublocationEntityTypeConfiguration : IEntityTypeConfigur
 
         builder.Property(x => x.IsActive).HasConversion(v => v ? 1 : 0, v => v == 1).IsRequired();
 
+        builder.HasOne(x => x.Competition)
+            .WithMany(y => y.CompetitionSublocations)
+            .HasForeignKey(x => x.CompetitionId)
+            .HasConstraintName("FK_CompetitionSolutions_Competition");
+
         builder.HasMany(x => x.SublocationRecipients)
             .WithOne(y => y.ParentSublocation)
             .HasForeignKey(y => new { y.CompetitionId, y.ParentSublocationOdsCode })

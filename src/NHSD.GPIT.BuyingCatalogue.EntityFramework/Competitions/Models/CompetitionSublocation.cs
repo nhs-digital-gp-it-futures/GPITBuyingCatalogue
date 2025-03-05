@@ -15,5 +15,7 @@ public record CompetitionSublocation
 
     public bool IsActive { get; set; }
 
+    public Competition Competition { get; set; }
+
     public ICollection<CompetitionSublocationRecipient> SublocationRecipients { get; set; }
 }
