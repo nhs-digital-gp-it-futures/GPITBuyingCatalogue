@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
@@ -17,9 +18,13 @@ public class SublocationModel
 
     public string Name { get; set; }
 
+    public string OdsCode { get; set; }
+
     public List<ServiceRecipientModel> ServiceRecipients { get; set; }
 
     public int ServiceRecipientCount { get; set; }
+
+    public TaskProgress TaskProgress => ServiceRecipientCount == 0 ? TaskProgress.NotStarted : TaskProgress.Completed;
 
     public bool AllRecipientsSelected => ServiceRecipients.All(x => x.Selected);
 }

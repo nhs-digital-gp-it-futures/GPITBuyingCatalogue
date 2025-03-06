@@ -89,11 +89,11 @@ public class CompetitionRecipientsController : Controller
                 var sublocationModel = new SublocationModel
                 {
                     Name = s.SublocationOrganisation.Name,
-                    ServiceRecipientCount = competitionsService.GetCountForCompetitionSublocationRecipients(
-                            internalOrgId,
-                            competitionId,
-                            s.SublocationOdsCode)
-                        .Result,
+                    ServiceRecipientCount = await competitionsService.GetCountForCompetitionSublocationRecipients(
+                        internalOrgId,
+                        competitionId,
+                        s.SublocationOdsCode),
+                    OdsCode = s.SublocationOdsCode,
                 };
                 sublocations.Add(sublocationModel);
             }

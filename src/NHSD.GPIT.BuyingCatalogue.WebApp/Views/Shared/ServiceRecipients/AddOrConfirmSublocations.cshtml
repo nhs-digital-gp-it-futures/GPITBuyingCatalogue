@@ -1,9 +1,15 @@
 ﻿
-@using System.Drawing
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.AddOrChange
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.AddOrConfirmSublocationsModel;
 
 @{
     ViewBag.Title = Model.Title;
+
+    var isChangeSublocations = Model.Sublocations.Count > 0;
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -22,9 +28,9 @@
                     @foreach (var sublocation in @Model.Sublocations)
                     {
                         <nhs-table-row-container>
-                            <nhs-table-cell>@sublocation.Name</nhs-table-cell>
+                            <nhs-table-cell>@sublocation.OdsCode</nhs-table-cell>
                             <nhs-table-cell>@sublocation.ServiceRecipientCount</nhs-table-cell>
-                            <nhs-table-cell>need to do status</nhs-table-cell>
+                            <nhs-table-cell><nhs-tag status-enum="@sublocation.TaskProgress"/></nhs-table-cell>
                             <nhs-table-cell><a>Select</a></nhs-table-cell>
                         </nhs-table-row-container>
                     }
@@ -32,7 +38,7 @@
                 </nhs-table>
             </nhs-card-content>
             <nhs-card-footer>
-                <vc:add-or-change href="" noun-phrase="sublocations" />
+                <vc:add-or-change href="" noun-phrase="sublocations" is-change="@isChangeSublocations" />
                 </nhs-card-footer>
         </nhs-card-v2>
     </div>
