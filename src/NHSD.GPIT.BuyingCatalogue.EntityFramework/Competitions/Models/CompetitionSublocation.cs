@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
@@ -18,4 +19,6 @@ public record CompetitionSublocation
     public Competition Competition { get; set; }
 
     public ICollection<CompetitionSublocationRecipient> SublocationRecipients { get; set; }
+
+    public OdsOrganisation SublocationOrganisation { get; set; }
 }
