@@ -82,7 +82,9 @@ public class CompetitionRecipientsController : Controller
         Competition competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
         Organisation organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        var model = new AddOrConfirmSublocationsModel(true, competition, organisation);
+        var addOrChangeSublocationsHref = "";
+
+        var model = new AddOrConfirmSublocationsModel(true, competition, organisation, addOrChangeSublocationsHref);
 
         return View("ServiceRecipients/AddOrConfirmSublocations", model);
     }
