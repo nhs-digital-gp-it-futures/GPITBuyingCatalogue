@@ -81,17 +81,23 @@ public class CompetitionRecipientsController : Controller
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
 
-        IEnumerable<Task<SublocationModel>> sublocationTasks = competition.CompetitionSublocations.Select(
-            async s => new SublocationModel
-            {
-                Name = s.SublocationOrganisation.Name,
-                ServiceRecipientCount = await competitionsService.GetCountForCompetitionSublocationRecipients(
-                    internalOrgId,
-                    competitionId,
-                    s.SublocationOdsCode),
-            });
+        var sublocations = new List<SublocationModel>();
 
-        List<SublocationModel> sublocations = (await Task.WhenAll(sublocationTasks)).ToList();
+        foreach (CompetitionSublocation s in competition.CompetitionSublocations)
+        {
+            {
+                var sublocationModel = new SublocationModel
+                {
+                    Name = s.SublocationOrganisation.Name,
+                    ServiceRecipientCount = competitionsService.GetCountForCompetitionSublocationRecipients(
+                            internalOrgId,
+                            competitionId,
+                            s.SublocationOdsCode)
+                        .Result,
+                };
+                sublocations.Add(sublocationModel);
+            }
+        }
 
         var addOrChangeSublocationsHref = "";
 

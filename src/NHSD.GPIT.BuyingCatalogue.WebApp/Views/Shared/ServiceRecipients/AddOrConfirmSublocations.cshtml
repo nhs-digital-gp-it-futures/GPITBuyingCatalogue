@@ -1,4 +1,5 @@
 ﻿
+@using System.Drawing
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.AddOrConfirmSublocationsModel;
 
 @{
@@ -12,7 +13,23 @@
         <nhs-page-title model="@Model"/>
         <nhs-card-v2>
             <nhs-card-content title="Sublocations for @Model.ParentName">
-                <div>Hello i am card content</div>
+                <nhs-table>
+                    <nhs-table-column>Sublocation</nhs-table-column>
+                    <nhs-table-column>Organisations added</nhs-table-column>
+                    <nhs-table-column>Status</nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+                    
+                    @foreach (var sublocation in @Model.Sublocations)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@sublocation.Name</nhs-table-cell>
+                            <nhs-table-cell>@sublocation.ServiceRecipientCount</nhs-table-cell>
+                            <nhs-table-cell>need to do status</nhs-table-cell>
+                            <nhs-table-cell><a>Select</a></nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+
+                </nhs-table>
             </nhs-card-content>
             <nhs-card-footer>
                 <vc:add-or-change href="" noun-phrase="sublocations" />
