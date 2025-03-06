@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -74,12 +76,15 @@ public class CompetitionRecipientsController : Controller
             new { internalOrgId, competitionId });
     }
 
-    [HttpGet("review-sublocations")]
-    public async Task<IActionResult> ReviewSublocations()
+    [HttpGet("confirm-sublocations")]
+    public async Task<IActionResult> ConfirmSublocations(string internalOrgId, int competitionId)
     {
-        var model = new ReviewSublocationsModel();
+        Competition competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
+        Organisation organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
-        return View("ServiceRecipients/ReviewSublocations", model);
+        var model = new AddOrConfirmSublocationsModel(true, competition, organisation);
+
+        return View("ServiceRecipients/AddOrConfirmSublocations", model);
     }
 
     [HttpGet]
