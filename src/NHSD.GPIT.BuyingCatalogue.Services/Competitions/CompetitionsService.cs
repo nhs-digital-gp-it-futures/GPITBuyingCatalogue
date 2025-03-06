@@ -220,9 +220,24 @@ public class CompetitionsService : ICompetitionsService
     public async Task<Competition> GetCompetitionWithSublocations(string internalOrgId, int competitionId)
     {
         return await dbContext.Competitions.AsNoTracking()
+            .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
             .Include(x => x.Organisation)
             .Include(x => x.CompetitionSublocations)
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+            .ThenInclude(y => y.SublocationOrganisation)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<int> GetCountForCompetitionSublocationRecipients(
+        string internalOrgId,
+        int competitionId,
+        string sublocationId)
+    {
+        return await dbContext.Competitions
+            .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
+            .SelectMany(x => x.CompetitionSublocations)
+            .Where(s => s.SublocationOdsCode == sublocationId)
+            .SelectMany(s => s.SublocationRecipients)
+            .CountAsync();
     }
 
     public async Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(

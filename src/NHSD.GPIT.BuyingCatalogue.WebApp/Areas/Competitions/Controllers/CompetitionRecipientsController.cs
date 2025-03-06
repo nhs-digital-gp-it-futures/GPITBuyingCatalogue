@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -81,11 +80,26 @@ public class CompetitionRecipientsController : Controller
     {
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
-        Organisation organisation = competition.Organisation;
+
+        IEnumerable<Task<SublocationModel>> sublocationTasks = competition.CompetitionSublocations.Select(
+            async s => new SublocationModel
+            {
+                Name = s.SublocationOrganisation.Name,
+                ServiceRecipientCount = await competitionsService.GetCountForCompetitionSublocationRecipients(
+                    internalOrgId,
+                    competitionId,
+                    s.SublocationOdsCode),
+            });
+
+        List<SublocationModel> sublocations = (await Task.WhenAll(sublocationTasks)).ToList();
 
         var addOrChangeSublocationsHref = "";
 
-        var model = new AddOrConfirmSublocationsModel(true, competition, organisation, addOrChangeSublocationsHref);
+        var model = new AddOrConfirmSublocationsModel(
+            true,
+            competition,
+            sublocations,
+            addOrChangeSublocationsHref);
 
         return View("ServiceRecipients/AddOrConfirmSublocations", model);
     }

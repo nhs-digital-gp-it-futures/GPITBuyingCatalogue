@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
@@ -9,12 +10,13 @@ public sealed class AddOrConfirmSublocationsModel : NavBaseModel
     public AddOrConfirmSublocationsModel(
         bool isConfirm,
         Competition competition,
-        Organisation organisation,
+        List<SublocationModel> sublocations,
         string addOrChangeSublocationsHref)
     {
         ProcessType = "competition";
         EntityNameForCaption = competition.Name;
-        Organisation = organisation;
+        Sublocations = sublocations;
+        ParentName = competition.Organisation.Name;
 
         SetTitleParams(isConfirm);
 
@@ -25,7 +27,6 @@ public sealed class AddOrConfirmSublocationsModel : NavBaseModel
     {
         ProcessType = "order";
         EntityNameForCaption = order.Description;
-        Organisation = organisation;
 
         SetTitleParams(isConfirm);
     }
@@ -34,9 +35,11 @@ public sealed class AddOrConfirmSublocationsModel : NavBaseModel
 
     public string EntityNameForCaption { get; set; }
 
-    public Organisation Organisation { get; set; }
-
     public string AddOrChangeSublocationsHref { get; set; }
+
+    public string ParentName { get; set; }
+
+    public ICollection<SublocationModel> Sublocations { get; set; }
 
     private void SetTitleParams(bool isConfirm)
     {

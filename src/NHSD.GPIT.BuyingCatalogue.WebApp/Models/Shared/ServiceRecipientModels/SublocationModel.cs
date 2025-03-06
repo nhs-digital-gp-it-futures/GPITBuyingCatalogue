@@ -19,5 +19,7 @@ public class SublocationModel
 
     public List<ServiceRecipientModel> ServiceRecipients { get; set; }
 
+    public int ServiceRecipientCount { get; set; }
+
     public bool AllRecipientsSelected => ServiceRecipients.All(x => x.Selected);
 }
