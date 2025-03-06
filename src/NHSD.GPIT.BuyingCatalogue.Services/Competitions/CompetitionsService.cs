@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -217,6 +216,14 @@ public class CompetitionsService : ICompetitionsService
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+
+    public async Task<Competition> GetCompetitionWithSublocations(string internalOrgId, int competitionId)
+    {
+        return await dbContext.Competitions.AsNoTracking()
+            .Include(x => x.Organisation)
+            .Include(x => x.CompetitionSublocations)
+            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+    }
 
     public async Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(
         string internalOrgId,

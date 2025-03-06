@@ -79,8 +79,9 @@ public class CompetitionRecipientsController : Controller
     [HttpGet("confirm-sublocations")]
     public async Task<IActionResult> ConfirmSublocations(string internalOrgId, int competitionId)
     {
-        Competition competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
-        Organisation organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+        Competition competition =
+            await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+        Organisation organisation = competition.Organisation;
 
         var addOrChangeSublocationsHref = "";
 

@@ -42,6 +42,8 @@ public interface ICompetitionsService
 
     Task<Competition> GetCompetitionWithSolutionsHub(string internalOrgId, int competitionId);
 
+    Task<Competition> GetCompetitionWithSublocations(string internalOrgId, int competitionId);
+
     Task<CompetitionTaskListModel> GetCompetitionTaskList(string internalOrgId, int competitionId);
 
     Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(string internalOrgId, int competitionId);

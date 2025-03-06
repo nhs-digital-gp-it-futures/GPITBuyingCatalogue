@@ -87,6 +87,6 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
         builder.HasMany(x => x.CompetitionSublocations)
             .WithOne(y => y.Competition)
             .HasForeignKey(y => y.CompetitionId)
-            .HasConstraintName("FK_CompetitionSolutions_Competition");
+            .HasConstraintName("FK_CompetitionSublocations_Competition");
     }
 }

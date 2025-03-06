@@ -8,7 +8,7 @@ public class CompetitionSublocationEntityTypeConfiguration : IEntityTypeConfigur
 {
     public void Configure(EntityTypeBuilder<CompetitionSublocation> builder)
     {
-        builder.ToTable("CompetitionSublocation", Schemas.Competitions);
+        builder.ToTable("CompetitionSublocations", Schemas.Competitions);
 
         builder.HasKey(x => new { x.CompetitionId, x.SublocationOdsCode });
 
@@ -18,12 +18,12 @@ public class CompetitionSublocationEntityTypeConfiguration : IEntityTypeConfigur
 
         builder.Property(x => x.OwnerOdsCode).IsRequired();
 
-        builder.Property(x => x.IsActive).HasConversion(v => v ? 1 : 0, v => v == 1).IsRequired();
+        builder.Property(x => x.IsActive).IsRequired();
 
         builder.HasOne(x => x.Competition)
             .WithMany(y => y.CompetitionSublocations)
             .HasForeignKey(x => x.CompetitionId)
-            .HasConstraintName("FK_CompetitionSolutions_Competition");
+            .HasConstraintName("FK_CompetitionSublocations_Competitions");
 
         builder.HasMany(x => x.SublocationRecipients)
             .WithOne(y => y.ParentSublocation)
