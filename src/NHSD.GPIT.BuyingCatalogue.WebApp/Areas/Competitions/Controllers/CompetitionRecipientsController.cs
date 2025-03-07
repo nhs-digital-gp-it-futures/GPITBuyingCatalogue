@@ -75,39 +75,28 @@ public class CompetitionRecipientsController : Controller
             new { internalOrgId, competitionId });
     }
 
+    [HttpGet("add-sublocations")]
+    public async Task<IActionResult> AddSublocations(string internalOrgId, int competitionId)
+    {
+        return await AddOrConfirmSublocations(internalOrgId, competitionId, false);
+    }
+
+    [HttpPost("add-sublocations")]
+    public async Task<IActionResult> AddSublocations()
+    {
+        throw new NotImplementedException();
+    }
+
     [HttpGet("confirm-sublocations")]
     public async Task<IActionResult> ConfirmSublocations(string internalOrgId, int competitionId)
     {
-        Competition competition =
-            await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+        return await AddOrConfirmSublocations(internalOrgId, competitionId, true);
+    }
 
-        var sublocations = new List<SublocationModel>();
-
-        foreach (CompetitionSublocation s in competition.CompetitionSublocations)
-        {
-            {
-                var sublocationModel = new SublocationModel
-                {
-                    Name = s.SublocationOrganisation.Name,
-                    ServiceRecipientCount = await competitionsService.GetCountForCompetitionSublocationRecipients(
-                        internalOrgId,
-                        competitionId,
-                        s.SublocationOdsCode),
-                    OdsCode = s.SublocationOdsCode,
-                };
-                sublocations.Add(sublocationModel);
-            }
-        }
-
-        var addOrChangeSublocationsHref = "";
-
-        var model = new AddOrConfirmSublocationsModel(
-            true,
-            competition,
-            sublocations,
-            addOrChangeSublocationsHref);
-
-        return View("ServiceRecipients/AddOrConfirmSublocations", model);
+    [HttpPost("confirm-sublocations")]
+    public async Task<IActionResult> ConfirmSublocations()
+    {
+        throw new NotImplementedException();
     }
 
     [HttpGet]
@@ -225,5 +214,39 @@ public class CompetitionRecipientsController : Controller
             .OrderBy(x => x.Name)
             .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location, })
             .ToList();
+    }
+
+    private async Task<IActionResult> AddOrConfirmSublocations(string internalOrgId, int competitionId, bool isConfirm)
+    {
+        Competition competition =
+            await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+
+        var sublocations = new List<SublocationModel>();
+
+        foreach (CompetitionSublocation s in competition.CompetitionSublocations)
+        {
+            {
+                var sublocationModel = new SublocationModel
+                {
+                    Name = s.SublocationOrganisation.Name,
+                    ServiceRecipientCount = await competitionsService.GetCountForCompetitionSublocationRecipients(
+                        internalOrgId,
+                        competitionId,
+                        s.SublocationOdsCode),
+                    OdsCode = s.SublocationOdsCode,
+                };
+                sublocations.Add(sublocationModel);
+            }
+        }
+
+        var addOrChangeSublocationsHref = "";
+
+        var model = new AddOrConfirmSublocationsModel(
+            isConfirm,
+            competition,
+            sublocations,
+            addOrChangeSublocationsHref);
+
+        return View("ServiceRecipients/AddOrConfirmSublocations", model);
     }
 }
