@@ -5,7 +5,18 @@
 <partial name="Partials/_BackLink" model="Model" />
 
 <div class="nhsuk-grid-row">
-<div class="nhsuk-grid-column-two-thirds">
-    <nhs-page-title model="@Model"/>
-</div>
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title model="@Model"/>
+        <form method="post">
+            <nhs-checkbox-container>
+                @foreach (var checkedSublocation in Model.CheckedSublocations)
+                {
+                    <nhs-checkbox asp-for="@checkedSublocation" 
+                                  label-text="@checkedSublocation.Name" />
+                }
+            </nhs-checkbox-container>
+            <br/>
+            <nhs-submit-button/>
+        </form>
+    </div>
 </div>
