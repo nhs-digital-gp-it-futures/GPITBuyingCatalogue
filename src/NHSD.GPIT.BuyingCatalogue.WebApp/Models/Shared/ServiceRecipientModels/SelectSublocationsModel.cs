@@ -33,26 +33,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         {
             if (isInitialSelection)
             {
-                foreach (ServiceModels.OdsOrganisation sl in PossibleSublocations)
-                {
-                    CheckedSublocations.Add(new CheckboxNameAndValueModel { Name = sl.OdsCode, Value = false });
-                }
+                CheckedSublocations.AddRange(
+                    PossibleSublocations.Select(
+                        sl => new CheckboxNameAndValueModel { Name = sl.OdsCode, Value = false }));
             }
             else
             {
-                foreach (EntityModels.CompetitionSublocation cs in ActualSublocations)
-                {
-                    CheckedSublocations.Add(
-                        new CheckboxNameAndValueModel { Name = cs.SublocationOdsCode, Value = cs.Selected });
-                }
+                CheckedSublocations.AddRange(
+                    ActualSublocations.Select(
+                        cs => new CheckboxNameAndValueModel { Name = cs.SublocationOdsCode, Value = cs.Selected }));
 
-                foreach (ServiceModels.OdsOrganisation sl in PossibleSublocations)
-                {
-                    if (CheckedSublocations.All(x => x.Name != sl.OdsCode))
-                    {
-                        CheckedSublocations.Add(new CheckboxNameAndValueModel { Name = sl.OdsCode, Value = false });
-                    }
-                }
+                CheckedSublocations.AddRange( // Fill in sublocations if they are missing
+                    PossibleSublocations
+                        .Where(sl => CheckedSublocations.All(x => x.Name != sl.OdsCode))
+                        .Select(sl => new CheckboxNameAndValueModel { Name = sl.OdsCode, Value = false }));
             }
         }
     }
