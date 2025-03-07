@@ -104,6 +104,26 @@ public class TrudOdsService : IOdsService
         return serviceRecipients;
     }
 
+    public async Task<IEnumerable<OdsOrganisation>> GetSublocationsByParentInternalIdentifier(string internalIdentifier)
+    {
+        Organisation organisation =
+            await context.Organisations.FirstOrDefaultAsync(x => x.InternalIdentifier == internalIdentifier);
+        if (organisation is null)
+            throw new ArgumentException(InvalidIdExceptionMessage, nameof(internalIdentifier));
+
+        List<OdsOrganisation> subLocations = await context.OrganisationRelationships
+            .AsNoTracking()
+            .Where(
+                x => x.OwnerOrganisationId == organisation.ExternalIdentifier
+                    && x.RelationshipTypeId == settings.InGeographyOfRelType
+                    && x.TargetOrganisation.IsActive
+                    && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.SubLocationRoleId))
+            .Select(x => MapOrganisation(x.TargetOrganisation))
+            .ToListAsync();
+
+        return subLocations;
+    }
+
     public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsById(string internalIdentifier, IEnumerable<string> odsCodes)
     {
         var organisation = await context.Organisations.FirstOrDefaultAsync(x => x.InternalIdentifier == internalIdentifier);

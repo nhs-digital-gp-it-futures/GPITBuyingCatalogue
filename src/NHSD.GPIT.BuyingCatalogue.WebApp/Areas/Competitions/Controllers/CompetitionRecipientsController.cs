@@ -76,11 +76,18 @@ public class CompetitionRecipientsController : Controller
     }
 
     [HttpGet("select-sublocations")]
-    public async Task<IActionResult> SelectSublocations(string internalOrgId, int competitionId)
+    public async Task<IActionResult> SelectSublocations(
+        string internalOrgId,
+        int competitionId,
+        bool isInitialSelection)
     {
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
-        var model = new SelectSublocationsModel(competition);
+
+        IEnumerable<OdsOrganisation> possibleSublocations =
+            await odsService.GetSublocationsByParentInternalIdentifier(internalOrgId);
+
+        var model = new SelectSublocationsModel(competition, possibleSublocations, isInitialSelection);
         return View("ServiceRecipients/SelectSublocations", model);
     }
 
