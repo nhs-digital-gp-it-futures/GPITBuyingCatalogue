@@ -1,8 +1,8 @@
 BEGIN TRANSACTION
 
 INSERT INTO GPITBuyingCatalogue.competitions.CompetitionSublocations
-    (CompetitionId, SublocationOdsCode, OwnerOdsCode, IsActive)
-SELECT DISTINCT cr.CompetitionId, rel.OwnerOrganisationId AS SublocationOdsCode, rel2.OwnerOrganisationId AS OwnerOdsCode, 1 AS IsActive
+    (CompetitionId, SublocationOdsCode, OwnerOdsCode, Selected)
+SELECT DISTINCT cr.CompetitionId, rel.OwnerOrganisationId AS SublocationOdsCode, rel2.OwnerOrganisationId AS OwnerOdsCode, 1 AS Selected
 FROM GPITBuyingCatalogue.competitions.CompetitionRecipients cr
     JOIN GPITBuyingCatalogue.ods_organisations.OrganisationRelationships rel
     ON cr.OdsCode = rel.TargetOrganisationId

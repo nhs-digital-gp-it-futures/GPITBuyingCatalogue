@@ -14,7 +14,7 @@ public record CompetitionSublocation
     [MaxLength(10)]
     public string OwnerOdsCode { get; set; }
 
-    public bool IsActive { get; set; }
+    public bool Selected { get; set; }
 
     public Competition Competition { get; set; }
 

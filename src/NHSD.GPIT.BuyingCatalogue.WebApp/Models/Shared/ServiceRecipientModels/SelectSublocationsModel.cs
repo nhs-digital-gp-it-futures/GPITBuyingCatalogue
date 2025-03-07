@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 foreach (EntityModels.CompetitionSublocation cs in ActualSublocations)
                 {
                     CheckedSublocations.Add(
-                        new CheckboxNameAndValueModel { Name = cs.SublocationOdsCode, Value = cs.IsActive });
+                        new CheckboxNameAndValueModel { Name = cs.SublocationOdsCode, Value = cs.Selected });
                 }
             }
         }
