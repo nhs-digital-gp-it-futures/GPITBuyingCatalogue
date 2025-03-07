@@ -5,9 +5,9 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
-public sealed class AddOrConfirmSublocationsModel : NavBaseModel
+public sealed class SelectSublocationsOverviewModel : NavBaseModel
 {
-    public AddOrConfirmSublocationsModel(
+    public SelectSublocationsOverviewModel(
         bool isConfirm,
         Competition competition,
         List<SublocationModel> sublocations,
@@ -23,7 +23,7 @@ public sealed class AddOrConfirmSublocationsModel : NavBaseModel
         AddOrChangeSublocationsHref = addOrChangeSublocationsHref;
     }
 
-    public AddOrConfirmSublocationsModel(bool isConfirm, Order order, Organisation organisation)
+    public SelectSublocationsOverviewModel(bool isConfirm, Order order, Organisation organisation)
     {
         ProcessType = "order";
         EntityNameForCaption = order.Description;

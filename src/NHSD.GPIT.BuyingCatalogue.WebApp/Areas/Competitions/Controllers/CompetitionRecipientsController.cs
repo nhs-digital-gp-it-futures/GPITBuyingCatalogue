@@ -78,7 +78,7 @@ public class CompetitionRecipientsController : Controller
     [HttpGet("add-sublocations")]
     public async Task<IActionResult> AddSublocations(string internalOrgId, int competitionId)
     {
-        return await AddOrConfirmSublocations(internalOrgId, competitionId, false);
+        return await SelectSublocationsOverview(internalOrgId, competitionId, false);
     }
 
     [HttpPost("add-sublocations")]
@@ -90,7 +90,7 @@ public class CompetitionRecipientsController : Controller
     [HttpGet("confirm-sublocations")]
     public async Task<IActionResult> ConfirmSublocations(string internalOrgId, int competitionId)
     {
-        return await AddOrConfirmSublocations(internalOrgId, competitionId, true);
+        return await SelectSublocationsOverview(internalOrgId, competitionId, true);
     }
 
     [HttpPost("confirm-sublocations")]
@@ -216,7 +216,10 @@ public class CompetitionRecipientsController : Controller
             .ToList();
     }
 
-    private async Task<IActionResult> AddOrConfirmSublocations(string internalOrgId, int competitionId, bool isConfirm)
+    private async Task<IActionResult> SelectSublocationsOverview(
+        string internalOrgId,
+        int competitionId,
+        bool isConfirm)
     {
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
@@ -241,12 +244,12 @@ public class CompetitionRecipientsController : Controller
 
         var addOrChangeSublocationsHref = "";
 
-        var model = new AddOrConfirmSublocationsModel(
+        var model = new SelectSublocationsOverviewModel(
             isConfirm,
             competition,
             sublocations,
             addOrChangeSublocationsHref);
 
-        return View("ServiceRecipients/AddOrConfirmSublocations", model);
+        return View("ServiceRecipients/SelectSublocationsOverview", model);
     }
 }
