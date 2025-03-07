@@ -75,6 +75,21 @@ public class CompetitionRecipientsController : Controller
             new { internalOrgId, competitionId });
     }
 
+    [HttpGet("select-sublocations")]
+    public async Task<IActionResult> SelectSublocations(string internalOrgId, int competitionId)
+    {
+        Competition competition =
+            await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+        var model = new SelectSublocationsModel(competition);
+        return View("ServiceRecipients/SelectSublocations", model);
+    }
+
+    [HttpPost("select-sublocations")]
+    public async Task<IActionResult> SelectSublocations()
+    {
+        throw new NotImplementedException();
+    }
+
     [HttpGet("add-sublocations")]
     public async Task<IActionResult> AddSublocations(string internalOrgId, int competitionId)
     {
