@@ -121,6 +121,30 @@ public class CompetitionRecipientsController : Controller
         throw new NotImplementedException();
     }
 
+    [HttpGet("remove-sublocations")]
+    public async Task<IActionResult> RemoveSublocations(
+        string internalOrgId,
+        int competitionId,
+        string sublocationOdsCodes)
+    {
+        var splitSublocationOdsCodes = sublocationOdsCodes?.Split(
+            [','],
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+
+        Competition competition =
+            await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+
+        var model = new RemoveSublocationsModel(competition);
+
+        return View("ServiceRecipients/RemoveSublocations", model);
+    }
+
+    [HttpPost("remove-sublocations")]
+    public async Task<IActionResult> RemoveSublocations()
+    {
+        throw new NotImplementedException();
+    }
+
     [HttpGet]
     public async Task<IActionResult> Index(
         string internalOrgId,
