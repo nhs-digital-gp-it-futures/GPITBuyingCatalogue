@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using EntityModels = NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using ServiceModels = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -43,6 +44,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 {
                     CheckedSublocations.Add(
                         new CheckboxNameAndValueModel { Name = cs.SublocationOdsCode, Value = cs.Selected });
+                }
+
+                foreach (ServiceModels.OdsOrganisation sl in PossibleSublocations)
+                {
+                    if (CheckedSublocations.All(x => x.Name != sl.OdsCode))
+                    {
+                        CheckedSublocations.Add(new CheckboxNameAndValueModel { Name = sl.OdsCode, Value = false });
+                    }
                 }
             }
         }
