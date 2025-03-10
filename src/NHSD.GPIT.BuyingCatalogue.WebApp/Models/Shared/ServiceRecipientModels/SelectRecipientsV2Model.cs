@@ -1,0 +1,108 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
+{
+    public class SelectRecipientsV2Model : NavBaseModel
+    {
+        private readonly SelectionMode? selectionMode;
+
+        public SelectRecipientsV2Model()
+        {
+        }
+
+        public SelectRecipientsV2Model(
+            Organisation organisation,
+            SublocationModel selectedSublocation,
+            IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
+            IEnumerable<string> existingRecipients,
+            IEnumerable<ServiceRecipientModel> previouslySelectedRecipients,
+            IEnumerable<string> preSelectedRecipients,
+            SelectionMode? selectionMode = null,
+            bool isAmendment = false)
+        {
+            this.selectionMode = selectionMode;
+
+            OrganisationName = organisation.Name;
+            OrganisationType = organisation.OrganisationType.GetValueOrDefault();
+            PreviouslySelected = previouslySelectedRecipients.ToList();
+
+            Sublocation = selectedSublocation;
+
+            IsAmendment = isAmendment;
+
+            SelectServiceRecipients(existingRecipients, preSelectedRecipients);
+        }
+
+        public string OrganisationName { get; set; }
+
+        public OrganisationType OrganisationType { get; set; }
+
+        public SublocationModel Sublocation { get; set; }
+
+        public ServiceRecipientModel[] SearchRecipients => Sublocation.ServiceRecipients
+            .Select(y => new ServiceRecipientModel { Name = y.Name, OdsCode = y.OdsCode })
+            .OrderBy(x => x.Name)
+            .ToArray();
+
+        public bool HasImportedRecipients { get; set; }
+
+        public List<ServiceRecipientModel> PreviouslySelected { get; set; }
+
+        public bool ShouldExpand { get; set; }
+
+        public int? SelectAtLeast { get; set; }
+
+        public bool IsAmendment { get; set; }
+
+        public IEnumerable<ServiceRecipientModel> GetServiceRecipients()
+        {
+            return Sublocation.ServiceRecipients;
+        }
+
+        public IEnumerable<ServiceRecipientModel> GetSelectedServiceRecipients()
+        {
+            return GetServiceRecipients().Where(x => x.Selected);
+        }
+
+        public bool HasSelectedRecipients()
+        {
+            return GetSelectedServiceRecipients().Any();
+        }
+
+        private void SelectServiceRecipients(
+            IEnumerable<string> existingRecipients,
+            IEnumerable<string> recipients)
+        {
+            switch (selectionMode)
+            {
+                case SelectionMode.All:
+                    GetServiceRecipients().ToList().ForEach(x => x.Selected = true);
+                    break;
+                case SelectionMode.None:
+                    GetServiceRecipients().ToList().ForEach(x => x.Selected = false);
+                    break;
+                default:
+                    if (recipients == null) return;
+
+                    var enumeratedRecipients = recipients.ToArray();
+                    var recipientsToSelect = enumeratedRecipients.Any()
+                        ? enumeratedRecipients.ToArray()
+                        : existingRecipients.ToArray();
+
+                    List<ServiceRecipientModel> matchingRecipients = GetServiceRecipients()
+                        .Where(x => recipientsToSelect.Contains(x.OdsCode))
+                        .ToList();
+                    if (!matchingRecipients.Any())
+                        return;
+
+                    matchingRecipients.ForEach(x => x.Selected = true);
+
+                    var allSelected = GetServiceRecipients().All(x => x.Selected);
+
+                    break;
+            }
+        }
+    }
+}
