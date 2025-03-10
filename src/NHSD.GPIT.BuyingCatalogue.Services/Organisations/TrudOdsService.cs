@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -124,6 +125,20 @@ public class TrudOdsService : IOdsService
         return subLocations;
     }
 
+    public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsBySublocation(
+        string sublocationInternalIdentifier)
+    {
+        List<ServiceRecipient> sublocationRecipients = await context.OrganisationRelationships
+            .AsNoTracking()
+            .Where(
+                x => x.OwnerOrganisationId == sublocationInternalIdentifier &&
+                    x.RelationshipTypeId == settings.IsCommissionedByRelType)
+            .Select(x => MapServiceRecipientFromRelationship(x))
+            .ToListAsync();
+
+        return sublocationRecipients;
+    }
+
     public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsById(string internalIdentifier, IEnumerable<string> odsCodes)
     {
         var organisation = await context.Organisations.FirstOrDefaultAsync(x => x.InternalIdentifier == internalIdentifier);
@@ -196,6 +211,18 @@ public class TrudOdsService : IOdsService
             Country = organisation.Country,
         },
     };
+
+    private static ServiceRecipient MapServiceRecipientFromRelationship(
+        OrganisationRelationship relationship)
+    {
+        return new ServiceRecipient
+        {
+            Name = relationship.TargetOrganisation.Name,
+            OrgId = relationship.TargetOrganisation.Id,
+            PrimaryRoleId = relationship.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
+            Location = relationship.OwnerOrganisation.Name,
+        };
+    }
 
     private static string GetPrimaryRoleId(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation) =>
         organisation.Roles.FirstOrDefault(x => x.IsPrimaryRole)?.RoleId;
