@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
@@ -8,31 +9,29 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
     {
         private readonly SelectionMode? selectionMode;
 
-        public SelectRecipientsV2Model()
-        {
-        }
-
         public SelectRecipientsV2Model(
-            Organisation organisation,
+            Competition competition,
             SublocationModel selectedSublocation,
             IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
-            IEnumerable<string> existingRecipients,
-            IEnumerable<ServiceRecipientModel> previouslySelectedRecipients,
-            IEnumerable<string> preSelectedRecipients,
+            IEnumerable<string> requestSelectedRecipients,
             SelectionMode? selectionMode = null,
             bool isAmendment = false)
         {
             this.selectionMode = selectionMode;
 
+            Organisation organisation = competition.Organisation;
+
             OrganisationName = organisation.Name;
             OrganisationType = organisation.OrganisationType.GetValueOrDefault();
-            PreviouslySelected = previouslySelectedRecipients.ToList();
+            PreviouslySelected = selectedSublocation.ServiceRecipients;
+
+            List<string> previouslySelectedAsString = PreviouslySelected.Select(x => x.OdsCode).ToList();
 
             Sublocation = selectedSublocation;
 
             IsAmendment = isAmendment;
 
-            SelectServiceRecipients(existingRecipients, preSelectedRecipients);
+            SelectServiceRecipients(previouslySelectedAsString, requestSelectedRecipients);
         }
 
         public string OrganisationName { get; set; }

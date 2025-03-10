@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -22,16 +23,20 @@ public class CompetitionRecipientsController : Controller
 
     private readonly IOrganisationsService organisationsService;
     private readonly ICompetitionsService competitionsService;
+    private readonly ICompetitionSublocationService competitionSublocationService;
     private readonly IOdsService odsService;
 
     public CompetitionRecipientsController(
         IOrganisationsService organisationsService,
         ICompetitionsService competitionsService,
+        ICompetitionSublocationService competitionSublocationService,
         IOdsService odsService)
     {
         this.organisationsService =
             organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
         this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+        this.competitionSublocationService = competitionSublocationService
+            ?? throw new ArgumentNullException(nameof(competitionSublocationService));
         this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
     }
 
@@ -143,6 +148,55 @@ public class CompetitionRecipientsController : Controller
     public async Task<IActionResult> RemoveSublocations()
     {
         throw new NotImplementedException();
+    }
+
+    [HttpGet("{sublocationId}")]
+    public async Task<IActionResult> SelectSublocationRecipients(
+        string internalOrgId,
+        int competitionId,
+        string sublocationId,
+        string recipientIds = "",
+        string importedRecipients = "",
+        SelectionMode? selectionMode = null)
+    {
+        Organisation organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
+        Competition competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
+        CompetitionSublocation competitionSublocation =
+            await competitionSublocationService.GetCompetitionSublocationWithRecipients(
+                organisation.ExternalIdentifier,
+                competitionId,
+                sublocationId);
+
+        var sublocationAsSublocationModel = new SublocationModel
+        {
+            Name = competitionSublocation.SublocationOrganisation.Name,
+            OdsCode = competitionSublocation.SublocationOdsCode,
+            ServiceRecipients = competitionSublocation.SublocationRecipients.Select(
+                    x => new ServiceRecipientModel
+                    {
+                        OdsCode = x.RecipientOdsCode,
+                        Name = x.RecipientOrganisation.Name,
+                        Location = competition.Organisation.Name,
+                        Selected = true,
+                    })
+                .ToList(),
+        };
+
+        List<ServiceRecipientModel> possibleRecipients = await GetServiceRecipients(internalOrgId);
+        var splitRecipientIds = string.Join(',', recipientIds, importedRecipients)
+            .Split(
+                ',',
+                StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+        var model = new SelectRecipientsV2Model(
+            competition,
+            sublocationAsSublocationModel,
+            possibleRecipients,
+            splitRecipientIds,
+            selectionMode);
+
+        return View("ServiceRecipients/SelectRecipientsV2", model);
     }
 
     [HttpGet]

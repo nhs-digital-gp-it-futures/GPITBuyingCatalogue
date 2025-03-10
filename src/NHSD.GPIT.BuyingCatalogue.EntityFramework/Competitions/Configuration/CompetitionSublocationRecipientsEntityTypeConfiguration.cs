@@ -32,6 +32,9 @@ public class
             .HasConstraintName("FK_CompetitionSublocationRecipients_CompetitionSublocations")
             .OnDelete(DeleteBehavior.Cascade);
 
-        // TODO: Add OdsOrganisation entities for recipient and sublocation (if required)
+        builder.HasOne(x => x.RecipientOrganisation)
+            .WithMany()
+            .HasForeignKey(x => x.RecipientOdsCode)
+            .HasConstraintName("FK_CompetitionSublocationRecipients_OdsOrganisations_Recipient");
     }
 }

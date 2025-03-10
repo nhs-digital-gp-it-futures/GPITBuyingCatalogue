@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -12,10 +14,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
         public async Task<CompetitionSublocation> GetCompetitionSublocationWithRecipients(
-            string internalOrgId,
-            int competitionId)
+            string externalOrgId,
+            int competitionId,
+            string sublocationId)
         {
-            throw new NotImplementedException();
+            CompetitionSublocation sublocation = await dbContext
+                .CompetitionSublocations
+                .Where(
+                    x => x.OwnerOdsCode == externalOrgId
+                        && x.CompetitionId == competitionId
+                        && x.SublocationOdsCode == sublocationId)
+                .Include(x => x.SublocationOrganisation)
+                .Include(x => x.SublocationRecipients)
+                .ThenInclude(y => y.RecipientOrganisation)
+                .FirstOrDefaultAsync();
+            return sublocation;
         }
     }
 }

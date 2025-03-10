@@ -163,6 +163,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<SolutionScore> CompetitionSolutionScores { get; set; }
 
+        public DbSet<CompetitionSublocation> CompetitionSublocations { get; set; }
+
         public DbSet<EmailNotification> EmailNotifications { get; set; }
 
         public DbSet<ContractOrderNumber> OrderNumbers { get; set; }

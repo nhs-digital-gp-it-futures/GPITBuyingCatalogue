@@ -5,6 +5,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
 {
     public interface ICompetitionSublocationService
     {
-        Task<CompetitionSublocation> GetCompetitionSublocationWithRecipients(string internalOrgId, int competitionId);
+        Task<CompetitionSublocation> GetCompetitionSublocationWithRecipients(
+            string externalOrgId,
+            int competitionId,
+            string sublocationId);
     }
 }
