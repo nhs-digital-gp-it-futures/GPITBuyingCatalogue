@@ -7,5 +7,21 @@
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title model="@Model"/>
+        <p>@Model.ListHeaderText
+            <ul>@foreach(var sublocation in @Model.SublocationsToRemove){<li>@sublocation.OdsCode</li>}</ul>
+        </p>
+        
+        <nhs-warning-callout label-text="Remove a sublocation">
+            Removing a sublocation will also remove any related service recipients that you have previously added.
+        </nhs-warning-callout>
+        
+        <form method="post">
+            <nhs-radio-button-container>
+                <nhs-radio-button asp-for="ConfirmRemove" value="true" display-text="Yes, I want to remove the sublocations" index="0"/>
+                <nhs-radio-button asp-for="ConfirmRemove" value="false" display-text="No, I want to keep the sublocations" index="1"/>
+            </nhs-radio-button-container>
+            <br/>
+            <nhs-submit-button/>
+        </form>
     </div>
 </div>
