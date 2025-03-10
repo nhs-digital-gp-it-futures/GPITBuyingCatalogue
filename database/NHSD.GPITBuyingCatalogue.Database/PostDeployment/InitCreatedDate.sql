@@ -1,6 +1,6 @@
 ﻿DECLARE @UsersDateMap AS TABLE ([ID] INT, [Created] DATETIME2);
 
-INSERT INTO @UsersDataMap
+INSERT INTO @UsersDateMap
 SELECT Id, MIN(SysStartTime) As Created FROM users.AspNetUsers FOR SYSTEM_TIME ALL GROUP BY ID ORDER BY ID ASC
 
 UPDATE ANU
