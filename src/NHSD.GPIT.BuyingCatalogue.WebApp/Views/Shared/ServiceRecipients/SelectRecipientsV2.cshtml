@@ -20,17 +20,6 @@
         @if (Model.HasImportedRecipients
              || (Model.PreviouslySelected?.Any() ?? false))
         {
-            @if (Model.HasImportedRecipients)
-            {
-                <nhs-inset-text>
-                    <p>
-                        <span>Your Service Recipients have been imported successfully.</span>
-
-                        If you need to make changes, you can do so manually or re-import them.
-                    </p>
-                </nhs-inset-text>
-            }
-
             @if (Model.IsAmendment && (Model.PreviouslySelected?.Any() ?? false))
             {
                 <div id="previously-selected-service-recipients">
@@ -68,7 +57,6 @@
                                       type="Secondary"/>
             </nhs-button-group>
         </div>
-        }
 
         <form method="post" id="sr-form">
             <input type="hidden" asp-for="Title"/>

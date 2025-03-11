@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
-    public class SelectRecipientsV2Model : NavBaseModel
+    public sealed class SelectRecipientsV2Model : NavBaseModel
     {
         private readonly SelectionMode? selectionMode;
 
@@ -17,6 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             SelectionMode? selectionMode = null,
             bool isAmendment = false)
         {
+            Title = "Add service recipients";
+            Caption = competition.Name;
+            Advice = "Select all the organisations that will be receiving this order";
+
             this.selectionMode = selectionMode;
 
             Organisation organisation = competition.Organisation;
@@ -24,6 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             OrganisationName = organisation.Name;
             OrganisationType = organisation.OrganisationType.GetValueOrDefault();
             PreviouslySelected = selectedSublocation.ServiceRecipients;
+            PossibleServiceRecipients = possibleServiceRecipients.ToList();
 
             List<string> previouslySelectedAsString = PreviouslySelected.Select(x => x.OdsCode).ToList();
 
@@ -55,9 +60,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public bool IsAmendment { get; set; }
 
+        public List<ServiceRecipientModel> PossibleServiceRecipients { get; set; } = [];
+
         public IEnumerable<ServiceRecipientModel> GetServiceRecipients()
         {
-            return Sublocation.ServiceRecipients;
+            return PossibleServiceRecipients;
         }
 
         public IEnumerable<ServiceRecipientModel> GetSelectedServiceRecipients()
