@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Buttons
@@ -88,20 +89,20 @@
                             <div class="nhsuk-label bold-label non-js-only">Organisation</div>
                         </nhs-table-column>
                         <nhs-table-column>ODS code</nhs-table-column>
-                        @foreach (var (item, rIndex) in Model.Sublocation.ServiceRecipients.Select((x, i) => (x, i)))
+                        @foreach (var item in Model.PossibleServiceRecipients)
                         {
+                            var checkboxModel = new CheckboxNameAndValueModel() { Name = item.OdsCode, Value = item.Selected };
+                            
                             <nhs-table-row-container id="@item.OdsCode" class="recipient">
                                 <nhs-table-cell>
                                     <nhs-checkbox-container>
-                                        <nhs-checkbox asp-for="@Model.Sublocation.ServiceRecipients[rIndex].Selected"
+                                        <nhs-checkbox asp-for="@checkboxModel"
                                                       label-text="@item.Name"
-                                                      hidden-input="@Model.Sublocation.ServiceRecipients[rIndex].Name"
                                                       checkbox-class="main-srs gather-data"/>
                                     </nhs-checkbox-container>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
-                                    <input type="hidden" asp-for="@Model.Sublocation.ServiceRecipients[rIndex].OdsCode"/>
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         }
