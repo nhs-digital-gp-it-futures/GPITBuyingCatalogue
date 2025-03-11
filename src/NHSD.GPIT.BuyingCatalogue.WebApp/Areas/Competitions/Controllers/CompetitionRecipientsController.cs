@@ -76,7 +76,7 @@ public class CompetitionRecipientsController : Controller
         }
 
         return RedirectToAction(
-            nameof(Index),
+            nameof(SelectSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
     }
@@ -93,7 +93,13 @@ public class CompetitionRecipientsController : Controller
         IEnumerable<OdsOrganisation> possibleSublocations =
             await odsService.GetSublocationsByParentInternalIdentifier(internalOrgId);
 
-        var model = new SelectSublocationsModel(competition, possibleSublocations, isInitialSelection);
+        var model = new SelectSublocationsModel(competition, possibleSublocations, isInitialSelection)
+        {
+            BackLink = Url.Action(
+                nameof(UploadOrSelectServiceRecipients),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId }),
+        };
         return View("ServiceRecipients/SelectSublocations", model);
     }
 
