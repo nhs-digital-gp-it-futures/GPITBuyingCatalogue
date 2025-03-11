@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
@@ -183,7 +184,7 @@ public class CompetitionRecipientsController : Controller
                 .ToList(),
         };
 
-        List<ServiceRecipientModel> possibleRecipients = await GetServiceRecipients(internalOrgId);
+        List<ServiceRecipientModel> possibleRecipients = await GetServiceRecipientsBySublocation(sublocationId);
         var splitRecipientIds = string.Join(',', recipientIds, importedRecipients)
             .Split(
                 ',',
@@ -313,6 +314,16 @@ public class CompetitionRecipientsController : Controller
         return recipients
             .OrderBy(x => x.Name)
             .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location, })
+            .ToList();
+    }
+
+    private async Task<List<ServiceRecipientModel>> GetServiceRecipientsBySublocation(string internalOrgId)
+    {
+        IEnumerable<ServiceRecipient> recipients = await odsService.GetServiceRecipientsBySublocation(internalOrgId);
+
+        return recipients
+            .OrderBy(x => x.Name)
+            .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
             .ToList();
     }
 

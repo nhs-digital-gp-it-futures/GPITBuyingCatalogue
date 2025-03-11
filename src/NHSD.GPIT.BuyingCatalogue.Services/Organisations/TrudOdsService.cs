@@ -133,6 +133,9 @@ public class TrudOdsService : IOdsService
             .Where(
                 x => x.OwnerOrganisationId == sublocationInternalIdentifier &&
                     x.RelationshipTypeId == settings.IsCommissionedByRelType)
+            .Include(x => x.TargetOrganisation)
+            .ThenInclude(y => y.Roles)
+            .Include(x => x.OwnerOrganisation)
             .Select(x => MapServiceRecipientFromRelationship(x))
             .ToListAsync();
 
