@@ -22,6 +22,7 @@
      CatalogueAgreementSigned bit CONSTRAINT DF_AspNetUsers_CatalogueAgreementSigned DEFAULT 0 NOT NULL,
      FirstName nvarchar(100) NOT NULL,
      LastName nvarchar(100) NOT NULL,
+     Created DATETIME2(7) DEFAULT GETUTCDATE() NOT NULL,
      LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
      LastUpdatedBy int NULL,
      HasOptedInUserResearch BIT DEFAULT 0 NOT NULL,
