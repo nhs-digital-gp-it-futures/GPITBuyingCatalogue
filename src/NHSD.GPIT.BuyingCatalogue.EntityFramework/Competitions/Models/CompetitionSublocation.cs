@@ -14,7 +14,7 @@ public record CompetitionSublocation
     [MaxLength(10)]
     public string OwnerOdsCode { get; set; }
 
-    public bool Selected { get; set; }
+    public bool Selected { get; set; } // could potentially remove and count presence as selected status
 
     public Competition Competition { get; set; }
 

@@ -75,6 +75,16 @@ public interface ICompetitionsService
         CatalogueItemId solutionId,
         CatalogueItemId serviceId);
 
+    Task AddSublocations(
+        string internalOrgId,
+        int competitionId,
+        IReadOnlyCollection<string> sublocationIds);
+
+    Task RemoveSublocations(
+        string internalOrgId,
+        int competitionId,
+        IReadOnlyCollection<string> sublocationIds);
+
     Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
 
     Task SetContractLength(string internalOrgId, int competitionId, int contractLength);
