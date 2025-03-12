@@ -112,7 +112,12 @@ public class CompetitionRecipientsController : Controller
     [HttpGet("add-sublocations")]
     public async Task<IActionResult> AddSublocations(string internalOrgId, int competitionId)
     {
-        return await SelectSublocationsOverview(internalOrgId, competitionId, false);
+        var backLink = Url.Action(
+            nameof(SelectSublocations),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
+
+        return await SelectSublocationsOverview(internalOrgId, competitionId, false, backLink);
     }
 
     [HttpPost("add-sublocations")]
@@ -124,7 +129,12 @@ public class CompetitionRecipientsController : Controller
     [HttpGet("confirm-sublocations")]
     public async Task<IActionResult> ConfirmSublocations(string internalOrgId, int competitionId)
     {
-        return await SelectSublocationsOverview(internalOrgId, competitionId, true);
+        var backLink = Url.Action(
+            nameof(CompetitionTaskListController.Index),
+            typeof(CompetitionTaskListController).ControllerName(),
+            new { internalOrgId, competitionId });
+
+        return await SelectSublocationsOverview(internalOrgId, competitionId, true, backLink);
     }
 
     [HttpPost("confirm-sublocations")]
@@ -146,7 +156,13 @@ public class CompetitionRecipientsController : Controller
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
 
-        var model = new RemoveSublocationsModel(competition);
+        var model = new RemoveSublocationsModel(competition)
+        {
+            BackLink = Url.Action(
+                nameof(ConfirmSublocations),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId }),
+        };
 
         return View("ServiceRecipients/RemoveSublocations", model);
     }
@@ -201,7 +217,13 @@ public class CompetitionRecipientsController : Controller
             sublocationAsSublocationModel,
             possibleRecipients,
             splitRecipientIds,
-            selectionMode);
+            selectionMode)
+        {
+            BackLink = Url.Action(
+                nameof(ConfirmSublocations),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId }),
+        };
 
         return View("ServiceRecipients/SelectRecipientsV2", model);
     }
@@ -336,7 +358,8 @@ public class CompetitionRecipientsController : Controller
     private async Task<IActionResult> SelectSublocationsOverview(
         string internalOrgId,
         int competitionId,
-        bool isConfirm)
+        bool isConfirm,
+        string backlink)
     {
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
@@ -354,6 +377,10 @@ public class CompetitionRecipientsController : Controller
                         competitionId,
                         s.SublocationOdsCode),
                     OdsCode = s.SublocationOdsCode,
+                    RecipientHref = Url.Action(
+                        nameof(SelectSublocationRecipients),
+                        typeof(CompetitionRecipientsController).ControllerName(),
+                        new { internalOrgId, competitionId, sublocationId = s.SublocationOdsCode }),
                 };
                 sublocations.Add(sublocationModel);
             }
@@ -365,7 +392,7 @@ public class CompetitionRecipientsController : Controller
             isConfirm,
             competition,
             sublocations,
-            addOrChangeSublocationsHref);
+            addOrChangeSublocationsHref) { BackLink = backlink };
 
         return View("ServiceRecipients/SelectSublocationsOverview", model);
     }

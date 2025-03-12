@@ -27,4 +27,6 @@ public class SublocationModel
     public TaskProgress TaskProgress => ServiceRecipientCount == 0 ? TaskProgress.NotStarted : TaskProgress.Completed;
 
     public bool AllRecipientsSelected => ServiceRecipients.All(x => x.Selected);
+
+    public string RecipientHref { get; set; }
 }
