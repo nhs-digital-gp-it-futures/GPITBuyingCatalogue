@@ -78,12 +78,12 @@ public interface ICompetitionsService
     Task AddSublocations(
         string internalOrgId,
         int competitionId,
-        IReadOnlyCollection<string> sublocationIds);
+        HashSet<string> sublocationIds);
 
     Task RemoveSublocations(
         string internalOrgId,
         int competitionId,
-        IReadOnlyCollection<string> sublocationIds);
+        HashSet<string> sublocationIds);
 
     Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
 

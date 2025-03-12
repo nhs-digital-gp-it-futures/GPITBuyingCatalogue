@@ -274,7 +274,7 @@ public class CompetitionsService : ICompetitionsService
     public async Task AddSublocations(
         string internalOrgId,
         int competitionId,
-        IReadOnlyCollection<string> sublocationIds)
+        HashSet<string> sublocationIds)
     {
         if (sublocationIds.IsNullOrEmpty())
         {
@@ -321,7 +321,7 @@ public class CompetitionsService : ICompetitionsService
     public async Task RemoveSublocations(
         string internalOrgId,
         int competitionId,
-        IReadOnlyCollection<string> sublocationIds)
+        HashSet<string> sublocationIds)
     {
         if (sublocationIds.IsNullOrEmpty())
         {
