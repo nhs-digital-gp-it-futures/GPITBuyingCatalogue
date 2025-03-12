@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.FormContent;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -78,7 +79,7 @@ public class CompetitionRecipientsController : Controller
         return RedirectToAction(
             nameof(SelectSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId });
+            new { internalOrgId, competitionId, isInitialSelection = true });
     }
 
     [HttpGet("select-sublocations")]
@@ -104,9 +105,20 @@ public class CompetitionRecipientsController : Controller
     }
 
     [HttpPost("select-sublocations")]
-    public async Task<IActionResult> SelectSublocations()
+    public async Task<IActionResult> SelectSublocations(
+        [FilteredFormContent] Dictionary<string, string> form,
+        string internalOrgId,
+        int competitionId,
+        bool isInitialSelection)
     {
-        throw new NotImplementedException();
+        List<string> sublocationIds = form.Keys.ToList();
+
+        await competitionsService.AddSublocations(internalOrgId, competitionId, sublocationIds);
+
+        return RedirectToAction(
+            nameof(AddSublocations),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
     }
 
     [HttpGet("add-sublocations")]
