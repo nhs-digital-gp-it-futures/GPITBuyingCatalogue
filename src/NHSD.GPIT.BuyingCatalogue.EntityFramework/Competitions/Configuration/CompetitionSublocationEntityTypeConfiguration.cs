@@ -28,7 +28,8 @@ public class CompetitionSublocationEntityTypeConfiguration : IEntityTypeConfigur
         builder.HasMany(x => x.SublocationRecipients)
             .WithOne(y => y.ParentSublocation)
             .HasForeignKey(y => new { y.CompetitionId, y.ParentSublocationOdsCode })
-            .HasConstraintName("FK_CompetitionSublocationRecipients_CompetitionSublocations");
+            .HasConstraintName("FK_CompetitionSublocationRecipients_CompetitionSublocations")
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.SublocationOrganisation)
             .WithMany()

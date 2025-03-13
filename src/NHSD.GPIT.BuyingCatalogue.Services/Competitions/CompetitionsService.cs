@@ -332,6 +332,7 @@ public class CompetitionsService : ICompetitionsService
             .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
             .Include(x => x.Organisation)
             .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
             .FirstOrDefaultAsync();
 
         if (!competition.CompetitionSublocations.Any(x => sublocationIds.Contains(x.SublocationOdsCode)))
