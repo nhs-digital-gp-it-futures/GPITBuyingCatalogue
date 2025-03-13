@@ -249,10 +249,7 @@ public class CompetitionRecipientsController : Controller
         };
 
         List<ServiceRecipientModel> possibleRecipients = await GetServiceRecipientsBySublocation(sublocationId);
-        var splitRecipientIds = string.Join(',', recipientIds, importedRecipients)
-            .Split(
-                ',',
-                StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        var splitRecipientIds = SplitCommaSeparatedString(string.Join(',', recipientIds, importedRecipients));
 
         var model = new SelectRecipientsV2Model(
             competition,
@@ -281,10 +278,7 @@ public class CompetitionRecipientsController : Controller
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var competition = await competitionsService.GetCompetitionWithRecipients(internalOrgId, competitionId);
         var recipients = await GetServiceRecipients(internalOrgId);
-        var splitRecipientIds = string.Join(',', recipientIds, importedRecipients)
-            .Split(
-                ',',
-                StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        var splitRecipientIds = SplitCommaSeparatedString(string.Join(',', recipientIds, importedRecipients));
 
         const string pageAdvice =
             "Select the organisations that will receive the winning solution for this competition or upload them using a CSV file.";
@@ -339,9 +333,7 @@ public class CompetitionRecipientsController : Controller
         var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
         var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
 
-        var recipientOdsCodes = recipientIds.Split(
-            ',',
-            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var recipientOdsCodes = SplitCommaSeparatedString(recipientIds);
 
         var recipients = await odsService.GetServiceRecipientsById(internalOrgId, recipientOdsCodes);
 
@@ -440,5 +432,12 @@ public class CompetitionRecipientsController : Controller
             addOrChangeSublocationsHref) { BackLink = backlink };
 
         return View("ServiceRecipients/SelectSublocationsOverview", model);
+    }
+
+    private static string[] SplitCommaSeparatedString(string sublocationsToRemove)
+    {
+        return sublocationsToRemove?.Split(
+            ',',
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
     }
 }
