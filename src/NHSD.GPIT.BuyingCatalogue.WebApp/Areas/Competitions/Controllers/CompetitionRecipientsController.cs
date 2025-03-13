@@ -111,12 +111,42 @@ public class CompetitionRecipientsController : Controller
         int competitionId,
         bool isInitialSelection)
     {
-        List<string> sublocationIds = form.Keys.ToList();
+        HashSet<string> sublocationIds = form.Keys.ToHashSet();
 
-        await competitionsService.AddSublocations(internalOrgId, competitionId, sublocationIds);
+        if (isInitialSelection)
+        {
+            await competitionsService.AddSublocations(internalOrgId, competitionId, sublocationIds);
+
+            return RedirectToAction(
+                nameof(AddSublocations),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId });
+        }
+
+        Competition competition =
+            await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+
+        HashSet<string> competitionSublocations =
+            competition.CompetitionSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
+
+        var removes = new HashSet<string>(competitionSublocations);
+        removes.ExceptWith(sublocationIds);
+
+        var adds = new HashSet<string>(sublocationIds);
+        adds.ExceptWith(competitionSublocations);
+
+        if (removes.Count > 0)
+        {
+            await competitionsService.RemoveSublocations(internalOrgId, competitionId, removes);
+        }
+
+        if (adds.Count > 0)
+        {
+            await competitionsService.AddSublocations(internalOrgId, competitionId, adds);
+        }
 
         return RedirectToAction(
-            nameof(AddSublocations),
+            nameof(ConfirmSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
     }
