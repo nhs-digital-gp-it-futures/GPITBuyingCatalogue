@@ -428,7 +428,10 @@ public class CompetitionRecipientsController : Controller
             }
         }
 
-        var addOrChangeSublocationsHref = "";
+        var addOrChangeSublocationsHref = Url.Action(
+            nameof(SelectSublocations),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
 
         var model = new SelectSublocationsOverviewModel(
             isConfirm,
