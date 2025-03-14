@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.FormContent;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
+using stringDict = System.Collections.Generic.Dictionary<string, string>;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
@@ -106,7 +107,7 @@ public class CompetitionRecipientsController : Controller
 
     [HttpPost("select-sublocations")]
     public async Task<IActionResult> SelectSublocations(
-        [FilteredFormContent] Dictionary<string, string> form,
+        [FilteredFormContent] stringDict form,
         string internalOrgId,
         int competitionId,
         bool isInitialSelection)
@@ -161,7 +162,7 @@ public class CompetitionRecipientsController : Controller
         return RedirectToAction(
             nameof(ConfirmSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId, sublocationsToRemove = removes, sublocationsToAdd = adds });
+            new { internalOrgId, competitionId });
     }
 
     [HttpGet("add-sublocations")]
@@ -226,9 +227,42 @@ public class CompetitionRecipientsController : Controller
     }
 
     [HttpPost("remove-sublocations")]
-    public async Task<IActionResult> RemoveSublocations()
+    public async Task<IActionResult> RemoveSublocations(
+        [FilteredFormContent] stringDict form,
+        string internalOrgId,
+        int competitionId)
     {
-        throw new NotImplementedException();
+        const string confirmationKey = "ConfirmRemove";
+        const string removePrefix = "remove";
+        const string addPrefix = "add";
+
+        var userHasConfirmed = form[confirmationKey] == "True";
+
+        if (userHasConfirmed)
+        {
+            HashSet<string> removes = form.Where(kvp => kvp.Key.ToString().StartsWith(removePrefix))
+                .Select(kvp => kvp.Value)
+                .ToHashSet();
+
+            HashSet<string> adds = form.Where(kvp => kvp.Key.ToString().StartsWith(addPrefix))
+                .Select(kvp => kvp.Value)
+                .ToHashSet();
+
+            if (adds.Count > 0)
+            {
+                await competitionsService.AddSublocations(internalOrgId, competitionId, adds);
+            }
+
+            if (removes.Count > 0)
+            {
+                await competitionsService.RemoveSublocations(internalOrgId, competitionId, removes);
+            }
+        }
+
+        return RedirectToAction(
+            nameof(ConfirmSublocations),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
     }
 
     [HttpGet("{sublocationId}")]
