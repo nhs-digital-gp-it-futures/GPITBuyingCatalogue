@@ -14,11 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
         Task AddSublocationRecipients(
             string externalOrgId,
             int competitionId,
-            HashSet<string> sublocationIds);
+            string sublocationId,
+            HashSet<string> recipientIds);
 
         Task RemoveSublocationRecipients(
             string externalOrgId,
             int competitionId,
-            HashSet<string> sublocationIds);
+            string sublocationId,
+            HashSet<string> recipientIds);
     }
 }
