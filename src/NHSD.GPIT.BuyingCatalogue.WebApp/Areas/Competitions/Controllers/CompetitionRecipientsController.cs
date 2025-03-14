@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -19,29 +18,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 [Authorize("Buyer")]
 [Area("Competitions")]
 [Route("organisation/{internalOrgId}/competitions/{competitionId:int}/select-recipients")]
-public class CompetitionRecipientsController : Controller
+public class CompetitionRecipientsController(
+    IOrganisationsService organisationsService,
+    ICompetitionsService competitionsService,
+    ICompetitionSublocationService competitionSublocationService,
+    IOdsService odsService)
+    : Controller
 {
     internal const string ConfirmRecipientsAdvice =
         "Review the organisations you’ve selected to receive the winning solution for this competition.";
 
-    private readonly IOrganisationsService organisationsService;
-    private readonly ICompetitionsService competitionsService;
-    private readonly ICompetitionSublocationService competitionSublocationService;
-    private readonly IOdsService odsService;
+    private readonly IOrganisationsService organisationsService =
+        organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
 
-    public CompetitionRecipientsController(
-        IOrganisationsService organisationsService,
-        ICompetitionsService competitionsService,
-        ICompetitionSublocationService competitionSublocationService,
-        IOdsService odsService)
-    {
-        this.organisationsService =
-            organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
-        this.competitionsService = competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
-        this.competitionSublocationService = competitionSublocationService
-            ?? throw new ArgumentNullException(nameof(competitionSublocationService));
-        this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
-    }
+    private readonly ICompetitionsService competitionsService =
+        competitionsService ?? throw new ArgumentNullException(nameof(competitionsService));
+
+    private readonly ICompetitionSublocationService competitionSublocationService = competitionSublocationService
+        ?? throw new ArgumentNullException(nameof(competitionSublocationService));
+
+    private readonly IOdsService odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
 
     [HttpGet("upload-or-select-service-recipients")]
     public async Task<IActionResult> UploadOrSelectServiceRecipients(
@@ -274,12 +270,10 @@ public class CompetitionRecipientsController : Controller
         string importedRecipients,
         SelectionMode? selectionMode = null)
     {
-        Organisation organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-
         Competition competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
         CompetitionSublocation competitionSublocation =
             await competitionSublocationService.GetCompetitionSublocationWithRecipients(
-                organisation.ExternalIdentifier,
+                competition.Organisation.ExternalIdentifier,
                 competitionId,
                 sublocationId);
 
