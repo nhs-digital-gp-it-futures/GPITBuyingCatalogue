@@ -287,6 +287,11 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSublocations)
             .FirstOrDefaultAsync();
 
+        if (competition.Completed.HasValue)
+        {
+            throw new InvalidOperationException("Cannot add sublocations on a completed competition.");
+        }
+
         if (competition.CompetitionSublocations.Any(x => sublocationIds.Contains(x.SublocationOdsCode)))
         {
             throw new InvalidOperationException("Can only add sublocations not already included in competition.");
@@ -334,6 +339,11 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSublocations)
             .ThenInclude(y => y.SublocationRecipients)
             .FirstOrDefaultAsync();
+
+        if (competition.Completed.HasValue)
+        {
+            throw new InvalidOperationException("Cannot remove sublocations on a completed competition.");
+        }
 
         if (!competition.CompetitionSublocations.Any(x => sublocationIds.Contains(x.SublocationOdsCode)))
         {
