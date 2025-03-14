@@ -126,10 +126,10 @@ public class CompetitionRecipientsController(
         HashSet<string> competitionSublocations =
             competition.CompetitionSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
 
-        var removes = new HashSet<string>(competitionSublocations);
+        HashSet<string> removes = [..competitionSublocations];
         removes.ExceptWith(sublocationIds);
 
-        var adds = new HashSet<string>(sublocationIds);
+        HashSet<string> adds = [..sublocationIds];
         adds.ExceptWith(competitionSublocations);
 
         var stringOfRemoves = JoinEnumerableStringsToCommaSeparatedString(removes);
@@ -318,7 +318,50 @@ public class CompetitionRecipientsController(
         int competitionId,
         string sublocationId)
     {
-        throw new NotImplementedException();
+        const string selectPrefix = "recipient";
+
+        Competition competition =
+            await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+
+        CompetitionSublocation activeSublocation =
+            competition.CompetitionSublocations.First(x => x.SublocationOdsCode == sublocationId);
+
+        HashSet<string> pageSelections = form.Where(kvp => kvp.Key.ToString().StartsWith(selectPrefix))
+            .Select(kvp => kvp.Value)
+            .ToHashSet();
+
+        HashSet<string> currentRecipients =
+            activeSublocation.SublocationRecipients?.Select(x => x.RecipientOdsCode).ToHashSet() ?? [];
+
+        HashSet<string> adds = [..pageSelections];
+        adds.ExceptWith(currentRecipients);
+
+        HashSet<string> removes = [..currentRecipients];
+        removes.ExceptWith(pageSelections);
+
+        if (adds.Count > 0)
+        {
+            await competitionSublocationService.AddSublocationRecipients(
+                competition.Organisation.ExternalIdentifier,
+                competitionId,
+                sublocationId,
+                adds);
+        }
+
+        if (removes.Count > 0)
+        {
+            await competitionSublocationService.RemoveSublocationRecipients(
+                competition.Organisation.ExternalIdentifier,
+                competitionId,
+                sublocationId,
+                removes);
+        }
+
+        return RedirectToAction(
+            Url.Action(
+                nameof(ConfirmSublocations),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId }));
     }
 
     [HttpGet]
