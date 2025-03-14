@@ -323,15 +323,18 @@ public class CompetitionRecipientsController(
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
 
-        CompetitionSublocation activeSublocation =
-            competition.CompetitionSublocations.First(x => x.SublocationOdsCode == sublocationId);
+        CompetitionSublocation sublocation =
+            await competitionSublocationService.GetCompetitionSublocationWithRecipients(
+                competition.Organisation.ExternalIdentifier,
+                competitionId,
+                sublocationId);
 
         HashSet<string> pageSelections = form.Where(kvp => kvp.Key.ToString().StartsWith(selectPrefix))
-            .Select(kvp => kvp.Value)
+            .Select(kvp => kvp.Key.Split('-')[1])
             .ToHashSet();
 
         HashSet<string> currentRecipients =
-            activeSublocation.SublocationRecipients?.Select(x => x.RecipientOdsCode).ToHashSet() ?? [];
+            sublocation.SublocationRecipients.Select(x => x.RecipientOdsCode).ToHashSet();
 
         HashSet<string> adds = [..pageSelections];
         adds.ExceptWith(currentRecipients);
@@ -358,10 +361,9 @@ public class CompetitionRecipientsController(
         }
 
         return RedirectToAction(
-            Url.Action(
-                nameof(ConfirmSublocations),
-                typeof(CompetitionRecipientsController).ControllerName(),
-                new { internalOrgId, competitionId }));
+            nameof(ConfirmSublocations),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
     }
 
     [HttpGet]

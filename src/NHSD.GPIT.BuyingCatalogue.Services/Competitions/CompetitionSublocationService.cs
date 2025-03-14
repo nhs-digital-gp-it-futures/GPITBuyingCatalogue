@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
                 .ThenInclude(y => y.RecipientOrganisation)
-                .FirstOrDefaultAsync();
+                .FirstAsync();
             return sublocation;
         }
 
@@ -54,7 +54,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
 
             CompetitionSublocation sublocation = await dbContext
                 .CompetitionSublocations
-                .AsNoTracking()
                 .Where(
                     x => x.OwnerOdsCode == externalOrgId
                         && x.CompetitionId == competitionId
@@ -118,7 +117,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
 
             CompetitionSublocation sublocation = await dbContext
                 .CompetitionSublocations
-                .AsNoTracking()
                 .Where(
                     x => x.OwnerOdsCode == externalOrgId
                         && x.CompetitionId == competitionId
