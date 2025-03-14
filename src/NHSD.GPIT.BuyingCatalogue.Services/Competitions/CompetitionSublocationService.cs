@@ -21,6 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
         {
             CompetitionSublocation sublocation = await dbContext
                 .CompetitionSublocations
+                .AsNoTracking()
                 .Where(
                     x => x.OwnerOdsCode == externalOrgId
                         && x.CompetitionId == competitionId
