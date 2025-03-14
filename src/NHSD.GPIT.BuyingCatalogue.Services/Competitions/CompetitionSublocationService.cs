@@ -109,7 +109,48 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             string sublocationId,
             HashSet<string> recipientIds)
         {
-            throw new NotImplementedException();
+            ArgumentException.ThrowIfNullOrEmpty(externalOrgId, nameof(externalOrgId));
+            ArgumentException.ThrowIfNullOrEmpty(sublocationId, nameof(sublocationId));
+            if (recipientIds.IsNullOrEmpty())
+            {
+                throw new ArgumentException(@"recipientIds is null or empty", nameof(recipientIds));
+            }
+
+            CompetitionSublocation sublocation = await dbContext
+                .CompetitionSublocations
+                .AsNoTracking()
+                .Where(
+                    x => x.OwnerOdsCode == externalOrgId
+                        && x.CompetitionId == competitionId
+                        && x.SublocationOdsCode == sublocationId)
+                .Include(x => x.Competition)
+                .Include(x => x.SublocationOrganisation)
+                .Include(x => x.SublocationRecipients)
+                .FirstOrDefaultAsync();
+
+            if (sublocation.Competition.Completed.HasValue)
+            {
+                throw new InvalidOperationException(
+                    "Cannot remove recipients from sublocations on a completed competition.");
+            }
+
+            var anyIdAlreadyInServiceRecipients =
+                recipientIds.All(x => sublocation.SublocationRecipients.Any(y => y.RecipientOdsCode == x));
+
+            if (!anyIdAlreadyInServiceRecipients)
+            {
+                throw new InvalidOperationException("Can only remove recipient if present in sublocation.");
+            }
+
+            foreach (var recipientId in recipientIds)
+            {
+                CompetitionSublocationRecipient itemToRemove =
+                    sublocation.SublocationRecipients.First(x => x.RecipientOdsCode == recipientId);
+
+                sublocation.SublocationRecipients.Remove(itemToRemove);
+            }
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }
