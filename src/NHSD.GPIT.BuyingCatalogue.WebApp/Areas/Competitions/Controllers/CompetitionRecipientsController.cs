@@ -270,8 +270,8 @@ public class CompetitionRecipientsController : Controller
         string internalOrgId,
         int competitionId,
         string sublocationId,
-        string recipientIds = "",
-        string importedRecipients = "",
+        string recipientIds,
+        string importedRecipients,
         SelectionMode? selectionMode = null)
     {
         Organisation organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
@@ -315,6 +315,16 @@ public class CompetitionRecipientsController : Controller
         };
 
         return View("ServiceRecipients/SelectRecipientsV2", model);
+    }
+
+    [HttpPost("{sublocationId}")]
+    public async Task<IActionResult> SelectSublocationRecipients(
+        [FilteredFormContent] stringDict form,
+        string internalOrgId,
+        int competitionId,
+        string sublocationId)
+    {
+        throw new NotImplementedException();
     }
 
     [HttpGet]
