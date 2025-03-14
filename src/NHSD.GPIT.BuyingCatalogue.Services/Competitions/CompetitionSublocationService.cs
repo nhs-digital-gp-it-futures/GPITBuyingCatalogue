@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                 .ThenInclude(y => y.RecipientOrganisation)
                 .FirstOrDefaultAsync();
             return sublocation;
+        }
+
+        public Task AddSublocationRecipients(
+            string externalOrgId,
+            int competitionId,
+            HashSet<string> sublocationIds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveSublocationRecipients(
+            string externalOrgId,
+            int competitionId,
+            HashSet<string> sublocationIds)
+        {
+            throw new NotImplementedException();
         }
     }
 }

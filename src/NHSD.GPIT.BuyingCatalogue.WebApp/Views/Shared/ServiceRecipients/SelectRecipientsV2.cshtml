@@ -60,16 +60,9 @@
         </div>
 
         <form method="post" id="sr-form">
-            <input type="hidden" asp-for="Title"/>
-            <input type="hidden" asp-for="Caption"/>
-            <input type="hidden" asp-for="Advice"/>
-            <input type="hidden" asp-for="SelectAtLeast"/>
-            <input type="hidden" asp-for="OrganisationName"/>
-            <input type="hidden" asp-for="IsAmendment"/>
 
             @{ var expandWhenNotValid = !ViewData.ModelState.IsValid; }
 
-            <input type="hidden" asp-for="@Model.Sublocation.Name"/>
             <nhs-expander-v2 id="recipients-expander" open="@(expandWhenNotValid || Model.ShouldExpand || Model.Sublocation.ServiceRecipients.Any(x => x.Selected))">
                 <nhs-expander-summary label-text="@Model.Sublocation.Name" bold-title="true">
                     <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">
@@ -91,9 +84,9 @@
                         <nhs-table-column>ODS code</nhs-table-column>
                         @foreach (var item in Model.PossibleServiceRecipients)
                         {
-                            var checkboxModel = new CheckboxNameAndValueModel() { Name = item.OdsCode, Value = item.Selected };
+                            var checkboxModel = new CheckboxNameAndValueModel() { Name = $"recipient-{item.OdsCode}", Value = item.Selected };
                             
-                            <nhs-table-row-container id="@item.OdsCode" class="recipient">
+                            <nhs-table-row-container id="@item.OdsCode">
                                 <nhs-table-cell>
                                     <nhs-checkbox-container>
                                         <nhs-checkbox asp-for="@checkboxModel"
