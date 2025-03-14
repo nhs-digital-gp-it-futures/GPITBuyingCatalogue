@@ -8,7 +8,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title model="@Model"/>
         <p>@Model.ListHeaderText
-            <ul>@foreach(var sublocation in @Model.SublocationsToRemove){<li>@sublocation.OdsCode</li>}</ul>
+            <ul>@foreach(var sublocation in @Model.SublocationIdsToRemove){<li>@sublocation</li>}</ul>
         </p>
         
         <nhs-warning-callout label-text="Remove a sublocation">
@@ -16,6 +16,16 @@
         </nhs-warning-callout>
         
         <form method="post">
+            @foreach ( var (sublocation, index) in @Model.SublocationIdsToRemove.Select((x, y) => (x, y)))
+            {
+                <input type="hidden" name="remove-@index" value="@sublocation" />
+            }
+            
+            @foreach ( var (sublocation, index) in @Model.SublocationIdsToAdd.Select((x, y) => (x, y)))
+            {
+                <input type="hidden" name="add-@index" value="@sublocation" />
+            }
+
             <nhs-radio-button-container>
                 <nhs-radio-button asp-for="ConfirmRemove" value="true" display-text="Yes, I want to remove the sublocations" index="0"/>
                 <nhs-radio-button asp-for="ConfirmRemove" value="false" display-text="No, I want to keep the sublocations" index="1"/>

@@ -17,6 +17,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public string ListHeaderText { get; set; }
 
-        public List<SublocationModel> SublocationsToRemove { get; set; } = [];
+        public HashSet<string> SublocationIdsToRemove { get; set; }
+
+        public HashSet<string> SublocationIdsToAdd { get; set; }
     }
 }

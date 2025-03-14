@@ -135,9 +135,22 @@ public class CompetitionRecipientsController : Controller
         var adds = new HashSet<string>(sublocationIds);
         adds.ExceptWith(competitionSublocations);
 
+        var stringOfRemoves = JoinEnumerableStringsToCommaSeparatedString(removes);
+
+        var stringOfAdds = JoinEnumerableStringsToCommaSeparatedString(adds);
+
         if (removes.Count > 0)
         {
-            await competitionsService.RemoveSublocations(internalOrgId, competitionId, removes);
+            return RedirectToAction(
+                nameof(RemoveSublocations),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new
+                {
+                    internalOrgId,
+                    competitionId,
+                    sublocationsToRemove = stringOfRemoves,
+                    sublocationsToAdd = stringOfAdds,
+                });
         }
 
         if (adds.Count > 0)
@@ -148,7 +161,7 @@ public class CompetitionRecipientsController : Controller
         return RedirectToAction(
             nameof(ConfirmSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId });
+            new { internalOrgId, competitionId, sublocationsToRemove = removes, sublocationsToAdd = adds });
     }
 
     [HttpGet("add-sublocations")]
@@ -189,11 +202,12 @@ public class CompetitionRecipientsController : Controller
     public async Task<IActionResult> RemoveSublocations(
         string internalOrgId,
         int competitionId,
-        string sublocationOdsCodes)
+        string sublocationsToRemove,
+        string sublocationsToAdd)
     {
-        var splitSublocationOdsCodes = sublocationOdsCodes?.Split(
-            [','],
-            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+        var splitSublocationsToRemove = SplitCommaSeparatedString(sublocationsToRemove);
+
+        var splitSublocationsToAdd = SplitCommaSeparatedString(sublocationsToAdd);
 
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
@@ -204,6 +218,8 @@ public class CompetitionRecipientsController : Controller
                 nameof(ConfirmSublocations),
                 typeof(CompetitionRecipientsController).ControllerName(),
                 new { internalOrgId, competitionId }),
+            SublocationIdsToRemove = splitSublocationsToRemove.ToHashSet(),
+            SublocationIdsToAdd = splitSublocationsToAdd.ToHashSet(),
         };
 
         return View("ServiceRecipients/RemoveSublocations", model);
@@ -439,5 +455,10 @@ public class CompetitionRecipientsController : Controller
         return sublocationsToRemove?.Split(
             ',',
             StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+    }
+
+    private static string JoinEnumerableStringsToCommaSeparatedString(IEnumerable<string> stringEnumerable)
+    {
+        return string.Join(",", stringEnumerable);
     }
 }
