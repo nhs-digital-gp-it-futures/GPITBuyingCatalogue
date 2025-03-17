@@ -45,6 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                         {
                             Name = sl.OdsCode, Value = CheckboxNameAndValueModel.NotSelected,
                         }));
+            RenderedSublocations.Sort((x, y) => string.CompareOrdinal(x.Name, y.Name));
         }
     }
 }
