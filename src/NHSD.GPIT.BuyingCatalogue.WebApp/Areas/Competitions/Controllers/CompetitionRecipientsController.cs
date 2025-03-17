@@ -319,6 +319,7 @@ public class CompetitionRecipientsController(
         string sublocationId)
     {
         const string selectPrefix = "recipient";
+        const int odsCodeSplitIndex = 1;
 
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
@@ -330,7 +331,7 @@ public class CompetitionRecipientsController(
                 sublocationId);
 
         HashSet<string> pageSelections = form.Where(kvp => kvp.Key.ToString().StartsWith(selectPrefix))
-            .Select(kvp => kvp.Key.Split('-')[1])
+            .Select(kvp => kvp.Key.Split('-')[odsCodeSplitIndex])
             .ToHashSet();
 
         HashSet<string> currentRecipients =
