@@ -8,9 +8,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
     public sealed class SelectSublocationsModel : NavBaseModel
     {
-        private const bool Selected = true;
-        private const bool NotSelected = false;
-
         public SelectSublocationsModel(
             EntityModels.Competition competition,
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations)
@@ -22,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             PossibleSublocations = possibleSublocations;
             ActualSublocations = competition.CompetitionSublocations;
 
-            PopulateCheckedState();
+            PopulateRenderedSublocations();
         }
 
         public IEnumerable<ServiceModels.OdsOrganisation> PossibleSublocations { get; init; }
@@ -31,16 +28,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public List<CheckboxNameAndValueModel> RenderedSublocations { get; init; } = [];
 
-        private void PopulateCheckedState()
+        private void PopulateRenderedSublocations()
         {
             RenderedSublocations.AddRange(
                 ActualSublocations.Select(
-                    cs => new CheckboxNameAndValueModel { Name = cs.SublocationOdsCode, Value = Selected }));
+                    cs => new CheckboxNameAndValueModel
+                    {
+                        Name = cs.SublocationOdsCode, Value = CheckboxNameAndValueModel.Selected,
+                    }));
 
             RenderedSublocations.AddRange(
                 PossibleSublocations
                     .Where(sl => RenderedSublocations.All(x => x.Name != sl.OdsCode))
-                    .Select(sl => new CheckboxNameAndValueModel { Name = sl.OdsCode, Value = NotSelected }));
+                    .Select(
+                        sl => new CheckboxNameAndValueModel
+                        {
+                            Name = sl.OdsCode, Value = CheckboxNameAndValueModel.NotSelected,
+                        }));
         }
     }
 }
