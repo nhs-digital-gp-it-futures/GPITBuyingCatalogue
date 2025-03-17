@@ -57,7 +57,7 @@ public class CompetitionRecipientsController(
     }
 
     [HttpPost("upload-or-select-service-recipients")]
-    public IActionResult UploadOrSelectServiceRecipients(
+    public async Task<IActionResult> UploadOrSelectServiceRecipients(
         UploadOrSelectServiceRecipientModel model,
         string internalOrgId,
         int competitionId)
@@ -73,8 +73,11 @@ public class CompetitionRecipientsController(
                 new { internalOrgId, competitionId });
         }
 
+        var competitionHasSublocations =
+            await competitionsService.GetCompetitionHasAnySublocations(internalOrgId, competitionId);
+
         return RedirectToAction(
-            nameof(SelectSublocations),
+            competitionHasSublocations ? nameof(ConfirmSublocations) : nameof(SelectSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
     }

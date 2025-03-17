@@ -53,6 +53,10 @@ public interface ICompetitionsService
         int competitionId,
         string sublocationId);
 
+    Task<bool> GetCompetitionHasAnySublocations(string internalOrgId, int competitionId);
+
+    Task<bool> GetCompetitionHasAnyRecipients(string internalOrgId, int competitionId);
+
     Task AddCompetitionSolutions(string internalOrgId, int competitionId, IEnumerable<CompetitionSolution> competitionSolutions);
 
     Task AcceptShortlist(string internalOrgId, int competitionId);
