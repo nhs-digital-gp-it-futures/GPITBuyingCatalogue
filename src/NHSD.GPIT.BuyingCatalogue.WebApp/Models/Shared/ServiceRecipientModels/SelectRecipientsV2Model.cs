@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Competition competition,
             SublocationModel selectedSublocation,
             IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
-            IEnumerable<string> requestSelectedRecipients,
+            IEnumerable<string> requestParameterRecipients,
             SelectionMode? selectionMode = null,
             bool isAmendment = false)
         {
@@ -30,13 +30,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             PreviouslySelected = selectedSublocation.ServiceRecipients;
             PossibleServiceRecipients = possibleServiceRecipients.ToList();
 
-            List<string> previouslySelectedAsString = PreviouslySelected.Select(x => x.OdsCode).ToList();
-
             Sublocation = selectedSublocation;
 
             IsAmendment = isAmendment;
 
-            SelectServiceRecipients(previouslySelectedAsString, requestSelectedRecipients);
+            PopulateRenderedServiceRecipients();
+
+            SelectServiceRecipients(requestParameterRecipients);
         }
 
         public string OrganisationName { get; set; }
@@ -54,58 +54,42 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public List<ServiceRecipientModel> PreviouslySelected { get; set; }
 
-        public bool ShouldExpand { get; set; }
-
         public int? SelectAtLeast { get; set; }
 
         public bool IsAmendment { get; set; }
 
-        public List<ServiceRecipientModel> PossibleServiceRecipients { get; set; } = [];
+        public List<ServiceRecipientModel> PossibleServiceRecipients { get; set; }
 
-        public IEnumerable<ServiceRecipientModel> GetServiceRecipients()
+        public List<ServiceRecipientModel> RenderedServiceRecipients { get; set; } = [];
+
+        private void PopulateRenderedServiceRecipients()
         {
-            return PossibleServiceRecipients;
+            RenderedServiceRecipients.AddRange(PreviouslySelected);
+            RenderedServiceRecipients.AddRange(
+                PossibleServiceRecipients.Where(
+                    nsr => RenderedServiceRecipients.All(esr => esr.OdsCode != nsr.OdsCode)));
+            RenderedServiceRecipients.Sort((x, y) => string.CompareOrdinal(x.Name, y.Name));
         }
 
-        public IEnumerable<ServiceRecipientModel> GetSelectedServiceRecipients()
-        {
-            return GetServiceRecipients().Where(x => x.Selected);
-        }
-
-        public bool HasSelectedRecipients()
-        {
-            return GetSelectedServiceRecipients().Any();
-        }
-
-        private void SelectServiceRecipients(
-            IEnumerable<string> existingRecipients,
-            IEnumerable<string> recipients)
+        private void SelectServiceRecipients(IEnumerable<string> requestParameterRecipients)
         {
             switch (selectionMode)
             {
                 case SelectionMode.All:
-                    GetServiceRecipients().ToList().ForEach(x => x.Selected = true);
+                    RenderedServiceRecipients.ForEach(x => x.Selected = true);
                     break;
                 case SelectionMode.None:
-                    GetServiceRecipients().ToList().ForEach(x => x.Selected = false);
+                    RenderedServiceRecipients.ForEach(x => x.Selected = false);
                     break;
                 default:
-                    if (recipients == null) return;
+                    if (requestParameterRecipients == null) return;
 
-                    var enumeratedRecipients = recipients.ToArray();
-                    var recipientsToSelect = enumeratedRecipients.Any()
-                        ? enumeratedRecipients.ToArray()
-                        : existingRecipients.ToArray();
-
-                    List<ServiceRecipientModel> matchingRecipients = GetServiceRecipients()
-                        .Where(x => recipientsToSelect.Contains(x.OdsCode))
+                    List<ServiceRecipientModel> matchingRecipients = RenderedServiceRecipients
+                        .Where(x => requestParameterRecipients.Contains(x.OdsCode))
                         .ToList();
-                    if (!matchingRecipients.Any())
-                        return;
+                    if (matchingRecipients.Count == 0) return;
 
                     matchingRecipients.ForEach(x => x.Selected = true);
-
-                    var allSelected = GetServiceRecipients().All(x => x.Selected);
 
                     break;
             }

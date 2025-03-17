@@ -63,10 +63,10 @@
 
             @{ var expandWhenNotValid = !ViewData.ModelState.IsValid; }
 
-            <nhs-expander-v2 id="recipients-expander" open="@(expandWhenNotValid || Model.ShouldExpand || Model.Sublocation.ServiceRecipients.Any(x => x.Selected))">
+            <nhs-expander-v2 id="recipients-expander" open="@(Model.RenderedServiceRecipients.Any(x => x.Selected))">
                 <nhs-expander-summary label-text="@Model.Sublocation.Name" bold-title="true">
                     <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">
-                        <b>@(Model.Sublocation.ServiceRecipients.Count(r => r.Selected)) </b>
+                        <b>@(Model.RenderedServiceRecipients.Count(r => r.Selected)) </b>
                         recipients selected
                     </span>
                 </nhs-expander-summary>
@@ -82,7 +82,7 @@
                             <div class="nhsuk-label bold-label non-js-only">Organisation</div>
                         </nhs-table-column>
                         <nhs-table-column>ODS code</nhs-table-column>
-                        @foreach (var item in Model.PossibleServiceRecipients)
+                        @foreach (var item in Model.RenderedServiceRecipients)
                         {
                             var checkboxModel = new CheckboxNameAndValueModel() { Name = $"recipient-{item.OdsCode}", Value = item.Selected };
                             
