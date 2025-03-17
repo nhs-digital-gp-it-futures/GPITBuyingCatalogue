@@ -76,14 +76,13 @@ public class CompetitionRecipientsController(
         return RedirectToAction(
             nameof(SelectSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId, isInitialSelection = true });
+            new { internalOrgId, competitionId });
     }
 
     [HttpGet("select-sublocations")]
     public async Task<IActionResult> SelectSublocations(
         string internalOrgId,
-        int competitionId,
-        bool isInitialSelection)
+        int competitionId)
     {
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
@@ -91,7 +90,7 @@ public class CompetitionRecipientsController(
         IEnumerable<OdsOrganisation> possibleSublocations =
             await odsService.GetSublocationsByParentInternalIdentifier(internalOrgId);
 
-        var model = new SelectSublocationsModel(competition, possibleSublocations, isInitialSelection)
+        var model = new SelectSublocationsModel(competition, possibleSublocations)
         {
             BackLink = Url.Action(
                 nameof(UploadOrSelectServiceRecipients),

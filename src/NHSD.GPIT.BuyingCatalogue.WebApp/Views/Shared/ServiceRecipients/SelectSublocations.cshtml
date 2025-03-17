@@ -9,7 +9,7 @@
         <nhs-page-title model="@Model"/>
         <form method="post">
             <nhs-checkbox-container>
-                @foreach (var checkedSublocation in Model.CheckedSublocations)
+                @foreach (var checkedSublocation in Model.RenderedSublocations)
                 {
                     <nhs-checkbox asp-for="@checkedSublocation" 
                                   label-text="@checkedSublocation.Name" />

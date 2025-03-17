@@ -18,8 +18,6 @@ public class CompetitionSublocationEntityTypeConfiguration : IEntityTypeConfigur
 
         builder.Property(x => x.OwnerOdsCode).IsRequired();
 
-        builder.Property(x => x.Selected).IsRequired();
-
         builder.HasOne(x => x.Competition)
             .WithMany(y => y.CompetitionSublocations)
             .HasForeignKey(x => x.CompetitionId)

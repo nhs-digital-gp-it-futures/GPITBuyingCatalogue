@@ -8,10 +8,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
     public sealed class SelectSublocationsModel : NavBaseModel
     {
+        private const bool Selected = true;
+        private const bool NotSelected = false;
+
         public SelectSublocationsModel(
             EntityModels.Competition competition,
-            IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
-            bool isInitialSelection)
+            IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations)
         {
             Title = "Select sublocations for this order";
             Caption = competition.Name;
@@ -20,34 +22,25 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             PossibleSublocations = possibleSublocations;
             ActualSublocations = competition.CompetitionSublocations;
 
-            PopulateCheckedState(isInitialSelection);
+            PopulateCheckedState();
         }
 
-        public IEnumerable<ServiceModels.OdsOrganisation> PossibleSublocations { get; set; }
+        public IEnumerable<ServiceModels.OdsOrganisation> PossibleSublocations { get; init; }
 
-        public IEnumerable<EntityModels.CompetitionSublocation> ActualSublocations { get; set; }
+        public IEnumerable<EntityModels.CompetitionSublocation> ActualSublocations { get; init; }
 
-        public List<CheckboxNameAndValueModel> CheckedSublocations { get; set; } = [];
+        public List<CheckboxNameAndValueModel> RenderedSublocations { get; init; } = [];
 
-        private void PopulateCheckedState(bool isInitialSelection)
+        private void PopulateCheckedState()
         {
-            if (isInitialSelection)
-            {
-                CheckedSublocations.AddRange(
-                    PossibleSublocations.Select(
-                        sl => new CheckboxNameAndValueModel { Name = sl.OdsCode, Value = false }));
-            }
-            else
-            {
-                CheckedSublocations.AddRange(
-                    ActualSublocations.Select(
-                        cs => new CheckboxNameAndValueModel { Name = cs.SublocationOdsCode, Value = cs.Selected }));
+            RenderedSublocations.AddRange(
+                ActualSublocations.Select(
+                    cs => new CheckboxNameAndValueModel { Name = cs.SublocationOdsCode, Value = Selected }));
 
-                CheckedSublocations.AddRange( // Fill in sublocations if they are missing
-                    PossibleSublocations
-                        .Where(sl => CheckedSublocations.All(x => x.Name != sl.OdsCode))
-                        .Select(sl => new CheckboxNameAndValueModel { Name = sl.OdsCode, Value = false }));
-            }
+            RenderedSublocations.AddRange(
+                PossibleSublocations
+                    .Where(sl => RenderedSublocations.All(x => x.Name != sl.OdsCode))
+                    .Select(sl => new CheckboxNameAndValueModel { Name = sl.OdsCode, Value = NotSelected }));
         }
     }
 }

@@ -316,7 +316,6 @@ public class CompetitionsService : ICompetitionsService
                     CompetitionId = competitionId,
                     SublocationOdsCode = sublocationId,
                     OwnerOdsCode = competition.Organisation.ExternalIdentifier,
-                    Selected = true,
                 });
         }
 
