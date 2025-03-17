@@ -105,6 +105,7 @@ public class CompetitionRecipientsController(
 
     [HttpPost("select-sublocations")]
     public async Task<IActionResult> SelectSublocations(
+        SelectSublocationsModel selectSublocations,
         [FilteredFormContent] stringDict form,
         string internalOrgId,
         int competitionId,

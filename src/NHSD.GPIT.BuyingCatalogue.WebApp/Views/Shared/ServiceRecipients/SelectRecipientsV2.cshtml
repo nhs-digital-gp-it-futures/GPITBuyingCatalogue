@@ -60,9 +60,6 @@
         </div>
 
         <form method="post" id="sr-form">
-
-            @{ var expandWhenNotValid = !ViewData.ModelState.IsValid; }
-
             <nhs-expander-v2 id="recipients-expander" open="@(Model.RenderedServiceRecipients.Any(x => x.Selected))">
                 <nhs-expander-summary label-text="@Model.Sublocation.Name" bold-title="true">
                     <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">

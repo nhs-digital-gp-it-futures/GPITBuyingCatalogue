@@ -8,6 +8,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
     public sealed class SelectSublocationsModel : NavBaseModel
     {
+        public SelectSublocationsModel()
+        {
+        }
+
         public SelectSublocationsModel(
             EntityModels.Competition competition,
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations)
@@ -22,11 +26,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             PopulateRenderedSublocations();
         }
 
-        public IEnumerable<ServiceModels.OdsOrganisation> PossibleSublocations { get; init; }
-
-        public IEnumerable<EntityModels.CompetitionSublocation> ActualSublocations { get; init; }
-
         public List<CheckboxNameAndValueModel> RenderedSublocations { get; init; } = [];
+
+        private IEnumerable<ServiceModels.OdsOrganisation> PossibleSublocations { get; }
+
+        private IEnumerable<EntityModels.CompetitionSublocation> ActualSublocations { get; }
 
         private void PopulateRenderedSublocations()
         {
