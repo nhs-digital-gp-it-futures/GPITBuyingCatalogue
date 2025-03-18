@@ -9,6 +9,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
     {
         private readonly SelectionMode? selectionMode;
 
+        public SelectRecipientsV2Model()
+        {
+        }
+
         public SelectRecipientsV2Model(
             Competition competition,
             SublocationModel selectedSublocation,
@@ -44,11 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public OrganisationType OrganisationType { get; set; }
 
         public SublocationModel Sublocation { get; set; }
-
-        public ServiceRecipientModel[] SearchRecipients => Sublocation.ServiceRecipients
-            .Select(y => new ServiceRecipientModel { Name = y.Name, OdsCode = y.OdsCode })
-            .OrderBy(x => x.Name)
-            .ToArray();
 
         public bool HasImportedRecipients { get; set; }
 

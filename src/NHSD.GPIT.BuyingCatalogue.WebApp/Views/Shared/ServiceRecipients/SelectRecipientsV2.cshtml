@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Buttons
@@ -19,7 +18,7 @@
         <nhs-page-title model="@Model"/>
 
         @if (Model.HasImportedRecipients
-             || (Model.PreviouslySelected?.Any() ?? false))
+            || (Model.PreviouslySelected?.Any() ?? false))
         {
             @if (Model.IsAmendment && (Model.PreviouslySelected?.Any() ?? false))
             {
@@ -32,8 +31,8 @@
                         @foreach (var location in Model.PreviouslySelected.GroupBy(x => x.Location))
                         {
                             <nhs-expander label-text="@location.Key"
-                                          bold-title="true"
-                                          data-test-id="existing-recipient-group-summary">
+                            bold-title="true"
+                            data-test-id="existing-recipient-group-summary">
                                 <ul>
                                     @foreach (var item in location)
                                     {
@@ -51,11 +50,11 @@
         <div class="bc-u-max-width-full">
             <nhs-button-group>
                 <vc:nhs-anchor-button url="@Url.Action(null, new { selectionMode = SelectionMode.All })"
-                                      text="Select all"
-                                      type="Secondary"/>
+                text="Select all"
+                type="Secondary"/>
                 <vc:nhs-anchor-button url="@Url.Action(null, new { selectionMode = SelectionMode.None })"
-                                      text="Deselect all"
-                                      type="Secondary"/>
+                text="Deselect all"
+                type="Secondary"/>
             </nhs-button-group>
         </div>
 
@@ -79,20 +78,21 @@
                             <div class="nhsuk-label bold-label non-js-only">Organisation</div>
                         </nhs-table-column>
                         <nhs-table-column>ODS code</nhs-table-column>
-                        @foreach (var item in Model.RenderedServiceRecipients)
+                        @for (var i = 0; i < Model.RenderedServiceRecipients.Count; i++)
                         {
-                            var checkboxModel = new CheckboxNameAndValueModel() { Name = $"recipient-{item.OdsCode}", Value = item.Selected };
-                            
-                            <nhs-table-row-container id="@item.OdsCode">
+                            var instanceSlice = i;
+
+                            <nhs-table-row-container id="@Model.RenderedServiceRecipients[instanceSlice].OdsCode">
                                 <nhs-table-cell>
                                     <nhs-checkbox-container>
-                                        <nhs-checkbox asp-for="@checkboxModel"
-                                                      label-text="@item.Name"
+                                        @Html.HiddenFor(model => model.RenderedServiceRecipients[instanceSlice].OdsCode)
+                                        <nhs-checkbox asp-for="@Model.RenderedServiceRecipients[instanceSlice].Selected"
+                                                      label-text="@Model.RenderedServiceRecipients[instanceSlice].Name"
                                                       checkbox-class="main-srs gather-data"/>
                                     </nhs-checkbox-container>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
+                                    <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@Model.RenderedServiceRecipients[instanceSlice].OdsCode</div>
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         }

@@ -9,9 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.FormContent;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
-using stringDict = System.Collections.Generic.Dictionary<string, string>;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
@@ -316,14 +314,11 @@ public class CompetitionRecipientsController(
 
     [HttpPost("{sublocationId}")]
     public async Task<IActionResult> SelectSublocationRecipients(
-        [FilteredFormContent] stringDict form,
+        SelectRecipientsV2Model selectRecipientsV2Model,
         string internalOrgId,
         int competitionId,
         string sublocationId)
     {
-        const string selectPrefix = "recipient";
-        const int odsCodeSplitIndex = 1;
-
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
 
@@ -333,8 +328,8 @@ public class CompetitionRecipientsController(
                 competitionId,
                 sublocationId);
 
-        HashSet<string> pageSelections = form.Where(kvp => kvp.Key.ToString().StartsWith(selectPrefix))
-            .Select(kvp => kvp.Key.Split('-')[odsCodeSplitIndex])
+        HashSet<string> pageSelections = selectRecipientsV2Model.RenderedServiceRecipients.Where(x => x.Selected)
+            .Select(y => y.OdsCode)
             .ToHashSet();
 
         HashSet<string> currentRecipients =
