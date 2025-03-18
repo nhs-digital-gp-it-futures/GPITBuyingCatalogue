@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 {
@@ -108,27 +106,12 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
         {
             var inputClass = string.IsNullOrEmpty(CheckboxClass) ? NhsCheckboxInput : $"{NhsCheckboxInput} {CheckboxClass}";
 
-            if (For.Model is CheckboxNameAndValueModel workingModel)
-            {
-                return htmlGenerator.GenerateCheckBox(
-                    ViewContext,
-                    For.ModelExplorer,
-                    workingModel.Name,
-                    workingModel.Value,
-                    new { @class = inputClass });
-            }
-
-            if (For.Model is bool booleanModel)
-            {
-                return htmlGenerator.GenerateCheckBox(
-                    ViewContext,
-                    For.ModelExplorer,
-                    For.Name,
-                    booleanModel,
-                    new { @class = inputClass });
-            }
-
-            throw new InvalidOperationException("Unsupported model type");
+            return htmlGenerator.GenerateCheckBox(
+                ViewContext,
+                For.ModelExplorer,
+                For.Name,
+                (bool)For.Model,
+                new { @class = inputClass });
         }
 
         private TagBuilder GetCheckboxLabelBuilder()
