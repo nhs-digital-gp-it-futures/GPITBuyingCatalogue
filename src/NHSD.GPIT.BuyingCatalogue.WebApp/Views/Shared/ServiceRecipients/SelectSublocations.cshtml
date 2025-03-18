@@ -12,17 +12,13 @@
             @Html.HiddenFor(model => model.Title)
             @Html.HiddenFor(model => model.Caption)
             @Html.HiddenFor(model => model.Advice)
-            @for (int i = 0; i < Model.RenderedSublocations.Count; i++)
-            {
-                @Html.HiddenFor(model => model.RenderedSublocations[i].Name)
-                @Html.HiddenFor(model => model.RenderedSublocations[i].Value)
-            }
 
             <nhs-checkbox-container>
-                @foreach (var checkedSublocation in Model.RenderedSublocations)
+                @for (var i = 0; i < Model.RenderedSublocations.Count; i++)
                 {
-                    <nhs-checkbox asp-for="@checkedSublocation"
-                                  label-text="@checkedSublocation.Name"/>
+                    @Html.HiddenFor(model => model.RenderedSublocations[i].Name)
+                    <nhs-checkbox asp-for="@Model.RenderedSublocations[i].Value"
+                                  label-text="@Model.RenderedSublocations[i].Name" />
                 }
             </nhs-checkbox-container>
             <br/>

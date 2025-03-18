@@ -106,12 +106,12 @@ public class CompetitionRecipientsController(
     [HttpPost("select-sublocations")]
     public async Task<IActionResult> SelectSublocations(
         SelectSublocationsModel selectSublocations,
-        [FilteredFormContent] stringDict form,
         string internalOrgId,
         int competitionId,
         bool isInitialSelection)
     {
-        HashSet<string> sublocationIds = form.Keys.ToHashSet();
+        HashSet<string> sublocationIds =
+            selectSublocations.RenderedSublocations.Where(x => x.Value).Select(y => y.Name).ToHashSet();
 
         if (isInitialSelection)
         {
