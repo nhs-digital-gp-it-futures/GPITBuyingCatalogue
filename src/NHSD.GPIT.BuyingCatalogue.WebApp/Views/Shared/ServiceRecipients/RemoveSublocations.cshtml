@@ -27,8 +27,8 @@
             }
 
             <nhs-radio-button-container>
-                <nhs-radio-button asp-for="ConfirmRemove" value="true" display-text="Yes, I want to remove the sublocations" index="0"/>
-                <nhs-radio-button asp-for="ConfirmRemove" value="false" display-text="No, I want to keep the sublocations" index="1"/>
+                <nhs-radio-button asp-for="ConfirmRemove" value="true" display-text="Yes, I want to remove the @Model.Pluralisation" index="0"/>
+                <nhs-radio-button asp-for="ConfirmRemove" value="false" display-text="No, I want to keep the @Model.Pluralisation" index="1" />
             </nhs-radio-button-container>
             <br/>
             <nhs-submit-button/>

@@ -209,21 +209,22 @@ public class CompetitionRecipientsController(
         string sublocationsToRemove,
         string sublocationsToAdd)
     {
-        var splitSublocationsToRemove = SplitCommaSeparatedString(sublocationsToRemove);
+        HashSet<string> splitSublocationsToRemove = SplitCommaSeparatedString(sublocationsToRemove).ToHashSet();
 
-        var splitSublocationsToAdd = SplitCommaSeparatedString(sublocationsToAdd);
+        HashSet<string> splitSublocationsToAdd = SplitCommaSeparatedString(sublocationsToAdd).ToHashSet();
 
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
 
-        var model = new RemoveSublocationsModel(competition)
+        var model = new RemoveSublocationsModel(
+            competition,
+            splitSublocationsToRemove,
+            splitSublocationsToAdd)
         {
             BackLink = Url.Action(
                 nameof(ConfirmSublocations),
                 typeof(CompetitionRecipientsController).ControllerName(),
                 new { internalOrgId, competitionId }),
-            SublocationIdsToRemove = splitSublocationsToRemove.ToHashSet(),
-            SublocationIdsToAdd = splitSublocationsToAdd.ToHashSet(),
         };
 
         return View("ServiceRecipients/RemoveSublocations", model);
