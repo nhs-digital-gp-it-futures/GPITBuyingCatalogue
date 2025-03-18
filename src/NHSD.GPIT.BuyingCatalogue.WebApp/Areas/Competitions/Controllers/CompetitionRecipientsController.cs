@@ -107,8 +107,7 @@ public class CompetitionRecipientsController(
     public async Task<IActionResult> SelectSublocations(
         SelectSublocationsModel selectSublocations,
         string internalOrgId,
-        int competitionId,
-        bool isInitialSelection)
+        int competitionId)
     {
         if (!ModelState.IsValid)
         {
@@ -118,7 +117,13 @@ public class CompetitionRecipientsController(
         HashSet<string> sublocationIds =
             selectSublocations.RenderedSublocations.Where(x => x.Value).Select(y => y.Name).ToHashSet();
 
-        if (isInitialSelection)
+        Competition competition =
+            await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+
+        HashSet<string> competitionSublocations =
+            competition.CompetitionSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
+
+        if (competitionSublocations.Count == 0)
         {
             await competitionsService.AddSublocations(internalOrgId, competitionId, sublocationIds);
 
@@ -127,12 +132,6 @@ public class CompetitionRecipientsController(
                 typeof(CompetitionRecipientsController).ControllerName(),
                 new { internalOrgId, competitionId });
         }
-
-        Competition competition =
-            await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
-
-        HashSet<string> competitionSublocations =
-            competition.CompetitionSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
 
         HashSet<string> removes = [..competitionSublocations];
         removes.ExceptWith(sublocationIds);
