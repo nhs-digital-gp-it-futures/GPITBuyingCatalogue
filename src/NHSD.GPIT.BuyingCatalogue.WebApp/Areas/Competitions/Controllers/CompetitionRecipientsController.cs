@@ -110,6 +110,11 @@ public class CompetitionRecipientsController(
         int competitionId,
         bool isInitialSelection)
     {
+        if (!ModelState.IsValid)
+        {
+            return View("ServiceRecipients/SelectSublocations", selectSublocations);
+        }
+
         HashSet<string> sublocationIds =
             selectSublocations.RenderedSublocations.Where(x => x.Value).Select(y => y.Name).ToHashSet();
 

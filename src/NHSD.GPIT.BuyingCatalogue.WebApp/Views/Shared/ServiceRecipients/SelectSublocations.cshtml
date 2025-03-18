@@ -1,5 +1,4 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectSublocationsModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectSublocationsModel
 @{
     ViewBag.Title = Model.Title;
 }
@@ -7,20 +6,20 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
         <nhs-page-title model="@Model"/>
         <form method="post">
-            @Html.HiddenFor(model => model.Title)
-            @Html.HiddenFor(model => model.Caption)
-            @Html.HiddenFor(model => model.Advice)
-
-            <nhs-checkbox-container>
-                @for (var i = 0; i < Model.RenderedSublocations.Count; i++)
-                {
-                    @Html.HiddenFor(model => model.RenderedSublocations[i].Name)
-                    <nhs-checkbox asp-for="@Model.RenderedSublocations[i].Value"
-                                  label-text="@Model.RenderedSublocations[i].Name" />
-                }
-            </nhs-checkbox-container>
+            <hidden-inputs title="@Model.Title" caption="@Model.Caption" advice="@Model.Advice" />
+            <nhs-fieldset-form-label asp-for="@Model">
+                <nhs-checkbox-container>
+                    @for (var i = 0; i < Model.RenderedSublocations.Count; i++)
+                    {
+                        @Html.HiddenFor(model => model.RenderedSublocations[i].Name)
+                        <nhs-checkbox asp-for="@Model.RenderedSublocations[i].Value"
+                                      label-text="@Model.RenderedSublocations[i].Name"/>
+                    }
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
             <br/>
             <nhs-submit-button/>
         </form>
