@@ -319,6 +319,11 @@ public class CompetitionRecipientsController(
         int competitionId,
         string sublocationId)
     {
+        if (!ModelState.IsValid)
+        {
+            return View("ServiceRecipients/SelectRecipientsV2", selectRecipientsV2Model);
+        }
+
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
 
