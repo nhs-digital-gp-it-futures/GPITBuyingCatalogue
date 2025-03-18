@@ -10,6 +10,8 @@
         <nhs-page-title model="@Model"/>
         <form method="post">
             <hidden-inputs title="@Model.Title" caption="@Model.Caption" advice="@Model.Advice" />
+            @Html.HiddenFor(model => model.BackLink)
+
             <nhs-fieldset-form-label asp-for="@Model">
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.RenderedSublocations.Count; i++)
