@@ -209,9 +209,9 @@ public class CompetitionRecipientsController(
         string sublocationsToRemove,
         string sublocationsToAdd)
     {
-        HashSet<string> splitSublocationsToRemove = SplitCommaSeparatedString(sublocationsToRemove).ToHashSet();
+        var splitSublocationsToRemove = SplitCommaSeparatedString(sublocationsToRemove);
 
-        HashSet<string> splitSublocationsToAdd = SplitCommaSeparatedString(sublocationsToAdd).ToHashSet();
+        var splitSublocationsToAdd = SplitCommaSeparatedString(sublocationsToAdd);
 
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
@@ -232,34 +232,29 @@ public class CompetitionRecipientsController(
 
     [HttpPost("remove-sublocations")]
     public async Task<IActionResult> RemoveSublocations(
-        [FilteredFormContent] stringDict form,
+        RemoveSublocationsModel removeSublocationsModel,
         string internalOrgId,
         int competitionId)
     {
-        const string confirmationKey = "ConfirmRemove";
-        const string removePrefix = "remove";
-        const string addPrefix = "add";
-
-        var userHasConfirmed = form[confirmationKey] == "True";
-
-        if (userHasConfirmed)
+        if (removeSublocationsModel.ConfirmRemove)
         {
-            HashSet<string> removes = form.Where(kvp => kvp.Key.ToString().StartsWith(removePrefix))
-                .Select(kvp => kvp.Value)
-                .ToHashSet();
+            HashSet<string> adds = removeSublocationsModel.SublocationIdsToAdd?.ToHashSet();
+            HashSet<string> removes = removeSublocationsModel.SublocationIdsToRemove?.ToHashSet();
 
-            HashSet<string> adds = form.Where(kvp => kvp.Key.ToString().StartsWith(addPrefix))
-                .Select(kvp => kvp.Value)
-                .ToHashSet();
-
-            if (adds.Count > 0)
+            if (adds is not null && adds.Count > 0)
             {
-                await competitionsService.AddSublocations(internalOrgId, competitionId, adds);
+                await competitionsService.AddSublocations(
+                    internalOrgId,
+                    competitionId,
+                    adds);
             }
 
-            if (removes.Count > 0)
+            if (removes is not null && removes.Count > 0)
             {
-                await competitionsService.RemoveSublocations(internalOrgId, competitionId, removes);
+                await competitionsService.RemoveSublocations(
+                    internalOrgId,
+                    competitionId,
+                    removes);
             }
         }
 

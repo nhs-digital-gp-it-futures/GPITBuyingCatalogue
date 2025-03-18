@@ -16,19 +16,19 @@
         </nhs-warning-callout>
         
         <form method="post">
-            @foreach ( var (sublocation, index) in @Model.SublocationIdsToRemove.Select((x, y) => (x, y)))
+            @for (var i = 0; i < @Model.SublocationIdsToRemove.Count; i++)
             {
-                <input type="hidden" name="remove-@index" value="@sublocation" />
+                @Html.HiddenFor(model => model.SublocationIdsToRemove[i])
             }
-            
-            @foreach ( var (sublocation, index) in @Model.SublocationIdsToAdd.Select((x, y) => (x, y)))
+
+            @for (var i = 0; i < @Model.SublocationIdsToAdd.Count; i++)
             {
-                <input type="hidden" name="add-@index" value="@sublocation" />
+                @Html.HiddenFor(model => model.SublocationIdsToAdd[i])
             }
 
             <nhs-radio-button-container>
                 <nhs-radio-button asp-for="ConfirmRemove" value="true" display-text="Yes, I want to remove the @Model.Pluralisation" index="0"/>
-                <nhs-radio-button asp-for="ConfirmRemove" value="false" display-text="No, I want to keep the @Model.Pluralisation" index="1" />
+                <nhs-radio-button asp-for="ConfirmRemove" value="false" display-text="No, I want to keep the @Model.Pluralisation" index="1"/>
             </nhs-radio-button-container>
             <br/>
             <nhs-submit-button/>

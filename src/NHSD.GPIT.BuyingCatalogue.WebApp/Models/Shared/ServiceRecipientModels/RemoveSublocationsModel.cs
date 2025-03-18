@@ -5,14 +5,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
     public sealed class RemoveSublocationsModel : NavBaseModel
     {
+        public RemoveSublocationsModel()
+        {
+        }
+
         public RemoveSublocationsModel(
             Competition competition,
-            HashSet<string> sublocationsToRemove,
-            HashSet<string> sublocationsToAdd)
+            IReadOnlyList<string> sublocationsToRemove,
+            IReadOnlyList<string> sublocationsToAdd)
         {
             SublocationIdsToRemove = sublocationsToRemove;
             SublocationIdsToAdd = sublocationsToAdd;
-            Pluralisation = SublocationIdsToRemove is { Count: 1 }
+            Pluralisation = SublocationIdsToRemove.Count == 1
                 ? "sublocation"
                 : "sublocations";
 
@@ -28,8 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public string Pluralisation { get; init; }
 
-        public HashSet<string> SublocationIdsToRemove { get; init; }
+        public IReadOnlyList<string> SublocationIdsToRemove { get; init; }
 
-        public HashSet<string> SublocationIdsToAdd { get; init; }
+        public IReadOnlyList<string> SublocationIdsToAdd { get; init; }
     }
 }
