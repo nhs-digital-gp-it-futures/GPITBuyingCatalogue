@@ -183,23 +183,6 @@ public class CompetitionRecipientsController(
         throw new NotImplementedException();
     }
 
-    [HttpGet("confirm-sublocations")]
-    public async Task<IActionResult> ConfirmSublocations(string internalOrgId, int competitionId)
-    {
-        var backLink = Url.Action(
-            nameof(CompetitionTaskListController.Index),
-            typeof(CompetitionTaskListController).ControllerName(),
-            new { internalOrgId, competitionId });
-
-        return await SelectSublocationsOverview(internalOrgId, competitionId, true, backLink);
-    }
-
-    [HttpPost("confirm-sublocations")]
-    public async Task<IActionResult> ConfirmSublocations()
-    {
-        throw new NotImplementedException();
-    }
-
     [HttpGet("remove-sublocations")]
     public async Task<IActionResult> RemoveSublocations(
         string internalOrgId,
@@ -360,6 +343,26 @@ public class CompetitionRecipientsController(
             new { internalOrgId, competitionId });
     }
 
+    [HttpGet("confirm-sublocations")]
+    public async Task<IActionResult> ConfirmSublocations(string internalOrgId, int competitionId)
+    {
+        var backLink = Url.Action(
+            nameof(CompetitionTaskListController.Index),
+            typeof(CompetitionTaskListController).ControllerName(),
+            new { internalOrgId, competitionId });
+
+        return await SelectSublocationsOverview(internalOrgId, competitionId, true, backLink);
+    }
+
+    [HttpPost("confirm-sublocations")]
+    public async Task<IActionResult> ConfirmSublocationsPost(string internalOrgId, int competitionId)
+    {
+        return RedirectToAction(
+            nameof(ConfirmSublocationRecipients),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
+    }
+
     [HttpGet]
     public async Task<IActionResult> Index(
         string internalOrgId,
@@ -472,7 +475,12 @@ public class CompetitionRecipientsController(
                 internalOrgId,
                 competitionId);
 
-        var model = new ConfirmSublocationRecipientsModel(competition, "");
+        var model = new ConfirmSublocationRecipientsModel(
+            competition,
+            Url.Action(
+                nameof(ConfirmSublocations),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId }));
 
         return View("ServiceRecipients/ConfirmSublocationRecipients", model);
     }

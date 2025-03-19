@@ -12,16 +12,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public ConfirmSublocationRecipientsModel(
             Competition competition,
-            string addRemoveRecipientsLink)
+            string backLinkHref)
         {
-            Title = "Confirm service recipients)";
+            Title = "Confirm service recipients";
             Caption = competition.Name;
             Advice = "Review the organisations you've selected to receive the winning solution for this competition.";
 
             Sublocations = competition.CompetitionSublocations.SelectMany(
                 x => new List<SublocationModel> { new(x, false) });
 
-            AddRemoveRecipientsLink = addRemoveRecipientsLink;
+            BackLink = backLinkHref;
+
+            AddRemoveRecipientsLink = BackLink;
         }
 
         public string AddRemoveRecipientsLink { get; init; }
