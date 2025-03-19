@@ -53,11 +53,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public List<ServiceRecipientModel> PreviouslySelected { get; set; }
 
-        public int? SelectAtLeast { get; set; }
-
         public bool IsAmendment { get; set; }
 
-        public List<ServiceRecipientModel> PossibleServiceRecipients { get; set; }
+        private List<ServiceRecipientModel> PossibleServiceRecipients { get; }
 
         public List<ServiceRecipientModel> RenderedServiceRecipients { get; set; } = [];
 

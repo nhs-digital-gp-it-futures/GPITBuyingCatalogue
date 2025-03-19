@@ -59,6 +59,7 @@
         </div>
 
         <form method="post" id="sr-form">
+            @Html.HiddenFor(model => model.Sublocation.Name)
             <nhs-expander-v2 id="recipients-expander" open="@(Model.RenderedServiceRecipients.Any(x => x.Selected))">
                 <nhs-expander-summary label-text="@Model.Sublocation.Name" bold-title="true">
                     <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">
@@ -86,6 +87,7 @@
                                 <nhs-table-cell>
                                     <nhs-checkbox-container>
                                         @Html.HiddenFor(model => model.RenderedServiceRecipients[instanceSlice].OdsCode)
+                                        @Html.HiddenFor(model => model.RenderedServiceRecipients[instanceSlice].Name)
                                         <nhs-checkbox asp-for="@Model.RenderedServiceRecipients[instanceSlice].Selected"
                                                       label-text="@Model.RenderedServiceRecipients[instanceSlice].Name"
                                                       checkbox-class="main-srs gather-data"/>
