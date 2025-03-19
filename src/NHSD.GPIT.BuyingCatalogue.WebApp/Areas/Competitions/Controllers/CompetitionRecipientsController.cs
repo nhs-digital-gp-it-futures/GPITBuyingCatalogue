@@ -463,9 +463,18 @@ public class CompetitionRecipientsController(
     }
 
     [HttpGet("confirm-sublocation-recipients")]
-    public async Task<IActionResult> ConfirmSublocationRecipients()
+    public async Task<IActionResult> ConfirmSublocationRecipients(
+        string internalOrgId,
+        int competitionId)
     {
-        throw new NotImplementedException();
+        Competition competition =
+            await competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(
+                internalOrgId,
+                competitionId);
+
+        var model = new ConfirmSublocationRecipientsModel(competition, "");
+
+        return View("ServiceRecipients/ConfirmSublocationRecipients", model);
     }
 
     [HttpPost("confirm-sublocation-recipients")]

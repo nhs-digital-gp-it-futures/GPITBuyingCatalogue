@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
@@ -11,19 +12,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public ConfirmSublocationRecipientsModel(
             Competition competition,
-            List<SublocationModel> sublocations,
             string addRemoveRecipientsLink)
         {
             Title = "Confirm service recipients)";
             Caption = competition.Name;
             Advice = "Review the organisations you've selected to receive the winning solution for this competition.";
 
-            Sublocations = sublocations;
+            Sublocations = competition.CompetitionSublocations.SelectMany(
+                x => new List<SublocationModel> { new(x, false) });
+
             AddRemoveRecipientsLink = addRemoveRecipientsLink;
         }
 
         public string AddRemoveRecipientsLink { get; init; }
 
-        public List<SublocationModel> Sublocations { get; init; } = [];
+        public IEnumerable<SublocationModel> Sublocations { get; init; } = [];
     }
 }

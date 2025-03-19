@@ -15,19 +15,14 @@
             <input type="hidden" asp-for="AddRemoveRecipientsLink" />
 
                 <div id="selected-service-recipients">
-                    @foreach (var location in Model.Selected.GroupBy(x => x.Location))
+                    @foreach (var sublocation in Model.Sublocations)
                     {
-                        var count = location.Count();
-                        <nhs-expander label-text="@($"{location.Key} ({count.ToString()} selected)")"
-                                      bold-title="true" open="@(count > 0 ? true : false)">
+                        <nhs-expander label-text="@($"{sublocation.Name} ({sublocation.ServiceRecipientCount} selected)")"
+                                      bold-title="true" open="@(sublocation.ServiceRecipientCount > 0)">
                             <ul>
-                                @foreach (var item in location)
+                                @foreach (var sublocationRecipient in sublocation.ServiceRecipients)
                                 {
-                                    var index = Model.Selected.FindIndex(x => x.OdsCode.Contains(item.OdsCode));
-
-                                    <input type="hidden" asp-for="@Model.Selected[index].Name" />
-                                    <input type="hidden" asp-for="@Model.Selected[index].OdsCode" />
-                                    <li>@item.Description</li>
+                                    <li>@sublocationRecipient.Description</li>
                                 }
                             </ul>
 
@@ -42,30 +37,6 @@
                         if needed, or edit them later if you continue with your order.
                     </p>
                 </div>
-
-                @if (Model.PreviouslySelected?.Any() ?? false)
-                {
-                    <div id="previously-selected-service-recipients">
-                        <nhs-details label-text="View Service Recipients from the previous revision">
-                            <p>
-                                The previous revision had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
-                            </p>
-
-                            @foreach (var location in Model.PreviouslySelected.GroupBy(x => x.Location))
-                            {
-                                <nhs-expander label-text="@location.Key"
-                                              bold-title="true">
-                                    <ul>
-                                        @foreach (var item in location)
-                                        {
-                                            <li>@item.Description</li>
-                                        }
-                                    </ul>
-                                </nhs-expander>
-                            }
-                        </nhs-details>
-                    </div>
-                }
 
             <div class="nhsuk-u-margin-top-6">
                 <nhs-submit-button />

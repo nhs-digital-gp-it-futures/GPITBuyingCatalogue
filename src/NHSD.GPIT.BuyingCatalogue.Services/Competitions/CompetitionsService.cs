@@ -229,7 +229,23 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.Organisation)
             .Include(x => x.CompetitionSublocations)
             .ThenInclude(y => y.SublocationOrganisation)
-            .FirstOrDefaultAsync();
+            .FirstAsync();
+    }
+
+    public async Task<Competition> GetCompetitionWithSublocationsAndSublocationRecipients(
+        string internalOrgId,
+        int competitionId)
+    {
+        // resource intensive, use sparingly
+        return await dbContext.Competitions.AsNoTracking()
+            .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
+            .Include(x => x.Organisation)
+            .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationOrganisation)
+            .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
+            .ThenInclude(z => z.RecipientOrganisation)
+            .FirstAsync();
     }
 
     public async Task<int> GetCountForCompetitionSublocationRecipients(
