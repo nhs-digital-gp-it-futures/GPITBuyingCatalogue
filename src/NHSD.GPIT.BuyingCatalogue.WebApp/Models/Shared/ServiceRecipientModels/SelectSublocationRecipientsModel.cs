@@ -17,12 +17,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             SublocationModel selectedSublocation,
             IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
             IEnumerable<string> requestParameterRecipients,
+            string backLinkHref,
             SelectionMode? selectionMode = null,
             bool isAmendment = false)
         {
             Title = "Add service recipients";
             Caption = competition.Name;
             Advice = "Select all the organisations that will be receiving this order";
+            BackLink = backLinkHref;
 
             this.selectionMode = selectionMode;
 

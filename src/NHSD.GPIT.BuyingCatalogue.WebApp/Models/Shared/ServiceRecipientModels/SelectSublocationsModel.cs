@@ -14,11 +14,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public SelectSublocationsModel(
             EntityModels.Competition competition,
-            IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations)
+            IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
+            string backLinkHref)
         {
             Title = "Select sublocations for this order";
             Caption = competition.Name;
             Advice = $"Select all the {competition.Organisation.Name} sublocations that will be receiving this order";
+            BackLink = backLinkHref;
 
             PossibleSublocations = possibleSublocations;
             ActualSublocations = competition.CompetitionSublocations;
