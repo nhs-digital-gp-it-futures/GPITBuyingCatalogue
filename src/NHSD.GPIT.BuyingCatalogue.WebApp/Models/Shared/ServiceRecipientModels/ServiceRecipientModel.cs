@@ -1,8 +1,6 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
+﻿namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
-    public class ServiceRecipientModel
+    public record ServiceRecipientModel
     {
         public string OdsCode { get; set; }
 
@@ -13,12 +11,5 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public string Description => $"{Name}" + (string.IsNullOrEmpty(OdsCode) ? string.Empty : $" ({OdsCode})");
 
         public string Location { get; set; }
-
-        public ServiceRecipientDto Dto => new()
-        {
-            Name = Name,
-            OdsCode = OdsCode,
-            Location = Location,
-        };
     }
 }

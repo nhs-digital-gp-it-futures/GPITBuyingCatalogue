@@ -280,20 +280,7 @@ public class CompetitionRecipientsController(
                 competitionId,
                 sublocationId);
 
-        var sublocationAsSublocationModel = new SublocationModel
-        {
-            Name = competitionSublocation.SublocationOrganisation.Name,
-            OdsCode = competitionSublocation.SublocationOdsCode,
-            ServiceRecipients = competitionSublocation.SublocationRecipients.Select(
-                    x => new ServiceRecipientModel
-                    {
-                        OdsCode = x.RecipientOdsCode,
-                        Name = x.RecipientOrganisation.Name,
-                        Location = competition.Organisation.Name,
-                        Selected = true,
-                    })
-                .ToList(),
-        };
+        var sublocationAsSublocationModel = new SublocationModel(competitionSublocation, true);
 
         List<ServiceRecipientModel> possibleRecipients = await GetServiceRecipientsBySublocation(sublocationId);
         var splitRecipientIds = SplitCommaSeparatedString(string.Join(',', recipientIds, importedRecipients));
@@ -522,19 +509,18 @@ public class CompetitionRecipientsController(
         foreach (CompetitionSublocation s in competition.CompetitionSublocations)
         {
             {
-                var sublocationModel = new SublocationModel
-                {
-                    Name = s.SublocationOrganisation.Name,
-                    ServiceRecipientCount = await competitionsService.GetCountForCompetitionSublocationRecipients(
+                var recipientHref = Url.Action(
+                    nameof(SelectSublocationRecipients),
+                    typeof(CompetitionRecipientsController).ControllerName(),
+                    new { internalOrgId, competitionId, sublocationId = s.SublocationOdsCode });
+
+                var serviceRecipientCount =
+                    await competitionsService.GetCountForCompetitionSublocationRecipients(
                         internalOrgId,
                         competitionId,
-                        s.SublocationOdsCode),
-                    OdsCode = s.SublocationOdsCode,
-                    RecipientHref = Url.Action(
-                        nameof(SelectSublocationRecipients),
-                        typeof(CompetitionRecipientsController).ControllerName(),
-                        new { internalOrgId, competitionId, sublocationId = s.SublocationOdsCode }),
-                };
+                        s.SublocationOdsCode);
+
+                var sublocationModel = new SublocationModel(s, recipientHref, serviceRecipientCount);
                 sublocations.Add(sublocationModel);
             }
         }
