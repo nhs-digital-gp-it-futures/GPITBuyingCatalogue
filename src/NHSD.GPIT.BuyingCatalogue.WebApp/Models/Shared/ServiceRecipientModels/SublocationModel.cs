@@ -21,6 +21,7 @@ public record SublocationModel
     {
         Name = competitionSublocation.SublocationOrganisation.Name;
         OdsCode = competitionSublocation.SublocationOdsCode;
+        ServiceRecipientCount = competitionSublocation.SublocationRecipients.Count;
         ServiceRecipients = competitionSublocation.SublocationRecipients.Select(
                 x => new ServiceRecipientModel
                 {
@@ -28,7 +29,7 @@ public record SublocationModel
                     Name = x.RecipientOrganisation.Name,
                     Selected = presenceDeterminesSelected,
                 })
-            .ToList();
+            .ToArray();
     }
 
     public SublocationModel(

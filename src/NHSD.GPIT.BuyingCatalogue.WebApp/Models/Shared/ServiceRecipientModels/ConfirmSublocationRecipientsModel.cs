@@ -19,7 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Advice = "Review the organisations you've selected to receive the winning solution for this competition.";
 
             Sublocations = competition.CompetitionSublocations
-                .Select(x => new SublocationModel(x, false));
+                .Select(x => new SublocationModel(x, false))
+                .ToArray();
 
             BackLink = backLinkHref;
 
@@ -28,6 +29,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public string AddRemoveRecipientsLink { get; init; }
 
-        public IEnumerable<SublocationModel> Sublocations { get; init; } = [];
+        public IReadOnlyCollection<SublocationModel> Sublocations { get; init; }
     }
 }
