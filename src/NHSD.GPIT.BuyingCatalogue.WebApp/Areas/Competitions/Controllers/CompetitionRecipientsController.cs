@@ -472,6 +472,19 @@ public class CompetitionRecipientsController(
             new { internalOrgId, competitionId });
     }
 
+    [HttpGet("confirm-sublocation-recipients")]
+    public async Task<IActionResult> ConfirmSublocationRecipients()
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpPost("confirm-sublocation-recipients")]
+    public async Task<IActionResult> ConfirmSublocationRecipients(
+        ConfirmSublocationRecipientsModel confirmSublocationRecipientsModel)
+    {
+        throw new NotImplementedException();
+    }
+
     private async Task<List<ServiceRecipientModel>> GetServiceRecipients(string internalOrgId)
     {
         var recipients = await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
