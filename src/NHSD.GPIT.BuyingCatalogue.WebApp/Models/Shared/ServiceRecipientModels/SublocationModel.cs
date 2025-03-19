@@ -26,7 +26,6 @@ public record SublocationModel
                 {
                     OdsCode = x.RecipientOdsCode,
                     Name = x.RecipientOrganisation.Name,
-                    Location = competitionSublocation.Competition.Organisation.Name,
                     Selected = presenceDeterminesSelected,
                 })
             .ToList();

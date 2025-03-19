@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
@@ -27,10 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
             this.selectionMode = selectionMode;
 
-            Organisation organisation = competition.Organisation;
-
-            OrganisationName = organisation.Name;
-            OrganisationType = organisation.OrganisationType.GetValueOrDefault();
             PreviouslySelected = selectedSublocation.ServiceRecipients;
             PossibleServiceRecipients = possibleServiceRecipients.ToList();
 
@@ -42,10 +37,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
             SelectServiceRecipients(requestParameterRecipients);
         }
-
-        public string OrganisationName { get; set; }
-
-        public OrganisationType OrganisationType { get; set; }
 
         public SublocationModel Sublocation { get; set; }
 
