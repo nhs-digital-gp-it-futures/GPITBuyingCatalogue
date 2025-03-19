@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients
                 .OverridePropertyName("RenderedServiceRecipients[0].Selected");
         }
 
-        private static bool HaveMadeASelection(List<ServiceRecipientModel> checkboxSelections)
+        private static bool HaveMadeASelection(IReadOnlyList<ServiceRecipientModel> checkboxSelections)
         {
             if (checkboxSelections is null || checkboxSelections.Count == 0)
                 return false;

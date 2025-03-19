@@ -18,8 +18,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Caption = competition.Name;
             Advice = "Review the organisations you've selected to receive the winning solution for this competition.";
 
-            Sublocations = competition.CompetitionSublocations.SelectMany(
-                x => new List<SublocationModel> { new(x, false) });
+            Sublocations = competition.CompetitionSublocations
+                .Select(x => new SublocationModel(x, false));
 
             BackLink = backLinkHref;
 

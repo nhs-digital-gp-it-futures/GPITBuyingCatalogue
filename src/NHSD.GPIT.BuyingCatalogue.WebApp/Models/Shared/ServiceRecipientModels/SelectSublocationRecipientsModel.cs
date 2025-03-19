@@ -29,54 +29,54 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             this.selectionMode = selectionMode;
 
             PreviouslySelected = selectedSublocation.ServiceRecipients;
-            PossibleServiceRecipients = possibleServiceRecipients.ToList();
 
             Sublocation = selectedSublocation;
 
             IsAmendment = isAmendment;
 
-            PopulateRenderedServiceRecipients();
+            WorkingServiceRecipients = PreviouslySelected
+                .Concat(
+                    possibleServiceRecipients.Where(
+                        nsr => PreviouslySelected.All(esr => esr.OdsCode != nsr.OdsCode)))
+                .OrderBy(x => x.Name)
+                .ToList();
 
-            SelectServiceRecipients(requestParameterRecipients);
+            SelectServiceRecipients(requestParameterRecipients, WorkingServiceRecipients);
+
+            RenderedServiceRecipients = WorkingServiceRecipients;
         }
 
-        public SublocationModel Sublocation { get; set; }
+        public SublocationModel Sublocation { get; init; }
 
-        public bool HasImportedRecipients { get; set; }
+        public bool HasImportedRecipients { get; init; }
 
-        public List<ServiceRecipientModel> PreviouslySelected { get; set; }
+        public IReadOnlyCollection<ServiceRecipientModel> PreviouslySelected { get; init; }
 
-        public bool IsAmendment { get; set; }
+        public bool IsAmendment { get; init; }
 
-        private List<ServiceRecipientModel> PossibleServiceRecipients { get; }
+        public IReadOnlyList<ServiceRecipientModel> RenderedServiceRecipients { get; }
 
-        public List<ServiceRecipientModel> RenderedServiceRecipients { get; set; } = [];
+        private List<ServiceRecipientModel> WorkingServiceRecipients { get; } = [];
 
-        private void PopulateRenderedServiceRecipients()
-        {
-            RenderedServiceRecipients.AddRange(PreviouslySelected);
-            RenderedServiceRecipients.AddRange(
-                PossibleServiceRecipients.Where(
-                    nsr => RenderedServiceRecipients.All(esr => esr.OdsCode != nsr.OdsCode)));
-            RenderedServiceRecipients.Sort((x, y) => string.CompareOrdinal(x.Name, y.Name));
-        }
-
-        private void SelectServiceRecipients(IEnumerable<string> requestParameterRecipients)
+        private void SelectServiceRecipients(
+            IEnumerable<string> requestParameterRecipients,
+            List<ServiceRecipientModel> modifyList)
         {
             switch (selectionMode)
             {
                 case SelectionMode.All:
-                    RenderedServiceRecipients.ForEach(x => x.Selected = true);
+                    modifyList.ForEach(x => x.Selected = true);
                     break;
                 case SelectionMode.None:
-                    RenderedServiceRecipients.ForEach(x => x.Selected = false);
+                    modifyList.ForEach(x => x.Selected = false);
                     break;
                 default:
                     if (requestParameterRecipients == null) return;
 
-                    List<ServiceRecipientModel> matchingRecipients = RenderedServiceRecipients
+                    List<ServiceRecipientModel> matchingRecipients = modifyList
                         .Where(x => requestParameterRecipients.Contains(x.OdsCode))
                         .ToList();
+
                     if (matchingRecipients.Count == 0) return;
 
                     matchingRecipients.ForEach(x => x.Selected = true);

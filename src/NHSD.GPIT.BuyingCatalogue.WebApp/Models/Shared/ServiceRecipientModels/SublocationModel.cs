@@ -46,7 +46,7 @@ public record SublocationModel
 
     public string OdsCode { get; init; }
 
-    public List<ServiceRecipientModel> ServiceRecipients { get; init; }
+    public IReadOnlyList<ServiceRecipientModel> ServiceRecipients { get; }
 
     public int ServiceRecipientCount { get; init; }
 

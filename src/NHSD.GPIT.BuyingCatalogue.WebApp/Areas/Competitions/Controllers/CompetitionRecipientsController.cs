@@ -557,7 +557,7 @@ public class CompetitionRecipientsController(
         var model = new SelectSublocationsOverviewModel(
             isConfirm,
             competition,
-            sublocations.ToArray(),
+            sublocations,
             addOrChangeSublocationsHref,
             backLinkHref);
 

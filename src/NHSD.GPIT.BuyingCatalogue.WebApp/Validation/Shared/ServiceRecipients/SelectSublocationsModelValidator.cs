@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients
                 .OverridePropertyName("RenderedSublocations[0].Value");
         }
 
-        private static bool HaveMadeASelection(List<CheckboxNameAndValueModel> checkboxSelections)
+        private static bool HaveMadeASelection(IReadOnlyList<CheckboxNameAndValueModel> checkboxSelections)
         {
             if (checkboxSelections is null || checkboxSelections.Count == 0)
                 return false;
