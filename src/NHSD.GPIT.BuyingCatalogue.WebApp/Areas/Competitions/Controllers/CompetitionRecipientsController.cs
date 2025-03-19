@@ -91,13 +91,15 @@ public class CompetitionRecipientsController(
         IEnumerable<OdsOrganisation> possibleSublocations =
             await odsService.GetSublocationsByParentInternalIdentifier(internalOrgId);
 
-        var model = new SelectSublocationsModel(competition, possibleSublocations)
-        {
-            BackLink = Url.Action(
-                nameof(UploadOrSelectServiceRecipients),
-                typeof(CompetitionRecipientsController).ControllerName(),
-                new { internalOrgId, competitionId }),
-        };
+        var backLinkHref = Url.Action(
+            nameof(UploadOrSelectServiceRecipients),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
+
+        var model = new SelectSublocationsModel(
+            competition,
+            possibleSublocations,
+            backLinkHref);
         return View("ServiceRecipients/SelectSublocations", model);
     }
 
@@ -197,16 +199,16 @@ public class CompetitionRecipientsController(
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
 
+        var backLinkHref = Url.Action(
+            nameof(ConfirmSublocations),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
+
         var model = new RemoveSublocationsModel(
             competition,
             splitSublocationsToRemove,
-            splitSublocationsToAdd)
-        {
-            BackLink = Url.Action(
-                nameof(ConfirmSublocations),
-                typeof(CompetitionRecipientsController).ControllerName(),
-                new { internalOrgId, competitionId }),
-        };
+            splitSublocationsToAdd,
+            backLinkHref);
 
         return View("ServiceRecipients/RemoveSublocations", model);
     }
@@ -268,18 +270,18 @@ public class CompetitionRecipientsController(
         List<ServiceRecipientModel> possibleRecipients = await GetServiceRecipientsBySublocation(sublocationId);
         var splitRecipientIds = SplitCommaSeparatedString(string.Join(',', recipientIds, importedRecipients));
 
+        var backLinkHref = Url.Action(
+            nameof(ConfirmSublocations),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
+
         var model = new SelectSublocationRecipientsModel(
             competitionSublocation.Competition,
             sublocationAsSublocationModel,
             possibleRecipients,
             splitRecipientIds,
-            selectionMode)
-        {
-            BackLink = Url.Action(
-                nameof(ConfirmSublocations),
-                typeof(CompetitionRecipientsController).ControllerName(),
-                new { internalOrgId, competitionId }),
-        };
+            backLinkHref,
+            selectionMode);
 
         return View("ServiceRecipients/SelectSublocationRecipients", model);
     }
@@ -516,7 +518,7 @@ public class CompetitionRecipientsController(
         string internalOrgId,
         int competitionId,
         bool isConfirm,
-        string backlink)
+        string backLinkHref)
     {
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
@@ -551,7 +553,8 @@ public class CompetitionRecipientsController(
             isConfirm,
             competition,
             sublocations,
-            addOrChangeSublocationsHref) { BackLink = backlink };
+            addOrChangeSublocationsHref,
+            backLinkHref);
 
         return View("ServiceRecipients/SelectSublocationsOverview", model);
     }

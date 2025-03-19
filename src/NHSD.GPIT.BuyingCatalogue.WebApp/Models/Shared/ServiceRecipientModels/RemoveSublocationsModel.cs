@@ -12,7 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public RemoveSublocationsModel(
             Competition competition,
             IReadOnlyList<string> sublocationsToRemove,
-            IReadOnlyList<string> sublocationsToAdd)
+            IReadOnlyList<string> sublocationsToAdd,
+            string backLinkHref)
         {
             SublocationIdsToRemove = sublocationsToRemove;
             SublocationIdsToAdd = sublocationsToAdd;
@@ -24,6 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Caption = competition.Name;
             Advice = "Confirm you want to remove sublocations from this order";
             ListHeaderText = $"{competition.Organisation.Name} {Pluralisation} to be removed:";
+            BackLink = backLinkHref;
         }
 
         public bool ConfirmRemove { get; init; }

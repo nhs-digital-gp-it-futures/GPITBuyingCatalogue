@@ -11,12 +11,14 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         bool isConfirm,
         Competition competition,
         List<SublocationModel> sublocations,
-        string addOrChangeSublocationsHref)
+        string addOrChangeSublocationsHref,
+        string backLinkHref)
     {
         ProcessType = "competition";
         EntityNameForCaption = competition.Name;
         Sublocations = sublocations;
         ParentName = competition.Organisation.Name;
+        BackLink = backLinkHref;
 
         SetTitleParams(isConfirm);
 
