@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
@@ -7,10 +6,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 public sealed class SelectSublocationsOverviewModel : NavBaseModel
 {
+    public SelectSublocationsOverviewModel()
+    {
+    }
+
     public SelectSublocationsOverviewModel(
         bool isConfirm,
         Competition competition,
-        List<SublocationModel> sublocations,
+        SublocationModel[] sublocations,
         string addOrChangeSublocationsHref,
         string backLinkHref)
     {
@@ -41,7 +44,7 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
 
     public string ParentName { get; set; }
 
-    public ICollection<SublocationModel> Sublocations { get; set; }
+    public SublocationModel[] Sublocations { get; init; }
 
     private void SetTitleParams(bool isConfirm)
     {

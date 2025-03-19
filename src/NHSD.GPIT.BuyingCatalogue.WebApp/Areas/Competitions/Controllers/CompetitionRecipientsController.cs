@@ -180,9 +180,12 @@ public class CompetitionRecipientsController(
     }
 
     [HttpPost("add-sublocations")]
-    public async Task<IActionResult> AddSublocations()
+    public IActionResult AddSublocations(
+        SelectSublocationsOverviewModel model,
+        string internalOrgId,
+        int competitionId)
     {
-        throw new NotImplementedException();
+        return SelectSublocationsOverviewDynamicRedirect(model, internalOrgId, competitionId);
     }
 
     [HttpGet("remove-sublocations")]
@@ -357,12 +360,12 @@ public class CompetitionRecipientsController(
     }
 
     [HttpPost("confirm-sublocations")]
-    public async Task<IActionResult> ConfirmSublocationsPost(string internalOrgId, int competitionId)
+    public IActionResult ConfirmSublocationsPost(
+        SelectSublocationsOverviewModel model,
+        string internalOrgId,
+        int competitionId)
     {
-        return RedirectToAction(
-            nameof(ConfirmSublocationRecipients),
-            typeof(CompetitionRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId });
+        return SelectSublocationsOverviewDynamicRedirect(model, internalOrgId, competitionId);
     }
 
     [HttpGet]
@@ -484,8 +487,7 @@ public class CompetitionRecipientsController(
 
         var model = new ConfirmSublocationRecipientsModel(
             competition,
-            backLinkHref
-        );
+            backLinkHref);
 
         return View("ServiceRecipients/ConfirmSublocationRecipients", model);
     }
@@ -555,11 +557,32 @@ public class CompetitionRecipientsController(
         var model = new SelectSublocationsOverviewModel(
             isConfirm,
             competition,
-            sublocations,
+            sublocations.ToArray(),
             addOrChangeSublocationsHref,
             backLinkHref);
 
         return View("ServiceRecipients/SelectSublocationsOverview", model);
+    }
+
+    private IActionResult SelectSublocationsOverviewDynamicRedirect(
+        SelectSublocationsOverviewModel model,
+        string internalOrgId,
+        int competitionId)
+    {
+        SublocationModel sublocationToComplete = model.Sublocations.FirstOrDefault(x => x.ServiceRecipientCount == 0);
+
+        if (sublocationToComplete != null)
+        {
+            return RedirectToAction(
+                nameof(SelectSublocationRecipients),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId, sublocationId = sublocationToComplete.OdsCode });
+        }
+
+        return RedirectToAction(
+            nameof(ConfirmSublocationRecipients),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
     }
 
     private static string[] SplitCommaSeparatedString(string sublocationsToRemove)
