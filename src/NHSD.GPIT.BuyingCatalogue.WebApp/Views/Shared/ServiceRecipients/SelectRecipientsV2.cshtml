@@ -50,17 +50,23 @@
         <div class="bc-u-max-width-full">
             <nhs-button-group>
                 <vc:nhs-anchor-button url="@Url.Action(null, new { selectionMode = SelectionMode.All })"
-                text="Select all"
-                type="Secondary"/>
+                                      text="Select all"
+                                      type="Secondary"/>
                 <vc:nhs-anchor-button url="@Url.Action(null, new { selectionMode = SelectionMode.None })"
-                text="Deselect all"
-                type="Secondary"/>
+                                      text="Deselect all"
+                                      type="Secondary"/>
             </nhs-button-group>
         </div>
+        
+        @{
+            var expandWhenNotValid = !ViewData.ModelState.IsValid;
+        }
 
         <form method="post" id="sr-form">
+            <hidden-inputs title="@Model.Title" advice="@Model.Advice" caption="@Model.Caption" />
             @Html.HiddenFor(model => model.Sublocation.Name)
-            <nhs-expander-v2 id="recipients-expander" open="@(Model.RenderedServiceRecipients.Any(x => x.Selected))">
+            @Html.HiddenFor(model => model.BackLink)
+            <nhs-expander-v2 id="recipients-expander" open="@(Model.RenderedServiceRecipients.Any(x => x.Selected) || expandWhenNotValid)">
                 <nhs-expander-summary label-text="@Model.Sublocation.Name" bold-title="true">
                     <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">
                         <b>@(Model.RenderedServiceRecipients.Count(r => r.Selected)) </b>

@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients
             RuleFor(x => x.RenderedServiceRecipients)
                 .Must(HaveMadeASelection)
                 .WithMessage(NoRecipientsSelectedMessage)
-                .OverridePropertyName("RenderedServiceRecipients[0].Value");
+                .OverridePropertyName("RenderedServiceRecipients[0].Selected");
         }
 
         private static bool HaveMadeASelection(List<ServiceRecipientModel> checkboxSelections)
