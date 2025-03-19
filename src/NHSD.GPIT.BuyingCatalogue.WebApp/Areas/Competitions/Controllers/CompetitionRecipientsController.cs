@@ -296,7 +296,7 @@ public class CompetitionRecipientsController(
         List<ServiceRecipientModel> possibleRecipients = await GetServiceRecipientsBySublocation(sublocationId);
         var splitRecipientIds = SplitCommaSeparatedString(string.Join(',', recipientIds, importedRecipients));
 
-        var model = new SelectRecipientsV2Model(
+        var model = new SelectSublocationRecipientsModel(
             competition,
             sublocationAsSublocationModel,
             possibleRecipients,
@@ -309,19 +309,19 @@ public class CompetitionRecipientsController(
                 new { internalOrgId, competitionId }),
         };
 
-        return View("ServiceRecipients/SelectRecipientsV2", model);
+        return View("ServiceRecipients/SelectSublocationRecipients", model);
     }
 
     [HttpPost("{sublocationId}")]
     public async Task<IActionResult> SelectSublocationRecipients(
-        SelectRecipientsV2Model selectRecipientsV2Model,
+        SelectSublocationRecipientsModel selectSublocationRecipientsModel,
         string internalOrgId,
         int competitionId,
         string sublocationId)
     {
         if (!ModelState.IsValid)
         {
-            return View("ServiceRecipients/SelectRecipientsV2", selectRecipientsV2Model);
+            return View("ServiceRecipients/SelectSublocationRecipients", selectSublocationRecipientsModel);
         }
 
         Competition competition =
@@ -333,7 +333,8 @@ public class CompetitionRecipientsController(
                 competitionId,
                 sublocationId);
 
-        HashSet<string> pageSelections = selectRecipientsV2Model.RenderedServiceRecipients.Where(x => x.Selected)
+        HashSet<string> pageSelections = selectSublocationRecipientsModel.RenderedServiceRecipients
+            .Where(x => x.Selected)
             .Select(y => y.OdsCode)
             .ToHashSet();
 

@@ -5,11 +5,11 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients
 {
-    public class SelectRecipientsV2ModelValidator : AbstractValidator<SelectRecipientsV2Model>
+    public class SelectSublocationRecipientsModelValidator : AbstractValidator<SelectSublocationRecipientsModel>
     {
         private const string NoRecipientsSelectedMessage = "Select the service recipients for this order";
 
-        public SelectRecipientsV2ModelValidator()
+        public SelectSublocationRecipientsModelValidator()
         {
             RuleFor(x => x.RenderedServiceRecipients)
                 .Must(HaveMadeASelection)

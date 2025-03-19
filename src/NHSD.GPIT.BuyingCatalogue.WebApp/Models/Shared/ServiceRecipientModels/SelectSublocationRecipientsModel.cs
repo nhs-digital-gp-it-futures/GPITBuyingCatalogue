@@ -5,15 +5,15 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
-    public sealed class SelectRecipientsV2Model : NavBaseModel
+    public sealed class SelectSublocationRecipientsModel : NavBaseModel
     {
         private readonly SelectionMode? selectionMode;
 
-        public SelectRecipientsV2Model()
+        public SelectSublocationRecipientsModel()
         {
         }
 
-        public SelectRecipientsV2Model(
+        public SelectSublocationRecipientsModel(
             Competition competition,
             SublocationModel selectedSublocation,
             IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
