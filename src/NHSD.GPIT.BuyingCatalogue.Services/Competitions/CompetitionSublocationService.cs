@@ -32,6 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                     x => x.OwnerOdsCode == externalOrgId
                         && x.CompetitionId == competitionId
                         && x.SublocationOdsCode == sublocationId)
+                .Include(x => x.Competition)
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
                 .ThenInclude(y => y.RecipientOrganisation)

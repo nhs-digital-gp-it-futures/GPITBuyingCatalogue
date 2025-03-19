@@ -97,6 +97,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Organisations
             return await dbContext.Organisations.FirstAsync(o => o.InternalIdentifier == internalIdentifier);
         }
 
+        public async Task<string> GetOrganisationExternalIdentifierByInternalIdentifier(string internalIdentifier)
+        {
+            return await dbContext.Organisations.Where(o => o.InternalIdentifier == internalIdentifier)
+                .Select(x => x.ExternalIdentifier)
+                .FirstAsync();
+        }
+
         public async Task<List<Organisation>> GetOrganisationsByInternalIdentifiers(string[] internalIdentifiers)
         {
             return await dbContext.Organisations.Where(o => internalIdentifiers.Contains(o.InternalIdentifier)).OrderBy(o => o.Name).ToListAsync();

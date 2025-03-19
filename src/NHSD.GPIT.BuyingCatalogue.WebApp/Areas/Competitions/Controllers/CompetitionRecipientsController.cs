@@ -271,10 +271,12 @@ public class CompetitionRecipientsController(
         string importedRecipients,
         SelectionMode? selectionMode = null)
     {
-        Competition competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
+        var externalOrganisationId =
+            await organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(internalOrgId);
+
         CompetitionSublocation competitionSublocation =
             await competitionSublocationService.GetCompetitionSublocationWithRecipients(
-                competition.Organisation.ExternalIdentifier,
+                externalOrganisationId,
                 competitionId,
                 sublocationId);
 
@@ -297,7 +299,7 @@ public class CompetitionRecipientsController(
         var splitRecipientIds = SplitCommaSeparatedString(string.Join(',', recipientIds, importedRecipients));
 
         var model = new SelectSublocationRecipientsModel(
-            competition,
+            competitionSublocation.Competition,
             sublocationAsSublocationModel,
             possibleRecipients,
             splitRecipientIds,
@@ -324,12 +326,12 @@ public class CompetitionRecipientsController(
             return View("ServiceRecipients/SelectSublocationRecipients", selectSublocationRecipientsModel);
         }
 
-        Competition competition =
-            await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+        var externalOrganisationId =
+            await organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(internalOrgId);
 
         CompetitionSublocation sublocation =
             await competitionSublocationService.GetCompetitionSublocationWithRecipients(
-                competition.Organisation.ExternalIdentifier,
+                externalOrganisationId,
                 competitionId,
                 sublocationId);
 
@@ -350,7 +352,7 @@ public class CompetitionRecipientsController(
         if (adds.Count > 0)
         {
             await competitionSublocationService.AddSublocationRecipients(
-                competition.Organisation.ExternalIdentifier,
+                externalOrganisationId,
                 competitionId,
                 sublocationId,
                 adds);
@@ -359,7 +361,7 @@ public class CompetitionRecipientsController(
         if (removes.Count > 0)
         {
             await competitionSublocationService.RemoveSublocationRecipients(
-                competition.Organisation.ExternalIdentifier,
+                externalOrganisationId,
                 competitionId,
                 sublocationId,
                 removes);
