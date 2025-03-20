@@ -94,7 +94,7 @@ public static class CompetitionsQuantityServiceTests
             organisation.InternalIdentifier,
             competition.Id,
             solution.CatalogueItemId,
-            odsOrganisations.Select(x => new ServiceRecipientDto(x.Id, x.Name, quantity)));
+            odsOrganisations.Select(x => new ServiceRecipientQuantityDto(x.Id, x.Name, quantity)));
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Quantities)
@@ -193,7 +193,7 @@ public static class CompetitionsQuantityServiceTests
             competition.Id,
             solution.CatalogueItemId,
             additionalService.CatalogueItemId,
-            odsOrganisations.Select(x => new ServiceRecipientDto(x.Id, x.Name, quantity)));
+            odsOrganisations.Select(x => new ServiceRecipientQuantityDto(x.Id, x.Name, quantity)));
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.SolutionServices)

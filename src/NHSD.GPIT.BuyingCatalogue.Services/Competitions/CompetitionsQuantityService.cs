@@ -58,7 +58,7 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
-        IEnumerable<ServiceRecipientDto> serviceRecipients)
+        IEnumerable<ServiceRecipientQuantityDto> serviceRecipients)
     {
         var solution = await GetSolution(internalOrgId, competitionId, solutionId);
         if (solution is null) return;
@@ -76,7 +76,7 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId serviceId,
-        IEnumerable<ServiceRecipientDto> serviceRecipients)
+        IEnumerable<ServiceRecipientQuantityDto> serviceRecipients)
     {
         var service = await GetSolutionService(internalOrgId, competitionId, solutionId, serviceId);
         if (service is null) return;

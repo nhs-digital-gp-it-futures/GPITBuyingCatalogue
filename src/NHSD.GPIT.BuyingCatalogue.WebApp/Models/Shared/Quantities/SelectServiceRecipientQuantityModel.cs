@@ -26,7 +26,7 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
     public SelectServiceRecipientQuantityModel(
         CatalogueItem catalogueItem,
         IPrice price,
-        IEnumerable<ServiceRecipientDto> serviceRecipients)
+        IEnumerable<ServiceRecipientQuantityDto> serviceRecipients)
     {
         Caption = catalogueItem.Name;
         Title = string.Format(TitleText, catalogueItem.CatalogueItemType.Name());
@@ -46,8 +46,8 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
         OdsOrganisation practiceReorganisationRecipient,
         CatalogueItem catalogueItem,
         IPrice price,
-        IEnumerable<ServiceRecipientDto> serviceRecipients,
-        IEnumerable<ServiceRecipientDto> previousRecipients)
+        IEnumerable<ServiceRecipientQuantityDto> serviceRecipients,
+        IEnumerable<ServiceRecipientQuantityDto> previousRecipients)
         : this(catalogueItem, price, serviceRecipients)
     {
         OrderType = orderType;
@@ -82,7 +82,7 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
         _ => QuantityColumnTitleText,
     };
 
-    private static SubLocationModel[] CreateSubLocations(IEnumerable<ServiceRecipientDto> recipients)
+    private static SubLocationModel[] CreateSubLocations(IEnumerable<ServiceRecipientQuantityDto> recipients)
     {
         return recipients
             .GroupBy(x => x.Location)
@@ -93,15 +93,15 @@ public class SelectServiceRecipientQuantityModel : NavBaseModel
             .ToArray();
     }
 
-    private static ServiceRecipientQuantityModel CreateServiceRecipient(ServiceRecipientDto recipient)
+    private static ServiceRecipientQuantityModel CreateServiceRecipient(ServiceRecipientQuantityDto recipientQuantity)
     {
         var recipientQuantityModel = new ServiceRecipientQuantityModel
         {
-            OdsCode = recipient.OdsCode,
-            Name = recipient.Name,
-            Quantity = recipient.Quantity ?? 0,
-            InputQuantity = recipient.Quantity.HasValue
-                ? $"{recipient.Quantity}"
+            OdsCode = recipientQuantity.OdsCode,
+            Name = recipientQuantity.Name,
+            Quantity = recipientQuantity.Quantity ?? 0,
+            InputQuantity = recipientQuantity.Quantity.HasValue
+                ? $"{recipientQuantity.Quantity}"
                 : string.Empty,
         };
 

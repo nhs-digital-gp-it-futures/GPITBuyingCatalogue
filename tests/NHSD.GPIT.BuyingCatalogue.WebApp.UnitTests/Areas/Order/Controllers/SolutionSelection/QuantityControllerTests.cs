@@ -233,8 +233,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            var recipients = order.OrderRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
+            IEnumerable<ServiceRecipientQuantityDto> recipients = order.OrderRecipients.Select(
+                x => new ServiceRecipientQuantityDto(
+                    x.OdsCode,
+                    x.OdsOrganisation?.Name,
+                    x.GetQuantityForItem(orderItem.CatalogueItemId),
+                    location));
 
             var expected = new SelectServiceRecipientQuantityModel(
                 order.OrderType,
@@ -292,8 +296,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            var recipients = order.OrderRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
+            IEnumerable<ServiceRecipientQuantityDto> recipients = order.OrderRecipients.Select(
+                x => new ServiceRecipientQuantityDto(
+                    x.OdsCode,
+                    x.OdsOrganisation?.Name,
+                    x.GetQuantityForItem(orderItem.CatalogueItemId),
+                    location));
 
             var expected = new SelectServiceRecipientQuantityModel(
                 order.OrderType,
@@ -351,8 +359,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            var recipients = order.OrderRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
+            IEnumerable<ServiceRecipientQuantityDto> recipients = order.OrderRecipients.Select(
+                x => new ServiceRecipientQuantityDto(
+                    x.OdsCode,
+                    x.OdsOrganisation?.Name,
+                    x.GetQuantityForItem(orderItem.CatalogueItemId),
+                    location));
 
             var expected = new SelectServiceRecipientQuantityModel(
                 order.OrderType,

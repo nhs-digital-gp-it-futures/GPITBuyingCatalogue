@@ -313,7 +313,7 @@ public class CompetitionHubController : Controller
         var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
         var competitionSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
 
-        (IPrice price, CatalogueItem item, IEnumerable<ServiceRecipientDto> recipientQuantities) =
+        (IPrice price, CatalogueItem item, IEnumerable<ServiceRecipientQuantityDto> recipientQuantities) =
             await GetRecipientQuantityDetails(competition, competitionSolution, internalOrgId, serviceId);
 
         var model = new SelectServiceRecipientQuantityModel(item, price, recipientQuantities)
@@ -337,9 +337,9 @@ public class CompetitionHubController : Controller
             return View(ServiceRecipientViewName, model);
         }
 
-        var quantities = model.SubLocations.SelectMany(x => x.ServiceRecipients)
+        List<ServiceRecipientQuantityDto> quantities = model.SubLocations.SelectMany(x => x.ServiceRecipients)
             .Select(
-                x => new ServiceRecipientDto
+                x => new ServiceRecipientQuantityDto
                 {
                     OdsCode = x.OdsCode,
                     Quantity = string.IsNullOrWhiteSpace(x.InputQuantity)
@@ -446,7 +446,7 @@ public class CompetitionHubController : Controller
         return RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId });
     }
 
-    internal async Task<IEnumerable<ServiceRecipientDto>> GetRecipientQuantities(
+    internal async Task<IEnumerable<ServiceRecipientQuantityDto>> GetRecipientQuantities(
         ICollection<OdsOrganisation> competitionRecipients,
         ICollection<RecipientQuantityBase> recipientQuantities,
         string internalOrgId)
@@ -456,10 +456,11 @@ public class CompetitionHubController : Controller
         var organisations = await odsService.GetServiceRecipientsById(internalOrgId, competitionRecipientIds);
 
         return competitionRecipients.Select(
-            x => new ServiceRecipientDto(
+            x => new ServiceRecipientQuantityDto(
                 x.Id,
                 x.Name,
-                recipientQuantities?.FirstOrDefault(y => x.Id == y.OdsCode)?.Quantity ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.Id)?.NumberOfPatients,
+                recipientQuantities?.FirstOrDefault(y => x.Id == y.OdsCode)?.Quantity
+                ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.Id)?.NumberOfPatients,
                 organisations?.FirstOrDefault(y => x.Id == y.OrgId).Location));
     }
 
@@ -501,7 +502,8 @@ public class CompetitionHubController : Controller
         };
     }
 
-    private async Task<(IPrice Price, CatalogueItem CatalogueItem, IEnumerable<ServiceRecipientDto> RecipientQuantities)>
+    private async Task<(IPrice Price, CatalogueItem CatalogueItem, IEnumerable<ServiceRecipientQuantityDto>
+            RecipientQuantities)>
         GetRecipientQuantityDetails(
             Competition competition,
             CompetitionSolution competitionSolution,

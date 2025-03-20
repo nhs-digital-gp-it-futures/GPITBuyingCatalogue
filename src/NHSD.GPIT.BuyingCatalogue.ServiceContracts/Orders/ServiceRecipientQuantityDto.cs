@@ -1,12 +1,12 @@
 ﻿namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 {
-    public class ServiceRecipientDto
+    public class ServiceRecipientQuantityDto
     {
-        public ServiceRecipientDto()
+        public ServiceRecipientQuantityDto()
         {
         }
 
-        public ServiceRecipientDto(
+        public ServiceRecipientQuantityDto(
             string odsCode,
             string name,
             int? quantity)
@@ -16,7 +16,7 @@
             Quantity = quantity;
         }
 
-        public ServiceRecipientDto(
+        public ServiceRecipientQuantityDto(
             string odsCode,
             string name,
             int? quantity,

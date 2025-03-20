@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
         public static void WithValidOrderItem_PropertiesCorrectlySet(
             ProvisioningType provisioningType,
             string expectedAdvice,
-            List<ServiceRecipientDto> serviceRecipients,
+            List<ServiceRecipientQuantityDto> serviceRecipients,
             OrderItem item)
         {
             item.OrderItemPrice.ProvisioningType = provisioningType;
@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
         [MockInlineAutoData(OrderTypeEnum.AssociatedServiceOther)]
         public static void WithValidOrderItem_Not_MergerSplit_PropertiesCorrectlySet(
             OrderType orderType,
-            List<ServiceRecipientDto> serviceRecipients,
+            List<ServiceRecipientQuantityDto> serviceRecipients,
             OrderItem item)
         {
             item.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
         public static void WithValidOrderItem_MergerSplit_PropertiesCorrectlySet(
             OrderType orderType,
             OdsOrganisation organisation,
-            List<ServiceRecipientDto> serviceRecipients,
+            List<ServiceRecipientQuantityDto> serviceRecipients,
             OrderItem item)
         {
             item.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
@@ -128,7 +128,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
         {
             item.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
 
-            var model = new SelectServiceRecipientQuantityModel(orderType, null, item.CatalogueItem, item.OrderItemPrice, null, Array.Empty<ServiceRecipientDto>());
+            var model = new SelectServiceRecipientQuantityModel(
+                orderType,
+                null,
+                item.CatalogueItem,
+                item.OrderItemPrice,
+                null,
+                Array.Empty<ServiceRecipientQuantityDto>());
 
             model.PreviouslySelected.Length.Should().Be(0);
         }
