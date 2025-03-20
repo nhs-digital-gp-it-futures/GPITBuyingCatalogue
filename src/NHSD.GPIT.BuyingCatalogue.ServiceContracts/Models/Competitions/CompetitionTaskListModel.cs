@@ -72,9 +72,12 @@ public class CompetitionTaskListModel
 
     private void SetSectionOneStatuses(Competition competition)
     {
-        ServiceRecipients = CompletedOrNotStarted(competition, c => c.Recipients.Any());
+        ServiceRecipients = CompletedInProgressOrNotStarted(
+            competition,
+            c => c.CompetitionSublocations.All(sl => sl.SublocationRecipients.Count > 0),
+            c => c.CompetitionSublocations.Any(sl => sl.SublocationRecipients.Count == 0));
 
-        if (ServiceRecipients is TaskProgress.NotStarted) return;
+        if (ServiceRecipients is not TaskProgress.Completed) return;
 
         ContractLength = CompletedOrNotStarted(competition, c => c.ContractLength.HasValue);
     }

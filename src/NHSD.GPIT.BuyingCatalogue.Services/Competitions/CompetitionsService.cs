@@ -822,9 +822,12 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<CompetitionTaskListModel> GetCompetitionTaskList(string internalOrgId, int competitionId) =>
-        await dbContext
+    public async Task<CompetitionTaskListModel> GetCompetitionTaskList(string internalOrgId, int competitionId)
+    {
+        return await dbContext
             .Competitions
+            .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
             .Include(x => x.Weightings)
             .Include(x => x.Recipients)
             .Include(x => x.NonPriceElements)
@@ -833,9 +836,12 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.Features)
-            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
-            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price)
-            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Scores)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Price)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Quantities)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.SolutionServices)
             .ThenInclude(x => x.Quantities)
@@ -848,6 +854,7 @@ public class CompetitionsService : ICompetitionsService
             .Select(
                 x => new CompetitionTaskListModel(x))
             .FirstOrDefaultAsync();
+    }
 
     public async Task<string> GetCompetitionName(string internalOrgId, int competitionId) => await dbContext.Competitions
         .AsNoTracking()
