@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public bool IsAmendment { get; init; }
 
-        public IReadOnlyList<ServiceRecipientModel> RenderedServiceRecipients { get; }
+        public IReadOnlyList<ServiceRecipientModel> RenderedServiceRecipients { get; init; }
 
         private List<ServiceRecipientModel> WorkingServiceRecipients { get; } = [];
 
