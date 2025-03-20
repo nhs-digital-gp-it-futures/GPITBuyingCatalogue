@@ -53,7 +53,7 @@ public interface ICompetitionsService
     Task<int> GetCountForCompetitionSublocationRecipients(
         string internalOrgId,
         int competitionId,
-        string sublocationId);
+        string sublocationOdsCode);
 
     Task<bool> GetCompetitionHasAnySublocations(string internalOrgId, int competitionId);
 
@@ -84,12 +84,12 @@ public interface ICompetitionsService
     Task AddSublocations(
         string internalOrgId,
         int competitionId,
-        HashSet<string> sublocationIds);
+        HashSet<string> sublocationOdsCodes);
 
     Task RemoveSublocations(
         string internalOrgId,
         int competitionId,
-        HashSet<string> sublocationIds);
+        HashSet<string> sublocationOdsCodes);
 
     Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
 

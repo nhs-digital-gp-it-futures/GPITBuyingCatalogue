@@ -89,7 +89,7 @@ public class CompetitionRecipientsController(
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
 
         IEnumerable<OdsOrganisation> possibleSublocations =
-            await odsService.GetSublocationsByParentInternalIdentifier(internalOrgId);
+            await odsService.GetSublocationsByParentOdsCode(competition.Organisation.ExternalIdentifier);
 
         var backLinkHref = Url.Action(
             nameof(UploadOrSelectServiceRecipients),
@@ -250,11 +250,11 @@ public class CompetitionRecipientsController(
             new { internalOrgId, competitionId });
     }
 
-    [HttpGet("{sublocationId}")]
+    [HttpGet("{sublocationOdsCode}")]
     public async Task<IActionResult> SelectSublocationRecipients(
         string internalOrgId,
         int competitionId,
-        string sublocationId,
+        string sublocationOdsCode,
         string recipientIds,
         string importedRecipients,
         SelectionMode? selectionMode = null)
@@ -266,11 +266,11 @@ public class CompetitionRecipientsController(
             await competitionSublocationService.GetCompetitionSublocationWithRecipients(
                 externalOrganisationId,
                 competitionId,
-                sublocationId);
+                sublocationOdsCode);
 
         var sublocationAsSublocationModel = new SublocationModel(competitionSublocation, true);
 
-        List<ServiceRecipientModel> possibleRecipients = await GetServiceRecipientsBySublocation(sublocationId);
+        List<ServiceRecipientModel> possibleRecipients = await GetServiceRecipientsBySublocation(sublocationOdsCode);
         var splitRecipientIds = SplitCommaSeparatedString(string.Join(',', recipientIds, importedRecipients));
 
         var backLinkHref = Url.Action(
@@ -289,12 +289,12 @@ public class CompetitionRecipientsController(
         return View("ServiceRecipients/SelectSublocationRecipients", model);
     }
 
-    [HttpPost("{sublocationId}")]
+    [HttpPost("{sublocationOdsCode}")]
     public async Task<IActionResult> SelectSublocationRecipients(
         SelectSublocationRecipientsModel selectSublocationRecipientsModel,
         string internalOrgId,
         int competitionId,
-        string sublocationId)
+        string sublocationOdsCode)
     {
         if (!ModelState.IsValid)
         {
@@ -308,7 +308,7 @@ public class CompetitionRecipientsController(
             await competitionSublocationService.GetCompetitionSublocationWithRecipients(
                 externalOrganisationId,
                 competitionId,
-                sublocationId);
+                sublocationOdsCode);
 
         HashSet<string> pageSelections = selectSublocationRecipientsModel.RenderedServiceRecipients
             .Where(x => x.Selected)
@@ -329,7 +329,7 @@ public class CompetitionRecipientsController(
             await competitionSublocationService.AddSublocationRecipients(
                 externalOrganisationId,
                 competitionId,
-                sublocationId,
+                sublocationOdsCode,
                 adds);
         }
 
@@ -338,7 +338,7 @@ public class CompetitionRecipientsController(
             await competitionSublocationService.RemoveSublocationRecipients(
                 externalOrganisationId,
                 competitionId,
-                sublocationId,
+                sublocationOdsCode,
                 removes);
         }
 
@@ -509,9 +509,10 @@ public class CompetitionRecipientsController(
             .ToList();
     }
 
-    private async Task<List<ServiceRecipientModel>> GetServiceRecipientsBySublocation(string internalOrgId)
+    private async Task<List<ServiceRecipientModel>> GetServiceRecipientsBySublocation(string sublocationOdsCode)
     {
-        IEnumerable<ServiceRecipient> recipients = await odsService.GetServiceRecipientsBySublocation(internalOrgId);
+        IEnumerable<ServiceRecipient> recipients =
+            await odsService.GetServiceRecipientsBySublocation(sublocationOdsCode);
 
         return recipients
             .OrderBy(x => x.Name)
@@ -536,7 +537,7 @@ public class CompetitionRecipientsController(
                 var recipientHref = Url.Action(
                     nameof(SelectSublocationRecipients),
                     typeof(CompetitionRecipientsController).ControllerName(),
-                    new { internalOrgId, competitionId, sublocationId = s.SublocationOdsCode });
+                    new { internalOrgId, competitionId, sublocationOdsCode = s.SublocationOdsCode });
 
                 var serviceRecipientCount =
                     await competitionsService.GetCountForCompetitionSublocationRecipients(
@@ -576,7 +577,7 @@ public class CompetitionRecipientsController(
             return RedirectToAction(
                 nameof(SelectSublocationRecipients),
                 typeof(CompetitionRecipientsController).ControllerName(),
-                new { internalOrgId, competitionId, sublocationId = sublocationToComplete.OdsCode });
+                new { internalOrgId, competitionId, sublocationOdsCode = sublocationToComplete.OdsCode });
         }
 
         return RedirectToAction(

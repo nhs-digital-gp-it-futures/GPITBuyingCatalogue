@@ -42,6 +42,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 .ToList();
         }
 
-        public IReadOnlyList<CheckboxNameAndValueModel> RenderedSublocations { get; init; } = [];
+        public IReadOnlyList<CheckboxNameAndValueModel> RenderedSublocations { get; init; }
     }
 }

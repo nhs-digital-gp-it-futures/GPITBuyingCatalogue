@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
         public async Task<CompetitionSublocation> GetCompetitionSublocationWithRecipients(
             string externalOrgId,
             int competitionId,
-            string sublocationId)
+            string sublocationOdsCode)
         {
             CompetitionSublocation sublocation = await dbContext
                 .CompetitionSublocations
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                 .Where(
                     x => x.OwnerOdsCode == externalOrgId
                         && x.CompetitionId == competitionId
-                        && x.SublocationOdsCode == sublocationId)
+                        && x.SublocationOdsCode == sublocationOdsCode)
                 .Include(x => x.Competition)
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
@@ -41,24 +41,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
         }
 
         public async Task AddSublocationRecipients(
-            string externalOrgId,
+            string parentOdsCode,
             int competitionId,
-            string sublocationId,
-            HashSet<string> recipientIds)
+            string sublocationOdsCode,
+            HashSet<string> recipientOdsCodes)
         {
-            ArgumentException.ThrowIfNullOrEmpty(externalOrgId, nameof(externalOrgId));
-            ArgumentException.ThrowIfNullOrEmpty(sublocationId, nameof(sublocationId));
-            if (recipientIds.IsNullOrEmpty())
+            ArgumentException.ThrowIfNullOrEmpty(parentOdsCode, nameof(parentOdsCode));
+            ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode, nameof(sublocationOdsCode));
+            if (recipientOdsCodes.IsNullOrEmpty())
             {
-                throw new ArgumentException(@"recipientIds is null or empty", nameof(recipientIds));
+                throw new ArgumentException(@"recipientIds is null or empty", nameof(recipientOdsCodes));
             }
 
             CompetitionSublocation sublocation = await dbContext
                 .CompetitionSublocations
                 .Where(
-                    x => x.OwnerOdsCode == externalOrgId
+                    x => x.OwnerOdsCode == parentOdsCode
                         && x.CompetitionId == competitionId
-                        && x.SublocationOdsCode == sublocationId)
+                        && x.SublocationOdsCode == sublocationOdsCode)
                 .Include(x => x.Competition)
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             }
 
             var anyIdAlreadyInServiceRecipients =
-                recipientIds.All(x => sublocation.SublocationRecipients.Any(y => y.RecipientOdsCode == x));
+                recipientOdsCodes.All(x => sublocation.SublocationRecipients.Any(y => y.RecipientOdsCode == x));
 
             if (anyIdAlreadyInServiceRecipients)
             {
@@ -79,9 +79,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             }
 
             IEnumerable<ServiceRecipient> validRecipientsForSublocation =
-                await odsService.GetServiceRecipientsBySublocation(sublocationId);
+                await odsService.GetServiceRecipientsBySublocation(sublocationOdsCode);
 
-            var allIdsValid = recipientIds.All(x => validRecipientsForSublocation.Any(y => y.OrgId == x));
+            var allIdsValid = recipientOdsCodes.All(x => validRecipientsForSublocation.Any(y => y.OrgId == x));
 
             if (!allIdsValid)
             {
@@ -89,14 +89,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                     "One or more requested Ids not found or not valid for this sublocation.");
             }
 
-            foreach (var recipientId in recipientIds)
+            foreach (var recipientOdsCode in recipientOdsCodes)
             {
                 sublocation.SublocationRecipients.Add(
                     new CompetitionSublocationRecipient
                     {
                         CompetitionId = competitionId,
-                        RecipientOdsCode = recipientId,
-                        ParentSublocationOdsCode = sublocationId,
+                        RecipientOdsCode = recipientOdsCode,
+                        ParentSublocationOdsCode = sublocationOdsCode,
                     });
             }
 
@@ -106,14 +106,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
         public async Task RemoveSublocationRecipients(
             string externalOrgId,
             int competitionId,
-            string sublocationId,
-            HashSet<string> recipientIds)
+            string sublocationOdsCode,
+            HashSet<string> recipientOdsCodes)
         {
             ArgumentException.ThrowIfNullOrEmpty(externalOrgId, nameof(externalOrgId));
-            ArgumentException.ThrowIfNullOrEmpty(sublocationId, nameof(sublocationId));
-            if (recipientIds.IsNullOrEmpty())
+            ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode, nameof(sublocationOdsCode));
+            if (recipientOdsCodes.IsNullOrEmpty())
             {
-                throw new ArgumentException(@"recipientIds is null or empty", nameof(recipientIds));
+                throw new ArgumentException(@"recipientIds is null or empty", nameof(recipientOdsCodes));
             }
 
             CompetitionSublocation sublocation = await dbContext
@@ -121,7 +121,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                 .Where(
                     x => x.OwnerOdsCode == externalOrgId
                         && x.CompetitionId == competitionId
-                        && x.SublocationOdsCode == sublocationId)
+                        && x.SublocationOdsCode == sublocationOdsCode)
                 .Include(x => x.Competition)
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
@@ -134,17 +134,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             }
 
             var anyIdAlreadyInServiceRecipients =
-                recipientIds.All(x => sublocation.SublocationRecipients.Any(y => y.RecipientOdsCode == x));
+                recipientOdsCodes.All(x => sublocation.SublocationRecipients.Any(y => y.RecipientOdsCode == x));
 
             if (!anyIdAlreadyInServiceRecipients)
             {
                 throw new InvalidOperationException("Can only remove recipient if present in sublocation.");
             }
 
-            foreach (var recipientId in recipientIds)
+            foreach (var recipientOdsCode in recipientOdsCodes)
             {
                 CompetitionSublocationRecipient itemToRemove =
-                    sublocation.SublocationRecipients.First(x => x.RecipientOdsCode == recipientId);
+                    sublocation.SublocationRecipients.First(x => x.RecipientOdsCode == recipientOdsCode);
 
                 sublocation.SublocationRecipients.Remove(itemToRemove);
             }

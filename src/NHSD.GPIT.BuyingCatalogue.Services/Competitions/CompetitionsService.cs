@@ -251,12 +251,12 @@ public class CompetitionsService : ICompetitionsService
     public async Task<int> GetCountForCompetitionSublocationRecipients(
         string internalOrgId,
         int competitionId,
-        string sublocationId)
+        string sublocationOdsCode)
     {
         return await dbContext.Competitions
             .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
             .SelectMany(x => x.CompetitionSublocations)
-            .Where(s => s.SublocationOdsCode == sublocationId)
+            .Where(s => s.SublocationOdsCode == sublocationOdsCode)
             .SelectMany(s => s.SublocationRecipients)
             .CountAsync();
     }
@@ -308,11 +308,11 @@ public class CompetitionsService : ICompetitionsService
     public async Task AddSublocations(
         string internalOrgId,
         int competitionId,
-        HashSet<string> sublocationIds)
+        HashSet<string> sublocationOdsCodes)
     {
-        if (sublocationIds.IsNullOrEmpty())
+        if (sublocationOdsCodes.IsNullOrEmpty())
         {
-            throw new ArgumentException("sublocationIds is null or empty", nameof(sublocationIds));
+            throw new ArgumentException("sublocationIds is null or empty", nameof(sublocationOdsCodes));
         }
 
         Competition competition = await dbContext.Competitions
@@ -326,15 +326,15 @@ public class CompetitionsService : ICompetitionsService
             throw new InvalidOperationException("Cannot add sublocations on a completed competition.");
         }
 
-        if (competition.CompetitionSublocations.Any(x => sublocationIds.Contains(x.SublocationOdsCode)))
+        if (competition.CompetitionSublocations.Any(x => sublocationOdsCodes.Contains(x.SublocationOdsCode)))
         {
             throw new InvalidOperationException("Can only add sublocations not already included in competition.");
         }
 
         IEnumerable<OdsOrganisation> validSublocations =
-            await odsService.GetSublocationsByParentInternalIdentifier(internalOrgId);
+            await odsService.GetSublocationsByParentOdsCode(competition.Organisation.ExternalIdentifier);
 
-        var allIdsValid = sublocationIds.All(x => validSublocations.Any(y => y.OdsCode == x));
+        var allIdsValid = sublocationOdsCodes.All(x => validSublocations.Any(y => y.OdsCode == x));
 
         if (!allIdsValid)
         {
@@ -342,13 +342,13 @@ public class CompetitionsService : ICompetitionsService
                 "One or more requested Ids not found or not valid for this organisation.");
         }
 
-        foreach (var sublocationId in sublocationIds)
+        foreach (var sublocationOdsCode in sublocationOdsCodes)
         {
             competition.CompetitionSublocations.Add(
                 new CompetitionSublocation
                 {
                     CompetitionId = competitionId,
-                    SublocationOdsCode = sublocationId,
+                    SublocationOdsCode = sublocationOdsCode,
                     OwnerOdsCode = competition.Organisation.ExternalIdentifier,
                 });
         }
@@ -359,11 +359,11 @@ public class CompetitionsService : ICompetitionsService
     public async Task RemoveSublocations(
         string internalOrgId,
         int competitionId,
-        HashSet<string> sublocationIds)
+        HashSet<string> sublocationOdsCodes)
     {
-        if (sublocationIds.IsNullOrEmpty())
+        if (sublocationOdsCodes.IsNullOrEmpty())
         {
-            throw new ArgumentException("sublocationIds is null or empty", nameof(sublocationIds));
+            throw new ArgumentException("sublocationIds is null or empty", nameof(sublocationOdsCodes));
         }
 
         Competition competition = await dbContext.Competitions
@@ -378,15 +378,15 @@ public class CompetitionsService : ICompetitionsService
             throw new InvalidOperationException("Cannot remove sublocations on a completed competition.");
         }
 
-        if (!competition.CompetitionSublocations.Any(x => sublocationIds.Contains(x.SublocationOdsCode)))
+        if (!competition.CompetitionSublocations.Any(x => sublocationOdsCodes.Contains(x.SublocationOdsCode)))
         {
             throw new InvalidOperationException("Can only remove sublocations already included in competition.");
         }
 
-        foreach (var sublocationId in sublocationIds)
+        foreach (var sublocationOdsCode in sublocationOdsCodes)
         {
             CompetitionSublocation itemToRemove =
-                competition.CompetitionSublocations.First(x => x.SublocationOdsCode == sublocationId);
+                competition.CompetitionSublocations.First(x => x.SublocationOdsCode == sublocationOdsCode);
 
             competition.CompetitionSublocations.Remove(itemToRemove);
         }

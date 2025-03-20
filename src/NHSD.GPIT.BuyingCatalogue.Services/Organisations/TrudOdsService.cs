@@ -105,17 +105,15 @@ public class TrudOdsService : IOdsService
         return serviceRecipients;
     }
 
-    public async Task<IEnumerable<OdsOrganisation>> GetSublocationsByParentInternalIdentifier(string internalIdentifier)
+    public async Task<IReadOnlyList<OdsOrganisation>> GetSublocationsByParentOdsCode(string parentOdsCode)
     {
-        Organisation organisation =
-            await context.Organisations.FirstOrDefaultAsync(x => x.InternalIdentifier == internalIdentifier);
-        if (organisation is null)
-            throw new ArgumentException(InvalidIdExceptionMessage, nameof(internalIdentifier));
+        if (string.IsNullOrEmpty(parentOdsCode))
+            throw new ArgumentException(InvalidIdExceptionMessage, nameof(parentOdsCode));
 
         List<OdsOrganisation> subLocations = await context.OrganisationRelationships
             .AsNoTracking()
             .Where(
-                x => x.OwnerOrganisationId == organisation.ExternalIdentifier
+                x => x.OwnerOrganisationId == parentOdsCode
                     && x.RelationshipTypeId == settings.InGeographyOfRelType
                     && x.TargetOrganisation.IsActive
                     && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.SubLocationRoleId))
@@ -125,13 +123,16 @@ public class TrudOdsService : IOdsService
         return subLocations;
     }
 
-    public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsBySublocation(
-        string sublocationInternalIdentifier)
+    public async Task<IReadOnlyList<ServiceRecipient>> GetServiceRecipientsBySublocation(
+        string sublocationOdsCode)
     {
+        if (string.IsNullOrEmpty(sublocationOdsCode))
+            throw new ArgumentException(InvalidIdExceptionMessage, nameof(sublocationOdsCode));
+
         List<ServiceRecipient> sublocationRecipients = await context.OrganisationRelationships
             .AsNoTracking()
             .Where(
-                x => x.OwnerOrganisationId == sublocationInternalIdentifier &&
+                x => x.OwnerOrganisationId == sublocationOdsCode &&
                     x.RelationshipTypeId == settings.IsCommissionedByRelType)
             .Include(x => x.TargetOrganisation)
             .ThenInclude(y => y.Roles)
