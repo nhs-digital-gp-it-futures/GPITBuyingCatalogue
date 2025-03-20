@@ -12,5 +12,7 @@ public class ServiceQuantity : RecipientQuantityBase
 
     public CompetitionRecipient CompetitionRecipient { get; set; }
 
+    public CompetitionSublocationRecipient CompetitionSublocationRecipient { get; set; }
+
     public SolutionService SolutionService { get; set; }
 }

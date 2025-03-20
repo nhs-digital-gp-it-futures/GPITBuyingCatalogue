@@ -31,5 +31,11 @@ public class ServiceQuantityEntityTypeConfiguration : IEntityTypeConfiguration<S
             .HasForeignKey(x => new { x.CompetitionId, x.OdsCode })
             .HasConstraintName("FK_ServiceQuantities_Recipient")
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.CompetitionSublocationRecipient)
+            .WithMany()
+            .HasForeignKey(x => new { x.CompetitionId, x.OdsCode })
+            .HasConstraintName("FK_ServiceQuantities_SublocationRecipient")
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
