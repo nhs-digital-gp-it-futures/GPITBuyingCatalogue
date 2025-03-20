@@ -74,8 +74,10 @@ public class CompetitionTaskListModel
     {
         ServiceRecipients = CompletedInProgressOrNotStarted(
             competition,
-            c => c.CompetitionSublocations.All(sl => sl.SublocationRecipients.Count > 0),
-            c => c.CompetitionSublocations.Any(sl => sl.SublocationRecipients.Count == 0));
+            c => c.CompetitionSublocations.Count > 0
+                && c.CompetitionSublocations.All(sl => sl.SublocationRecipients.Count > 0),
+            c => c.CompetitionSublocations.Count > 0
+                && c.CompetitionSublocations.Any(sl => sl.SublocationRecipients.Count == 0));
 
         if (ServiceRecipients is not TaskProgress.Completed) return;
 
