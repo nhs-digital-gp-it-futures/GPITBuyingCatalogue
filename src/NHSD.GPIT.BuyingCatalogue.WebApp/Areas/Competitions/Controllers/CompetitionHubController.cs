@@ -510,11 +510,15 @@ public class CompetitionHubController : Controller
             string internalOrgId,
             CatalogueItemId? serviceId = null)
     {
+        List<OdsOrganisation> flattenedRecipients = competition.CompetitionSublocations
+            .SelectMany(x => x.SublocationRecipients.Select(y => y.RecipientOrganisation))
+            .ToList();
+
         if (serviceId is null)
         {
             return (competitionSolution.Price, competitionSolution.Solution.CatalogueItem,
                 await GetRecipientQuantities(
-                    competition.Recipients,
+                    flattenedRecipients,
                     competitionSolution.Quantities.Cast<RecipientQuantityBase>().ToList(),
                     internalOrgId));
         }
@@ -524,7 +528,7 @@ public class CompetitionHubController : Controller
 
         return (service.Price, service.Service,
             await GetRecipientQuantities(
-                competition.Recipients,
+                flattenedRecipients,
                 service.Quantities.Cast<RecipientQuantityBase>().ToList(),
                 internalOrgId));
     }

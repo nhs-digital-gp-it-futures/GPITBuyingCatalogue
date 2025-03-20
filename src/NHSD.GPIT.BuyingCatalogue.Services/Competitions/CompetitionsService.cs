@@ -177,7 +177,8 @@ public class CompetitionsService : ICompetitionsService
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
     public async Task<Competition> GetCompetitionWithSolutionsHub(string internalOrgId, int competitionId)
-        => await dbContext.Competitions
+    {
+        return await dbContext.Competitions
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
@@ -200,10 +201,13 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(x => x.Quantities)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Quantities)
-            .Include(x => x.Recipients)
+            .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
+            .ThenInclude(z => z.RecipientOrganisation)
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+    }
 
     public async Task<Competition> GetCompetition(string internalOrgId, int competitionId)
         => await dbContext.Competitions.AsNoTracking()
