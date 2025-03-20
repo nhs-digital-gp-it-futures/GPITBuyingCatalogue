@@ -493,10 +493,14 @@ public class CompetitionRecipientsController(
     }
 
     [HttpPost("confirm-sublocation-recipients")]
-    public async Task<IActionResult> ConfirmSublocationRecipients(
-        ConfirmSublocationRecipientsModel confirmSublocationRecipientsModel)
+    public IActionResult ConfirmSublocationRecipientsPost(
+        string internalOrgId,
+        int competitionId)
     {
-        throw new NotImplementedException();
+        return RedirectToAction(
+            nameof(CompetitionTaskListController.Index),
+            typeof(CompetitionTaskListController).ControllerName(),
+            new { internalOrgId, competitionId });
     }
 
     private async Task<List<ServiceRecipientModel>> GetServiceRecipients(string internalOrgId)

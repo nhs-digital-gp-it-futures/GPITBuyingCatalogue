@@ -2,49 +2,38 @@
 @{
     ViewBag.Title = Model.Title;
 }
-<partial name="Partials/_BackLink" model="Model" />
+<partial name="Partials/_BackLink" model="Model"/>
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
-        <nhs-page-title model="@Model" />
+        <nhs-page-title model="@Model"/>
+        <div id="selected-service-recipients">
+            @foreach (var sublocation in Model.Sublocations)
+            {
+                <nhs-expander label-text="@($"{sublocation.Name} ({sublocation.ServiceRecipientCount} selected)")"
+                              bold-title="true" open="@(sublocation.ServiceRecipientCount > 0)">
+                    <ul>
+                        @foreach (var sublocationRecipient in sublocation.ServiceRecipients)
+                        {
+                            <li>@sublocationRecipient.Description</li>
+                        }
+                    </ul>
 
-        <form method="post">
-            <hidden-inputs title="Title" caption="Caption" advice="Advice" />
-            <input type="hidden" asp-for="BackLink" />
-            <input type="hidden" asp-for="AddRemoveRecipientsLink" />
+                </nhs-expander>
+            }
+        </div>
 
-                <div id="selected-service-recipients">
-                    @foreach (var sublocation in Model.Sublocations)
-                    {
-                        <nhs-expander label-text="@($"{sublocation.Name} ({sublocation.ServiceRecipientCount} selected)")"
-                                      bold-title="true" open="@(sublocation.ServiceRecipientCount > 0)">
-                            <ul>
-                                @foreach (var sublocationRecipient in sublocation.ServiceRecipients)
-                                {
-                                    <li>@sublocationRecipient.Description</li>
-                                }
-                            </ul>
-
-                        </nhs-expander>
-                    }
-                </div>
-
-                <div class="nhsuk-u-margin-top-6">
-                    <p>
-                        You can
-                        <a href="@Model.AddRemoveRecipientsLink">add or remove Service Recipients</a>
-                        if needed, or edit them later if you continue with your order.
-                    </p>
-                </div>
-
-            <div class="nhsuk-u-margin-top-6">
-                <nhs-submit-button />
-            </div>
-        </form>
+        <div class="nhsuk-u-margin-top-6">
+            <p>
+                You can
+                <a href="@Model.AddRemoveRecipientsLink">add or remove Service Recipients</a>
+                if needed, or edit them later if you continue with your order.
+            </p>
+        </div>
+        <div class="nhsuk-u-margin-top-6">
+            <form method="post">
+                <nhs-submit-button/>
+            </form>
+        </div>
     </div>
 </div>
-
-@{
-    string PluralOrSingular(int total) => total == 1 ? "Recipient:" : "Recipients:";
-}
