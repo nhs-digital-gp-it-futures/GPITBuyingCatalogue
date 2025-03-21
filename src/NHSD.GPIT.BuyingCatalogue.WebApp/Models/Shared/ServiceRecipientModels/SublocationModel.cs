@@ -47,13 +47,13 @@ public record SublocationModel
 
     public string OdsCode { get; init; }
 
-    public IReadOnlyList<ServiceRecipientModel> ServiceRecipients { get; }
+    public IReadOnlyList<ServiceRecipientModel> ServiceRecipients { get; init; }
 
     public int ServiceRecipientCount { get; init; }
+
+    public string RecipientHref { get; init; }
 
     public TaskProgress TaskProgress => ServiceRecipientCount == 0 ? TaskProgress.NotStarted : TaskProgress.Completed;
 
     public bool? AllRecipientsSelected => ServiceRecipients?.All(x => x.Selected);
-
-    public string RecipientHref { get; init; }
 }
