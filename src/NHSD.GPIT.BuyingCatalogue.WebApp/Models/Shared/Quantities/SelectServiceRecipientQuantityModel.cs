@@ -10,7 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 
-public class SelectServiceRecipientQuantityModel : NavBaseModel
+public sealed class SelectServiceRecipientQuantityModel : NavBaseModel
 {
     public const string AdviceText = "Enter the quantity you want for each practice for the duration of your order.";
     public const string AdviceTextPatient = "We’ve included the latest practice list sizes published by the NHS.";
