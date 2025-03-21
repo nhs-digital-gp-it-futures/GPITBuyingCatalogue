@@ -22,7 +22,7 @@ public class OrderingInformationModel : NavBaseModel
         CompetitionId = competition.Id;
         CompetitionName = competition.Name;
 
-        NumberOfRecipients = competition.Recipients.Count;
+        NumberOfRecipients = competition.FlattenedRecipients.Count;
         ContractLength = competition.ContractLength.GetValueOrDefault();
 
         CompetitionSolution = competitionSolution;

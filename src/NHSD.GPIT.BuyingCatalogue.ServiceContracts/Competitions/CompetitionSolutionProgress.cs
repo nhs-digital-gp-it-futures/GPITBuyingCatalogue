@@ -9,11 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 public readonly struct CompetitionSolutionProgress
 {
     private readonly CompetitionSolution competitionSolution;
-    private readonly ICollection<OdsOrganisation> competitionRecipients;
+    private readonly IReadOnlyList<OdsOrganisation> competitionRecipients;
 
     public CompetitionSolutionProgress(
         CompetitionSolution competitionSolution,
-        ICollection<OdsOrganisation> competitionRecipients)
+        IReadOnlyList<OdsOrganisation> competitionRecipients)
     {
         this.competitionSolution = competitionSolution;
         this.competitionRecipients = competitionRecipients;
@@ -48,12 +48,15 @@ public readonly struct CompetitionSolutionProgress
         {
             bool HasQuantities(
                 CompetitionSolution solution,
-                ICollection<OdsOrganisation> recipients) => (solution.Quantity.HasValue || (solution.Quantities.Any()
-                    && recipients.All(x => solution.Quantities.Any(y => y.OdsCode == x.Id))))
-                && (!solution.SolutionServices.Any()
-                    || solution.SolutionServices.All(
-                        x => x.Quantity.HasValue || (x.Quantities.Any()
-                            && recipients.All(y => x.Quantities.Any(z => z.OdsCode == y.Id)))));
+                IReadOnlyList<OdsOrganisation> recipients)
+            {
+                return (solution.Quantity.HasValue || (solution.Quantities.Any()
+                        && recipients.All(x => solution.Quantities.Any(y => y.OdsCode == x.Id))))
+                    && (!solution.SolutionServices.Any()
+                        || solution.SolutionServices.All(
+                            x => x.Quantity.HasValue || (x.Quantities.Any()
+                                && recipients.All(y => x.Quantities.Any(z => z.OdsCode == y.Id)))));
+            }
 
             if (PriceProgress is not TaskProgress.Completed) return TaskProgress.CannotStart;
 

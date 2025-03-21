@@ -10,7 +10,5 @@ public class SolutionQuantity : RecipientQuantityBase
 
     public CompetitionSolution CompetitionSolution { get; set; }
 
-    public CompetitionRecipient CompetitionRecipient { get; set; }
-
     public CompetitionSublocationRecipient CompetitionSublocationRecipient { get; set; }
 }

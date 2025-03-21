@@ -26,12 +26,6 @@ public class SolutionQuantityEntityTypeConfiguration : IEntityTypeConfiguration<
             .HasConstraintName("FK_SolutionQuantities_Solution")
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(x => x.CompetitionRecipient)
-            .WithMany()
-            .HasForeignKey(x => new { x.CompetitionId, x.OdsCode })
-            .HasConstraintName("FK_SolutionQuantities_Recipient")
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasOne(x => x.CompetitionSublocationRecipient)
             .WithMany()
             .HasForeignKey(x => new { x.CompetitionId, x.OdsCode })

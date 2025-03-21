@@ -14,7 +14,7 @@ public class SolutionPriceModel
         CatalogueItemId = solution.SolutionId;
         Name = solution.Solution.CatalogueItem.Name;
 
-        var competitionSolutionProgress = new CompetitionSolutionProgress(solution, competition.Recipients);
+        var competitionSolutionProgress = new CompetitionSolutionProgress(solution, competition.FlattenedRecipients);
 
         Progress = competitionSolutionProgress.Progress;
 

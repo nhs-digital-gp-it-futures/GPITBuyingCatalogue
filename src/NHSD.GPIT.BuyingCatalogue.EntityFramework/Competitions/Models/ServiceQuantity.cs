@@ -10,8 +10,6 @@ public class ServiceQuantity : RecipientQuantityBase
 
     public CatalogueItemId ServiceId { get; set; }
 
-    public CompetitionRecipient CompetitionRecipient { get; set; }
-
     public CompetitionSublocationRecipient CompetitionSublocationRecipient { get; set; }
 
     public SolutionService SolutionService { get; set; }

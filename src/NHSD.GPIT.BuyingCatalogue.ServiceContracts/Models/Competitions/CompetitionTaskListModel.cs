@@ -154,7 +154,7 @@ public class CompetitionTaskListModel
         if (CompareAndScoreSolutions is not (TaskProgress.NotApplicable or TaskProgress.Completed)) return;
 
         var solutionProgressStatuses = competition.CompetitionSolutions
-            .Select(x => new CompetitionSolutionProgress(x, competition.Recipients))
+            .Select(x => new CompetitionSolutionProgress(x, competition.FlattenedRecipients))
             .ToList();
 
         CalculatePrice = CompletedInProgressOrNotStarted(

@@ -65,28 +65,44 @@ public class CompetitionsService : ICompetitionsService
         return new PagedList<Competition>(results, options);
     }
 
-    public async Task<Competition> GetCompetitionForResults(string internalOrgId, int competitionId) =>
-        await dbContext
+    public async Task<Competition> GetCompetitionForResults(string internalOrgId, int competitionId)
+    {
+        return await dbContext
             .Competitions
             .Include(x => x.Organisation)
             .Include(x => x.Weightings)
-            .Include(x => x.Recipients)
+            .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
+            .ThenInclude(z => z.RecipientOrganisation)
             .Include(x => x.NonPriceElements)
             .Include(x => x.NonPriceElements.NonPriceWeights)
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.IntegrationTypes)
             .Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.Features)
-            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Scores)
-            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
-            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Quantities)
-            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.Solution.CatalogueItem.Supplier)
-            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Service.Supplier)
-            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Quantities)
-            .Include(x => x.CompetitionSolutions).ThenInclude(x => x.SolutionServices).ThenInclude(x => x.Price).ThenInclude(x => x.Tiers)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Scores)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Price)
+            .ThenInclude(x => x.Tiers)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.Solution.CatalogueItem.Supplier)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Service.Supplier)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Quantities)
+            .Include(x => x.CompetitionSolutions)
+            .ThenInclude(x => x.SolutionServices)
+            .ThenInclude(x => x.Price)
+            .ThenInclude(x => x.Tiers)
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+    }
 
     public async Task<Competition> GetCompetitionWithNonPriceElements(string internalOrgId, int competitionId)
         => await dbContext.Competitions
@@ -153,7 +169,8 @@ public class CompetitionsService : ICompetitionsService
     }
 
     public async Task<Competition> GetCompetitionWithSolutions(string internalOrgId, int competitionId)
-        => await dbContext.Competitions
+    {
+        return await dbContext.Competitions
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
@@ -171,10 +188,13 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.NonPriceElements.Implementation)
             .Include(x => x.NonPriceElements.ServiceLevel)
             .Include(x => x.NonPriceElements.Features)
-            .Include(x => x.Recipients)
+            .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
+            .ThenInclude(z => z.RecipientOrganisation)
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+    }
 
     public async Task<Competition> GetCompetitionWithSolutionsHub(string internalOrgId, int competitionId)
     {
@@ -221,10 +241,14 @@ public class CompetitionsService : ICompetitionsService
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
     public async Task<Competition> GetCompetitionWithRecipients(string internalOrgId, int competitionId)
-        => await dbContext.Competitions.Include(x => x.Recipients)
+    {
+        return await dbContext.Competitions.Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
+            .ThenInclude(z => z.RecipientOrganisation)
             .AsNoTracking()
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
+    }
 
     public async Task<Competition> GetCompetitionWithSublocations(string internalOrgId, int competitionId)
     {
@@ -833,7 +857,9 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.CompetitionSublocations)
             .ThenInclude(y => y.SublocationRecipients)
             .Include(x => x.Weightings)
-            .Include(x => x.Recipients)
+            .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
+            .ThenInclude(z => z.RecipientOrganisation)
             .Include(x => x.NonPriceElements)
             .Include(x => x.NonPriceElements.NonPriceWeights)
             .Include(x => x.NonPriceElements.Implementation)

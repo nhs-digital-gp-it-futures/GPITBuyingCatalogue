@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -218,8 +219,8 @@ public class CompetitionResultsController : Controller
         int competitionId)
     {
         var competition = await competitionsService.GetCompetitionWithRecipients(internalOrgId, competitionId);
-        var recipients = competition.Recipients.Select(
-            x => new ServiceRecipientImportModel { Organisation = x.Name, OdsCode = x.Id, });
+        IEnumerable<ServiceRecipientImportModel> recipients = competition.FlattenedRecipients.Select(
+            x => new ServiceRecipientImportModel { Organisation = x.Name, OdsCode = x.Id });
 
         using var stream = new MemoryStream();
         await serviceRecipientImportService.CreateServiceRecipientTemplate(stream, recipients);

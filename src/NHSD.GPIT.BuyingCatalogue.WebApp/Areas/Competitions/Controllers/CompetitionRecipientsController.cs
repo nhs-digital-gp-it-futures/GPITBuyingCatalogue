@@ -387,7 +387,7 @@ public class CompetitionRecipientsController(
         var model = new SelectRecipientsModel(
             organisation,
             recipients,
-            competition.Recipients.Select(x => x.Id),
+            competition.FlattenedRecipients.Select(x => x.Id),
             [],
             splitRecipientIds,
             selectionMode)

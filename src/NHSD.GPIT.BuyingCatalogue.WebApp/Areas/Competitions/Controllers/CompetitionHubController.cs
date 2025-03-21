@@ -447,11 +447,11 @@ public class CompetitionHubController : Controller
     }
 
     internal async Task<IEnumerable<ServiceRecipientQuantityDto>> GetRecipientQuantities(
-        ICollection<OdsOrganisation> competitionRecipients,
+        IReadOnlyList<OdsOrganisation> competitionRecipients,
         ICollection<RecipientQuantityBase> recipientQuantities,
         string internalOrgId)
     {
-        var competitionRecipientIds = competitionRecipients.Select(x => x.Id);
+        List<string> competitionRecipientIds = competitionRecipients.Select(x => x.Id).ToList();
         var practiceListSizes = await gpPracticeService.GetNumberOfPatients(competitionRecipientIds);
         var organisations = await odsService.GetServiceRecipientsById(internalOrgId, competitionRecipientIds);
 
@@ -510,15 +510,11 @@ public class CompetitionHubController : Controller
             string internalOrgId,
             CatalogueItemId? serviceId = null)
     {
-        List<OdsOrganisation> flattenedRecipients = competition.CompetitionSublocations
-            .SelectMany(x => x.SublocationRecipients.Select(y => y.RecipientOrganisation))
-            .ToList();
-
         if (serviceId is null)
         {
             return (competitionSolution.Price, competitionSolution.Solution.CatalogueItem,
                 await GetRecipientQuantities(
-                    flattenedRecipients,
+                    competition.FlattenedRecipients,
                     competitionSolution.Quantities.Cast<RecipientQuantityBase>().ToList(),
                     internalOrgId));
         }
@@ -528,7 +524,7 @@ public class CompetitionHubController : Controller
 
         return (service.Price, service.Service,
             await GetRecipientQuantities(
-                flattenedRecipients,
+                competition.FlattenedRecipients,
                 service.Quantities.Cast<RecipientQuantityBase>().ToList(),
                 internalOrgId));
     }

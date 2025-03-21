@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
@@ -21,8 +20,4 @@ public class CompetitionRecipient
     public int CompetitionId { get; set; }
 
     public string OdsCode { get; set; }
-
-    public Competition Competition { get; set; }
-
-    public OdsOrganisation OdsOrganisation { get; set; }
 }

@@ -2,7 +2,6 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -22,17 +21,13 @@ public class CompetitionSolutionHubModel : NavBaseModel
         SolutionId = competitionSolution.SolutionId;
         SolutionName = competitionSolution.Solution.CatalogueItem.Name;
 
-        List<OdsOrganisation> flattenedRecipients = competition.CompetitionSublocations
-            .SelectMany(x => x.SublocationRecipients.Select(y => y.RecipientOrganisation))
-            .ToList();
-
         CatalogueItems = new[]
             {
                 new CatalogueItemHubModel(
                     competitionSolution.SolutionId,
                     competitionSolution.Solution.CatalogueItem,
                     competitionSolution.Quantity,
-                    flattenedRecipients.ToDictionary(
+                    competition.FlattenedRecipients.ToDictionary(
                         x => x,
                         x => competitionSolution.Quantities.FirstOrDefault(y => y.OdsCode == x.Id)?.Quantity),
                     competitionSolution.Price)
@@ -47,7 +42,7 @@ public class CompetitionSolutionHubModel : NavBaseModel
                         competitionSolution.SolutionId,
                         x.Service,
                         x.Quantity,
-                        flattenedRecipients.ToDictionary(
+                        competition.FlattenedRecipients.ToDictionary(
                             y => y,
                             y => x.Quantities.FirstOrDefault(z => z.OdsCode == y.Id)?.Quantity),
                         x.Price)

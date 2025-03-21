@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
@@ -14,7 +16,6 @@ public class Competition
     public Competition()
     {
         CompetitionSolutions = new HashSet<CompetitionSolution>();
-        Recipients = new HashSet<OdsOrganisation>();
     }
 
     public int Id { get; set; }
@@ -65,7 +66,14 @@ public class Competition
 
     public ICollection<CompetitionSublocation> CompetitionSublocations { get; set; }
 
-    public ICollection<OdsOrganisation> Recipients { get; set; }
-
     public ICollection<Order> Orders { get; set; }
+
+    /// <summary>
+    ///     Gets the list of recipient organisations. This property will only work correctly if sublocation organisations and
+    ///     sublocation recipients are included in db query.
+    /// </summary>
+    [NotMapped]
+    public IReadOnlyList<OdsOrganisation> FlattenedRecipients => CompetitionSublocations?.AsEnumerable()
+        .SelectMany(x => x.SublocationRecipients.Select(y => y.RecipientOrganisation))
+        .ToList();
 }
