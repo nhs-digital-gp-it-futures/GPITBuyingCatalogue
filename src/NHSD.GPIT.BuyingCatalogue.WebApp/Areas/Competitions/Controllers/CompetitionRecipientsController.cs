@@ -579,9 +579,9 @@ public class CompetitionRecipientsController(
         if (sublocationToComplete != null)
         {
             return RedirectToAction(
-                nameof(SelectSublocationRecipients),
-                typeof(CompetitionRecipientsController).ControllerName(),
-                new { internalOrgId, competitionId, sublocationOdsCode = sublocationToComplete.OdsCode });
+                nameof(CompetitionTaskListController.Index),
+                typeof(CompetitionTaskListController).ControllerName(),
+                new { internalOrgId, competitionId });
         }
 
         return RedirectToAction(

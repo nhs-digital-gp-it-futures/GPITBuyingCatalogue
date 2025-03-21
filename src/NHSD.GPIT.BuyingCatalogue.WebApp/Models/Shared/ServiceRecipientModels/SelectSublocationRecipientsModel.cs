@@ -6,8 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
     public sealed class SelectSublocationRecipientsModel : NavBaseModel
     {
-        private readonly SelectionMode? selectionMode;
-
         public SelectSublocationRecipientsModel()
         {
         }
@@ -26,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Advice = "Select all the organisations that will be receiving this order";
             BackLink = backLinkHref;
 
-            this.selectionMode = selectionMode;
+            SelectionMode = selectionMode;
 
             PreviouslySelected = selectedSublocation.ServiceRecipients;
 
@@ -56,18 +54,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public IReadOnlyList<ServiceRecipientModel> RenderedServiceRecipients { get; init; }
 
+        public SelectionMode? SelectionMode { get; init; }
+
         private List<ServiceRecipientModel> WorkingServiceRecipients { get; } = [];
 
         private void SelectServiceRecipients(
             IEnumerable<string> requestParameterRecipients,
             List<ServiceRecipientModel> modifyList)
         {
-            switch (selectionMode)
+            switch (SelectionMode)
             {
-                case SelectionMode.All:
+                case ServiceRecipientModels.SelectionMode.All:
                     modifyList.ForEach(x => x.Selected = true);
                     break;
-                case SelectionMode.None:
+                case ServiceRecipientModels.SelectionMode.None:
                     modifyList.ForEach(x => x.Selected = false);
                     break;
                 default:

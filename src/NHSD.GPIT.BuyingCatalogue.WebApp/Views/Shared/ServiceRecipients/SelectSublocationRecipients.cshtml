@@ -66,7 +66,7 @@
             <hidden-inputs title="@Model.Title" advice="@Model.Advice" caption="@Model.Caption" />
             @Html.HiddenFor(model => model.Sublocation.Name)
             @Html.HiddenFor(model => model.BackLink)
-            <nhs-expander-v2 id="recipients-expander" open="@(Model.RenderedServiceRecipients.Any(x => x.Selected) || expandWhenNotValid)">
+            <nhs-expander-v2 id="recipients-expander" open="@(Model.RenderedServiceRecipients.Any(x => x.Selected) && Model.SelectionMode is null || expandWhenNotValid)">
                 <nhs-expander-summary label-text="@Model.Sublocation.Name" bold-title="true">
                     <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">
                         <b>@(Model.RenderedServiceRecipients.Count(r => r.Selected)) </b>
