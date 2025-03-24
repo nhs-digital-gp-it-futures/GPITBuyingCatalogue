@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
@@ -163,8 +164,8 @@ public class CompetitionImportServiceRecipientsController : Controller
         }
 
         return RedirectToAction(
-            nameof(Validate),
-            new { internalOrgId, competitionId });
+            nameof(ValidationComplete),
+            new { internalOrgId, competitionId, hasInvalidRecipients = acceptLossOfOdsIfMismatch });
     }
 
     [HttpPost("validate")]
@@ -214,13 +215,16 @@ public class CompetitionImportServiceRecipientsController : Controller
                 internalOrgId,
                 requestedRecipientOdsCodes);
 
-        List<SublocationModel> recipientsAsSublocations = organisationServiceRecipients.GroupBy(x => x.Location)
+        List<SublocationModel> recipientsAsSublocations = organisationServiceRecipients.GroupBy(x => x.LocationOrgId)
             .Select(
                 x => new SublocationModel
                 {
                     OdsCode = x.Key,
                     ServiceRecipients = x.Select(
-                            y => new ServiceRecipientModel { OdsCode = y.OrgId, Name = y.Name, Location = y.Location })
+                            y => new ServiceRecipientModel
+                            {
+                                OdsCode = y.OrgId, Name = y.Name, Location = y.LocationOrgId,
+                            })
                         .ToList(),
                 })
             .ToList();
@@ -231,9 +235,39 @@ public class CompetitionImportServiceRecipientsController : Controller
     }
 
     [HttpPost("validation-complete")]
-    public async Task<IActionResult> ValidationComplete(ValidationCompleteModel model)
+    public async Task<IActionResult> ValidationComplete(
+        string internalOrgId,
+        int competitionId,
+        ValidationCompleteModel model)
     {
-        throw new NotImplementedException();
+        Competition competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
+
+        List<CompetitionSublocation> sublocationModelAsEntityModel = model.Sublocations.Select(
+                x => new CompetitionSublocation
+                {
+                    CompetitionId = competitionId,
+                    SublocationOdsCode = x.OdsCode,
+                    OwnerOdsCode = competition.Organisation.ExternalIdentifier,
+                    SublocationRecipients = x.ServiceRecipients.Select(
+                            y => new CompetitionSublocationRecipient
+                            {
+                                CompetitionId = competitionId,
+                                RecipientOdsCode = y.OdsCode,
+                                ParentSublocationOdsCode = x.OdsCode,
+                            })
+                        .ToList(),
+                })
+            .ToList();
+
+        await competitionsService.SetCompetitionSublocationsAndRecipients(
+            internalOrgId,
+            competitionId,
+            sublocationModelAsEntityModel);
+
+        return RedirectToAction(
+            nameof(CompetitionRecipientsController.ConfirmSublocations),
+            typeof(CompetitionRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId });
     }
 
     [HttpGet("download-template")]

@@ -159,7 +159,7 @@ public class TrudOdsService : IOdsService
             .Select(x => x.TargetOrganisation.Id)
             .ToListAsync();
 
-        var serviceRecipients = await context.OrganisationRelationships.AsNoTracking()
+        List<ServiceRecipient> serviceRecipients = await context.OrganisationRelationships.AsNoTracking()
             .Where(
                 x => subLocations.Contains(x.OwnerOrganisationId)
                     && odsCodes.Contains(x.TargetOrganisationId)
@@ -173,6 +173,7 @@ public class TrudOdsService : IOdsService
                     OrgId = x.TargetOrganisationId,
                     PrimaryRoleId = x.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
                     Location = x.OwnerOrganisation.Name,
+                    LocationOrgId = x.OwnerOrganisation.Id,
                 })
             .ToListAsync();
 
