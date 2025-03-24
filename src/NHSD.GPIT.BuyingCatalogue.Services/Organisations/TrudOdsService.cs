@@ -143,7 +143,7 @@ public class TrudOdsService : IOdsService
         return sublocationRecipients;
     }
 
-    public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsById(string internalIdentifier, IEnumerable<string> odsCodes)
+    public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(string internalIdentifier, IEnumerable<string> odsCodes)
     {
         var organisation = await context.Organisations.FirstOrDefaultAsync(x => x.InternalIdentifier == internalIdentifier);
         if (organisation is null) return Enumerable.Empty<ServiceRecipient>();

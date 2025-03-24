@@ -278,7 +278,10 @@ public class TrudOdsServiceTests
         string internalOrgId,
         TrudOdsService service)
     {
-        var result = await service.GetServiceRecipientsById(internalOrgId, Enumerable.Empty<string>());
+        IEnumerable<ServiceRecipient> result =
+            await service.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                Enumerable.Empty<string>());
 
         result.Should().BeEmpty();
     }
@@ -333,7 +336,9 @@ public class TrudOdsServiceTests
 
         var selectedOrgs = organisations.Take(2).ToList();
 
-        var result = await service.GetServiceRecipientsById(organisation.InternalIdentifier, selectedOrgs.Select(x => x.Id));
+        IEnumerable<ServiceRecipient> result = await service.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+            organisation.InternalIdentifier,
+            selectedOrgs.Select(x => x.Id));
 
         result.Should().NotBeEmpty();
         result.Should()

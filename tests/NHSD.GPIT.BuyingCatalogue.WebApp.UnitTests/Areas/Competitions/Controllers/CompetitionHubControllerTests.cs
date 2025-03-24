@@ -1274,7 +1274,10 @@ public static class CompetitionHubControllerTests
         var competitionRecipients = new List<OdsOrganisation> { competitionRecipient };
         var recipientQuantities = new List<RecipientQuantityBase> { recipientQuantity };
 
-        odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(new List<ServiceRecipient> { serviceRecipient });
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                Arg.Any<IEnumerable<string>>())
+            .Returns(new List<ServiceRecipient> { serviceRecipient });
         gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns(new List<GpPracticeSize>() { gpPracticeSize });
 
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
@@ -1307,7 +1310,10 @@ public static class CompetitionHubControllerTests
         var competitionRecipients = new List<OdsOrganisation> { competitionRecipient };
         var recipientQuantities = Enumerable.Empty<RecipientQuantityBase>().ToList();
 
-        odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(new List<ServiceRecipient> { serviceRecipient });
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                Arg.Any<IEnumerable<string>>())
+            .Returns(new List<ServiceRecipient> { serviceRecipient });
         gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns(new List<GpPracticeSize> { gpPractice });
 
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);

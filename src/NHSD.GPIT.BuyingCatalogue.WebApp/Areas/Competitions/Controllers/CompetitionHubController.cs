@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -453,7 +454,10 @@ public class CompetitionHubController : Controller
     {
         List<string> competitionRecipientIds = competitionRecipients.Select(x => x.Id).ToList();
         var practiceListSizes = await gpPracticeService.GetNumberOfPatients(competitionRecipientIds);
-        var organisations = await odsService.GetServiceRecipientsById(internalOrgId, competitionRecipientIds);
+        IEnumerable<ServiceRecipient> organisations =
+            await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                competitionRecipientIds);
 
         return competitionRecipients.Select(
             x => new ServiceRecipientQuantityDto(

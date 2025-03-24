@@ -106,7 +106,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             PageTitleModel title = GetSelectServiceRecipientsTitle(wrapper.Order.OrderType);
 
-            var previousRecipients = await odsService.GetServiceRecipientsById(internalOrgId, wrapper.PreviousRecipientsOdsCodes());
+            IEnumerable<ServiceRecipient> previousRecipients =
+                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    wrapper.PreviousRecipientsOdsCodes());
             var previousRecipientsModel = MapToModel(previousRecipients, false);
 
             var model =
@@ -194,7 +197,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             }
 
             var selectedRecipientOdsCodes = UrlStringToValues(recipientIds);
-            var serviceRecipients = MapToModel(await odsService.GetServiceRecipientsById(internalOrgId, selectedRecipientOdsCodes), false);
+            List<ServiceRecipientModel> serviceRecipients = MapToModel(
+                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    selectedRecipientOdsCodes),
+                false);
             var title = GetSelectRecipientForPracticeReorganisationTitle(orderType);
 
             var model = new RecipientForPracticeReorganisationModel(
@@ -240,8 +247,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var orderType = wrapper.Order.OrderType;
-            var selectedRecipients = MapToModel(
-                await odsService.GetServiceRecipientsById(internalOrgId, UrlStringToValues(recipientIds)),
+            List<ServiceRecipientModel> selectedRecipients = MapToModel(
+                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    UrlStringToValues(recipientIds)),
                 false);
             ServiceRecipientModel practiceReorganisation = null;
 
@@ -256,7 +265,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 selectedRecipients.Remove(practiceReorganisation);
             }
 
-            var previousRecipients = await odsService.GetServiceRecipientsById(internalOrgId, wrapper.PreviousRecipientsOdsCodes());
+            IEnumerable<ServiceRecipient> previousRecipients =
+                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    wrapper.PreviousRecipientsOdsCodes());
 
             var title = GetConfirmRecipientsTitle(orderType, callOffId.IsAmendment);
             var model = new ConfirmChangesModel()

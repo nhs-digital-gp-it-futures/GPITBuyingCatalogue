@@ -415,7 +415,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var organisations = order.OrderRecipients.Select(x => new ServiceRecipient() { OrgId = x.OdsCode, Location = "Test" });
 
-            odsService.GetServiceRecipientsById(
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                     internalOrgId,
                     Arg.Any<IEnumerable<string>>())
                 .Returns(organisations);
@@ -516,9 +516,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var organisations = order.OrderRecipients.Select(x => new ServiceRecipient() { OrgId = x.OdsCode, Location = "Test" });
 
-            odsService.GetServiceRecipientsById(
-                internalOrgId,
-                Arg.Any<IEnumerable<string>>())
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Any<IEnumerable<string>>())
                 .Returns(organisations);
 
             var result = await controller.EditDates(internalOrgId, callOffId, catalogueItemId);

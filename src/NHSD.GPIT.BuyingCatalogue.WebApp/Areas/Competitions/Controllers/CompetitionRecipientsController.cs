@@ -436,7 +436,10 @@ public class CompetitionRecipientsController(
 
         var recipientOdsCodes = SplitCommaSeparatedString(recipientIds);
 
-        var recipients = await odsService.GetServiceRecipientsById(internalOrgId, recipientOdsCodes);
+        IEnumerable<ServiceRecipient> recipients =
+            await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                recipientOdsCodes);
 
         var model = new ConfirmChangesModel(organisation)
         {

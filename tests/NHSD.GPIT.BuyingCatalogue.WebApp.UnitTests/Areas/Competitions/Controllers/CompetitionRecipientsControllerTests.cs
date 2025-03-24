@@ -106,7 +106,9 @@ public static class CompetitionRecipientsControllerTests
         competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id)
             .Returns(competition);
 
-        odsService.GetServiceRecipientsById(organisation.InternalIdentifier, Arg.Any<IEnumerable<string>>())
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<IEnumerable<string>>())
             .Returns(serviceRecipients);
 
         var expectedModel = new ConfirmChangesModel(organisation)
@@ -147,7 +149,9 @@ public static class CompetitionRecipientsControllerTests
         competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id)
             .Returns(competition);
 
-        odsService.GetServiceRecipientsById(organisation.InternalIdentifier, Arg.Any<IEnumerable<string>>())
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<IEnumerable<string>>())
             .Returns(serviceRecipients);
 
         _ = (await controller.ConfirmRecipients(
@@ -181,7 +185,9 @@ public static class CompetitionRecipientsControllerTests
         competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id)
             .Returns(competition);
 
-        odsService.GetServiceRecipientsById(organisation.InternalIdentifier, Arg.Any<IEnumerable<string>>())
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<IEnumerable<string>>())
             .Returns(serviceRecipients);
 
         _ = (await controller.ConfirmRecipients(

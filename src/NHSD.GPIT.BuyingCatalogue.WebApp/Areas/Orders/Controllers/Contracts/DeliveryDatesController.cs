@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -177,7 +178,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
             var orderRecipients = orderWrapper.DetermineOrderRecipients(catalogueItemId);
-            var organisations = (await odsService.GetServiceRecipientsById(internalOrgId, orderRecipients.Select(x => x.OdsCode)))
+            Dictionary<string, string> organisations =
+                (await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    orderRecipients.Select(x => x.OdsCode)))
                 .ToDictionary(sr => sr.OrgId, sr => sr.Location);
 
             var model = new EditDatesModel(orderWrapper, catalogueItemId, organisations, source)

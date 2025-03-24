@@ -217,8 +217,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(
-                 order.OrderRecipients.Select(
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Any<IEnumerable<string>>())
+                .Returns(
+                    order.OrderRecipients.Select(
                             x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
                         .ToList());
 
@@ -280,8 +283,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                             x => new GpPracticeSize { OdsCode = x.OdsCode, NumberOfPatients = NumberOfPatients })
                         .ToList());
 
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(
-                 order.OrderRecipients.Select(
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Any<IEnumerable<string>>())
+                .Returns(
+                    order.OrderRecipients.Select(
                             x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
                         .ToList());
 
@@ -343,8 +349,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(
-                 order.OrderRecipients.Select(
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Any<IEnumerable<string>>())
+                .Returns(
+                    order.OrderRecipients.Select(
                             x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
                         .ToList());
 
