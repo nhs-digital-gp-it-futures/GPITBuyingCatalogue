@@ -193,6 +193,34 @@ public class CompetitionImportServiceRecipientsController : Controller
             });
     }
 
+    [HttpGet("validation-complete")]
+    public async Task<IActionResult> ValidationComplete(
+        string internalOrgId,
+        int competitionId)
+    {
+        var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
+        IList<ServiceRecipientImportModel> cachedRecipients = await importService.GetCached(cacheKey);
+        if (cachedRecipients is null)
+            return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+
+        HashSet<string> requestedRecipientOdsCodes = cachedRecipients.Select(x => x.OdsCode).ToHashSet();
+
+        IReadOnlyList<ServiceRecipient> organisationServiceRecipients =
+            await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                requestedRecipientOdsCodes);
+
+        var model = new ValidationCompleteModel();
+
+        return View("ServiceRecipients/ImportServiceRecipients/ValidationComplete", model);
+    }
+
+    [HttpPost("validation-complete")]
+    public async Task<IActionResult> ValidationComplete(ValidationCompleteModel model)
+    {
+        throw new NotImplementedException();
+    }
+
     [HttpGet("download-template")]
     public async Task<IActionResult> DownloadTemplate(
         string internalOrgId,
