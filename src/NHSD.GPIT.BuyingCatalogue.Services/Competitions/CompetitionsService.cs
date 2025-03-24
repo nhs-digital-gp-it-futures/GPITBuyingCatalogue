@@ -850,6 +850,25 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task SetCompetitionSublocationsAndRecipients(
+        string internalOrgId,
+        int competitionId,
+        ICollection<CompetitionSublocation> competitionSublocations)
+    {
+        Competition competition = await dbContext.Competitions
+            .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
+            .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
+            .FirstAsync();
+
+        bool validateSublocations;
+
+        bool validateRecipients;
+
+        competition.CompetitionSublocations = competitionSublocations;
+        await dbContext.SaveChangesAsync();
+    }
+
     public async Task<CompetitionTaskListModel> GetCompetitionTaskList(string internalOrgId, int competitionId)
     {
         return await dbContext

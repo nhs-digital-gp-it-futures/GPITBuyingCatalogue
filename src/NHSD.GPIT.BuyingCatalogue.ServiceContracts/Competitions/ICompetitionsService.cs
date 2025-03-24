@@ -93,6 +93,11 @@ public interface ICompetitionsService
 
     Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
 
+    Task SetCompetitionSublocationsAndRecipients(
+        string internalOrgId,
+        int competitionId,
+        ICollection<CompetitionSublocation> competitionSublocations);
+
     Task SetContractLength(string internalOrgId, int competitionId, int contractLength);
 
     Task SetCompetitionCriteria(string internalOrgId, int competitionId, bool includesNonPrice);

@@ -10,6 +10,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 using ServiceRecipient = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceRecipient;
 
@@ -196,8 +197,11 @@ public class CompetitionImportServiceRecipientsController : Controller
     [HttpGet("validation-complete")]
     public async Task<IActionResult> ValidationComplete(
         string internalOrgId,
-        int competitionId)
+        int competitionId,
+        bool hasInvalidRecipients)
     {
+        var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
+
         var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
         IList<ServiceRecipientImportModel> cachedRecipients = await importService.GetCached(cacheKey);
         if (cachedRecipients is null)
@@ -210,7 +214,18 @@ public class CompetitionImportServiceRecipientsController : Controller
                 internalOrgId,
                 requestedRecipientOdsCodes);
 
-        var model = new ValidationCompleteModel();
+        List<SublocationModel> recipientsAsSublocations = organisationServiceRecipients.GroupBy(x => x.Location)
+            .Select(
+                x => new SublocationModel
+                {
+                    OdsCode = x.Key,
+                    ServiceRecipients = x.Select(
+                            y => new ServiceRecipientModel { OdsCode = y.OrgId, Name = y.Name, Location = y.Location })
+                        .ToList(),
+                })
+            .ToList();
+
+        var model = new ValidationCompleteModel(competitionName, hasInvalidRecipients, recipientsAsSublocations);
 
         return View("ServiceRecipients/ImportServiceRecipients/ValidationComplete", model);
     }

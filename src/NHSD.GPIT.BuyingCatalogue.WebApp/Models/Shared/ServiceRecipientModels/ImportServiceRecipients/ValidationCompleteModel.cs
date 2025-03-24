@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 
@@ -17,13 +16,19 @@ public sealed class ValidationCompleteModel : NavBaseModel
     {
     }
 
-    public ValidationCompleteModel(Competition competition, bool hasHadValidationFailure)
+    public ValidationCompleteModel(
+        string competitionName,
+        bool hasHadValidationFailure,
+        IReadOnlyList<SublocationModel> sublocations)
     {
         Title = "Upload validated";
-        Caption = competition.Name;
-        Advice = hasHadValidationFailure ? ValidationPartiallySucceededAdvice : ValidationSucceededAdvice;
+        Caption = competitionName;
+        AdviceBody = hasHadValidationFailure ? ValidationPartiallySucceededAdvice : ValidationSucceededAdvice;
         InteractionNoun = "competition";
+        Sublocations = sublocations;
     }
+
+    public string AdviceBody { get; init; }
 
     public IReadOnlyList<SublocationModel> Sublocations { get; init; }
 
