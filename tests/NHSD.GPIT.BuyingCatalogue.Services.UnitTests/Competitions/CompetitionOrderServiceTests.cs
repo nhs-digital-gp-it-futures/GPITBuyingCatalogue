@@ -305,6 +305,7 @@ public static class CompetitionOrderServiceTests
         List<OdsOrganisation> recipients,
         Solution solution,
         CompetitionSolution competitionSolution,
+        List<CompetitionSublocation> competitionSublocations,
         CompetitionCatalogueItemPrice price,
         CompetitionCatalogueItemPriceTier priceTier,
         [Frozen] BuyingCatalogueDbContext dbContext,

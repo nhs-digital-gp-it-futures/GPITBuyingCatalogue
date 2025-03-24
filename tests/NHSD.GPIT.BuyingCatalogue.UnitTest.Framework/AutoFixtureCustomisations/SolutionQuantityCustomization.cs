@@ -9,9 +9,12 @@ public class SolutionQuantityCustomization : ICustomization
 {
     public void Customize(IFixture fixture)
     {
-        static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<SolutionQuantity> composer) => composer
-            .Without(x => x.CompetitionSolution)
-            .Without(x => x.CompetitionRecipient);
+        static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<SolutionQuantity> composer)
+        {
+            return composer
+                .Without(x => x.CompetitionSolution)
+                .Without(x => x.CompetitionSublocationRecipient);
+        }
 
         fixture.Customize<SolutionQuantity>(ComposerTransformation);
     }
