@@ -14,9 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         Task<IReadOnlyList<ServiceRecipient>> GetServiceRecipientsBySublocation(string sublocationOdsCode);
 
-        Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-            string internalIdentifier,
-            IEnumerable<string> odsCodes);
+        Task<IReadOnlyList<ServiceRecipient>> GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
             string internalIdentifier,
             IEnumerable<string> odsCodes);
 

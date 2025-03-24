@@ -93,68 +93,64 @@ public class CompetitionImportServiceRecipientsController : Controller
             importedServiceRecipients);
 
         return RedirectToAction(
-            nameof(ValidateOds),
+            nameof(Validate),
             new { internalOrgId, competitionId });
     }
 
-    [HttpGet("validate-ods")]
-    public async Task<IActionResult> ValidateOds(
+    [HttpGet("validate")]
+    public async Task<IActionResult> Validate(
         string internalOrgId,
-        int competitionId)
+        int competitionId,
+        bool acceptLossOfOdsIfMismatch)
     {
         var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
         var cachedRecipients = await importService.GetCached(cacheKey);
         if (cachedRecipients is null)
             return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
 
-        var organisationServiceRecipients =
-            await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
+        HashSet<string> requestedRecipientOdsCodes = cachedRecipients.Select(x => x.OdsCode).ToHashSet();
 
-        var mismatchedOdsCodes = GetMismatchedOdsCodes(cachedRecipients, organisationServiceRecipients).ToList();
-        if (mismatchedOdsCodes.Any())
+        IReadOnlyList<ServiceRecipient> organisationServiceRecipients =
+            await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                requestedRecipientOdsCodes);
+
+        HashSet<string> actualServiceRecipientsAsHashSet =
+            organisationServiceRecipients.Select(x => x.OrgId).ToHashSet();
+
+        var mismatchedOdsCodes =
+            new HashSet<string>(requestedRecipientOdsCodes);
+        mismatchedOdsCodes.ExceptWith(actualServiceRecipientsAsHashSet);
+
+        var shouldShowValidateOdsScreen = mismatchedOdsCodes.Count > 0 && !acceptLossOfOdsIfMismatch;
+
+        if (shouldShowValidateOdsScreen)
         {
             var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
+
             var model = new ValidateOdsModel(
-                mismatchedOdsCodes)
+                cachedRecipients.Where(x => mismatchedOdsCodes.Contains(x.OdsCode)))
             {
                 BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
                 Caption = competitionName,
                 CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId }),
                 ValidateNamesLink = Url.Action(
-                    nameof(ValidateNames),
-                    new { internalOrgId, competitionId }),
+                    nameof(Validate),
+                    new { internalOrgId, competitionId, acceptLossOfOdsIfMismatch = true }),
             };
 
             return View("ServiceRecipients/ImportServiceRecipients/ValidateOds", model);
         }
 
-        return RedirectToAction(
-            nameof(ValidateNames),
-            new
-            {
-                internalOrgId,
-                competitionId,
-            });
-    }
+        List<(string Expected, string Actual, string OdsCode)> mismatchedNames =
+            GetMismatchedNames(cachedRecipients.ToList(), organisationServiceRecipients);
 
-    [HttpGet("validate-names")]
-    public async Task<IActionResult> ValidateNames(
-        string internalOrgId,
-        int competitionId)
-    {
-        var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
-        var cachedRecipients = await importService.GetCached(cacheKey);
-        if (cachedRecipients is null)
-            return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
+        var shouldShowValidateNamesScreen = mismatchedNames.Count > 0;
 
-        var organisationServiceRecipients =
-            (await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId)).ToList();
-
-        var mismatchedRecipients = GetMismatchedNames(cachedRecipients.ToList(), organisationServiceRecipients);
-        if (mismatchedRecipients.Any())
+        if (shouldShowValidateNamesScreen)
         {
             var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
-            var model = new ValidateNamesModel(mismatchedRecipients)
+            var model = new ValidateNamesModel(mismatchedNames)
             {
                 BackLink = Url.Action(
                     GetNameValidationBacklink(cachedRecipients, organisationServiceRecipients),
@@ -165,22 +161,13 @@ public class CompetitionImportServiceRecipientsController : Controller
             return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
         }
 
-        var validOdsCodes = GetValidOdsCodes(cachedRecipients, organisationServiceRecipients);
-        await importService.Clear(cacheKey);
         return RedirectToAction(
-            nameof(CompetitionRecipientsController.ConfirmRecipients),
-            typeof(CompetitionRecipientsController).ControllerName(),
-            new
-            {
-                internalOrgId,
-                competitionId,
-                recipientIds = string.Join(',', validOdsCodes),
-                hasImported = true,
-            });
+            nameof(Validate),
+            new { internalOrgId, competitionId });
     }
 
-    [HttpPost("validate-names")]
-    public async Task<IActionResult> ValidateNames(
+    [HttpPost("validate")]
+    public async Task<IActionResult> Validate(
         string internalOrgId,
         int competitionId,
         ValidateNamesModel model)
@@ -242,8 +229,8 @@ public class CompetitionImportServiceRecipientsController : Controller
                 x => !string.Equals(x.OrgId, r.OdsCode, StringComparison.OrdinalIgnoreCase))).ToList();
 
     private static List<(string Expected, string Actual, string OdsCode)> GetMismatchedNames(
-        List<ServiceRecipientImportModel> importedServiceRecipients,
-        List<ServiceRecipient> serviceRecipients)
+        IReadOnlyList<ServiceRecipientImportModel> importedServiceRecipients,
+        IReadOnlyList<ServiceRecipient> serviceRecipients)
     {
         return (from importedRecipient in importedServiceRecipients
                 from serviceRecipient in serviceRecipients
@@ -260,10 +247,12 @@ public class CompetitionImportServiceRecipientsController : Controller
 
     private static string GetNameValidationBacklink(
         IEnumerable<ServiceRecipientImportModel> importedServiceRecipients,
-        IEnumerable<ServiceRecipient> serviceRecipients) =>
-        GetMismatchedOdsCodes(importedServiceRecipients, serviceRecipients).Any()
-            ? nameof(ValidateOds)
+        IEnumerable<ServiceRecipient> serviceRecipients)
+    {
+        return GetMismatchedOdsCodes(importedServiceRecipients, serviceRecipients).Any()
+            ? nameof(Validate)
             : nameof(Index);
+    }
 
     private static string[] GetValidOdsCodes(
         IEnumerable<ServiceRecipientImportModel> importedServiceRecipients,
