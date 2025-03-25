@@ -64,7 +64,7 @@ public class Competition
 
     public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
 
-    public ICollection<CompetitionSublocation> CompetitionSublocations { get; set; }
+    public ICollection<CompetitionSublocation> CompetitionSublocations { get; set; } = [];
 
     public ICollection<Order> Orders { get; set; }
 
