@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -166,15 +167,7 @@ public class TrudOdsService : IOdsService
                     && x.TargetOrganisation.IsActive
                     && x.RelationshipTypeId == settings.IsCommissionedByRelType
                     && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.GetPrimaryRoleId(OrganisationType.GP)))
-            .Select(
-                x => new ServiceRecipient
-                {
-                    Name = x.TargetOrganisation.Name,
-                    OrgId = x.TargetOrganisationId,
-                    PrimaryRoleId = x.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
-                    Location = x.OwnerOrganisation.Name,
-                    LocationOrgId = x.OwnerOrganisation.Id,
-                })
+            .Select(SelectServiceRecipientFromRelationshipPredicate())
             .ToListAsync();
 
         return serviceRecipients;
@@ -228,6 +221,20 @@ public class TrudOdsService : IOdsService
             OrgId = relationship.TargetOrganisation.Id,
             PrimaryRoleId = relationship.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
             Location = relationship.OwnerOrganisation.Name,
+            LocationOrgId = relationship.OwnerOrganisation.Id,
+        };
+    }
+
+    public static Expression<Func<OrganisationRelationship, ServiceRecipient>>
+        SelectServiceRecipientFromRelationshipPredicate()
+    {
+        return x => new ServiceRecipient
+        {
+            Name = x.TargetOrganisation.Name,
+            OrgId = x.TargetOrganisation.Id,
+            PrimaryRoleId = x.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
+            Location = x.OwnerOrganisation.Name,
+            LocationOrgId = x.OwnerOrganisation.Id,
         };
     }
 
