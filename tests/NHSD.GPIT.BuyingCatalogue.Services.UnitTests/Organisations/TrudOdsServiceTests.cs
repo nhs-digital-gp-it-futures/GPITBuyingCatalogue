@@ -344,7 +344,10 @@ public class TrudOdsServiceTests
         result.Should()
             .BeEquivalentTo(
                 selectedOrgs.Select(
-                    x => new ServiceRecipient { Name = x.Name, OrgId = x.Id, Location = subLocation.Name, }),
+                    x => new ServiceRecipient
+                    {
+                        Name = x.Name, OrgId = x.Id, Location = subLocation.Name, LocationOrgId = subLocation.Id,
+                    }),
                 opt => opt.Excluding(m => m.PrimaryRoleId));
     }
 
