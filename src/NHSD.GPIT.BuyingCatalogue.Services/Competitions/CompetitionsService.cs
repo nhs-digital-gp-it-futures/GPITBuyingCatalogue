@@ -25,7 +25,7 @@ public class CompetitionsService : ICompetitionsService
         IOdsService odsService)
     {
         this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        this.odsService = odsService;
+        this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
     }
 
     public async Task<Competition> GetCompetitionCriteriaReview(string internalOrgId, int competitionId) =>
