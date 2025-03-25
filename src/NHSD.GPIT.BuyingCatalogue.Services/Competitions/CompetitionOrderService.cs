@@ -23,13 +23,16 @@ public class CompetitionOrderService : ICompetitionOrderService
 
     public async Task<CallOffId> CreateDirectAwardOrder(string internalOrgId, int competitionId, CatalogueItemId solutionId)
     {
-        var competition = await dbContext.Competitions
+        Competition competition = await dbContext.Competitions
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
             .ThenInclude(x => x.Supplier)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.SolutionServices)
+            .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
+            .ThenInclude(z => z.RecipientOrganisation)
             .IgnoreQueryFilters()
             .AsNoTracking()
             .AsSplitQuery()
