@@ -157,9 +157,7 @@ public class CompetitionImportServiceRecipientsController : Controller
             var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
             var model = new ValidateNamesModel(mismatchedNames)
             {
-                BackLink = backAndCancelLink,
-                CancelLink = backAndCancelLink,
-                Caption = competitionName,
+                BackLink = backAndCancelLink, CancelLink = backAndCancelLink, Caption = competitionName,
             };
             return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
         }
@@ -175,25 +173,12 @@ public class CompetitionImportServiceRecipientsController : Controller
         int competitionId,
         ValidateNamesModel model)
     {
-        var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
-        var cachedRecipients = await importService.GetCached(cacheKey);
-        var organisationServiceRecipients =
-            await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
-
-        var validOdsCodes = GetValidOdsCodes(cachedRecipients, organisationServiceRecipients);
-
-        await importService.Clear(cacheKey);
+        //TODO: Replace with standard GET link when order functionality no longer requires POST.
 
         return RedirectToAction(
-            nameof(CompetitionRecipientsController.ConfirmRecipients),
-            typeof(CompetitionRecipientsController).ControllerName(),
-            new
-            {
-                internalOrgId,
-                competitionId,
-                recipientIds = string.Join(',', validOdsCodes),
-                hasImported = true,
-            });
+            nameof(ValidationComplete),
+            typeof(CompetitionImportServiceRecipientsController).ControllerName(),
+            new { internalOrgId, competitionId, hasInvalidRecipients = true });
     }
 
     [HttpGet("validation-complete")]
