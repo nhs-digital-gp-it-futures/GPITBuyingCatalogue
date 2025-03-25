@@ -12,7 +12,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -772,17 +771,27 @@ public static class CompetitionsServiceTests
     public static async Task GetCompetitionWithRecipients_ReturnsExpected(
         Organisation organisation,
         Competition competition,
-        List<OdsOrganisation> odsOrganisations,
+        List<CompetitionSublocation> competitionSublocations,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
+        competitionSublocations.ForEach(
+            x =>
+            {
+                x.CompetitionId = competition.Id;
+                foreach (CompetitionSublocationRecipient competitionSublocationRecipient in x.SublocationRecipients)
+                {
+                    competitionSublocationRecipient.CompetitionId = competition.Id;
+                }
+            });
+
         competition.OrganisationId = organisation.Id;
         competition.FrameworkId = competition.Framework.Id;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
 
         context.Competitions.Add(competition);
         context.Organisations.Add(organisation);
-        context.OdsOrganisations.AddRange(odsOrganisations);
+        context.CompetitionSublocations.AddRange(competitionSublocations);
 
         await context.SaveChangesAsync();
 
@@ -792,72 +801,15 @@ public static class CompetitionsServiceTests
 
         competitionWithRecipients.Should()
             .BeEquivalentTo(
-            competition,
-            opt => opt.Excluding(m => m.Organisation).Excluding(x => x.Framework).Excluding(m => m.Recipients));
-        competitionWithRecipients.Recipients.Should()
-            .BeEquivalentTo(odsOrganisations, opt => opt.Excluding(m => m.Roles).Excluding(m => m.Related).Excluding(m => m.Parents));
-    }
+                competition,
+                opt => opt.Excluding(m => m.Organisation)
+                    .Excluding(x => x.Framework)
+                    .Excluding(m => m.CompetitionSublocations));
 
-    [Theory]
-    [MockInMemoryDbAutoData]
-    public static async Task SetCompetitionRecipients_AddsNewRecipients(
-        Organisation organisation,
-        Competition competition,
-        List<OdsOrganisation> odsOrganisations,
-        [Frozen] BuyingCatalogueDbContext context,
-        CompetitionsService service)
-    {
-        competition.OrganisationId = organisation.Id;
-
-        context.Competitions.Add(competition);
-        context.Organisations.Add(organisation);
-        context.OdsOrganisations.AddRange(odsOrganisations);
-
-        await context.SaveChangesAsync();
-
-        context.ChangeTracker.Clear();
-
-        await service.SetCompetitionRecipients(competition.Id, odsOrganisations.Select(x => x.Id));
-
-        var updatedCompetition = await context.Competitions.AsNoTracking().Include(x => x.Recipients)
-            .FirstOrDefaultAsync(x => x.OrganisationId == organisation.Id && x.Id == competition.Id);
-
-        updatedCompetition.Recipients.Should()
+        competitionWithRecipients.CompetitionSublocations.Should()
             .BeEquivalentTo(
-                odsOrganisations,
-                opt => opt.Excluding(m => m.Roles).Excluding(m => m.Related).Excluding(m => m.Parents));
-    }
-
-    [Theory]
-    [MockInMemoryDbAutoData]
-    public static async Task SetCompetitionRecipients_RemovesStaleRecipients(
-        Organisation organisation,
-        Competition competition,
-        List<OdsOrganisation> odsOrganisations,
-        [Frozen] BuyingCatalogueDbContext context,
-        CompetitionsService service)
-    {
-        competition.OrganisationId = organisation.Id;
-        competition.Recipients = odsOrganisations;
-
-        context.Competitions.Add(competition);
-        context.Organisations.Add(organisation);
-        context.OdsOrganisations.AddRange(odsOrganisations);
-
-        await context.SaveChangesAsync();
-
-        context.ChangeTracker.Clear();
-
-        var selectedRecipients = odsOrganisations.Skip(2).ToList();
-        var staleRecipients = odsOrganisations.Except(selectedRecipients).ToList();
-
-        await service.SetCompetitionRecipients(competition.Id, selectedRecipients.Select(x => x.Id));
-
-        var updatedCompetition = await context.Competitions.AsNoTracking().Include(x => x.Recipients)
-            .FirstOrDefaultAsync(x => x.OrganisationId == organisation.Id && x.Id == competition.Id);
-
-        selectedRecipients.ForEach(x => updatedCompetition.Recipients.Should().Contain(y => y.Id == x.Id));
-        staleRecipients.ForEach(x => updatedCompetition.Recipients.Should().NotContain(y => y.Id == x.Id));
+                competitionSublocations,
+                opt => opt.Excluding(x => x.SublocationOrganisation).Excluding(x => x.Competition));
     }
 
     [Theory]
@@ -865,10 +817,12 @@ public static class CompetitionsServiceTests
     public static async Task GetCompetitionTaskList_ReturnsExpected(
         Organisation organisation,
         Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
         [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
         competition.OrganisationId = organisation.Id;
+        competition.CompetitionSublocations = competitionSublocations;
 
         context.Competitions.Add(competition);
         context.Organisations.Add(organisation);
