@@ -869,6 +869,12 @@ public class CompetitionsService : ICompetitionsService
             .ThenInclude(y => y.SublocationRecipients)
             .FirstAsync();
 
+        if (competition.Completed.HasValue)
+        {
+            throw new InvalidOperationException(
+                "Cannot set sublocations / recipients on a completed competition.");
+        }
+
         IReadOnlyList<OdsOrganisation> validSublocations =
             await odsService.GetSublocationsByParentOdsCode(competition.Organisation.ExternalIdentifier);
 

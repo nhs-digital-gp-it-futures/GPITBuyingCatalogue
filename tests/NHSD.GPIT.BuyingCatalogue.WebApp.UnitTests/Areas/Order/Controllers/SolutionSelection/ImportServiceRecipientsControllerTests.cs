@@ -164,7 +164,7 @@ public static class ImportServiceRecipientsControllerTests
                 opt => opt
                     .Excluding(m => m.BackLink)
                     .Excluding(m => m.CancelLink)
-                    .Excluding(m => m.ValidateNamesLink));
+                    .Excluding(m => m.ContinueLink));
     }
 
     [Theory]

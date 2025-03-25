@@ -50,7 +50,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode, nameof(sublocationOdsCode));
             if (recipientOdsCodes.IsNullOrEmpty())
             {
-                throw new ArgumentException(@"recipientIds is null or empty", nameof(recipientOdsCodes));
+                throw new ArgumentException(@"recipientOdsCodes is null or empty", nameof(recipientOdsCodes));
             }
 
             CompetitionSublocation sublocation = await dbContext
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode, nameof(sublocationOdsCode));
             if (recipientOdsCodes.IsNullOrEmpty())
             {
-                throw new ArgumentException(@"recipientIds is null or empty", nameof(recipientOdsCodes));
+                throw new ArgumentException(@"recipientOdsCodes is null or empty", nameof(recipientOdsCodes));
             }
 
             CompetitionSublocation sublocation = await dbContext

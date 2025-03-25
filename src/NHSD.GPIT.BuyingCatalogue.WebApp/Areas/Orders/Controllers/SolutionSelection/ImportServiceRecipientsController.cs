@@ -119,7 +119,7 @@ public class ImportServiceRecipientsController : Controller
                 BackLink = Url.Action(nameof(Index), new { internalOrgId, callOffId }),
                 Caption = callOffId.ToString(),
                 CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId }),
-                ValidateNamesLink = Url.Action(
+                ContinueLink = Url.Action(
                     nameof(ValidateNames),
                     new { internalOrgId, callOffId }),
             };

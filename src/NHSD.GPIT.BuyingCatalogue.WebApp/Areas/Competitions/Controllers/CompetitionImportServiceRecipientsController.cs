@@ -107,6 +107,7 @@ public class CompetitionImportServiceRecipientsController : Controller
     {
         var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
         var cachedRecipients = await importService.GetCached(cacheKey);
+
         if (cachedRecipients is null)
             return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
 
@@ -124,6 +125,8 @@ public class CompetitionImportServiceRecipientsController : Controller
             new HashSet<string>(requestedRecipientOdsCodes);
         mismatchedOdsCodes.ExceptWith(actualServiceRecipientsAsHashSet);
 
+        var backAndCancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId });
+
         var shouldShowValidateOdsScreen = mismatchedOdsCodes.Count > 0 && !acceptLossOfOdsIfMismatch;
 
         if (shouldShowValidateOdsScreen)
@@ -133,10 +136,10 @@ public class CompetitionImportServiceRecipientsController : Controller
             var model = new ValidateOdsModel(
                 cachedRecipients.Where(x => mismatchedOdsCodes.Contains(x.OdsCode)))
             {
-                BackLink = Url.Action(nameof(Index), new { internalOrgId, competitionId }),
+                BackLink = backAndCancelLink,
                 Caption = competitionName,
-                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId }),
-                ValidateNamesLink = Url.Action(
+                CancelLink = backAndCancelLink,
+                ContinueLink = Url.Action(
                     nameof(Validate),
                     new { internalOrgId, competitionId, acceptLossOfOdsIfMismatch = true }),
             };
@@ -154,10 +157,8 @@ public class CompetitionImportServiceRecipientsController : Controller
             var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
             var model = new ValidateNamesModel(mismatchedNames)
             {
-                BackLink = Url.Action(
-                    GetNameValidationBacklink(cachedRecipients, organisationServiceRecipients),
-                    new { internalOrgId, competitionId }),
-                CancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId }),
+                BackLink = backAndCancelLink,
+                CancelLink = backAndCancelLink,
                 Caption = competitionName,
             };
             return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
@@ -264,6 +265,9 @@ public class CompetitionImportServiceRecipientsController : Controller
             competitionId,
             sublocationModelAsEntityModel);
 
+        await importService.Clear(
+            new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId));
+
         return RedirectToAction(
             nameof(CompetitionRecipientsController.ConfirmSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
@@ -320,15 +324,6 @@ public class CompetitionImportServiceRecipientsController : Controller
                     serviceRecipient.Name,
                     StringComparison.OrdinalIgnoreCase)
                 select (importedRecipient.Organisation, serviceRecipient.Name, serviceRecipient.OrgId)).ToList();
-    }
-
-    private static string GetNameValidationBacklink(
-        IEnumerable<ServiceRecipientImportModel> importedServiceRecipients,
-        IEnumerable<ServiceRecipient> serviceRecipients)
-    {
-        return GetMismatchedOdsCodes(importedServiceRecipients, serviceRecipients).Any()
-            ? nameof(Validate)
-            : nameof(Index);
     }
 
     private static string[] GetValidOdsCodes(
