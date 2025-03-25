@@ -855,15 +855,52 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         ICollection<CompetitionSublocation> competitionSublocations)
     {
+        ArgumentException.ThrowIfNullOrEmpty(internalOrgId, nameof(internalOrgId));
+
+        if (competitionSublocations.IsNullOrEmpty())
+        {
+            throw new ArgumentException(@"competitionSublocations is null or empty", nameof(competitionSublocations));
+        }
+
         Competition competition = await dbContext.Competitions
             .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
+            .Include(x => x.Organisation)
             .Include(x => x.CompetitionSublocations)
             .ThenInclude(y => y.SublocationRecipients)
             .FirstAsync();
 
-        bool validateSublocations;
+        IReadOnlyList<OdsOrganisation> validSublocations =
+            await odsService.GetSublocationsByParentOdsCode(competition.Organisation.ExternalIdentifier);
 
-        bool validateRecipients;
+        var validateSublocations = competitionSublocations
+            .All(x => validSublocations.Select(y => y.OdsCode).Contains(x.SublocationOdsCode));
+
+        if (!validateSublocations)
+        {
+            throw new InvalidOperationException("Provided sublocations not valid for this organisation.");
+        }
+
+        var validateRecipients = true;
+
+        foreach (CompetitionSublocation sublocation in competitionSublocations)
+        {
+            IReadOnlyList<ServiceRecipient> validServiceRecipients =
+                await odsService.GetServiceRecipientsBySublocation(sublocation.SublocationOdsCode);
+
+            var instanceCheck = sublocation.SublocationRecipients.All(
+                x => validServiceRecipients.Select(y => y.OrgId).Contains(x.RecipientOdsCode));
+
+            if (!instanceCheck)
+            {
+                validateRecipients = false;
+            }
+        }
+
+        if (!validateRecipients)
+        {
+            throw new InvalidOperationException(
+                "Provided recipients not valid for this organisation or its sublocations.");
+        }
 
         competition.CompetitionSublocations = competitionSublocations;
         await dbContext.SaveChangesAsync();
