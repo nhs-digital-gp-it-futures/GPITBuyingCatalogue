@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -330,11 +329,11 @@ public static class CompetitionResultsControllerTests
     public static async Task RecipientsCsv_ReturnsFileResult(
         string internalOrgId,
         Competition competition,
-        List<OdsOrganisation> competitionRecipients,
+        List<CompetitionSublocation> competitionSublocations,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsController controller)
     {
-        competition.Recipients = competitionRecipients;
+        competition.CompetitionSublocations = competitionSublocations;
 
         competitionsService.GetCompetitionWithRecipients(internalOrgId, competition.Id).Returns(competition);
 
