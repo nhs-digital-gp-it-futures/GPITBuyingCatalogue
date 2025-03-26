@@ -135,7 +135,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task ValidateOds_MismatchedOdsCodes_ReturnsViewWithModel(
+    public static async Task Validate_MismatchedOdsCodes_ReturnsMismatchedOdsView(
         Organisation organisation,
         Competition competition,
         List<ServiceRecipient> serviceRecipients,
@@ -144,22 +144,27 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        var importedServiceRecipients = serviceRecipients.Take(2)
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-            .ToList();
-        importedServiceRecipients.First().OdsCode = "MISMATCH";
+        const string mismatchOdsCode = "MISMATCH";
 
-        var expectedModel = new ValidateOdsModel(
-            importedServiceRecipients.Take(1).ToList())
-        { Caption = competition.Name };
+        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
+
+        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
+        importedServiceRecipients.First().OdsCode = mismatchOdsCode;
+        List<ServiceRecipientImportModel> expectedInvalidRecipients =
+            importedServiceRecipients.Where(x => x.OdsCode == mismatchOdsCode).ToList();
+        var expectedModel = new ValidateOdsModel(expectedInvalidRecipients) { Caption = competition.Name };
 
         importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
 
         competitionsService.GetCompetitionName(Arg.Any<string>(), competition.Id).Returns(competition.Name);
 
-        odsService.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier).Returns(serviceRecipients);
+        // This service call includes a filter to restrict by ods codes, but the controller logic should find mismatches regardless
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(null, null)
+            .ReturnsForAnyArgs(serviceRecipients);
 
-        var result = (await controller.ValidateOds(organisation.InternalIdentifier, competition.Id))
+        var result = (await controller.Validate(organisation.InternalIdentifier, competition.Id, false))
             .As<ViewResult>();
 
         result.Should().NotBeNull();
@@ -169,7 +174,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 opt => opt
                     .Excluding(m => m.BackLink)
                     .Excluding(m => m.CancelLink)
-                    .Excluding(m => m.ValidateNamesLink));
+                    .Excluding(m => m.ContinueLink));
     }
 
     [Theory]
@@ -182,6 +187,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
+        Assert.Fail("needs fixing");
+
         var importedServiceRecipients = serviceRecipients.Take(2)
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
@@ -190,18 +197,18 @@ public static class CompetitionImportServiceRecipientsControllerTests
 
         odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
 
-        var result = (await controller.ValidateOds(internalOrgId, competitionId))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.ValidateNames));
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(competitionId), competitionId },
-                });
+        // var result = (await controller.ValidateOds(internalOrgId, competitionId))
+        //     .As<RedirectToActionResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.ActionName.Should().Be(nameof(controller.ValidateNames));
+        // result.RouteValues.Should()
+        //     .BeEquivalentTo(
+        //         new RouteValueDictionary
+        //         {
+        //             { nameof(internalOrgId), internalOrgId },
+        //             { nameof(competitionId), competitionId },
+        //         });
     }
 
     [Theory]
@@ -212,20 +219,22 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IServiceRecipientImportService importService,
         CompetitionImportServiceRecipientsController controller)
     {
+        Assert.Fail("needs fixing");
+
         importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns((IList<ServiceRecipientImportModel>)null);
 
-        var result = (await controller.ValidateNames(internalOrgId, competitionId))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.Index));
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(competitionId), competitionId },
-                });
+        // var result = (await controller.ValidateNames(internalOrgId, competitionId))
+        //     .As<RedirectToActionResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.ActionName.Should().Be(nameof(controller.Index));
+        // result.RouteValues.Should()
+        //     .BeEquivalentTo(
+        //         new RouteValueDictionary
+        //         {
+        //             { nameof(internalOrgId), internalOrgId },
+        //             { nameof(competitionId), competitionId },
+        //         });
     }
 
     [Theory]
@@ -239,6 +248,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
+        Assert.Fail("needs fixing");
+
         var importedServiceRecipients = serviceRecipients.Take(2)
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
@@ -262,16 +273,16 @@ public static class CompetitionImportServiceRecipientsControllerTests
 
         odsService.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier).Returns(serviceRecipients);
 
-        var result = (await controller.ValidateNames(organisation.InternalIdentifier, competition.Id))
-            .As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should()
-            .BeEquivalentTo(
-                expectedModel,
-                opt => opt
-                    .Excluding(m => m.BackLink)
-                    .Excluding(m => m.CancelLink));
+        // var result = (await controller.ValidateNames(organisation.InternalIdentifier, competition.Id))
+        //     .As<ViewResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.Model.Should()
+        //     .BeEquivalentTo(
+        //         expectedModel,
+        //         opt => opt
+        //             .Excluding(m => m.BackLink)
+        //             .Excluding(m => m.CancelLink));
     }
 
     [Theory]
@@ -284,6 +295,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
+        Assert.Fail("needs fixing");
+
         var recipientIds = serviceRecipients.Take(2)
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
@@ -292,21 +305,22 @@ public static class CompetitionImportServiceRecipientsControllerTests
 
         odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
 
-        var result = (await controller.ValidateNames(internalOrgId, competitionId))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmRecipients));
-        result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(competitionId), competitionId },
-                    { nameof(recipientIds), string.Join(',', recipientIds.Select(s => s.OdsCode)) },
-                    { "hasImported", true },
-                });
+        //
+        // var result = (await controller.ValidateNames(internalOrgId, competitionId))
+        //     .As<RedirectToActionResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmRecipients));
+        // result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
+        // result.RouteValues.Should()
+        //     .BeEquivalentTo(
+        //         new RouteValueDictionary
+        //         {
+        //             { nameof(internalOrgId), internalOrgId },
+        //             { nameof(competitionId), competitionId },
+        //             { nameof(recipientIds), string.Join(',', recipientIds.Select(s => s.OdsCode)) },
+        //             { "hasImported", true },
+        //         });
     }
 
     [Theory]
@@ -320,6 +334,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
+        Assert.Fail("needs fixing");
+
         var recipientIds = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
             .ToList();
@@ -343,21 +359,21 @@ public static class CompetitionImportServiceRecipientsControllerTests
 
         odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
 
-        var result = (await controller.ValidateNames(internalOrgId, competition.Id, model))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmRecipients));
-        result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { "competitionId", competition.Id },
-                    { nameof(recipientIds), string.Join(',', recipientIds.Skip(1).Select(x => x.OdsCode)) },
-                    { "hasImported", true },
-                });
+        // var result = (await controller.ValidateNames(internalOrgId, competition.Id, model))
+        //     .As<RedirectToActionResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmRecipients));
+        // result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
+        // result.RouteValues.Should()
+        //     .BeEquivalentTo(
+        //         new RouteValueDictionary
+        //         {
+        //             { nameof(internalOrgId), internalOrgId },
+        //             { "competitionId", competition.Id },
+        //             { nameof(recipientIds), string.Join(',', recipientIds.Skip(1).Select(x => x.OdsCode)) },
+        //             { "hasImported", true },
+        //         });
     }
 
     [Theory]
