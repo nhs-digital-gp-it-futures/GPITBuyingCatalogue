@@ -168,7 +168,7 @@ public class CompetitionImportServiceRecipientsController : Controller
     }
 
     [HttpPost("validate")]
-    public async Task<IActionResult> Validate(
+    public IActionResult Validate(
         string internalOrgId,
         int competitionId,
         ValidateNamesModel model)
