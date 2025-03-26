@@ -162,9 +162,13 @@ public class CompetitionImportServiceRecipientsController : Controller
             return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
         }
 
-        return RedirectToAction(
-            nameof(ValidationComplete),
-            new { internalOrgId, competitionId, hasInvalidRecipients = acceptLossOfOdsIfMismatch });
+        return acceptLossOfOdsIfMismatch
+            ? RedirectToAction(
+                nameof(ValidationComplete),
+                new { internalOrgId, competitionId, hasInvalidRecipients = true })
+            : RedirectToAction(
+                nameof(ValidationComplete),
+                new { internalOrgId, competitionId });
     }
 
     [HttpPost("validate")]
