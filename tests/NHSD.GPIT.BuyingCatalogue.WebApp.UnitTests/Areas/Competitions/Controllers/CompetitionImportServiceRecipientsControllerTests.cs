@@ -101,19 +101,18 @@ public static class CompetitionImportServiceRecipientsControllerTests
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.ValidateOds));
+        result.ActionName.Should().Be(nameof(controller.Validate));
         result.RouteValues.Should()
             .BeEquivalentTo(
                 new RouteValueDictionary
                 {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(competitionId), competitionId },
+                    { nameof(internalOrgId), internalOrgId }, { nameof(competitionId), competitionId },
                 });
     }
 
     [Theory]
     [MockAutoData]
-    public static async Task ValidateOds_CachedRecipientsNull_Redirects(
+    public static async Task Validate_CachedRecipientsNull_Redirects(
         string internalOrgId,
         int competitionId,
         [Frozen] IServiceRecipientImportService importService,
@@ -121,7 +120,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
     {
         importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns((IList<ServiceRecipientImportModel>)null);
 
-        var result = (await controller.ValidateOds(internalOrgId, competitionId))
+        var result = (await controller.Validate(internalOrgId, competitionId, false))
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
@@ -130,8 +129,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
             .BeEquivalentTo(
                 new RouteValueDictionary
                 {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(competitionId), competitionId },
+                    { nameof(internalOrgId), internalOrgId }, { nameof(competitionId), competitionId },
                 });
     }
 
