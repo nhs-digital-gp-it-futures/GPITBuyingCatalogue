@@ -14,7 +14,8 @@
             <input type="hidden" asp-for="Caption" />
 
             <nhs-fieldset-form-label asp-for="@Model"
-                                     size="Medium">
+                                     label-text="Select how you want to add Service Recipients"
+                                     size="Large">
                 <nhs-radio-buttons asp-for="ShouldUploadRecipients"
                                    display-name="Text"
                                    values="Model.ServiceRecipientOptions.Cast<object>()"

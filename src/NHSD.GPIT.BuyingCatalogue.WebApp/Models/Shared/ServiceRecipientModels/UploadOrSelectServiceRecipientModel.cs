@@ -12,8 +12,6 @@ public class UploadOrSelectServiceRecipientModel : NavBaseModel
 
     public override string Title => "Service Recipients";
 
-    public override string Advice => "Select how you want to add Service Recipients.";
-
     public IEnumerable<SelectOption<bool>> ServiceRecipientOptions => new List<SelectOption<bool>>
         {
             new(YesUploadRecipientsOption, true),
