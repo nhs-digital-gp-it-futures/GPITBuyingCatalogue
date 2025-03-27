@@ -196,8 +196,8 @@ public static class CompetitionRecipientsControllerTests
         Competition competition,
         List<CompetitionSublocation> existingSublocations,
         List<CheckboxNameAndValueModel> checkboxSelections,
-        HashSet<string> expectedAdds,
-        HashSet<string> expectedRemoves,
+        string expectedAddsAsConcatString,
+        string expectedRemovesAsConcatString,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionRecipientsController controller)
     {
@@ -221,8 +221,8 @@ public static class CompetitionRecipientsControllerTests
                 {
                     { "internalOrgId", organisation.InternalIdentifier },
                     { "competitionId", competition.Id },
-                    { "sublocationsToRemove", expectedRemoves },
-                    { "sublocationsToAdd", expectedAdds },
+                    { "sublocationsToRemove", expectedRemovesAsConcatString },
+                    { "sublocationsToAdd", expectedAddsAsConcatString },
                 });
     }
 
@@ -240,7 +240,7 @@ public static class CompetitionRecipientsControllerTests
                     {
                         CompetitionId = CommonCompetitionId,
                         SublocationOdsCode = "XXXX",
-                        OwnerOdsCode = "FFGG",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
                         SublocationRecipients = new List<CompetitionSublocationRecipient>
                         {
                             new()
@@ -261,7 +261,7 @@ public static class CompetitionRecipientsControllerTests
                     {
                         CompetitionId = CommonCompetitionId,
                         SublocationOdsCode = "XXXA",
-                        OwnerOdsCode = "FFGG",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
                         SublocationRecipients = new List<CompetitionSublocationRecipient>
                         {
                             new()
@@ -297,7 +297,7 @@ public static class CompetitionRecipientsControllerTests
                     {
                         CompetitionId = CommonCompetitionId,
                         SublocationOdsCode = "XXXX",
-                        OwnerOdsCode = "FFGG",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
                         SublocationRecipients = new List<CompetitionSublocationRecipient>
                         {
                             new()
@@ -318,7 +318,7 @@ public static class CompetitionRecipientsControllerTests
                     {
                         CompetitionId = CommonCompetitionId,
                         SublocationOdsCode = "XXXA",
-                        OwnerOdsCode = "FFGG",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
                         SublocationRecipients = new List<CompetitionSublocationRecipient>
                         {
                             new()
@@ -333,7 +333,7 @@ public static class CompetitionRecipientsControllerTests
                     {
                         CompetitionId = CommonCompetitionId,
                         SublocationOdsCode = "XXXE",
-                        OwnerOdsCode = "FFGG",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
                         SublocationRecipients = new List<CompetitionSublocationRecipient>(),
                     },
                 },
@@ -384,11 +384,15 @@ public static class CompetitionRecipientsControllerTests
                 {
                     new()
                     {
-                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG",
+                        CompetitionId = CommonCompetitionId,
+                        SublocationOdsCode = "XXXX",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
                     },
                     new()
                     {
-                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXA", OwnerOdsCode = "FFGG",
+                        CompetitionId = CommonCompetitionId,
+                        SublocationOdsCode = "XXXA",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
                     },
                 },
                 new List<CheckboxNameAndValueModel>
@@ -409,7 +413,9 @@ public static class CompetitionRecipientsControllerTests
                 {
                     new()
                     {
-                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG",
+                        CompetitionId = CommonCompetitionId,
+                        SublocationOdsCode = "XXXX",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
                     },
                 },
                 new List<CheckboxNameAndValueModel>
@@ -443,7 +449,7 @@ public static class CompetitionRecipientsControllerTests
     {
         return
         [
-            // 2 existing and 3 ticked resulting in 1 add
+            // 2 existing, 1 unticked and 2 ticked resulting in 1 add and 1 remove
             [
                 CommonOrganisationFactory(),
                 CommonCompetitionFactory(),
@@ -451,24 +457,28 @@ public static class CompetitionRecipientsControllerTests
                 {
                     new()
                     {
-                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG",
+                        CompetitionId = CommonCompetitionId,
+                        SublocationOdsCode = "XXXX",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
                     },
                     new()
                     {
-                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXA", OwnerOdsCode = "FFGG",
+                        CompetitionId = CommonCompetitionId,
+                        SublocationOdsCode = "XXXA",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
                     },
                 },
                 new List<CheckboxNameAndValueModel>
                 {
-                    new() { Name = "XXXX", Value = true },
+                    new() { Name = "XXXX", Value = false },
                     new() { Name = "XXXA", Value = true },
                     new() { Name = "XXXE", Value = true },
                 },
-                new HashSet<string> { "XXXE" },
-                nameof(CompetitionRecipientsController.ConfirmSublocations),
+                "XXXE",
+                "XXXX",
             ],
 
-            // 1 existing and 3 ticked resulting in 2 adds
+            // 2 existing 1 unticked and 1 ticked resulting in 1 remove no adds
             [
                 CommonOrganisationFactory(),
                 CommonCompetitionFactory(),
@@ -476,44 +486,76 @@ public static class CompetitionRecipientsControllerTests
                 {
                     new()
                     {
-                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG",
+                        CompetitionId = CommonCompetitionId,
+                        SublocationOdsCode = "XXXX",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
+                    },
+                    new()
+                    {
+                        CompetitionId = CommonCompetitionId,
+                        SublocationOdsCode = "XXXA",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
                     },
                 },
                 new List<CheckboxNameAndValueModel>
                 {
-                    new() { Name = "XXXX", Value = true },
-                    new() { Name = "XXXA", Value = true },
-                    new() { Name = "XXXE", Value = true },
+                    new() { Name = "XXXX", Value = false }, new() { Name = "XXXA", Value = true },
                 },
-                new HashSet<string> { "XXXA", "XXXE" },
-                nameof(CompetitionRecipientsController.ConfirmSublocations),
+                string.Empty,
+                "XXXX",
             ],
 
-            // 0 existing and 3 ticked resulting in 3 adds - also redirects to 'Add sublocation' page instead of 'confirm'
+            // 3 existing and 1 ticked resulting in 2 removes 
             [
                 CommonOrganisationFactory(),
                 CommonCompetitionFactory(),
-                new List<CompetitionSublocation>(),
+                new List<CompetitionSublocation>
+                {
+                    new()
+                    {
+                        CompetitionId = CommonCompetitionId,
+                        SublocationOdsCode = "XXXX",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
+                    },
+                    new()
+                    {
+                        CompetitionId = CommonCompetitionId,
+                        SublocationOdsCode = "XXXA",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
+                    },
+                    new()
+                    {
+                        CompetitionId = CommonCompetitionId,
+                        SublocationOdsCode = "XXXE",
+                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
+                    },
+                },
                 new List<CheckboxNameAndValueModel>
                 {
-                    new() { Name = "XXXX", Value = true },
-                    new() { Name = "XXXA", Value = true },
+                    new() { Name = "XXXX", Value = false },
+                    new() { Name = "XXXA", Value = false },
                     new() { Name = "XXXE", Value = true },
                 },
-                new HashSet<string> { "XXXX", "XXXA", "XXXE" },
-                nameof(CompetitionRecipientsController.AddSublocations),
+                string.Empty,
+                "XXXX,XXXA",
             ],
         ];
     }
 
     private const int CommonCompetitionId = 34;
+
     private const int CommonOrganisationId = 21;
+    private const string CommonOrganisationInternalIdentifier = "BB-FFGG";
+    private const string CommonOrganisationExternalIdentifier = "FFGG";
 
     private static Organisation CommonOrganisationFactory()
     {
         return new Organisation
         {
-            Id = CommonCompetitionId, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
+            Id = CommonCompetitionId,
+            InternalIdentifier = CommonOrganisationInternalIdentifier,
+            ExternalIdentifier = CommonOrganisationExternalIdentifier,
+            Name = "A Local ICB",
         };
     }
 
