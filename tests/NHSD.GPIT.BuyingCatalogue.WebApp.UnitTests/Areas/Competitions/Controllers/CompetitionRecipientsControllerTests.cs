@@ -1,23 +1,20 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using Xunit;
-using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
-using SelectRecipientsModel = NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectRecipientsModel;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controllers;
 
@@ -31,194 +28,6 @@ public static class CompetitionRecipientsControllerTests
         var constructors = typeof(CompetitionRecipientsController).GetConstructors();
 
         assertion.Verify(constructors);
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task Index_ReturnsViewWithModel(
-        Organisation organisation,
-        Competition competition,
-        List<OdsOrganisation> odsOrganisations,
-        [Frozen] IOrganisationsService organisationsService,
-        [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IOdsService odsService,
-        CompetitionRecipientsController controller)
-    {
-        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
-            .Returns(organisation);
-
-        competitionsService.GetCompetitionWithRecipients(organisation.InternalIdentifier, competition.Id)
-            .Returns(competition);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier)
-            .Returns(odsOrganisations.Select(x => new ServiceRecipient { Name = x.Name, OrgId = x.Id, }));
-
-        var result = (await controller.Index(organisation.InternalIdentifier, competition.Id)).As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static void Index_InvalidModelState_ReturnsViewWithModel(
-        string internalOrgId,
-        int competitionId,
-        SelectRecipientsModel model,
-        CompetitionRecipientsController controller)
-    {
-        controller.ModelState.AddModelError("some-key", "some-error");
-
-        var result = controller.Index(internalOrgId, competitionId, model).As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.ShouldExpand));
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static void Index_Valid_Redirects(
-        string internalOrgId,
-        int competitionId,
-        SelectRecipientsModel model,
-        CompetitionRecipientsController controller)
-    {
-        var result = controller.Index(internalOrgId, competitionId, model).As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().BeEquivalentTo(nameof(controller.ConfirmRecipients));
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task ConfirmRecipients_ReturnsViewWithModel(
-        Organisation organisation,
-        Competition competition,
-        List<ServiceRecipient> serviceRecipients,
-        [Frozen] IOrganisationsService organisationsService,
-        [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IOdsService odsService,
-        CompetitionRecipientsController controller)
-    {
-        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
-            .Returns(organisation);
-
-        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id)
-            .Returns(competition);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                organisation.InternalIdentifier,
-                Arg.Any<IEnumerable<string>>())
-            .Returns(serviceRecipients);
-
-        var expectedModel = new ConfirmChangesModel(organisation)
-        {
-            Caption = competition.Name,
-            Selected = serviceRecipients.Select(
-                    x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
-                .ToList(),
-            Advice = CompetitionRecipientsController.ConfirmRecipientsAdvice,
-        };
-
-        var result = (await controller.ConfirmRecipients(
-            organisation.InternalIdentifier,
-            competition.Id,
-            string.Join(',', serviceRecipients.Select(x => x.OrgId)))).As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should().BeEquivalentTo(expectedModel, opt => opt
-            .Excluding(m => m.BackLink)
-            .Excluding(m => m.AddRemoveRecipientsLink));
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task ConfirmRecipients_HasImportedRecipients_SetsBacklink(
-        Organisation organisation,
-        Competition competition,
-        List<ServiceRecipient> serviceRecipients,
-        [Frozen] IOrganisationsService organisationsService,
-        [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IOdsService odsService,
-        [Frozen] IUrlHelper urlHelper,
-        CompetitionRecipientsController controller)
-    {
-        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
-            .Returns(organisation);
-
-        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id)
-            .Returns(competition);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                organisation.InternalIdentifier,
-                Arg.Any<IEnumerable<string>>())
-            .Returns(serviceRecipients);
-
-        _ = (await controller.ConfirmRecipients(
-            organisation.InternalIdentifier,
-            competition.Id,
-            string.Join(',', serviceRecipients.Select(x => x.OrgId)),
-            true)).As<ViewResult>();
-
-        urlHelper.Received()
-            .Action(
-                Arg.Is<UrlActionContext>(
-                    y => y.Action == nameof(CompetitionImportServiceRecipientsController.Index) && y.Controller
-                        == typeof(CompetitionImportServiceRecipientsController).ControllerName()));
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task ConfirmRecipients_HasNotImportedRecipients_SetsBacklink(
-        Organisation organisation,
-        Competition competition,
-        List<ServiceRecipient> serviceRecipients,
-        [Frozen] IOrganisationsService organisationsService,
-        [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IOdsService odsService,
-        [Frozen] IUrlHelper urlHelper,
-        CompetitionRecipientsController controller)
-    {
-        organisationsService.GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)
-            .Returns(organisation);
-
-        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id)
-            .Returns(competition);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                organisation.InternalIdentifier,
-                Arg.Any<IEnumerable<string>>())
-            .Returns(serviceRecipients);
-
-        _ = (await controller.ConfirmRecipients(
-            organisation.InternalIdentifier,
-            competition.Id,
-            string.Join(',', serviceRecipients.Select(x => x.OrgId)),
-            false)).As<ViewResult>();
-
-        urlHelper.Received()
-            .Action(
-                Arg.Is<UrlActionContext>(
-                    y => y.Action == nameof(controller.Index) && string.IsNullOrWhiteSpace(y.Controller)));
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task ConfirmRecipients_Valid_Redirects(
-        string internalOrgId,
-        int competitionId,
-        ConfirmChangesModel model,
-        [Frozen] ICompetitionsService competitionsService,
-        CompetitionRecipientsController controller)
-    {
-        var result = (await controller.ConfirmRecipients(internalOrgId, competitionId, model))
-            .As<RedirectToActionResult>();
-
-        await competitionsService.Received().SetCompetitionRecipients(competitionId, Arg.Any<IEnumerable<string>>());
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
-        result.ControllerName.Should().Be(typeof(CompetitionTaskListController).ControllerName());
     }
 
     [Theory]
@@ -303,5 +112,335 @@ public static class CompetitionRecipientsControllerTests
         RedirectToActionResult redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirectToActionResult.ActionName.Should().Be(nameof(CompetitionRecipientsController.SelectSublocations));
         redirectToActionResult.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
+    }
+
+    [Theory]
+    [MockMemberAutoData(nameof(ExistingAndNewSublocationsToRenderedSublocations))]
+    public static async Task SelectSublocations_ReturnsViewWithModel(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> existingSublocations,
+        List<OdsOrganisation> possibleSublocations,
+        List<CheckboxNameAndValueModel> renderedSelections,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IOdsService odsService,
+        CompetitionRecipientsController controller)
+    {
+        competition.CompetitionSublocations = existingSublocations;
+        competition.Organisation = organisation;
+
+        competitionsService.GetCompetitionWithSublocations(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
+
+        odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns(possibleSublocations);
+
+        var expectedModel = new SelectSublocationsModel { RenderedSublocations = renderedSelections };
+
+        var result = (await controller.SelectSublocations(organisation.InternalIdentifier, competition.Id))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.BackLink)
+                    .Excluding(m => m.Title)
+                    .Excluding(m => m.Caption)
+                    .Excluding(m => m.Advice));
+    }
+
+    [Theory]
+    [MockMemberAutoData(nameof(ExpectedAddsFromSublocationSelection))]
+    public static async Task SelectSublocations_Post_AddsOnly_PerformsAddServiceCall(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> existingSublocations,
+        List<CheckboxNameAndValueModel> checkboxSelections,
+        HashSet<string> expectedAdds,
+        string expectedControllerName,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        competition.CompetitionSublocations = existingSublocations;
+        competition.Organisation = organisation;
+
+        competitionsService.GetCompetitionWithSublocations(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
+
+        var callingModel = new SelectSublocationsModel { RenderedSublocations = checkboxSelections };
+
+        var result =
+            (await controller.SelectSublocations(callingModel, organisation.InternalIdentifier, competition.Id))
+            .As<RedirectToActionResult>();
+
+        await competitionsService.Received()
+            .AddSublocations(
+                organisation.InternalIdentifier,
+                competition.Id,
+                Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, expectedAdds)));
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(expectedControllerName);
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier }, { "competitionId", competition.Id },
+                });
+    }
+
+    private static IEnumerable<object[]> ExistingAndNewSublocationsToRenderedSublocations()
+    {
+        return
+        [
+            // 2 Existing sublocations that should be ticked, and a new one that shouldn't
+            [
+                new Organisation
+                {
+                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
+                },
+                new Competition
+                {
+                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
+                },
+                new List<CompetitionSublocation>
+                {
+                    new()
+                    {
+                        CompetitionId = 34,
+                        SublocationOdsCode = "XXXX",
+                        OwnerOdsCode = "FFGG",
+                        SublocationRecipients = new List<CompetitionSublocationRecipient>
+                        {
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAA",
+                                ParentSublocationOdsCode = "XXXX",
+                            },
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAB",
+                                ParentSublocationOdsCode = "XXXX",
+                            },
+                        },
+                    },
+                    new()
+                    {
+                        CompetitionId = 34,
+                        SublocationOdsCode = "XXXA",
+                        OwnerOdsCode = "FFGG",
+                        SublocationRecipients = new List<CompetitionSublocationRecipient>
+                        {
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAC",
+                                ParentSublocationOdsCode = "XXXA",
+                            },
+                        },
+                    },
+                },
+                new List<OdsOrganisation>
+                {
+                    new() { OdsCode = "XXXX", OrganisationName = "An existing sublocation - XXXX" },
+                    new() { OdsCode = "XXXA", OrganisationName = "An existing sublocation - XXXA" },
+                    new() { OdsCode = "XXXE", OrganisationName = "A new sublocation - XXXE" },
+                },
+                new List<CheckboxNameAndValueModel>
+                {
+                    new() { Name = "XXXX", Value = true },
+                    new() { Name = "XXXA", Value = true },
+                    new() { Name = "XXXE", Value = false },
+                },
+            ],
+
+            // 3 Existing sublocations with no new - should all be ticked
+            [
+                new Organisation
+                {
+                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
+                },
+                new Competition
+                {
+                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
+                },
+                new List<CompetitionSublocation>
+                {
+                    new()
+                    {
+                        CompetitionId = 34,
+                        SublocationOdsCode = "XXXX",
+                        OwnerOdsCode = "FFGG",
+                        SublocationRecipients = new List<CompetitionSublocationRecipient>
+                        {
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAA",
+                                ParentSublocationOdsCode = "XXXX",
+                            },
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAB",
+                                ParentSublocationOdsCode = "XXXX",
+                            },
+                        },
+                    },
+                    new()
+                    {
+                        CompetitionId = 34,
+                        SublocationOdsCode = "XXXA",
+                        OwnerOdsCode = "FFGG",
+                        SublocationRecipients = new List<CompetitionSublocationRecipient>
+                        {
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAC",
+                                ParentSublocationOdsCode = "XXXA",
+                            },
+                        },
+                    },
+                    new()
+                    {
+                        CompetitionId = 34,
+                        SublocationOdsCode = "XXXE",
+                        OwnerOdsCode = "FFGG",
+                        SublocationRecipients = new List<CompetitionSublocationRecipient>(),
+                    },
+                },
+                new List<OdsOrganisation>
+                {
+                    new() { OdsCode = "XXXX", OrganisationName = "An existing sublocation - XXXX" },
+                    new() { OdsCode = "XXXA", OrganisationName = "An existing sublocation - XXXA" },
+                    new() { OdsCode = "XXXE", OrganisationName = "A new sublocation - XXXE" },
+                },
+                new List<CheckboxNameAndValueModel>
+                {
+                    new() { Name = "XXXX", Value = true },
+                    new() { Name = "XXXA", Value = true },
+                    new() { Name = "XXXE", Value = true },
+                },
+            ],
+
+            // 3 all new sublocations - none should be ticked
+            [
+                new Organisation
+                {
+                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
+                },
+                new Competition
+                {
+                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
+                },
+                new List<CompetitionSublocation>(),
+                new List<OdsOrganisation>
+                {
+                    new() { OdsCode = "XXXX", OrganisationName = "An existing sublocation - XXXX" },
+                    new() { OdsCode = "XXXA", OrganisationName = "An existing sublocation - XXXA" },
+                    new() { OdsCode = "XXXE", OrganisationName = "A new sublocation - XXXE" },
+                },
+                new List<CheckboxNameAndValueModel>
+                {
+                    new() { Name = "XXXX", Value = false },
+                    new() { Name = "XXXA", Value = false },
+                    new() { Name = "XXXE", Value = false },
+                },
+            ],
+        ];
+    }
+
+    private static IEnumerable<object[]> ExpectedAddsFromSublocationSelection()
+    {
+        return
+        [
+            // 2 existing and 3 ticked resulting in 1 add
+            [
+                new Organisation
+                {
+                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
+                },
+                new Competition
+                {
+                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
+                },
+                new List<CompetitionSublocation>
+                {
+                    new() { CompetitionId = 34, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG" },
+                    new() { CompetitionId = 34, SublocationOdsCode = "XXXA", OwnerOdsCode = "FFGG" },
+                },
+                new List<CheckboxNameAndValueModel>
+                {
+                    new() { Name = "XXXX", Value = true },
+                    new() { Name = "XXXA", Value = true },
+                    new() { Name = "XXXE", Value = true },
+                },
+                new HashSet<string> { "XXXE" },
+                nameof(CompetitionRecipientsController.ConfirmSublocations),
+            ],
+
+            // 1 existing and 3 ticked resulting in 2 adds
+            [
+                new Organisation
+                {
+                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
+                },
+                new Competition
+                {
+                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
+                },
+                new List<CompetitionSublocation>
+                {
+                    new() { CompetitionId = 34, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG" },
+                },
+                new List<CheckboxNameAndValueModel>
+                {
+                    new() { Name = "XXXX", Value = true },
+                    new() { Name = "XXXA", Value = true },
+                    new() { Name = "XXXE", Value = true },
+                },
+                new HashSet<string> { "XXXA", "XXXE" },
+                nameof(CompetitionRecipientsController.ConfirmSublocations),
+            ],
+
+            // 0 existing and 3 ticked resulting in 3 adds
+            [
+                new Organisation
+                {
+                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
+                },
+                new Competition
+                {
+                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
+                },
+                new List<CompetitionSublocation>(),
+                new List<CheckboxNameAndValueModel>
+                {
+                    new() { Name = "XXXX", Value = true },
+                    new() { Name = "XXXA", Value = true },
+                    new() { Name = "XXXE", Value = true },
+                },
+                new HashSet<string> { "XXXX", "XXXA", "XXXE" },
+                nameof(CompetitionRecipientsController.AddSublocations),
+            ],
+        ];
+    }
+
+    private static bool AreStringHashSetsEquivalent(
+        HashSet<string> actual,
+        HashSet<string> expected)
+    {
+        try
+        {
+            actual.Should().BeEquivalentTo(expected);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
