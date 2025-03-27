@@ -245,7 +245,7 @@ public static class CompetitionRecipientsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static void UploadOrSelectServiceRecipients_InvalidModel_ReturnsViewWithModel(
+    public static async Task UploadOrSelectServiceRecipients_InvalidModel_ReturnsViewWithModel(
         UploadOrSelectServiceRecipientModel model,
         string internalOrgId,
         int competitionId,
@@ -257,7 +257,7 @@ public static class CompetitionRecipientsControllerTests
         competitionsService.GetCompetition(internalOrgId, competitionId)
             .Returns(competition);
 
-        var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
+        IActionResult result = await controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         var returnedModel = viewResult.Model.Should().BeOfType<UploadOrSelectServiceRecipientModel>().Subject;
@@ -267,7 +267,7 @@ public static class CompetitionRecipientsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static void UploadOrSelectServiceRecipients_UploadRecipients_RedirectsToImportController(
+    public static async Task UploadOrSelectServiceRecipients_UploadRecipients_RedirectsToImportController(
         UploadOrSelectServiceRecipientModel model,
         string internalOrgId,
         int competitionId,
@@ -278,7 +278,7 @@ public static class CompetitionRecipientsControllerTests
         competitionsService.GetCompetition(internalOrgId, competitionId)
             .Returns(new Competition());
 
-        var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
+        IActionResult result = await controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
 
         var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirectToActionResult.ActionName.Should().Be(nameof(CompetitionImportServiceRecipientsController.Index));
@@ -287,7 +287,7 @@ public static class CompetitionRecipientsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static void UploadOrSelectServiceRecipients_DoNotUploadRecipients_RedirectsToIndexAction(
+    public static async Task UploadOrSelectServiceRecipients_DoNotUploadRecipients_RedirectsToIndexAction(
         UploadOrSelectServiceRecipientModel model,
         string internalOrgId,
         int competitionId,
@@ -298,10 +298,10 @@ public static class CompetitionRecipientsControllerTests
         competitionsService.GetCompetition(internalOrgId, competitionId)
             .Returns(new Competition());
 
-        var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
+        IActionResult result = await controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
 
-        var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-        redirectToActionResult.ActionName.Should().Be(nameof(CompetitionRecipientsController.Index));
+        RedirectToActionResult redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirectToActionResult.ActionName.Should().Be(nameof(CompetitionRecipientsController.SelectSublocations));
         redirectToActionResult.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
     }
 }
