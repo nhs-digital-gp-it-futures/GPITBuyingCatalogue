@@ -280,16 +280,6 @@ public class CompetitionsService : ICompetitionsService
             .AnyAsync(x => x.CompetitionSublocations.Count > 0);
     }
 
-    public async Task<bool> GetCompetitionHasAnyRecipients(string internalOrgId, int competitionId)
-    {
-        return await dbContext.Competitions
-            .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
-            .Include(x => x.CompetitionSublocations)
-            .ThenInclude(y => y.SublocationRecipients)
-            .AnyAsync(
-                x => x.CompetitionSublocations.Any(y => y.SublocationRecipients.Count > 0));
-    }
-
     public async Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(
         string internalOrgId,
         int competitionId)

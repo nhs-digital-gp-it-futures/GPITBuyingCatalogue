@@ -368,111 +368,6 @@ public class CompetitionRecipientsController(
         return SelectSublocationsOverviewDynamicRedirect(model, internalOrgId, competitionId);
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Index(
-        string internalOrgId,
-        int competitionId,
-        string recipientIds = "",
-        string importedRecipients = "",
-        SelectionMode? selectionMode = null)
-    {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetitionWithRecipients(internalOrgId, competitionId);
-        var recipients = await GetServiceRecipients(internalOrgId);
-        var splitRecipientIds = SplitCommaSeparatedString(string.Join(',', recipientIds, importedRecipients));
-
-        const string pageAdvice =
-            "Select the organisations that will receive the winning solution for this competition or upload them using a CSV file.";
-
-        var model = new SelectRecipientsModel(
-            organisation,
-            recipients,
-            competition.FlattenedRecipients.Select(x => x.Id),
-            [],
-            splitRecipientIds,
-            selectionMode)
-        {
-            Title = "Service Recipients",
-            BackLink = Url.Action(
-                nameof(UploadOrSelectServiceRecipients),
-                typeof(CompetitionRecipientsController).ControllerName(),
-                new { internalOrgId, competitionId }),
-            Caption = competition.Name,
-            Advice = pageAdvice,
-            HasImportedRecipients = !string.IsNullOrWhiteSpace(importedRecipients),
-        };
-
-        return View("ServiceRecipients/SelectRecipients", model);
-    }
-
-    [HttpPost]
-    public IActionResult Index(string internalOrgId, int competitionId, SelectRecipientsModel model)
-    {
-        if (ModelState.IsValid)
-        {
-            return RedirectToAction(
-                nameof(ConfirmRecipients),
-                new
-                {
-                    internalOrgId,
-                    competitionId,
-                    recipientIds = string.Join(',', model.GetSelectedServiceRecipients().Select(x => x.OdsCode)),
-                });
-        }
-
-        model.ShouldExpand = true;
-        return View("ServiceRecipients/SelectRecipients", model);
-    }
-
-    [HttpGet("confirm-recipients")]
-    public async Task<IActionResult> ConfirmRecipients(
-        string internalOrgId,
-        int competitionId,
-        string recipientIds,
-        bool? hasImported = null)
-    {
-        var organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
-        var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
-
-        var recipientOdsCodes = SplitCommaSeparatedString(recipientIds);
-
-        IEnumerable<ServiceRecipient> recipients =
-            await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                internalOrgId,
-                recipientOdsCodes);
-
-        var model = new ConfirmChangesModel(organisation)
-        {
-            BackLink = hasImported.GetValueOrDefault()
-                ? Url.Action(
-                    nameof(CompetitionImportServiceRecipientsController.Index),
-                    typeof(CompetitionImportServiceRecipientsController).ControllerName(),
-                    new { internalOrgId, competitionId })
-                : Url.Action(nameof(Index), new { internalOrgId, competitionId, recipientIds }),
-            Caption = competition.Name,
-            Selected = recipients.Select(
-                    x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
-                .ToList(),
-            Advice = ConfirmRecipientsAdvice,
-        };
-
-        return View("ServiceRecipients/ConfirmChanges", model);
-    }
-
-    [HttpPost("confirm-recipients")]
-    public async Task<IActionResult> ConfirmRecipients(
-        string internalOrgId,
-        int competitionId,
-        ConfirmChangesModel model)
-    {
-        await competitionsService.SetCompetitionRecipients(competitionId, model.Selected.Select(x => x.OdsCode));
-
-        return RedirectToAction(
-            nameof(CompetitionTaskListController.Index),
-            typeof(CompetitionTaskListController).ControllerName(),
-            new { internalOrgId, competitionId });
-    }
-
     [HttpGet("confirm-sublocation-recipients")]
     public async Task<IActionResult> ConfirmSublocationRecipients(
         string internalOrgId,
@@ -504,16 +399,6 @@ public class CompetitionRecipientsController(
             nameof(CompetitionTaskListController.Index),
             typeof(CompetitionTaskListController).ControllerName(),
             new { internalOrgId, competitionId });
-    }
-
-    private async Task<List<ServiceRecipientModel>> GetServiceRecipients(string internalOrgId)
-    {
-        var recipients = await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId);
-
-        return recipients
-            .OrderBy(x => x.Name)
-            .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location, })
-            .ToList();
     }
 
     private async Task<List<ServiceRecipientModel>> GetServiceRecipientsBySublocation(string sublocationOdsCode)
