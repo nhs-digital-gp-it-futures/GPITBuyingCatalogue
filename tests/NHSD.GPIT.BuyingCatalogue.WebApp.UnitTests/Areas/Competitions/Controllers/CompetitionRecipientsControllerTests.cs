@@ -189,38 +189,69 @@ public static class CompetitionRecipientsControllerTests
                 });
     }
 
+    [Theory]
+    [MockMemberAutoData(nameof(ExpectedRemovesOrAddsAndRemoves))]
+    public static async Task SelectSublocations_Post_RemovesOrAddsAndRemoves_RedirectsToRemovePage(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> existingSublocations,
+        List<CheckboxNameAndValueModel> checkboxSelections,
+        HashSet<string> expectedAdds,
+        HashSet<string> expectedRemoves,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        competition.CompetitionSublocations = existingSublocations;
+        competition.Organisation = organisation;
+
+        competitionsService.GetCompetitionWithSublocations(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
+
+        var callingModel = new SelectSublocationsModel { RenderedSublocations = checkboxSelections };
+
+        var result =
+            (await controller.SelectSublocations(callingModel, organisation.InternalIdentifier, competition.Id))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.RemoveSublocations));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier },
+                    { "competitionId", competition.Id },
+                    { "sublocationsToRemove", expectedRemoves },
+                    { "sublocationsToAdd", expectedAdds },
+                });
+    }
+
     private static IEnumerable<object[]> ExistingAndNewSublocationsToRenderedSublocations()
     {
         return
         [
             // 2 Existing sublocations that should be ticked, and a new one that shouldn't
             [
-                new Organisation
-                {
-                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
-                },
-                new Competition
-                {
-                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
-                },
+                CommonOrganisationFactory(),
+                CommonCompetitionFactory(),
                 new List<CompetitionSublocation>
                 {
                     new()
                     {
-                        CompetitionId = 34,
+                        CompetitionId = CommonCompetitionId,
                         SublocationOdsCode = "XXXX",
                         OwnerOdsCode = "FFGG",
                         SublocationRecipients = new List<CompetitionSublocationRecipient>
                         {
                             new()
                             {
-                                CompetitionId = 34,
+                                CompetitionId = CommonCompetitionId,
                                 RecipientOdsCode = "AAAA",
                                 ParentSublocationOdsCode = "XXXX",
                             },
                             new()
                             {
-                                CompetitionId = 34,
+                                CompetitionId = CommonCompetitionId,
                                 RecipientOdsCode = "AAAB",
                                 ParentSublocationOdsCode = "XXXX",
                             },
@@ -228,14 +259,14 @@ public static class CompetitionRecipientsControllerTests
                     },
                     new()
                     {
-                        CompetitionId = 34,
+                        CompetitionId = CommonCompetitionId,
                         SublocationOdsCode = "XXXA",
                         OwnerOdsCode = "FFGG",
                         SublocationRecipients = new List<CompetitionSublocationRecipient>
                         {
                             new()
                             {
-                                CompetitionId = 34,
+                                CompetitionId = CommonCompetitionId,
                                 RecipientOdsCode = "AAAC",
                                 ParentSublocationOdsCode = "XXXA",
                             },
@@ -258,32 +289,26 @@ public static class CompetitionRecipientsControllerTests
 
             // 3 Existing sublocations with no new - should all be ticked
             [
-                new Organisation
-                {
-                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
-                },
-                new Competition
-                {
-                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
-                },
+                CommonOrganisationFactory(),
+                CommonCompetitionFactory(),
                 new List<CompetitionSublocation>
                 {
                     new()
                     {
-                        CompetitionId = 34,
+                        CompetitionId = CommonCompetitionId,
                         SublocationOdsCode = "XXXX",
                         OwnerOdsCode = "FFGG",
                         SublocationRecipients = new List<CompetitionSublocationRecipient>
                         {
                             new()
                             {
-                                CompetitionId = 34,
+                                CompetitionId = CommonCompetitionId,
                                 RecipientOdsCode = "AAAA",
                                 ParentSublocationOdsCode = "XXXX",
                             },
                             new()
                             {
-                                CompetitionId = 34,
+                                CompetitionId = CommonCompetitionId,
                                 RecipientOdsCode = "AAAB",
                                 ParentSublocationOdsCode = "XXXX",
                             },
@@ -291,14 +316,14 @@ public static class CompetitionRecipientsControllerTests
                     },
                     new()
                     {
-                        CompetitionId = 34,
+                        CompetitionId = CommonCompetitionId,
                         SublocationOdsCode = "XXXA",
                         OwnerOdsCode = "FFGG",
                         SublocationRecipients = new List<CompetitionSublocationRecipient>
                         {
                             new()
                             {
-                                CompetitionId = 34,
+                                CompetitionId = CommonCompetitionId,
                                 RecipientOdsCode = "AAAC",
                                 ParentSublocationOdsCode = "XXXA",
                             },
@@ -306,7 +331,7 @@ public static class CompetitionRecipientsControllerTests
                     },
                     new()
                     {
-                        CompetitionId = 34,
+                        CompetitionId = CommonCompetitionId,
                         SublocationOdsCode = "XXXE",
                         OwnerOdsCode = "FFGG",
                         SublocationRecipients = new List<CompetitionSublocationRecipient>(),
@@ -328,14 +353,8 @@ public static class CompetitionRecipientsControllerTests
 
             // 3 all new sublocations - none should be ticked
             [
-                new Organisation
-                {
-                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
-                },
-                new Competition
-                {
-                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
-                },
+                CommonOrganisationFactory(),
+                CommonCompetitionFactory(),
                 new List<CompetitionSublocation>(),
                 new List<OdsOrganisation>
                 {
@@ -359,18 +378,18 @@ public static class CompetitionRecipientsControllerTests
         [
             // 2 existing and 3 ticked resulting in 1 add
             [
-                new Organisation
-                {
-                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
-                },
-                new Competition
-                {
-                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
-                },
+                CommonOrganisationFactory(),
+                CommonCompetitionFactory(),
                 new List<CompetitionSublocation>
                 {
-                    new() { CompetitionId = 34, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG" },
-                    new() { CompetitionId = 34, SublocationOdsCode = "XXXA", OwnerOdsCode = "FFGG" },
+                    new()
+                    {
+                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG",
+                    },
+                    new()
+                    {
+                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXA", OwnerOdsCode = "FFGG",
+                    },
                 },
                 new List<CheckboxNameAndValueModel>
                 {
@@ -384,17 +403,14 @@ public static class CompetitionRecipientsControllerTests
 
             // 1 existing and 3 ticked resulting in 2 adds
             [
-                new Organisation
-                {
-                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
-                },
-                new Competition
-                {
-                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
-                },
+                CommonOrganisationFactory(),
+                CommonCompetitionFactory(),
                 new List<CompetitionSublocation>
                 {
-                    new() { CompetitionId = 34, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG" },
+                    new()
+                    {
+                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG",
+                    },
                 },
                 new List<CheckboxNameAndValueModel>
                 {
@@ -406,16 +422,10 @@ public static class CompetitionRecipientsControllerTests
                 nameof(CompetitionRecipientsController.ConfirmSublocations),
             ],
 
-            // 0 existing and 3 ticked resulting in 3 adds
+            // 0 existing and 3 ticked resulting in 3 adds - also redirects to 'Add sublocation' page instead of 'confirm'
             [
-                new Organisation
-                {
-                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
-                },
-                new Competition
-                {
-                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
-                },
+                CommonOrganisationFactory(),
+                CommonCompetitionFactory(),
                 new List<CompetitionSublocation>(),
                 new List<CheckboxNameAndValueModel>
                 {
@@ -427,6 +437,95 @@ public static class CompetitionRecipientsControllerTests
                 nameof(CompetitionRecipientsController.AddSublocations),
             ],
         ];
+    }
+
+    private static IEnumerable<object[]> ExpectedRemovesOrAddsAndRemoves()
+    {
+        return
+        [
+            // 2 existing and 3 ticked resulting in 1 add
+            [
+                CommonOrganisationFactory(),
+                CommonCompetitionFactory(),
+                new List<CompetitionSublocation>
+                {
+                    new()
+                    {
+                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG",
+                    },
+                    new()
+                    {
+                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXA", OwnerOdsCode = "FFGG",
+                    },
+                },
+                new List<CheckboxNameAndValueModel>
+                {
+                    new() { Name = "XXXX", Value = true },
+                    new() { Name = "XXXA", Value = true },
+                    new() { Name = "XXXE", Value = true },
+                },
+                new HashSet<string> { "XXXE" },
+                nameof(CompetitionRecipientsController.ConfirmSublocations),
+            ],
+
+            // 1 existing and 3 ticked resulting in 2 adds
+            [
+                CommonOrganisationFactory(),
+                CommonCompetitionFactory(),
+                new List<CompetitionSublocation>
+                {
+                    new()
+                    {
+                        CompetitionId = CommonCompetitionId, SublocationOdsCode = "XXXX", OwnerOdsCode = "FFGG",
+                    },
+                },
+                new List<CheckboxNameAndValueModel>
+                {
+                    new() { Name = "XXXX", Value = true },
+                    new() { Name = "XXXA", Value = true },
+                    new() { Name = "XXXE", Value = true },
+                },
+                new HashSet<string> { "XXXA", "XXXE" },
+                nameof(CompetitionRecipientsController.ConfirmSublocations),
+            ],
+
+            // 0 existing and 3 ticked resulting in 3 adds - also redirects to 'Add sublocation' page instead of 'confirm'
+            [
+                CommonOrganisationFactory(),
+                CommonCompetitionFactory(),
+                new List<CompetitionSublocation>(),
+                new List<CheckboxNameAndValueModel>
+                {
+                    new() { Name = "XXXX", Value = true },
+                    new() { Name = "XXXA", Value = true },
+                    new() { Name = "XXXE", Value = true },
+                },
+                new HashSet<string> { "XXXX", "XXXA", "XXXE" },
+                nameof(CompetitionRecipientsController.AddSublocations),
+            ],
+        ];
+    }
+
+    private const int CommonCompetitionId = 34;
+    private const int CommonOrganisationId = 21;
+
+    private static Organisation CommonOrganisationFactory()
+    {
+        return new Organisation
+        {
+            Id = CommonCompetitionId, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
+        };
+    }
+
+    private static Competition CommonCompetitionFactory()
+    {
+        return new Competition
+        {
+            Id = CommonCompetitionId,
+            OrganisationId = CommonOrganisationId,
+            Name = "My Competition",
+            Description = "Competition for competitiony things",
+        };
     }
 
     private static bool AreStringHashSetsEquivalent(
