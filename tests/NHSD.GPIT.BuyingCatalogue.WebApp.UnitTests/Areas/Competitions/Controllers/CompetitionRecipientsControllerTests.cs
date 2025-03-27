@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
@@ -150,6 +151,24 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
+    [MockAutoData]
+    public static async Task SelectSublocations_Post_ErrorStateRejectsRequest(
+        string internalOrgId,
+        int competitionId,
+        SelectSublocationsModel selectSublocationsModel,
+        CompetitionRecipientsController controller)
+    {
+        controller.ModelState.AddModelError("some-property", "some-error");
+
+        var result =
+            (await controller.SelectSublocations(selectSublocationsModel, internalOrgId, competitionId))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should().Be(selectSublocationsModel);
+    }
+
+    [Theory]
     [MockMemberAutoData(nameof(ExpectedAddsFromSublocationSelection))]
     public static async Task SelectSublocations_Post_AddsOnly_PerformsAddServiceCall(
         Organisation organisation,
@@ -224,6 +243,66 @@ public static class CompetitionRecipientsControllerTests
                     { "sublocationsToRemove", expectedRemovesAsConcatString },
                     { "sublocationsToAdd", expectedAddsAsConcatString },
                 });
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task AddSublocations_ReturnsSublocationsView(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competition.CompetitionSublocations = competitionSublocations;
+
+        competitionsService.GetCompetitionWithSublocations(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
+        competitionsService.GetCountForCompetitionSublocationRecipients(
+                organisation.InternalIdentifier,
+                competition.Id,
+                Arg.Any<string>())
+            .Returns(
+                call => competitionSublocations.First(x => x.SublocationOdsCode == call.ArgAt<string>(2))
+                    .SublocationRecipients.Count);
+
+        var expectedModel = new SelectSublocationsOverviewModel
+        {
+            Title = "Add sublocations",
+            Caption = competition.Name,
+            Advice = "Select a sublocation to add organisations to this competition",
+            ProcessType = "competition",
+            Sublocations = competitionSublocations.Select(
+                    x => new SublocationModel
+                    {
+                        Name = x.SublocationOrganisation.Name,
+                        ServiceRecipientCount = x.SublocationRecipients.Count,
+                        OdsCode = x.SublocationOdsCode,
+                    })
+                .ToList(),
+            ParentName = organisation.Name,
+        };
+
+        var result =
+            (await controller.AddSublocations(organisation.InternalIdentifier, competition.Id))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(model => model.BackLink)
+                    .Excluding(model => model.AddOrChangeSublocationsHref)
+                    .Excluding(model => model.Sublocations));
+
+        IReadOnlyList<SublocationModel> sublocations = result.Model.As<SelectSublocationsOverviewModel>().Sublocations;
+
+        sublocations.Should()
+            .BeEquivalentTo(
+                expectedModel.Sublocations,
+                opt => opt.Excluding(slModel => slModel.RecipientHref).Excluding(slModel => slModel.TaskProgress));
     }
 
     private static IEnumerable<object[]> ExistingAndNewSublocationsToRenderedSublocations()
@@ -505,7 +584,7 @@ public static class CompetitionRecipientsControllerTests
                 "XXXX",
             ],
 
-            // 3 existing and 1 ticked resulting in 2 removes 
+            // 3 existing and 1 ticked resulting in 2 removes
             [
                 CommonOrganisationFactory(),
                 CommonCompetitionFactory(),
