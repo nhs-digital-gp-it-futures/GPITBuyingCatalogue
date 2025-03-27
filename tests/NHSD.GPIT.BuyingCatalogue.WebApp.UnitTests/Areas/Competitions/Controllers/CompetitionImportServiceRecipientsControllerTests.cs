@@ -357,23 +357,44 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 opt => opt.Excluding(m => m.Caption));
     }
 
-        odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
+    [Theory]
+    [MockMemberAutoData(nameof(SublocationViewModelToSublocationEntityModelMapping))]
+    public static async Task ValidateComplete_Post_PerformsExpectedFunctions(
+        Organisation organisation,
+        Competition competition,
+        List<SublocationModel> sublocationsAsViewModel,
+        List<CompetitionSublocation> sublocationsAsEntityModel,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionImportServiceRecipientsController controller)
+    {
+        competition.Organisation = organisation;
 
-        // var result = (await controller.ValidateNames(internalOrgId, competition.Id, model))
-        //     .As<RedirectToActionResult>();
-        //
-        // result.Should().NotBeNull();
-        // result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmRecipients));
-        // result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
-        // result.RouteValues.Should()
-        //     .BeEquivalentTo(
-        //         new RouteValueDictionary
-        //         {
-        //             { nameof(internalOrgId), internalOrgId },
-        //             { "competitionId", competition.Id },
-        //             { nameof(recipientIds), string.Join(',', recipientIds.Skip(1).Select(x => x.OdsCode)) },
-        //             { "hasImported", true },
-        //         });
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
+
+        var modelForPost = new ValidationCompleteModel { Sublocations = sublocationsAsViewModel };
+
+        var result =
+            (await controller.ValidationComplete(organisation.InternalIdentifier, competition.Id, modelForPost))
+            .As<RedirectToActionResult>();
+
+        await competitionsService.Received()
+            .SetCompetitionSublocationsAndRecipients(
+                Arg.Is<string>(s => s == organisation.InternalIdentifier),
+                Arg.Is<int>(i => i == competition.Id),
+                Arg.Is<List<CompetitionSublocation>>(
+                    list => AreListsEquivalentIgnoreOrder(list, sublocationsAsEntityModel)));
+
+        await importService.Received().Clear(Arg.Any<DistributedCacheKey>());
+
+        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmSublocations));
+        result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier }, { "competitionId", competition.Id },
+                });
     }
 
     [Theory]
@@ -456,6 +477,85 @@ public static class CompetitionImportServiceRecipientsControllerTests
         };
     }
 
+    public static IEnumerable<object[]> SublocationViewModelToSublocationEntityModelMapping()
+    {
+        return new[]
+        {
+            new object[]
+            {
+                new Organisation
+                {
+                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
+                },
+                new Competition
+                {
+                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
+                },
+                new List<SublocationModel>
+                {
+                    new()
+                    {
+                        OdsCode = "XXXX",
+                        ServiceRecipients =
+                            new List<ServiceRecipientModel>
+                            {
+                                new() { OdsCode = "AAAA", Name = "Surgery 1", Location = "XXXX" },
+                                new() { OdsCode = "AAAB", Name = "Surgery 2", Location = "XXXX" },
+                            },
+                    },
+                    new()
+                    {
+                        OdsCode = "XXXA",
+                        ServiceRecipients =
+                            new List<ServiceRecipientModel>
+                            {
+                                new() { OdsCode = "AAAC", Name = "Surgery 34", Location = "XXXA" },
+                            },
+                    },
+                },
+                new List<CompetitionSublocation>
+                {
+                    new()
+                    {
+                        CompetitionId = 34,
+                        SublocationOdsCode = "XXXX",
+                        OwnerOdsCode = "FFGG",
+                        SublocationRecipients = new List<CompetitionSublocationRecipient>
+                        {
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAA",
+                                ParentSublocationOdsCode = "XXXX",
+                            },
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAB",
+                                ParentSublocationOdsCode = "XXXX",
+                            },
+                        },
+                    },
+                    new()
+                    {
+                        CompetitionId = 34,
+                        SublocationOdsCode = "XXXA",
+                        OwnerOdsCode = "FFGG",
+                        SublocationRecipients = new List<CompetitionSublocationRecipient>
+                        {
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAC",
+                                ParentSublocationOdsCode = "XXXA",
+                            },
+                        },
+                    },
+                },
+            },
+        };
+    }
+
     public static IEnumerable<object[]> InvalidServiceRecipientsTestData()
         => new[]
         {
@@ -494,4 +594,19 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 },
             },
         };
+
+    private static bool AreListsEquivalentIgnoreOrder(
+        IReadOnlyList<CompetitionSublocation> actual,
+        IReadOnlyList<CompetitionSublocation> expected)
+    {
+        try
+        {
+            actual.Should().BeEquivalentTo(expected, options => options.WithoutStrictOrdering());
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }
