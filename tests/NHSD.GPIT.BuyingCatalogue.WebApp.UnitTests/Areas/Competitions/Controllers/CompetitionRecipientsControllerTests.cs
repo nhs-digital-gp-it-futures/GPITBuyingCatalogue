@@ -305,6 +305,137 @@ public static class CompetitionRecipientsControllerTests
                 opt => opt.Excluding(slModel => slModel.RecipientHref).Excluding(slModel => slModel.TaskProgress));
     }
 
+    [Theory]
+    [MockAutoData]
+    public static async Task AddSublocations_Post_ConditionalRedirect(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveSublocations_ReturnsView(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveSublocations_Post_ReturnsViewOnError(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveSublocations_Post_PerformsServiceCallsAndRedirects(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SublocationOdsCode_ReturnsView(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SublocationOdsCode_Post_ReturnsViewOnError(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SublocationOdsCode_Post_PerformsServiceCallsAndRedirects(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task ConfirmSublocations_ReturnsView(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task ConfirmSublocations_Post_Redirects(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task ConfirmSublocationsRecipients_ReturnsView(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task ConfirmSublocationsRecipients_Post_Redirects(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        Assert.Fail("not implemented");
+    }
+
     private static IEnumerable<object[]> ExistingAndNewSublocationsToRenderedSublocations()
     {
         return
