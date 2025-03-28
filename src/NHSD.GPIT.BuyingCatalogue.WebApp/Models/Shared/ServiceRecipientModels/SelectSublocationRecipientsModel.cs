@@ -26,8 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
             SelectionMode = selectionMode;
 
-            PreviouslySelected = selectedSublocation.ServiceRecipients;
-
             Sublocation = selectedSublocation;
 
             IsAmendment = isAmendment;
@@ -46,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public SublocationModel Sublocation { get; init; }
 
-        public IReadOnlyCollection<ServiceRecipientModel> PreviouslySelected { get; init; }
+        public IReadOnlyCollection<ServiceRecipientModel> PreviouslySelected => Sublocation.ServiceRecipients;
 
         public bool IsAmendment { get; init; }
 

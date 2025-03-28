@@ -460,8 +460,20 @@ public static class CompetitionImportServiceRecipientsControllerTests
                         ServiceRecipients =
                             new List<ServiceRecipientModel>
                             {
-                                new() { OdsCode = "AAAA", Name = "Surgery 1", Location = "XXXX" },
-                                new() { OdsCode = "AAAB", Name = "Surgery 2", Location = "XXXX" },
+                                new()
+                                {
+                                    OdsCode = "AAAA",
+                                    Name = "Surgery 1",
+                                    Location = "NHS Big Location XXXX",
+                                    LocationOrgId = "XXXX",
+                                },
+                                new()
+                                {
+                                    OdsCode = "AAAB",
+                                    Name = "Surgery 2",
+                                    Location = "NHS Big Location XXXX",
+                                    LocationOrgId = "XXXX",
+                                },
                             },
                     },
                     new()
@@ -469,7 +481,13 @@ public static class CompetitionImportServiceRecipientsControllerTests
                         OdsCode = "XXXA",
                         ServiceRecipients = new List<ServiceRecipientModel>
                         {
-                            new() { OdsCode = "AAAC", Name = "Surgery 34", Location = "XXXA" },
+                            new()
+                            {
+                                OdsCode = "AAAC",
+                                Name = "Surgery 34",
+                                Location = "NHS Unrelated Big Location XXXA",
+                                LocationOrgId = "XXXA",
+                            },
                         },
                     },
                 },
@@ -499,8 +517,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
                         ServiceRecipients =
                             new List<ServiceRecipientModel>
                             {
-                                new() { OdsCode = "AAAA", Name = "Surgery 1", Location = "XXXX" },
-                                new() { OdsCode = "AAAB", Name = "Surgery 2", Location = "XXXX" },
+                                new() { OdsCode = "AAAA", Name = "Surgery 1", LocationOrgId = "XXXX" },
+                                new() { OdsCode = "AAAB", Name = "Surgery 2", LocationOrgId = "XXXX" },
                             },
                     },
                     new()
@@ -509,7 +527,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
                         ServiceRecipients =
                             new List<ServiceRecipientModel>
                             {
-                                new() { OdsCode = "AAAC", Name = "Surgery 34", Location = "XXXA" },
+                                new() { OdsCode = "AAAC", Name = "Surgery 34", LocationOrgId = "XXXA" },
                             },
                     },
                 },

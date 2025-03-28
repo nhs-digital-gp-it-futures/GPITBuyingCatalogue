@@ -13,6 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Name = serviceRecipientServiceModel.Name;
             OdsCode = serviceRecipientServiceModel.OrgId;
             Location = serviceRecipientServiceModel.Location;
+            LocationOrgId = serviceRecipientServiceModel.LocationOrgId;
         }
 
         public string OdsCode { get; set; }
@@ -24,5 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public string Description => $"{Name}" + (string.IsNullOrEmpty(OdsCode) ? string.Empty : $" ({OdsCode})");
 
         public string Location { get; set; }
+
+        public string LocationOrgId { get; set; }
     }
 }

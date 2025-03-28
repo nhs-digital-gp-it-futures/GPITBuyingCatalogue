@@ -210,11 +210,7 @@ public class CompetitionImportServiceRecipientsController : Controller
                 x => new SublocationModel
                 {
                     OdsCode = x.Key,
-                    ServiceRecipients = x.Select(
-                            y => new ServiceRecipientModel
-                            {
-                                OdsCode = y.OrgId, Name = y.Name, Location = y.LocationOrgId,
-                            })
+                    ServiceRecipients = x.Select(y => new ServiceRecipientModel(y))
                         .ToList(),
                 })
             .ToList();

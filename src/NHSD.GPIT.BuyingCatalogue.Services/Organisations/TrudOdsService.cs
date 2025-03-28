@@ -226,6 +226,7 @@ public class TrudOdsService : IOdsService
         };
     }
 
+    //TODO: Transition to predicate
     public static Expression<Func<OrganisationRelationship, ServiceRecipient>>
         SelectServiceRecipientFromRelationshipPredicate()
     {
