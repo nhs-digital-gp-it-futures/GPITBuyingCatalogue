@@ -315,42 +315,17 @@ public static class CompetitionRecipientsControllerTests
                 CommonCompetitionFactory(),
                 new List<CompetitionSublocation>
                 {
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXX",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                        SublocationRecipients = new List<CompetitionSublocationRecipient>
-                        {
-                            new()
-                            {
-                                CompetitionId = CommonCompetitionId,
-                                RecipientOdsCode = "AAAA",
-                                ParentSublocationOdsCode = "XXXX",
-                            },
-                            new()
-                            {
-                                CompetitionId = CommonCompetitionId,
-                                RecipientOdsCode = "AAAB",
-                                ParentSublocationOdsCode = "XXXX",
-                            },
-                        },
-                    },
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXA",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                        SublocationRecipients = new List<CompetitionSublocationRecipient>
-                        {
-                            new()
-                            {
-                                CompetitionId = CommonCompetitionId,
-                                RecipientOdsCode = "AAAC",
-                                ParentSublocationOdsCode = "XXXA",
-                            },
-                        },
-                    },
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                            CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        ]),
+                    CommonCompetitionSublocationFactory(
+                        "XXXA",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAC", "XXXA"),
+                        ]),
                 },
                 new List<OdsOrganisation>
                 {
@@ -372,49 +347,19 @@ public static class CompetitionRecipientsControllerTests
                 CommonCompetitionFactory(),
                 new List<CompetitionSublocation>
                 {
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXX",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                        SublocationRecipients = new List<CompetitionSublocationRecipient>
-                        {
-                            new()
-                            {
-                                CompetitionId = CommonCompetitionId,
-                                RecipientOdsCode = "AAAA",
-                                ParentSublocationOdsCode = "XXXX",
-                            },
-                            new()
-                            {
-                                CompetitionId = CommonCompetitionId,
-                                RecipientOdsCode = "AAAB",
-                                ParentSublocationOdsCode = "XXXX",
-                            },
-                        },
-                    },
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXA",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                        SublocationRecipients = new List<CompetitionSublocationRecipient>
-                        {
-                            new()
-                            {
-                                CompetitionId = CommonCompetitionId,
-                                RecipientOdsCode = "AAAC",
-                                ParentSublocationOdsCode = "XXXA",
-                            },
-                        },
-                    },
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXE",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                        SublocationRecipients = new List<CompetitionSublocationRecipient>(),
-                    },
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                            CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        ]),
+                    CommonCompetitionSublocationFactory(
+                        "XXXA",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAC", "XXXA"),
+                        ]),
+                    CommonCompetitionSublocationFactory(
+                        "XXXE"),
                 },
                 new List<OdsOrganisation>
                 {
@@ -461,18 +406,7 @@ public static class CompetitionRecipientsControllerTests
                 CommonCompetitionFactory(),
                 new List<CompetitionSublocation>
                 {
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXX",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                    },
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXA",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                    },
+                    CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA"),
                 },
                 new List<CheckboxNameAndValueModel>
                 {
@@ -488,15 +422,7 @@ public static class CompetitionRecipientsControllerTests
             [
                 CommonOrganisationFactory(),
                 CommonCompetitionFactory(),
-                new List<CompetitionSublocation>
-                {
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXX",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                    },
-                },
+                new List<CompetitionSublocation> { CommonCompetitionSublocationFactory("XXXX") },
                 new List<CheckboxNameAndValueModel>
                 {
                     new() { Name = "XXXX", Value = true },
@@ -534,18 +460,7 @@ public static class CompetitionRecipientsControllerTests
                 CommonCompetitionFactory(),
                 new List<CompetitionSublocation>
                 {
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXX",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                    },
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXA",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                    },
+                    CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA"),
                 },
                 new List<CheckboxNameAndValueModel>
                 {
@@ -563,18 +478,7 @@ public static class CompetitionRecipientsControllerTests
                 CommonCompetitionFactory(),
                 new List<CompetitionSublocation>
                 {
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXX",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                    },
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXA",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                    },
+                    CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA"),
                 },
                 new List<CheckboxNameAndValueModel>
                 {
@@ -590,24 +494,9 @@ public static class CompetitionRecipientsControllerTests
                 CommonCompetitionFactory(),
                 new List<CompetitionSublocation>
                 {
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXX",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                    },
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXA",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                    },
-                    new()
-                    {
-                        CompetitionId = CommonCompetitionId,
-                        SublocationOdsCode = "XXXE",
-                        OwnerOdsCode = CommonOrganisationExternalIdentifier,
-                    },
+                    CommonCompetitionSublocationFactory("XXXX"),
+                    CommonCompetitionSublocationFactory("XXXA"),
+                    CommonCompetitionSublocationFactory("XXXE"),
                 },
                 new List<CheckboxNameAndValueModel>
                 {
@@ -646,6 +535,31 @@ public static class CompetitionRecipientsControllerTests
             OrganisationId = CommonOrganisationId,
             Name = "My Competition",
             Description = "Competition for competitiony things",
+        };
+    }
+
+    private static CompetitionSublocation CommonCompetitionSublocationFactory(
+        string sublocationOdsCode,
+        List<CompetitionSublocationRecipient> sublocationRecipients = null)
+    {
+        return new CompetitionSublocation
+        {
+            CompetitionId = CommonCompetitionId,
+            SublocationOdsCode = sublocationOdsCode,
+            OwnerOdsCode = CommonOrganisationExternalIdentifier,
+            SublocationRecipients = sublocationRecipients,
+        };
+    }
+
+    private static CompetitionSublocationRecipient CommonCompetitionSublocationRecipientFactory(
+        string recipientOdsCode,
+        string parentSublocationOdsCode)
+    {
+        return new CompetitionSublocationRecipient
+        {
+            CompetitionId = CommonCompetitionId,
+            RecipientOdsCode = recipientOdsCode,
+            ParentSublocationOdsCode = parentSublocationOdsCode,
         };
     }
 
