@@ -19,14 +19,14 @@ public record SublocationModel
 
     public SublocationModel(CompetitionSublocation competitionSublocation, bool presenceDeterminesSelected)
     {
-        Name = competitionSublocation.SublocationOrganisation.Name;
+        Name = competitionSublocation.SublocationOrganisation?.Name;
         OdsCode = competitionSublocation.SublocationOdsCode;
         ServiceRecipientCount = competitionSublocation.SublocationRecipients.Count;
-        ServiceRecipients = competitionSublocation.SublocationRecipients.Select(
+        ServiceRecipients = competitionSublocation.SublocationRecipients?.Select(
                 x => new ServiceRecipientModel
                 {
                     OdsCode = x.RecipientOdsCode,
-                    Name = x.RecipientOrganisation.Name,
+                    Name = x.RecipientOrganisation?.Name,
                     Selected = presenceDeterminesSelected,
                 })
             .ToArray();

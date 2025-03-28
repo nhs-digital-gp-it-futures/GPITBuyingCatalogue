@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
@@ -501,12 +502,80 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
+    [MockMemberAutoData(nameof(PreviousSelectionsAndPotentialRecipientsToExpected))]
+    public static async Task
+        SelectSublocationRecipients_PreviousSelectionsScenarios_ReturnsViewWithSelectionsAsExpected(
+            Organisation organisation,
+            Competition competition,
+            CompetitionSublocation workingSublocation,
+            List<ServiceRecipient> possibleRecipients,
+            SublocationModel expectedSublocationModel,
+            List<ServiceRecipientModel> expectedRendered,
+            [Frozen] ICompetitionSublocationService competitionSublocationService,
+            [Frozen] IOrganisationsService organisationsService,
+            [Frozen] IOdsService odsOrganisationsService,
+            CompetitionRecipientsController controller)
+    {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+
+        workingSublocation.Competition = competition;
+
+        organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(organisation.InternalIdentifier)
+            .Returns(organisation.ExternalIdentifier);
+        odsOrganisationsService.GetServiceRecipientsBySublocation(workingSublocation.SublocationOdsCode)
+            .Returns(possibleRecipients);
+        competitionSublocationService.GetCompetitionSublocationWithRecipients(
+                organisation.ExternalIdentifier,
+                competition.Id,
+                workingSublocation.SublocationOdsCode)
+            .Returns(workingSublocation);
+
+        var expectedModel = new SelectSublocationRecipientsModel
+        {
+            Sublocation = expectedSublocationModel,
+            IsAmendment = false,
+            RenderedServiceRecipients = expectedRendered,
+        };
+
+        var result =
+            (await controller.SelectSublocationRecipients(
+                organisation.InternalIdentifier,
+                competition.Id,
+                workingSublocation.SublocationOdsCode))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.Title)
+                    .Excluding(m => m.Caption)
+                    .Excluding(m => m.Advice)
+                    .Excluding(m => m.BackLink));
+    }
+
+    [Theory]
     [MockAutoData]
-    public static async Task SublocationOdsCode_ReturnsView(
+    public static async Task SelectSublocationRecipients_SelectionMode_All_ReturnsViewAllItemsSelected(
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> competitionSublocations,
-        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] ICompetitionSublocationService competitionSublocationService,
+        [Frozen] IOrganisationsService organisationsService,
+        CompetitionRecipientsController controller)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SelectSublocationRecipients_SelectionMode_None_ReturnsViewAllItemsDeselected(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] ICompetitionSublocationService competitionSublocationService,
+        [Frozen] IOrganisationsService organisationsService,
         CompetitionRecipientsController controller)
     {
         Assert.Fail("not implemented");
@@ -823,6 +892,32 @@ public static class CompetitionRecipientsControllerTests
                         ["AAAA"],
                     SublocationIdsToAdd = ["AAAE", "AAAF", "AAAC"],
                     Pluralisation = "sublocation",
+                },
+            ],
+        ];
+    }
+
+    private static IEnumerable<object[]> PreviousSelectionsAndPotentialRecipientsToExpected()
+    {
+        return // 1 existing + 2 possible (1 overlap + 1 new) = 2 rendered with 1 existing selected
+        [
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(),
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX")]),
+                new List<ServiceRecipient>
+                {
+                    new() { Name = "Possible Recipient AAAA", OrgId = "AAAA", LocationOrgId = "XXXX" },
+                    new() { Name = "Possible Recipient AAAB", OrgId = "AAAB", LocationOrgId = "XXXX" },
+                },
+                new SublocationModel
+                {
+                    OdsCode = "XXXX", ServiceRecipients = [new ServiceRecipientModel { OdsCode = "AAAA" }],
+                },
+                new List<ServiceRecipientModel>
+                {
+                    new() { OdsCode = "AAAA", Selected = true }, new() { OdsCode = "AAAB", Selected = false },
                 },
             ],
         ];
