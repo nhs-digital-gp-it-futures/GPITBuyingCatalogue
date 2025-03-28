@@ -200,7 +200,7 @@ public class CompetitionRecipientsController(
         var splitSublocationsToAdd = SplitCommaSeparatedString(sublocationsToAdd);
 
         Competition competition =
-            await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+            await competitionsService.GetCompetition(internalOrgId, competitionId);
 
         var backLinkHref = Url.Action(
             nameof(ConfirmSublocations),

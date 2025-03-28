@@ -361,15 +361,45 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [MockAutoData]
+    [MockMemberAutoData(nameof(RemoveSublocationsUrlParamsToModel))]
     public static async Task RemoveSublocations_ReturnsView(
+        string sublocationsToRemoveAsConcatString,
+        string sublocationsToAddAsConcatString,
+        RemoveSublocationsModel expectedModel,
         Organisation organisation,
         Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionRecipientsController controller)
     {
-        Assert.Fail("not implemented");
+        competition.Organisation = organisation;
+
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
+
+        var result =
+            (await controller.RemoveSublocations(
+                organisation.InternalIdentifier,
+                competition.Id,
+                sublocationsToRemoveAsConcatString,
+                sublocationsToAddAsConcatString))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.ListHeaderText)
+                    .Excluding(m => m.BackLink)
+                    .Excluding(m => m.Title)
+                    .Excluding(m => m.Caption)
+                    .Excluding(m => m.Advice));
+
+        var modelForFurtherComparison = result.Model.As<RemoveSublocationsModel>();
+
+        modelForFurtherComparison.ListHeaderText.Should()
+            .Be($"{competition.Organisation.Name} {expectedModel.Pluralisation} to be removed:");
+        modelForFurtherComparison.Title.Should().Be($"Remove {expectedModel.Pluralisation}");
+        modelForFurtherComparison.Caption.Should().Be(competition.Name);
+        modelForFurtherComparison.Advice.Should().Be("Confirm you want to remove sublocations from this competition");
     }
 
     [Theory]
@@ -681,6 +711,45 @@ public static class CompetitionRecipientsControllerTests
                 },
                 string.Empty,
                 "XXXX,XXXA",
+            ],
+        ];
+    }
+
+    private static IEnumerable<object[]> RemoveSublocationsUrlParamsToModel()
+    {
+        return
+        [
+            // 3 to remove, 2 to add
+            [
+                "AAAA,AAAB,AAAC", "AAAE,AAAF",
+                new RemoveSublocationsModel
+                {
+                    SublocationIdsToRemove =
+                        ["AAAA", "AAAB", "AAAC"],
+                    SublocationIdsToAdd = ["AAAE", "AAAF"],
+                    Pluralisation = "sublocations",
+                },
+            ],
+
+            // 1 to remove, 0 to add
+            [
+                "AAAA", string.Empty,
+                new RemoveSublocationsModel
+                {
+                    SublocationIdsToRemove = ["AAAA"], SublocationIdsToAdd = [], Pluralisation = "sublocation",
+                },
+            ],
+
+            // 1 to remove, 3 to add
+            [
+                "AAAA", "AAAE,AAAF,AAAC",
+                new RemoveSublocationsModel
+                {
+                    SublocationIdsToRemove =
+                        ["AAAA"],
+                    SublocationIdsToAdd = ["AAAE", "AAAF", "AAAC"],
+                    Pluralisation = "sublocation",
+                },
             ],
         ];
     }

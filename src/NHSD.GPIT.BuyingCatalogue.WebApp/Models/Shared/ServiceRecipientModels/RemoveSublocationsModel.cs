@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
             Title = $"Remove {Pluralisation}";
             Caption = competition.Name;
-            Advice = "Confirm you want to remove sublocations from this order";
+            Advice = "Confirm you want to remove sublocations from this competition";
             ListHeaderText = $"{competition.Organisation.Name} {Pluralisation} to be removed:";
             BackLink = backLinkHref;
         }
