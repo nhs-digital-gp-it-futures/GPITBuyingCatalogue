@@ -404,26 +404,100 @@ public static class CompetitionRecipientsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task RemoveSublocations_Post_ReturnsViewOnError(
-        Organisation organisation,
-        Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
+    public static async Task RemoveSublocations_Post_NoServiceCallsIfNo(
+        string internalOrganisationId,
+        int competitionId,
+        List<string> sublocationIdsToRemove,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionRecipientsController controller)
     {
-        Assert.Fail("not implemented");
+        var callingModel =
+            new RemoveSublocationsModel { ConfirmRemove = false, SublocationIdsToRemove = sublocationIdsToRemove };
+
+        var result =
+            (await controller.RemoveSublocations(callingModel, internalOrganisationId, competitionId))
+            .As<RedirectToActionResult>();
+
+        await competitionsService.DidNotReceiveWithAnyArgs().AddSublocations(null, 0, null);
+        await competitionsService.DidNotReceiveWithAnyArgs().RemoveSublocations(null, 0, null);
+
+        result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", internalOrganisationId }, { "competitionId", competitionId },
+                });
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveSublocations_Post_NoServiceCallsIfNotPopulated(
+        string internalOrganisationId,
+        int competitionId,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        var callingModel =
+            new RemoveSublocationsModel { ConfirmRemove = true, SublocationIdsToRemove = [], SublocationIdsToAdd = [] };
+
+        var result =
+            (await controller.RemoveSublocations(callingModel, internalOrganisationId, competitionId))
+            .As<RedirectToActionResult>();
+
+        await competitionsService.DidNotReceiveWithAnyArgs().AddSublocations(null, 0, null);
+        await competitionsService.DidNotReceiveWithAnyArgs().RemoveSublocations(null, 0, null);
+
+        result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", internalOrganisationId }, { "competitionId", competitionId },
+                });
     }
 
     [Theory]
     [MockAutoData]
     public static async Task RemoveSublocations_Post_PerformsServiceCallsAndRedirects(
-        Organisation organisation,
-        Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
+        string internalOrganisationId,
+        int competitionId,
+        List<string> sublocationIdsToRemove,
+        List<string> sublocationIdsToAdd,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionRecipientsController controller)
     {
-        Assert.Fail("not implemented");
+        var callingModel =
+            new RemoveSublocationsModel
+            {
+                ConfirmRemove = true,
+                SublocationIdsToRemove = sublocationIdsToRemove,
+                SublocationIdsToAdd = sublocationIdsToAdd,
+            };
+
+        var result =
+            (await controller.RemoveSublocations(callingModel, internalOrganisationId, competitionId))
+            .As<RedirectToActionResult>();
+
+        await competitionsService.Received()
+            .RemoveSublocations(
+                internalOrganisationId,
+                competitionId,
+                Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, sublocationIdsToRemove.ToHashSet())));
+
+        await competitionsService.Received()
+            .AddSublocations(
+                internalOrganisationId,
+                competitionId,
+                Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, sublocationIdsToAdd.ToHashSet())));
+
+        result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", internalOrganisationId }, { "competitionId", competitionId },
+                });
     }
 
     [Theory]
