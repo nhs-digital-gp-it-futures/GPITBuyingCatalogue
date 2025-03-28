@@ -139,6 +139,7 @@ public class TrudOdsService : IOdsService
             .ThenInclude(y => y.Roles)
             .Include(x => x.OwnerOrganisation)
             .Select(x => MapServiceRecipientFromRelationship(x))
+            .OrderBy(x => x.Name)
             .ToListAsync();
 
         return sublocationRecipients;

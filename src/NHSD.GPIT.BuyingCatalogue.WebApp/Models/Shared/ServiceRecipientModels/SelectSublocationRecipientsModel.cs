@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
@@ -14,7 +15,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Competition competition,
             SublocationModel selectedSublocation,
             IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
-            IEnumerable<string> requestParameterRecipients,
             string backLinkHref,
             SelectionMode? selectionMode = null,
             bool isAmendment = false)
@@ -39,14 +39,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 .OrderBy(x => x.Name)
                 .ToList();
 
-            SelectServiceRecipients(requestParameterRecipients, WorkingServiceRecipients);
+            SelectServiceRecipients(WorkingServiceRecipients);
 
             RenderedServiceRecipients = WorkingServiceRecipients;
         }
 
         public SublocationModel Sublocation { get; init; }
-
-        public bool HasImportedRecipients { get; init; }
 
         public IReadOnlyCollection<ServiceRecipientModel> PreviouslySelected { get; init; }
 
@@ -59,7 +57,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         private List<ServiceRecipientModel> WorkingServiceRecipients { get; } = [];
 
         private void SelectServiceRecipients(
-            IEnumerable<string> requestParameterRecipients,
             List<ServiceRecipientModel> modifyList)
         {
             switch (SelectionMode)
@@ -70,18 +67,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 case ServiceRecipientModels.SelectionMode.None:
                     modifyList.ForEach(x => x.Selected = false);
                     break;
-                default:
-                    if (requestParameterRecipients == null) return;
-
-                    List<ServiceRecipientModel> matchingRecipients = modifyList
-                        .Where(x => requestParameterRecipients.Contains(x.OdsCode))
-                        .ToList();
-
-                    if (matchingRecipients.Count == 0) return;
-
-                    matchingRecipients.ForEach(x => x.Selected = true);
-
+                case null:
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(SelectionMode), @"Selection mode mot handled");
             }
         }
     }

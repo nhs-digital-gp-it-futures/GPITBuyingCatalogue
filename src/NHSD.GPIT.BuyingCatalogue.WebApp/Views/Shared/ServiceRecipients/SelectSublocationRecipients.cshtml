@@ -17,8 +17,7 @@
         <nhs-validation-summary/>
         <nhs-page-title model="@Model"/>
 
-        @if (Model.HasImportedRecipients
-            || (Model.PreviouslySelected?.Any() ?? false))
+        @if ((Model.PreviouslySelected?.Any() ?? false))
         {
             @if (Model.IsAmendment && (Model.PreviouslySelected?.Any() ?? false))
             {
