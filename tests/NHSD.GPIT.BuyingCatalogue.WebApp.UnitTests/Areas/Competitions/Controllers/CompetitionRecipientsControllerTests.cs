@@ -307,13 +307,57 @@ public static class CompetitionRecipientsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task AddSublocations_Post_ConditionalRedirect(
-        Organisation organisation,
-        Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
-        [Frozen] ICompetitionsService competitionsService,
+    public static void AddSublocations_Post_ConditionalRedirect_RedirectToTasklistIfIncomplete(
+        string internalOrganisationId,
+        int competitionId,
         CompetitionRecipientsController controller)
     {
+        var callingModel =
+            new SelectSublocationsOverviewModel
+            {
+                Sublocations = [new SublocationModel { ServiceRecipientCount = 0 }],
+            };
+
+        var result =
+            controller.AddSublocations(callingModel, internalOrganisationId, competitionId)
+                .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
+        result.ControllerName.Should().Be(typeof(CompetitionTaskListController).ControllerName());
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", internalOrganisationId }, { "competitionId", competitionId },
+                });
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void AddSublocations_Post_ConditionalRedirect_RedirectToConfirmScreenIfComplete(
+        string internalOrganisationId,
+        int competitionId,
+        CompetitionRecipientsController controller)
+    {
+        var callingModel =
+            new SelectSublocationsOverviewModel
+            {
+                Sublocations = [new SublocationModel { ServiceRecipientCount = 1 }],
+            };
+
+        var result =
+            controller.AddSublocations(callingModel, internalOrganisationId, competitionId)
+                .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.ConfirmSublocationRecipients));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", internalOrganisationId }, { "competitionId", competitionId },
+                });
     }
 
     [Theory]

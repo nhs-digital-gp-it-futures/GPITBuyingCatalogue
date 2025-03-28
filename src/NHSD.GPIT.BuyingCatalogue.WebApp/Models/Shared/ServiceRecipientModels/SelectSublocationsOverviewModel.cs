@@ -32,7 +32,7 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
 
     public string ParentName { get; init; }
 
-    public IReadOnlyList<SublocationModel> Sublocations { get; init; }
+    public IReadOnlyList<SublocationModel> Sublocations { get; init; } = [];
 
     private void SetConditionalTitleAndAdvice(bool isConfirm)
     {
