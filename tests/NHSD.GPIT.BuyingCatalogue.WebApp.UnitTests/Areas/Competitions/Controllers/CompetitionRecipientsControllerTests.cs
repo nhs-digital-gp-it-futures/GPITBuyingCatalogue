@@ -509,8 +509,8 @@ public static class CompetitionRecipientsControllerTests
         SelectSublocationRecipients_PreviousSelectionsScenarios_ReturnsViewWithSelectionsAsExpected(
             Organisation organisation,
             Competition competition,
-            CompetitionSublocation workingSublocation,
             List<ServiceRecipient> possibleRecipients,
+            CompetitionSublocation workingSublocation,
             SublocationModel expectedSublocationModel,
             List<ServiceRecipientModel> expectedRendered,
             [Frozen] ICompetitionSublocationService competitionSublocationService,
@@ -570,7 +570,10 @@ public static class CompetitionRecipientsControllerTests
                     .Excluding(m => m.ServiceRecipients));
 
         Func<EquivalencyAssertionOptions<ServiceRecipientModel>, EquivalencyAssertionOptions<ServiceRecipientModel>>
-            commonNameDescriptionExclusionConfig = opt => opt.Excluding(m => m.Name).Excluding(m => m.Description);
+            commonNameDescriptionExclusionConfig = opt =>
+                opt.Excluding(m => m.Name)
+                    .Excluding(m => m.Description)
+                    .WithoutStrictOrdering(); // Ordering provided by DB not controller
 
         sublocationForFurtherEvaluation.ServiceRecipients.Should()
             .BeEquivalentTo(
@@ -938,42 +941,128 @@ public static class CompetitionRecipientsControllerTests
 
     private static IEnumerable<object[]> PreviousSelectionsAndPotentialRecipientsToExpected()
     {
-        return // 1 existing + 2 possible (1 overlap + 1 new) = 2 rendered with 1 existing selected
+        List<ServiceRecipient> possibleRecipientRepo =
         [
+            CommonServiceRecipientFactory("AAAA", "XXXX"),
+            CommonServiceRecipientFactory("AAAB", "XXXX"),
+            CommonServiceRecipientFactory("AAAC", "XXXX"),
+        ];
+
+        return
+        [
+            // 1 existing + repo = 3 rendered with 1 existing selected
             [
-                CommonOrganisationFactory(), CommonCompetitionFactory(),
+                CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
                 CommonCompetitionSublocationFactory(
                     "XXXX",
                     [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX")]),
-                new List<ServiceRecipient>
-                {
-                    new() { Name = "Possible Recipient AAAA", OrgId = "AAAA", LocationOrgId = "XXXX" },
-                    new() { Name = "Possible Recipient AAAB", OrgId = "AAAB", LocationOrgId = "XXXX" },
-                },
-                new SublocationModel
-                {
-                    OdsCode = "XXXX",
-                    ServiceRecipients =
-                    [
-                        new ServiceRecipientModel
-                        {
-                            Name = "Possible Recipient AAAA",
-                            OdsCode = "AAAA",
-                            Selected = true,
-                            LocationOrgId = "XXXX",
-                        },
-                    ],
-                },
+
+                commonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", true)]),
                 new List<ServiceRecipientModel>
                 {
-                    new()
-                    {
-                        Name = "Possible Recipient AAAA", OdsCode = "AAAA", Selected = true, LocationOrgId = "XXXX",
-                    },
-                    new()
-                    {
-                        Name = "Possible Recipient AAAB", OdsCode = "AAAB", Selected = false, LocationOrgId = "XXXX",
-                    },
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                },
+            ],
+
+            // 0 existing + repo = 3 rendered with 0 existing selected
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    []),
+
+                commonSublocationModelFactory(
+                    "XXXX",
+                    [
+                    ]),
+                new List<ServiceRecipientModel>
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                },
+            ],
+
+            // 3 existing + repo = 3 rendered with 3 existing selected
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [
+                        CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
+                    ]),
+
+                commonSublocationModelFactory(
+                    "XXXX",
+                    [
+                        CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                        CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                        CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                    ]),
+                new List<ServiceRecipientModel>
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                },
+            ],
+
+            // 3 existing + empty repo = 3 rendered with 3 existing selected
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), new List<ServiceRecipient>(),
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [
+                        CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
+                    ]),
+
+                commonSublocationModelFactory(
+                    "XXXX",
+                    [
+                        CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                        CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                        CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                    ]),
+                new List<ServiceRecipientModel>
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                },
+            ],
+
+            // 3 existing (not in repo) + repo = 6 rendered with 3 existing selected
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [
+                        CommonCompetitionSublocationRecipientFactory("BAAA", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("BAAB", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("BAAC", "XXXX"),
+                    ]),
+
+                commonSublocationModelFactory(
+                    "XXXX",
+                    [
+                        CommonServiceRecipientModelFactory("BAAA", "XXXX", true),
+                        CommonServiceRecipientModelFactory("BAAB", "XXXX", true),
+                        CommonServiceRecipientModelFactory("BAAC", "XXXX", true),
+                    ]),
+                new List<ServiceRecipientModel>
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                    CommonServiceRecipientModelFactory("BAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("BAAB", "XXXX", true),
+                    CommonServiceRecipientModelFactory("BAAC", "XXXX", true),
                 },
             ],
         ];
@@ -1030,6 +1119,26 @@ public static class CompetitionRecipientsControllerTests
             RecipientOdsCode = recipientOdsCode,
             ParentSublocationOdsCode = parentSublocationOdsCode,
         };
+    }
+
+    private static ServiceRecipient CommonServiceRecipientFactory(string orgId, string locationOrgId)
+    {
+        return new ServiceRecipient { OrgId = orgId, LocationOrgId = locationOrgId };
+    }
+
+    private static SublocationModel commonSublocationModelFactory(
+        string odsCode,
+        IReadOnlyList<ServiceRecipientModel> serviceRecipients)
+    {
+        return new SublocationModel { OdsCode = odsCode, ServiceRecipients = serviceRecipients };
+    }
+
+    private static ServiceRecipientModel CommonServiceRecipientModelFactory(
+        string odsCode,
+        string locationOrgId,
+        bool selected)
+    {
+        return new ServiceRecipientModel { OdsCode = odsCode, LocationOrgId = locationOrgId, Selected = selected };
     }
 
     private static bool AreStringHashSetsEquivalent(
