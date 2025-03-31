@@ -504,35 +504,6 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [MockMemberAutoData(nameof(PreviousSelectionsAndPotentialRecipientsToExpected))]
-    public static async Task
-        SelectSublocationRecipients_PreviousSelectionsScenarios_ReturnsViewWithSelectionsAsExpected(
-            Organisation organisation,
-            Competition competition,
-            List<ServiceRecipient> possibleRecipients,
-            CompetitionSublocation workingSublocation,
-            SublocationModel expectedSublocationModel,
-            List<ServiceRecipientModel> expectedRendered,
-            [Frozen] ICompetitionSublocationService competitionSublocationService,
-            [Frozen] IOrganisationsService organisationsService,
-            [Frozen] IOdsService odsOrganisationsService,
-            CompetitionRecipientsController controller)
-    {
-        await SelectSublocationRecipients_SelectionMode_ReturnsViewAsExpected(
-            organisation,
-            competition,
-            possibleRecipients,
-            workingSublocation,
-            expectedSublocationModel,
-            expectedRendered,
-            null,
-            competitionSublocationService,
-            organisationsService,
-            odsOrganisationsService,
-            controller);
-    }
-
-    [Theory]
     [MockMemberAutoData(nameof(SelectionModesAndExpectedResults))]
     public static async Task SelectSublocationRecipients_SelectionMode_ReturnsViewAsExpected(
         Organisation organisation,
@@ -620,6 +591,35 @@ public static class CompetitionRecipientsControllerTests
             .BeEquivalentTo(
                 expectedModel.RenderedServiceRecipients,
                 CommonNameDescriptionExclusionConfig);
+    }
+
+    [Theory]
+    [MockMemberAutoData(nameof(PreviousSelectionsAndPotentialRecipientsToExpected))]
+    public static async Task
+        SelectSublocationRecipients_PreviousSelectionsScenarios_ReturnsViewWithSelectionsAsExpected(
+            Organisation organisation,
+            Competition competition,
+            List<ServiceRecipient> possibleRecipients,
+            CompetitionSublocation workingSublocation,
+            SublocationModel expectedSublocationModel,
+            List<ServiceRecipientModel> expectedRendered,
+            [Frozen] ICompetitionSublocationService competitionSublocationService,
+            [Frozen] IOrganisationsService organisationsService,
+            [Frozen] IOdsService odsOrganisationsService,
+            CompetitionRecipientsController controller)
+    {
+        await SelectSublocationRecipients_SelectionMode_ReturnsViewAsExpected(
+            organisation,
+            competition,
+            possibleRecipients,
+            workingSublocation,
+            expectedSublocationModel,
+            expectedRendered,
+            null,
+            competitionSublocationService,
+            organisationsService,
+            odsOrganisationsService,
+            controller);
     }
 
     [Theory]
