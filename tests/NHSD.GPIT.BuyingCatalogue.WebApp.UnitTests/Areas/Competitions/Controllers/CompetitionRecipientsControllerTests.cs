@@ -624,19 +624,6 @@ public static class CompetitionRecipientsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task SelectSublocationRecipients_SelectionMode_None_ReturnsViewAllItemsDeselected(
-        Organisation organisation,
-        Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
-        [Frozen] ICompetitionSublocationService competitionSublocationService,
-        [Frozen] IOrganisationsService organisationsService,
-        CompetitionRecipientsController controller)
-    {
-        Assert.Fail("not implemented");
-    }
-
-    [Theory]
-    [MockAutoData]
     public static async Task SublocationOdsCode_Post_ReturnsViewOnError(
         Organisation organisation,
         Competition competition,
@@ -1096,8 +1083,7 @@ public static class CompetitionRecipientsControllerTests
                 CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
                 CommonCompetitionSublocationFactory(
                     "XXXX",
-                    [
-                    ]),
+                    []),
 
                 commonSublocationModelFactory("XXXX", []),
                 new List<ServiceRecipientModel>
@@ -1109,6 +1095,69 @@ public static class CompetitionRecipientsControllerTests
                 SelectionMode.All,
             ],
 
+            // Repo + 1 selected all mode = 3 selected
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [
+                        CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                    ]),
+
+                commonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", true)]),
+                new List<ServiceRecipientModel>
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                },
+                SelectionMode.All,
+            ],
+
+            // Repo + 3 selected all mode = 3 selected
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [
+                        CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
+                    ]),
+
+                commonSublocationModelFactory(
+                    "XXXX",
+                    [
+                        CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                        CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                        CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                    ]),
+                new List<ServiceRecipientModel>
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                },
+                SelectionMode.All,
+            ],
+
+            // Repo + 0 selected none mode = 0 selected
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    []),
+
+                commonSublocationModelFactory("XXXX", []),
+                new List<ServiceRecipientModel>
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                },
+                SelectionMode.None,
+            ],
+
             // Repo + 1 selected none mode = 0 selected
             [
                 CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
@@ -1116,7 +1165,34 @@ public static class CompetitionRecipientsControllerTests
                     "XXXX",
                     [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX")]),
 
-                commonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", true)]),
+                commonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", false)]),
+                new List<ServiceRecipientModel>
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                },
+                SelectionMode.None,
+            ],
+
+            // Repo + 3 selected none mode = 0 selected
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [
+                        CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
+                    ]),
+
+                commonSublocationModelFactory(
+                    "XXXX",
+                    [
+                        CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
+                        CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
+                        CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                    ]),
                 new List<ServiceRecipientModel>
                 {
                     CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
