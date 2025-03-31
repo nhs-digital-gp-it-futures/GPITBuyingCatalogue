@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using FluentAssertions.Equivalency;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -552,7 +554,44 @@ public static class CompetitionRecipientsControllerTests
                 opt => opt.Excluding(m => m.Title)
                     .Excluding(m => m.Caption)
                     .Excluding(m => m.Advice)
-                    .Excluding(m => m.BackLink));
+                    .Excluding(m => m.BackLink)
+                    .Excluding(m => m.Sublocation)
+                    .Excluding(m => m.PreviouslySelected)
+                    .Excluding(m => m.RenderedServiceRecipients));
+
+        SublocationModel sublocationForFurtherEvaluation =
+            result.Model.As<SelectSublocationRecipientsModel>().Sublocation;
+
+        sublocationForFurtherEvaluation.Should()
+            .BeEquivalentTo(
+                expectedSublocationModel,
+                opt => opt.Excluding(m => m.TaskProgress)
+                    .Excluding(m => m.ServiceRecipientCount)
+                    .Excluding(m => m.ServiceRecipients));
+
+        Func<EquivalencyAssertionOptions<ServiceRecipientModel>, EquivalencyAssertionOptions<ServiceRecipientModel>>
+            commonNameDescriptionExclusionConfig = opt => opt.Excluding(m => m.Name).Excluding(m => m.Description);
+
+        sublocationForFurtherEvaluation.ServiceRecipients.Should()
+            .BeEquivalentTo(
+                expectedSublocationModel.ServiceRecipients,
+                commonNameDescriptionExclusionConfig);
+
+        IEnumerable<ServiceRecipientModel> previouslySelectedServiceRecipientsForFurtherEvaluation =
+            result.Model.As<SelectSublocationRecipientsModel>().PreviouslySelected;
+
+        previouslySelectedServiceRecipientsForFurtherEvaluation.Should()
+            .BeEquivalentTo(
+                expectedSublocationModel.ServiceRecipients,
+                commonNameDescriptionExclusionConfig);
+
+        IReadOnlyList<ServiceRecipientModel> renderedRecipientsForFurtherEvaluation =
+            result.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
+
+        renderedRecipientsForFurtherEvaluation.Should()
+            .BeEquivalentTo(
+                expectedModel.RenderedServiceRecipients,
+                commonNameDescriptionExclusionConfig);
     }
 
     [Theory]
@@ -913,11 +952,28 @@ public static class CompetitionRecipientsControllerTests
                 },
                 new SublocationModel
                 {
-                    OdsCode = "XXXX", ServiceRecipients = [new ServiceRecipientModel { OdsCode = "AAAA" }],
+                    OdsCode = "XXXX",
+                    ServiceRecipients =
+                    [
+                        new ServiceRecipientModel
+                        {
+                            Name = "Possible Recipient AAAA",
+                            OdsCode = "AAAA",
+                            Selected = true,
+                            LocationOrgId = "XXXX",
+                        },
+                    ],
                 },
                 new List<ServiceRecipientModel>
                 {
-                    new() { OdsCode = "AAAA", Selected = true }, new() { OdsCode = "AAAB", Selected = false },
+                    new()
+                    {
+                        Name = "Possible Recipient AAAA", OdsCode = "AAAA", Selected = true, LocationOrgId = "XXXX",
+                    },
+                    new()
+                    {
+                        Name = "Possible Recipient AAAB", OdsCode = "AAAB", Selected = false, LocationOrgId = "XXXX",
+                    },
                 },
             ],
         ];
