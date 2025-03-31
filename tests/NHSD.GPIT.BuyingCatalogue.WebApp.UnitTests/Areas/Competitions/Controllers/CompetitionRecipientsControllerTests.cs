@@ -518,6 +518,35 @@ public static class CompetitionRecipientsControllerTests
             [Frozen] IOdsService odsOrganisationsService,
             CompetitionRecipientsController controller)
     {
+        await SelectSublocationRecipients_SelectionMode_ReturnsViewAsExpected(
+            organisation,
+            competition,
+            possibleRecipients,
+            workingSublocation,
+            expectedSublocationModel,
+            expectedRendered,
+            null,
+            competitionSublocationService,
+            organisationsService,
+            odsOrganisationsService,
+            controller);
+    }
+
+    [Theory]
+    [MockMemberAutoData(nameof(SelectionModesAndExpectedResults))]
+    public static async Task SelectSublocationRecipients_SelectionMode_ReturnsViewAsExpected(
+        Organisation organisation,
+        Competition competition,
+        List<ServiceRecipient> possibleRecipients,
+        CompetitionSublocation workingSublocation,
+        SublocationModel expectedSublocationModel,
+        List<ServiceRecipientModel> expectedRendered,
+        SelectionMode? selectionMode,
+        [Frozen] ICompetitionSublocationService competitionSublocationService,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] IOdsService odsOrganisationsService,
+        CompetitionRecipientsController controller)
+    {
         competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
 
@@ -538,13 +567,15 @@ public static class CompetitionRecipientsControllerTests
             Sublocation = expectedSublocationModel,
             IsAmendment = false,
             RenderedServiceRecipients = expectedRendered,
+            SelectionMode = selectionMode,
         };
 
         var result =
             (await controller.SelectSublocationRecipients(
                 organisation.InternalIdentifier,
                 competition.Id,
-                workingSublocation.SublocationOdsCode))
+                workingSublocation.SublocationOdsCode,
+                selectionMode))
             .As<ViewResult>();
 
         result.Should().NotBeNull();
@@ -569,16 +600,10 @@ public static class CompetitionRecipientsControllerTests
                     .Excluding(m => m.ServiceRecipientCount)
                     .Excluding(m => m.ServiceRecipients));
 
-        Func<EquivalencyAssertionOptions<ServiceRecipientModel>, EquivalencyAssertionOptions<ServiceRecipientModel>>
-            commonNameDescriptionExclusionConfig = opt =>
-                opt.Excluding(m => m.Name)
-                    .Excluding(m => m.Description)
-                    .WithoutStrictOrdering(); // Ordering provided by DB not controller
-
         sublocationForFurtherEvaluation.ServiceRecipients.Should()
             .BeEquivalentTo(
                 expectedSublocationModel.ServiceRecipients,
-                commonNameDescriptionExclusionConfig);
+                CommonNameDescriptionExclusionConfig);
 
         IEnumerable<ServiceRecipientModel> previouslySelectedServiceRecipientsForFurtherEvaluation =
             result.Model.As<SelectSublocationRecipientsModel>().PreviouslySelected;
@@ -586,7 +611,7 @@ public static class CompetitionRecipientsControllerTests
         previouslySelectedServiceRecipientsForFurtherEvaluation.Should()
             .BeEquivalentTo(
                 expectedSublocationModel.ServiceRecipients,
-                commonNameDescriptionExclusionConfig);
+                CommonNameDescriptionExclusionConfig);
 
         IReadOnlyList<ServiceRecipientModel> renderedRecipientsForFurtherEvaluation =
             result.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
@@ -594,20 +619,7 @@ public static class CompetitionRecipientsControllerTests
         renderedRecipientsForFurtherEvaluation.Should()
             .BeEquivalentTo(
                 expectedModel.RenderedServiceRecipients,
-                commonNameDescriptionExclusionConfig);
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task SelectSublocationRecipients_SelectionMode_All_ReturnsViewAllItemsSelected(
-        Organisation organisation,
-        Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
-        [Frozen] ICompetitionSublocationService competitionSublocationService,
-        [Frozen] IOrganisationsService organisationsService,
-        CompetitionRecipientsController controller)
-    {
-        Assert.Fail("not implemented");
+                CommonNameDescriptionExclusionConfig);
     }
 
     [Theory]
@@ -1068,6 +1080,54 @@ public static class CompetitionRecipientsControllerTests
         ];
     }
 
+    private static IEnumerable<object[]> SelectionModesAndExpectedResults()
+    {
+        List<ServiceRecipient> possibleRecipientRepo =
+        [
+            CommonServiceRecipientFactory("AAAA", "XXXX"),
+            CommonServiceRecipientFactory("AAAB", "XXXX"),
+            CommonServiceRecipientFactory("AAAC", "XXXX"),
+        ];
+
+        return
+        [
+            // Repo + all mode = 3 selected
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [
+                    ]),
+
+                commonSublocationModelFactory("XXXX", []),
+                new List<ServiceRecipientModel>
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                },
+                SelectionMode.All,
+            ],
+
+            // Repo + 1 selected none mode = 0 selected
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), possibleRecipientRepo,
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX")]),
+
+                commonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", true)]),
+                new List<ServiceRecipientModel>
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                },
+                SelectionMode.None,
+            ],
+        ];
+    }
+
     private const int CommonCompetitionId = 34;
 
     private const int CommonOrganisationId = 21;
@@ -1155,4 +1215,11 @@ public static class CompetitionRecipientsControllerTests
             return false;
         }
     }
+
+    private static readonly Func<EquivalencyAssertionOptions<ServiceRecipientModel>,
+            EquivalencyAssertionOptions<ServiceRecipientModel>>
+        CommonNameDescriptionExclusionConfig = opt =>
+            opt.Excluding(m => m.Name)
+                .Excluding(m => m.Description)
+                .WithoutStrictOrdering(); // Ordering provided by DB not controller
 }
