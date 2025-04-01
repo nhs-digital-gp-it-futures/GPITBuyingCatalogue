@@ -22,6 +22,15 @@ public static class SublocationModelTests
     }
 
     [Theory]
+    [MockAutoData]
+    public static void TaskProgressProperty_SetByRecipientCount(
+        string name,
+        List<ServiceRecipientModel> serviceRecipients)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
     [MockInlineAutoData(true)]
     [MockInlineAutoData(false)]
     public static void AllRecipientsSelected_SetsPropertiesAsExpected(
