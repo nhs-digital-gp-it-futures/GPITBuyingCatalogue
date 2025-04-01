@@ -95,6 +95,47 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionsWithSublocations_ReturnsCompetition(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionsWithSublocationsAndSublocationRecipients_ReturnsCompetition(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task
+        GetCompetitionsWithSublocationsAndSublocationRecipients_FlattenedRecipientsPropertyPopulated(
+            CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCountForCompetitionSublocationRecipients_ReturnsCount(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetCompetitionHasAnySublocations_ReturnsBool(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
     [MockInMemoryDbInlineAutoData(0)]
     [MockInMemoryDbInlineAutoData(1)]
     public static async Task GetPagedCompetitions_ReturnsExpectedPageSize(
@@ -858,6 +899,78 @@ public static class CompetitionsServiceTests
         var result = await service.GetCompetitionName(organisation.InternalIdentifier, competition.Id);
 
         result.Should().Be(competition.Name);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task AddSublocations_RejectsNullParams(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task AddSublocations_RejectsInvalidOperations(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task AddSublocations_AddsSublocations(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task RemoveSublocations_RejectsNullParams(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task RemoveSublocations_RejectsInvalidOperations(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task RemoveSublocations_RemovesSublocations(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task SetCompetitionSublocationAndRecipients_RejectsNullParams(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task SetCompetitionSublocationAndRecipients_RejectsInvalidOperations(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task SetCompetitionSublocationAndRecipients_SetsCompetitionSublocationAndRecipients(
+        CompetitionsService service)
+    {
+        Assert.Fail("not implemented");
     }
 
     [Theory]

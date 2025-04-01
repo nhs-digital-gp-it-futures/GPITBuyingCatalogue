@@ -218,6 +218,22 @@ public class TrudOdsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
+    public static async Task GetSublocationsByParentOdsCode_ReturnsSublocationOdsOrganisations(
+        TrudOdsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetServiceRecipientsBySublocation_ReturnsServiceRecipients(
+        TrudOdsService service)
+    {
+        Assert.Fail("not implemented");
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static async Task UpdateOrganisationDetails_InvalidOdsOrganisation_Returns(
         string odsCode,
         [Frozen] IOrganisationsService organisationsService,
@@ -274,7 +290,7 @@ public class TrudOdsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task GetServiceRecipientsById_InvalidOrganisation_ReturnsEmpty(
+    public static async Task GetServiceRecipientsByParentInternalIdentifierAndOdsCodes_InvalidOrganisation_ReturnsEmpty(
         string internalOrgId,
         TrudOdsService service)
     {
@@ -288,7 +304,7 @@ public class TrudOdsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task GetServiceRecipientsById_ReturnsExpected(
+    public static async Task GetServiceRecipientsByParentInternalIdentifierAndOdsCodes_ReturnsExpected(
         RelationshipType relationshipType,
         RoleType roleType,
         Organisation organisation,
