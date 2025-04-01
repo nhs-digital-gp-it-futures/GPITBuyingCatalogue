@@ -661,22 +661,21 @@ public static class CompetitionRecipientsControllerTests
         Organisation organisation,
         Competition competition,
         string sublocationOdsCode,
-        CompetitionSublocation competitionSublocation,
-        SublocationModel competitionSublocationModel,
-        IReadOnlyList<ServiceRecipientModel> renderedServiceRecipientModels,
+        CompetitionSublocation existingCompetitionSublocation,
+        IReadOnlyList<ServiceRecipientModel> newRenderedServiceRecipients,
         HashSet<string> expectedAdds,
         HashSet<string> expectedRemoves,
         [Frozen] IOrganisationsService organisationsService,
         [Frozen] ICompetitionSublocationService competitionSublocationService,
         CompetitionRecipientsController controller)
     {
-        competitionSublocation.SublocationOdsCode = sublocationOdsCode;
-        competitionSublocation.CompetitionId = competition.Id;
-        competitionSublocation.OwnerOdsCode = organisation.ExternalIdentifier;
+        existingCompetitionSublocation.SublocationOdsCode = sublocationOdsCode;
+        existingCompetitionSublocation.CompetitionId = competition.Id;
+        existingCompetitionSublocation.OwnerOdsCode = organisation.ExternalIdentifier;
 
         var selectSublocationRecipientsModel = new SelectSublocationRecipientsModel
         {
-            Sublocation = competitionSublocationModel, RenderedServiceRecipients = renderedServiceRecipientModels,
+            RenderedServiceRecipients = newRenderedServiceRecipients,
         };
 
         organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(organisation.InternalIdentifier)
@@ -687,7 +686,7 @@ public static class CompetitionRecipientsControllerTests
                 organisation.ExternalIdentifier,
                 competition.Id,
                 sublocationOdsCode)
-            .Returns(competitionSublocation);
+            .Returns(existingCompetitionSublocation);
 
         var result =
             (await controller.SelectSublocationRecipients(
@@ -1289,10 +1288,10 @@ public static class CompetitionRecipientsControllerTests
     {
         return
         [
-            // no existing sublocation + 2 selected = 2 adds
+            // no existing sublocation recipients + 2 new selected = 2 adds
             [
                 CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",
-                CommonCompetitionSublocationFactory("XXXX"), commonSublocationModelFactory("XXXX"),
+                CommonCompetitionSublocationFactory("XXXX"),
                 new[]
                 {
                     CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
@@ -1300,6 +1299,79 @@ public static class CompetitionRecipientsControllerTests
                     CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
                 },
                 new HashSet<string> { "AAAA", "AAAB" }, new HashSet<string>(),
+            ],
+
+            // 1 existing sublocation recipient + 1 new selected = 1 add
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX")]),
+                new[]
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                },
+                new HashSet<string> { "AAAB" }, new HashSet<string>(),
+            ],
+
+            // 3 existing sublocation recipient + 1 unselected = 1 remove
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [
+                        CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
+                    ]),
+                new[]
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                },
+                new HashSet<string>(), new HashSet<string> { "AAAC" },
+            ],
+
+            // 3 existing sublocation recipient + 1 new selected, 2 selected, 1 unselected = 1 add 1 remove
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [
+                        CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
+                    ]),
+                new[]
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                    CommonServiceRecipientModelFactory("AAAD", "XXXX", true),
+                },
+                new HashSet<string> { "AAAD" }, new HashSet<string> { "AAAC" },
+            ],
+
+            // 3 existing sublocation recipient + 3 selected = no change
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",
+                CommonCompetitionSublocationFactory(
+                    "XXXX",
+                    [
+                        CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
+                    ]),
+                new[]
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                },
+                new HashSet<string>(), new HashSet<string>(),
             ],
         ];
     }
