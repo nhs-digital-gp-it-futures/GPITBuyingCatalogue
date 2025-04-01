@@ -624,7 +624,7 @@ public static class CompetitionRecipientsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task SublocationOdsCode_Post_ReturnsViewOnError(
+    public static async Task SelectSublocationRecipients_Post_ReturnsViewOnError(
         SelectSublocationRecipientsModel selectSublocationRecipientsModel,
         string internalOrgId,
         int competitionId,
@@ -656,15 +656,75 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [MockAutoData]
-    public static async Task SublocationOdsCode_Post_PerformsServiceCallsAndRedirects(
+    [MockMemberAutoData(nameof(SublocationExpectedAddsAndOrRemoves))]
+    public static async Task SelectSublocationRecipients_Post_PerformsServiceCallsAndRedirects(
         Organisation organisation,
         Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
-        [Frozen] ICompetitionsService competitionsService,
+        string sublocationOdsCode,
+        CompetitionSublocation competitionSublocation,
+        SublocationModel competitionSublocationModel,
+        IReadOnlyList<ServiceRecipientModel> renderedServiceRecipientModels,
+        HashSet<string> expectedAdds,
+        HashSet<string> expectedRemoves,
+        [Frozen] IOrganisationsService organisationsService,
+        [Frozen] ICompetitionSublocationService competitionSublocationService,
         CompetitionRecipientsController controller)
     {
-        Assert.Fail("not implemented");
+        competitionSublocation.SublocationOdsCode = sublocationOdsCode;
+        competitionSublocation.CompetitionId = competition.Id;
+        competitionSublocation.OwnerOdsCode = organisation.ExternalIdentifier;
+
+        var selectSublocationRecipientsModel = new SelectSublocationRecipientsModel
+        {
+            Sublocation = competitionSublocationModel, RenderedServiceRecipients = renderedServiceRecipientModels,
+        };
+
+        organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(organisation.InternalIdentifier)
+            .Returns(organisation.ExternalIdentifier);
+
+        competitionSublocationService
+            .GetCompetitionSublocationWithRecipients(
+                organisation.ExternalIdentifier,
+                competition.Id,
+                sublocationOdsCode)
+            .Returns(competitionSublocation);
+
+        var result =
+            (await controller.SelectSublocationRecipients(
+                selectSublocationRecipientsModel,
+                organisation.InternalIdentifier,
+                competition.Id,
+                sublocationOdsCode))
+            .As<RedirectToActionResult>();
+
+        if (expectedAdds.Count > 0)
+        {
+            await competitionSublocationService.Received()
+                .AddSublocationRecipients(
+                    organisation.ExternalIdentifier,
+                    competition.Id,
+                    sublocationOdsCode,
+                    Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, expectedAdds)));
+        }
+
+        if (expectedRemoves.Count > 0)
+        {
+            await competitionSublocationService.Received()
+                .RemoveSublocationRecipients(
+                    organisation.ExternalIdentifier,
+                    competition.Id,
+                    sublocationOdsCode,
+                    Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, expectedRemoves)));
+        }
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier }, { "competitionId", competition.Id },
+                });
     }
 
     [Theory]
@@ -1225,6 +1285,25 @@ public static class CompetitionRecipientsControllerTests
         ];
     }
 
+    private static IEnumerable<object[]> SublocationExpectedAddsAndOrRemoves()
+    {
+        return
+        [
+            // no existing sublocation + 2 selected = 2 adds
+            [
+                CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",
+                CommonCompetitionSublocationFactory("XXXX"), commonSublocationModelFactory("XXXX"),
+                new[]
+                {
+                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
+                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                },
+                new HashSet<string> { "AAAA", "AAAB" }, new HashSet<string>(),
+            ],
+        ];
+    }
+
     private const int CommonCompetitionId = 34;
 
     private const int CommonOrganisationId = 21;
@@ -1285,7 +1364,7 @@ public static class CompetitionRecipientsControllerTests
 
     private static SublocationModel commonSublocationModelFactory(
         string odsCode,
-        IReadOnlyList<ServiceRecipientModel> serviceRecipients)
+        IReadOnlyList<ServiceRecipientModel> serviceRecipients = null)
     {
         return new SublocationModel { OdsCode = odsCode, ServiceRecipients = serviceRecipients };
     }

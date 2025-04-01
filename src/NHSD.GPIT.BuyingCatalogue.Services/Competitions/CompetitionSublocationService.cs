@@ -104,12 +104,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
         }
 
         public async Task RemoveSublocationRecipients(
-            string externalOrgId,
+            string parentOdsCode,
             int competitionId,
             string sublocationOdsCode,
             HashSet<string> recipientOdsCodes)
         {
-            ArgumentException.ThrowIfNullOrEmpty(externalOrgId, nameof(externalOrgId));
+            ArgumentException.ThrowIfNullOrEmpty(parentOdsCode, nameof(parentOdsCode));
             ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode, nameof(sublocationOdsCode));
             if (recipientOdsCodes.IsNullOrEmpty())
             {
@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             CompetitionSublocation sublocation = await dbContext
                 .CompetitionSublocations
                 .Where(
-                    x => x.OwnerOdsCode == externalOrgId
+                    x => x.OwnerOdsCode == parentOdsCode
                         && x.CompetitionId == competitionId
                         && x.SublocationOdsCode == sublocationOdsCode)
                 .Include(x => x.Competition)

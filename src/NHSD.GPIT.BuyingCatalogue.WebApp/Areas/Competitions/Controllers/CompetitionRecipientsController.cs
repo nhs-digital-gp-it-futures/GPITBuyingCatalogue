@@ -313,7 +313,7 @@ public class CompetitionRecipientsController(
             .ToHashSet();
 
         HashSet<string> currentRecipients =
-            sublocation.SublocationRecipients.Select(x => x.RecipientOdsCode).ToHashSet();
+            sublocation.SublocationRecipients?.Select(x => x.RecipientOdsCode).ToHashSet() ?? [];
 
         HashSet<string> adds = [..pageSelections];
         adds.ExceptWith(currentRecipients);
