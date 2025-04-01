@@ -759,19 +759,28 @@ public static class CompetitionRecipientsControllerTests
         [Frozen] ICompetitionsService competitionsService,
         CompetitionRecipientsController controller)
     {
-        Assert.Fail("not implemented");
-    }
+        competition.CompetitionSublocations = competitionSublocations;
 
-    [Theory]
-    [MockAutoData]
-    public static async Task ConfirmSublocationsRecipients_Post_Redirects(
-        Organisation organisation,
-        Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
-        [Frozen] ICompetitionsService competitionsService,
-        CompetitionRecipientsController controller)
-    {
-        Assert.Fail("not implemented");
+        var expectedModel = new ConfirmSublocationRecipientsModel(competition, "testUrl", "testUrl");
+
+        competitionsService
+            .GetCompetitionWithSublocationsAndSublocationRecipients(
+                organisation.InternalIdentifier,
+                competition.Id)
+            .Returns(competition);
+
+        var result = (await controller.ConfirmSublocationRecipients(
+            organisation.InternalIdentifier,
+            competition.Id)).As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.BackLink)
+                    .Excluding(m => m.Title)
+                    .Excluding(m => m.Caption)
+                    .Excluding(m => m.Advice));
     }
 
     private static IEnumerable<object[]> ExistingAndNewSublocationsToRenderedSublocations()

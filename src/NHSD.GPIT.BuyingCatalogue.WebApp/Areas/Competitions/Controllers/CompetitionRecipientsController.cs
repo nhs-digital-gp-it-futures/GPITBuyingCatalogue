@@ -375,14 +375,20 @@ public class CompetitionRecipientsController(
                 internalOrgId,
                 competitionId);
 
-        var backLinkHref = Url.Action(
+        var backLinkUrl = Url.Action(
             nameof(ConfirmSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
 
+        var continueLinkUrl = Url.Action(
+            nameof(CompetitionTaskListController.Index),
+            typeof(CompetitionTaskListController).ControllerName(),
+            new { internalOrgId, competitionId });
+
         var model = new ConfirmSublocationRecipientsModel(
             competition,
-            backLinkHref);
+            backLinkUrl,
+            continueLinkUrl);
 
         return View("ServiceRecipients/ConfirmSublocationRecipients", model);
     }
