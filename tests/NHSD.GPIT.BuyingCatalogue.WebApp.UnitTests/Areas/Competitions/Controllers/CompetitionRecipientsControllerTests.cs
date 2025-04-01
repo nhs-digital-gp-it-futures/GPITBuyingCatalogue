@@ -625,13 +625,34 @@ public static class CompetitionRecipientsControllerTests
     [Theory]
     [MockAutoData]
     public static async Task SublocationOdsCode_Post_ReturnsViewOnError(
-        Organisation organisation,
-        Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
-        [Frozen] ICompetitionsService competitionsService,
+        SelectSublocationRecipientsModel selectSublocationRecipientsModel,
+        string internalOrgId,
+        int competitionId,
+        string externalOrgId,
+        string sublocationOdsCode,
+        [Frozen] IOrganisationsService organisationsService,
         CompetitionRecipientsController controller)
     {
-        Assert.Fail("not implemented");
+        controller.ModelState.AddModelError("SomeError", "Error message");
+
+        organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(internalOrgId)
+            .Returns(externalOrgId);
+
+        IActionResult result = await controller.SelectSublocationRecipients(
+            selectSublocationRecipientsModel,
+            internalOrgId,
+            competitionId,
+            sublocationOdsCode);
+
+        await organisationsService.DidNotReceiveWithAnyArgs()
+                .GetOrganisationExternalIdentifierByInternalIdentifier(null)
+            ;
+
+        ViewResult viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        SelectSublocationRecipientsModel returnedModel =
+            viewResult.Model.Should().BeOfType<SelectSublocationRecipientsModel>().Subject;
+
+        returnedModel.Should().BeEquivalentTo(selectSublocationRecipientsModel);
     }
 
     [Theory]
