@@ -138,7 +138,7 @@ public class TrudOdsService : IOdsService
             .Include(x => x.TargetOrganisation)
             .ThenInclude(y => y.Roles)
             .Include(x => x.OwnerOrganisation)
-            .Select(x => MapServiceRecipientFromRelationship(x))
+            .Select(SelectServiceRecipientFromRelationshipPredicate())
             .OrderBy(x => x.Name)
             .ToListAsync();
 
@@ -213,21 +213,7 @@ public class TrudOdsService : IOdsService
         },
     };
 
-    private static ServiceRecipient MapServiceRecipientFromRelationship(
-        OrganisationRelationship relationship)
-    {
-        return new ServiceRecipient
-        {
-            Name = relationship.TargetOrganisation.Name,
-            OrgId = relationship.TargetOrganisation.Id,
-            PrimaryRoleId = relationship.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
-            Location = relationship.OwnerOrganisation.Name,
-            LocationOrgId = relationship.OwnerOrganisation.Id,
-        };
-    }
-
-    //TODO: Transition to predicate
-    public static Expression<Func<OrganisationRelationship, ServiceRecipient>>
+    private static Expression<Func<OrganisationRelationship, ServiceRecipient>>
         SelectServiceRecipientFromRelationshipPredicate()
     {
         return x => new ServiceRecipient
