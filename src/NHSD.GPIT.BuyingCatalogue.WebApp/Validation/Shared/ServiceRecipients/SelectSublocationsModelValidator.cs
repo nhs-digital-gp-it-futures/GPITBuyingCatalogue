@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients
 {
     public class SelectSublocationsModelValidator : AbstractValidator<SelectSublocationsModel>
     {
-        private const string NoSublocationSelectedMessage = "Select the sublocations for this order";
+        public const string NoSublocationSelectedMessage = "Select the sublocations for this order";
 
         public SelectSublocationsModelValidator()
         {
