@@ -14,12 +14,12 @@
             <input type="hidden" asp-for="Caption" />
 
             <nhs-fieldset-form-label asp-for="@Model"
-                                     label-text="Select how you want to add Service Recipients"
-                                     size="Large">
+                                     size="Medium">
                 <nhs-radio-buttons asp-for="ShouldUploadRecipients"
-                                   display-name="Text"
                                    values="Model.ServiceRecipientOptions.Cast<object>()"
-                                   value-name="Value" />
+                                   display-name="Text"
+                                   value-name="Value"
+                                   hint-name="Advice"/>
             </nhs-fieldset-form-label>
 
             <div class="nhsuk-u-margin-top-9">
