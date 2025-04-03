@@ -255,6 +255,7 @@ public static class CompetitionRecipientsControllerTests
         Competition competition,
         List<CompetitionSublocation> competitionSublocations,
         [Frozen] ICompetitionsService competitionsService,
+        [Frozen] ICompetitionSublocationService competitionSublocationService,
         CompetitionRecipientsController controller)
     {
         competition.OrganisationId = organisation.Id;
@@ -263,8 +264,8 @@ public static class CompetitionRecipientsControllerTests
 
         competitionsService.GetCompetitionWithSublocations(organisation.InternalIdentifier, competition.Id)
             .Returns(competition);
-        competitionsService.GetCountForCompetitionSublocationRecipients(
-                organisation.InternalIdentifier,
+        competitionSublocationService.GetCountForCompetitionSublocationRecipients(
+                organisation.ExternalIdentifier,
                 competition.Id,
                 Arg.Any<string>())
             .Returns(

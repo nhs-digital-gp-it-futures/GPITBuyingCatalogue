@@ -11,6 +11,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
             int competitionId,
             string sublocationOdsCode);
 
+        Task<int> GetCountForCompetitionSublocationRecipients(
+            string externalOrgId,
+            int competitionId,
+            string sublocationOdsCode);
+
         Task AddSublocationRecipients(
             string parentOdsCode,
             int competitionId,

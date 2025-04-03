@@ -50,11 +50,6 @@ public interface ICompetitionsService
 
     Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(string internalOrgId, int competitionId);
 
-    Task<int> GetCountForCompetitionSublocationRecipients(
-        string internalOrgId,
-        int competitionId,
-        string sublocationOdsCode);
-
     Task<bool> GetCompetitionHasAnySublocations(string internalOrgId, int competitionId);
 
     Task AddCompetitionSolutions(string internalOrgId, int competitionId, IEnumerable<CompetitionSolution> competitionSolutions);

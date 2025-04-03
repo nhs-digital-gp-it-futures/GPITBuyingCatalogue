@@ -124,19 +124,33 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [MockInMemoryDbAutoData]
-    public static async Task GetCountForCompetitionSublocationRecipients_ReturnsCount(
-        CompetitionsService service)
-    {
-        Assert.Fail("not implemented");
-    }
-
-    [Theory]
-    [MockInMemoryDbAutoData]
+    [MockInMemoryDbInlineAutoData(false, false)]
+    [MockInMemoryDbInlineAutoData(true, true)]
     public static async Task GetCompetitionHasAnySublocations_ReturnsBool(
+        bool addSublocation,
+        bool expectedResult,
+        Competition competition,
+        Organisation organisation,
+        CompetitionSublocation competitionSublocation,
+        [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
-        Assert.Fail("not implemented");
+        competition.Organisation = organisation;
+
+        if (addSublocation)
+        {
+            competition.CompetitionSublocations.Add(competitionSublocation);
+        }
+
+        context.Add(competition);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        var result = await service.GetCompetitionHasAnySublocations(organisation.InternalIdentifier, competition.Id);
+
+        Assert.Equal(expectedResult, result);
     }
 
     [Theory]

@@ -259,19 +259,6 @@ public class CompetitionsService : ICompetitionsService
             .FirstAsync();
     }
 
-    public async Task<int> GetCountForCompetitionSublocationRecipients(
-        string internalOrgId,
-        int competitionId,
-        string sublocationOdsCode)
-    {
-        return await dbContext.Competitions
-            .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
-            .SelectMany(x => x.CompetitionSublocations)
-            .Where(s => s.SublocationOdsCode == sublocationOdsCode)
-            .SelectMany(s => s.SublocationRecipients)
-            .CountAsync();
-    }
-
     public async Task<bool> GetCompetitionHasAnySublocations(string internalOrgId, int competitionId)
     {
         return await dbContext.Competitions

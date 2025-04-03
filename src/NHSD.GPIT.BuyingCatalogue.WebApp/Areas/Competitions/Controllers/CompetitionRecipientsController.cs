@@ -434,8 +434,8 @@ public class CompetitionRecipientsController(
                     new { internalOrgId, competitionId, sublocationOdsCode = s.SublocationOdsCode });
 
                 var serviceRecipientCount =
-                    await competitionsService.GetCountForCompetitionSublocationRecipients(
-                        internalOrgId,
+                    await competitionSublocationService.GetCountForCompetitionSublocationRecipients(
+                        competition.Organisation.ExternalIdentifier,
                         competitionId,
                         s.SublocationOdsCode);
 

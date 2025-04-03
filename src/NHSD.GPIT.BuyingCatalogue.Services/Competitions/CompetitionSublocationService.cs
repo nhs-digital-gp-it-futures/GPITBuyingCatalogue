@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +21,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
 
         private readonly IOdsService odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
 
+        private static Expression<Func<CompetitionSublocation, bool>> CompetitionSublocationPrimaryKeyPredicate(
+            string externalOrgId,
+            int competitionId,
+            string sublocationOdsCode)
+        {
+            return x => x.OwnerOdsCode == externalOrgId
+                && x.CompetitionId == competitionId
+                && x.SublocationOdsCode == sublocationOdsCode;
+        }
+
         public async Task<CompetitionSublocation> GetCompetitionSublocationWithRecipients(
             string externalOrgId,
             int competitionId,
@@ -29,15 +40,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                 .CompetitionSublocations
                 .AsNoTracking()
                 .Where(
-                    x => x.OwnerOdsCode == externalOrgId
-                        && x.CompetitionId == competitionId
-                        && x.SublocationOdsCode == sublocationOdsCode)
+                    CompetitionSublocationPrimaryKeyPredicate(externalOrgId, competitionId, sublocationOdsCode))
                 .Include(x => x.Competition)
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
                 .ThenInclude(y => y.RecipientOrganisation)
                 .FirstAsync();
             return sublocation;
+        }
+
+        public async Task<int> GetCountForCompetitionSublocationRecipients(
+            string externalOrgId,
+            int competitionId,
+            string sublocationOdsCode)
+        {
+            return await dbContext.CompetitionSublocations
+                .Where(CompetitionSublocationPrimaryKeyPredicate(externalOrgId, competitionId, sublocationOdsCode))
+                .Include(x => x.SublocationRecipients)
+                .SelectMany(s => s.SublocationRecipients)
+                .CountAsync();
         }
 
         public async Task AddSublocationRecipients(
@@ -56,9 +77,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             CompetitionSublocation sublocation = await dbContext
                 .CompetitionSublocations
                 .Where(
-                    x => x.OwnerOdsCode == parentOdsCode
-                        && x.CompetitionId == competitionId
-                        && x.SublocationOdsCode == sublocationOdsCode)
+                    CompetitionSublocationPrimaryKeyPredicate(parentOdsCode, competitionId, sublocationOdsCode))
                 .Include(x => x.Competition)
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
@@ -119,9 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             CompetitionSublocation sublocation = await dbContext
                 .CompetitionSublocations
                 .Where(
-                    x => x.OwnerOdsCode == parentOdsCode
-                        && x.CompetitionId == competitionId
-                        && x.SublocationOdsCode == sublocationOdsCode)
+                    CompetitionSublocationPrimaryKeyPredicate(parentOdsCode, competitionId, sublocationOdsCode))
                 .Include(x => x.Competition)
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
