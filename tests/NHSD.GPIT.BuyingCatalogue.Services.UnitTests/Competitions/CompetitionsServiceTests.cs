@@ -12,16 +12,17 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
-using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 using EntityOdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
+using ServiceContractOdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions;
 
@@ -1067,10 +1068,34 @@ public static class CompetitionsServiceTests
         return
         [
             [
-                competition, organisation,
+                organisation, competition,
+                CommonEntityOdsOrganisationFactory(CommonOrganisationExternalIdentifier),
                 new List<EntityOdsOrganisation>
                 {
-                    CommonOdsOrganisationFactory("XXXX"), CommonOdsOrganisationFactory("XXXA"),
+                    CommonEntityOdsOrganisationFactory("XXXX"), CommonEntityOdsOrganisationFactory("XXXA"),
+                },
+                new List<EntityOdsOrganisation>
+                {
+                    CommonEntityOdsOrganisationFactory("AAAA"),
+                    CommonEntityOdsOrganisationFactory("AAAB"),
+                    CommonEntityOdsOrganisationFactory("BAAA"),
+                    CommonEntityOdsOrganisationFactory("BAAB"),
+                },
+                new List<ServiceContractOdsOrganisation>
+                {
+                    CommonServiceContractOdsOrganisationFactory("XXXX"),
+                    CommonServiceContractOdsOrganisationFactory("XXXA"),
+                },
+                new Dictionary<string, List<ServiceRecipient>>
+                {
+                    {
+                        "XXXX",
+                        [CommonServiceRecipientFactory("AAAA", "XXXX"), CommonServiceRecipientFactory("AAAB", "XXXX")]
+                    },
+                    {
+                        "XXXA",
+                        [CommonServiceRecipientFactory("BAAA", "XXXA"), CommonServiceRecipientFactory("BAAB", "XXXB")]
+                    },
                 },
                 new List<CompetitionSublocation>
                 {
@@ -1096,32 +1121,61 @@ public static class CompetitionsServiceTests
     public static async Task SetCompetitionSublocationAndRecipients_SetsCompetitionSublocationAndRecipients(
         Organisation organisation,
         Competition competition,
-        List<EntityOdsOrganisation> odsOrganisationsForDb,
+        EntityOdsOrganisation ownerOdsOrganisation,
+        List<EntityOdsOrganisation> sublocationOdsOrganisationsForDb,
+        List<EntityOdsOrganisation> recipientOdsOrganisationsForDb,
+        List<ServiceContractOdsOrganisation> validSublocations,
+        Dictionary<string, List<ServiceRecipient>> validRecipientsPerSublocation,
         List<CompetitionSublocation> competitionSublocationsToSubmit,
         [Frozen] BuyingCatalogueDbContext context,
-        [Frozen] OdsSettings odsSettings,
+        [Frozen] IOdsService odsService,
         CompetitionsService service)
     {
-        List<OrganisationRole> organisationRoles = [];
-        List<OrganisationRelationship> organisationRelationships = [];
+        competition.Organisation = organisation;
 
-        context.AddRange(odsOrganisationsForDb);
+        context.Add(ownerOdsOrganisation);
+        context.AddRange(sublocationOdsOrganisationsForDb);
+        context.AddRange(recipientOdsOrganisationsForDb);
         context.Add(organisation);
         context.Add(competition);
         await context.SaveChangesAsync();
 
         context.ChangeTracker.Clear();
 
+        odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier)
+            .Returns(validSublocations);
+
+        foreach (KeyValuePair<string, List<ServiceRecipient>> kvp in validRecipientsPerSublocation)
+        {
+            odsService.GetServiceRecipientsBySublocation(kvp.Key).Returns(kvp.Value);
+        }
+
         await service.SetCompetitionSublocationsAndRecipients(
             organisation.InternalIdentifier,
             competition.Id,
             competitionSublocationsToSubmit);
 
-        Competition actualCompetition = await service.GetCompetitionWithSublocations(
+        Competition actualCompetition = await service.GetCompetitionWithSublocationsAndSublocationRecipients(
             organisation.InternalIdentifier,
             competition.Id);
 
-        actualCompetition.CompetitionSublocations.Should().BeEquivalentTo(competitionSublocationsToSubmit);
+        actualCompetition.CompetitionSublocations.Should()
+            .BeEquivalentTo(
+                competitionSublocationsToSubmit,
+                opt => opt.Excluding(m => m.Competition)
+                    .Excluding(m => m.SublocationOrganisation)
+                    .Excluding(m => m.SublocationRecipients));
+        foreach (CompetitionSublocation actualSublocation in actualCompetition.CompetitionSublocations)
+        {
+            actualSublocation.SublocationRecipients.Should()
+                .BeEquivalentTo(
+                    competitionSublocationsToSubmit.First(
+                            x => x.SublocationOdsCode == actualSublocation.SublocationOdsCode)
+                        .SublocationRecipients,
+                    opt => opt.Excluding(x => x.Competition)
+                        .Excluding(x => x.ParentSublocation)
+                        .Excluding(x => x.RecipientOrganisation));
+        }
     }
 
     [Theory]
@@ -2713,8 +2767,21 @@ public static class CompetitionsServiceTests
         };
     }
 
-    private static EntityOdsOrganisation CommonOdsOrganisationFactory(string id)
+    private static EntityOdsOrganisation CommonEntityOdsOrganisationFactory(string id)
     {
-        return new EntityOdsOrganisation { Id = id, Name = $"A sublocation - {id}", IsActive = true };
+        return new EntityOdsOrganisation { Id = id, Name = $"An organisation - {id}", IsActive = true };
+    }
+
+    private static ServiceContractOdsOrganisation CommonServiceContractOdsOrganisationFactory(string id)
+    {
+        return new ServiceContractOdsOrganisation
+        {
+            OdsCode = id, OrganisationName = $"An organisation - {id}", IsActive = true,
+        };
+    }
+
+    private static ServiceRecipient CommonServiceRecipientFactory(string orgId, string locationOrgId)
+    {
+        return new ServiceRecipient { OrgId = orgId, LocationOrgId = locationOrgId };
     }
 }
