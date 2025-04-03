@@ -114,13 +114,66 @@ public static class CompetitionsServiceTests
         Assert.Fail("not implemented");
     }
 
+    private static IEnumerable<object[]> CompetitionSublocationFlattenedRecipients()
+    {
+        return
+        [
+            [
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX", true),
+                            CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX", true),
+                        ]),
+                    CommonCompetitionSublocationFactory(
+                        "XXXA",
+                        [CommonCompetitionSublocationRecipientFactory("BAAA", "XXXA", true)]),
+                },
+                new List<EntityOdsOrganisation>
+                {
+                    CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX", true).RecipientOrganisation,
+                    CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX", true).RecipientOrganisation,
+                    CommonCompetitionSublocationRecipientFactory("BAAA", "XXXA", true).RecipientOrganisation,
+                },
+            ],
+        ];
+    }
+
     [Theory]
-    [MockInMemoryDbAutoData]
+    [MockInMemoryDbMemberAutoData(nameof(CompetitionSublocationFlattenedRecipients))]
     public static async Task
-        GetCompetitionsWithSublocationsAndSublocationRecipients_FlattenedRecipientsPropertyPopulated(
+        GetCompetitionWithSublocationsAndSublocationRecipients_FlattenedRecipientsPropertyPopulated(
+            List<CompetitionSublocation> competitionSublocations,
+            List<EntityOdsOrganisation> expectedOdsOrganisationRecipients,
+            Competition competition,
+            Organisation organisation,
+            [Frozen] BuyingCatalogueDbContext context,
             CompetitionsService service)
     {
-        Assert.Fail("not implemented");
+        competition.Organisation = organisation;
+
+        competitionSublocations.ForEach(
+            x =>
+            {
+                x.OwnerOdsCode = organisation.ExternalIdentifier;
+                x.CompetitionId = competition.Id;
+            });
+
+        competition.CompetitionSublocations = competitionSublocations;
+
+        context.Add(competition);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        Competition result = await service.GetCompetitionWithSublocationsAndSublocationRecipients(
+            organisation.InternalIdentifier,
+            competition.Id);
+
+        result.FlattenedRecipients.Should().BeEquivalentTo(expectedOdsOrganisationRecipients);
     }
 
     [Theory]
@@ -2920,7 +2973,8 @@ public static class CompetitionsServiceTests
 
     private static CompetitionSublocation CommonCompetitionSublocationFactory(
         string sublocationOdsCode,
-        List<CompetitionSublocationRecipient> sublocationRecipients = null)
+        List<CompetitionSublocationRecipient> sublocationRecipients = null,
+        bool hasOrganisation = false)
     {
         return new CompetitionSublocation
         {
@@ -2928,18 +2982,21 @@ public static class CompetitionsServiceTests
             SublocationOdsCode = sublocationOdsCode,
             OwnerOdsCode = CommonOrganisationExternalIdentifier,
             SublocationRecipients = sublocationRecipients,
+            SublocationOrganisation = hasOrganisation ? CommonEntityOdsOrganisationFactory(sublocationOdsCode) : null,
         };
     }
 
     private static CompetitionSublocationRecipient CommonCompetitionSublocationRecipientFactory(
         string recipientOdsCode,
-        string parentSublocationOdsCode)
+        string parentSublocationOdsCode,
+        bool hasOrganisation = false)
     {
         return new CompetitionSublocationRecipient
         {
             CompetitionId = CommonCompetitionId,
             RecipientOdsCode = recipientOdsCode,
             ParentSublocationOdsCode = parentSublocationOdsCode,
+            RecipientOrganisation = hasOrganisation ? CommonEntityOdsOrganisationFactory(recipientOdsCode) : null,
         };
     }
 

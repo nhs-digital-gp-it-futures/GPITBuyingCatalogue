@@ -247,15 +247,13 @@ public class CompetitionsService : ICompetitionsService
         string internalOrgId,
         int competitionId)
     {
-        // resource intensive, use sparingly
         return await dbContext.Competitions.AsNoTracking()
             .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
             .Include(x => x.Organisation)
             .Include(x => x.CompetitionSublocations)
-            .ThenInclude(y => y.SublocationOrganisation)
-            .Include(x => x.CompetitionSublocations)
             .ThenInclude(y => y.SublocationRecipients)
             .ThenInclude(z => z.RecipientOrganisation)
+            .AsSplitQuery()
             .FirstAsync();
     }
 
