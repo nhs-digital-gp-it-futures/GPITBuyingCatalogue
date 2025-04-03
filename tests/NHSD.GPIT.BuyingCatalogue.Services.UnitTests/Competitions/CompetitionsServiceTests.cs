@@ -1022,26 +1022,81 @@ public static class CompetitionsServiceTests
         exception!.Message.Should().Be("Cannot set sublocations / recipients on a completed competition.");
     }
 
+    private static IEnumerable<object[]> CompetitionSublocationNotValidData()
+    {
+        Organisation organisation = CommonOrganisationFactory();
+        Competition competition = CommonCompetitionFactory();
+
+        competition.CompetitionSublocations =
+            [CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA")];
+
+        return
+        [
+            [
+                organisation, competition,
+                CommonEntityOdsOrganisationFactory(CommonOrganisationExternalIdentifier),
+                new List<EntityOdsOrganisation>
+                {
+                    CommonEntityOdsOrganisationFactory("XXXX"), CommonEntityOdsOrganisationFactory("XXXA"),
+                },
+                new List<EntityOdsOrganisation>
+                {
+                    CommonEntityOdsOrganisationFactory("AAAA"),
+                    CommonEntityOdsOrganisationFactory("AAAB"),
+                    CommonEntityOdsOrganisationFactory("BAAA"),
+                    CommonEntityOdsOrganisationFactory("BAAB"),
+                },
+                new List<ServiceContractOdsOrganisation>
+                {
+                    CommonServiceContractOdsOrganisationFactory("ZZZZ"),
+                    CommonServiceContractOdsOrganisationFactory("XXXA"),
+                },
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                            CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        ]),
+                    CommonCompetitionSublocationFactory(
+                        "XXXA",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("BAAA", "XXXA"),
+                            CommonCompetitionSublocationRecipientFactory("BAAB", "XXXA"),
+                        ]),
+                },
+            ],
+        ];
+    }
+
     [Theory]
-    [MockInMemoryDbAutoData]
+    [MockInMemoryDbMemberAutoData(nameof(CompetitionSublocationNotValidData))]
     public static async Task SetCompetitionSublocationAndRecipients_RejectsInvalidOperations_SublocationsNotValid(
         Organisation organisation,
         Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
+        EntityOdsOrganisation ownerOdsOrganisation,
+        List<EntityOdsOrganisation> sublocationOdsOrganisationsForDb,
+        List<EntityOdsOrganisation> recipientOdsOrganisationsForDb,
+        List<ServiceContractOdsOrganisation> validSublocations,
+        List<CompetitionSublocation> competitionSublocationsToSubmit,
         [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IOdsService odsService,
         CompetitionsService service)
     {
-        competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
-        competition.CompetitionSublocations = competitionSublocations;
 
-        competition.Completed = null;
-
+        context.Add(ownerOdsOrganisation);
+        context.AddRange(sublocationOdsOrganisationsForDb);
+        context.AddRange(recipientOdsOrganisationsForDb);
         context.Add(organisation);
         context.Add(competition);
         await context.SaveChangesAsync();
 
         context.ChangeTracker.Clear();
+
+        odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier)
+            .Returns(validSublocations);
 
         Exception exception = await Record.ExceptionAsync(
             async () =>
@@ -1049,12 +1104,119 @@ public static class CompetitionsServiceTests
                 await service.SetCompetitionSublocationsAndRecipients(
                     organisation.InternalIdentifier,
                     competition.Id,
-                    competitionSublocations);
+                    competitionSublocationsToSubmit);
             });
 
         exception.Should().NotBeNull();
         exception!.GetType().Should().Be(typeof(InvalidOperationException));
         exception!.Message.Should().Be("Provided sublocations not valid for this organisation.");
+    }
+
+    private static IEnumerable<object[]> CompetitionSublocationAndInvalidRecipientsData()
+    {
+        Organisation organisation = CommonOrganisationFactory();
+        Competition competition = CommonCompetitionFactory();
+
+        competition.CompetitionSublocations =
+            [CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA")];
+
+        return
+        [
+            [
+                organisation, competition,
+                CommonEntityOdsOrganisationFactory(CommonOrganisationExternalIdentifier),
+                new List<EntityOdsOrganisation>
+                {
+                    CommonEntityOdsOrganisationFactory("XXXX"), CommonEntityOdsOrganisationFactory("XXXA"),
+                },
+                new List<EntityOdsOrganisation>
+                {
+                    CommonEntityOdsOrganisationFactory("AAAA"),
+                    CommonEntityOdsOrganisationFactory("AAAB"),
+                    CommonEntityOdsOrganisationFactory("BAAA"),
+                    CommonEntityOdsOrganisationFactory("BAAB"),
+                },
+                new List<ServiceContractOdsOrganisation>
+                {
+                    CommonServiceContractOdsOrganisationFactory("XXXX"),
+                    CommonServiceContractOdsOrganisationFactory("XXXA"),
+                },
+                new Dictionary<string, List<ServiceRecipient>>
+                {
+                    {
+                        "XXXX",
+                        [CommonServiceRecipientFactory("AXXA", "XXXX"), CommonServiceRecipientFactory("AAAB", "XXXX")]
+                    },
+                    {
+                        "XXXA",
+                        [CommonServiceRecipientFactory("BAAA", "XXXA"), CommonServiceRecipientFactory("BAAB", "XXXB")]
+                    },
+                },
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                            CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        ]),
+                    CommonCompetitionSublocationFactory(
+                        "XXXA",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("BAAA", "XXXA"),
+                            CommonCompetitionSublocationRecipientFactory("BAAB", "XXXA"),
+                        ]),
+                },
+            ],
+        ];
+    }
+
+    [Theory]
+    [MockInMemoryDbMemberAutoData(nameof(CompetitionSublocationAndInvalidRecipientsData))]
+    public static async Task SetCompetitionSublocationAndRecipients_RejectsInvalidOperations_RecipientsNotValid(
+        Organisation organisation,
+        Competition competition,
+        EntityOdsOrganisation ownerOdsOrganisation,
+        List<EntityOdsOrganisation> sublocationOdsOrganisationsForDb,
+        List<EntityOdsOrganisation> recipientOdsOrganisationsForDb,
+        List<ServiceContractOdsOrganisation> validSublocations,
+        Dictionary<string, List<ServiceRecipient>> validRecipientsPerSublocation,
+        List<CompetitionSublocation> competitionSublocationsToSubmit,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IOdsService odsService,
+        CompetitionsService service)
+    {
+        competition.Organisation = organisation;
+
+        context.Add(ownerOdsOrganisation);
+        context.AddRange(sublocationOdsOrganisationsForDb);
+        context.AddRange(recipientOdsOrganisationsForDb);
+        context.Add(organisation);
+        context.Add(competition);
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier)
+            .Returns(validSublocations);
+
+        foreach (KeyValuePair<string, List<ServiceRecipient>> kvp in validRecipientsPerSublocation)
+        {
+            odsService.GetServiceRecipientsBySublocation(kvp.Key).Returns(kvp.Value);
+        }
+
+        Exception exception = await Record.ExceptionAsync(
+            async () =>
+            {
+                await service.SetCompetitionSublocationsAndRecipients(
+                    organisation.InternalIdentifier,
+                    competition.Id,
+                    competitionSublocationsToSubmit);
+            });
+
+        exception.Should().NotBeNull();
+        exception!.GetType().Should().Be(typeof(InvalidOperationException));
+        exception!.Message.Should().Be("Provided recipients not valid for this organisation or its sublocations.");
     }
 
     private static IEnumerable<object[]> CompetitionSublocationAndRecipientsData()
