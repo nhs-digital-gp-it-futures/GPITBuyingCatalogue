@@ -1124,12 +1124,68 @@ public static class CompetitionsServiceTests
         exception!.GetType().Should().Be(expectedExceptionType);
     }
 
+    private static IEnumerable<object[]> RemoveSublocationsNotValidData()
+    {
+        Competition completedCompetition = CommonCompetitionFactory(67, 21);
+        completedCompetition.Completed = new DateTime(2024, 05, 03);
+
+        Competition populatedCompetitionWithMatchingSublocations = CommonCompetitionFactory(83, 45);
+        populatedCompetitionWithMatchingSublocations.CompetitionSublocations =
+        [
+            CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXY"),
+        ];
+
+        var removeHashSet = new HashSet<string> { "XXXX", "XXXY", "XXXZ" };
+
+        return
+        [
+            [
+                CommonOrganisationFactory(21), completedCompetition, new List<ServiceContractOdsOrganisation>(),
+                removeHashSet,
+                "Cannot remove sublocations on a completed competition.",
+            ],
+            [
+                CommonOrganisationFactory(45), populatedCompetitionWithMatchingSublocations,
+                new List<ServiceContractOdsOrganisation>(),
+                removeHashSet, "Can only remove sublocations already included in competition.",
+            ],
+        ];
+    }
+
     [Theory]
-    [MockInMemoryDbAutoData]
+    [MockInMemoryDbMemberAutoData(nameof(RemoveSublocationsNotValidData))]
     public static async Task RemoveSublocations_RejectsInvalidOperations(
+        Organisation organisation,
+        Competition competition,
+        List<ServiceContractOdsOrganisation> validSublocations,
+        HashSet<string> sublocationOdsCodes,
+        string expectedMesssage,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IOdsService odsService,
         CompetitionsService service)
     {
-        Assert.Fail("not implemented");
+        competition.Organisation = organisation;
+
+        context.Add(organisation);
+        context.Add(competition);
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns(validSublocations);
+
+        Exception exception = await Record.ExceptionAsync(
+            async () =>
+            {
+                await service.RemoveSublocations(
+                    organisation.InternalIdentifier,
+                    competition.Id,
+                    sublocationOdsCodes);
+            });
+
+        exception.Should().NotBeNull();
+        exception!.GetType().Should().Be(typeof(InvalidOperationException));
+        exception!.Message.Should().Be(expectedMesssage);
     }
 
     [Theory]

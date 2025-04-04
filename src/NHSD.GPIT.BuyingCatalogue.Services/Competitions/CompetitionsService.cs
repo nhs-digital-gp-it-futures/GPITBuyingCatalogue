@@ -314,7 +314,10 @@ public class CompetitionsService : ICompetitionsService
             throw new InvalidOperationException("Cannot add sublocations on a completed competition.");
         }
 
-        if (competition.CompetitionSublocations.Any(x => sublocationOdsCodes.Contains(x.SublocationOdsCode)))
+        var sublocationsAlreadyInCompetition =
+            competition.CompetitionSublocations.Any(x => sublocationOdsCodes.Contains(x.SublocationOdsCode));
+
+        if (sublocationsAlreadyInCompetition)
         {
             throw new InvalidOperationException("Can only add sublocations not already included in competition.");
         }
@@ -368,7 +371,10 @@ public class CompetitionsService : ICompetitionsService
             throw new InvalidOperationException("Cannot remove sublocations on a completed competition.");
         }
 
-        if (!competition.CompetitionSublocations.Any(x => sublocationOdsCodes.Contains(x.SublocationOdsCode)))
+        var sublocationsInCompetition = !sublocationOdsCodes.All(
+            x => competition.CompetitionSublocations.Any(y => y.SublocationOdsCode == x));
+
+        if (sublocationsInCompetition)
         {
             throw new InvalidOperationException("Can only remove sublocations already included in competition.");
         }
