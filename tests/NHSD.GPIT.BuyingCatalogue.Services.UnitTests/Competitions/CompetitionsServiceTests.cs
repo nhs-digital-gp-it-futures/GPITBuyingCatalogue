@@ -1081,12 +1081,75 @@ public static class CompetitionsServiceTests
         exception!.Message.Should().Be(expectedMesssage);
     }
 
+    private static IEnumerable<object[]> AddSublocationsData()
+    {
+        return
+        [
+            [
+                CommonOrganisationFactory(78), CommonCompetitionFactory(33, 78),
+                new List<EntityOdsOrganisation>
+                {
+                    CommonEntityOdsOrganisationFactory("XXXX"),
+                    CommonEntityOdsOrganisationFactory("XXXY"),
+                    CommonEntityOdsOrganisationFactory("XXXZ"),
+                },
+                new List<ServiceContractOdsOrganisation>
+                {
+                    CommonServiceContractOdsOrganisationFactory("XXXX"),
+                    CommonServiceContractOdsOrganisationFactory("XXXY"),
+                    CommonServiceContractOdsOrganisationFactory("XXXZ"),
+                },
+                new HashSet<string> { "XXXX", "XXXY" },
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory("XXXX", null, false, 33),
+                    CommonCompetitionSublocationFactory("XXXY", null, false, 33),
+                },
+            ],
+        ];
+    }
+
     [Theory]
-    [MockInMemoryDbAutoData]
+    [MockInMemoryDbMemberAutoData(nameof(AddSublocationsData))]
     public static async Task AddSublocations_AddsSublocations(
+        Organisation organisation,
+        Competition competition,
+        List<EntityOdsOrganisation> validSublocationsAsEntityModels,
+        List<ServiceContractOdsOrganisation> validSublocationsAsServiceModels,
+        HashSet<string> addSublocationOdsCodes,
+        List<CompetitionSublocation> expectedCompetitionSublocations,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IOdsService odsService,
         CompetitionsService service)
     {
-        Assert.Fail("not implemented");
+        competition.Organisation = organisation;
+
+        context.AddRange(validSublocationsAsEntityModels);
+        context.Add(organisation);
+        context.Add(competition);
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier)
+            .Returns(validSublocationsAsServiceModels);
+
+        await service.AddSublocations(
+            organisation.InternalIdentifier,
+            competition.Id,
+            addSublocationOdsCodes);
+
+        Competition actualCompetition = await service.GetCompetitionWithSublocations(
+            organisation.InternalIdentifier,
+            competition.Id);
+
+        actualCompetition.CompetitionSublocations.Should()
+            .BeEquivalentTo(
+                expectedCompetitionSublocations,
+                opt => opt.WithoutStrictOrdering()
+                    .Excluding(m => m.Competition)
+                    .Excluding(m => m.SublocationOrganisation)
+                    .Excluding(m => m.SublocationRecipients));
     }
 
     [Theory]
@@ -1188,12 +1251,59 @@ public static class CompetitionsServiceTests
         exception!.Message.Should().Be(expectedMesssage);
     }
 
+    private static IEnumerable<object[]> RemoveSublocationsData()
+    {
+        return
+        [
+            [
+                CommonOrganisationFactory(21), CommonCompetitionFactory(388, 21),
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory("XXXX", null, true, 388),
+                    CommonCompetitionSublocationFactory("XXXY", null, true, 388),
+                },
+                new HashSet<string> { "XXXX" },
+                new List<CompetitionSublocation> { CommonCompetitionSublocationFactory("XXXY", null, true, 388) },
+            ],
+        ];
+    }
+
     [Theory]
-    [MockInMemoryDbAutoData]
+    [MockInMemoryDbMemberAutoData(nameof(RemoveSublocationsData))]
     public static async Task RemoveSublocations_RemovesSublocations(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> existingSublocations,
+        HashSet<string> removeSublocationOdsCodes,
+        List<CompetitionSublocation> expectedCompetitionSublocations,
+        [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
-        Assert.Fail("not implemented");
+        competition.Organisation = organisation;
+
+        context.AddRange(existingSublocations);
+        context.Add(organisation);
+        context.Add(competition);
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        await service.RemoveSublocations(
+            organisation.InternalIdentifier,
+            competition.Id,
+            removeSublocationOdsCodes);
+
+        Competition actualCompetition = await service.GetCompetitionWithSublocations(
+            organisation.InternalIdentifier,
+            competition.Id);
+
+        actualCompetition.CompetitionSublocations.Should()
+            .BeEquivalentTo(
+                expectedCompetitionSublocations,
+                opt => opt.WithoutStrictOrdering()
+                    .Excluding(m => m.Competition)
+                    .Excluding(m => m.SublocationOrganisation)
+                    .Excluding(m => m.SublocationRecipients));
     }
 
     [Theory]
@@ -3150,11 +3260,12 @@ public static class CompetitionsServiceTests
     private static CompetitionSublocation CommonCompetitionSublocationFactory(
         string sublocationOdsCode,
         List<CompetitionSublocationRecipient> sublocationRecipients = null,
-        bool hasOrganisation = false)
+        bool hasOrganisation = false,
+        int customCompetitionId = 0)
     {
         return new CompetitionSublocation
         {
-            CompetitionId = CommonCompetitionId,
+            CompetitionId = customCompetitionId == 0 ? CommonCompetitionId : customCompetitionId,
             SublocationOdsCode = sublocationOdsCode,
             OwnerOdsCode = CommonOrganisationExternalIdentifier,
             SublocationRecipients = sublocationRecipients,
