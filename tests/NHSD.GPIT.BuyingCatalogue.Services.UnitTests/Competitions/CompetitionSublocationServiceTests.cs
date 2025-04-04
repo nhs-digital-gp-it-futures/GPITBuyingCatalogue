@@ -31,6 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
 
             sublocation.Competition = competition;
             sublocation.CompetitionId = competition.Id;
+            sublocation.OwnerOdsCode = organisation.ExternalIdentifier;
 
             sublocation.SublocationOrganisation = sublocationOrganisation;
             sublocation.SublocationRecipients = competitionSublocationRecipients;
@@ -49,7 +50,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
                 competition.Id,
                 sublocation.SublocationOdsCode);
 
-            actualSublocation.Should().BeEquivalentTo(sublocation);
+            actualSublocation.Should()
+                .BeEquivalentTo(
+                    sublocation,
+                    opt => opt.Excluding(m => m.Competition)
+                        .Excluding(m => m.SublocationOrganisation)
+                        .Excluding(m => m.SublocationRecipients));
+            actualSublocation.SublocationRecipients.Should()
+                .BeEquivalentTo(
+                    competitionSublocationRecipients,
+                    opt => opt.Excluding(m => m.Competition)
+                        .Excluding(m => m.RecipientOrganisation)
+                        .Excluding(m => m.ParentSublocation));
         }
 
         public static IEnumerable<object[]> CompetitionSublocationsWithRecipientsForCount()

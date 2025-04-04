@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             int competitionId,
             string sublocationOdsCode)
         {
-            CompetitionSublocation sublocation = await dbContext
+            return await dbContext
                 .CompetitionSublocations
                 .AsNoTracking()
                 .Where(
@@ -46,7 +46,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                 .Include(x => x.SublocationRecipients)
                 .ThenInclude(y => y.RecipientOrganisation)
                 .FirstAsync();
-            return sublocation;
         }
 
         public async Task<int> GetCountForCompetitionSublocationRecipients(
