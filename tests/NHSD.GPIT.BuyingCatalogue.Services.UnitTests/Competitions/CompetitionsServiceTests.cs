@@ -1052,14 +1052,13 @@ public static class CompetitionsServiceTests
         Competition competition,
         List<ServiceContractOdsOrganisation> validSublocations,
         HashSet<string> sublocationOdsCodes,
-        string expectedMesssage,
+        string expectedMessage,
         [Frozen] BuyingCatalogueDbContext context,
         [Frozen] IOdsService odsService,
         CompetitionsService service)
     {
         competition.Organisation = organisation;
 
-        context.Add(organisation);
         context.Add(competition);
         await context.SaveChangesAsync();
 
@@ -1078,7 +1077,7 @@ public static class CompetitionsServiceTests
 
         exception.Should().NotBeNull();
         exception!.GetType().Should().Be(typeof(InvalidOperationException));
-        exception!.Message.Should().Be(expectedMesssage);
+        exception!.Message.Should().Be(expectedMessage);
     }
 
     private static IEnumerable<object[]> AddSublocationsData()
@@ -1222,7 +1221,7 @@ public static class CompetitionsServiceTests
         Competition competition,
         List<ServiceContractOdsOrganisation> validSublocations,
         HashSet<string> sublocationOdsCodes,
-        string expectedMesssage,
+        string expectedMessage,
         [Frozen] BuyingCatalogueDbContext context,
         [Frozen] IOdsService odsService,
         CompetitionsService service)
@@ -1248,7 +1247,7 @@ public static class CompetitionsServiceTests
 
         exception.Should().NotBeNull();
         exception!.GetType().Should().Be(typeof(InvalidOperationException));
-        exception!.Message.Should().Be(expectedMesssage);
+        exception!.Message.Should().Be(expectedMessage);
     }
 
     private static IEnumerable<object[]> RemoveSublocationsData()
