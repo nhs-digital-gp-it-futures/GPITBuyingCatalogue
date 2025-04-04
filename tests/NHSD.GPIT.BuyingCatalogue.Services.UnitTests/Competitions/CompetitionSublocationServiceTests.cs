@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -142,11 +143,43 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
         }
 
         [Theory]
-        [MockInMemoryDbAutoData]
+        [MockInMemoryDbInlineAutoData("", 5, "MY-RECIPIENT-ID", true, typeof(ArgumentException))]
+        [MockInMemoryDbInlineAutoData(null, 5, "MY-RECIPIENT-ID", true, typeof(ArgumentNullException))]
+        [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, "", true, typeof(ArgumentException))]
+        [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, null, true, typeof(ArgumentNullException))]
+        [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, "MY-RECIPIENT-ID", false, typeof(ArgumentException))]
         public static async Task AddSublocationRecipients_RejectsNullArguments(
+            string parentOdsCode,
+            int competitionId,
+            string sublocationOdsCode,
+            bool populateOdsCodes,
+            Type expectedExceptionType,
+            HashSet<string> odsCodes,
             CompetitionSublocationService service)
         {
-            Assert.Fail("not implemented");
+            Exception exception = await Record.ExceptionAsync(
+                async () =>
+                {
+                    if (!populateOdsCodes)
+                    {
+                        await service.AddSublocationRecipients(
+                            parentOdsCode,
+                            competitionId,
+                            sublocationOdsCode,
+                            new HashSet<string>());
+                    }
+                    else
+                    {
+                        await service.AddSublocationRecipients(
+                            parentOdsCode,
+                            competitionId,
+                            sublocationOdsCode,
+                            odsCodes);
+                    }
+                });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(expectedExceptionType);
         }
 
         [Theory]
@@ -166,11 +199,43 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
         }
 
         [Theory]
-        [MockInMemoryDbAutoData]
+        [MockInMemoryDbInlineAutoData("", 5, "MY-RECIPIENT-ID", true, typeof(ArgumentException))]
+        [MockInMemoryDbInlineAutoData(null, 5, "MY-RECIPIENT-ID", true, typeof(ArgumentNullException))]
+        [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, "", true, typeof(ArgumentException))]
+        [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, null, true, typeof(ArgumentNullException))]
+        [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, "MY-RECIPIENT-ID", false, typeof(ArgumentException))]
         public static async Task RemoveSublocationRecipients_RejectsNullArguments(
+            string parentOdsCode,
+            int competitionId,
+            string sublocationOdsCode,
+            bool populateOdsCodes,
+            Type expectedExceptionType,
+            HashSet<string> odsCodes,
             CompetitionSublocationService service)
         {
-            Assert.Fail("not implemented");
+            Exception exception = await Record.ExceptionAsync(
+                async () =>
+                {
+                    if (!populateOdsCodes)
+                    {
+                        await service.RemoveSublocationRecipients(
+                            parentOdsCode,
+                            competitionId,
+                            sublocationOdsCode,
+                            new HashSet<string>());
+                    }
+                    else
+                    {
+                        await service.RemoveSublocationRecipients(
+                            parentOdsCode,
+                            competitionId,
+                            sublocationOdsCode,
+                            odsCodes);
+                    }
+                });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(expectedExceptionType);
         }
 
         [Theory]
