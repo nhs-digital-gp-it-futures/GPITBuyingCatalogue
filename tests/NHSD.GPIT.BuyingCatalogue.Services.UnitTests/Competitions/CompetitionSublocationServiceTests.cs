@@ -66,20 +66,79 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
 
         public static IEnumerable<object[]> CompetitionSublocationsWithRecipientsForCount()
         {
-            return [[new List<CompetitionSublocation>()]];
+            return
+            [
+                [
+                    CommonOrganisationFactory(57), CommonCompetitionFactory(22, 57),
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX", 22),
+                            CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                        ]),
+                    2,
+                ],
+                [
+                    CommonOrganisationFactory(34), CommonCompetitionFactory(89, 34),
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                        ]),
+                    0,
+                ],
+                [
+                    CommonOrganisationFactory(61), CommonCompetitionFactory(61, 79),
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX", 61),
+                        ]),
+                    1,
+                ],
+                [
+                    CommonOrganisationFactory(1), CommonCompetitionFactory(43, 1),
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX", 1),
+                            CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX", 1),
+                            CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX", 1),
+                            CommonCompetitionSublocationRecipientFactory("AAAD", "XXXX", 1),
+                            CommonCompetitionSublocationRecipientFactory("AAAE", "XXXX", 1),
+                        ]),
+                    5,
+                ],
+            ];
         }
 
         [Theory]
-        [MockInMemoryDbAutoData]
+        [MockInMemoryDbMemberAutoData(nameof(CompetitionSublocationsWithRecipientsForCount))]
         public static async Task GetCountForCompetitionSublocationRecipients_ReturnsCount(
-            List<CompetitionSublocation> competitionSublocationsWithRecipients,
-            int expectedQuantity,
-            Competition competition,
             Organisation organisation,
+            Competition competition,
+            CompetitionSublocation sublocation,
+            int expectedCount,
             [Frozen] BuyingCatalogueDbContext context,
             CompetitionSublocationService service)
         {
-            Assert.Fail("Not implemented");
+            competition.Organisation = organisation;
+
+            sublocation.Competition = competition;
+            sublocation.CompetitionId = competition.Id;
+            sublocation.OwnerOdsCode = organisation.ExternalIdentifier;
+
+            context.Add(sublocation);
+
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var count = await service.GetCountForCompetitionSublocationRecipients(
+                organisation.ExternalIdentifier,
+                competition.Id,
+                sublocation.SublocationOdsCode);
+
+            Assert.Equal(expectedCount, count);
         }
 
         [Theory]
@@ -177,11 +236,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
         private static CompetitionSublocationRecipient CommonCompetitionSublocationRecipientFactory(
             string recipientOdsCode,
             string parentSublocationOdsCode,
+            int competitionId = 0,
             bool hasOrganisation = false)
         {
             return new CompetitionSublocationRecipient
             {
-                CompetitionId = CommonCompetitionId,
+                CompetitionId = competitionId == 0 ? CommonCompetitionId : competitionId,
                 RecipientOdsCode = recipientOdsCode,
                 ParentSublocationOdsCode = parentSublocationOdsCode,
                 RecipientOrganisation = hasOrganisation ? CommonEntityOdsOrganisationFactory(recipientOdsCode) : null,
