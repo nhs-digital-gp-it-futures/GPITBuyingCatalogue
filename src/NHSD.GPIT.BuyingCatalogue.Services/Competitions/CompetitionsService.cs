@@ -371,6 +371,11 @@ public class CompetitionsService : ICompetitionsService
             throw new InvalidOperationException("Cannot remove sublocations on a completed competition.");
         }
 
+        if (competition.CompetitionSublocations.Count == 0)
+        {
+            throw new InvalidOperationException("Competition has no sublocations to remove.");
+        }
+
         var sublocationsInCompetition = !sublocationOdsCodes.All(
             x => competition.CompetitionSublocations.Any(y => y.SublocationOdsCode == x));
 

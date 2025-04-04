@@ -80,7 +80,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                 .Include(x => x.Competition)
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
-                .FirstOrDefaultAsync();
+                .FirstAsync();
 
             if (sublocation.Competition.Completed.HasValue)
             {
@@ -147,6 +147,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             {
                 throw new InvalidOperationException(
                     "Cannot remove recipients from sublocations on a completed competition.");
+            }
+
+            if (sublocation.SublocationRecipients.Count == 0)
+            {
+                throw new InvalidOperationException("Sublocation has no recipients to remove.");
             }
 
             var anyIdAlreadyInServiceRecipients =

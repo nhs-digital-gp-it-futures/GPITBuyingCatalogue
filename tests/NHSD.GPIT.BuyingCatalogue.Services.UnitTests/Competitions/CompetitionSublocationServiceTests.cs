@@ -7,8 +7,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
+using NSubstitute;
 using Xunit;
 using EntityOdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
 using ServiceContractOdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
@@ -182,12 +184,76 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
             exception!.GetType().Should().Be(expectedExceptionType);
         }
 
+        private static IEnumerable<object[]> AddSublocationRecipientsNotValidData()
+        {
+            Competition completeCompetition = CommonCompetitionFactory(32, 45);
+            completeCompetition.Completed = new DateTime(2024, 01, 03);
+
+            return
+            [
+                [
+                    CommonOrganisationFactory(45), completeCompetition,
+                    CommonCompetitionSublocationFactory("XXXX", [], true, 32),
+                    new HashSet<string> { "AAAA" }, "Cannot add recipients to sublocations on a completed competition.",
+                ],
+                [
+                    CommonOrganisationFactory(75), CommonCompetitionFactory(23, 75),
+                    CommonCompetitionSublocationFactory(
+                        "XXXY",
+                        [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXY", 23)],
+                        true,
+                        23),
+                    new HashSet<string> { "AAAA" }, "One or more requested Ids already present in sublocation.",
+                ],
+                [
+                    CommonOrganisationFactory(61), CommonCompetitionFactory(78, 61),
+                    CommonCompetitionSublocationFactory(
+                        "XXXZ",
+                        [],
+                        true,
+                        78),
+                    new HashSet<string> { "AAAA" },
+                    "One or more requested Ids not found or not valid for this sublocation.",
+                ],
+            ];
+        }
+
         [Theory]
-        [MockInMemoryDbAutoData]
+        [MockInMemoryDbMemberAutoData(nameof(AddSublocationRecipientsNotValidData))]
         public static async Task AddSublocationRecipients_RejectsInvalidOperations(
+            Organisation organisation,
+            Competition competition,
+            CompetitionSublocation competitionSublocation,
+            HashSet<string> recipientOdsCodes,
+            string expectedMessage,
+            [Frozen] IOdsService odsService,
+            [Frozen] BuyingCatalogueDbContext context,
             CompetitionSublocationService service)
         {
-            Assert.Fail("not implemented");
+            competition.Organisation = organisation;
+
+            context.Add(competitionSublocation);
+            context.Add(competition);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            odsService.GetServiceRecipientsBySublocation(competitionSublocation.SublocationOdsCode)
+                .Returns([]);
+
+            Exception exception = await Record.ExceptionAsync(
+                async () =>
+                {
+                    await service.AddSublocationRecipients(
+                        organisation.ExternalIdentifier,
+                        competition.Id,
+                        competitionSublocation.SublocationOdsCode,
+                        recipientOdsCodes);
+                });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be(expectedMessage);
         }
 
         [Theory]
@@ -238,12 +304,76 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
             exception!.GetType().Should().Be(expectedExceptionType);
         }
 
+        private static IEnumerable<object[]> RemoveSublocationRecipientsNotValidData()
+        {
+            Competition completeCompetition = CommonCompetitionFactory(32, 45);
+            completeCompetition.Completed = new DateTime(2024, 01, 03);
+
+            return
+            [
+                [
+                    CommonOrganisationFactory(45), completeCompetition,
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX", 32, true)],
+                        true,
+                        32),
+                    new HashSet<string> { "AAAA" },
+                    "Cannot remove recipients from sublocations on a completed competition.",
+                ],
+                [
+                    CommonOrganisationFactory(89), CommonCompetitionFactory(55, 89),
+                    CommonCompetitionSublocationFactory("XXXY", [], true, 55),
+                    new HashSet<string> { "AAAA" }, "Sublocation has no recipients to remove.",
+                ],
+                [
+                    CommonOrganisationFactory(75), CommonCompetitionFactory(23, 75),
+                    CommonCompetitionSublocationFactory(
+                        "XXXZ",
+                        [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXZ", 23)],
+                        true,
+                        23),
+                    new HashSet<string> { "AAZZ" }, "Can only remove recipient if present in sublocation.",
+                ],
+            ];
+        }
+
         [Theory]
-        [MockInMemoryDbAutoData]
+        [MockInMemoryDbMemberAutoData(nameof(RemoveSublocationRecipientsNotValidData))]
         public static async Task RemoveSublocationRecipients_RejectsInvalidOperations(
+            Organisation organisation,
+            Competition competition,
+            CompetitionSublocation competitionSublocation,
+            HashSet<string> recipientOdsCodes,
+            string expectedMessage,
+            [Frozen] IOdsService odsService,
+            [Frozen] BuyingCatalogueDbContext context,
             CompetitionSublocationService service)
         {
-            Assert.Fail("not implemented");
+            competition.Organisation = organisation;
+
+            context.Add(competitionSublocation);
+            context.Add(competition);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            odsService.GetServiceRecipientsBySublocation(competitionSublocation.SublocationOdsCode)
+                .Returns([]);
+
+            Exception exception = await Record.ExceptionAsync(
+                async () =>
+                {
+                    await service.RemoveSublocationRecipients(
+                        organisation.ExternalIdentifier,
+                        competition.Id,
+                        competitionSublocation.SublocationOdsCode,
+                        recipientOdsCodes);
+                });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be(expectedMessage);
         }
 
         [Theory]
@@ -285,11 +415,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
         private static CompetitionSublocation CommonCompetitionSublocationFactory(
             string sublocationOdsCode,
             List<CompetitionSublocationRecipient> sublocationRecipients = null,
-            bool hasOrganisation = false)
+            bool hasOrganisation = false,
+            int customCompetitionId = 0)
         {
             return new CompetitionSublocation
             {
-                CompetitionId = CommonCompetitionId,
+                CompetitionId = customCompetitionId == 0 ? CommonCompetitionId : customCompetitionId,
                 SublocationOdsCode = sublocationOdsCode,
                 OwnerOdsCode = CommonOrganisationExternalIdentifier,
                 SublocationRecipients = sublocationRecipients,

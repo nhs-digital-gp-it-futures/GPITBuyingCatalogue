@@ -1023,22 +1023,16 @@ public static class CompetitionsServiceTests
         return
         [
             [
-                CommonOrganisationFactory(21), completedCompetition, new List<ServiceContractOdsOrganisation>(),
+                CommonOrganisationFactory(21), completedCompetition,
                 addHashSet,
                 "Cannot add sublocations on a completed competition.",
             ],
             [
                 CommonOrganisationFactory(45), populatedCompetitionWithMatchingSublocations,
-                new List<ServiceContractOdsOrganisation>(),
                 addHashSet, "Can only add sublocations not already included in competition.",
             ],
             [
                 CommonOrganisationFactory(78), CommonCompetitionFactory(33, 78),
-                new List<ServiceContractOdsOrganisation>
-                {
-                    CommonServiceContractOdsOrganisationFactory("XXXY"),
-                    CommonServiceContractOdsOrganisationFactory("XXXZ"),
-                },
                 new HashSet<string> { "FFGH" },
                 "One or more requested Ids not found or not valid for this organisation.",
             ],
@@ -1050,7 +1044,6 @@ public static class CompetitionsServiceTests
     public static async Task AddSublocations_RejectsInvalidOperations(
         Organisation organisation,
         Competition competition,
-        List<ServiceContractOdsOrganisation> validSublocations,
         HashSet<string> sublocationOdsCodes,
         string expectedMessage,
         [Frozen] BuyingCatalogueDbContext context,
@@ -1064,7 +1057,7 @@ public static class CompetitionsServiceTests
 
         context.ChangeTracker.Clear();
 
-        odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns(validSublocations);
+        odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns([]);
 
         Exception exception = await Record.ExceptionAsync(
             async () =>
@@ -1205,6 +1198,11 @@ public static class CompetitionsServiceTests
                 CommonOrganisationFactory(21), completedCompetition, new List<ServiceContractOdsOrganisation>(),
                 removeHashSet,
                 "Cannot remove sublocations on a completed competition.",
+            ],
+            [
+                CommonOrganisationFactory(54), CommonCompetitionFactory(12, 54),
+                new List<ServiceContractOdsOrganisation>(),
+                removeHashSet, "Competition has no sublocations to remove.",
             ],
             [
                 CommonOrganisationFactory(45), populatedCompetitionWithMatchingSublocations,
