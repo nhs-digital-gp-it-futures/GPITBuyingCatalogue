@@ -296,6 +296,8 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         HashSet<string> sublocationOdsCodes)
     {
+        ArgumentException.ThrowIfNullOrEmpty(internalOrgId, nameof(internalOrgId));
+
         if (sublocationOdsCodes.IsNullOrEmpty())
         {
             throw new ArgumentException("sublocationIds is null or empty", nameof(sublocationOdsCodes));
@@ -347,6 +349,8 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         HashSet<string> sublocationOdsCodes)
     {
+        ArgumentException.ThrowIfNullOrEmpty(internalOrgId, nameof(internalOrgId));
+
         if (sublocationOdsCodes.IsNullOrEmpty())
         {
             throw new ArgumentException("sublocationIds is null or empty", nameof(sublocationOdsCodes));

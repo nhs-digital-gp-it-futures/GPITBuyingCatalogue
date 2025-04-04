@@ -973,11 +973,38 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [MockInMemoryDbAutoData]
+    [MockInMemoryDbInlineAutoData("", 5, true, typeof(ArgumentException))]
+    [MockInMemoryDbInlineAutoData(null, 5, true, typeof(ArgumentNullException))]
+    [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, false, typeof(ArgumentException))]
     public static async Task AddSublocations_RejectsNullParams(
+        string internalOrgId,
+        int competitionId,
+        bool populateSublocations,
+        Type expectedExceptionType,
+        HashSet<string> competitionSublocations,
         CompetitionsService service)
     {
-        Assert.Fail("not implemented");
+        Exception exception = await Record.ExceptionAsync(
+            async () =>
+            {
+                if (!populateSublocations)
+                {
+                    await service.AddSublocations(
+                        internalOrgId,
+                        competitionId,
+                        []);
+                }
+                else
+                {
+                    await service.AddSublocations(
+                        internalOrgId,
+                        competitionId,
+                        competitionSublocations);
+                }
+            });
+
+        exception.Should().NotBeNull();
+        exception!.GetType().Should().Be(expectedExceptionType);
     }
 
     [Theory]
@@ -997,11 +1024,38 @@ public static class CompetitionsServiceTests
     }
 
     [Theory]
-    [MockInMemoryDbAutoData]
+    [MockInMemoryDbInlineAutoData("", 5, true, typeof(ArgumentException))]
+    [MockInMemoryDbInlineAutoData(null, 5, true, typeof(ArgumentNullException))]
+    [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, false, typeof(ArgumentException))]
     public static async Task RemoveSublocations_RejectsNullParams(
+        string internalOrgId,
+        int competitionId,
+        bool populateSublocations,
+        Type expectedExceptionType,
+        HashSet<string> competitionSublocations,
         CompetitionsService service)
     {
-        Assert.Fail("not implemented");
+        Exception exception = await Record.ExceptionAsync(
+            async () =>
+            {
+                if (!populateSublocations)
+                {
+                    await service.RemoveSublocations(
+                        internalOrgId,
+                        competitionId,
+                        []);
+                }
+                else
+                {
+                    await service.RemoveSublocations(
+                        internalOrgId,
+                        competitionId,
+                        competitionSublocations);
+                }
+            });
+
+        exception.Should().NotBeNull();
+        exception!.GetType().Should().Be(expectedExceptionType);
     }
 
     [Theory]
@@ -1024,7 +1078,7 @@ public static class CompetitionsServiceTests
     [MockInMemoryDbInlineAutoData("", 5, true, typeof(ArgumentException))]
     [MockInMemoryDbInlineAutoData(null, 5, true, typeof(ArgumentNullException))]
     [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, false, typeof(ArgumentException))]
-    public static async Task SetCompetitionSublocationAndRecipients_RejectsNullParams(
+    public static async Task SetCompetitionSublocationsAndRecipients_RejectsNullParams(
         string internalOrgId,
         int competitionId,
         bool populateSublocations,
@@ -1057,7 +1111,7 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task SetCompetitionSublocationAndRecipients_RejectsInvalidOperations_CompetitionComplete(
+    public static async Task SetCompetitionSublocationsAndRecipients_RejectsInvalidOperations_CompetitionComplete(
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> competitionSublocations,
@@ -1139,7 +1193,7 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [MockInMemoryDbMemberAutoData(nameof(CompetitionSublocationNotValidData))]
-    public static async Task SetCompetitionSublocationAndRecipients_RejectsInvalidOperations_SublocationsNotValid(
+    public static async Task SetCompetitionSublocationsAndRecipients_RejectsInvalidOperations_SublocationsNotValid(
         Organisation organisation,
         Competition competition,
         EntityOdsOrganisation ownerOdsOrganisation,
