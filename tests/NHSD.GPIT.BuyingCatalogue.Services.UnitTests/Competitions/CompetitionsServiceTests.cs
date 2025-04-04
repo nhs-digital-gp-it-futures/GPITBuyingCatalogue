@@ -1007,12 +1007,78 @@ public static class CompetitionsServiceTests
         exception!.GetType().Should().Be(expectedExceptionType);
     }
 
+    private static IEnumerable<object[]> AddSublocationsNotValidData()
+    {
+        Competition completedCompetition = CommonCompetitionFactory(67, 21);
+        completedCompetition.Completed = new DateTime(2024, 05, 03);
+
+        Competition populatedCompetitionWithMatchingSublocations = CommonCompetitionFactory(83, 45);
+        populatedCompetitionWithMatchingSublocations.CompetitionSublocations =
+        [
+            CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXY"),
+        ];
+
+        var addHashSet = new HashSet<string> { "XXXX", "XXXY", "XXXZ" };
+
+        return
+        [
+            [
+                CommonOrganisationFactory(21), completedCompetition, new List<ServiceContractOdsOrganisation>(),
+                addHashSet,
+                "Cannot add sublocations on a completed competition.",
+            ],
+            [
+                CommonOrganisationFactory(45), populatedCompetitionWithMatchingSublocations,
+                new List<ServiceContractOdsOrganisation>(),
+                addHashSet, "Can only add sublocations not already included in competition.",
+            ],
+            [
+                CommonOrganisationFactory(78), CommonCompetitionFactory(33, 78),
+                new List<ServiceContractOdsOrganisation>
+                {
+                    CommonServiceContractOdsOrganisationFactory("XXXY"),
+                    CommonServiceContractOdsOrganisationFactory("XXXZ"),
+                },
+                new HashSet<string> { "FFGH" },
+                "One or more requested Ids not found or not valid for this organisation.",
+            ],
+        ];
+    }
+
     [Theory]
-    [MockInMemoryDbAutoData]
+    [MockInMemoryDbMemberAutoData(nameof(AddSublocationsNotValidData))]
     public static async Task AddSublocations_RejectsInvalidOperations(
+        Organisation organisation,
+        Competition competition,
+        List<ServiceContractOdsOrganisation> validSublocations,
+        HashSet<string> sublocationOdsCodes,
+        string expectedMesssage,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IOdsService odsService,
         CompetitionsService service)
     {
-        Assert.Fail("not implemented");
+        competition.Organisation = organisation;
+
+        context.Add(organisation);
+        context.Add(competition);
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns(validSublocations);
+
+        Exception exception = await Record.ExceptionAsync(
+            async () =>
+            {
+                await service.AddSublocations(
+                    organisation.InternalIdentifier,
+                    competition.Id,
+                    sublocationOdsCodes);
+            });
+
+        exception.Should().NotBeNull();
+        exception!.GetType().Should().Be(typeof(InvalidOperationException));
+        exception!.Message.Should().Be(expectedMesssage);
     }
 
     [Theory]
@@ -3003,23 +3069,23 @@ public static class CompetitionsServiceTests
     private const string CommonOrganisationInternalIdentifier = "BB-FFGG";
     private const string CommonOrganisationExternalIdentifier = "FFGG";
 
-    private static Organisation CommonOrganisationFactory()
+    private static Organisation CommonOrganisationFactory(int customId = 0)
     {
         return new Organisation
         {
-            Id = CommonCompetitionId,
+            Id = customId == 0 ? CommonCompetitionId : customId,
             InternalIdentifier = CommonOrganisationInternalIdentifier,
             ExternalIdentifier = CommonOrganisationExternalIdentifier,
             Name = "A Local ICB",
         };
     }
 
-    private static Competition CommonCompetitionFactory()
+    private static Competition CommonCompetitionFactory(int customId = 0, int customOrganisationId = 0)
     {
         return new Competition
         {
-            Id = CommonCompetitionId,
-            OrganisationId = CommonOrganisationId,
+            Id = customId == 0 ? CommonCompetitionId : customId,
+            OrganisationId = customOrganisationId == 0 ? CommonOrganisationId : customOrganisationId,
             Name = "My Competition",
             Description = "Competition for competitiony things",
         };

@@ -307,7 +307,7 @@ public class CompetitionsService : ICompetitionsService
             .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
             .Include(x => x.Organisation)
             .Include(x => x.CompetitionSublocations)
-            .FirstOrDefaultAsync();
+            .FirstAsync();
 
         if (competition.Completed.HasValue)
         {
@@ -361,7 +361,7 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.Organisation)
             .Include(x => x.CompetitionSublocations)
             .ThenInclude(y => y.SublocationRecipients)
-            .FirstOrDefaultAsync();
+            .FirstAsync();
 
         if (competition.Completed.HasValue)
         {
