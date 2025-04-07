@@ -56,8 +56,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             string sublocationOdsCode,
             HashSet<string> recipientOdsCodes)
         {
-            ArgumentException.ThrowIfNullOrEmpty(parentOdsCode, nameof(parentOdsCode));
-            ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode, nameof(sublocationOdsCode));
+            ArgumentException.ThrowIfNullOrEmpty(parentOdsCode);
+            ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode);
             if (recipientOdsCodes.IsNullOrEmpty())
             {
                 throw new ArgumentException(@"recipientOdsCodes is null or empty", nameof(recipientOdsCodes));
@@ -117,8 +117,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             string sublocationOdsCode,
             HashSet<string> recipientOdsCodes)
         {
-            ArgumentException.ThrowIfNullOrEmpty(parentOdsCode, nameof(parentOdsCode));
-            ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode, nameof(sublocationOdsCode));
+            ArgumentException.ThrowIfNullOrEmpty(parentOdsCode);
+            ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode);
             if (recipientOdsCodes.IsNullOrEmpty())
             {
                 throw new ArgumentException(@"recipientOdsCodes is null or empty", nameof(recipientOdsCodes));

@@ -392,7 +392,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
             exception!.GetType().Should().Be(expectedExceptionType);
         }
 
-        private static IEnumerable<object[]> RemoveSublocationRecipientsNotValidData()
+        public static IEnumerable<object[]> RemoveSublocationRecipientsNotValidData()
         {
             Competition completeCompetition = CommonCompetitionFactory(32, 45);
             completeCompetition.Completed = new DateTime(2024, 01, 03);
@@ -464,7 +464,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
             exception!.Message.Should().Be(expectedMessage);
         }
 
-        private static IEnumerable<object[]> RemoveSublocationRecipientsData()
+        public static IEnumerable<object[]> RemoveSublocationRecipientsData()
         {
             return
             [

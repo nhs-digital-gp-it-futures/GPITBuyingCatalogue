@@ -296,11 +296,11 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         HashSet<string> sublocationOdsCodes)
     {
-        ArgumentException.ThrowIfNullOrEmpty(internalOrgId, nameof(internalOrgId));
+        ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
 
         if (sublocationOdsCodes.IsNullOrEmpty())
         {
-            throw new ArgumentException("sublocationIds is null or empty", nameof(sublocationOdsCodes));
+            throw new ArgumentException(@"sublocationOdsCodes is null or empty", nameof(sublocationOdsCodes));
         }
 
         Competition competition = await dbContext.Competitions
@@ -352,7 +352,7 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         HashSet<string> sublocationOdsCodes)
     {
-        ArgumentException.ThrowIfNullOrEmpty(internalOrgId, nameof(internalOrgId));
+        ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
 
         if (sublocationOdsCodes.IsNullOrEmpty())
         {
@@ -828,7 +828,7 @@ public class CompetitionsService : ICompetitionsService
         int competitionId,
         ICollection<CompetitionSublocation> competitionSublocations)
     {
-        ArgumentException.ThrowIfNullOrEmpty(internalOrgId, nameof(internalOrgId));
+        ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
 
         if (competitionSublocations.IsNullOrEmpty())
         {

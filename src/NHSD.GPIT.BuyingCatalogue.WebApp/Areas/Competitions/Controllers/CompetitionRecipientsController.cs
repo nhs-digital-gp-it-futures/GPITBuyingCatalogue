@@ -445,6 +445,18 @@ public class CompetitionRecipientsController(
             new { internalOrgId, competitionId });
     }
 
+    private static string[] SplitCommaSeparatedString(string sublocationsToRemove)
+    {
+        return sublocationsToRemove?.Split(
+            ',',
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+    }
+
+    private static string JoinEnumerableStringsToCommaSeparatedString(IEnumerable<string> stringEnumerable)
+    {
+        return string.Join(",", stringEnumerable);
+    }
+
     private async Task<List<ServiceRecipientModel>> GetServiceRecipientModelsBySublocation(string sublocationOdsCode)
     {
         IEnumerable<ServiceRecipient> recipients =
@@ -474,19 +486,7 @@ public class CompetitionRecipientsController(
         foreach (CompetitionSublocation s in competition.CompetitionSublocations)
         {
             {
-                var recipientHref = Url.Action(
-                    nameof(SelectSublocationRecipients),
-                    typeof(CompetitionRecipientsController).ControllerName(),
-                    new { internalOrgId, competitionId, sublocationOdsCode = s.SublocationOdsCode });
-
-                var serviceRecipientCount =
-                    await competitionSublocationService.GetCountForCompetitionSublocationRecipients(
-                        competition.Organisation.ExternalIdentifier,
-                        competitionId,
-                        s.SublocationOdsCode);
-
-                var sublocationModel = new SublocationModel(s, recipientHref, serviceRecipientCount);
-                sublocations.Add(sublocationModel);
+                await MapSublocationToSublocationModel(s);
             }
         }
 
@@ -503,9 +503,26 @@ public class CompetitionRecipientsController(
             backLinkHref);
 
         return View("ServiceRecipients/SelectSublocationsOverview", model);
+
+        async Task MapSublocationToSublocationModel(CompetitionSublocation competitionSublocation)
+        {
+            var recipientHref = Url.Action(
+                nameof(SelectSublocationRecipients),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId, sublocationOdsCode = competitionSublocation.SublocationOdsCode });
+
+            var serviceRecipientCount =
+                await competitionSublocationService.GetCountForCompetitionSublocationRecipients(
+                    competition.Organisation.ExternalIdentifier,
+                    competitionId,
+                    competitionSublocation.SublocationOdsCode);
+
+            var sublocationModel = new SublocationModel(competitionSublocation, recipientHref, serviceRecipientCount);
+            sublocations.Add(sublocationModel);
+        }
     }
 
-    private IActionResult SelectSublocationsOverviewDynamicRedirect(
+    private RedirectToActionResult SelectSublocationsOverviewDynamicRedirect(
         SelectSublocationsOverviewModel model,
         string internalOrgId,
         int competitionId)
@@ -524,17 +541,5 @@ public class CompetitionRecipientsController(
             nameof(ConfirmSublocationRecipients),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
-    }
-
-    private static string[] SplitCommaSeparatedString(string sublocationsToRemove)
-    {
-        return sublocationsToRemove?.Split(
-            ',',
-            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
-    }
-
-    private static string JoinEnumerableStringsToCommaSeparatedString(IEnumerable<string> stringEnumerable)
-    {
-        return string.Join(",", stringEnumerable);
     }
 }
