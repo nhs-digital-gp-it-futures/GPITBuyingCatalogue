@@ -357,7 +357,7 @@ public class CompetitionRecipientsController(
     }
 
     [HttpPost("confirm-sublocations")]
-    public IActionResult ConfirmSublocationsPost(
+    public IActionResult ConfirmSublocations(
         SelectSublocationsOverviewModel model,
         string internalOrgId,
         int competitionId)

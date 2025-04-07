@@ -729,26 +729,118 @@ public static class CompetitionRecipientsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task ConfirmSublocations_ReturnsView(
+    public static async Task ConfirmSublocations_ReturnsSublocationsView(
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> competitionSublocations,
         [Frozen] ICompetitionsService competitionsService,
+        [Frozen] ICompetitionSublocationService competitionSublocationService,
         CompetitionRecipientsController controller)
     {
-        Assert.Fail("not implemented");
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competition.CompetitionSublocations = competitionSublocations;
+
+        competitionsService.GetCompetitionWithSublocations(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition);
+        competitionSublocationService.GetCountForCompetitionSublocationRecipients(
+                organisation.ExternalIdentifier,
+                competition.Id,
+                Arg.Any<string>())
+            .Returns(
+                call => competitionSublocations.First(x => x.SublocationOdsCode == call.ArgAt<string>(2))
+                    .SublocationRecipients.Count);
+
+        var expectedModel = new SelectSublocationsOverviewModel
+        {
+            Title = "Confirm sublocations",
+            Caption = competition.Name,
+            Advice = "Select a sublocation to amend the organisations in this competition",
+            ProcessType = "competition",
+            Sublocations = competitionSublocations.Select(
+                    x => new SublocationModel
+                    {
+                        Name = x.SublocationOrganisation.Name,
+                        ServiceRecipientCount = x.SublocationRecipients.Count,
+                        OdsCode = x.SublocationOdsCode,
+                    })
+                .ToList(),
+            ParentName = organisation.Name,
+        };
+
+        var result =
+            (await controller.ConfirmSublocations(organisation.InternalIdentifier, competition.Id))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(model => model.BackLink)
+                    .Excluding(model => model.AddOrChangeSublocationsHref)
+                    .Excluding(model => model.Sublocations));
+
+        IReadOnlyList<SublocationModel> sublocations = result.Model.As<SelectSublocationsOverviewModel>().Sublocations;
+
+        sublocations.Should()
+            .BeEquivalentTo(
+                expectedModel.Sublocations,
+                opt => opt.Excluding(slModel => slModel.RecipientHref).Excluding(slModel => slModel.TaskProgress));
     }
 
     [Theory]
     [MockAutoData]
-    public static async Task ConfirmSublocations_Post_Redirects(
-        Organisation organisation,
-        Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
-        [Frozen] ICompetitionsService competitionsService,
+    public static void ConfirmSublocations_Post_ConditionalRedirect_RedirectToTasklistIfIncomplete(
+        string internalOrganisationId,
+        int competitionId,
         CompetitionRecipientsController controller)
     {
-        Assert.Fail("not implemented");
+        var callingModel =
+            new SelectSublocationsOverviewModel
+            {
+                Sublocations = [new SublocationModel { ServiceRecipientCount = 0 }],
+            };
+
+        var result =
+            controller.ConfirmSublocations(callingModel, internalOrganisationId, competitionId)
+                .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
+        result.ControllerName.Should().Be(typeof(CompetitionTaskListController).ControllerName());
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", internalOrganisationId }, { "competitionId", competitionId },
+                });
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void ConfirmSublocations_Post_ConditionalRedirect_RedirectToConfirmScreenIfComplete(
+        string internalOrganisationId,
+        int competitionId,
+        CompetitionRecipientsController controller)
+    {
+        var callingModel =
+            new SelectSublocationsOverviewModel
+            {
+                Sublocations = [new SublocationModel { ServiceRecipientCount = 1 }],
+            };
+
+        var result =
+            controller.ConfirmSublocations(callingModel, internalOrganisationId, competitionId)
+                .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.ConfirmSublocationRecipients));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", internalOrganisationId }, { "competitionId", competitionId },
+                });
     }
 
     [Theory]
