@@ -256,12 +256,82 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
             exception!.Message.Should().Be(expectedMessage);
         }
 
+        private static IEnumerable<object[]> AddSublocationRecipientsData()
+        {
+            return
+            [
+                [
+                    CommonOrganisationFactory(45), CommonCompetitionFactory(32, 45),
+                    CommonCompetitionSublocationFactory("XXXX", [], true, 32),
+                    new List<EntityOdsOrganisation>
+                    {
+                        CommonEntityOdsOrganisationFactory("AAAA"),
+                        CommonEntityOdsOrganisationFactory("AAAB"),
+                        CommonEntityOdsOrganisationFactory("AAAC"),
+                    },
+                    new List<ServiceRecipient>
+                    {
+                        CommonServiceRecipientFactory("AAAA", "XXXX"),
+                        CommonServiceRecipientFactory("AAAB", "XXXX"),
+                        CommonServiceRecipientFactory("AAAC", "XXXX"),
+                    },
+                    new HashSet<string> { "AAAA", "AAAB" },
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX", 32, true),
+                            CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX", 32, true),
+                        ],
+                        true,
+                        32),
+                ],
+            ];
+        }
+
         [Theory]
-        [MockInMemoryDbAutoData]
+        [MockInMemoryDbMemberAutoData(nameof(AddSublocationRecipientsData))]
         public static async Task AddSublocationRecipients_AddsAsExpected(
+            Organisation organisation,
+            Competition competition,
+            CompetitionSublocation workingCompetitionSublocation,
+            List<EntityOdsOrganisation> validSublocationRecipientsAsEntityModels,
+            List<ServiceRecipient> validSublocationRecipientsAsServiceModels,
+            HashSet<string> addSublocationRecipientsOdsCodes,
+            CompetitionSublocation expectedCompetitionSublocation,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] IOdsService odsService,
             CompetitionSublocationService service)
         {
-            Assert.Fail("not implemented");
+            competition.Organisation = organisation;
+
+            context.AddRange(validSublocationRecipientsAsEntityModels);
+            context.Add(workingCompetitionSublocation);
+            context.Add(competition);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            odsService.GetServiceRecipientsBySublocation(workingCompetitionSublocation.SublocationOdsCode)
+                .Returns(validSublocationRecipientsAsServiceModels);
+
+            await service.AddSublocationRecipients(
+                organisation.ExternalIdentifier,
+                competition.Id,
+                workingCompetitionSublocation.SublocationOdsCode,
+                addSublocationRecipientsOdsCodes);
+
+            CompetitionSublocation actualCompetitionSublocation = await service.GetCompetitionSublocationWithRecipients(
+                organisation.ExternalIdentifier,
+                competition.Id,
+                workingCompetitionSublocation.SublocationOdsCode);
+
+            actualCompetitionSublocation.Should()
+                .BeEquivalentTo(
+                    expectedCompetitionSublocation,
+                    opt => opt.WithoutStrictOrdering()
+                        .Excluding(m => m.Competition)
+                        .Excluding(m => m.SublocationOrganisation)
+                        .Excluding(m => m.SublocationRecipients));
         }
 
         [Theory]
