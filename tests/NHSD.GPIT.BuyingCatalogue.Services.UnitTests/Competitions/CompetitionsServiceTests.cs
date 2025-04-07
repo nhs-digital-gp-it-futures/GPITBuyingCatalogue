@@ -28,6 +28,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions;
 
 public static class CompetitionsServiceTests
 {
+    private const int CommonCompetitionId = 34;
+    private const int CommonOrganisationId = 21;
+    private const string CommonOrganisationInternalIdentifier = "BB-FFGG";
+    private const string CommonOrganisationExternalIdentifier = "FFGG";
+
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
@@ -3315,12 +3320,6 @@ public static class CompetitionsServiceTests
                     .Excluding(m => m.Solution)
                     .Excluding(m => m.SolutionServices));
     }
-
-    private const int CommonCompetitionId = 34;
-
-    private const int CommonOrganisationId = 21;
-    private const string CommonOrganisationInternalIdentifier = "BB-FFGG";
-    private const string CommonOrganisationExternalIdentifier = "FFGG";
 
     private static Organisation CommonOrganisationFactory(int customId = 0)
     {

@@ -20,6 +20,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
 {
     public static class CompetitionSublocationServiceTests
     {
+        private const int CommonCompetitionId = 34;
+        private const int CommonOrganisationId = 21;
+        private const string CommonOrganisationInternalIdentifier = "BB-FFGG";
+        private const string CommonOrganisationExternalIdentifier = "FFGG";
+
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task GetCompetitionSublocationWithRecipients_ReturnsCompetitionSublocation(
@@ -538,12 +543,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
                         opt => opt.Excluding(m => m.Competition).Excluding(m => m.ParentSublocation));
             }
         }
-
-        private const int CommonCompetitionId = 34;
-
-        private const int CommonOrganisationId = 21;
-        private const string CommonOrganisationInternalIdentifier = "BB-FFGG";
-        private const string CommonOrganisationExternalIdentifier = "FFGG";
 
         private static Organisation CommonOrganisationFactory(int customId = 0)
         {

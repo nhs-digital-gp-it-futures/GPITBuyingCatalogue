@@ -24,6 +24,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controll
 
 public static class CompetitionRecipientsControllerTests
 {
+    private const int CommonCompetitionId = 34;
+    private const int CommonOrganisationId = 21;
+    private const string CommonOrganisationInternalIdentifier = "BB-FFGG";
+    private const string CommonOrganisationExternalIdentifier = "FFGG";
+
+    private static readonly Func<EquivalencyAssertionOptions<ServiceRecipientModel>,
+            EquivalencyAssertionOptions<ServiceRecipientModel>>
+        CommonNameDescriptionExclusionConfig = opt =>
+            opt.Excluding(m => m.Name)
+                .Excluding(m => m.Description)
+                .WithoutStrictOrdering(); // Ordering provided by DB not controller
+
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
@@ -1478,12 +1490,6 @@ public static class CompetitionRecipientsControllerTests
         ];
     }
 
-    private const int CommonCompetitionId = 34;
-
-    private const int CommonOrganisationId = 21;
-    private const string CommonOrganisationInternalIdentifier = "BB-FFGG";
-    private const string CommonOrganisationExternalIdentifier = "FFGG";
-
     private static Organisation CommonOrganisationFactory()
     {
         return new Organisation
@@ -1565,11 +1571,4 @@ public static class CompetitionRecipientsControllerTests
             return false;
         }
     }
-
-    private static readonly Func<EquivalencyAssertionOptions<ServiceRecipientModel>,
-            EquivalencyAssertionOptions<ServiceRecipientModel>>
-        CommonNameDescriptionExclusionConfig = opt =>
-            opt.Excluding(m => m.Name)
-                .Excluding(m => m.Description)
-                .WithoutStrictOrdering(); // Ordering provided by DB not controller
 }
