@@ -14,7 +14,6 @@ using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using NSubstitute;
 using Xunit;
 using EntityOdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
-using ServiceContractOdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
 {
@@ -190,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
             exception!.GetType().Should().Be(expectedExceptionType);
         }
 
-        private static IEnumerable<object[]> AddSublocationRecipientsNotValidData()
+        public static IEnumerable<object[]> AddSublocationRecipientsNotValidData()
         {
             Competition completeCompetition = CommonCompetitionFactory(32, 45);
             completeCompetition.Completed = new DateTime(2024, 01, 03);
@@ -262,7 +261,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
             exception!.Message.Should().Be(expectedMessage);
         }
 
-        private static IEnumerable<object[]> AddSublocationRecipientsData()
+        public static IEnumerable<object[]> AddSublocationRecipientsData()
         {
             return
             [
@@ -601,14 +600,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
         private static EntityOdsOrganisation CommonEntityOdsOrganisationFactory(string id)
         {
             return new EntityOdsOrganisation { Id = id, Name = $"An organisation - {id}", IsActive = true };
-        }
-
-        private static ServiceContractOdsOrganisation CommonServiceContractOdsOrganisationFactory(string id)
-        {
-            return new ServiceContractOdsOrganisation
-            {
-                OdsCode = id, OrganisationName = $"An organisation - {id}", IsActive = true,
-            };
         }
 
         private static ServiceRecipient CommonServiceRecipientFactory(string orgId, string locationOrgId)

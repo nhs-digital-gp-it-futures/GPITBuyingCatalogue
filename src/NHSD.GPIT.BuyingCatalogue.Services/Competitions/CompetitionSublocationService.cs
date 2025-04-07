@@ -21,16 +21,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
 
         private readonly IOdsService odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
 
-        private static Expression<Func<CompetitionSublocation, bool>> CompetitionSublocationPrimaryKeyPredicate(
-            string externalOrgId,
-            int competitionId,
-            string sublocationOdsCode)
-        {
-            return x => x.OwnerOdsCode == externalOrgId
-                && x.CompetitionId == competitionId
-                && x.SublocationOdsCode == sublocationOdsCode;
-        }
-
         public async Task<CompetitionSublocation> GetCompetitionSublocationWithRecipients(
             string externalOrgId,
             int competitionId,
@@ -171,6 +161,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
             }
 
             await dbContext.SaveChangesAsync();
+        }
+
+        private static Expression<Func<CompetitionSublocation, bool>> CompetitionSublocationPrimaryKeyPredicate(
+            string externalOrgId,
+            int competitionId,
+            string sublocationOdsCode)
+        {
+            return x => x.OwnerOdsCode == externalOrgId
+                && x.CompetitionId == competitionId
+                && x.SublocationOdsCode == sublocationOdsCode;
         }
     }
 }

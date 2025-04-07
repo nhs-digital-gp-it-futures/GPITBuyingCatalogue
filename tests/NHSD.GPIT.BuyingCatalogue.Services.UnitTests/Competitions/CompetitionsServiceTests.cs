@@ -209,7 +209,7 @@ public static class CompetitionsServiceTests
         }
     }
 
-    private static IEnumerable<object[]> CompetitionSublocationFlattenedRecipients()
+    public static IEnumerable<object[]> CompetitionSublocationFlattenedRecipients()
     {
         return
         [
@@ -1102,7 +1102,7 @@ public static class CompetitionsServiceTests
         exception!.GetType().Should().Be(expectedExceptionType);
     }
 
-    private static IEnumerable<object[]> AddSublocationsNotValidData()
+    public static IEnumerable<object[]> AddSublocationsNotValidData()
     {
         Competition completedCompetition = CommonCompetitionFactory(67, 21);
         completedCompetition.Completed = new DateTime(2024, 05, 03);
@@ -1168,7 +1168,7 @@ public static class CompetitionsServiceTests
         exception!.Message.Should().Be(expectedMessage);
     }
 
-    private static IEnumerable<object[]> AddSublocationsData()
+    public static IEnumerable<object[]> AddSublocationsData()
     {
         return
         [
@@ -1274,7 +1274,7 @@ public static class CompetitionsServiceTests
         exception!.GetType().Should().Be(expectedExceptionType);
     }
 
-    private static IEnumerable<object[]> RemoveSublocationsNotValidData()
+    public static IEnumerable<object[]> RemoveSublocationsNotValidData()
     {
         Competition completedCompetition = CommonCompetitionFactory(67, 21);
         completedCompetition.Completed = new DateTime(2024, 05, 03);
@@ -1343,7 +1343,7 @@ public static class CompetitionsServiceTests
         exception!.Message.Should().Be(expectedMessage);
     }
 
-    private static IEnumerable<object[]> RemoveSublocationsData()
+    public static IEnumerable<object[]> RemoveSublocationsData()
     {
         return
         [
@@ -1467,7 +1467,7 @@ public static class CompetitionsServiceTests
         exception!.Message.Should().Be("Cannot set sublocations / recipients on a completed competition.");
     }
 
-    private static IEnumerable<object[]> CompetitionSublocationNotValidData()
+    public static IEnumerable<object[]> CompetitionSublocationNotValidData()
     {
         Organisation organisation = CommonOrganisationFactory();
         Competition competition = CommonCompetitionFactory();
@@ -1557,7 +1557,7 @@ public static class CompetitionsServiceTests
         exception!.Message.Should().Be("Provided sublocations not valid for this organisation.");
     }
 
-    private static IEnumerable<object[]> CompetitionSublocationAndInvalidRecipientsData()
+    public static IEnumerable<object[]> CompetitionSublocationAndInvalidRecipientsData()
     {
         Organisation organisation = CommonOrganisationFactory();
         Competition competition = CommonCompetitionFactory();
@@ -1664,7 +1664,7 @@ public static class CompetitionsServiceTests
         exception!.Message.Should().Be("Provided recipients not valid for this organisation or its sublocations.");
     }
 
-    private static IEnumerable<object[]> CompetitionSublocationAndRecipientsData()
+    public static IEnumerable<object[]> CompetitionSublocationAndRecipientsData()
     {
         Organisation organisation = CommonOrganisationFactory();
         Competition competition = CommonCompetitionFactory();
