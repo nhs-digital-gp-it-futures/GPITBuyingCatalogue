@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
@@ -68,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 case null:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(SelectionMode), @"Selection mode mot handled");
+                    throw new InvalidDataException("Selection mode mot handled");
             }
         }
     }

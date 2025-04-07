@@ -1150,7 +1150,7 @@ public static class CompetitionRecipientsControllerTests
                     "XXXX",
                     [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX")]),
 
-                commonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", true)]),
+                CommonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", true)]),
                 new List<ServiceRecipientModel>
                 {
                     CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
@@ -1166,7 +1166,7 @@ public static class CompetitionRecipientsControllerTests
                     "XXXX",
                     []),
 
-                commonSublocationModelFactory(
+                CommonSublocationModelFactory(
                     "XXXX",
                     [
                     ]),
@@ -1189,7 +1189,7 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
                     ]),
 
-                commonSublocationModelFactory(
+                CommonSublocationModelFactory(
                     "XXXX",
                     [
                         CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
@@ -1215,7 +1215,7 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
                     ]),
 
-                commonSublocationModelFactory(
+                CommonSublocationModelFactory(
                     "XXXX",
                     [
                         CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
@@ -1241,7 +1241,7 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("BAAC", "XXXX"),
                     ]),
 
-                commonSublocationModelFactory(
+                CommonSublocationModelFactory(
                     "XXXX",
                     [
                         CommonServiceRecipientModelFactory("BAAA", "XXXX", true),
@@ -1279,7 +1279,7 @@ public static class CompetitionRecipientsControllerTests
                     "XXXX",
                     []),
 
-                commonSublocationModelFactory("XXXX", []),
+                CommonSublocationModelFactory("XXXX", []),
                 new List<ServiceRecipientModel>
                 {
                     CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
@@ -1298,7 +1298,7 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
                     ]),
 
-                commonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", true)]),
+                CommonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", true)]),
                 new List<ServiceRecipientModel>
                 {
                     CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
@@ -1319,7 +1319,7 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
                     ]),
 
-                commonSublocationModelFactory(
+                CommonSublocationModelFactory(
                     "XXXX",
                     [
                         CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
@@ -1342,7 +1342,7 @@ public static class CompetitionRecipientsControllerTests
                     "XXXX",
                     []),
 
-                commonSublocationModelFactory("XXXX", []),
+                CommonSublocationModelFactory("XXXX", []),
                 new List<ServiceRecipientModel>
                 {
                     CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
@@ -1359,7 +1359,7 @@ public static class CompetitionRecipientsControllerTests
                     "XXXX",
                     [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX")]),
 
-                commonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", false)]),
+                CommonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", false)]),
                 new List<ServiceRecipientModel>
                 {
                     CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
@@ -1380,7 +1380,7 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
                     ]),
 
-                commonSublocationModelFactory(
+                CommonSublocationModelFactory(
                     "XXXX",
                     [
                         CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
@@ -1542,7 +1542,7 @@ public static class CompetitionRecipientsControllerTests
         return new ServiceRecipient { OrgId = orgId, LocationOrgId = locationOrgId };
     }
 
-    private static SublocationModel commonSublocationModelFactory(
+    private static SublocationModel CommonSublocationModelFactory(
         string odsCode,
         IReadOnlyList<ServiceRecipientModel> serviceRecipients = null)
     {
