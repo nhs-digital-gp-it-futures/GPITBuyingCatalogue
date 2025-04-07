@@ -460,12 +460,19 @@ public class CompetitionHubController : Controller
                 competitionRecipientIds);
 
         return competitionRecipients.Select(
-            x => new ServiceRecipientQuantityDto(
-                x.Id,
-                x.Name,
-                recipientQuantities?.FirstOrDefault(y => x.Id == y.OdsCode)?.Quantity
-                ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.Id)?.NumberOfPatients,
-                organisations?.FirstOrDefault(y => x.Id == y.OrgId).Location));
+            x =>
+            {
+                var quantity = recipientQuantities?.FirstOrDefault(y => x.Id == y.OdsCode)?.Quantity
+                    ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.Id)?.NumberOfPatients;
+
+                var location = organisations?.FirstOrDefault(y => x.Id == y.OrgId)?.Location;
+
+                return new ServiceRecipientQuantityDto(
+                    x.Id,
+                    x.Name,
+                    quantity,
+                    location);
+            });
     }
 
     private static (IPrice Price, CatalogueItem CatalogueItem, int? Quantity) GetGlobalQuantityDetails(
