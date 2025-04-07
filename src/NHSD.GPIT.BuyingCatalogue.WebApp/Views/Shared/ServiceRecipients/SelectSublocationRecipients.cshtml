@@ -19,7 +19,7 @@
 
         @if ((Model.PreviouslySelected?.Any() ?? false))
         {
-            @if (Model.IsAmendment && (Model.PreviouslySelected?.Any() ?? false))
+            @if (Model.IsAmendment is true && (Model.PreviouslySelected?.Any() ?? false))
             {
                 <div id="previously-selected-service-recipients">
                     <nhs-details label-text="View Service Recipients from the previous revision" data-test-id="existing-recipients-details">

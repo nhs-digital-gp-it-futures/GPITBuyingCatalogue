@@ -222,7 +222,7 @@ public class CompetitionRecipientsController(
         string internalOrgId,
         int competitionId)
     {
-        if (removeSublocationsModel.ConfirmRemove)
+        if (removeSublocationsModel.ConfirmRemove is true)
         {
             HashSet<string> adds = removeSublocationsModel.SublocationIdsToAdd?.ToHashSet();
             HashSet<string> removes = removeSublocationsModel.SublocationIdsToRemove?.ToHashSet();
