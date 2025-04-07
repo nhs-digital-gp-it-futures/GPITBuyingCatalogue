@@ -446,12 +446,70 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
             exception!.Message.Should().Be(expectedMessage);
         }
 
+        private static IEnumerable<object[]> RemoveSublocationRecipientsData()
+        {
+            return
+            [
+                [
+                    CommonOrganisationFactory(45), CommonCompetitionFactory(32, 45),
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX", 32, true),
+                            CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX", 32, true),
+                            CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX", 32, true),
+                        ],
+                        true,
+                        32),
+                    new HashSet<string> { "AAAA", "AAAB" },
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX", 32, true),
+                        ],
+                        true,
+                        32),
+                ],
+            ];
+        }
+
         [Theory]
-        [MockInMemoryDbAutoData]
-        public static async Task RemoveSublocationRecipients_RemovesAsExpected(
+        [MockInMemoryDbMemberAutoData(nameof(RemoveSublocationRecipientsData))]
+        public static async Task RemoveSublocationRecipients_AddsAsExpected(
+            Organisation organisation,
+            Competition competition,
+            CompetitionSublocation workingCompetitionSublocation,
+            HashSet<string> removeSublocationRecipientsOdsCodes,
+            CompetitionSublocation expectedCompetitionSublocation,
+            [Frozen] BuyingCatalogueDbContext context,
             CompetitionSublocationService service)
         {
-            Assert.Fail("not implemented");
+            competition.Organisation = organisation;
+
+            context.Add(workingCompetitionSublocation);
+            context.Add(competition);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            await service.RemoveSublocationRecipients(
+                organisation.ExternalIdentifier,
+                competition.Id,
+                workingCompetitionSublocation.SublocationOdsCode,
+                removeSublocationRecipientsOdsCodes);
+
+            CompetitionSublocation actualCompetitionSublocation = await service.GetCompetitionSublocationWithRecipients(
+                organisation.ExternalIdentifier,
+                competition.Id,
+                workingCompetitionSublocation.SublocationOdsCode);
+
+            actualCompetitionSublocation.Should()
+                .BeEquivalentTo(
+                    expectedCompetitionSublocation,
+                    opt => opt.WithoutStrictOrdering()
+                        .Excluding(m => m.Competition)
+                        .Excluding(m => m.SublocationOrganisation)
+                        .Excluding(m => m.SublocationRecipients));
         }
 
         private const int CommonCompetitionId = 34;
