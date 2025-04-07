@@ -100,10 +100,45 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task GetCompetitionsWithSublocations_ReturnsCompetition(
+    public static async Task GetCompetitionWithSublocations_ReturnsCompetition(
+        Organisation organisation,
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        [Frozen] BuyingCatalogueDbContext context,
         CompetitionsService service)
     {
-        Assert.Fail("not implemented");
+        competition.Organisation = organisation;
+
+        competitionSublocations.ForEach(
+            x =>
+            {
+                x.OwnerOdsCode = organisation.ExternalIdentifier;
+                x.CompetitionId = competition.Id;
+                x.SublocationOrganisation.Id = x.SublocationOdsCode;
+            });
+
+        competition.CompetitionSublocations = competitionSublocations;
+
+        context.Add(competition);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        Competition result = await service.GetCompetitionWithSublocations(
+            organisation.InternalIdentifier,
+            competition.Id);
+
+        result.Should()
+            .BeEquivalentTo(
+                competition,
+                opt => opt.Excluding(m => m.Framework)
+                    .Excluding(m => m.CompetitionSublocations)
+                    .Excluding(m => m.FlattenedRecipients));
+        result.CompetitionSublocations.Should()
+            .BeEquivalentTo(
+                competition.CompetitionSublocations,
+                opt => opt.Excluding(m => m.Competition).Excluding(m => m.SublocationRecipients));
     }
 
     [Theory]
