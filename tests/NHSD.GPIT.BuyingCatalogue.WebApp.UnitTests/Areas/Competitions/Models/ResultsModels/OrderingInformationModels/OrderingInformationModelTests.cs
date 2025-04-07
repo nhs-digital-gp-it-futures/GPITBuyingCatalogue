@@ -30,7 +30,7 @@ public static class OrderingInformationModelTests
         model.CompetitionId.Should().Be(competition.Id);
         model.CompetitionName.Should().Be(competition.Name);
 
-        model.NumberOfRecipients.Should().Be(competition.FlattenedRecipients.Count);
+        model.NumberOfRecipients.Should().Be(competition.FlattenedRecipients.Count());
         model.ContractLength.Should().Be(competition.ContractLength);
     }
 

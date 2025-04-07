@@ -518,7 +518,7 @@ public class CompetitionHubController : Controller
         {
             return (competitionSolution.Price, competitionSolution.Solution.CatalogueItem,
                 await GetRecipientQuantities(
-                    competition.FlattenedRecipients,
+                    competition.FlattenedRecipients.ToList(),
                     competitionSolution.Quantities.Cast<RecipientQuantityBase>().ToList(),
                     internalOrgId));
         }
@@ -528,7 +528,7 @@ public class CompetitionHubController : Controller
 
         return (service.Price, service.Service,
             await GetRecipientQuantities(
-                competition.FlattenedRecipients,
+                competition.FlattenedRecipients.ToList(),
                 service.Quantities.Cast<RecipientQuantityBase>().ToList(),
                 internalOrgId));
     }

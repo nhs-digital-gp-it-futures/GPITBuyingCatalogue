@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -153,8 +154,8 @@ public class CompetitionTaskListModel
 
         if (CompareAndScoreSolutions is not (TaskProgress.NotApplicable or TaskProgress.Completed)) return;
 
-        var solutionProgressStatuses = competition.CompetitionSolutions
-            .Select(x => new CompetitionSolutionProgress(x, competition.FlattenedRecipients))
+        List<CompetitionSolutionProgress> solutionProgressStatuses = competition.CompetitionSolutions
+            .Select(x => new CompetitionSolutionProgress(x, competition.FlattenedRecipients.ToList()))
             .ToList();
 
         CalculatePrice = CompletedInProgressOrNotStarted(

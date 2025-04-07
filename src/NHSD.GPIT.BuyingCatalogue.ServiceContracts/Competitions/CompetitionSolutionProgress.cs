@@ -9,11 +9,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 public readonly struct CompetitionSolutionProgress
 {
     private readonly CompetitionSolution competitionSolution;
-    private readonly IReadOnlyList<OdsOrganisation> competitionRecipients;
+    private readonly ICollection<OdsOrganisation> competitionRecipients;
 
     public CompetitionSolutionProgress(
         CompetitionSolution competitionSolution,
-        IReadOnlyList<OdsOrganisation> competitionRecipients)
+        ICollection<OdsOrganisation> competitionRecipients)
     {
         this.competitionSolution = competitionSolution;
         this.competitionRecipients = competitionRecipients;
@@ -48,7 +48,7 @@ public readonly struct CompetitionSolutionProgress
         {
             bool HasQuantities(
                 CompetitionSolution solution,
-                IReadOnlyList<OdsOrganisation> recipients)
+                ICollection<OdsOrganisation> recipients)
             {
                 return (solution.Quantity.HasValue || (solution.Quantities.Any()
                         && recipients.All(x => solution.Quantities.Any(y => y.OdsCode == x.Id))))

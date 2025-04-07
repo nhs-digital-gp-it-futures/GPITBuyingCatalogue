@@ -73,8 +73,7 @@ public class Competition
     ///     sublocation recipients are included in db query.
     /// </summary>
     [NotMapped]
-    public IReadOnlyList<OdsOrganisation> FlattenedRecipients => CompetitionSublocations?
+    public IEnumerable<OdsOrganisation> FlattenedRecipients => CompetitionSublocations?
         .Where(x => x.SublocationRecipients is { Count: > 0 })
-        .SelectMany(x => x.SublocationRecipients.Select(y => y.RecipientOrganisation))
-        .ToList();
+        .SelectMany(x => x.SublocationRecipients.Select(y => y.RecipientOrganisation));
 }
