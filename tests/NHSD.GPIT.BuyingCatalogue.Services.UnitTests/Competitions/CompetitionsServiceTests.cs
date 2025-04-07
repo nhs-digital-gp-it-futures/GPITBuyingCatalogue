@@ -190,13 +190,16 @@ public static class CompetitionsServiceTests
                     .Excluding(m => m.SublocationOrganisation)
                     .Excluding(m => m.SublocationRecipients));
 
-        foreach (CompetitionSublocation resultCompetitionSublocation in result.CompetitionSublocations)
+        foreach (CompetitionSublocation expectedCompetitionSublocation in competition.CompetitionSublocations)
         {
-            resultCompetitionSublocation.SublocationRecipients.Should()
+            ICollection<CompetitionSublocationRecipient> actualSublocationRecipients = result.CompetitionSublocations
+                .First(
+                    x => x.SublocationOdsCode == expectedCompetitionSublocation.SublocationOdsCode)
+                .SublocationRecipients;
+
+            expectedCompetitionSublocation.SublocationRecipients.Should()
                 .BeEquivalentTo(
-                    competition.CompetitionSublocations.First(
-                            x => x.SublocationOdsCode == resultCompetitionSublocation.SublocationOdsCode)
-                        .SublocationRecipients,
+                    actualSublocationRecipients,
                     opt => opt.Excluding(m => m.Competition).Excluding(m => m.ParentSublocation));
         }
     }
