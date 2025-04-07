@@ -372,6 +372,37 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Organisations
             actual.Should().BeNull();
         }
 
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetOrganisationExternalIdentifierByInternalIdentifier(
+            Organisation organisation,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrganisationsService service)
+        {
+            context.Add(organisation);
+
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var result =
+                await service.GetOrganisationExternalIdentifierByInternalIdentifier(organisation.InternalIdentifier);
+
+            Assert.Equal(organisation.ExternalIdentifier, result);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetOrganisationExternalIdentifierByInternalIdentifierReturnsDefault(
+            Organisation organisation,
+            OrganisationsService service)
+        {
+            var result =
+                await service.GetOrganisationExternalIdentifierByInternalIdentifier(organisation.InternalIdentifier);
+
+            Assert.Null(result);
+        }
+
         private static List<Organisation> GetOrganisationsForSearchTerm(string searchTerm)
         {
             return new List<Organisation>

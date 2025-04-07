@@ -57,6 +57,12 @@ public class CompetitionImportServiceRecipientsController : Controller
         await importService.Clear(new(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId));
 
         var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
+
+        if (competitionName is null)
+        {
+            return NotFound();
+        }
+
         var model = new ImportServiceRecipientModel
         {
             BackLink = Url.Action(

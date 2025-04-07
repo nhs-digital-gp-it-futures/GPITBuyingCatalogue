@@ -18,6 +18,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
+using NSubstitute.ReturnsExtensions;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controllers;
@@ -517,6 +518,26 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
+    [MockAutoData]
+    public static async Task SelectSublocationRecipients_SelectionMode_ReturnsNotFound(
+        string internalOrgId,
+        int competitionId,
+        string sublocationOdsCode,
+        [Frozen] IOrganisationsService organisationsService,
+        CompetitionRecipientsController controller)
+    {
+        organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(internalOrgId).ReturnsNull();
+
+        var result =
+            (await controller.SelectSublocationRecipients(
+                internalOrgId,
+                competitionId,
+                sublocationOdsCode)).As<NotFoundResult>();
+
+        result.Should().NotBeNull();
+    }
+
+    [Theory]
     [MockMemberAutoData(nameof(SelectionModesAndExpectedResults))]
     public static async Task SelectSublocationRecipients_SelectionMode_ReturnsViewAsExpected(
         Organisation organisation,
@@ -633,6 +654,28 @@ public static class CompetitionRecipientsControllerTests
             organisationsService,
             odsOrganisationsService,
             controller);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task SelectSublocationRecipients_Post_ReturnsBadRequest(
+        SelectSublocationRecipientsModel selectSublocationRecipientsModel,
+        string internalOrgId,
+        int competitionId,
+        string sublocationOdsCode,
+        [Frozen] IOrganisationsService organisationsService,
+        CompetitionRecipientsController controller)
+    {
+        organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(internalOrgId).ReturnsNull();
+
+        var result =
+            (await controller.SelectSublocationRecipients(
+                selectSublocationRecipientsModel,
+                internalOrgId,
+                competitionId,
+                sublocationOdsCode)).As<BadRequestResult>();
+
+        result.Should().NotBeNull();
     }
 
     [Theory]

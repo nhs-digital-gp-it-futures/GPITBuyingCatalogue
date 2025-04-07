@@ -43,6 +43,12 @@ public class CompetitionRecipientsController(
         int competitionId)
     {
         var competition = await competitionsService.GetCompetition(internalOrgId, competitionId);
+
+        if (competition is null)
+        {
+            return NotFound();
+        }
+
         var model = new UploadOrSelectServiceRecipientModel()
         {
             Caption = competition.Name,
@@ -87,6 +93,11 @@ public class CompetitionRecipientsController(
     {
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+
+        if (competition is null)
+        {
+            return NotFound();
+        }
 
         IEnumerable<OdsOrganisation> possibleSublocations =
             await odsService.GetSublocationsByParentOdsCode(competition.Organisation.ExternalIdentifier);
@@ -202,6 +213,11 @@ public class CompetitionRecipientsController(
         Competition competition =
             await competitionsService.GetCompetition(internalOrgId, competitionId);
 
+        if (competition is null)
+        {
+            return NotFound();
+        }
+
         var backLinkHref = Url.Action(
             nameof(ConfirmSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
@@ -260,11 +276,21 @@ public class CompetitionRecipientsController(
         var externalOrganisationId =
             await organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(internalOrgId);
 
+        if (externalOrganisationId is null)
+        {
+            return NotFound();
+        }
+
         CompetitionSublocation competitionSublocation =
             await competitionSublocationService.GetCompetitionSublocationWithRecipients(
                 externalOrganisationId,
                 competitionId,
                 sublocationOdsCode);
+
+        if (competitionSublocation is null)
+        {
+            return NotFound();
+        }
 
         var sublocationAsSublocationModel = new SublocationModel(competitionSublocation, true);
 
@@ -301,11 +327,21 @@ public class CompetitionRecipientsController(
         var externalOrganisationId =
             await organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(internalOrgId);
 
+        if (externalOrganisationId is null)
+        {
+            return BadRequest();
+        }
+
         CompetitionSublocation sublocation =
             await competitionSublocationService.GetCompetitionSublocationWithRecipients(
                 externalOrganisationId,
                 competitionId,
                 sublocationOdsCode);
+
+        if (sublocation is null)
+        {
+            return BadRequest();
+        }
 
         HashSet<string> pageSelections = selectSublocationRecipientsModel.RenderedServiceRecipients
             .Where(x => x.Selected)
@@ -375,6 +411,11 @@ public class CompetitionRecipientsController(
                 internalOrgId,
                 competitionId);
 
+        if (competition is null)
+        {
+            return NotFound();
+        }
+
         var backLinkUrl = Url.Action(
             nameof(ConfirmSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
@@ -422,6 +463,11 @@ public class CompetitionRecipientsController(
     {
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
+
+        if (competition is null)
+        {
+            return NotFound();
+        }
 
         var sublocations = new List<SublocationModel>();
 

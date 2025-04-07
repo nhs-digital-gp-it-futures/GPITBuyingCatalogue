@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
                 .ThenInclude(y => y.RecipientOrganisation)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
         }
 
         public async Task<int> GetCountForCompetitionSublocationRecipients(
