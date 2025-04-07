@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using FluentAssertions;
@@ -332,6 +333,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
                         .Excluding(m => m.Competition)
                         .Excluding(m => m.SublocationOrganisation)
                         .Excluding(m => m.SublocationRecipients));
+
+            foreach (CompetitionSublocationRecipient expectedRecipient in expectedCompetitionSublocation
+                         .SublocationRecipients)
+            {
+                CompetitionSublocationRecipient actualRecipient =
+                    actualCompetitionSublocation.SublocationRecipients.First(
+                        x => x.RecipientOdsCode == expectedRecipient.RecipientOdsCode);
+
+                actualRecipient.Should()
+                    .BeEquivalentTo(
+                        expectedRecipient,
+                        opt => opt.Excluding(m => m.Competition).Excluding(m => m.ParentSublocation));
+            }
         }
 
         [Theory]
@@ -475,7 +489,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
 
         [Theory]
         [MockInMemoryDbMemberAutoData(nameof(RemoveSublocationRecipientsData))]
-        public static async Task RemoveSublocationRecipients_AddsAsExpected(
+        public static async Task RemoveSublocationRecipients_RemovesAsExpected(
             Organisation organisation,
             Competition competition,
             CompetitionSublocation workingCompetitionSublocation,
@@ -510,6 +524,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
                         .Excluding(m => m.Competition)
                         .Excluding(m => m.SublocationOrganisation)
                         .Excluding(m => m.SublocationRecipients));
+
+            foreach (CompetitionSublocationRecipient expectedRecipient in expectedCompetitionSublocation
+                         .SublocationRecipients)
+            {
+                CompetitionSublocationRecipient actualRecipient =
+                    actualCompetitionSublocation.SublocationRecipients.First(
+                        x => x.RecipientOdsCode == expectedRecipient.RecipientOdsCode);
+
+                actualRecipient.Should()
+                    .BeEquivalentTo(
+                        expectedRecipient,
+                        opt => opt.Excluding(m => m.Competition).Excluding(m => m.ParentSublocation));
+            }
         }
 
         private const int CommonCompetitionId = 34;
