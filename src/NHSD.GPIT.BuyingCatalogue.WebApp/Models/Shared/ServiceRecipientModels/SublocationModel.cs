@@ -44,7 +44,7 @@ public record SublocationModel
 
     public IReadOnlyList<ServiceRecipientModel> ServiceRecipients { get; init; }
 
-    public int ServiceRecipientCount { get; init; }
+    public int? ServiceRecipientCount { get; init; }
 
     public string RecipientHref { get; init; }
 

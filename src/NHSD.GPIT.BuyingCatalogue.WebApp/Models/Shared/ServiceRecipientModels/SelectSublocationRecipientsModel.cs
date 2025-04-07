@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public IReadOnlyCollection<ServiceRecipientModel> PreviouslySelected => Sublocation.ServiceRecipients;
 
-        public bool IsAmendment { get; init; }
+        public bool? IsAmendment { get; init; }
 
         public IReadOnlyList<ServiceRecipientModel> RenderedServiceRecipients { get; init; }
 

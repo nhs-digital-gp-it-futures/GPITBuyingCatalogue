@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             BackLink = backLinkHref;
         }
 
-        public bool ConfirmRemove { get; init; }
+        public bool? ConfirmRemove { get; init; }
 
         public string ListHeaderText { get; init; }
 
