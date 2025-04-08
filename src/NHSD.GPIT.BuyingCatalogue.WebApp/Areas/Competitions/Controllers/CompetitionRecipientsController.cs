@@ -485,9 +485,7 @@ public class CompetitionRecipientsController(
 
         foreach (CompetitionSublocation s in competition.CompetitionSublocations)
         {
-            {
-                await MapSublocationToSublocationModel(s);
-            }
+            await MapSublocationToSublocationModel(s);
         }
 
         var addOrChangeSublocationsHref = Url.Action(
