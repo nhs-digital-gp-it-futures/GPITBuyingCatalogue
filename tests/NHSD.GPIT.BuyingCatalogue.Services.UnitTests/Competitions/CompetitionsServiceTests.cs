@@ -221,10 +221,12 @@ public static class CompetitionsServiceTests
                         [
                             CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX", true),
                             CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX", true),
-                        ]),
+                        ],
+                        true),
                     CommonCompetitionSublocationFactory(
                         "XXXA",
-                        [CommonCompetitionSublocationRecipientFactory("BAAA", "XXXA", true)]),
+                        [CommonCompetitionSublocationRecipientFactory("BAAA", "XXXA", true)],
+                        true),
                 },
                 new List<EntityOdsOrganisation>
                 {
