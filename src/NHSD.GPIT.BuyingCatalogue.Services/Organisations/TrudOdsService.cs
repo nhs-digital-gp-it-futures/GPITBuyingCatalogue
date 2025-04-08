@@ -78,12 +78,10 @@ public class TrudOdsService : IOdsService
             };
         }
 
-        var subLocations = await context.OrganisationRelationships
+        List<string> subLocations = await context.OrganisationRelationships
             .AsNoTracking()
-            .Where(x => x.OwnerOrganisationId == organisation.ExternalIdentifier
-                && x.RelationshipTypeId == settings.InGeographyOfRelType
-                && x.TargetOrganisation.IsActive
-                && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.SubLocationRoleId))
+            .Where(
+                SublocationsForOrganisationExternalIdentifierPredicate(organisation.ExternalIdentifier))
             .Select(x => x.TargetOrganisation.Id)
             .ToListAsync();
 
@@ -114,10 +112,7 @@ public class TrudOdsService : IOdsService
         List<OdsOrganisation> subLocations = await context.OrganisationRelationships
             .AsNoTracking()
             .Where(
-                x => x.OwnerOrganisationId == parentOdsCode
-                    && x.RelationshipTypeId == settings.InGeographyOfRelType
-                    && x.TargetOrganisation.IsActive
-                    && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.SubLocationRoleId))
+                SublocationsForOrganisationExternalIdentifierPredicate(parentOdsCode))
             .Select(x => MapOrganisation(x.TargetOrganisation))
             .ToListAsync();
 
@@ -231,6 +226,15 @@ public class TrudOdsService : IOdsService
 
     private static bool HasSecondaryRole(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation, string roleId) =>
         organisation.Roles.Any(x => !x.IsPrimaryRole && x.RoleId == roleId);
+
+    private Expression<Func<OrganisationRelationship, bool>> SublocationsForOrganisationExternalIdentifierPredicate(
+        string parentOdsCode)
+    {
+        return x => x.OwnerOrganisationId == parentOdsCode
+            && x.RelationshipTypeId == settings.InGeographyOfRelType
+            && x.TargetOrganisation.IsActive
+            && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.SubLocationRoleId);
+    }
 
     private bool IsBuyerOrganisation(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation)
     {
