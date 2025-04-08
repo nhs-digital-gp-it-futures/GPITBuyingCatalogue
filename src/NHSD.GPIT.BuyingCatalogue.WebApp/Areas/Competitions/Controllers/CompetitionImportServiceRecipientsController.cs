@@ -195,7 +195,7 @@ public class CompetitionImportServiceRecipientsController : Controller
         return RedirectToAction(
             nameof(ValidationComplete),
             typeof(CompetitionImportServiceRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId, hasInvalidRecipients = true });
+            new { internalOrgId, competitionId, validationStatus = ValidationStatusEnum.PartialSuccess });
     }
 
     [HttpGet("validation-complete")]
