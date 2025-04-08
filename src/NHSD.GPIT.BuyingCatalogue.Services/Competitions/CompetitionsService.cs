@@ -252,7 +252,6 @@ public class CompetitionsService : ICompetitionsService
     {
         return await dbContext.Competitions
             .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
-            .Include(x => x.CompetitionSublocations)
             .AnyAsync(x => x.CompetitionSublocations.Count > 0);
     }
 
