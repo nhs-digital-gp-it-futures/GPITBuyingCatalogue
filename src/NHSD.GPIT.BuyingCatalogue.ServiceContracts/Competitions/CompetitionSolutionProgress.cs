@@ -48,15 +48,12 @@ public readonly struct CompetitionSolutionProgress
         {
             bool HasQuantities(
                 CompetitionSolution solution,
-                ICollection<OdsOrganisation> recipients)
-            {
-                return (solution.Quantity.HasValue || (solution.Quantities.Any()
-                        && recipients.All(x => solution.Quantities.Any(y => y.OdsCode == x.Id))))
-                    && (!solution.SolutionServices.Any()
-                        || solution.SolutionServices.All(
-                            x => x.Quantity.HasValue || (x.Quantities.Any()
-                                && recipients.All(y => x.Quantities.Any(z => z.OdsCode == y.Id)))));
-            }
+                ICollection<OdsOrganisation> recipients) => (solution.Quantity.HasValue || (solution.Quantities.Any()
+                    && recipients.All(x => solution.Quantities.Any(y => y.OdsCode == x.Id))))
+                && (!solution.SolutionServices.Any()
+                    || solution.SolutionServices.All(
+                        x => x.Quantity.HasValue || (x.Quantities.Any()
+                            && recipients.All(y => x.Quantities.Any(z => z.OdsCode == y.Id)))));
 
             if (PriceProgress is not TaskProgress.Completed) return TaskProgress.CannotStart;
 
