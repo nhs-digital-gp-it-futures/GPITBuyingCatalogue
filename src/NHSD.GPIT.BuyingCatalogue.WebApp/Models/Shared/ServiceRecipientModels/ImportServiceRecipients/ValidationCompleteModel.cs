@@ -11,6 +11,13 @@ public sealed class ValidationCompleteModel : NavBaseModel
     private const string ValidationPartiallySucceededAdvice =
         "We have received your CSV file and shown you the mismatches we detected. We have been able to match all remaining ODS codes and service recipient names to what we have have on record.";
 
+    private const string ValidationSucceededNextStep = "You will be able to confirm these changes in the next step.";
+
+    private const string ValidationFailureAdvice =
+        "We Have received your CSV file. We have not been able to match any ODS Codes to what we have on record.";
+
+    private const string ValidationFailureNextStep = "Please try again, or select your service recipients manually.";
+
     [ExcludeFromCodeCoverage]
     public ValidationCompleteModel()
     {
@@ -18,17 +25,41 @@ public sealed class ValidationCompleteModel : NavBaseModel
 
     public ValidationCompleteModel(
         string competitionName,
-        bool hasHadValidationFailure,
+        ValidationStatusEnum validationStatus,
         IReadOnlyList<SublocationModel> sublocations)
     {
         Title = "Upload validated";
         Caption = competitionName;
-        AdviceBody = hasHadValidationFailure ? ValidationPartiallySucceededAdvice : ValidationSucceededAdvice;
         InteractionNoun = "competition";
         Sublocations = sublocations;
+        ValidationStatus = validationStatus;
+
+        switch (validationStatus)
+        {
+            case ValidationStatusEnum.Success:
+                AdviceBody = ValidationSucceededAdvice;
+                NextStep = ValidationSucceededNextStep;
+                break;
+
+            case ValidationStatusEnum.PartialSuccess:
+                AdviceBody = ValidationPartiallySucceededAdvice;
+                NextStep = ValidationSucceededNextStep;
+                break;
+
+            case ValidationStatusEnum.Failure:
+            default:
+                Title = "Upload failed";
+                AdviceBody = ValidationFailureAdvice;
+                NextStep = ValidationFailureNextStep;
+                break;
+        }
     }
 
     public string AdviceBody { get; init; }
+
+    public string NextStep { get; init; }
+
+    public ValidationStatusEnum ValidationStatus { get; init; }
 
     public IReadOnlyList<SublocationModel> Sublocations { get; init; }
 
