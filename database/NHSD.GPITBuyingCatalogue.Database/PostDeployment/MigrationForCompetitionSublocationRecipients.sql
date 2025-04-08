@@ -19,4 +19,14 @@ FROM [GPITBuyingCatalogue].[competitions].[CompetitionRecipients] [cr]
     ON [cr].[OdsCode] = [rel].[TargetOrganisationId]
 WHERE [rel].[RelationshipTypeId] = 'RE4';
 
+INSERT INTO [competitions].[ServiceQuantitiesSublocationRecipients]
+    ([CompetitionId], [SolutionId], [ServiceId], [OdsCode], [Quantity])
+SELECT [CompetitionId], [SolutionId], [ServiceId], [OdsCode], [Quantity]
+FROM [competitions].[ServiceQuantities];
+
+INSERT INTO [competitions].[SolutionQuantitiesSublocationRecipients]
+    ([CompetitionId], [SolutionId], [OdsCode], [Quantity])
+SELECT [CompetitionId], [SolutionId], [OdsCode], [Quantity]
+FROM [competitions].[SolutionQuantities];
+
 COMMIT TRANSACTION;
