@@ -975,52 +975,6 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task GetCompetitionWithRecipients_ReturnsExpected(
-        Organisation organisation,
-        Competition competition,
-        List<CompetitionSublocation> competitionSublocations,
-        [Frozen] BuyingCatalogueDbContext context,
-        CompetitionsService service)
-    {
-        competitionSublocations.ForEach(
-            x =>
-            {
-                x.CompetitionId = competition.Id;
-                foreach (CompetitionSublocationRecipient competitionSublocationRecipient in x.SublocationRecipients)
-                {
-                    competitionSublocationRecipient.CompetitionId = competition.Id;
-                }
-            });
-
-        competition.OrganisationId = organisation.Id;
-        competition.FrameworkId = competition.Framework.Id;
-        competition.CompetitionSublocations = competitionSublocations;
-
-        context.Competitions.Add(competition);
-        context.Organisations.Add(organisation);
-        context.CompetitionSublocations.AddRange(competitionSublocations);
-
-        await context.SaveChangesAsync();
-
-        context.ChangeTracker.Clear();
-
-        var competitionWithRecipients = await service.GetCompetitionWithRecipients(organisation.InternalIdentifier, competition.Id);
-
-        competitionWithRecipients.Should()
-            .BeEquivalentTo(
-                competition,
-                opt => opt.Excluding(m => m.Organisation)
-                    .Excluding(x => x.Framework)
-                    .Excluding(m => m.CompetitionSublocations));
-
-        competitionWithRecipients.CompetitionSublocations.Should()
-            .BeEquivalentTo(
-                competitionSublocations,
-                opt => opt.Excluding(x => x.SublocationOrganisation).Excluding(x => x.Competition));
-    }
-
-    [Theory]
-    [MockInMemoryDbAutoData]
     public static async Task GetCompetitionTaskList_ReturnsExpected(
         Organisation organisation,
         Competition competition,
@@ -1040,7 +994,9 @@ public static class CompetitionsServiceTests
 
         var expectedModel = new CompetitionTaskListModel(competition);
 
-        var result = await service.GetCompetitionTaskList(organisation.InternalIdentifier, competition.Id);
+        CompetitionTaskListModel result = await service.GetCompetitionTaskList(
+            organisation.InternalIdentifier,
+            competition.Id);
 
         result.Should().BeEquivalentTo(expectedModel);
     }

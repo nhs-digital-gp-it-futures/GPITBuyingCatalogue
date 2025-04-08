@@ -32,8 +32,6 @@ public interface ICompetitionsService
 
     Task<Competition> GetCompetitionWithWeightings(string internalOrgId, int competitionId);
 
-    Task<Competition> GetCompetitionWithRecipients(string internalOrgId, int competitionId);
-
     Task<Competition> GetCompetitionWithServices(string internalOrgId, int competitionId, bool shouldTrack = false);
 
     Task<Competition> GetCompetitionWithServicesAndFramework(string internalOrgId, int competitionId, bool shouldTrack = false);
@@ -83,8 +81,6 @@ public interface ICompetitionsService
         string internalOrgId,
         int competitionId,
         HashSet<string> sublocationOdsCodes);
-
-    Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
 
     Task SetCompetitionSublocationsAndRecipients(
         string internalOrgId,

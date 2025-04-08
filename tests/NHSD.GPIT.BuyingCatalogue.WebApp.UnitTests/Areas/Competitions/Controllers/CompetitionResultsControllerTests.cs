@@ -335,7 +335,8 @@ public static class CompetitionResultsControllerTests
     {
         competition.CompetitionSublocations = competitionSublocations;
 
-        competitionsService.GetCompetitionWithRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id)
+            .Returns(competition);
 
         var result = (await controller.RecipientsCsv(internalOrgId, competition.Id)).As<FileResult>();
 

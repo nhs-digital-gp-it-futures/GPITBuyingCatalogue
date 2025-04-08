@@ -223,16 +223,6 @@ public class CompetitionsService : ICompetitionsService
             .Include(x => x.Framework)
             .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
 
-    public async Task<Competition> GetCompetitionWithRecipients(string internalOrgId, int competitionId)
-    {
-        return await dbContext.Competitions.Include(x => x.CompetitionSublocations)
-            .ThenInclude(y => y.SublocationRecipients)
-            .ThenInclude(z => z.RecipientOrganisation)
-            .AsNoTracking()
-            .AsSplitQuery()
-            .FirstOrDefaultAsync(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId);
-    }
-
     public async Task<Competition> GetCompetitionWithSublocations(string internalOrgId, int competitionId)
     {
         return await dbContext.Competitions.AsNoTracking()
@@ -805,23 +795,6 @@ public class CompetitionsService : ICompetitionsService
     public async Task<bool> Exists(string internalOrgId, string competitionName) =>
         await dbContext.Competitions.AnyAsync(
             x => x.Organisation.InternalIdentifier == internalOrgId && string.Equals(x.Name, competitionName));
-
-    public async Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes)
-    {
-        var recipients =
-            await dbContext.CompetitionRecipients
-                .Where(
-                    x => x.CompetitionId == competitionId)
-                .ToListAsync();
-
-        var staleRecipients = recipients.Where(x => !odsCodes.Contains(x.OdsCode)).ToList();
-        var newRecipients = odsCodes.Where(x => recipients.All(y => x != y.OdsCode)).ToList();
-
-        dbContext.CompetitionRecipients.RemoveRange(staleRecipients);
-        dbContext.CompetitionRecipients.AddRange(newRecipients.Select(x => new CompetitionRecipient(competitionId, x)));
-
-        await dbContext.SaveChangesAsync();
-    }
 
     public async Task SetCompetitionSublocationsAndRecipients(
         string internalOrgId,

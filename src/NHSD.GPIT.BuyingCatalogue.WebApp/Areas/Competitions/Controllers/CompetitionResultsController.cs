@@ -218,7 +218,10 @@ public class CompetitionResultsController : Controller
         string internalOrgId,
         int competitionId)
     {
-        var competition = await competitionsService.GetCompetitionWithRecipients(internalOrgId, competitionId);
+        Competition competition =
+            await competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(
+                internalOrgId,
+                competitionId);
         IEnumerable<ServiceRecipientImportModel> recipients = competition.FlattenedRecipients.Select(
             x => new ServiceRecipientImportModel { Organisation = x.Name, OdsCode = x.Id });
 
