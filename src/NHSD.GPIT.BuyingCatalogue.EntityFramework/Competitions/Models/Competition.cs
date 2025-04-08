@@ -69,8 +69,8 @@ public class Competition
     public ICollection<Order> Orders { get; set; }
 
     /// <summary>
-    ///     Gets the list of recipient organisations. This property will only work correctly if sublocation organisations and
-    ///     sublocation recipients are included in db query.
+    ///     Gets all recipient organisations. Requires <see cref="CompetitionSublocations" /> and all child entities to
+    ///     be loaded.
     /// </summary>
     [NotMapped]
     public IEnumerable<OdsOrganisation> FlattenedRecipients => CompetitionSublocations?
