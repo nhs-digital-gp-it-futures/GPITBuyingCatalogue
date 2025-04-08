@@ -225,7 +225,7 @@ public static class CompetitionsQuantityServiceTests
                 IsShortlisted = true,
                 Quantity = quantity,
                 Quantities = odsOrganisations.Select(
-                        x => new SolutionQuantity
+                        x => new SolutionQuantitySublocationRecipient
                         {
                             CompetitionId = competition.Id,
                             SolutionId = solution.CatalogueItemId,
@@ -275,14 +275,13 @@ public static class CompetitionsQuantityServiceTests
             new CompetitionSolution(competition.Id, solution.CatalogueItemId)
             {
                 IsShortlisted = true,
-
                 SolutionServices = new List<SolutionService>
                 {
                     new(competition.Id, solution.CatalogueItemId, additionalService.CatalogueItemId, true)
                     {
                         Quantity = quantity,
                         Quantities = odsOrganisations.Select(
-                                x => new ServiceQuantity
+                                x => new ServiceQuantitySublocationRecipient
                                 {
                                     CompetitionId = competition.Id,
                                     SolutionId = solution.CatalogueItemId,

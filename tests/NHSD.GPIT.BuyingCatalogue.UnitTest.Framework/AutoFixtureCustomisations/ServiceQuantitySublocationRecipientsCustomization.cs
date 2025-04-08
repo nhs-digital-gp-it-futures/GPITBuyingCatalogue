@@ -5,17 +5,17 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations;
 
-public class ServiceQuantityCustomization : ICustomization
+public class ServiceQuantitySublocationRecipientsCustomization : ICustomization
 {
     public void Customize(IFixture fixture)
     {
-        static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<ServiceQuantity> composer)
+        static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<ServiceQuantitySublocationRecipient> composer)
         {
             return composer
                 .Without(x => x.SolutionService)
                 .Without(x => x.CompetitionSublocationRecipient);
         }
 
-        fixture.Customize<ServiceQuantity>(ComposerTransformation);
+        fixture.Customize<ServiceQuantitySublocationRecipient>(ComposerTransformation);
     }
 }

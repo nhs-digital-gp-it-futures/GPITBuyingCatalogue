@@ -427,7 +427,7 @@ public static class CompetitionOrderServiceTests
         solutionService.Service = additionalService.CatalogueItem;
 
         solutionService.Quantities = competition.FlattenedRecipients.Select(
-                x => new ServiceQuantity
+                x => new ServiceQuantitySublocationRecipient
                 {
                     OdsCode = x.Id, Quantity = 5, ServiceId = additionalService.CatalogueItemId,
                 })
@@ -440,7 +440,10 @@ public static class CompetitionOrderServiceTests
         competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
 
         competitionSolution.Quantities = competition.FlattenedRecipients.Select(
-                x => new SolutionQuantity { OdsCode = x.Id, Quantity = 5, SolutionId = solution.CatalogueItemId })
+                x => new SolutionQuantitySublocationRecipient
+                {
+                    OdsCode = x.Id, Quantity = 5, SolutionId = solution.CatalogueItemId,
+                })
             .ToList();
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };

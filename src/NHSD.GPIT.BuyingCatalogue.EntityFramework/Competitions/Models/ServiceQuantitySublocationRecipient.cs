@@ -2,7 +2,7 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
-public class ServiceQuantity : RecipientQuantityBase
+public class ServiceQuantitySublocationRecipient : RecipientQuantityBase
 {
     public int CompetitionId { get; set; }
 

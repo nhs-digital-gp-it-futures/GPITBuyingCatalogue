@@ -4,13 +4,15 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Configuration;
 
-public class ServiceQuantityEntityTypeConfiguration : IEntityTypeConfiguration<ServiceQuantity>
+public class
+    SolutionQuantitySublocationRecipientEntityTypeConfiguration : IEntityTypeConfiguration<
+    SolutionQuantitySublocationRecipient>
 {
-    public void Configure(EntityTypeBuilder<ServiceQuantity> builder)
+    public void Configure(EntityTypeBuilder<SolutionQuantitySublocationRecipient> builder)
     {
-        builder.ToTable("ServiceQuantities", Schemas.Competitions);
+        builder.ToTable("SolutionQuantitiesSublocationRecipients", Schemas.Competitions);
 
-        builder.HasKey(x => new { x.CompetitionId, x.SolutionId, x.ServiceId, x.OdsCode });
+        builder.HasKey(x => new { x.CompetitionId, x.SolutionId, x.OdsCode });
 
         builder.Property(x => x.CompetitionId).IsRequired();
 
@@ -20,16 +22,16 @@ public class ServiceQuantityEntityTypeConfiguration : IEntityTypeConfiguration<S
 
         builder.Property(x => x.Quantity).IsRequired();
 
-        builder.HasOne(x => x.SolutionService)
+        builder.HasOne(x => x.CompetitionSolution)
             .WithMany(x => x.Quantities)
-            .HasForeignKey(x => new { x.CompetitionId, x.SolutionId, x.ServiceId })
-            .HasConstraintName("FK_ServiceQuantities_Solution")
+            .HasForeignKey(x => new { x.CompetitionId, x.SolutionId })
+            .HasConstraintName("FK_SolutionQuantitiesSublocationRecipients_Solution")
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.CompetitionSublocationRecipient)
             .WithMany()
             .HasForeignKey(x => new { x.CompetitionId, x.OdsCode })
-            .HasConstraintName("FK_ServiceQuantities_SublocationRecipient")
+            .HasConstraintName("FK_SolutionQuantitiesSublocationRecipients_SublocationRecipient")
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
