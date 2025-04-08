@@ -6,10 +6,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.
 public sealed class ValidationCompleteModel : NavBaseModel
 {
     private const string ValidationSucceededAdvice =
-        "We have received your CSV file and have been able to match all ODS Codes and Service Recipient names to what we have on record.";
+        "We have received your CSV file. We have been able to match all ODS codes and service recipient names to what we have have on record.";
 
     private const string ValidationPartiallySucceededAdvice =
-        "We have recieved your CSV file and we have been able to match all remaining ODS Codes and Service Recipient names to what we have on record. Any Service Recipients that have failed to import will not be included.";
+        "We have received your CSV file and shown you the mismatches we detected. We have been able to match all remaining ODS codes and service recipient names to what we have have on record.";
 
     [ExcludeFromCodeCoverage]
     public ValidationCompleteModel()
