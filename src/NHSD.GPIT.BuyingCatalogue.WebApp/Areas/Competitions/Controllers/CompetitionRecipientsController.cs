@@ -243,7 +243,7 @@ public class CompetitionRecipientsController(
             HashSet<string> adds = removeSublocationsModel.SublocationIdsToAdd?.ToHashSet();
             HashSet<string> removes = removeSublocationsModel.SublocationIdsToRemove?.ToHashSet();
 
-            if (adds is not null && adds.Count > 0)
+            if (adds is { Count: > 0 })
             {
                 await competitionsService.AddSublocations(
                     internalOrgId,
@@ -251,7 +251,7 @@ public class CompetitionRecipientsController(
                     adds);
             }
 
-            if (removes is not null && removes.Count > 0)
+            if (removes is { Count: > 0 })
             {
                 await competitionsService.RemoveSublocations(
                     internalOrgId,
@@ -527,7 +527,7 @@ public class CompetitionRecipientsController(
     {
         SublocationModel sublocationToComplete = model.Sublocations.FirstOrDefault(x => x.ServiceRecipientCount == 0);
 
-        if (sublocationToComplete != null)
+        if (sublocationToComplete is not null)
         {
             return RedirectToAction(
                 nameof(CompetitionTaskListController.Index),
