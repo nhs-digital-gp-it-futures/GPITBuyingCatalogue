@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
@@ -161,10 +160,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         {
             var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            // If there are no new recipients for this item (e.g. the original solution in a amend)
-            if (orderWrapper.DetermineOrderRecipients(catalogueItemId).IsNullOrEmpty())
+            // If there are no new recipients for this item (e.g. the original solution in an amend)
+            if (orderWrapper.DetermineOrderRecipients(catalogueItemId) is null or { Count: 0 })
             {
-                var next = routingService.GetRoute(
+                RoutingResult next = routingService.GetRoute(
                     RoutingPoint.EditDeliveryDates,
                     orderWrapper,
                     new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });

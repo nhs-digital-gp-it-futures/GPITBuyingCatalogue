@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -58,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
         {
             ArgumentException.ThrowIfNullOrEmpty(parentOdsCode);
             ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode);
-            if (recipientOdsCodes.IsNullOrEmpty())
+            if (recipientOdsCodes is null or { Count: 0 })
             {
                 throw new ArgumentException(@"recipientOdsCodes is null or empty", nameof(recipientOdsCodes));
             }
@@ -119,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
         {
             ArgumentException.ThrowIfNullOrEmpty(parentOdsCode);
             ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode);
-            if (recipientOdsCodes.IsNullOrEmpty())
+            if (recipientOdsCodes is null or { Count: 0 })
             {
                 throw new ArgumentException(@"recipientOdsCodes is null or empty", nameof(recipientOdsCodes));
             }

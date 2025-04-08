@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -290,7 +289,7 @@ public class CompetitionsService : ICompetitionsService
     {
         ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
 
-        if (sublocationOdsCodes.IsNullOrEmpty())
+        if (sublocationOdsCodes is null or { Count: 0 })
         {
             throw new ArgumentException(@"sublocationOdsCodes is null or empty", nameof(sublocationOdsCodes));
         }
@@ -346,7 +345,7 @@ public class CompetitionsService : ICompetitionsService
     {
         ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
 
-        if (sublocationOdsCodes.IsNullOrEmpty())
+        if (sublocationOdsCodes is null or { Count: 0 })
         {
             throw new ArgumentException("sublocationIds is null or empty", nameof(sublocationOdsCodes));
         }
@@ -805,7 +804,7 @@ public class CompetitionsService : ICompetitionsService
     {
         ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
 
-        if (competitionSublocations.IsNullOrEmpty())
+        if (competitionSublocations is null or { Count: 0 })
         {
             throw new ArgumentException(@"competitionSublocations is null or empty", nameof(competitionSublocations));
         }
