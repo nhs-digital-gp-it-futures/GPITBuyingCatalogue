@@ -221,7 +221,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 {
                     { "internalOrgId", organisation.InternalIdentifier },
                     { "competitionId", competition.Id },
-                    { "hasInvalidRecipients", true },
+                    { "validationStatus", ValidationStatusEnum.PartialSuccess },
                 });
     }
 
@@ -312,7 +312,9 @@ public static class CompetitionImportServiceRecipientsControllerTests
             .BeEquivalentTo(
                 new RouteValueDictionary
                 {
-                    { "internalOrgId", organisation.InternalIdentifier }, { "competitionId", competition.Id },
+                    { "internalOrgId", organisation.InternalIdentifier },
+                    { "competitionId", competition.Id },
+                    { "validationStatus", ValidationStatusEnum.Success },
                 });
     }
 
@@ -345,9 +347,15 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 Arg.Any<HashSet<string>>())
             .Returns(serviceRecipients);
 
-        var expectedModel = new ValidationCompleteModel(competition.Name, false, sublocationsAsViewModel);
+        var expectedModel = new ValidationCompleteModel(
+            competition.Name,
+            ValidationStatusEnum.Success,
+            sublocationsAsViewModel);
 
-        var result = (await controller.ValidationComplete(organisation.InternalIdentifier, competition.Id, false))
+        var result = (await controller.ValidationComplete(
+                organisation.InternalIdentifier,
+                competition.Id,
+                ValidationStatusEnum.Success))
             .As<ViewResult>();
 
         result.Should().NotBeNull();
@@ -355,6 +363,29 @@ public static class CompetitionImportServiceRecipientsControllerTests
             .BeEquivalentTo(
                 expectedModel,
                 opt => opt.Excluding(m => m.Caption));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task ValidateComplete_Post_CancelsIfInvalid(
+        string internalOrgId,
+        int competitionId,
+        [Frozen] IServiceRecipientImportService importService,
+        CompetitionImportServiceRecipientsController controller)
+    {
+        var model = new ValidationCompleteModel("MY competition", ValidationStatusEnum.Failure, []);
+
+        var result =
+            (await controller.ValidationComplete(internalOrgId, competitionId, model))
+            .As<RedirectToActionResult>();
+
+        result.ActionName.Should().Be(nameof(CompetitionImportServiceRecipientsController.CancelImport));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { nameof(internalOrgId), internalOrgId }, { nameof(competitionId), competitionId },
+                });
     }
 
     [Theory]
