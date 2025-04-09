@@ -139,7 +139,7 @@
 
             <div class="nhsuk-u-margin-top-9">
                 @{
-                    var submitButton = !inputRequired && Model.OrderType?.MergerOrSplit is not null && Model.OrderType.MergerOrSplit
+                    var submitButton = !inputRequired && Model.OrderType?.MergerOrSplit is true
                     ? "Continue"
                     : string.Empty; // use the default text
                 }
