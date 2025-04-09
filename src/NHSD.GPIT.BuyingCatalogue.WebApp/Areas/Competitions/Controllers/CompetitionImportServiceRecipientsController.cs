@@ -119,9 +119,9 @@ public class CompetitionImportServiceRecipientsController : Controller
 
         var backAndCancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId });
 
-        ValidationStatusEnum validationStatus = acceptLossOfOdsIfMismatch
-            ? ValidationStatusEnum.PartialSuccess
-            : ValidationStatusEnum.Success;
+        ValidationStatus validationStatus = acceptLossOfOdsIfMismatch
+            ? ValidationStatus.PartialSuccess
+            : ValidationStatus.Success;
 
         HashSet<string> requestedRecipientOdsCodes = cachedRecipients.Select(x => x.OdsCode).ToHashSet();
 
@@ -135,7 +135,7 @@ public class CompetitionImportServiceRecipientsController : Controller
 
         if (actualServiceRecipientsAsHashSet.Count == 0)
         {
-            validationStatus = ValidationStatusEnum.Failure;
+            validationStatus = ValidationStatus.Failure;
             return RedirectToAction(
                 nameof(ValidationComplete),
                 new { internalOrgId, competitionId, validationStatus });
@@ -195,14 +195,14 @@ public class CompetitionImportServiceRecipientsController : Controller
         return RedirectToAction(
             nameof(ValidationComplete),
             typeof(CompetitionImportServiceRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId, validationStatus = ValidationStatusEnum.PartialSuccess });
+            new { internalOrgId, competitionId, validationStatus = ValidationStatus.PartialSuccess });
     }
 
     [HttpGet("validation-complete")]
     public async Task<IActionResult> ValidationComplete(
         string internalOrgId,
         int competitionId,
-        ValidationStatusEnum validationStatus)
+        ValidationStatus validationStatus)
     {
         var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
 
@@ -240,7 +240,7 @@ public class CompetitionImportServiceRecipientsController : Controller
         int competitionId,
         ValidationCompleteModel model)
     {
-        if (model.ValidationStatus is not (ValidationStatusEnum.Success or ValidationStatusEnum.PartialSuccess))
+        if (model.ValidationStatus is not (ValidationStatus.Success or ValidationStatus.PartialSuccess))
         {
             return RedirectToAction(
                 nameof(CancelImport),

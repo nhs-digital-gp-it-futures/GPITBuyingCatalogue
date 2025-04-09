@@ -25,7 +25,7 @@ public sealed class ValidationCompleteModel : NavBaseModel
 
     public ValidationCompleteModel(
         string competitionName,
-        ValidationStatusEnum validationStatus,
+        ValidationStatus validationStatus,
         IReadOnlyList<SublocationModel> sublocations)
     {
         Title = "Upload validated";
@@ -36,17 +36,17 @@ public sealed class ValidationCompleteModel : NavBaseModel
 
         switch (validationStatus)
         {
-            case ValidationStatusEnum.Success:
+            case ImportServiceRecipients.ValidationStatus.Success:
                 AdviceBody = ValidationSucceededAdvice;
                 NextStep = ValidationSucceededNextStep;
                 break;
 
-            case ValidationStatusEnum.PartialSuccess:
+            case ImportServiceRecipients.ValidationStatus.PartialSuccess:
                 AdviceBody = ValidationPartiallySucceededAdvice;
                 NextStep = ValidationSucceededNextStep;
                 break;
 
-            case ValidationStatusEnum.Failure:
+            case ImportServiceRecipients.ValidationStatus.Failure:
             default:
                 Title = "Upload failed";
                 AdviceBody = ValidationFailureAdvice;
@@ -59,7 +59,7 @@ public sealed class ValidationCompleteModel : NavBaseModel
 
     public string NextStep { get; init; }
 
-    public ValidationStatusEnum ValidationStatus { get; init; }
+    public ValidationStatus? ValidationStatus { get; }
 
     public IReadOnlyList<SublocationModel> Sublocations { get; init; }
 

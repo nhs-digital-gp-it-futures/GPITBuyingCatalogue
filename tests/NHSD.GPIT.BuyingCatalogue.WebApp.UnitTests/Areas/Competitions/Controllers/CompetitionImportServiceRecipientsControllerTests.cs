@@ -221,7 +221,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 {
                     { "internalOrgId", organisation.InternalIdentifier },
                     { "competitionId", competition.Id },
-                    { "validationStatus", ValidationStatusEnum.PartialSuccess },
+                    { "validationStatus", ValidationStatus.PartialSuccess },
                 });
     }
 
@@ -264,7 +264,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 {
                     { "internalOrgId", organisation.InternalIdentifier },
                     { "competitionId", competition.Id },
-                    { "validationStatus", ValidationStatusEnum.Failure },
+                    { "validationStatus", ValidationStatus.Failure },
                 });
     }
 
@@ -357,7 +357,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 {
                     { "internalOrgId", organisation.InternalIdentifier },
                     { "competitionId", competition.Id },
-                    { "validationStatus", ValidationStatusEnum.Success },
+                    { "validationStatus", ValidationStatus.Success },
                 });
     }
 
@@ -392,13 +392,13 @@ public static class CompetitionImportServiceRecipientsControllerTests
 
         var expectedModel = new ValidationCompleteModel(
             competition.Name,
-            ValidationStatusEnum.Success,
+            ValidationStatus.Success,
             sublocationsAsViewModel);
 
         var result = (await controller.ValidationComplete(
                 organisation.InternalIdentifier,
                 competition.Id,
-                ValidationStatusEnum.Success))
+                ValidationStatus.Success))
             .As<ViewResult>();
 
         result.Should().NotBeNull();
@@ -413,10 +413,9 @@ public static class CompetitionImportServiceRecipientsControllerTests
     public static async Task ValidateComplete_Post_CancelsIfInvalid(
         string internalOrgId,
         int competitionId,
-        [Frozen] IServiceRecipientImportService importService,
         CompetitionImportServiceRecipientsController controller)
     {
-        var model = new ValidationCompleteModel("MY competition", ValidationStatusEnum.Failure, []);
+        var model = new ValidationCompleteModel("MY competition", ValidationStatus.Failure, []);
 
         var result =
             (await controller.ValidationComplete(internalOrgId, competitionId, model))
