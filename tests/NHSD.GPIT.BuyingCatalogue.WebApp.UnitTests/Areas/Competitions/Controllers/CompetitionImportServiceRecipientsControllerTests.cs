@@ -227,6 +227,49 @@ public static class CompetitionImportServiceRecipientsControllerTests
 
     [Theory]
     [MockAutoData]
+    public static async Task Validate_AllMismatchedOdsCodes_FailedStatus(
+        Organisation organisation,
+        Competition competition,
+        List<ServiceRecipient> serviceRecipients,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IOdsService odsService,
+        CompetitionImportServiceRecipientsController controller)
+    {
+        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
+
+        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
+        importedServiceRecipients.First().OdsCode = MismatchOdsCode;
+
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+
+        competitionsService.GetCompetitionName(Arg.Any<string>(), competition.Id).Returns(competition.Name);
+
+        // This service call includes a filter to restrict by ods codes, but the controller logic should find mismatches regardless
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns([]);
+
+        var result = (await controller.Validate(organisation.InternalIdentifier, competition.Id, true))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(CompetitionImportServiceRecipientsController.ValidationComplete));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier },
+                    { "competitionId", competition.Id },
+                    { "validationStatus", ValidationStatusEnum.Failure },
+                });
+    }
+
+    [Theory]
+    [MockAutoData]
     public static async Task Validate_MismatchedNames_ReturnsViewWithModel(
         Organisation organisation,
         Competition competition,
