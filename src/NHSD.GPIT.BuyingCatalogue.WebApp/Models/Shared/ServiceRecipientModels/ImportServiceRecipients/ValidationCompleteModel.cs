@@ -59,7 +59,7 @@ public sealed class ValidationCompleteModel : NavBaseModel
 
     public string NextStep { get; init; }
 
-    public ValidationStatus? ValidationStatus { get; }
+    public ValidationStatus? ValidationStatus { get; init; }
 
     public IReadOnlyList<SublocationModel> Sublocations { get; init; }
 

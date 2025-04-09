@@ -445,7 +445,10 @@ public static class CompetitionImportServiceRecipientsControllerTests
 
         competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
 
-        var modelForPost = new ValidationCompleteModel { Sublocations = sublocationsAsViewModel };
+        var modelForPost = new ValidationCompleteModel
+        {
+            Sublocations = sublocationsAsViewModel, ValidationStatus = ValidationStatus.Success,
+        };
 
         var result =
             (await controller.ValidationComplete(organisation.InternalIdentifier, competition.Id, modelForPost))
