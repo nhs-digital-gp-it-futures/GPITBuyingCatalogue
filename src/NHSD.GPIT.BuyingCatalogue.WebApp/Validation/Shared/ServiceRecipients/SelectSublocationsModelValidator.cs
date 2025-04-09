@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients
 
         private static bool HaveMadeASelection(IReadOnlyList<CheckboxNameAndValueModel> checkboxSelections)
         {
-            if (checkboxSelections is null || checkboxSelections.Count == 0)
+            if (checkboxSelections is null or { Count: 0 })
                 return false;
 
             var checkedCheckboxSelectionCount =
