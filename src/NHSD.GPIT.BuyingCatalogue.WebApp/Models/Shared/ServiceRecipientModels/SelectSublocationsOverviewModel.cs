@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
@@ -12,12 +13,12 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
     public SelectSublocationsOverviewModel(
         bool isConfirm,
         Competition competition,
-        IReadOnlyList<SublocationModel> sublocations,
+        IEnumerable<SublocationModel> sublocations,
         string addOrChangeSublocationsHref,
         string backLinkHref)
     {
         ProcessType = "competition";
-        Sublocations = sublocations;
+        Sublocations = sublocations.ToList();
         ParentName = competition.Organisation.Name;
         AddOrChangeSublocationsHref = addOrChangeSublocationsHref;
 
@@ -32,7 +33,7 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
 
     public string ParentName { get; init; }
 
-    public IReadOnlyList<SublocationModel> Sublocations { get; init; } = [];
+    public List<SublocationModel> Sublocations { get; init; } = [];
 
     private void SetConditionalTitleAndAdvice(bool isConfirm)
     {

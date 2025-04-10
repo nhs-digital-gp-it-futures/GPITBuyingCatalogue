@@ -525,9 +525,9 @@ public class CompetitionRecipientsController(
         string internalOrgId,
         int competitionId)
     {
-        SublocationModel sublocationToComplete = model.Sublocations.FirstOrDefault(x => x.ServiceRecipientCount == 0);
+        var sublocationToComplete = model.Sublocations.Any(x => x.ServiceRecipientCount == 0);
 
-        if (sublocationToComplete is not null)
+        if (sublocationToComplete)
         {
             return RedirectToAction(
                 nameof(CompetitionTaskListController.Index),
