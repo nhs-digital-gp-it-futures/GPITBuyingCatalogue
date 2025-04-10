@@ -303,6 +303,63 @@ public static class CompetitionsServiceTests
         Assert.Equal(expectedResult, result);
     }
 
+    public static IEnumerable<object[]> CompetitionCountData()
+    {
+        return
+        [
+            [
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory(
+                        "XXXX",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
+                            CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
+                            CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
+                        ]),
+                    CommonCompetitionSublocationFactory(
+                        "XXXY",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("BAAA", "XXXY"),
+                            CommonCompetitionSublocationRecipientFactory("BAAB", "XXXY"),
+                            CommonCompetitionSublocationRecipientFactory("BAAC", "XXXY"),
+                        ]),
+                    CommonCompetitionSublocationFactory(
+                        "XXXZ",
+                        [
+                            CommonCompetitionSublocationRecipientFactory("CAAA", "XXXZ"),
+                            CommonCompetitionSublocationRecipientFactory("CAAB", "XXXZ"),
+                        ]),
+                },
+                8,
+            ],
+        ];
+    }
+
+    [Theory]
+    [MockInMemoryDbMemberAutoData(nameof(CompetitionCountData))]
+    public static async Task GetCompetitionTotalRecipientCount_ReturnsInt(
+        List<CompetitionSublocation> competitionSublocations,
+        int expectedRecipientCount,
+        Competition competition,
+        Organisation organisation,
+        [Frozen] BuyingCatalogueDbContext context,
+        CompetitionsService service)
+    {
+        competition.Organisation = organisation;
+        competition.CompetitionSublocations = competitionSublocations;
+
+        context.Add(competition);
+
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        var result = await service.GetCompetitionTotalRecipientCount(organisation.InternalIdentifier, competition.Id);
+
+        Assert.Equal(expectedRecipientCount, result);
+    }
+
     [Theory]
     [MockInMemoryDbInlineAutoData(0)]
     [MockInMemoryDbInlineAutoData(1)]

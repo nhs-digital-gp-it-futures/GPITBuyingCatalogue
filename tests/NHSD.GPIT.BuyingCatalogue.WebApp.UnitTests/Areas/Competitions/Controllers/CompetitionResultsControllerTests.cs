@@ -285,6 +285,7 @@ public static class CompetitionResultsControllerTests
         Competition competition,
         CompetitionSolution competitionSolution,
         Solution solution,
+        int expectedRecipientCount,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsController controller)
     {
@@ -296,8 +297,10 @@ public static class CompetitionResultsControllerTests
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         competitionsService.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionTotalRecipientCount(organisation.InternalIdentifier, competition.Id)
+            .Returns(expectedRecipientCount);
 
-        var expectedModel = new OrderingInformationModel(competition, competitionSolution);
+        var expectedModel = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         var result = (await controller.OrderingInformation(
             organisation.InternalIdentifier,

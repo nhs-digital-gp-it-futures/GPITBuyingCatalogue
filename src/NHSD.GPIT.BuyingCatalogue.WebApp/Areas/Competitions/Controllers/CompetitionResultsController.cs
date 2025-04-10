@@ -183,12 +183,14 @@ public class CompetitionResultsController : Controller
         }
 
         var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+        var totalRecipientCount =
+            await competitionsService.GetCompetitionTotalRecipientCount(internalOrgId, competitionId);
         var solution = competition.CompetitionSolutions.FirstOrDefault(WinningSolutionSelector);
 
         if (solution is null || !solution.IsWinningSolution)
             return RedirectToAction(nameof(ViewResults), new { internalOrgId, competitionId });
 
-        var model = new OrderingInformationModel(competition, solution)
+        var model = new OrderingInformationModel(competition, solution, totalRecipientCount)
         {
             BackLink = Url.Action(nameof(ViewResults), new { internalOrgId, competitionId }),
         };

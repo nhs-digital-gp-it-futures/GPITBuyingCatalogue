@@ -17,6 +17,7 @@ public static class OrderingInformationModelTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> competitionSublocations,
+        int expectedRecipientCount,
         Solution solution,
         CompetitionSolution competitionSolution)
     {
@@ -24,13 +25,13 @@ public static class OrderingInformationModelTests
         competition.Organisation = organisation;
         competitionSolution.Solution = solution;
 
-        var model = new OrderingInformationModel(competition, competitionSolution);
+        var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         model.InternalOrgId.Should().Be(organisation.InternalIdentifier);
         model.CompetitionId.Should().Be(competition.Id);
         model.CompetitionName.Should().Be(competition.Name);
 
-        model.NumberOfRecipients.Should().Be(competition.FlattenedRecipients.Count());
+        model.NumberOfRecipients.Should().Be(expectedRecipientCount);
         model.ContractLength.Should().Be(competition.ContractLength);
     }
 
@@ -40,6 +41,7 @@ public static class OrderingInformationModelTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> competitionSublocations,
+        int expectedRecipientCount,
         Solution solution,
         CompetitionSolution competitionSolution,
         int globalQuantity)
@@ -49,7 +51,7 @@ public static class OrderingInformationModelTests
         competitionSolution.Solution = solution;
         competitionSolution.Quantity = globalQuantity;
 
-        var model = new OrderingInformationModel(competition, competitionSolution);
+        var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         model.SolutionDisplay.Should()
             .BeEquivalentTo(
@@ -62,6 +64,7 @@ public static class OrderingInformationModelTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> competitionSublocations,
+        int expectedRecipientCount,
         Solution solution,
         CompetitionSolution competitionSolution,
         int recipientQuantity)
@@ -74,7 +77,7 @@ public static class OrderingInformationModelTests
             .Select(x => new SolutionQuantitySublocationRecipient { OdsCode = x.Id, Quantity = recipientQuantity })
             .ToList();
 
-        var model = new OrderingInformationModel(competition, competitionSolution);
+        var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         model.SolutionDisplay.Should()
             .BeEquivalentTo(
@@ -87,6 +90,7 @@ public static class OrderingInformationModelTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> competitionSublocations,
+        int expectedRecipientCount,
         Solution solution,
         CompetitionSolution competitionSolution,
         AdditionalService additionalService,
@@ -102,7 +106,7 @@ public static class OrderingInformationModelTests
         solutionService.Service = additionalService.CatalogueItem;
         solutionService.Quantity = globalQuantity;
 
-        var model = new OrderingInformationModel(competition, competitionSolution);
+        var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         var expectedItems = new List<OrderingInformationItem>
         {
@@ -121,6 +125,7 @@ public static class OrderingInformationModelTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> competitionSublocations,
+        int expectedRecipientCount,
         Solution solution,
         CompetitionSolution competitionSolution,
         AdditionalService additionalService,
@@ -139,7 +144,7 @@ public static class OrderingInformationModelTests
             .Select(x => new ServiceQuantitySublocationRecipient { OdsCode = x.Id, Quantity = recipientQuantity })
             .ToList();
 
-        var model = new OrderingInformationModel(competition, competitionSolution);
+        var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         var expectedItems = new List<OrderingInformationItem>
         {

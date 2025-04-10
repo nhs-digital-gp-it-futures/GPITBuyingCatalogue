@@ -255,6 +255,15 @@ public class CompetitionsService : ICompetitionsService
             .AnyAsync(x => x.CompetitionSublocations.Count > 0);
     }
 
+    public async Task<int> GetCompetitionTotalRecipientCount(string internalOrgId, int competitionId)
+    {
+        return await dbContext.Competitions
+            .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
+            .SelectMany(x => x.CompetitionSublocations.SelectMany(y => y.SublocationRecipients))
+            .AsSplitQuery()
+            .CountAsync();
+    }
+
     public async Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(
         string internalOrgId,
         int competitionId)
