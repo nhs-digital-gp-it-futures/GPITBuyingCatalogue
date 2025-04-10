@@ -15,7 +15,7 @@
                                 advice="Provide information about the best person to contact at your organisation."
 								caption = "Order @Model.CallOffId"/>
 
-				<nhs-fieldset-form-container asp-for="@Model">
+				<nhs-fieldset-form-container asp-for="@Model" label-text="Contact details">
 					<nhs-input asp-for="@Model.FirstName"
                                             label-text="First name" />
                     <nhs-input asp-for="@Model.LastName"

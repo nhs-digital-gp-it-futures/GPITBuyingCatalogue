@@ -16,9 +16,10 @@
             <nhs-fieldset-form-label asp-for="@Model"
                                      size="Medium">
                 <nhs-radio-buttons asp-for="ShouldUploadRecipients"
-                                   display-name="Text"
                                    values="Model.ServiceRecipientOptions.Cast<object>()"
-                                   value-name="Value" />
+                                   display-name="Text"
+                                   value-name="Value"
+                                   hint-name="Advice"/>
             </nhs-fieldset-form-label>
 
             <div class="nhsuk-u-margin-top-9">

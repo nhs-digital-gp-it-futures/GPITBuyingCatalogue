@@ -26,10 +26,6 @@ variable "sku_size" {
   type = string
 }
 
-variable "repository_name" {
-  type = string
-}
-
 variable "always_on" {
   type = string
 }
@@ -59,18 +55,6 @@ variable "app_gateway_ip" {
 }
 
 variable "app_dns_url" {
-  type = string
-}
-
-variable "docker_registry_server_url" {
-  type = string
-}
-
-variable "docker_registry_server_username" {
-  type = string
-}
-
-variable "docker_registry_server_password" {
   type = string
 }
 
