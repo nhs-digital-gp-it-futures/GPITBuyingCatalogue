@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentValidation.TestHelper;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients;
 using Xunit;
@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
                     new SelectSublocationsModel
                     {
                         RenderedSublocations =
-                            [new CheckboxNameAndValueModel { Name = "Option 1", Value = true }],
+                            [new SelectOption<bool> { Text = "Option 1", Value = true }],
                     },
                 ],
             ];
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
                     new SelectSublocationsModel
                     {
                         RenderedSublocations =
-                            [new CheckboxNameAndValueModel { Name = "Option 1", Value = false }],
+                            [new SelectOption<bool> { Text = "Option 1", Value = false }],
                     },
                 ],
             ];

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using EntityModels = NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using ServiceModels = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
@@ -26,22 +26,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
             RenderedSublocations = existingSublocations
                 .Select(
-                    cs => new CheckboxNameAndValueModel
-                    {
-                        Name = cs.SublocationOdsCode, Value = CheckboxNameAndValueModel.Selected,
-                    })
+                    cs => new SelectOption<bool> { Text = cs.SublocationOdsCode, Value = true })
                 .Concat(
                     possibleSublocations
                         .Where(sl => existingSublocations.All(cs => cs.SublocationOdsCode != sl.OdsCode))
                         .Select(
-                            sl => new CheckboxNameAndValueModel
-                            {
-                                Name = sl.OdsCode, Value = CheckboxNameAndValueModel.NotSelected,
-                            }))
-                .OrderBy(x => x.Name)
+                            sl => new SelectOption<bool> { Text = sl.OdsCode, Value = false }))
+                .OrderBy(x => x.Text)
                 .ToList();
         }
 
-        public IReadOnlyList<CheckboxNameAndValueModel> RenderedSublocations { get; init; }
+        public IReadOnlyList<SelectOption<bool>> RenderedSublocations { get; init; }
     }
 }

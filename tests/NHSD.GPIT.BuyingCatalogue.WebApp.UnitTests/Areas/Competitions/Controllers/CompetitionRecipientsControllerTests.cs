@@ -12,10 +12,10 @@ using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NSubstitute.ReturnsExtensions;
@@ -138,7 +138,7 @@ public static class CompetitionRecipientsControllerTests
         Competition competition,
         List<CompetitionSublocation> existingSublocations,
         List<OdsOrganisation> possibleSublocations,
-        List<CheckboxNameAndValueModel> renderedSelections,
+        List<SelectOption<bool>> renderedSelections,
         [Frozen] ICompetitionsService competitionsService,
         [Frozen] IOdsService odsService,
         CompetitionRecipientsController controller)
@@ -190,7 +190,7 @@ public static class CompetitionRecipientsControllerTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> existingSublocations,
-        List<CheckboxNameAndValueModel> checkboxSelections,
+        List<SelectOption<bool>> checkboxSelections,
         HashSet<string> expectedAdds,
         string expectedControllerName,
         [Frozen] ICompetitionsService competitionsService,
@@ -230,7 +230,7 @@ public static class CompetitionRecipientsControllerTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> existingSublocations,
-        List<CheckboxNameAndValueModel> checkboxSelections,
+        List<SelectOption<bool>> checkboxSelections,
         string expectedAddsAsConcatString,
         string expectedRemovesAsConcatString,
         [Frozen] ICompetitionsService competitionsService,
@@ -959,11 +959,11 @@ public static class CompetitionRecipientsControllerTests
                     new() { OdsCode = "XXXA", OrganisationName = "An existing sublocation - XXXA" },
                     new() { OdsCode = "XXXE", OrganisationName = "A new sublocation - XXXE" },
                 },
-                new List<CheckboxNameAndValueModel>
+                new List<SelectOption<bool>>
                 {
-                    new() { Name = "XXXX", Value = true },
-                    new() { Name = "XXXA", Value = true },
-                    new() { Name = "XXXE", Value = false },
+                    new() { Text = "XXXX", Value = true },
+                    new() { Text = "XXXA", Value = true },
+                    new() { Text = "XXXE", Value = false },
                 },
             ],
 
@@ -993,11 +993,11 @@ public static class CompetitionRecipientsControllerTests
                     new() { OdsCode = "XXXA", OrganisationName = "An existing sublocation - XXXA" },
                     new() { OdsCode = "XXXE", OrganisationName = "A new sublocation - XXXE" },
                 },
-                new List<CheckboxNameAndValueModel>
+                new List<SelectOption<bool>>
                 {
-                    new() { Name = "XXXX", Value = true },
-                    new() { Name = "XXXA", Value = true },
-                    new() { Name = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = true },
+                    new() { Text = "XXXA", Value = true },
+                    new() { Text = "XXXE", Value = true },
                 },
             ],
 
@@ -1012,11 +1012,11 @@ public static class CompetitionRecipientsControllerTests
                     new() { OdsCode = "XXXA", OrganisationName = "An existing sublocation - XXXA" },
                     new() { OdsCode = "XXXE", OrganisationName = "A new sublocation - XXXE" },
                 },
-                new List<CheckboxNameAndValueModel>
+                new List<SelectOption<bool>>
                 {
-                    new() { Name = "XXXX", Value = false },
-                    new() { Name = "XXXA", Value = false },
-                    new() { Name = "XXXE", Value = false },
+                    new() { Text = "XXXX", Value = false },
+                    new() { Text = "XXXA", Value = false },
+                    new() { Text = "XXXE", Value = false },
                 },
             ],
         ];
@@ -1034,11 +1034,11 @@ public static class CompetitionRecipientsControllerTests
                 {
                     CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA"),
                 },
-                new List<CheckboxNameAndValueModel>
+                new List<SelectOption<bool>>
                 {
-                    new() { Name = "XXXX", Value = true },
-                    new() { Name = "XXXA", Value = true },
-                    new() { Name = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = true },
+                    new() { Text = "XXXA", Value = true },
+                    new() { Text = "XXXE", Value = true },
                 },
                 new HashSet<string> { "XXXE" },
                 nameof(CompetitionRecipientsController.ConfirmSublocations),
@@ -1049,11 +1049,11 @@ public static class CompetitionRecipientsControllerTests
                 CommonOrganisationFactory(),
                 CommonCompetitionFactory(),
                 new List<CompetitionSublocation> { CommonCompetitionSublocationFactory("XXXX") },
-                new List<CheckboxNameAndValueModel>
+                new List<SelectOption<bool>>
                 {
-                    new() { Name = "XXXX", Value = true },
-                    new() { Name = "XXXA", Value = true },
-                    new() { Name = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = true },
+                    new() { Text = "XXXA", Value = true },
+                    new() { Text = "XXXE", Value = true },
                 },
                 new HashSet<string> { "XXXA", "XXXE" },
                 nameof(CompetitionRecipientsController.ConfirmSublocations),
@@ -1064,11 +1064,11 @@ public static class CompetitionRecipientsControllerTests
                 CommonOrganisationFactory(),
                 CommonCompetitionFactory(),
                 new List<CompetitionSublocation>(),
-                new List<CheckboxNameAndValueModel>
+                new List<SelectOption<bool>>
                 {
-                    new() { Name = "XXXX", Value = true },
-                    new() { Name = "XXXA", Value = true },
-                    new() { Name = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = true },
+                    new() { Text = "XXXA", Value = true },
+                    new() { Text = "XXXE", Value = true },
                 },
                 new HashSet<string> { "XXXX", "XXXA", "XXXE" },
                 nameof(CompetitionRecipientsController.AddSublocations),
@@ -1088,11 +1088,11 @@ public static class CompetitionRecipientsControllerTests
                 {
                     CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA"),
                 },
-                new List<CheckboxNameAndValueModel>
+                new List<SelectOption<bool>>
                 {
-                    new() { Name = "XXXX", Value = false },
-                    new() { Name = "XXXA", Value = true },
-                    new() { Name = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = false },
+                    new() { Text = "XXXA", Value = true },
+                    new() { Text = "XXXE", Value = true },
                 },
                 "XXXE",
                 "XXXX",
@@ -1106,9 +1106,9 @@ public static class CompetitionRecipientsControllerTests
                 {
                     CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA"),
                 },
-                new List<CheckboxNameAndValueModel>
+                new List<SelectOption<bool>>
                 {
-                    new() { Name = "XXXX", Value = false }, new() { Name = "XXXA", Value = true },
+                    new() { Text = "XXXX", Value = false }, new() { Text = "XXXA", Value = true },
                 },
                 string.Empty,
                 "XXXX",
@@ -1124,11 +1124,11 @@ public static class CompetitionRecipientsControllerTests
                     CommonCompetitionSublocationFactory("XXXA"),
                     CommonCompetitionSublocationFactory("XXXE"),
                 },
-                new List<CheckboxNameAndValueModel>
+                new List<SelectOption<bool>>
                 {
-                    new() { Name = "XXXX", Value = false },
-                    new() { Name = "XXXA", Value = false },
-                    new() { Name = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = false },
+                    new() { Text = "XXXA", Value = false },
+                    new() { Text = "XXXE", Value = true },
                 },
                 string.Empty,
                 "XXXX,XXXA",

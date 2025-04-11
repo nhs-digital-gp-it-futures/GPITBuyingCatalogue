@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients
@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients
                 .OverridePropertyName("RenderedSublocations[0].Value");
         }
 
-        private static bool HaveMadeASelection(IReadOnlyList<CheckboxNameAndValueModel> checkboxSelections)
+        private static bool HaveMadeASelection(IReadOnlyList<SelectOption<bool>> checkboxSelections)
         {
             if (checkboxSelections is null or { Count: 0 })
                 return false;

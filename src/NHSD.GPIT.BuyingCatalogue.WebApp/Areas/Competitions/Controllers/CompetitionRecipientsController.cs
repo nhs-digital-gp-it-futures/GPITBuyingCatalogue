@@ -126,7 +126,7 @@ public class CompetitionRecipientsController(
         }
 
         HashSet<string> sublocationIds =
-            selectSublocations.RenderedSublocations.Where(x => x.Value).Select(y => y.Name).ToHashSet();
+            selectSublocations.RenderedSublocations.Where(x => x.Value).Select(y => y.Text).ToHashSet();
 
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);

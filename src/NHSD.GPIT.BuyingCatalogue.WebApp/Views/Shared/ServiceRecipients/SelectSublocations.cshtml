@@ -16,9 +16,9 @@
                 <nhs-checkbox-container>
                     @for (var i = 0; i < Model.RenderedSublocations.Count; i++)
                     {
-                        @Html.HiddenFor(model => model.RenderedSublocations[i].Name)
+                        @Html.HiddenFor(model => model.RenderedSublocations[i].Text)
                         <nhs-checkbox asp-for="@Model.RenderedSublocations[i].Value"
-                                      label-text="@Model.RenderedSublocations[i].Name"/>
+                                      label-text="@Model.RenderedSublocations[i].Text"/>
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>
