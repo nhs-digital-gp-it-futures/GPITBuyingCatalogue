@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
@@ -29,6 +30,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         }
 
         public bool? ConfirmRemove { get; init; }
+
+        public IEnumerable<SelectOption<bool>> ConfirmRemoveOptions => new List<SelectOption<bool>>
+        {
+            new($"Yes, I want to remove the {Pluralisation}", true),
+            new($"No, I want to keep the {Pluralisation}", false),
+        };
 
         public string ListHeaderText { get; init; }
 
