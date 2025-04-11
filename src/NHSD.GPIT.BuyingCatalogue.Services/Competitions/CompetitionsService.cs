@@ -841,8 +841,6 @@ public class CompetitionsService : ICompetitionsService
             throw new InvalidOperationException("Provided sublocations not valid for this organisation.");
         }
 
-        var validateRecipients = true;
-
         foreach (CompetitionSublocation sublocation in competitionSublocations)
         {
             IReadOnlyList<ServiceRecipient> validServiceRecipients =
@@ -853,14 +851,9 @@ public class CompetitionsService : ICompetitionsService
 
             if (!instanceCheck)
             {
-                validateRecipients = false;
+                throw new InvalidOperationException(
+                    "Provided recipients not valid for this organisation or its sublocations.");
             }
-        }
-
-        if (!validateRecipients)
-        {
-            throw new InvalidOperationException(
-                "Provided recipients not valid for this organisation or its sublocations.");
         }
 
         competition.CompetitionSublocations = competitionSublocations;
