@@ -18,12 +18,12 @@
         <form method="post">
             @for (var i = 0; i < @Model.SublocationIdsToRemove.Count; i++)
             {
-                @Html.HiddenFor(model => model.SublocationIdsToRemove[i])
+                <input type="hidden" asp-for="@Model.SublocationIdsToRemove[i]" />
             }
 
             @for (var i = 0; i < @Model.SublocationIdsToAdd.Count; i++)
             {
-                @Html.HiddenFor(model => model.SublocationIdsToAdd[i])
+                <input type="hidden" asp-for="@Model.SublocationIdsToAdd[i]" />
             }
 
             <nhs-radio-button-container>

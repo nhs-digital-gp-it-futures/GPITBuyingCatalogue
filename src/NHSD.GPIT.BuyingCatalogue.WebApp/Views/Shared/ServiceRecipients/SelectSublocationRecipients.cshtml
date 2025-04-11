@@ -63,8 +63,8 @@
 
         <form method="post" id="sr-form">
             <hidden-inputs title="@Model.Title" advice="@Model.Advice" caption="@Model.Caption" />
-            @Html.HiddenFor(model => model.Sublocation.Name)
-            @Html.HiddenFor(model => model.BackLink)
+            <input type="hidden" asp-for="@Model.Sublocation.Name" />
+            <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-expander-v2 id="recipients-expander" open="@(Model.SelectionMode is null || expandWhenNotValid)">
                 <nhs-expander-summary label-text="@Model.Sublocation.Name" bold-title="true">
                     <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">
@@ -91,8 +91,8 @@
                             <nhs-table-row-container id="@Model.RenderedServiceRecipients[instanceSlice].OdsCode">
                                 <nhs-table-cell>
                                     <nhs-checkbox-container>
-                                        @Html.HiddenFor(model => model.RenderedServiceRecipients[instanceSlice].OdsCode)
-                                        @Html.HiddenFor(model => model.RenderedServiceRecipients[instanceSlice].Name)
+                                        <input type="hidden" asp-for="@Model.RenderedServiceRecipients[instanceSlice].OdsCode)" />
+                                        <input type="hidden" asp-for="@Model.RenderedServiceRecipients[instanceSlice].Name" />
                                         <nhs-checkbox asp-for="@Model.RenderedServiceRecipients[instanceSlice].Selected"
                                                       label-text="@Model.RenderedServiceRecipients[instanceSlice].Name"
                                                       checkbox-class="main-srs gather-data"/>

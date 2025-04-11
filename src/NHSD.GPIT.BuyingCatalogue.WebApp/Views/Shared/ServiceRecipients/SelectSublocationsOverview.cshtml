@@ -44,9 +44,9 @@
         <form method="post">
             @for (var i = 0; i < Model.Sublocations.Count; i++)
             {
-                @Html.HiddenFor(model => model.Sublocations[i].Name)
-                @Html.HiddenFor(model => model.Sublocations[i].OdsCode)
-                @Html.HiddenFor(model => model.Sublocations[i].ServiceRecipientCount)
+                <input type="hidden" asp-for="@Model.Sublocations[i].Name)" />
+                <input type="hidden" asp-for="@Model.Sublocations[i].OdsCode" />
+                <input type="hidden" asp-for="@Model.Sublocations[i].ServiceRecipientCount" />
             }  
 
         <nhs-submit-button/>
