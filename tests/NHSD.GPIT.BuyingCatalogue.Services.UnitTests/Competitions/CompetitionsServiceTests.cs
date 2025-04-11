@@ -14,6 +14,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -1185,6 +1186,10 @@ public static class CompetitionsServiceTests
 
     public static IEnumerable<object[]> AddSublocationsData()
     {
+        Competition competitionWithExistingSublocations = CommonCompetitionFactory(64, 38);
+        competitionWithExistingSublocations.CompetitionSublocations.AddRange(
+            [CommonCompetitionSublocationFactory("ZZZA"), CommonCompetitionSublocationFactory("ZZZB")]);
+
         return
         [
             [
@@ -1206,6 +1211,33 @@ public static class CompetitionsServiceTests
                 {
                     CommonCompetitionSublocationFactory("XXXX", null, false, 33),
                     CommonCompetitionSublocationFactory("XXXY", null, false, 33),
+                },
+            ],
+            [
+                CommonOrganisationFactory(21), competitionWithExistingSublocations,
+                new List<EntityOdsOrganisation>
+                {
+                    CommonEntityOdsOrganisationFactory("ZZZA"),
+                    CommonEntityOdsOrganisationFactory("ZZZB"),
+                    CommonEntityOdsOrganisationFactory("ZZZC"),
+                    CommonEntityOdsOrganisationFactory("ZZZD"),
+                    CommonEntityOdsOrganisationFactory("ZZZE"),
+                },
+                new List<ServiceContractOdsOrganisation>
+                {
+                    CommonServiceContractOdsOrganisationFactory("ZZZA"),
+                    CommonServiceContractOdsOrganisationFactory("ZZZB"),
+                    CommonServiceContractOdsOrganisationFactory("ZZZC"),
+                    CommonServiceContractOdsOrganisationFactory("ZZZD"),
+                    CommonServiceContractOdsOrganisationFactory("ZZZE"),
+                },
+                new HashSet<string> { "ZZZC", "ZZZD" },
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory("ZZZA", null, false, 64),
+                    CommonCompetitionSublocationFactory("ZZZB", null, false, 64),
+                    CommonCompetitionSublocationFactory("ZZZC", null, false, 64),
+                    CommonCompetitionSublocationFactory("ZZZD", null, false, 64),
                 },
             ],
         ];
@@ -1309,16 +1341,6 @@ public static class CompetitionsServiceTests
                 removeHashSet,
                 "Cannot remove sublocations on a completed competition.",
             ],
-            [
-                CommonOrganisationFactory(54), CommonCompetitionFactory(12, 54),
-                new List<ServiceContractOdsOrganisation>(),
-                removeHashSet, "Competition has no sublocations to remove.",
-            ],
-            [
-                CommonOrganisationFactory(45), populatedCompetitionWithMatchingSublocations,
-                new List<ServiceContractOdsOrganisation>(),
-                removeHashSet, "Can only remove sublocations already included in competition.",
-            ],
         ];
     }
 
@@ -1371,6 +1393,16 @@ public static class CompetitionsServiceTests
                 },
                 new HashSet<string> { "XXXX" },
                 new List<CompetitionSublocation> { CommonCompetitionSublocationFactory("XXXY", null, true, 388) },
+            ],
+            [
+                CommonOrganisationFactory(54), CommonCompetitionFactory(454, 54),
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory("ZZZA", null, true, 454),
+                    CommonCompetitionSublocationFactory("ZZZB", null, true, 454),
+                },
+                new HashSet<string> { "ZZZA", "ZZZB" },
+                new List<CompetitionSublocation>(),
             ],
         ];
     }

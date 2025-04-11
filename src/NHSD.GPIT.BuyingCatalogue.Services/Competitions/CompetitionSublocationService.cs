@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -96,16 +97,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                     "One or more requested Ids not found or not valid for this sublocation.");
             }
 
-            foreach (var recipientOdsCode in recipientOdsCodes)
-            {
-                sublocation.SublocationRecipients.Add(
-                    new CompetitionSublocationRecipient
+            sublocation.SublocationRecipients.AddRange(
+                recipientOdsCodes.Select(
+                    x => new CompetitionSublocationRecipient
                     {
                         CompetitionId = competitionId,
-                        RecipientOdsCode = recipientOdsCode,
+                        RecipientOdsCode = x,
                         ParentSublocationOdsCode = sublocationOdsCode,
-                    });
-            }
+                    }));
 
             await dbContext.SaveChangesAsync();
         }
@@ -138,26 +137,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                     "Cannot remove recipients from sublocations on a completed competition.");
             }
 
-            if (sublocation.SublocationRecipients.Count == 0)
-            {
-                throw new InvalidOperationException("Sublocation has no recipients to remove.");
-            }
+            List<CompetitionSublocationRecipient> itemsToRemove =
+                sublocation.SublocationRecipients.Where(x => recipientOdsCodes.Contains(x.RecipientOdsCode)).ToList();
 
-            var anyIdAlreadyInServiceRecipients =
-                recipientOdsCodes.All(x => sublocation.SublocationRecipients.Any(y => y.RecipientOdsCode == x));
-
-            if (!anyIdAlreadyInServiceRecipients)
-            {
-                throw new InvalidOperationException("Can only remove recipient if present in sublocation.");
-            }
-
-            foreach (var recipientOdsCode in recipientOdsCodes)
-            {
-                CompetitionSublocationRecipient itemToRemove =
-                    sublocation.SublocationRecipients.First(x => x.RecipientOdsCode == recipientOdsCode);
-
-                sublocation.SublocationRecipients.Remove(itemToRemove);
-            }
+            sublocation.SublocationRecipients.RemoveRange(itemsToRemove);
 
             await dbContext.SaveChangesAsync();
         }

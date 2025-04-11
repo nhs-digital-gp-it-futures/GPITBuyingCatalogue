@@ -409,20 +409,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
                     new HashSet<string> { "AAAA" },
                     "Cannot remove recipients from sublocations on a completed competition.",
                 ],
-                [
-                    CommonOrganisationFactory(89), CommonCompetitionFactory(55, 89),
-                    CommonCompetitionSublocationFactory("XXXY", [], true, 55),
-                    new HashSet<string> { "AAAA" }, "Sublocation has no recipients to remove.",
-                ],
-                [
-                    CommonOrganisationFactory(75), CommonCompetitionFactory(23, 75),
-                    CommonCompetitionSublocationFactory(
-                        "XXXZ",
-                        [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXZ", 23)],
-                        true,
-                        23),
-                    new HashSet<string> { "AAZZ" }, "Can only remove recipient if present in sublocation.",
-                ],
             ];
         }
 

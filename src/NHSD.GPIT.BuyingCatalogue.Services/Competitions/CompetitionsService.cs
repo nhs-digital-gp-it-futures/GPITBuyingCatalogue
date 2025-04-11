@@ -332,16 +332,14 @@ public class CompetitionsService : ICompetitionsService
                 "One or more requested Ids not found or not valid for this organisation.");
         }
 
-        foreach (var sublocationOdsCode in sublocationOdsCodes)
-        {
-            competition.CompetitionSublocations.Add(
-                new CompetitionSublocation
+        competition.CompetitionSublocations.AddRange(
+            sublocationOdsCodes.Select(
+                x => new CompetitionSublocation
                 {
                     CompetitionId = competitionId,
-                    SublocationOdsCode = sublocationOdsCode,
+                    SublocationOdsCode = x,
                     OwnerOdsCode = competition.Organisation.ExternalIdentifier,
-                });
-        }
+                }));
 
         await dbContext.SaveChangesAsync();
     }
@@ -370,26 +368,10 @@ public class CompetitionsService : ICompetitionsService
             throw new InvalidOperationException("Cannot remove sublocations on a completed competition.");
         }
 
-        if (competition.CompetitionSublocations.Count == 0)
-        {
-            throw new InvalidOperationException("Competition has no sublocations to remove.");
-        }
+        List<CompetitionSublocation> itemsToRemove =
+            competition.CompetitionSublocations.Where(x => sublocationOdsCodes.Contains(x.SublocationOdsCode)).ToList();
 
-        var sublocationsInCompetition = !sublocationOdsCodes.All(
-            x => competition.CompetitionSublocations.Any(y => y.SublocationOdsCode == x));
-
-        if (sublocationsInCompetition)
-        {
-            throw new InvalidOperationException("Can only remove sublocations already included in competition.");
-        }
-
-        foreach (var sublocationOdsCode in sublocationOdsCodes)
-        {
-            CompetitionSublocation itemToRemove =
-                competition.CompetitionSublocations.First(x => x.SublocationOdsCode == sublocationOdsCode);
-
-            competition.CompetitionSublocations.Remove(itemToRemove);
-        }
+        competition.CompetitionSublocations.RemoveRange(itemsToRemove);
 
         await dbContext.SaveChangesAsync();
     }
