@@ -84,6 +84,11 @@ public interface ICompetitionsService
         int competitionId,
         HashSet<string> sublocationOdsCodes);
 
+    Task SetSublocations(
+        string internalOrgId,
+        int competitionId,
+        HashSet<string> sublocationOdsCodes);
+
     Task SetCompetitionSublocationsAndRecipients(
         string internalOrgId,
         int competitionId,

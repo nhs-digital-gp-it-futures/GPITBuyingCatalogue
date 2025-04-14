@@ -1449,6 +1449,209 @@ public static class CompetitionsServiceTests
     [MockInMemoryDbInlineAutoData("", 5, true, typeof(ArgumentException))]
     [MockInMemoryDbInlineAutoData(null, 5, true, typeof(ArgumentNullException))]
     [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, false, typeof(ArgumentException))]
+    public static async Task SetSublocations_RejectsNullParams(
+        string internalOrgId,
+        int competitionId,
+        bool populateSublocations,
+        Type expectedExceptionType,
+        HashSet<string> competitionSublocations,
+        CompetitionsService service)
+    {
+        Exception exception = await Record.ExceptionAsync(
+            async () =>
+            {
+                if (!populateSublocations)
+                {
+                    await service.SetSublocations(
+                        internalOrgId,
+                        competitionId,
+                        []);
+                }
+                else
+                {
+                    await service.SetSublocations(
+                        internalOrgId,
+                        competitionId,
+                        competitionSublocations);
+                }
+            });
+
+        exception.Should().NotBeNull();
+        exception!.GetType().Should().Be(expectedExceptionType);
+    }
+
+    public static IEnumerable<object[]> SetSublocationsNotValidData()
+    {
+        Competition completedCompetition = CommonCompetitionFactory(67, 21);
+        completedCompetition.Completed = new DateTime(2024, 05, 03);
+
+        Competition populatedCompetitionWithMatchingSublocations = CommonCompetitionFactory(83, 45);
+        populatedCompetitionWithMatchingSublocations.CompetitionSublocations =
+        [
+            CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXY"),
+        ];
+
+        var addHashSet = new HashSet<string> { "XXXX", "XXXY", "XXXZ" };
+
+        return
+        [
+            [
+                CommonOrganisationFactory(21), completedCompetition,
+                addHashSet,
+                "Cannot add sublocations on a completed competition.",
+            ],
+            [
+                CommonOrganisationFactory(45), populatedCompetitionWithMatchingSublocations,
+                addHashSet, "Can only add sublocations not already included in competition.",
+            ],
+            [
+                CommonOrganisationFactory(78), CommonCompetitionFactory(33, 78),
+                new HashSet<string> { "FFGH" },
+                "One or more requested Ids not found or not valid for this organisation.",
+            ],
+        ];
+    }
+
+    [Theory]
+    [MockInMemoryDbMemberAutoData(nameof(SetSublocationsNotValidData))]
+    public static async Task SetSublocations_RejectsInvalidOperations(
+        Organisation organisation,
+        Competition competition,
+        HashSet<string> sublocationOdsCodes,
+        string expectedMessage,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IOdsService odsService,
+        CompetitionsService service)
+    {
+        competition.Organisation = organisation;
+
+        context.Add(competition);
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns([]);
+
+        Exception exception = await Record.ExceptionAsync(
+            async () =>
+            {
+                await service.SetSublocations(
+                    organisation.InternalIdentifier,
+                    competition.Id,
+                    sublocationOdsCodes);
+            });
+
+        exception.Should().NotBeNull();
+        exception!.GetType().Should().Be(typeof(InvalidOperationException));
+        exception!.Message.Should().Be(expectedMessage);
+    }
+
+    public static IEnumerable<object[]> SetSublocationsData()
+    {
+        Competition competitionWithExistingSublocations = CommonCompetitionFactory(64, 38);
+        competitionWithExistingSublocations.CompetitionSublocations.AddRange(
+            [CommonCompetitionSublocationFactory("ZZZA"), CommonCompetitionSublocationFactory("ZZZB")]);
+
+        return
+        [
+            [
+                CommonOrganisationFactory(78), CommonCompetitionFactory(33, 78),
+                new List<EntityOdsOrganisation>
+                {
+                    CommonEntityOdsOrganisationFactory("XXXX"),
+                    CommonEntityOdsOrganisationFactory("XXXY"),
+                    CommonEntityOdsOrganisationFactory("XXXZ"),
+                },
+                new List<ServiceContractOdsOrganisation>
+                {
+                    CommonServiceContractOdsOrganisationFactory("XXXX"),
+                    CommonServiceContractOdsOrganisationFactory("XXXY"),
+                    CommonServiceContractOdsOrganisationFactory("XXXZ"),
+                },
+                new HashSet<string> { "XXXX", "XXXY" },
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory("XXXX", null, false, 33),
+                    CommonCompetitionSublocationFactory("XXXY", null, false, 33),
+                },
+            ],
+            [
+                CommonOrganisationFactory(21), competitionWithExistingSublocations,
+                new List<EntityOdsOrganisation>
+                {
+                    CommonEntityOdsOrganisationFactory("ZZZA"),
+                    CommonEntityOdsOrganisationFactory("ZZZB"),
+                    CommonEntityOdsOrganisationFactory("ZZZC"),
+                    CommonEntityOdsOrganisationFactory("ZZZD"),
+                    CommonEntityOdsOrganisationFactory("ZZZE"),
+                },
+                new List<ServiceContractOdsOrganisation>
+                {
+                    CommonServiceContractOdsOrganisationFactory("ZZZA"),
+                    CommonServiceContractOdsOrganisationFactory("ZZZB"),
+                    CommonServiceContractOdsOrganisationFactory("ZZZC"),
+                    CommonServiceContractOdsOrganisationFactory("ZZZD"),
+                    CommonServiceContractOdsOrganisationFactory("ZZZE"),
+                },
+                new HashSet<string> { "ZZZC", "ZZZD" },
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory("ZZZA", null, false, 64),
+                    CommonCompetitionSublocationFactory("ZZZB", null, false, 64),
+                    CommonCompetitionSublocationFactory("ZZZC", null, false, 64),
+                    CommonCompetitionSublocationFactory("ZZZD", null, false, 64),
+                },
+            ],
+        ];
+    }
+
+    [Theory]
+    [MockInMemoryDbMemberAutoData(nameof(SetSublocationsData))]
+    public static async Task SetSublocations_SetsSublocations(
+        Organisation organisation,
+        Competition competition,
+        List<EntityOdsOrganisation> validSublocationsAsEntityModels,
+        List<ServiceContractOdsOrganisation> validSublocationsAsServiceModels,
+        HashSet<string> addSublocationOdsCodes,
+        List<CompetitionSublocation> expectedCompetitionSublocations,
+        [Frozen] BuyingCatalogueDbContext context,
+        [Frozen] IOdsService odsService,
+        CompetitionsService service)
+    {
+        competition.Organisation = organisation;
+
+        context.AddRange(validSublocationsAsEntityModels);
+        context.Add(organisation);
+        context.Add(competition);
+        await context.SaveChangesAsync();
+
+        context.ChangeTracker.Clear();
+
+        odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier)
+            .Returns(validSublocationsAsServiceModels);
+
+        await service.SetSublocations(
+            organisation.InternalIdentifier,
+            competition.Id,
+            addSublocationOdsCodes);
+
+        Competition actualCompetition = await service.GetCompetitionWithSublocations(
+            organisation.InternalIdentifier,
+            competition.Id);
+
+        actualCompetition.CompetitionSublocations.Should()
+            .BeEquivalentTo(
+                expectedCompetitionSublocations,
+                opt => opt.WithoutStrictOrdering()
+                    .Excluding(m => m.Competition)
+                    .Excluding(m => m.SublocationOrganisation)
+                    .Excluding(m => m.SublocationRecipients));
+    }
+
+    [Theory]
+    [MockInMemoryDbInlineAutoData("", 5, true, typeof(ArgumentException))]
+    [MockInMemoryDbInlineAutoData(null, 5, true, typeof(ArgumentNullException))]
+    [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, false, typeof(ArgumentException))]
     public static async Task SetCompetitionSublocationsAndRecipients_RejectsNullParams(
         string internalOrgId,
         int competitionId,

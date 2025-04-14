@@ -376,6 +376,70 @@ public class CompetitionsService : ICompetitionsService
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task SetSublocations(
+        string internalOrgId,
+        int competitionId,
+        HashSet<string> sublocationOdsCodes)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
+
+        if (sublocationOdsCodes is null or { Count: 0 })
+        {
+            throw new ArgumentException(@"sublocationOdsCodes is null or empty", nameof(sublocationOdsCodes));
+        }
+
+        Competition competition = await dbContext.Competitions
+            .Where(x => x.Organisation.InternalIdentifier == internalOrgId && x.Id == competitionId)
+            .Include(x => x.Organisation)
+            .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
+            .FirstAsync();
+
+        if (competition.Completed.HasValue)
+        {
+            throw new InvalidOperationException("Cannot set sublocations on a completed competition.");
+        }
+
+        IEnumerable<OdsOrganisation> validSublocations =
+            await odsService.GetSublocationsByParentOdsCode(competition.Organisation.ExternalIdentifier);
+
+        var allIdsValid = sublocationOdsCodes.All(x => validSublocations.Any(y => y.OdsCode == x));
+
+        if (!allIdsValid)
+        {
+            throw new InvalidOperationException(
+                "One or more requested Ids not found or not valid for this organisation.");
+        }
+
+        HashSet<string> competitionSublocations =
+            competition.CompetitionSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
+
+        HashSet<string> removes = [.. competitionSublocations];
+        removes.ExceptWith(sublocationOdsCodes);
+
+        HashSet<string> adds = [.. sublocationOdsCodes];
+        adds.ExceptWith(competitionSublocations);
+
+        IEnumerable<CompetitionSublocation> locationsToAdd = adds.Select(
+            x => new CompetitionSublocation
+            {
+                CompetitionId = competitionId,
+                SublocationOdsCode = x,
+                OwnerOdsCode = competition.Organisation.ExternalIdentifier,
+            });
+
+        competition.CompetitionSublocations.AddRange(
+            locationsToAdd
+        );
+
+        List<CompetitionSublocation> locationsToRemove =
+            competition.CompetitionSublocations.Where(x => removes.Contains(x.SublocationOdsCode)).ToList();
+
+        competition.CompetitionSublocations.RemoveRange(locationsToRemove);
+
+        await dbContext.SaveChangesAsync();
+    }
+
     public async Task SetContractLength(string internalOrgId, int competitionId, int contractLength)
     {
         var competition =
