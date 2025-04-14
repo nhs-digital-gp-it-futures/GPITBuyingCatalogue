@@ -1498,11 +1498,7 @@ public static class CompetitionsServiceTests
             [
                 CommonOrganisationFactory(21), completedCompetition,
                 addHashSet,
-                "Cannot add sublocations on a completed competition.",
-            ],
-            [
-                CommonOrganisationFactory(45), populatedCompetitionWithMatchingSublocations,
-                addHashSet, "Can only add sublocations not already included in competition.",
+                "Cannot set sublocations on a completed competition.",
             ],
             [
                 CommonOrganisationFactory(78), CommonCompetitionFactory(33, 78),
@@ -1548,12 +1544,9 @@ public static class CompetitionsServiceTests
 
     public static IEnumerable<object[]> SetSublocationsData()
     {
-        Competition competitionWithExistingSublocations = CommonCompetitionFactory(64, 38);
-        competitionWithExistingSublocations.CompetitionSublocations.AddRange(
-            [CommonCompetitionSublocationFactory("ZZZA"), CommonCompetitionSublocationFactory("ZZZB")]);
-
         return
         [
+            // Adds
             [
                 CommonOrganisationFactory(78), CommonCompetitionFactory(33, 78),
                 new List<EntityOdsOrganisation>
@@ -1575,31 +1568,73 @@ public static class CompetitionsServiceTests
                     CommonCompetitionSublocationFactory("XXXY", null, false, 33),
                 },
             ],
+
+            // Removes
             [
-                CommonOrganisationFactory(21), competitionWithExistingSublocations,
+                CommonOrganisationFactory(31),
+                CommonCompetitionFactory(
+                    64,
+                    31,
+                    [
+                        CommonCompetitionSublocationFactory("YXXA"), CommonCompetitionSublocationFactory("YXXB"),
+                        CommonCompetitionSublocationFactory("YXXC"),
+                    ]),
                 new List<EntityOdsOrganisation>
                 {
-                    CommonEntityOdsOrganisationFactory("ZZZA"),
-                    CommonEntityOdsOrganisationFactory("ZZZB"),
-                    CommonEntityOdsOrganisationFactory("ZZZC"),
-                    CommonEntityOdsOrganisationFactory("ZZZD"),
-                    CommonEntityOdsOrganisationFactory("ZZZE"),
+                    CommonEntityOdsOrganisationFactory("YXXA"),
+                    CommonEntityOdsOrganisationFactory("YXXB"),
+                    CommonEntityOdsOrganisationFactory("YXXC"),
                 },
                 new List<ServiceContractOdsOrganisation>
                 {
-                    CommonServiceContractOdsOrganisationFactory("ZZZA"),
-                    CommonServiceContractOdsOrganisationFactory("ZZZB"),
-                    CommonServiceContractOdsOrganisationFactory("ZZZC"),
-                    CommonServiceContractOdsOrganisationFactory("ZZZD"),
-                    CommonServiceContractOdsOrganisationFactory("ZZZE"),
+                    CommonServiceContractOdsOrganisationFactory("YXXA"),
+                    CommonServiceContractOdsOrganisationFactory("YXXB"),
+                    CommonServiceContractOdsOrganisationFactory("YXXC"),
                 },
-                new HashSet<string> { "ZZZC", "ZZZD" },
+                new HashSet<string> { "YXXB", "YXXC" },
                 new List<CompetitionSublocation>
                 {
-                    CommonCompetitionSublocationFactory("ZZZA", null, false, 64),
-                    CommonCompetitionSublocationFactory("ZZZB", null, false, 64),
-                    CommonCompetitionSublocationFactory("ZZZC", null, false, 64),
-                    CommonCompetitionSublocationFactory("ZZZD", null, false, 64),
+                    CommonCompetitionSublocationFactory("YXXB", null, false, 64),
+                    CommonCompetitionSublocationFactory("YXXC", null, false, 64),
+                },
+            ],
+
+            // Adds and removes
+
+            [
+                CommonOrganisationFactory(87),
+                CommonCompetitionFactory(
+                    55,
+                    87,
+                    [
+                        CommonCompetitionSublocationFactory("ZXXA"), CommonCompetitionSublocationFactory("ZXXB"),
+                        CommonCompetitionSublocationFactory("ZXXC"),
+                    ]),
+                new List<EntityOdsOrganisation>
+                {
+                    CommonEntityOdsOrganisationFactory("ZXXA"),
+                    CommonEntityOdsOrganisationFactory("ZXXB"),
+                    CommonEntityOdsOrganisationFactory("ZXXC"),
+                    CommonEntityOdsOrganisationFactory("ZXXD"),
+                    CommonEntityOdsOrganisationFactory("ZXXE"),
+                    CommonEntityOdsOrganisationFactory("ZXXF"),
+                },
+                new List<ServiceContractOdsOrganisation>
+                {
+                    CommonServiceContractOdsOrganisationFactory("ZXXA"),
+                    CommonServiceContractOdsOrganisationFactory("ZXXB"),
+                    CommonServiceContractOdsOrganisationFactory("ZXXC"),
+                    CommonServiceContractOdsOrganisationFactory("ZXXD"),
+                    CommonServiceContractOdsOrganisationFactory("ZXXE"),
+                    CommonServiceContractOdsOrganisationFactory("ZXXF"),
+                },
+                new HashSet<string> { "ZXXB", "ZXXC", "ZXXD", "ZXXE" },
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory("ZXXB", null, false, 55),
+                    CommonCompetitionSublocationFactory("ZXXC", null, false, 55),
+                    CommonCompetitionSublocationFactory("ZXXD", null, false, 55),
+                    CommonCompetitionSublocationFactory("ZXXE", null, false, 55),
                 },
             ],
         ];
@@ -1612,7 +1647,7 @@ public static class CompetitionsServiceTests
         Competition competition,
         List<EntityOdsOrganisation> validSublocationsAsEntityModels,
         List<ServiceContractOdsOrganisation> validSublocationsAsServiceModels,
-        HashSet<string> addSublocationOdsCodes,
+        HashSet<string> setSublocationOdsCodes,
         List<CompetitionSublocation> expectedCompetitionSublocations,
         [Frozen] BuyingCatalogueDbContext context,
         [Frozen] IOdsService odsService,
@@ -1633,7 +1668,7 @@ public static class CompetitionsServiceTests
         await service.SetSublocations(
             organisation.InternalIdentifier,
             competition.Id,
-            addSublocationOdsCodes);
+            setSublocationOdsCodes);
 
         Competition actualCompetition = await service.GetCompetitionWithSublocations(
             organisation.InternalIdentifier,
@@ -3582,7 +3617,10 @@ public static class CompetitionsServiceTests
         };
     }
 
-    private static Competition CommonCompetitionFactory(int customId = 0, int customOrganisationId = 0)
+    private static Competition CommonCompetitionFactory(
+        int customId = 0,
+        int customOrganisationId = 0,
+        ICollection<CompetitionSublocation> competitionSublocations = null)
     {
         return new Competition
         {
@@ -3590,6 +3628,7 @@ public static class CompetitionsServiceTests
             OrganisationId = customOrganisationId == 0 ? CommonOrganisationId : customOrganisationId,
             Name = "My Competition",
             Description = "Competition for competitiony things",
+            CompetitionSublocations = competitionSublocations is { Count: > 0 } ? competitionSublocations : [],
         };
     }
 
