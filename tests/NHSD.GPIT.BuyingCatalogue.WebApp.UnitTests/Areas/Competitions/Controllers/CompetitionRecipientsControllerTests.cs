@@ -712,15 +712,14 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [MockMemberAutoData(nameof(SublocationExpectedAddsAndOrRemoves))]
+    [MockMemberAutoData(nameof(SublocationExpectedSets))]
     public static async Task SelectSublocationRecipients_Post_PerformsServiceCallsAndRedirects(
         Organisation organisation,
         Competition competition,
         string sublocationOdsCode,
         CompetitionSublocation existingCompetitionSublocation,
         IReadOnlyList<ServiceRecipientModel> newRenderedServiceRecipients,
-        HashSet<string> expectedAdds,
-        HashSet<string> expectedRemoves,
+        HashSet<string> expectedSets,
         [Frozen] IOrganisationsService organisationsService,
         [Frozen] ICompetitionSublocationService competitionSublocationService,
         CompetitionRecipientsController controller)
@@ -752,25 +751,12 @@ public static class CompetitionRecipientsControllerTests
                 sublocationOdsCode))
             .As<RedirectToActionResult>();
 
-        if (expectedAdds.Count > 0)
-        {
-            await competitionSublocationService.Received()
-                .AddSublocationRecipients(
-                    organisation.ExternalIdentifier,
-                    competition.Id,
-                    sublocationOdsCode,
-                    Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, expectedAdds)));
-        }
-
-        if (expectedRemoves.Count > 0)
-        {
-            await competitionSublocationService.Received()
-                .RemoveSublocationRecipients(
-                    organisation.ExternalIdentifier,
-                    competition.Id,
-                    sublocationOdsCode,
-                    Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, expectedRemoves)));
-        }
+        await competitionSublocationService.Received()
+            .SetSublocationRecipients(
+                organisation.ExternalIdentifier,
+                competition.Id,
+                sublocationOdsCode,
+                Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, expectedSets)));
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
@@ -1442,7 +1428,7 @@ public static class CompetitionRecipientsControllerTests
         ];
     }
 
-    private static IEnumerable<object[]> SublocationExpectedAddsAndOrRemoves()
+    private static IEnumerable<object[]> SublocationExpectedSets()
     {
         return
         [
@@ -1456,10 +1442,10 @@ public static class CompetitionRecipientsControllerTests
                     CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
                     CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
                 },
-                new HashSet<string> { "AAAA", "AAAB" }, new HashSet<string>(),
+                new HashSet<string> { "AAAA", "AAAB" },
             ],
 
-            // 1 existing sublocation recipient + 1 new selected = 1 add
+            // 1 existing sublocation recipient + 1 new selected = 2 set
             [
                 CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",
                 CommonCompetitionSublocationFactory(
@@ -1471,65 +1457,7 @@ public static class CompetitionRecipientsControllerTests
                     CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
                     CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
                 },
-                new HashSet<string> { "AAAB" }, new HashSet<string>(),
-            ],
-
-            // 3 existing sublocation recipient + 1 unselected = 1 remove
-            [
-                CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",
-                CommonCompetitionSublocationFactory(
-                    "XXXX",
-                    [
-                        CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
-                        CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
-                        CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
-                    ]),
-                new[]
-                {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
-                },
-                new HashSet<string>(), new HashSet<string> { "AAAC" },
-            ],
-
-            // 3 existing sublocation recipient + 1 new selected, 2 selected, 1 unselected = 1 add 1 remove
-            [
-                CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",
-                CommonCompetitionSublocationFactory(
-                    "XXXX",
-                    [
-                        CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
-                        CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
-                        CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
-                    ]),
-                new[]
-                {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAD", "XXXX", true),
-                },
-                new HashSet<string> { "AAAD" }, new HashSet<string> { "AAAC" },
-            ],
-
-            // 3 existing sublocation recipient + 3 selected = no change
-            [
-                CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",
-                CommonCompetitionSublocationFactory(
-                    "XXXX",
-                    [
-                        CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
-                        CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX"),
-                        CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
-                    ]),
-                new[]
-                {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
-                },
-                new HashSet<string>(), new HashSet<string>(),
+                new HashSet<string> { "AAAA", "AAAB" },
             ],
         ];
     }

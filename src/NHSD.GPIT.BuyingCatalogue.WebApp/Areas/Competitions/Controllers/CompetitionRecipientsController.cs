@@ -348,32 +348,11 @@ public class CompetitionRecipientsController(
             .Select(y => y.OdsCode)
             .ToHashSet();
 
-        HashSet<string> currentRecipients =
-            sublocation.SublocationRecipients?.Select(x => x.RecipientOdsCode).ToHashSet() ?? [];
-
-        HashSet<string> adds = [..pageSelections];
-        adds.ExceptWith(currentRecipients);
-
-        HashSet<string> removes = [..currentRecipients];
-        removes.ExceptWith(pageSelections);
-
-        if (adds.Count > 0)
-        {
-            await competitionSublocationService.AddSublocationRecipients(
-                externalOrganisationId,
-                competitionId,
-                sublocationOdsCode,
-                adds);
-        }
-
-        if (removes.Count > 0)
-        {
-            await competitionSublocationService.RemoveSublocationRecipients(
-                externalOrganisationId,
-                competitionId,
-                sublocationOdsCode,
-                removes);
-        }
+        await competitionSublocationService.SetSublocationRecipients(
+            externalOrganisationId,
+            competitionId,
+            sublocationOdsCode,
+            pageSelections);
 
         return RedirectToAction(
             nameof(ConfirmSublocations),
