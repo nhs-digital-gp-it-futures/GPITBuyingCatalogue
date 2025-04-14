@@ -138,7 +138,7 @@ public static class CompetitionRecipientsControllerTests
         Competition competition,
         List<CompetitionSublocation> existingSublocations,
         List<OdsOrganisation> possibleSublocations,
-        List<SelectOption<bool>> renderedSelections,
+        List<SelectOption<string>> renderedSelections,
         [Frozen] ICompetitionsService competitionsService,
         [Frozen] IOdsService odsService,
         CompetitionRecipientsController controller)
@@ -190,7 +190,7 @@ public static class CompetitionRecipientsControllerTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> existingSublocations,
-        List<SelectOption<bool>> checkboxSelections,
+        List<SelectOption<string>> checkboxSelections,
         HashSet<string> expectedAdds,
         string expectedControllerName,
         [Frozen] ICompetitionsService competitionsService,
@@ -230,7 +230,7 @@ public static class CompetitionRecipientsControllerTests
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> existingSublocations,
-        List<SelectOption<bool>> checkboxSelections,
+        List<SelectOption<string>> checkboxSelections,
         string expectedAddsAsConcatString,
         string expectedRemovesAsConcatString,
         [Frozen] ICompetitionsService competitionsService,
@@ -959,11 +959,11 @@ public static class CompetitionRecipientsControllerTests
                     new() { OdsCode = "XXXA", OrganisationName = "An existing sublocation - XXXA" },
                     new() { OdsCode = "XXXE", OrganisationName = "A new sublocation - XXXE" },
                 },
-                new List<SelectOption<bool>>
+                new List<SelectOption<string>>
                 {
-                    new() { Text = "XXXX", Value = true },
-                    new() { Text = "XXXA", Value = true },
-                    new() { Text = "XXXE", Value = false },
+                    new() { Text = "XXXX", Value = "XXXX", Selected = true },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
+                    new() { Text = "XXXE", Value = "XXXE", Selected = true },
                 },
             ],
 
@@ -993,11 +993,11 @@ public static class CompetitionRecipientsControllerTests
                     new() { OdsCode = "XXXA", OrganisationName = "An existing sublocation - XXXA" },
                     new() { OdsCode = "XXXE", OrganisationName = "A new sublocation - XXXE" },
                 },
-                new List<SelectOption<bool>>
+                new List<SelectOption<string>>
                 {
-                    new() { Text = "XXXX", Value = true },
-                    new() { Text = "XXXA", Value = true },
-                    new() { Text = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = "XXXX", Selected = true },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
+                    new() { Text = "XXXE", Value = "XXXE", Selected = true },
                 },
             ],
 
@@ -1012,11 +1012,11 @@ public static class CompetitionRecipientsControllerTests
                     new() { OdsCode = "XXXA", OrganisationName = "An existing sublocation - XXXA" },
                     new() { OdsCode = "XXXE", OrganisationName = "A new sublocation - XXXE" },
                 },
-                new List<SelectOption<bool>>
+                new List<SelectOption<string>>
                 {
-                    new() { Text = "XXXX", Value = false },
-                    new() { Text = "XXXA", Value = false },
-                    new() { Text = "XXXE", Value = false },
+                    new() { Text = "XXXX", Value = "XXXX", Selected = false },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = false },
+                    new() { Text = "XXXE", Value = "XXXE", Selected = false },
                 },
             ],
         ];
@@ -1034,11 +1034,11 @@ public static class CompetitionRecipientsControllerTests
                 {
                     CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA"),
                 },
-                new List<SelectOption<bool>>
+                new List<SelectOption<string>>
                 {
-                    new() { Text = "XXXX", Value = true },
-                    new() { Text = "XXXA", Value = true },
-                    new() { Text = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = "XXXX", Selected = true },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
+                    new() { Text = "XXXE", Value = "XXXE", Selected = true },
                 },
                 new HashSet<string> { "XXXE" },
                 nameof(CompetitionRecipientsController.ConfirmSublocations),
@@ -1049,11 +1049,11 @@ public static class CompetitionRecipientsControllerTests
                 CommonOrganisationFactory(),
                 CommonCompetitionFactory(),
                 new List<CompetitionSublocation> { CommonCompetitionSublocationFactory("XXXX") },
-                new List<SelectOption<bool>>
+                new List<SelectOption<string>>
                 {
-                    new() { Text = "XXXX", Value = true },
-                    new() { Text = "XXXA", Value = true },
-                    new() { Text = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = "XXXX", Selected = true },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
+                    new() { Text = "XXXE", Value = "XXXE", Selected = true },
                 },
                 new HashSet<string> { "XXXA", "XXXE" },
                 nameof(CompetitionRecipientsController.ConfirmSublocations),
@@ -1064,11 +1064,11 @@ public static class CompetitionRecipientsControllerTests
                 CommonOrganisationFactory(),
                 CommonCompetitionFactory(),
                 new List<CompetitionSublocation>(),
-                new List<SelectOption<bool>>
+                new List<SelectOption<string>>
                 {
-                    new() { Text = "XXXX", Value = true },
-                    new() { Text = "XXXA", Value = true },
-                    new() { Text = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = "XXXX", Selected = true },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
+                    new() { Text = "XXXE", Value = "XXXE", Selected = true },
                 },
                 new HashSet<string> { "XXXX", "XXXA", "XXXE" },
                 nameof(CompetitionRecipientsController.AddSublocations),
@@ -1088,11 +1088,11 @@ public static class CompetitionRecipientsControllerTests
                 {
                     CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA"),
                 },
-                new List<SelectOption<bool>>
+                new List<SelectOption<string>>
                 {
-                    new() { Text = "XXXX", Value = false },
-                    new() { Text = "XXXA", Value = true },
-                    new() { Text = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = "XXXX", Selected = false },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
+                    new() { Text = "XXXE", Value = "XXXE", Selected = true },
                 },
                 "XXXE",
                 "XXXX",
@@ -1106,9 +1106,10 @@ public static class CompetitionRecipientsControllerTests
                 {
                     CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA"),
                 },
-                new List<SelectOption<bool>>
+                new List<SelectOption<string>>
                 {
-                    new() { Text = "XXXX", Value = false }, new() { Text = "XXXA", Value = true },
+                    new() { Text = "XXXX", Value = "XXXX", Selected = false },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
                 },
                 string.Empty,
                 "XXXX",
@@ -1124,11 +1125,11 @@ public static class CompetitionRecipientsControllerTests
                     CommonCompetitionSublocationFactory("XXXA"),
                     CommonCompetitionSublocationFactory("XXXE"),
                 },
-                new List<SelectOption<bool>>
+                new List<SelectOption<string>>
                 {
-                    new() { Text = "XXXX", Value = false },
-                    new() { Text = "XXXA", Value = false },
-                    new() { Text = "XXXE", Value = true },
+                    new() { Text = "XXXX", Value = "XXXX", Selected = false },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = false },
+                    new() { Text = "XXXE", Value = "XXXE", Selected = true },
                 },
                 string.Empty,
                 "XXXX,XXXA",

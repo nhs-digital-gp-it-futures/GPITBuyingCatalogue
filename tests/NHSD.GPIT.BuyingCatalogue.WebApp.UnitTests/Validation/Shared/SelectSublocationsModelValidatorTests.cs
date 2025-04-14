@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
                     new SelectSublocationsModel
                     {
                         RenderedSublocations =
-                            [new SelectOption<bool> { Text = "Option 1", Value = true }],
+                            [new SelectOption<string> { Text = "Option 1", Value = "XXXX", Selected = true }],
                     },
                 ],
             ];
@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
                     new SelectSublocationsModel
                     {
                         RenderedSublocations =
-                            [new SelectOption<bool> { Text = "Option 1", Value = false }],
+                            [new SelectOption<string> { Text = "Option 1", Value = "XXXX", Selected = false }],
                     },
                 ],
             ];
