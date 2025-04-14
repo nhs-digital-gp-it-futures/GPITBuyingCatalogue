@@ -8,7 +8,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title model="@Model"/>
         <p>@Model.ListHeaderText
-            <ul>@foreach(var sublocation in @Model.SublocationIdsToRemove){<li>@sublocation</li>}</ul>
+            <ul>@foreach(var sublocation in @Model.Removes){<li>@sublocation</li>}</ul>
         </p>
         
         <nhs-warning-callout label-text="Remove a sublocation">
@@ -16,14 +16,10 @@
         </nhs-warning-callout>
         
         <form method="post">
-            @for (var i = 0; i < @Model.SublocationIdsToRemove.Count; i++)
-            {
-                <input type="hidden" asp-for="@Model.SublocationIdsToRemove[i]" />
-            }
 
-            @for (var i = 0; i < @Model.SublocationIdsToAdd.Count; i++)
+            @for (var i = 0; i < @Model.SublocationOdsCodes.Count; i++)
             {
-                <input type="hidden" asp-for="@Model.SublocationIdsToAdd[i]" />
+                <input type="hidden" asp-for="@Model.SublocationOdsCodes[i]" />
             }
             
             <nhs-fieldset-form-label asp-for="@Model">

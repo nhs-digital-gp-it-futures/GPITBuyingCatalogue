@@ -125,8 +125,8 @@ public class CompetitionRecipientsController(
             return View("ServiceRecipients/SelectSublocations", selectSublocations);
         }
 
-        HashSet<string> sublocationIds =
-            selectSublocations.RenderedSublocations.Where(x => x.Selected).Select(y => y.Text).ToHashSet();
+        HashSet<string> sublocationOdsCodes =
+            selectSublocations.RenderedSublocations.Where(x => x.Selected).Select(y => y.Value).ToHashSet();
 
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
@@ -134,44 +134,25 @@ public class CompetitionRecipientsController(
         HashSet<string> competitionSublocations =
             competition.CompetitionSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
 
-        if (competitionSublocations.Count == 0)
-        {
-            await competitionsService.AddSublocations(internalOrgId, competitionId, sublocationIds);
-
-            return RedirectToAction(
-                nameof(AddSublocations),
-                typeof(CompetitionRecipientsController).ControllerName(),
-                new { internalOrgId, competitionId });
-        }
-
         HashSet<string> removes = [..competitionSublocations];
-        removes.ExceptWith(sublocationIds);
-
-        HashSet<string> adds = [..sublocationIds];
-        adds.ExceptWith(competitionSublocations);
+        removes.ExceptWith(sublocationOdsCodes);
 
         var stringOfRemoves = JoinEnumerableStringsToCommaSeparatedString(removes);
 
-        var stringOfAdds = JoinEnumerableStringsToCommaSeparatedString(adds);
-
         if (removes.Count > 0)
         {
+            var stringOfSublocations = JoinEnumerableStringsToCommaSeparatedString(sublocationOdsCodes);
+
             return RedirectToAction(
                 nameof(RemoveSublocations),
                 typeof(CompetitionRecipientsController).ControllerName(),
                 new
                 {
-                    internalOrgId,
-                    competitionId,
-                    sublocationsToRemove = stringOfRemoves,
-                    sublocationsToAdd = stringOfAdds,
+                    internalOrgId, competitionId, sublocations = stringOfSublocations, removes = stringOfRemoves,
                 });
         }
 
-        if (adds.Count > 0)
-        {
-            await competitionsService.AddSublocations(internalOrgId, competitionId, adds);
-        }
+        await competitionsService.SetSublocations(internalOrgId, competitionId, sublocationOdsCodes);
 
         return RedirectToAction(
             nameof(ConfirmSublocations),
@@ -203,12 +184,12 @@ public class CompetitionRecipientsController(
     public async Task<IActionResult> RemoveSublocations(
         string internalOrgId,
         int competitionId,
-        string sublocationsToRemove,
-        string sublocationsToAdd)
+        string sublocations,
+        string removes)
     {
-        var splitSublocationsToRemove = SplitCommaSeparatedString(sublocationsToRemove);
+        var parsedSublocations = SplitCommaSeparatedString(sublocations);
 
-        var splitSublocationsToAdd = SplitCommaSeparatedString(sublocationsToAdd);
+        var parsedRemoves = SplitCommaSeparatedString(removes);
 
         Competition competition =
             await competitionsService.GetCompetition(internalOrgId, competitionId);
@@ -225,8 +206,8 @@ public class CompetitionRecipientsController(
 
         var model = new RemoveSublocationsModel(
             competition,
-            splitSublocationsToRemove,
-            splitSublocationsToAdd,
+            parsedSublocations,
+            parsedRemoves,
             backLinkHref);
 
         return View("ServiceRecipients/RemoveSublocations", model);
@@ -238,27 +219,18 @@ public class CompetitionRecipientsController(
         string internalOrgId,
         int competitionId)
     {
-        if (removeSublocationsModel.ConfirmRemove is true)
+        if (removeSublocationsModel.ConfirmRemove is not true || removeSublocationsModel.SublocationOdsCodes is not
+                { Count: > 0 })
         {
-            HashSet<string> adds = removeSublocationsModel.SublocationIdsToAdd?.ToHashSet();
-            HashSet<string> removes = removeSublocationsModel.SublocationIdsToRemove?.ToHashSet();
-
-            if (adds is { Count: > 0 })
-            {
-                await competitionsService.AddSublocations(
-                    internalOrgId,
-                    competitionId,
-                    adds);
-            }
-
-            if (removes is { Count: > 0 })
-            {
-                await competitionsService.RemoveSublocations(
-                    internalOrgId,
-                    competitionId,
-                    removes);
-            }
+            return BadRequest();
         }
+
+        HashSet<string> sublocations = removeSublocationsModel.SublocationOdsCodes.ToHashSet();
+
+        await competitionsService.SetSublocations(
+                internalOrgId,
+                competitionId,
+                sublocations);
 
         return RedirectToAction(
             nameof(ConfirmSublocations),

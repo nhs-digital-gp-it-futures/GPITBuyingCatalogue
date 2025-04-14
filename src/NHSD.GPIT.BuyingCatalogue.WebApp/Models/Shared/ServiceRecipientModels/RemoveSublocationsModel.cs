@@ -12,13 +12,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public RemoveSublocationsModel(
             Competition competition,
-            IReadOnlyList<string> sublocationsToRemove,
-            IReadOnlyList<string> sublocationsToAdd,
+            IReadOnlyList<string> sublocations,
+            IReadOnlyList<string> removes,
             string backLinkHref)
         {
-            SublocationIdsToRemove = sublocationsToRemove;
-            SublocationIdsToAdd = sublocationsToAdd;
-            Pluralisation = SublocationIdsToRemove.Count == 1
+            SublocationOdsCodes = sublocations;
+            Removes = removes;
+            Pluralisation = Removes.Count == 1
                 ? "sublocation"
                 : "sublocations";
 
@@ -41,8 +41,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public string Pluralisation { get; init; }
 
-        public IReadOnlyList<string> SublocationIdsToRemove { get; init; }
+        public IReadOnlyList<string> SublocationOdsCodes { get; init; }
 
-        public IReadOnlyList<string> SublocationIdsToAdd { get; init; }
+        public IReadOnlyList<string> Removes { get; init; }
     }
 }

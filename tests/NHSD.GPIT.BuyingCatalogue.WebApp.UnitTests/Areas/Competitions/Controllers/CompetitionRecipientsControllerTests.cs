@@ -185,54 +185,14 @@ public static class CompetitionRecipientsControllerTests
     }
 
     [Theory]
-    [MockMemberAutoData(nameof(ExpectedAddsFromSublocationSelection))]
-    public static async Task SelectSublocations_Post_AddsOnly_PerformsAddServiceCall(
+    [MockMemberAutoData(nameof(ExpectedSetsAndRemoves))]
+    public static async Task SelectSublocations_Post_SetsAndRemoves_RedirectsToRemovePage(
         Organisation organisation,
         Competition competition,
         List<CompetitionSublocation> existingSublocations,
         List<SelectOption<string>> checkboxSelections,
-        HashSet<string> expectedAdds,
-        string expectedControllerName,
-        [Frozen] ICompetitionsService competitionsService,
-        CompetitionRecipientsController controller)
-    {
-        competition.CompetitionSublocations = existingSublocations;
-        competition.Organisation = organisation;
-
-        competitionsService.GetCompetitionWithSublocations(organisation.InternalIdentifier, competition.Id)
-            .Returns(competition);
-
-        var callingModel = new SelectSublocationsModel { RenderedSublocations = checkboxSelections };
-
-        var result =
-            (await controller.SelectSublocations(callingModel, organisation.InternalIdentifier, competition.Id))
-            .As<RedirectToActionResult>();
-
-        await competitionsService.Received()
-            .AddSublocations(
-                organisation.InternalIdentifier,
-                competition.Id,
-                Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, expectedAdds)));
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(expectedControllerName);
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { "internalOrgId", organisation.InternalIdentifier }, { "competitionId", competition.Id },
-                });
-    }
-
-    [Theory]
-    [MockMemberAutoData(nameof(ExpectedRemovesOrAddsAndRemoves))]
-    public static async Task SelectSublocations_Post_RemovesOrAddsAndRemoves_RedirectsToRemovePage(
-        Organisation organisation,
-        Competition competition,
-        List<CompetitionSublocation> existingSublocations,
-        List<SelectOption<string>> checkboxSelections,
-        string expectedAddsAsConcatString,
-        string expectedRemovesAsConcatString,
+        string sublocationsConcatString,
+        string removesConcatString,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionRecipientsController controller)
     {
@@ -256,8 +216,122 @@ public static class CompetitionRecipientsControllerTests
                 {
                     { "internalOrgId", organisation.InternalIdentifier },
                     { "competitionId", competition.Id },
-                    { "sublocationsToRemove", expectedRemovesAsConcatString },
-                    { "sublocationsToAdd", expectedAddsAsConcatString },
+                    { "sublocations", sublocationsConcatString },
+                    { "removes", removesConcatString },
+                });
+    }
+
+    [Theory]
+    [MockMemberAutoData(nameof(RemoveSublocationsUrlParamsToModel))]
+    public static async Task RemoveSublocations_ReturnsView(
+        string sublocations,
+        string removes,
+        RemoveSublocationsModel expectedModel,
+        Organisation organisation,
+        Competition competition,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        competition.Organisation = organisation;
+
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
+
+        var result =
+            (await controller.RemoveSublocations(
+                organisation.InternalIdentifier,
+                competition.Id,
+                sublocations,
+                removes))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt
+                    .Excluding(m => m.BackLink)
+                    .Excluding(m => m.Caption)
+                    .Excluding(m => m.ListHeaderText)
+            );
+
+        var modelForFurtherComparison = result.Model.As<RemoveSublocationsModel>();
+
+        modelForFurtherComparison.ListHeaderText.Should()
+            .Be($"{competition.Organisation.Name} {expectedModel.Pluralisation} to be removed:");
+        modelForFurtherComparison.Title.Should().Be($"Remove {expectedModel.Pluralisation}");
+        modelForFurtherComparison.Caption.Should().Be(competition.Name);
+        modelForFurtherComparison.Advice.Should().Be("Confirm you want to remove sublocations from this competition");
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveSublocations_Post_NoServiceCallsIfNo(
+        string internalOrganisationId,
+        int competitionId,
+        List<string> sublocationIdsToRemove,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        var callingModel =
+            new RemoveSublocationsModel { ConfirmRemove = false, Removes = sublocationIdsToRemove };
+
+        var result =
+            (await controller.RemoveSublocations(callingModel, internalOrganisationId, competitionId))
+            .As<BadRequestResult>();
+
+        await competitionsService.DidNotReceiveWithAnyArgs().SetSublocations(null, 0, null);
+
+        result.Should().NotBeNull();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveSublocations_Post_NoServiceCallsIfNotPopulated(
+        string internalOrganisationId,
+        int competitionId,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        var callingModel =
+            new RemoveSublocationsModel { ConfirmRemove = true, Removes = [], SublocationOdsCodes = [] };
+
+        var result =
+            (await controller.RemoveSublocations(callingModel, internalOrganisationId, competitionId))
+            .As<BadRequestResult>();
+
+        await competitionsService.DidNotReceiveWithAnyArgs().SetSublocations(null, 0, null);
+
+        result.Should().NotBeNull();
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task RemoveSublocations_Post_PerformsServiceCallsAndRedirects(
+        string internalOrganisationId,
+        int competitionId,
+        List<string> sublocationOdsCodes,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionRecipientsController controller)
+    {
+        var callingModel =
+            new RemoveSublocationsModel { ConfirmRemove = true, SublocationOdsCodes = sublocationOdsCodes };
+
+        var result =
+            (await controller.RemoveSublocations(callingModel, internalOrganisationId, competitionId))
+            .As<RedirectToActionResult>();
+
+        await competitionsService.Received()
+            .SetSublocations(
+                internalOrganisationId,
+                competitionId,
+                Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, sublocationOdsCodes.ToHashSet())));
+
+        result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", internalOrganisationId }, { "competitionId", competitionId },
                 });
     }
 
@@ -369,146 +443,6 @@ public static class CompetitionRecipientsControllerTests
 
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(controller.ConfirmSublocationRecipients));
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { "internalOrgId", internalOrganisationId }, { "competitionId", competitionId },
-                });
-    }
-
-    [Theory]
-    [MockMemberAutoData(nameof(RemoveSublocationsUrlParamsToModel))]
-    public static async Task RemoveSublocations_ReturnsView(
-        string sublocationsToRemoveAsConcatString,
-        string sublocationsToAddAsConcatString,
-        RemoveSublocationsModel expectedModel,
-        Organisation organisation,
-        Competition competition,
-        [Frozen] ICompetitionsService competitionsService,
-        CompetitionRecipientsController controller)
-    {
-        competition.Organisation = organisation;
-
-        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
-
-        var result =
-            (await controller.RemoveSublocations(
-                organisation.InternalIdentifier,
-                competition.Id,
-                sublocationsToRemoveAsConcatString,
-                sublocationsToAddAsConcatString))
-            .As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should()
-            .BeEquivalentTo(
-                expectedModel,
-                opt => opt.Excluding(m => m.ListHeaderText)
-                    .Excluding(m => m.BackLink)
-                    .Excluding(m => m.Title)
-                    .Excluding(m => m.Caption)
-                    .Excluding(m => m.Advice));
-
-        var modelForFurtherComparison = result.Model.As<RemoveSublocationsModel>();
-
-        modelForFurtherComparison.ListHeaderText.Should()
-            .Be($"{competition.Organisation.Name} {expectedModel.Pluralisation} to be removed:");
-        modelForFurtherComparison.Title.Should().Be($"Remove {expectedModel.Pluralisation}");
-        modelForFurtherComparison.Caption.Should().Be(competition.Name);
-        modelForFurtherComparison.Advice.Should().Be("Confirm you want to remove sublocations from this competition");
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task RemoveSublocations_Post_NoServiceCallsIfNo(
-        string internalOrganisationId,
-        int competitionId,
-        List<string> sublocationIdsToRemove,
-        [Frozen] ICompetitionsService competitionsService,
-        CompetitionRecipientsController controller)
-    {
-        var callingModel =
-            new RemoveSublocationsModel { ConfirmRemove = false, SublocationIdsToRemove = sublocationIdsToRemove };
-
-        var result =
-            (await controller.RemoveSublocations(callingModel, internalOrganisationId, competitionId))
-            .As<RedirectToActionResult>();
-
-        await competitionsService.DidNotReceiveWithAnyArgs().AddSublocations(null, 0, null);
-        await competitionsService.DidNotReceiveWithAnyArgs().RemoveSublocations(null, 0, null);
-
-        result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { "internalOrgId", internalOrganisationId }, { "competitionId", competitionId },
-                });
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task RemoveSublocations_Post_NoServiceCallsIfNotPopulated(
-        string internalOrganisationId,
-        int competitionId,
-        [Frozen] ICompetitionsService competitionsService,
-        CompetitionRecipientsController controller)
-    {
-        var callingModel =
-            new RemoveSublocationsModel { ConfirmRemove = true, SublocationIdsToRemove = [], SublocationIdsToAdd = [] };
-
-        var result =
-            (await controller.RemoveSublocations(callingModel, internalOrganisationId, competitionId))
-            .As<RedirectToActionResult>();
-
-        await competitionsService.DidNotReceiveWithAnyArgs().AddSublocations(null, 0, null);
-        await competitionsService.DidNotReceiveWithAnyArgs().RemoveSublocations(null, 0, null);
-
-        result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { "internalOrgId", internalOrganisationId }, { "competitionId", competitionId },
-                });
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task RemoveSublocations_Post_PerformsServiceCallsAndRedirects(
-        string internalOrganisationId,
-        int competitionId,
-        List<string> sublocationIdsToRemove,
-        List<string> sublocationIdsToAdd,
-        [Frozen] ICompetitionsService competitionsService,
-        CompetitionRecipientsController controller)
-    {
-        var callingModel =
-            new RemoveSublocationsModel
-            {
-                ConfirmRemove = true,
-                SublocationIdsToRemove = sublocationIdsToRemove,
-                SublocationIdsToAdd = sublocationIdsToAdd,
-            };
-
-        var result =
-            (await controller.RemoveSublocations(callingModel, internalOrganisationId, competitionId))
-            .As<RedirectToActionResult>();
-
-        await competitionsService.Received()
-            .RemoveSublocations(
-                internalOrganisationId,
-                competitionId,
-                Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, sublocationIdsToRemove.ToHashSet())));
-
-        await competitionsService.Received()
-            .AddSublocations(
-                internalOrganisationId,
-                competitionId,
-                Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(hs, sublocationIdsToAdd.ToHashSet())));
-
-        result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
         result.RouteValues.Should()
             .BeEquivalentTo(
                 new RouteValueDictionary
@@ -1062,11 +996,11 @@ public static class CompetitionRecipientsControllerTests
         ];
     }
 
-    private static IEnumerable<object[]> ExpectedRemovesOrAddsAndRemoves()
+    private static IEnumerable<object[]> ExpectedSetsAndRemoves()
     {
         return
         [
-            // 2 existing, 1 unticked and 2 ticked resulting in 1 add and 1 remove
+            // 2 existing, 1 unticked and 2 ticked resulting in 2 sublocations and 1 remove
             [
                 CommonOrganisationFactory(),
                 CommonCompetitionFactory(),
@@ -1080,28 +1014,11 @@ public static class CompetitionRecipientsControllerTests
                     new() { Text = "XXXA", Value = "XXXA", Selected = true },
                     new() { Text = "XXXE", Value = "XXXE", Selected = true },
                 },
-                "XXXE",
+                "XXXA,XXXE",
                 "XXXX",
             ],
 
-            // 2 existing 1 unticked and 1 ticked resulting in 1 remove no adds
-            [
-                CommonOrganisationFactory(),
-                CommonCompetitionFactory(),
-                new List<CompetitionSublocation>
-                {
-                    CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA"),
-                },
-                new List<SelectOption<string>>
-                {
-                    new() { Text = "XXXX", Value = "XXXX", Selected = false },
-                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
-                },
-                string.Empty,
-                "XXXX",
-            ],
-
-            // 3 existing and 1 ticked resulting in 2 removes
+            // 3 existing and 1 ticked resulting in 1 sublocation and 2 removes
             [
                 CommonOrganisationFactory(),
                 CommonCompetitionFactory(),
@@ -1117,8 +1034,28 @@ public static class CompetitionRecipientsControllerTests
                     new() { Text = "XXXA", Value = "XXXA", Selected = false },
                     new() { Text = "XXXE", Value = "XXXE", Selected = true },
                 },
-                string.Empty,
+                "XXXE",
                 "XXXX,XXXA",
+            ],
+
+            // 3 existing and 0 ticked resulting in 0 sublocations and 3 removes
+            [
+                CommonOrganisationFactory(),
+                CommonCompetitionFactory(),
+                new List<CompetitionSublocation>
+                {
+                    CommonCompetitionSublocationFactory("XXXX"),
+                    CommonCompetitionSublocationFactory("XXXA"),
+                    CommonCompetitionSublocationFactory("XXXE"),
+                },
+                new List<SelectOption<string>>
+                {
+                    new() { Text = "XXXX", Value = "XXXX", Selected = false },
+                    new() { Text = "XXXA", Value = "XXXA", Selected = false },
+                    new() { Text = "XXXE", Value = "XXXE", Selected = false },
+                },
+                string.Empty,
+                "XXXX,XXXA,XXXE",
             ],
         ];
     }
@@ -1127,36 +1064,49 @@ public static class CompetitionRecipientsControllerTests
     {
         return
         [
-            // 3 to remove, 2 to add
+            // No removes
             [
-                "AAAA,AAAB,AAAC", "AAAE,AAAF",
+                "AAAA,AAAB,AAAC",
+                string.Empty,
                 new RemoveSublocationsModel
                 {
-                    SublocationIdsToRemove =
-                        ["AAAA", "AAAB", "AAAC"],
-                    SublocationIdsToAdd = ["AAAE", "AAAF"],
+                    SublocationOdsCodes = ["AAAA", "AAAB", "AAAC"],
+                    Removes = [],
                     Pluralisation = "sublocations",
+                    Title = "Remove sublocations",
+                    Advice = "Confirm you want to remove sublocations from this competition",
                 },
             ],
 
-            // 1 to remove, 0 to add
+            // Remove
             [
-                "AAAA", string.Empty,
-                new RemoveSublocationsModel
-                {
-                    SublocationIdsToRemove = ["AAAA"], SublocationIdsToAdd = [], Pluralisation = "sublocation",
-                },
-            ],
+                "AAAA,AAAB",
 
-            // 1 to remove, 3 to add
-            [
-                "AAAA", "AAAE,AAAF,AAAC",
+                "AAAC",
+
                 new RemoveSublocationsModel
                 {
-                    SublocationIdsToRemove =
-                        ["AAAA"],
-                    SublocationIdsToAdd = ["AAAE", "AAAF", "AAAC"],
+                    SublocationOdsCodes = ["AAAA", "AAAB"],
+                    Removes = ["AAAC"],
                     Pluralisation = "sublocation",
+                    Title = "Remove sublocation",
+                    Advice = "Confirm you want to remove sublocations from this competition",
+                },
+            ],
+
+            // Removes
+            [
+                "AAAA",
+
+                "AAAB,AAAC",
+
+                new RemoveSublocationsModel
+                {
+                    SublocationOdsCodes = ["AAAA"],
+                    Removes = ["AAAB", "AAAC"],
+                    Pluralisation = "sublocations",
+                    Title = "Remove sublocations",
+                    Advice = "Confirm you want to remove sublocations from this competition",
                 },
             ],
         ];
