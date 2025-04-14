@@ -24,18 +24,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
             ICollection<EntityModels.CompetitionSublocation> existingSublocations = competition.CompetitionSublocations;
 
-            RenderedSublocations = existingSublocations
-                .Select(
-                    cs => new SelectOption<bool> { Text = cs.SublocationOdsCode, Value = true })
-                .Concat(
-                    possibleSublocations
-                        .Where(sl => existingSublocations.All(cs => cs.SublocationOdsCode != sl.OdsCode))
-                        .Select(
-                            sl => new SelectOption<bool> { Text = sl.OdsCode, Value = false }))
-                .OrderBy(x => x.Text)
-                .ToList();
+            RenderedSublocations =
+                possibleSublocations
+                    .Select(
+                        sl => new SelectOption<string>
+                        {
+                            Text = sl.OdsCode,
+                            Value = sl.OdsCode,
+                            Selected = existingSublocations.Select(es => es.SublocationOdsCode).Contains(sl.OdsCode),
+                        })
+                    .OrderBy(x => x.Text)
+                    .ToList();
         }
 
-        public IReadOnlyList<SelectOption<bool>> RenderedSublocations { get; init; }
+        public IReadOnlyList<SelectOption<string>> RenderedSublocations { get; init; }
     }
 }
