@@ -27,5 +27,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions
             int competitionId,
             string sublocationOdsCode,
             HashSet<string> recipientOdsCodes);
+
+        Task SetSublocationRecipients(
+            string parentOdsCode,
+            int competitionId,
+            string sublocationOdsCode,
+            HashSet<string> newRecipientOdsCodes);
     }
 }
