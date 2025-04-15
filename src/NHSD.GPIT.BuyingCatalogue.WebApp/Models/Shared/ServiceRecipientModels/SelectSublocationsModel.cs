@@ -17,9 +17,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
             string backLinkHref)
         {
-            Title = "Select sublocations for this order";
+            Title = "Select sublocations for this competition";
             Caption = competition.Name;
-            Advice = $"Select all the {competition.Organisation.Name} sublocations that will be receiving this order";
+            Advice =
+                $"Select all the {competition.Organisation.Name} sublocations that will be part of this competition";
             BackLink = backLinkHref;
 
             ICollection<EntityModels.CompetitionSublocation> existingSublocations = competition.CompetitionSublocations;
