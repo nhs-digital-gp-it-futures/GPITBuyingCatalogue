@@ -1,4 +1,4 @@
-CREATE TABLE [ordering].[OrderRecipients]
+CREATE TABLE [ordering].[OrderSublocationRecipients]
 (
     [OrderId] INT NOT NULL,
     [RecipientOdsCode] NVARCHAR(10) NOT NULL,
