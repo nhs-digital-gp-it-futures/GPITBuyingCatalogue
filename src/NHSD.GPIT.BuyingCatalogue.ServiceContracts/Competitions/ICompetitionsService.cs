@@ -74,16 +74,6 @@ public interface ICompetitionsService
         CatalogueItemId solutionId,
         CatalogueItemId serviceId);
 
-    Task AddSublocations(
-        string internalOrgId,
-        int competitionId,
-        HashSet<string> sublocationOdsCodes);
-
-    Task RemoveSublocations(
-        string internalOrgId,
-        int competitionId,
-        HashSet<string> sublocationOdsCodes);
-
     Task SetSublocations(
         string internalOrgId,
         int competitionId,
