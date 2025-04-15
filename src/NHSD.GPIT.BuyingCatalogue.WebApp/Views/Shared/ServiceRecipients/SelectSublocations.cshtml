@@ -1,0 +1,29 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectSublocationsModel
+@{
+    ViewBag.Title = Model.Title;
+}
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title model="@Model"/>
+        <form method="post">
+            <hidden-inputs title="@Model.Title" caption="@Model.Caption" advice="@Model.Advice" />
+            <input type="hidden" asp-for="@Model.BackLink" />
+
+            <nhs-fieldset-form-label asp-for="@Model">
+                <nhs-checkbox-container>
+                    @for (var i = 0; i < Model.RenderedSublocations.Count; i++)
+                    {
+                        <nhs-checkbox asp-for="@Model.RenderedSublocations[i].Selected"
+                                      label-text="@Model.RenderedSublocations[i].Text"
+                                      hidden-input="@Model.RenderedSublocations[i].Value"/>
+                    }
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+            <br/>
+            <nhs-submit-button/>
+        </form>
+    </div>
+</div>

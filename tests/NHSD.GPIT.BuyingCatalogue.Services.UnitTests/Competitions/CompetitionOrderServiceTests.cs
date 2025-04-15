@@ -71,6 +71,7 @@ public static class CompetitionOrderServiceTests
     public static async Task CreateDirectAwardOrder_Solution_CreatesOrder(
         Organisation organisation,
         Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
         Solution solution,
         CompetitionSolution competitionSolution,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -81,6 +82,7 @@ public static class CompetitionOrderServiceTests
         competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
         competition.CompetitionSolutions = [competitionSolution];
+        competition.CompetitionSublocations = competitionSublocations;
 
         dbContext.Organisations.Add(organisation);
         dbContext.Competitions.Add(competition);
@@ -305,6 +307,7 @@ public static class CompetitionOrderServiceTests
         List<OdsOrganisation> recipients,
         Solution solution,
         CompetitionSolution competitionSolution,
+        List<CompetitionSublocation> competitionSublocations,
         CompetitionCatalogueItemPrice price,
         CompetitionCatalogueItemPriceTier priceTier,
         [Frozen] BuyingCatalogueDbContext dbContext,
@@ -319,7 +322,7 @@ public static class CompetitionOrderServiceTests
 
         competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
-        competition.Recipients = recipients;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         dbContext.Organisations.Add(organisation);
@@ -340,7 +343,7 @@ public static class CompetitionOrderServiceTests
         order.SupplierId.Should().Be(solution.CatalogueItem.SupplierId);
         order.OrderRecipients.Should()
             .BeEquivalentTo(
-                recipients.Select(x => new OrderRecipient(x.Id)),
+                competition.FlattenedRecipients.Select(x => new OrderRecipient(x.Id)),
                 opt => opt.Excluding(m => m.OrderId).Excluding(m => m.Order).Excluding(m => m.OdsOrganisation));
         order.OrderItems.Select(o => o.CatalogueItemId).Should().BeEquivalentTo([solution.CatalogueItemId]);
         order.SelectedFrameworkId.Should().Be(competition.FrameworkId);
@@ -352,7 +355,7 @@ public static class CompetitionOrderServiceTests
     public static async Task CreateOrder_WinningSolution_SetsOrderItemServices(
         Organisation organisation,
         Competition competition,
-        List<OdsOrganisation> recipients,
+        List<CompetitionSublocation> competitionSublocations,
         Solution solution,
         CompetitionSolution competitionSolution,
         CompetitionCatalogueItemPrice price,
@@ -379,7 +382,7 @@ public static class CompetitionOrderServiceTests
 
         competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
-        competition.Recipients = recipients;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         dbContext.Organisations.Add(organisation);
@@ -400,7 +403,7 @@ public static class CompetitionOrderServiceTests
     public static async Task CreateOrder_WinningSolution_SetsRecipientQuantities(
         Organisation organisation,
         Competition competition,
-        List<OdsOrganisation> recipients,
+        List<CompetitionSublocation> competitionSublocations,
         Solution solution,
         CompetitionSolution competitionSolution,
         CompetitionCatalogueItemPrice price,
@@ -412,18 +415,21 @@ public static class CompetitionOrderServiceTests
         [Frozen] BuyingCatalogueDbContext dbContext,
         CompetitionOrderService service)
     {
+        competition.OrganisationId = organisation.Id;
+        competition.Organisation = organisation;
+        competition.CompetitionSublocations = competitionSublocations;
+
         servicePrice.Tiers = new List<CompetitionCatalogueItemPriceTier> { servicePriceTier };
         price.Tiers = new List<CompetitionCatalogueItemPriceTier> { priceTier };
 
         solutionService.IsRequired = false;
         solutionService.Price = servicePrice;
         solutionService.Service = additionalService.CatalogueItem;
-        solutionService.Quantities = recipients.Select(
-                x => new ServiceQuantity
+
+        solutionService.Quantities = competition.FlattenedRecipients.Select(
+                x => new ServiceQuantitySublocationRecipient
                 {
-                    OdsCode = x.Id,
-                    Quantity = 5,
-                    ServiceId = additionalService.CatalogueItemId,
+                    OdsCode = x.Id, Quantity = 5, ServiceId = additionalService.CatalogueItemId,
                 })
             .ToList();
 
@@ -432,13 +438,14 @@ public static class CompetitionOrderServiceTests
         competitionSolution.IsShortlisted = true;
         competitionSolution.IsWinningSolution = true;
         competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
-        competitionSolution.Quantities = recipients.Select(
-                x => new SolutionQuantity { OdsCode = x.Id, Quantity = 5, SolutionId = solution.CatalogueItemId })
+
+        competitionSolution.Quantities = competition.FlattenedRecipients.Select(
+                x => new SolutionQuantitySublocationRecipient
+                {
+                    OdsCode = x.Id, Quantity = 5, SolutionId = solution.CatalogueItemId,
+                })
             .ToList();
 
-        competition.OrganisationId = organisation.Id;
-        competition.Organisation = organisation;
-        competition.Recipients = recipients;
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         dbContext.Organisations.Add(organisation);

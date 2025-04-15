@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.ResultsModels.OrderingInformationModels;
 using Xunit;
@@ -17,21 +16,22 @@ public static class OrderingInformationModelTests
     public static void Construct_SetsPropertiesAsExpected(
         Organisation organisation,
         Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        int expectedRecipientCount,
         Solution solution,
-        CompetitionSolution competitionSolution,
-        List<OdsOrganisation> recipients)
+        CompetitionSolution competitionSolution)
     {
-        competition.Recipients = recipients;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.Organisation = organisation;
         competitionSolution.Solution = solution;
 
-        var model = new OrderingInformationModel(competition, competitionSolution);
+        var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         model.InternalOrgId.Should().Be(organisation.InternalIdentifier);
         model.CompetitionId.Should().Be(competition.Id);
         model.CompetitionName.Should().Be(competition.Name);
 
-        model.NumberOfRecipients.Should().Be(recipients.Count);
+        model.NumberOfRecipients.Should().Be(expectedRecipientCount);
         model.ContractLength.Should().Be(competition.ContractLength);
     }
 
@@ -40,17 +40,18 @@ public static class OrderingInformationModelTests
     public static void Construct_SolutionGlobalQuantity_SetsAsExpected(
         Organisation organisation,
         Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        int expectedRecipientCount,
         Solution solution,
         CompetitionSolution competitionSolution,
-        List<OdsOrganisation> recipients,
         int globalQuantity)
     {
-        competition.Recipients = recipients;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.Organisation = organisation;
         competitionSolution.Solution = solution;
         competitionSolution.Quantity = globalQuantity;
 
-        var model = new OrderingInformationModel(competition, competitionSolution);
+        var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         model.SolutionDisplay.Should()
             .BeEquivalentTo(
@@ -62,20 +63,21 @@ public static class OrderingInformationModelTests
     public static void Construct_SolutionRecipientQuantity_SetsAsExpected(
         Organisation organisation,
         Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        int expectedRecipientCount,
         Solution solution,
         CompetitionSolution competitionSolution,
-        List<OdsOrganisation> recipients,
         int recipientQuantity)
     {
-        competition.Recipients = recipients;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.Organisation = organisation;
         competitionSolution.Solution = solution;
         competitionSolution.Quantity = null;
-        competitionSolution.Quantities = recipients
-            .Select(x => new SolutionQuantity { OdsCode = x.Id, Quantity = recipientQuantity })
+        competitionSolution.Quantities = competition.FlattenedRecipients
+            .Select(x => new SolutionQuantitySublocationRecipient { OdsCode = x.Id, Quantity = recipientQuantity })
             .ToList();
 
-        var model = new OrderingInformationModel(competition, competitionSolution);
+        var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         model.SolutionDisplay.Should()
             .BeEquivalentTo(
@@ -87,14 +89,15 @@ public static class OrderingInformationModelTests
     public static void Construct_SolutionServiceGlobalQuantity_SetsAsExpected(
         Organisation organisation,
         Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        int expectedRecipientCount,
         Solution solution,
         CompetitionSolution competitionSolution,
         AdditionalService additionalService,
         SolutionService solutionService,
-        List<OdsOrganisation> recipients,
         int globalQuantity)
     {
-        competition.Recipients = recipients;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.Organisation = organisation;
 
         competitionSolution.Solution = solution;
@@ -103,7 +106,7 @@ public static class OrderingInformationModelTests
         solutionService.Service = additionalService.CatalogueItem;
         solutionService.Quantity = globalQuantity;
 
-        var model = new OrderingInformationModel(competition, competitionSolution);
+        var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         var expectedItems = new List<OrderingInformationItem>
         {
@@ -121,14 +124,15 @@ public static class OrderingInformationModelTests
     public static void Construct_SolutionServiceRecipientQuantity_SetsAsExpected(
         Organisation organisation,
         Competition competition,
+        List<CompetitionSublocation> competitionSublocations,
+        int expectedRecipientCount,
         Solution solution,
         CompetitionSolution competitionSolution,
         AdditionalService additionalService,
         SolutionService solutionService,
-        List<OdsOrganisation> recipients,
         int recipientQuantity)
     {
-        competition.Recipients = recipients;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.Organisation = organisation;
 
         competitionSolution.Solution = solution;
@@ -136,11 +140,11 @@ public static class OrderingInformationModelTests
 
         solutionService.Service = additionalService.CatalogueItem;
         solutionService.Quantity = null;
-        solutionService.Quantities = recipients
-            .Select(x => new ServiceQuantity() { OdsCode = x.Id, Quantity = recipientQuantity })
+        solutionService.Quantities = competition.FlattenedRecipients
+            .Select(x => new ServiceQuantitySublocationRecipient { OdsCode = x.Id, Quantity = recipientQuantity })
             .ToList();
 
-        var model = new OrderingInformationModel(competition, competitionSolution);
+        var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         var expectedItems = new List<OrderingInformationItem>
         {

@@ -16,6 +16,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 using Xunit;
 using ServiceRecipient = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceRecipient;
@@ -24,6 +25,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controll
 
 public static class CompetitionImportServiceRecipientsControllerTests
 {
+    private const string MismatchOdsCode = "MISMATCH";
+    private const string MismatchOrganisationName = "MISMATCH organisation name";
+
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
@@ -101,19 +105,18 @@ public static class CompetitionImportServiceRecipientsControllerTests
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.ValidateOds));
+        result.ActionName.Should().Be(nameof(controller.Validate));
         result.RouteValues.Should()
             .BeEquivalentTo(
                 new RouteValueDictionary
                 {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(competitionId), competitionId },
+                    { nameof(internalOrgId), internalOrgId }, { nameof(competitionId), competitionId },
                 });
     }
 
     [Theory]
     [MockAutoData]
-    public static async Task ValidateOds_CachedRecipientsNull_Redirects(
+    public static async Task Validate_CachedRecipientsNull_Redirects(
         string internalOrgId,
         int competitionId,
         [Frozen] IServiceRecipientImportService importService,
@@ -121,7 +124,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
     {
         importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns((IList<ServiceRecipientImportModel>)null);
 
-        var result = (await controller.ValidateOds(internalOrgId, competitionId))
+        var result = (await controller.Validate(internalOrgId, competitionId, false))
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
@@ -130,14 +133,13 @@ public static class CompetitionImportServiceRecipientsControllerTests
             .BeEquivalentTo(
                 new RouteValueDictionary
                 {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(competitionId), competitionId },
+                    { nameof(internalOrgId), internalOrgId }, { nameof(competitionId), competitionId },
                 });
     }
 
     [Theory]
     [MockAutoData]
-    public static async Task ValidateOds_MismatchedOdsCodes_ReturnsViewWithModel(
+    public static async Task Validate_MismatchedOdsCodes_ReturnsMismatchedOdsView(
         Organisation organisation,
         Competition competition,
         List<ServiceRecipient> serviceRecipients,
@@ -146,22 +148,28 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        var importedServiceRecipients = serviceRecipients.Take(2)
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-            .ToList();
-        importedServiceRecipients.First().OdsCode = "MISMATCH";
+        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
 
-        var expectedModel = new ValidateOdsModel(
-            importedServiceRecipients.Take(1).ToList())
-        { Caption = competition.Name };
+        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
+        importedServiceRecipients.First().OdsCode = MismatchOdsCode;
+        List<ServiceRecipientImportModel> expectedInvalidRecipients =
+            importedServiceRecipients.Where(x => x.OdsCode == MismatchOdsCode).ToList();
+        var expectedModel = new ValidateOdsModel(expectedInvalidRecipients) { Caption = competition.Name };
 
         importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
 
-        competitionsService.GetCompetitionName(Arg.Any<string>(), competition.Id).Returns(competition.Name);
+        competitionsService.GetCompetitionName(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition.Name);
 
-        odsService.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier).Returns(serviceRecipients);
+        // This service call includes a filter to restrict by ods codes, but the controller logic should find mismatches regardless
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns(serviceRecipients);
 
-        var result = (await controller.ValidateOds(organisation.InternalIdentifier, competition.Id))
+        var result = (await controller.Validate(organisation.InternalIdentifier, competition.Id, false))
             .As<ViewResult>();
 
         result.Should().NotBeNull();
@@ -171,68 +179,12 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 opt => opt
                     .Excluding(m => m.BackLink)
                     .Excluding(m => m.CancelLink)
-                    .Excluding(m => m.ValidateNamesLink));
+                    .Excluding(m => m.ContinueLink));
     }
 
     [Theory]
     [MockAutoData]
-    public static async Task ValidateOds_ValidOdsCodes_Redirects(
-        string internalOrgId,
-        int competitionId,
-        List<ServiceRecipient> serviceRecipients,
-        [Frozen] IServiceRecipientImportService importService,
-        [Frozen] IOdsService odsService,
-        CompetitionImportServiceRecipientsController controller)
-    {
-        var importedServiceRecipients = serviceRecipients.Take(2)
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-            .ToList();
-
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-
-        var result = (await controller.ValidateOds(internalOrgId, competitionId))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.ValidateNames));
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(competitionId), competitionId },
-                });
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task ValidateNames_CachedRecipientsNull_Redirects(
-        string internalOrgId,
-        int competitionId,
-        [Frozen] IServiceRecipientImportService importService,
-        CompetitionImportServiceRecipientsController controller)
-    {
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns((IList<ServiceRecipientImportModel>)null);
-
-        var result = (await controller.ValidateNames(internalOrgId, competitionId))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.Index));
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(competitionId), competitionId },
-                });
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task ValidateNames_MismatchedNames_ReturnsViewWithModel(
+    public static async Task Validate_MismatchedOdsCodes_SkipsIfDisclaimerAccepted(
         Organisation organisation,
         Competition competition,
         List<ServiceRecipient> serviceRecipients,
@@ -241,17 +193,103 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        var importedServiceRecipients = serviceRecipients.Take(2)
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
+        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
+
+        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
+        importedServiceRecipients.First().OdsCode = MismatchOdsCode;
+
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+
+        competitionsService.GetCompetitionName(Arg.Any<string>(), competition.Id).Returns(competition.Name);
+
+        // This service call includes a filter to restrict by ods codes, but the controller logic should find mismatches regardless
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns(serviceRecipients);
+
+        var result = (await controller.Validate(organisation.InternalIdentifier, competition.Id, true))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(CompetitionImportServiceRecipientsController.ValidationComplete));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier },
+                    { "competitionId", competition.Id },
+                    { "validationStatus", ValidationStatus.PartialSuccess },
+                });
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Validate_AllMismatchedOdsCodes_FailedStatus(
+        Organisation organisation,
+        Competition competition,
+        List<ServiceRecipient> serviceRecipients,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IOdsService odsService,
+        CompetitionImportServiceRecipientsController controller)
+    {
+        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
+
+        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
+        importedServiceRecipients.First().OdsCode = MismatchOdsCode;
+
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+
+        competitionsService.GetCompetitionName(Arg.Any<string>(), competition.Id).Returns(competition.Name);
+
+        // This service call includes a filter to restrict by ods codes, but the controller logic should find mismatches regardless
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns([]);
+
+        var result = (await controller.Validate(organisation.InternalIdentifier, competition.Id, true))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(CompetitionImportServiceRecipientsController.ValidationComplete));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier },
+                    { "competitionId", competition.Id },
+                    { "validationStatus", ValidationStatus.Failure },
+                });
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Validate_MismatchedNames_ReturnsViewWithModel(
+        Organisation organisation,
+        Competition competition,
+        List<ServiceRecipient> serviceRecipients,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IOdsService odsService,
+        CompetitionImportServiceRecipientsController controller)
+    {
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients.Take(3)
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
 
-        importedServiceRecipients.First().Organisation = "MISMATCH";
+        importedServiceRecipients.First().Organisation = MismatchOrganisationName;
 
         var serviceRecipient = serviceRecipients.First();
 
         var mismatchedNames = new List<(string, string, string)>
         {
-            ("MISMATCH", serviceRecipient.Name, serviceRecipient.OrgId),
+            (MismatchOrganisationName, serviceRecipient.Name, serviceRecipient.OrgId),
         };
 
         var expectedModel = new ValidateNamesModel(
@@ -260,11 +298,15 @@ public static class CompetitionImportServiceRecipientsControllerTests
 
         importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
 
-        competitionsService.GetCompetitionName(Arg.Any<string>(), competition.Id).Returns(competition.Name);
+        competitionsService.GetCompetitionName(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition.Name);
 
-        odsService.GetServiceRecipientsByParentInternalIdentifier(organisation.InternalIdentifier).Returns(serviceRecipients);
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns(serviceRecipients);
 
-        var result = (await controller.ValidateNames(organisation.InternalIdentifier, competition.Id))
+        var result = (await controller.Validate(organisation.InternalIdentifier, competition.Id, false))
             .As<ViewResult>();
 
         result.Should().NotBeNull();
@@ -278,87 +320,156 @@ public static class CompetitionImportServiceRecipientsControllerTests
 
     [Theory]
     [MockAutoData]
-    public static async Task ValidateNames_ValidNames_Redirects(
-        string internalOrgId,
-        int competitionId,
-        List<ServiceRecipient> serviceRecipients,
-        [Frozen] IServiceRecipientImportService importService,
-        [Frozen] IOdsService odsService,
-        CompetitionImportServiceRecipientsController controller)
-    {
-        var recipientIds = serviceRecipients.Take(2)
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-            .ToList();
-
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(recipientIds);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-
-        var result = (await controller.ValidateNames(internalOrgId, competitionId))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmRecipients));
-        result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(competitionId), competitionId },
-                    { nameof(recipientIds), string.Join(',', recipientIds.Select(s => s.OdsCode)) },
-                    { "hasImported", true },
-                });
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task ValidateNames_Post_Redirects(
+    public static async Task Validate_AllValid_Redirects(
+        Organisation organisation,
         Competition competition,
-        string internalOrgId,
         List<ServiceRecipient> serviceRecipients,
         [Frozen] IServiceRecipientImportService importService,
         [Frozen] ICompetitionsService competitionsService,
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        var recipientIds = serviceRecipients
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
+        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
+
+        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
 
-        recipientIds.First().OdsCode = "MISMATCH";
-        recipientIds.Skip(1).First().Organisation = "MISMATCH";
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
 
-        var firstServiceRecipient = serviceRecipients.First();
+        competitionsService.GetCompetitionName(organisation.InternalIdentifier, competition.Id)
+            .Returns(competition.Name);
 
-        var mismatchedNames = new List<(string, string, string)>
-        {
-            ("MISMATCH", firstServiceRecipient.Name, firstServiceRecipient.OrgId),
-        };
+        // This service call includes a filter to restrict by ods codes, but the controller logic should find mismatches regardless
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns(serviceRecipients);
 
-        var model = new ValidateNamesModel(
-            mismatchedNames);
-
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(recipientIds);
-
-        competitionsService.GetCompetitionName(Arg.Any<string>(), competition.Id).Returns(competition.Name);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-
-        var result = (await controller.ValidateNames(internalOrgId, competition.Id, model))
+        var result = (await controller.Validate(organisation.InternalIdentifier, competition.Id, false))
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmRecipients));
+        result.ActionName.Should().Be(nameof(CompetitionImportServiceRecipientsController.ValidationComplete));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier },
+                    { "competitionId", competition.Id },
+                    { "validationStatus", ValidationStatus.Success },
+                });
+    }
+
+    [Theory]
+    [MockMemberAutoData(nameof(RecipientsToSublocationMapping))]
+    public static async Task ValidateComplete_ReturnsViewWithModel(
+        List<ServiceRecipient> serviceRecipients,
+        List<SublocationModel> sublocationsAsViewModel,
+        Organisation organisation,
+        Competition competition,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] ICompetitionsService competitionsService,
+        [Frozen] IOdsService odsService,
+        CompetitionImportServiceRecipientsController controller)
+    {
+        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
+
+        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
+
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+
+        competition.Organisation = organisation;
+
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
+
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns(serviceRecipients);
+
+        var expectedModel = new ValidationCompleteModel(
+            competition.Name,
+            ValidationStatus.Success,
+            sublocationsAsViewModel);
+
+        var result = (await controller.ValidationComplete(
+                organisation.InternalIdentifier,
+                competition.Id,
+                ValidationStatus.Success))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.Caption));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task ValidateComplete_Post_CancelsIfInvalid(
+        string internalOrgId,
+        int competitionId,
+        CompetitionImportServiceRecipientsController controller)
+    {
+        var model = new ValidationCompleteModel("MY competition", ValidationStatus.Failure, []);
+
+        var result =
+            (await controller.ValidationComplete(internalOrgId, competitionId, model))
+            .As<RedirectToActionResult>();
+
+        result.ActionName.Should().Be(nameof(CompetitionImportServiceRecipientsController.CancelImport));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { nameof(internalOrgId), internalOrgId }, { nameof(competitionId), competitionId },
+                });
+    }
+
+    [Theory]
+    [MockMemberAutoData(nameof(SublocationViewModelToSublocationEntityModelMapping))]
+    public static async Task ValidateComplete_Post_PerformsExpectedFunctions(
+        Organisation organisation,
+        Competition competition,
+        List<SublocationModel> sublocationsAsViewModel,
+        List<CompetitionSublocation> sublocationsAsEntityModel,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] ICompetitionsService competitionsService,
+        CompetitionImportServiceRecipientsController controller)
+    {
+        competition.Organisation = organisation;
+
+        competitionsService.GetCompetition(organisation.InternalIdentifier, competition.Id).Returns(competition);
+
+        var modelForPost = new ValidationCompleteModel
+        {
+            Sublocations = sublocationsAsViewModel, ValidationStatus = ValidationStatus.Success,
+        };
+
+        var result =
+            (await controller.ValidationComplete(organisation.InternalIdentifier, competition.Id, modelForPost))
+            .As<RedirectToActionResult>();
+
+        await competitionsService.Received()
+            .SetCompetitionSublocationsAndRecipients(
+                Arg.Is<string>(s => s == organisation.InternalIdentifier),
+                Arg.Is<int>(i => i == competition.Id),
+                Arg.Is<List<CompetitionSublocation>>(
+                    list => AreListsEquivalentIgnoreOrder(list, sublocationsAsEntityModel)));
+
+        await importService.Received().Clear(Arg.Any<DistributedCacheKey>());
+
+        result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmSublocations));
         result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
         result.RouteValues.Should()
             .BeEquivalentTo(
                 new RouteValueDictionary
                 {
-                    { nameof(internalOrgId), internalOrgId },
-                    { "competitionId", competition.Id },
-                    { nameof(recipientIds), string.Join(',', recipientIds.Skip(1).Select(x => x.OdsCode)) },
-                    { "hasImported", true },
+                    { "internalOrgId", organisation.InternalIdentifier }, { "competitionId", competition.Id },
                 });
     }
 
@@ -382,6 +493,161 @@ public static class CompetitionImportServiceRecipientsControllerTests
                     { nameof(internalOrgId), internalOrgId },
                     { nameof(competitionId), competitionId },
                 });
+    }
+
+    public static IEnumerable<object[]> RecipientsToSublocationMapping()
+    {
+        return new[]
+        {
+            new object[]
+            {
+                new List<ServiceRecipient>
+                {
+                    new()
+                    {
+                        Name = "Surgery 1",
+                        OrgId = "AAAA",
+                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        Location = "NHS Big Location XXXX",
+                        LocationOrgId = "XXXX",
+                    },
+                    new()
+                    {
+                        Name = "Surgery 2",
+                        OrgId = "AAAB",
+                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        Location = "NHS Big Location XXXX",
+                        LocationOrgId = "XXXX",
+                    },
+                    new()
+                    {
+                        Name = "Surgery 34",
+                        OrgId = "AAAC",
+                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        Location = "NHS Unrelated Big Location XXXA",
+                        LocationOrgId = "XXXA",
+                    },
+                },
+                new List<SublocationModel>
+                {
+                    new()
+                    {
+                        OdsCode = "XXXX",
+                        ServiceRecipients =
+                            new List<ServiceRecipientModel>
+                            {
+                                new()
+                                {
+                                    OdsCode = "AAAA",
+                                    Name = "Surgery 1",
+                                    Location = "NHS Big Location XXXX",
+                                    LocationOrgId = "XXXX",
+                                },
+                                new()
+                                {
+                                    OdsCode = "AAAB",
+                                    Name = "Surgery 2",
+                                    Location = "NHS Big Location XXXX",
+                                    LocationOrgId = "XXXX",
+                                },
+                            },
+                    },
+                    new()
+                    {
+                        OdsCode = "XXXA",
+                        ServiceRecipients = new List<ServiceRecipientModel>
+                        {
+                            new()
+                            {
+                                OdsCode = "AAAC",
+                                Name = "Surgery 34",
+                                Location = "NHS Unrelated Big Location XXXA",
+                                LocationOrgId = "XXXA",
+                            },
+                        },
+                    },
+                },
+            },
+        };
+    }
+
+    public static IEnumerable<object[]> SublocationViewModelToSublocationEntityModelMapping()
+    {
+        return new[]
+        {
+            new object[]
+            {
+                new Organisation
+                {
+                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
+                },
+                new Competition
+                {
+                    Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
+                },
+                new List<SublocationModel>
+                {
+                    new()
+                    {
+                        OdsCode = "XXXX",
+                        ServiceRecipients =
+                            new List<ServiceRecipientModel>
+                            {
+                                new() { OdsCode = "AAAA", Name = "Surgery 1", LocationOrgId = "XXXX" },
+                                new() { OdsCode = "AAAB", Name = "Surgery 2", LocationOrgId = "XXXX" },
+                            },
+                    },
+                    new()
+                    {
+                        OdsCode = "XXXA",
+                        ServiceRecipients =
+                            new List<ServiceRecipientModel>
+                            {
+                                new() { OdsCode = "AAAC", Name = "Surgery 34", LocationOrgId = "XXXA" },
+                            },
+                    },
+                },
+                new List<CompetitionSublocation>
+                {
+                    new()
+                    {
+                        CompetitionId = 34,
+                        SublocationOdsCode = "XXXX",
+                        OwnerOdsCode = "FFGG",
+                        SublocationRecipients = new List<CompetitionSublocationRecipient>
+                        {
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAA",
+                                ParentSublocationOdsCode = "XXXX",
+                            },
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAB",
+                                ParentSublocationOdsCode = "XXXX",
+                            },
+                        },
+                    },
+                    new()
+                    {
+                        CompetitionId = 34,
+                        SublocationOdsCode = "XXXA",
+                        OwnerOdsCode = "FFGG",
+                        SublocationRecipients = new List<CompetitionSublocationRecipient>
+                        {
+                            new()
+                            {
+                                CompetitionId = 34,
+                                RecipientOdsCode = "AAAC",
+                                ParentSublocationOdsCode = "XXXA",
+                            },
+                        },
+                    },
+                },
+            },
+        };
     }
 
     public static IEnumerable<object[]> InvalidServiceRecipientsTestData()
@@ -422,4 +688,19 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 },
             },
         };
+
+    private static bool AreListsEquivalentIgnoreOrder(
+        IReadOnlyList<CompetitionSublocation> actual,
+        IReadOnlyList<CompetitionSublocation> expected)
+    {
+        try
+        {
+            actual.Should().BeEquivalentTo(expected, options => options.WithoutStrictOrdering());
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

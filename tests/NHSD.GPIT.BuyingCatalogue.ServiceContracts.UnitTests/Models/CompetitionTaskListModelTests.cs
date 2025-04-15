@@ -2,7 +2,6 @@
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.Competitions;
@@ -41,11 +40,11 @@ public static class CompetitionTaskListModelTests
     [Theory]
     [MockAutoData]
     public static void Construct_WithRecipients_SetsStatuses(
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = null;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
 
         var model = new CompetitionTaskListModel(competition);
 
@@ -57,11 +56,11 @@ public static class CompetitionTaskListModelTests
     [Theory]
     [MockAutoData]
     public static void Construct_WithContractLength_SetsStatuses(
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = null;
 
         var model = new CompetitionTaskListModel(competition);
@@ -74,11 +73,11 @@ public static class CompetitionTaskListModelTests
     [Theory]
     [MockAutoData]
     public static void Construct_WithoutNonPriceElementAwardCriteria_SetsStatuses(
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = false;
 
         var model = new CompetitionTaskListModel(competition);
@@ -95,11 +94,11 @@ public static class CompetitionTaskListModelTests
     [Theory]
     [MockAutoData]
     public static void Construct_WithNonPriceElementAwardCriteria_SetsStatuses(
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = true;
 
         var model = new CompetitionTaskListModel(competition);
@@ -116,11 +115,11 @@ public static class CompetitionTaskListModelTests
     [Theory]
     [MockAutoData]
     public static void Construct_WithAwardCriteriaWeightings_SetsStatuses(
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
 
@@ -134,11 +133,11 @@ public static class CompetitionTaskListModelTests
     [Theory]
     [MockAutoData]
     public static void Construct_WithNonPriceElements_SetsStatuses(
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
         competition.NonPriceElements = new();
@@ -153,11 +152,11 @@ public static class CompetitionTaskListModelTests
     [Theory]
     [MockAutoData]
     public static void Construct_WithIncompleteNonPriceElementWeightings_SetsStatuses(
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
         competition.NonPriceElements = new()
@@ -178,11 +177,11 @@ public static class CompetitionTaskListModelTests
     [Theory]
     [MockAutoData]
     public static void Construct_WithCompleteNonPriceElementWeightings_SetsStatuses(
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
         competition.HasReviewedCriteria = false;
@@ -204,11 +203,11 @@ public static class CompetitionTaskListModelTests
     [Theory]
     [MockAutoData]
     public static void Construct_ReviewedCriteria_SetsStatuses(
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
         competition.HasReviewedCriteria = true;
@@ -231,11 +230,11 @@ public static class CompetitionTaskListModelTests
     [MockAutoData]
     public static void Construct_WithIncompleteSolutionScores_SetsStatuses(
         CatalogueItemId solutionId,
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
         competition.HasReviewedCriteria = true;
@@ -265,11 +264,11 @@ public static class CompetitionTaskListModelTests
     [MockAutoData]
     public static void Construct_WithCompleteSolutionScores_SetsStatuses(
         CatalogueItemId solutionId,
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
         competition.HasReviewedCriteria = true;
@@ -304,11 +303,11 @@ public static class CompetitionTaskListModelTests
     [MockAutoData]
     public static void Construct_WithIncompletePrices_SetsStatuses(
         CatalogueItemId solutionId,
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
         competition.HasReviewedCriteria = true;
@@ -344,11 +343,11 @@ public static class CompetitionTaskListModelTests
     [MockAutoData]
     public static void Construct_WithCompletePrices_SetsStatuses(
         CatalogueItemId solutionId,
-        List<OdsOrganisation> odsOrganisations,
-        Competition competition)
+        Competition competition,
+        List<CompetitionSublocation> competitionSublocations)
     {
         competition.ContractLength = 5;
-        competition.Recipients = odsOrganisations;
+        competition.CompetitionSublocations = competitionSublocations;
         competition.IncludesNonPrice = true;
         competition.Weightings = new() { Price = 50, NonPrice = 50 };
         competition.HasReviewedCriteria = true;

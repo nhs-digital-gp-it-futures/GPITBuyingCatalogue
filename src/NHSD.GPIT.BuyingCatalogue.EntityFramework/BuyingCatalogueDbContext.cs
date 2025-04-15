@@ -159,9 +159,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<CompetitionSolution> CompetitionSolutions { get; set; }
 
-        public DbSet<CompetitionRecipient> CompetitionRecipients { get; set; }
-
         public DbSet<SolutionScore> CompetitionSolutionScores { get; set; }
+
+        public DbSet<CompetitionSublocation> CompetitionSublocations { get; set; }
 
         public DbSet<EmailNotification> EmailNotifications { get; set; }
 

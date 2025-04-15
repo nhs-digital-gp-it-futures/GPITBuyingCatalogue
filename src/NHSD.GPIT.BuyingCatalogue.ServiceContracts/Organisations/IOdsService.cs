@@ -10,7 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsByParentInternalIdentifier(string internalIdentifier);
 
-        Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsById(
+        Task<IReadOnlyList<OdsOrganisation>> GetSublocationsByParentOdsCode(string parentOdsCode);
+
+        Task<IReadOnlyList<ServiceRecipient>> GetServiceRecipientsBySublocation(string sublocationOdsCode);
+
+        Task<IReadOnlyList<ServiceRecipient>> GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
             string internalIdentifier,
             IEnumerable<string> odsCodes);
 

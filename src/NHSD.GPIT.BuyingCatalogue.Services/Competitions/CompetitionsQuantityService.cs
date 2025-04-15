@@ -58,13 +58,13 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         string internalOrgId,
         int competitionId,
         CatalogueItemId solutionId,
-        IEnumerable<ServiceRecipientDto> serviceRecipients)
+        IEnumerable<ServiceRecipientQuantityDto> serviceRecipients)
     {
         var solution = await GetSolution(internalOrgId, competitionId, solutionId);
         if (solution is null) return;
 
         solution.Quantities = serviceRecipients
-            .Select(x => new SolutionQuantity { OdsCode = x.OdsCode, Quantity = x.Quantity!.Value })
+            .Select(x => new SolutionQuantitySublocationRecipient { OdsCode = x.OdsCode, Quantity = x.Quantity!.Value })
             .ToList();
 
         if (dbContext.ChangeTracker.HasChanges())
@@ -76,13 +76,13 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
         int competitionId,
         CatalogueItemId solutionId,
         CatalogueItemId serviceId,
-        IEnumerable<ServiceRecipientDto> serviceRecipients)
+        IEnumerable<ServiceRecipientQuantityDto> serviceRecipients)
     {
         var service = await GetSolutionService(internalOrgId, competitionId, solutionId, serviceId);
         if (service is null) return;
 
         service.Quantities = serviceRecipients
-            .Select(x => new ServiceQuantity { OdsCode = x.OdsCode, Quantity = x.Quantity!.Value })
+            .Select(x => new ServiceQuantitySublocationRecipient { OdsCode = x.OdsCode, Quantity = x.Quantity!.Value })
             .ToList();
 
         await dbContext.SaveChangesAsync();

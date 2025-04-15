@@ -1,9 +1,33 @@
-﻿using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
-    public class ServiceRecipientModel
+    public record ServiceRecipientModel
     {
+        public ServiceRecipientModel()
+        {
+        }
+
+        public ServiceRecipientModel(ServiceRecipient serviceRecipientServiceModel)
+        {
+            Name = serviceRecipientServiceModel.Name;
+            OdsCode = serviceRecipientServiceModel.OrgId;
+            Location = serviceRecipientServiceModel.Location;
+            LocationOrgId = serviceRecipientServiceModel.LocationOrgId;
+        }
+
+        public ServiceRecipientModel(
+            CompetitionSublocationRecipient competitionSublocationRecipientEntityModel,
+            bool selected)
+        {
+            Name = competitionSublocationRecipientEntityModel.RecipientOrganisation?.Name;
+            OdsCode = competitionSublocationRecipientEntityModel.RecipientOdsCode;
+            Location = competitionSublocationRecipientEntityModel.ParentSublocation?.SublocationOrganisation?.Name;
+            LocationOrgId = competitionSublocationRecipientEntityModel.ParentSublocationOdsCode;
+            Selected = selected;
+        }
+
         public string OdsCode { get; set; }
 
         public string Name { get; set; }
@@ -14,11 +38,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public string Location { get; set; }
 
-        public ServiceRecipientDto Dto => new()
-        {
-            Name = Name,
-            OdsCode = OdsCode,
-            Location = Location,
-        };
+        public string LocationOrgId { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -130,20 +131,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
             var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
-            var organisationRecipients = await odsService.GetServiceRecipientsById(internalOrgId, orderRecipients.Select(x => x.OdsCode).ToList());
+            IEnumerable<ServiceRecipient> organisationRecipients =
+                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    orderRecipients.Select(x => x.OdsCode).ToList());
 
-            var recipients = orderRecipients.Join(
+            IEnumerable<ServiceRecipientQuantityDto> recipients = orderRecipients.Join(
                 organisationRecipients,
                 orderRecipients => orderRecipients.OdsCode,
                 organisationRecipients => organisationRecipients.OrgId,
-                (orderRecipients, organisationRecipients) => new ServiceRecipientDto(
+                (orderRecipients, organisationRecipients) => new ServiceRecipientQuantityDto(
                     orderRecipients.OdsCode,
                     orderRecipients.OdsOrganisation?.Name,
                     orderRecipients.GetQuantityForItem(orderItem.CatalogueItemId),
                     organisationRecipients.Location));
 
-            var previousRecipients = wrapper.Previous?.OrderRecipients?.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId)));
+            IEnumerable<ServiceRecipientQuantityDto> previousRecipients = wrapper.Previous?.OrderRecipients?.Select(
+                x => new ServiceRecipientQuantityDto(
+                    x.OdsCode,
+                    x.OdsOrganisation?.Name,
+                    x.GetQuantityForItem(orderItem.CatalogueItemId)));
 
             var practiceReorganisation = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient;
 

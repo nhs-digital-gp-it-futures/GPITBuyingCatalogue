@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -182,12 +183,14 @@ public class CompetitionResultsController : Controller
         }
 
         var competition = await competitionsService.GetCompetitionForResults(internalOrgId, competitionId);
+        var totalRecipientCount =
+            await competitionsService.GetCompetitionTotalRecipientCount(internalOrgId, competitionId);
         var solution = competition.CompetitionSolutions.FirstOrDefault(WinningSolutionSelector);
 
         if (solution is null || !solution.IsWinningSolution)
             return RedirectToAction(nameof(ViewResults), new { internalOrgId, competitionId });
 
-        var model = new OrderingInformationModel(competition, solution)
+        var model = new OrderingInformationModel(competition, solution, totalRecipientCount)
         {
             BackLink = Url.Action(nameof(ViewResults), new { internalOrgId, competitionId }),
         };
@@ -217,9 +220,12 @@ public class CompetitionResultsController : Controller
         string internalOrgId,
         int competitionId)
     {
-        var competition = await competitionsService.GetCompetitionWithRecipients(internalOrgId, competitionId);
-        var recipients = competition.Recipients.Select(
-            x => new ServiceRecipientImportModel { Organisation = x.Name, OdsCode = x.Id, });
+        Competition competition =
+            await competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(
+                internalOrgId,
+                competitionId);
+        IEnumerable<ServiceRecipientImportModel> recipients = competition.FlattenedRecipients.Select(
+            x => new ServiceRecipientImportModel { Organisation = x.Name, OdsCode = x.Id });
 
         using var stream = new MemoryStream();
         await serviceRecipientImportService.CreateServiceRecipientTemplate(stream, recipients);

@@ -27,7 +27,7 @@ public class CompetitionSolutionHubModel : NavBaseModel
                     competitionSolution.SolutionId,
                     competitionSolution.Solution.CatalogueItem,
                     competitionSolution.Quantity,
-                    competition.Recipients.ToDictionary(
+                    competition.FlattenedRecipients.ToDictionary(
                         x => x,
                         x => competitionSolution.Quantities.FirstOrDefault(y => y.OdsCode == x.Id)?.Quantity),
                     competitionSolution.Price)
@@ -42,7 +42,7 @@ public class CompetitionSolutionHubModel : NavBaseModel
                         competitionSolution.SolutionId,
                         x.Service,
                         x.Quantity,
-                        competition.Recipients.ToDictionary(
+                        competition.FlattenedRecipients.ToDictionary(
                             y => y,
                             y => x.Quantities.FirstOrDefault(z => z.OdsCode == y.Id)?.Quantity),
                         x.Price)

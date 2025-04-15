@@ -809,8 +809,8 @@ public static class CompetitionHubControllerTests
         Competition competition,
         CompetitionSolution competitionSolution,
         CompetitionCatalogueItemPrice competitionPrice,
-        List<SolutionQuantity> solutionQuantities,
-        List<ServiceRecipientDto> recipientQuantities,
+        List<SolutionQuantitySublocationRecipient> solutionQuantities,
+        List<ServiceRecipientQuantityDto> recipientQuantities,
         Solution solution,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionHubController controller)
@@ -848,8 +848,8 @@ public static class CompetitionHubControllerTests
         CompetitionSolution competitionSolution,
         SolutionService solutionService,
         CompetitionCatalogueItemPrice competitionPrice,
-        List<ServiceQuantity> solutionQuantities,
-        List<ServiceRecipientDto> recipientQuantities,
+        List<ServiceQuantitySublocationRecipient> solutionQuantities,
+        List<ServiceRecipientQuantityDto> recipientQuantities,
         Solution solution,
         AdditionalService service,
         [Frozen] ICompetitionsService competitionsService,
@@ -919,11 +919,12 @@ public static class CompetitionHubControllerTests
 
         _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, solutionId, model);
 
-        await competitionsQuantityService.Received().SetSolutionRecipientQuantity(
+        await competitionsQuantityService.Received()
+            .SetSolutionRecipientQuantity(
                 internalOrgId,
                 competitionId,
                 solutionId,
-                Arg.Any<List<ServiceRecipientDto>>());
+                Arg.Any<List<ServiceRecipientQuantityDto>>());
     }
 
     [Theory]
@@ -944,12 +945,13 @@ public static class CompetitionHubControllerTests
 
         _ = await controller.SelectServiceRecipientQuantity(internalOrgId, competitionId, solutionId, model, serviceId);
 
-        await competitionsQuantityService.Received().SetServiceRecipientQuantity(
+        await competitionsQuantityService.Received()
+            .SetServiceRecipientQuantity(
                 internalOrgId,
                 competitionId,
                 solutionId,
                 serviceId,
-                Arg.Any<IEnumerable<ServiceRecipientDto>>());
+                Arg.Any<IEnumerable<ServiceRecipientQuantityDto>>());
     }
 
     [Theory]
@@ -1272,13 +1274,20 @@ public static class CompetitionHubControllerTests
         var competitionRecipients = new List<OdsOrganisation> { competitionRecipient };
         var recipientQuantities = new List<RecipientQuantityBase> { recipientQuantity };
 
-        odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(new List<ServiceRecipient> { serviceRecipient });
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                Arg.Any<IEnumerable<string>>())
+            .Returns(new List<ServiceRecipient> { serviceRecipient });
         gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns(new List<GpPracticeSize>() { gpPracticeSize });
 
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
 
-        var expected = new ServiceRecipientDto(recipientQuantity.OdsCode, competitionRecipient.Name, recipientQuantity.Quantity, serviceRecipient.Location);
-        var expectedList = new List<ServiceRecipientDto> { expected };
+        var expected = new ServiceRecipientQuantityDto(
+            recipientQuantity.OdsCode,
+            competitionRecipient.Name,
+            recipientQuantity.Quantity,
+            serviceRecipient.Location);
+        var expectedList = new List<ServiceRecipientQuantityDto> { expected };
 
         serviceRecipients.Should().NotBeNull();
         serviceRecipients.Should().BeEquivalentTo(expectedList);
@@ -1301,13 +1310,20 @@ public static class CompetitionHubControllerTests
         var competitionRecipients = new List<OdsOrganisation> { competitionRecipient };
         var recipientQuantities = Enumerable.Empty<RecipientQuantityBase>().ToList();
 
-        odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(new List<ServiceRecipient> { serviceRecipient });
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                Arg.Any<IEnumerable<string>>())
+            .Returns(new List<ServiceRecipient> { serviceRecipient });
         gpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>()).Returns(new List<GpPracticeSize> { gpPractice });
 
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
 
-        var expected = new ServiceRecipientDto(gpPractice.OdsCode, competitionRecipient.Name, gpPractice.NumberOfPatients, serviceRecipient.Location);
-        var expectedList = new List<ServiceRecipientDto> { expected };
+        var expected = new ServiceRecipientQuantityDto(
+            gpPractice.OdsCode,
+            competitionRecipient.Name,
+            gpPractice.NumberOfPatients,
+            serviceRecipient.Location);
+        var expectedList = new List<ServiceRecipientQuantityDto> { expected };
 
         serviceRecipients.Should().NotBeNull();
         serviceRecipients.Should().BeEquivalentTo(expectedList);

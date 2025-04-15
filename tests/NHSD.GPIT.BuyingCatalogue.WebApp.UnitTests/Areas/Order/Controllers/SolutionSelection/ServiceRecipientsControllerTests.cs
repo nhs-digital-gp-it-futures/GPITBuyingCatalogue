@@ -339,7 +339,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order }));
 
-            mockOdsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(serviceRecipients);
+            mockOdsService
+                .GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Any<IEnumerable<string>>())
+                .Returns(serviceRecipients);
 
             organisationsService.GetOrganisationByInternalIdentifier(internalOrgId).Returns(organisation);
 
@@ -433,9 +437,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var recipientIds = serviceRecipients.Select(r => r.OrgId);
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))).Returns(serviceRecipients);
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds)))
+                .Returns(serviceRecipients);
 
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>()))).Returns(new List<ServiceRecipient>());
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>())))
+                .Returns(new List<ServiceRecipient>());
 
             var result = await controller.ConfirmChanges(
                 internalOrgId,
@@ -485,9 +495,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var recipientIds = serviceRecipients.Select(r => r.OrgId);
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))).Returns(serviceRecipients);
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds)))
+                .Returns(serviceRecipients);
 
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>()))).Returns(new List<ServiceRecipient>());
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>())))
+                .Returns(new List<ServiceRecipient>());
 
             await FluentActions.Invoking(async () => await controller.ConfirmChanges(
                 internalOrgId,
@@ -523,9 +539,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var recipientIds = serviceRecipients.Select(r => r.OrgId);
             var recipientIdFromList = recipientIds.First();
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds))).Returns(serviceRecipients);
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Is<IEnumerable<string>>(x => Enumerable.ToHashSet(x).SetEquals(recipientIds)))
+                .Returns(serviceRecipients);
 
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>()))).Returns(new List<ServiceRecipient>());
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Is<IEnumerable<string>>(x => x.SequenceEqual(Enumerable.Empty<string>())))
+                .Returns(new List<ServiceRecipient>());
 
             var result = await controller.ConfirmChanges(
                 internalOrgId,

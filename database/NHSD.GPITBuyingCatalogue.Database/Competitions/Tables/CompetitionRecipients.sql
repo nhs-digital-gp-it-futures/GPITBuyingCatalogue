@@ -1,4 +1,5 @@
-﻿CREATE TABLE [competitions].[CompetitionRecipients]
+﻿/* TODO: Deprecated - remove when sublocation feature stable */
+CREATE TABLE [competitions].[CompetitionRecipients]
 (
     [CompetitionId] INT NOT NULL,
     [OdsCode] NVARCHAR(10) NOT NULL,

@@ -1,4 +1,5 @@
-﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+﻿using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
@@ -14,7 +15,8 @@ public class SolutionPriceModel
         CatalogueItemId = solution.SolutionId;
         Name = solution.Solution.CatalogueItem.Name;
 
-        var competitionSolutionProgress = new CompetitionSolutionProgress(solution, competition.Recipients);
+        var competitionSolutionProgress =
+            new CompetitionSolutionProgress(solution, competition.FlattenedRecipients.ToList());
 
         Progress = competitionSolutionProgress.Progress;
 
