@@ -26,7 +26,7 @@ WHERE [rel].[RelationshipTypeId] = @IsCommissionedBy;
 
 INSERT INTO [orders].[OrderItemSublocationRecipients]
     ([OrderId], [CatalogueItemId], [RecipientOdsCode], [Quantity], [DeliveryDate], [LastUpdated], [LastUpdatedBy])
-SELECT [OrderId], [CatalogueItemId], [RecipientOdsCode], [Quantity], [DeliveryDate], [LastUpdated], [LastUpdatedBy]
+SELECT [OrderId], [CatalogueItemId], [OdsCode], [Quantity], [DeliveryDate], [LastUpdated], [LastUpdatedBy]
 FROM [ordering].[OrderItemRecipients];
 
 COMMIT TRANSACTION;
