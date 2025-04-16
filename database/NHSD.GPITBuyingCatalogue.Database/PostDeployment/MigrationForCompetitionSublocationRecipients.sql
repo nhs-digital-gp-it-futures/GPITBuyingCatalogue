@@ -1,9 +1,9 @@
 BEGIN TRANSACTION
 
-DECLARE @IsCommissionedBy VARCHAR(3)
-DECLARE @IsLocatedInTheGeographyOf VARCHAR(3)
-SET @IsCommissionedBy = 'RE4'
-SET @IsLocatedInTheGeographyOf = 'RE5'
+DECLARE @CompetitionSublocationIsCommissionedBy VARCHAR(3)
+DECLARE @CompetitionSublocationIsLocatedInTheGeographyOf VARCHAR(3)
+SET @CompetitionSublocationIsCommissionedBy = 'RE4'
+SET @CompetitionSublocationIsLocatedInTheGeographyOf = 'RE5'
 
 INSERT INTO [GPITBuyingCatalogue].[competitions].[CompetitionSublocations]
     ([CompetitionId], [SublocationOdsCode], [OwnerOdsCode])
@@ -13,8 +13,8 @@ FROM [GPITBuyingCatalogue].[competitions].[CompetitionRecipients] [cr]
     ON [cr].[OdsCode] = [rel].[TargetOrganisationId]
     JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel2]
     ON [rel].[OwnerOrganisationId] = [rel2].[TargetOrganisationId]
-WHERE [rel].[RelationshipTypeId] = @IsCommissionedBy
-    AND [rel2].[RelationshipTypeId] = @IsLocatedInTheGeographyOf;
+WHERE [rel].[RelationshipTypeId] = @CompetitionSublocationIsCommissionedBy
+    AND [rel2].[RelationshipTypeId] = @CompetitionSublocationIsLocatedInTheGeographyOf;
 
 INSERT INTO [GPITBuyingCatalogue].[competitions].[CompetitionSublocationRecipients]
     ([CompetitionId], [RecipientOdsCode], [ParentSublocationOdsCode])
@@ -22,13 +22,15 @@ SELECT [cr].[CompetitionId], [cr].[OdsCode] AS [RecipientOdsCode], [rel].[OwnerO
 FROM [GPITBuyingCatalogue].[competitions].[CompetitionRecipients] [cr]
     JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel]
     ON [cr].[OdsCode] = [rel].[TargetOrganisationId]
-WHERE [rel].[RelationshipTypeId] = @IsCommissionedBy;
+WHERE [rel].[RelationshipTypeId] = @CompetitionSublocationIsCommissionedBy;
 
 INSERT INTO [competitions].[ServiceQuantitiesSublocationRecipients]
+    ([CompetitionId], [SolutionId], [ServiceId], [OdsCode], [Quantity])
 SELECT [CompetitionId], [SolutionId], [ServiceId], [OdsCode], [Quantity]
 FROM [competitions].[ServiceQuantities];
 
 INSERT INTO [competitions].[SolutionQuantitiesSublocationRecipients]
+    ([CompetitionId], [SolutionId], [OdsCode], [Quantity])
 SELECT [CompetitionId], [SolutionId], [OdsCode], [Quantity]
 FROM [competitions].[SolutionQuantities];
 

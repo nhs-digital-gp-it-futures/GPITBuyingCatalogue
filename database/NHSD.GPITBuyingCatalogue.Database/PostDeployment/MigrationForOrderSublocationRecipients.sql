@@ -1,9 +1,9 @@
 BEGIN TRANSACTION
 
-DECLARE @IsCommissionedBy VARCHAR(3)
-DECLARE @IsLocatedInTheGeographyOf VARCHAR(3)
-SET @IsCommissionedBy = 'RE4'
-SET @IsLocatedInTheGeographyOf = 'RE5'
+DECLARE @OrderSublocationIsCommissionedBy VARCHAR(3)
+DECLARE @OrderSublocationIsLocatedInTheGeographyOf VARCHAR(3)
+SET @OrderSublocationIsCommissionedBy = 'RE4'
+SET @OrderSublocationIsLocatedInTheGeographyOf = 'RE5'
 
 INSERT INTO [GPITBuyingCatalogue].[ordering].[OrderSublocations]
     ([OrderId], [SublocationOdsCode], [OwnerOdsCode])
@@ -13,8 +13,8 @@ FROM [GPITBuyingCatalogue].[ordering].[OrderRecipients] [or]
     ON [or].[OdsCode] = [rel].[TargetOrganisationId]
     JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel2]
     ON [rel].[OwnerOrganisationId] = [rel2].[TargetOrganisationId]
-WHERE [rel].[RelationshipTypeId] = @IsCommissionedBy
-    AND [rel2].[RelationshipTypeId] = @IsLocatedInTheGeographyOf;
+WHERE [rel].[RelationshipTypeId] = @OrderSublocationIsCommissionedBy
+    AND [rel2].[RelationshipTypeId] = @OrderSublocationIsLocatedInTheGeographyOf;
 
 INSERT INTO [GPITBuyingCatalogue].[ordering].[OrderSublocationRecipients]
     ([OrderId], [RecipientOdsCode], [ParentSublocationOdsCode])
@@ -22,9 +22,11 @@ SELECT [or].[OrderId], [or].[OdsCode] AS [RecipientOdsCode], [rel].[OwnerOrganis
 FROM [GPITBuyingCatalogue].[ordering].[OrderRecipients] [or]
     JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel]
     ON [or].[OdsCode] = [rel].[TargetOrganisationId]
-WHERE [rel].[RelationshipTypeId] = @IsCommissionedBy;
+WHERE [rel].[RelationshipTypeId] = @OrderSublocationIsCommissionedBy;
 
-INSERT INTO [orders].[OrderItemSublocationRecipients]
+INSERT INTO [ordering].[OrderItemSublocationRecipients]
+([OrderId], [CatalogueItemId], [OdsCode], [Quantity], [DeliveryDate], [LastUpdated], [LastUpdatedBy]
+)
 SELECT [OrderId], [CatalogueItemId], [OdsCode], [Quantity], [DeliveryDate], [LastUpdated], [LastUpdatedBy]
 FROM [ordering].[OrderItemRecipients];
 
