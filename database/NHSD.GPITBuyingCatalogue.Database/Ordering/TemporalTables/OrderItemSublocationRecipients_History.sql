@@ -2,7 +2,7 @@ CREATE TABLE [ordering].[OrderItemSublocationRecipients_History]
 (
     [OrderId] INT NOT NULL,
     [CatalogueItemId] nvarchar(14) NOT NULL,
-    [RecipientOdsCode] NVARCHAR(10) NOT NULL,
+    [OdsCode] NVARCHAR(10) NOT NULL,
     [Quantity] int,
     [DeliveryDate] date NULL,
     [LastUpdated] datetime2(7) NOT NULL,
