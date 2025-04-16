@@ -107,6 +107,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<OrderRecipient> OrderRecipients { get; set; }
 
+        public ICollection<OrderSublocation> OrderSublocations { get; set; }
+
         public AssociatedServicesOnlyDetails AssociatedServicesOnlyDetails { get; set; }
 
         public Framework SelectedFramework { get; set; }

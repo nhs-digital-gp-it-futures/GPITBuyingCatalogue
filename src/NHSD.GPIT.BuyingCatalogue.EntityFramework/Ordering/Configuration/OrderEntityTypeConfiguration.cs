@@ -59,6 +59,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasForeignKey(x => x.OrderId)
                 .HasConstraintName("FK_OrderRecipients_Orders");
 
+            builder.HasMany(x => x.OrderSublocations)
+                .WithOne(y => y.Order)
+                .HasForeignKey(y => y.OrderId)
+                .HasConstraintName("FK_OrderSublocations_Order");
+
             builder.HasMany(x => x.OrderEvents)
                 .WithOne()
                 .HasForeignKey(x => x.OrderId)
