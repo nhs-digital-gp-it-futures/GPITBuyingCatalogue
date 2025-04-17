@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.HasMany(x => x.SublocationRecipients)
                 .WithOne(y => y.ParentSublocation)
-                .HasForeignKey(y => y.ParentSublocationOdsCode)
+                .HasForeignKey(y => new { y.OrderId, y.ParentSublocationOdsCode })
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_OrderSublocationRecipients_ParentSublocation");
 
