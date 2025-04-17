@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
@@ -27,8 +29,18 @@ public record SublocationModel
             .ToArray();
     }
 
+    public SublocationModel(OrderSublocation orderSublocation, bool presenceDeterminesSelected)
+    {
+        Name = orderSublocation.SublocationOrganisation?.Name;
+        OdsCode = orderSublocation.SublocationOdsCode;
+        ServiceRecipientCount = orderSublocation.SublocationRecipients.Count;
+        ServiceRecipients = orderSublocation.SublocationRecipients?.Select(
+                x => new ServiceRecipientModel(x, presenceDeterminesSelected))
+            .ToArray();
+    }
+
     public SublocationModel(
-        CompetitionSublocation competitionSublocation,
+        ISublocation competitionSublocation,
         string recipientHref,
         int serviceRecipientCount)
     {

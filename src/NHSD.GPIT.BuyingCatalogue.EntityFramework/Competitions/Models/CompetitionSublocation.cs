@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 
-public record CompetitionSublocation
+public record CompetitionSublocation : ISublocation
 {
     public int CompetitionId { get; set; }
 

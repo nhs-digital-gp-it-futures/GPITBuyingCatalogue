@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
@@ -18,9 +19,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             string backLinkHref,
             SelectionMode? selectionMode = null,
             bool isAmendment = false)
+            : this(
+                selectedSublocation,
+                possibleServiceRecipients,
+                backLinkHref,
+                selectionMode,
+                isAmendment)
+        {
+            Caption = competition.Name;
+        }
+
+        public SelectSublocationRecipientsModel(
+            Order order,
+            SublocationModel selectedSublocation,
+            IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
+            string backLinkHref,
+            SelectionMode? selectionMode = null,
+            bool isAmendment = false)
+            : this(
+                selectedSublocation,
+                possibleServiceRecipients,
+                backLinkHref,
+                selectionMode,
+                isAmendment)
+        {
+            Caption = order.Description;
+        }
+
+        private SelectSublocationRecipientsModel(
+            SublocationModel selectedSublocation,
+            IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
+            string backLinkHref,
+            SelectionMode? selectionMode = null,
+            bool isAmendment = false)
         {
             Title = "Add service recipients";
-            Caption = competition.Name;
             Advice = "Select all the organisations that will be receiving this order";
             BackLink = backLinkHref;
 

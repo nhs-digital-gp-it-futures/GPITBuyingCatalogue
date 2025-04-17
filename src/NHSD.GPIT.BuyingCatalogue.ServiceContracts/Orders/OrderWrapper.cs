@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
@@ -171,5 +172,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             fundingTypes.AddRange(Order.OrderItems.Where(oi => oi.CatalogueItemId == catalogueItemId).Select(oi => oi.FundingType));
             return fundingTypes.Distinct();
         }
+
+        public IEnumerable<OdsOrganisation> FlattenedRecipients => Order.OrderSublocations?
+            .Where(x => x.SublocationRecipients is { Count: > 0 })
+            .SelectMany(x => x.SublocationRecipients.Select(y => y.RecipientOdsOrganisation));
     }
 }

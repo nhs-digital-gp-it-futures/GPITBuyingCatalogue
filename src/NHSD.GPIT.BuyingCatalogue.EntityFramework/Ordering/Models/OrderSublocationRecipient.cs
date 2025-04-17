@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public class OrderSublocationRecipient
+    public record OrderSublocationRecipient : ISublocationRecipient
     {
         public int OrderId { get; set; }
 

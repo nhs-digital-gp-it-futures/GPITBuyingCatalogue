@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public class OrderItemSublocationRecipient : IAudited
+    public record OrderItemSublocationRecipient : IAudited
     {
         public int OrderId { get; set; }
 

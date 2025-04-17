@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
@@ -15,6 +16,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             IReadOnlyList<string> sublocations,
             IReadOnlyList<string> removes,
             string backLinkHref)
+            : this(sublocations, removes, backLinkHref)
+        {
+            Caption = competition.Name;
+            Advice = "Confirm you want to remove sublocations from this competition";
+            ListHeaderText = $"{competition.Organisation.Name} {Pluralisation} to be removed:";
+        }
+
+        public RemoveSublocationsModel(
+            Order order,
+            IReadOnlyList<string> sublocations,
+            IReadOnlyList<string> removes,
+            string backLinkHref)
+            : this(sublocations, removes, backLinkHref)
+        {
+            Caption = order.Description;
+            Advice = "Confirm you want to remove sublocations from this order";
+            ListHeaderText = $"{order.OrderingParty.Name} {Pluralisation} to be removed:";
+            BackLink = backLinkHref;
+        }
+
+        private RemoveSublocationsModel(
+            IReadOnlyList<string> sublocations,
+            IReadOnlyList<string> removes,
+            string backLinkHref)
         {
             SublocationOdsCodes = sublocations;
             Removes = removes;
@@ -23,9 +48,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 : "sublocations";
 
             Title = $"Remove {Pluralisation}";
-            Caption = competition.Name;
-            Advice = "Confirm you want to remove sublocations from this competition";
-            ListHeaderText = $"{competition.Organisation.Name} {Pluralisation} to be removed:";
             BackLink = backLinkHref;
         }
 

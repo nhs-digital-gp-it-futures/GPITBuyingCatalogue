@@ -241,6 +241,41 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return OrderWrapper.Create(orders, callOffId);
         }
 
+        public Task<OrderWrapper> GetOrderWithSublocations(CallOffId callOffId, string internalOrgId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OrderWrapper> GetOrderWithSublocationsAndSublocationRecipients(
+            CallOffId callOffId,
+            string internalOrgId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetOrderTotalRecipientCount(CallOffId callOffId, string internalOrgId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> GetOrderHasAnySublocations(CallOffId callOffId, string internalOrgId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetSublocations(CallOffId callOffId, string internalOrgId, HashSet<string> sublocationOdsCodes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetOrderSublocationsAndRecipients(
+            CallOffId callOffId,
+            string internalOrgId,
+            ICollection<OrderSublocation> competitionSublocations)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<Order>> GetOrders(int organisationId)
         {
             return (await dbContext.Orders
