@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -18,20 +21,32 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<int> GetCountForOrderSublocationRecipients(
+        public async Task<int> GetCountForOrderSublocationRecipients(
             string externalOrgId,
             CallOffId callOffId,
             string sublocationOdsCode)
         {
-            throw new NotImplementedException();
+            return await dbContext.OrderSublocations
+                .Where(OrderSublocationPrimaryKeyPredicate(externalOrgId, callOffId, sublocationOdsCode))
+                .SelectMany(s => s.SublocationRecipients)
+                .CountAsync();
         }
 
-        public Task<OrderSublocation> GetOrderSublocationWithRecipients(
+        public async Task<OrderSublocation> GetOrderSublocationWithRecipients(
             string externalOrgId,
             CallOffId callOffId,
             string sublocationOdsCode)
         {
-            throw new NotImplementedException();
+            return await dbContext
+                .OrderSublocations
+                .AsNoTracking()
+                .Where(
+                    OrderSublocationPrimaryKeyPredicate(externalOrgId, callOffId, sublocationOdsCode))
+                .Include(x => x.Order)
+                .Include(x => x.SublocationOrganisation)
+                .Include(x => x.SublocationRecipients)
+                .ThenInclude(y => y.RecipientOdsOrganisation)
+                .FirstOrDefaultAsync();
         }
 
         public Task SetSublocationRecipients(
@@ -41,6 +56,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             HashSet<string> newRecipientOdsCodes)
         {
             throw new NotImplementedException();
+        }
+
+        private static Expression<Func<OrderSublocation, bool>> OrderSublocationPrimaryKeyPredicate(
+            string parentOdsCode,
+            CallOffId callOffId,
+            string sublocationOdsCode)
+        {
+            return x => x.OwnerOdsCode == parentOdsCode && x.OrderId == callOffId.OrderNumber
+                && x.SublocationOdsCode == sublocationOdsCode;
         }
     }
 }
