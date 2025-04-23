@@ -23,25 +23,25 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<int> GetCountForOrderSublocationRecipients(
             string externalOrgId,
-            CallOffId callOffId,
+            int orderId,
             string sublocationOdsCode)
         {
             return await dbContext.OrderSublocations
-                .Where(OrderSublocationPrimaryKeyPredicate(externalOrgId, callOffId, sublocationOdsCode))
+                .Where(OrderSublocationPrimaryKeyPredicate(externalOrgId, orderId, sublocationOdsCode))
                 .SelectMany(s => s.SublocationRecipients)
                 .CountAsync();
         }
 
         public async Task<OrderSublocation> GetOrderSublocationWithRecipients(
             string externalOrgId,
-            CallOffId callOffId,
+            int orderId,
             string sublocationOdsCode)
         {
             return await dbContext
                 .OrderSublocations
                 .AsNoTracking()
                 .Where(
-                    OrderSublocationPrimaryKeyPredicate(externalOrgId, callOffId, sublocationOdsCode))
+                    OrderSublocationPrimaryKeyPredicate(externalOrgId, orderId, sublocationOdsCode))
                 .Include(x => x.Order)
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public Task SetSublocationRecipients(
             string parentOdsCode,
-            CallOffId callOffId,
+            int orderId,
             string sublocationOdsCode,
             HashSet<string> newRecipientOdsCodes)
         {
@@ -60,10 +60,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         private static Expression<Func<OrderSublocation, bool>> OrderSublocationPrimaryKeyPredicate(
             string parentOdsCode,
-            CallOffId callOffId,
+            int orderId,
             string sublocationOdsCode)
         {
-            return x => x.OwnerOdsCode == parentOdsCode && x.OrderId == callOffId.OrderNumber
+            return x => x.OwnerOdsCode == parentOdsCode && x.OrderId == orderId
                 && x.SublocationOdsCode == sublocationOdsCode;
         }
     }

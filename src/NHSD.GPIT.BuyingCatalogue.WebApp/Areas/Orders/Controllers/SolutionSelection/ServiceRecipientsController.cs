@@ -261,10 +261,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return NotFound();
             }
 
+            var orderId = await orderService.GetOrderId(callOffId);
+
             OrderSublocation orderSublocation =
                 await orderSublocationService.GetOrderSublocationWithRecipients(
                     externalOrganisationId,
-                    callOffId,
+                    orderId,
                     sublocationOdsCode);
 
             if (orderSublocation is null)
@@ -312,10 +314,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return BadRequest();
             }
 
+            var orderId = await orderService.GetOrderId(callOffId);
+
             OrderSublocation sublocation =
                 await orderSublocationService.GetOrderSublocationWithRecipients(
                     externalOrganisationId,
-                    callOffId,
+                    orderId,
                     sublocationOdsCode);
 
             if (sublocation is null)
@@ -330,7 +334,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             await orderSublocationService.SetSublocationRecipients(
                 externalOrganisationId,
-                callOffId,
+                callOffId.OrderNumber,
                 sublocationOdsCode,
                 pageSelections);
 
@@ -769,7 +773,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 var serviceRecipientCount =
                     await orderSublocationService.GetCountForOrderSublocationRecipients(
                         wrapper.Order.OrderingParty.ExternalIdentifier,
-                        callOffId,
+                        wrapper.Order.Id,
                         competitionSublocation.SublocationOdsCode);
 
                 var sublocationModel = new SublocationModel(

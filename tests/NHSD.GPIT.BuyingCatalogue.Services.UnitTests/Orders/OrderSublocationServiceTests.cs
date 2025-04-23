@@ -34,14 +34,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.OrderingParty = organisation;
 
             sublocation.Order = order;
-            sublocation.OrderId = order.Id;
             sublocation.OwnerOdsCode = organisation.ExternalIdentifier;
-
             sublocation.SublocationOrganisation = sublocationOrganisation;
-            sublocation.SublocationRecipients = orderSublocationRecipients;
 
             orderSublocationRecipients.ForEach(x =>
-                x.RecipientOdsOrganisation = CommonEntityOdsOrganisationFactory(x.RecipientOdsCode));
+            {
+                x.RecipientOdsOrganisation = CommonEntityOdsOrganisationFactory(x.RecipientOdsCode);
+            });
+            sublocation.SublocationRecipients = orderSublocationRecipients;
 
             context.Add(sublocation);
 
@@ -51,8 +51,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             OrderSublocation actualSublocation = await service.GetOrderSublocationWithRecipients(
                 organisation.ExternalIdentifier,
-                order.CallOffId,
+                order.Id,
                 sublocation.SublocationOdsCode);
+
+            actualSublocation.Should().NotBeNull();
 
             actualSublocation.Should()
                 .BeEquivalentTo(
@@ -79,16 +81,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [MockInMemoryDbMemberAutoData(nameof(OrderSublocationsWithRecipientsForCount))]
         public static async Task GetCountForOrderSublocationRecipients_ReturnsCount(
             Organisation organisation,
-            Order Order,
+            Order order,
             OrderSublocation sublocation,
             int expectedCount,
             [Frozen] BuyingCatalogueDbContext context,
             OrderSublocationService service)
         {
-            Order.OrderingParty = organisation;
+            order.OrderingParty = organisation;
 
-            sublocation.Order = Order;
-            sublocation.OrderId = Order.Id;
+            sublocation.Order = order;
+            sublocation.OrderId = order.Id;
             sublocation.OwnerOdsCode = organisation.ExternalIdentifier;
 
             context.Add(sublocation);
@@ -99,7 +101,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var count = await service.GetCountForOrderSublocationRecipients(
                 organisation.ExternalIdentifier,
-                Order.CallOffId,
+                order.Id,
                 sublocation.SublocationOdsCode);
 
             Assert.Equal(expectedCount, count);

@@ -8,17 +8,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
     {
         Task<OrderSublocation> GetOrderSublocationWithRecipients(
             string externalOrgId,
-            CallOffId callOffId,
+            int orderId,
             string sublocationOdsCode);
 
         Task<int> GetCountForOrderSublocationRecipients(
             string externalOrgId,
-            CallOffId callOffId,
+            int orderId,
             string sublocationOdsCode);
 
         Task SetSublocationRecipients(
             string parentOdsCode,
-            CallOffId callOffId,
+            int orderId,
             string sublocationOdsCode,
             HashSet<string> newRecipientOdsCodes);
     }
