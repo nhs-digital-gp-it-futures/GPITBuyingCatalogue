@@ -241,26 +241,76 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return OrderWrapper.Create(orders, callOffId);
         }
 
-        public Task<OrderWrapper> GetOrderWithSublocations(CallOffId callOffId, string internalOrgId)
+        public async Task<OrderWrapper> GetOrderWithSublocations(CallOffId callOffId, string internalOrgId)
         {
-            throw new NotImplementedException();
+            List<Order> orders = await dbContext.Orders
+                .Where(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.Revision <= callOffId.Revision
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .Include(o => o.AssociatedServicesOnlyDetails.Solution)
+                .Include(o => o.OrderingParty)
+                .Include(o => o.OrderingPartyContact)
+                .Include(o => o.Supplier)
+                .Include(o => o.LastUpdatedByUser)
+                .Include(o => o.OrderItems)
+                .ThenInclude(i => i.CatalogueItem)
+                .Include(o => o.SelectedFramework)
+                .Include(o => o.OrderSublocations)
+                .ThenInclude(os => os.SublocationOrganisation)
+                .AsSplitQuery()
+                .AsNoTracking()
+                .ToListAsync();
+
+            return OrderWrapper.Create(orders, callOffId);
         }
 
-        public Task<OrderWrapper> GetOrderWithSublocationsAndSublocationRecipients(
+        public async Task<OrderWrapper> GetOrderWithSublocationsAndSublocationRecipients(
             CallOffId callOffId,
             string internalOrgId)
         {
-            throw new NotImplementedException();
+            List<Order> orders = await dbContext.Orders
+                .Where(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.Revision <= callOffId.Revision
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .Include(o => o.AssociatedServicesOnlyDetails.Solution)
+                .Include(o => o.OrderingParty)
+                .Include(o => o.OrderingPartyContact)
+                .Include(o => o.Supplier)
+                .Include(o => o.LastUpdatedByUser)
+                .Include(o => o.OrderItems)
+                .ThenInclude(i => i.CatalogueItem)
+                .Include(o => o.SelectedFramework)
+                .Include(o => o.OrderSublocations)
+                .ThenInclude(os => os.SublocationOrganisation)
+                .Include(o => o.OrderSublocations)
+                .ThenInclude(os => os.SublocationRecipients)
+                .ThenInclude(sr => sr.RecipientOdsOrganisation)
+                .AsSplitQuery()
+                .AsNoTracking()
+                .ToListAsync();
+
+            return OrderWrapper.Create(orders, callOffId);
         }
 
-        public Task<int> GetOrderTotalRecipientCount(CallOffId callOffId, string internalOrgId)
+        public async Task<int> GetOrderTotalRecipientCount(CallOffId callOffId, string internalOrgId)
         {
-            throw new NotImplementedException();
+            return await dbContext.Orders
+                .Where(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.Revision <= callOffId.Revision
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .SelectMany(o => o.OrderSublocations)
+                .SelectMany(os => os.SublocationRecipients)
+                .AsSplitQuery()
+                .CountAsync();
         }
 
-        public Task<bool> GetOrderHasAnySublocations(CallOffId callOffId, string internalOrgId)
+        public async Task<bool> GetOrderHasAnySublocations(CallOffId callOffId, string internalOrgId)
         {
-            throw new NotImplementedException();
+            return await dbContext.Orders
+                .Where(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.Revision <= callOffId.Revision
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .AnyAsync(o => o.OrderSublocations.Count > 0);
         }
 
         public Task SetSublocations(CallOffId callOffId, string internalOrgId, HashSet<string> sublocationOdsCodes)
