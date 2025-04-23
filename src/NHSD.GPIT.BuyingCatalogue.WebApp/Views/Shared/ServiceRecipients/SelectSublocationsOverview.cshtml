@@ -44,7 +44,7 @@
         <form method="post">
             @for (var i = 0; i < Model.Sublocations.Count; i++)
             {
-                <input type="hidden" asp-for="@Model.Sublocations[i].Name)" />
+                <input type="hidden" asp-for="@Model.Sublocations[i].Name" />
                 <input type="hidden" asp-for="@Model.Sublocations[i].OdsCode" />
                 <input type="hidden" asp-for="@Model.Sublocations[i].ServiceRecipientCount" />
             }  
