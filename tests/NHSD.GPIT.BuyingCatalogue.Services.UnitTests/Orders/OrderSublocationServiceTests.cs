@@ -74,6 +74,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         {
             return
             [
+                [
+                    CommonOrganisationFactory(22), CommonOrderFactory(654, 22),
+                    CommonOrderSublocationFactory("XXXX", []), 0,
+                ],
+
+                [
+                    CommonOrganisationFactory(65), CommonOrderFactory(621, 65),
+                    CommonOrderSublocationFactory(
+                        "XXXY",
+                        [
+                            CommonOrderSublocationRecipientFactory("BAAA", "XXXY", 621),
+                            CommonOrderSublocationRecipientFactory("BAAB", "XXXY", 621),
+                        ]),
+                    2,
+                ],
             ];
         }
 
@@ -90,7 +105,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.OrderingParty = organisation;
 
             sublocation.Order = order;
-            sublocation.OrderId = order.Id;
             sublocation.OwnerOdsCode = organisation.ExternalIdentifier;
 
             context.Add(sublocation);
@@ -123,20 +137,39 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             return new Order
             {
                 Id = customId == 0 ? CommonOrderId : customId,
+                OrderNumber = customId,
+                Revision = 1,
+                Description = $"My order {customId}",
                 OrderingPartyId = customOrganisationId == 0 ? CommonOrganisationId : customOrganisationId,
-                Description = "Order for Ordery things",
+            };
+        }
+
+        private static OrderSublocation CommonOrderSublocationFactory(
+            string sublocationOdsCode,
+            List<OrderSublocationRecipient> sublocationRecipients = null,
+            bool hasOrganisation = false,
+            int customOrderId = 0)
+        {
+            return new OrderSublocation
+            {
+                OrderId = customOrderId == 0 ? CommonOrderId : customOrderId,
+                SublocationOdsCode = sublocationOdsCode,
+                OwnerOdsCode = CommonOrganisationExternalIdentifier,
+                SublocationRecipients = sublocationRecipients,
+                SublocationOrganisation =
+                    hasOrganisation ? CommonEntityOdsOrganisationFactory(sublocationOdsCode) : null,
             };
         }
 
         private static OrderSublocationRecipient CommonOrderSublocationRecipientFactory(
             string recipientOdsCode,
             string parentSublocationOdsCode,
-            int OrderId = 0,
+            int orderId = 0,
             bool hasOrganisation = false)
         {
             return new OrderSublocationRecipient
             {
-                Order = new Order(),
+                OrderId = orderId,
                 RecipientOdsCode = recipientOdsCode,
                 ParentSublocationOdsCode = parentSublocationOdsCode,
                 RecipientOdsOrganisation =
