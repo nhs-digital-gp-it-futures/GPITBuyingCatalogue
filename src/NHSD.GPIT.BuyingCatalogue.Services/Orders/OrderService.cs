@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -18,7 +17,10 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using Notify.Client;
+using MoreEnumerable = MoreLinq.MoreEnumerable;
+using ServiceContractOdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
@@ -33,6 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         private readonly ICsvService csvService;
         private readonly IGovNotifyEmailService emailService;
         private readonly IOrderPdfService pdfService;
+        private readonly IOdsService odsService;
         private readonly OrderMessageSettings orderMessageSettings;
 
         public OrderService(
@@ -40,12 +43,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             ICsvService csvService,
             IGovNotifyEmailService emailService,
             IOrderPdfService pdfService,
+            IOdsService odsService,
             OrderMessageSettings orderMessageSettings)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.csvService = csvService ?? throw new ArgumentNullException(nameof(csvService));
             this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             this.pdfService = pdfService ?? throw new ArgumentNullException(nameof(pdfService));
+            this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderMessageSettings = orderMessageSettings ?? throw new ArgumentNullException(nameof(orderMessageSettings));
         }
 
@@ -313,12 +318,70 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .AnyAsync(o => o.OrderSublocations.Count > 0);
         }
 
-        public Task SetSublocations(CallOffId callOffId, string internalOrgId, HashSet<string> sublocationOdsCodes)
+        public async Task SetSublocations(
+            CallOffId callOffId,
+            string internalOrgId,
+            HashSet<string> sublocationOdsCodes)
         {
-            throw new NotImplementedException();
+            ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
+
+            if (sublocationOdsCodes is null or { Count: 0 })
+            {
+                throw new ArgumentException(@"sublocationOdsCodes is null or empty", nameof(sublocationOdsCodes));
+            }
+
+            Order order = await dbContext.Orders
+                .Where(x => x.OrderingParty.InternalIdentifier == internalOrgId && x.CallOffId == callOffId)
+                .Include(x => x.OrderingParty)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .FirstAsync();
+
+            if (order.Completed.HasValue)
+            {
+                throw new InvalidOperationException("Cannot set sublocations on a completed order.");
+            }
+
+            IEnumerable<ServiceContractOdsOrganisation> validSublocations =
+                await odsService.GetSublocationsByParentOdsCode(order.OrderingParty.ExternalIdentifier);
+
+            var allIdsValid = sublocationOdsCodes.All(x => validSublocations.Any(y => y.OdsCode == x));
+
+            if (!allIdsValid)
+            {
+                throw new InvalidOperationException(
+                    "One or more requested Ids not found or not valid for this organisation.");
+            }
+
+            var orderId = await GetOrderId(callOffId);
+
+            HashSet<string> orderSublocations =
+                order.OrderSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
+
+            HashSet<string> removes = [.. orderSublocations];
+            removes.ExceptWith(sublocationOdsCodes);
+
+            HashSet<string> adds = [.. sublocationOdsCodes];
+            adds.ExceptWith(orderSublocations);
+
+            IEnumerable<OrderSublocation> locationsToAdd = adds.Select(x => new OrderSublocation
+            {
+                OrderId = orderId, SublocationOdsCode = x, OwnerOdsCode = order.OrderingParty.ExternalIdentifier,
+            });
+
+            order.OrderSublocations.AddRange(
+                locationsToAdd
+            );
+
+            List<OrderSublocation> locationsToRemove =
+                order.OrderSublocations.Where(x => removes.Contains(x.SublocationOdsCode)).ToList();
+
+            order.OrderSublocations.RemoveRange(locationsToRemove);
+
+            await dbContext.SaveChangesAsync();
         }
 
-        public Task SetOrderSublocationsAndRecipients(
+        public Task SetSublocationsAndRecipients(
             CallOffId callOffId,
             string internalOrgId,
             ICollection<OrderSublocation> competitionSublocations)
@@ -334,7 +397,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .Where(o => o.OrderingPartyId == organisationId)
                     .ToListAsync())
                 .GroupBy(x => x.OrderNumber)
-                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated or OrderStatus.Expired))
+                .SelectMany(x => MoreEnumerable.TakeUntil(x.OrderByDescending(y => y.Revision), y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated or OrderStatus.Expired))
                 .ToList();
         }
 
@@ -374,7 +437,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .Where(o => o.OrderingPartyId == organisationId)
                     .ToListAsync())
                 .GroupBy(x => x.OrderNumber)
-                .SelectMany(x => x.OrderByDescending(y => y.Revision).TakeUntil(y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated or OrderStatus.Expired))
+                .SelectMany(x => MoreEnumerable.TakeUntil(x.OrderByDescending(y => y.Revision), y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated or OrderStatus.Expired))
                 .ToList();
 
             var matches = baseData

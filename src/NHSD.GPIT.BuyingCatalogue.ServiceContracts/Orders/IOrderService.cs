@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             string internalOrgId,
             HashSet<string> sublocationOdsCodes);
 
-        Task SetOrderSublocationsAndRecipients(
+        Task SetSublocationsAndRecipients(
             CallOffId callOffId,
             string internalOrgId,
             ICollection<OrderSublocation> competitionSublocations);

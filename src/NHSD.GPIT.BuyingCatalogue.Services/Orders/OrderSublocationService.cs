@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 {
-    public sealed class OrderSublocationService : IOrderSublocationService
+    public sealed class OrderSublocationService(BuyingCatalogueDbContext dbContext, IOdsService odsService)
+        : IOrderSublocationService
     {
-        private readonly BuyingCatalogueDbContext dbContext;
+        private readonly BuyingCatalogueDbContext dbContext =
+            dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-        public OrderSublocationService(
-            BuyingCatalogueDbContext dbContext
-        )
-        {
-            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        }
+        private readonly IOdsService odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
 
         public async Task<int> GetCountForOrderSublocationRecipients(
             string externalOrgId,
@@ -49,13 +49,69 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .FirstOrDefaultAsync();
         }
 
-        public Task SetSublocationRecipients(
+        public async Task SetSublocationRecipients(
             string parentOdsCode,
             int orderId,
             string sublocationOdsCode,
             HashSet<string> newRecipientOdsCodes)
         {
-            throw new NotImplementedException();
+            ArgumentException.ThrowIfNullOrEmpty(parentOdsCode);
+            ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode);
+            if (newRecipientOdsCodes is null or { Count: 0 })
+            {
+                throw new ArgumentException(@"recipientOdsCodes is null or empty", nameof(newRecipientOdsCodes));
+            }
+
+            OrderSublocation sublocation = await dbContext
+                .OrderSublocations
+                .Where(
+                    OrderSublocationPrimaryKeyPredicate(parentOdsCode, orderId, sublocationOdsCode))
+                .Include(x => x.Order)
+                .Include(x => x.SublocationOrganisation)
+                .Include(x => x.SublocationRecipients)
+                .FirstAsync();
+
+            if (sublocation.Order.Completed.HasValue)
+            {
+                throw new InvalidOperationException(
+                    "Cannot set sublocation recipients on a completed order.");
+            }
+
+            IEnumerable<ServiceRecipient> validRecipientsForSublocation =
+                await odsService.GetServiceRecipientsBySublocation(sublocationOdsCode);
+
+            HashSet<string> currentRecipientsOdsCodes =
+                sublocation.SublocationRecipients.Select(x => x.RecipientOdsCode).ToHashSet();
+
+            var allIdsValid = newRecipientOdsCodes.All(x => validRecipientsForSublocation.Any(y => y.OrgId == x));
+
+            if (!allIdsValid)
+            {
+                throw new InvalidOperationException(
+                    "One or more requested Ids not found or not valid for this sublocation.");
+            }
+
+            HashSet<string> adds = [.. newRecipientOdsCodes];
+            adds.ExceptWith(currentRecipientsOdsCodes);
+
+            HashSet<string> removes = [.. currentRecipientsOdsCodes];
+            removes.ExceptWith(newRecipientOdsCodes);
+
+            List<OrderSublocationRecipient> sublocationRecipientsToAdd = adds
+                .Select(x => new OrderSublocationRecipient
+                {
+                    OrderId = orderId, RecipientOdsCode = x, ParentSublocationOdsCode = sublocationOdsCode,
+                })
+                .ToList();
+
+            sublocation.SublocationRecipients.AddRange(sublocationRecipientsToAdd);
+
+            List<OrderSublocationRecipient> sublocationRecipientsToRemove =
+                sublocation.SublocationRecipients.Where(x => removes.Contains(x.RecipientOdsCode)).ToList();
+
+            sublocation.SublocationRecipients.RemoveRange(sublocationRecipientsToRemove);
+
+            await dbContext.SaveChangesAsync();
         }
 
         private static Expression<Func<OrderSublocation, bool>> OrderSublocationPrimaryKeyPredicate(
