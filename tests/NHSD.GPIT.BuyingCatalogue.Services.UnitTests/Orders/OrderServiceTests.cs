@@ -25,6 +25,7 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Notify.Client;
@@ -740,6 +741,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> adminTokens = null;
@@ -773,6 +775,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 settings);
 
             await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
@@ -797,6 +800,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> userTokens = null;
@@ -830,6 +834,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 settings);
 
             var expectedOrderSummaryCsv = NotificationClient.PrepareUpload(bytes, true);
@@ -876,6 +881,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> adminTokens = null;
@@ -909,6 +915,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 settings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
@@ -931,6 +938,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> userTokens = null;
@@ -965,6 +973,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 settings);
 
             var expectedOrderSummaryCsv = NotificationClient.PrepareUpload(bytes, true);
@@ -991,6 +1000,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings orderMessageSettings)
         {
             order.OrderType = OrderTypeEnum.Solution;
@@ -1007,6 +1017,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 orderMessageSettings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
@@ -1024,6 +1035,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings orderMessageSettings)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
@@ -1040,6 +1052,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 orderMessageSettings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);

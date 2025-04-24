@@ -367,7 +367,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Competitions
 
         [Theory]
         [MockInMemoryDbMemberAutoData(nameof(SetSublocationRecipientsData))]
-        public static async Task SetSublocationRecipients_AddsAsExpected(
+        public static async Task SetSublocationRecipients_SetsAsExpected(
             Organisation organisation,
             Competition competition,
             CompetitionSublocation workingCompetitionSublocation,
