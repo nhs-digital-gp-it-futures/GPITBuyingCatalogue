@@ -461,17 +461,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         [Theory]
-        [MockInMemoryDbInlineAutoData("", 5, true, typeof(ArgumentException))]
-        [MockInMemoryDbInlineAutoData(null, 5, true, typeof(ArgumentNullException))]
-        [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, false, typeof(ArgumentException))]
+        [MockInMemoryDbInlineAutoData("", true, typeof(ArgumentException))]
+        [MockInMemoryDbInlineAutoData(null, true, typeof(ArgumentNullException))]
+        [MockInMemoryDbInlineAutoData("MY-ORG-ID", false, typeof(ArgumentException))]
         public static async Task SetSublocations_RejectsNullParams(
             string internalOrgId,
-            CallOffId callOffId,
             bool populateSublocations,
             Type expectedExceptionType,
             HashSet<string> orderSublocations,
             OrderService service)
         {
+            var callOffId = new CallOffId(10001, 0);
+
             Exception exception = await Record.ExceptionAsync(async () =>
             {
                 if (!populateSublocations)
