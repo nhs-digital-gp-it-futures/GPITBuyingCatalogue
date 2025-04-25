@@ -500,7 +500,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             {
                 Id = customId == 0 ? random.Next() : customId,
                 OrderNumber = customOrderNumber == 0 ? CommonOrderNumber : customId,
-                Revision = customOrderNumber == 0 ? customRevision : 1,
+                Revision = customRevision,
                 Description = $"An order {customId}",
                 OrderingPartyId = customOrganisationId == 0 ? CommonOrganisationId : customOrganisationId,
                 SelectedFramework = new EntityFramework.Catalogue.Models.Framework { Id = random.Next().ToString() },

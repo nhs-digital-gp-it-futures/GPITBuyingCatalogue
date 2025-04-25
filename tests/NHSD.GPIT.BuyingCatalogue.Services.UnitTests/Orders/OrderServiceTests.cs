@@ -32,6 +32,7 @@ using Notify.Client;
 using NSubstitute;
 using Xunit;
 using EntityOdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
+using ServiceContractOdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 {
@@ -39,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
     public static class OrderServiceTests
     {
         private const int CommonOrganisationId = 21;
-        private const int CommonOrderId = 10001;
+        private const int CommonOrderNumber = 10001;
         private const string CommonOrganisationInternalIdentifier = "BB-FFGG";
         private const string CommonOrganisationExternalIdentifier = "FFGG";
 
@@ -386,7 +387,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [
                 [
                     CommonOrganisationFactory(23),
-                    CommonOrderFactory(21, 23),
+                    CommonOrderFactory(23, 21),
                     new List<OrderSublocation>
                     {
                         CommonOrderSublocationFactory(
@@ -414,7 +415,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 ],
                 [
                     CommonOrganisationFactory(76),
-                    CommonOrderFactory(31, 76),
+                    CommonOrderFactory(76, 31, 3456),
                     new List<OrderSublocation>
                     {
                         CommonOrderSublocationFactory(
@@ -457,6 +458,246 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             var result = await service.GetOrderTotalRecipientCount(order.CallOffId, organisation.InternalIdentifier);
 
             Assert.Equal(expectedRecipientCount, result);
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData("", 5, true, typeof(ArgumentException))]
+        [MockInMemoryDbInlineAutoData(null, 5, true, typeof(ArgumentNullException))]
+        [MockInMemoryDbInlineAutoData("MY-ORG-ID", 5, false, typeof(ArgumentException))]
+        public static async Task SetSublocations_RejectsNullParams(
+            string internalOrgId,
+            CallOffId callOffId,
+            bool populateSublocations,
+            Type expectedExceptionType,
+            HashSet<string> orderSublocations,
+            OrderService service)
+        {
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                if (!populateSublocations)
+                {
+                    await service.SetSublocations(
+                        callOffId,
+                        internalOrgId,
+                        []);
+                }
+                else
+                {
+                    await service.SetSublocations(
+                        callOffId,
+                        internalOrgId,
+                        orderSublocations);
+                }
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(expectedExceptionType);
+        }
+
+        public static IEnumerable<object[]> SetSublocationsNotValidData()
+        {
+            Order completedOrder = CommonOrderFactory(67, 21);
+            completedOrder.Completed = new DateTime(2024, 05, 03);
+
+            Order populatedOrderWithMatchingSublocations = CommonOrderFactory(83, 45);
+            populatedOrderWithMatchingSublocations.OrderSublocations =
+            [
+                CommonOrderSublocationFactory("XXXX"), CommonOrderSublocationFactory("XXXY"),
+            ];
+
+            var addHashSet = new HashSet<string> { "XXXX", "XXXY", "XXXZ" };
+
+            return
+            [
+                [
+                    CommonOrganisationFactory(21), completedOrder,
+                    addHashSet,
+                    "Cannot set sublocations on a completed order.",
+                ],
+                [
+                    CommonOrganisationFactory(78), CommonOrderFactory(33, 78),
+                    new HashSet<string> { "FFGH" },
+                    "One or more requested Ids not found or not valid for this organisation.",
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsNotValidData))]
+        public static async Task SetSublocations_RejectsInvalidOperations(
+            Organisation organisation,
+            Order order,
+            HashSet<string> sublocationOdsCodes,
+            string expectedMessage,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] IOdsService odsService,
+            OrderService service)
+        {
+            order.OrderingParty = organisation;
+
+            context.Add(order);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns([]);
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocations(
+                    order.CallOffId,
+                    organisation.InternalIdentifier,
+                    sublocationOdsCodes);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be(expectedMessage);
+        }
+
+        public static IEnumerable<object[]> SetSublocationsData()
+        {
+            return
+            [
+                // Adds
+                [
+                    CommonOrganisationFactory(78), CommonOrderFactory(33, 78),
+                    new List<EntityOdsOrganisation>
+                    {
+                        CommonEntityOdsOrganisationFactory("XXXX"),
+                        CommonEntityOdsOrganisationFactory("XXXY"),
+                        CommonEntityOdsOrganisationFactory("XXXZ"),
+                    },
+                    new List<ServiceContractOdsOrganisation>
+                    {
+                        CommonServiceContractOdsOrganisationFactory("XXXX"),
+                        CommonServiceContractOdsOrganisationFactory("XXXY"),
+                        CommonServiceContractOdsOrganisationFactory("XXXZ"),
+                    },
+                    new HashSet<string> { "XXXX", "XXXY" },
+                    new List<OrderSublocation>
+                    {
+                        CommonOrderSublocationFactory("XXXX", null, false, 33),
+                        CommonOrderSublocationFactory("XXXY", null, false, 33),
+                    },
+                ],
+
+                // Removes
+                [
+                    CommonOrganisationFactory(31),
+                    CommonOrderFactory(
+                        31,
+                        64,
+                        0,
+                        0,
+                        [
+                            CommonOrderSublocationFactory("YXXA"), CommonOrderSublocationFactory("YXXB"),
+                            CommonOrderSublocationFactory("YXXC"),
+                        ]),
+                    new List<EntityOdsOrganisation>
+                    {
+                        CommonEntityOdsOrganisationFactory("YXXA"),
+                        CommonEntityOdsOrganisationFactory("YXXB"),
+                        CommonEntityOdsOrganisationFactory("YXXC"),
+                    },
+                    new List<ServiceContractOdsOrganisation>
+                    {
+                        CommonServiceContractOdsOrganisationFactory("YXXA"),
+                        CommonServiceContractOdsOrganisationFactory("YXXB"),
+                        CommonServiceContractOdsOrganisationFactory("YXXC"),
+                    },
+                    new HashSet<string> { "YXXB", "YXXC" },
+                    new List<OrderSublocation>
+                    {
+                        CommonOrderSublocationFactory("YXXB", null, false, 64),
+                        CommonOrderSublocationFactory("YXXC", null, false, 64),
+                    },
+                ],
+
+                // Adds and removes
+
+                [
+                    CommonOrganisationFactory(87),
+                    CommonOrderFactory(
+                        87,
+                        55,
+                        0,
+                        0,
+                        [
+                            CommonOrderSublocationFactory("ZXXA"), CommonOrderSublocationFactory("ZXXB"),
+                            CommonOrderSublocationFactory("ZXXC"),
+                        ]),
+                    new List<EntityOdsOrganisation>
+                    {
+                        CommonEntityOdsOrganisationFactory("ZXXA"),
+                        CommonEntityOdsOrganisationFactory("ZXXB"),
+                        CommonEntityOdsOrganisationFactory("ZXXC"),
+                        CommonEntityOdsOrganisationFactory("ZXXD"),
+                        CommonEntityOdsOrganisationFactory("ZXXE"),
+                        CommonEntityOdsOrganisationFactory("ZXXF"),
+                    },
+                    new List<ServiceContractOdsOrganisation>
+                    {
+                        CommonServiceContractOdsOrganisationFactory("ZXXA"),
+                        CommonServiceContractOdsOrganisationFactory("ZXXB"),
+                        CommonServiceContractOdsOrganisationFactory("ZXXC"),
+                        CommonServiceContractOdsOrganisationFactory("ZXXD"),
+                        CommonServiceContractOdsOrganisationFactory("ZXXE"),
+                        CommonServiceContractOdsOrganisationFactory("ZXXF"),
+                    },
+                    new HashSet<string> { "ZXXB", "ZXXC", "ZXXD", "ZXXE" },
+                    new List<OrderSublocation>
+                    {
+                        CommonOrderSublocationFactory("ZXXB", null, false, 55),
+                        CommonOrderSublocationFactory("ZXXC", null, false, 55),
+                        CommonOrderSublocationFactory("ZXXD", null, false, 55),
+                        CommonOrderSublocationFactory("ZXXE", null, false, 55),
+                    },
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsData))]
+        public static async Task SetSublocations_SetsSublocations(
+            Organisation organisation,
+            Order order,
+            List<EntityOdsOrganisation> validSublocationsAsEntityModels,
+            List<ServiceContractOdsOrganisation> validSublocationsAsServiceModels,
+            HashSet<string> setSublocationOdsCodes,
+            List<OrderSublocation> expectedOrderSublocations,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] IOdsService odsService,
+            OrderService service)
+        {
+            order.OrderingParty = organisation;
+
+            context.AddRange(validSublocationsAsEntityModels);
+            context.Add(organisation);
+            context.Add(order);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier)
+                .Returns(validSublocationsAsServiceModels);
+
+            await service.SetSublocations(
+                order.CallOffId,
+                organisation.InternalIdentifier,
+                setSublocationOdsCodes);
+
+            OrderWrapper actualOrder = await service.GetOrderWithSublocations(
+                order.CallOffId,
+                organisation.InternalIdentifier);
+
+            actualOrder.Order.OrderSublocations.Should()
+                .BeEquivalentTo(
+                    expectedOrderSublocations,
+                    opt => opt.WithoutStrictOrdering()
+                        .Excluding(m => m.Order)
+                        .Excluding(m => m.SublocationOrganisation)
+                        .Excluding(m => m.SublocationRecipients));
         }
 
         [Theory]
@@ -1528,22 +1769,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         {
             return new Organisation
             {
-                Id = customId == 0 ? CommonOrderId : customId,
+                Id = customId == 0 ? CommonOrganisationId : customId,
                 InternalIdentifier = CommonOrganisationInternalIdentifier,
                 ExternalIdentifier = CommonOrganisationExternalIdentifier,
                 Name = "A Local ICB",
             };
         }
 
-        private static Order CommonOrderFactory(int customId = 0, int customOrganisationId = 0)
+        private static Order CommonOrderFactory(
+            int customOrganisationId = 0,
+            int customId = 0,
+            int customOrderNumber = 0,
+            int customRevision = 0,
+            ICollection<OrderSublocation> orderSublocations = null)
         {
+            var random = new Random();
             return new Order
             {
-                Id = customId == 0 ? CommonOrderId : customId,
-                OrderNumber = customId,
-                Revision = 1,
-                Description = $"My order {customId}",
+                Id = customId == 0 ? random.Next() : customId,
+                OrderNumber = customOrderNumber == 0 ? CommonOrderNumber : customId,
+                Revision = customRevision,
+                Description = $"An order {customId}",
                 OrderingPartyId = customOrganisationId == 0 ? CommonOrganisationId : customOrganisationId,
+                SelectedFramework = new EntityFramework.Catalogue.Models.Framework { Id = random.Next().ToString() },
+                OrderSublocations = orderSublocations,
             };
         }
 
@@ -1555,7 +1804,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         {
             return new OrderSublocation
             {
-                OrderId = customOrderId == 0 ? CommonOrderId : customOrderId,
+                OrderId = customOrderId == 0 ? CommonOrderNumber : customOrderId,
                 SublocationOdsCode = sublocationOdsCode,
                 OwnerOdsCode = CommonOrganisationExternalIdentifier,
                 SublocationRecipients = sublocationRecipients,
@@ -1583,6 +1832,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         private static EntityOdsOrganisation CommonEntityOdsOrganisationFactory(string id)
         {
             return new EntityOdsOrganisation { Id = id, Name = $"An organisation - {id}", IsActive = true };
+        }
+
+        private static ServiceContractOdsOrganisation CommonServiceContractOdsOrganisationFactory(string id)
+        {
+            return new ServiceContractOdsOrganisation
+            {
+                OdsCode = id, OrganisationName = $"An organisation - {id}", IsActive = true,
+            };
         }
     }
 }
