@@ -1122,12 +1122,6 @@ public static class CompetitionsServiceTests
         Competition completedCompetition = CommonCompetitionFactory(67, 21);
         completedCompetition.Completed = new DateTime(2024, 05, 03);
 
-        Competition populatedCompetitionWithMatchingSublocations = CommonCompetitionFactory(83, 45);
-        populatedCompetitionWithMatchingSublocations.CompetitionSublocations =
-        [
-            CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXY"),
-        ];
-
         var addHashSet = new HashSet<string> { "XXXX", "XXXY", "XXXZ" };
 
         return
