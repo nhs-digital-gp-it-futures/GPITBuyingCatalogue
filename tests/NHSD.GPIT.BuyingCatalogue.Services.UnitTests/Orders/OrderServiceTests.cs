@@ -386,51 +386,64 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             return
             [
                 [
-                    CommonOrganisationFactory(23),
-                    CommonOrderFactory(23, 21),
-                    new List<OrderSublocation>
-                    {
-                        CommonOrderSublocationFactory(
-                            "XXXX",
-                            [
-                                CommonOrderSublocationRecipientFactory("AAAA", "XXXX"),
-                                CommonOrderSublocationRecipientFactory("AAAB", "XXXX"),
-                                CommonOrderSublocationRecipientFactory("AAAC", "XXXX"),
-                            ]),
-                        CommonOrderSublocationFactory(
-                            "XXXY",
-                            [
-                                CommonOrderSublocationRecipientFactory("BAAA", "XXXY"),
-                                CommonOrderSublocationRecipientFactory("BAAB", "XXXY"),
-                                CommonOrderSublocationRecipientFactory("BAAC", "XXXY"),
-                            ]),
-                        CommonOrderSublocationFactory(
-                            "XXXZ",
-                            [
-                                CommonOrderSublocationRecipientFactory("CAAA", "XXXZ"),
-                                CommonOrderSublocationRecipientFactory("CAAB", "XXXZ"),
-                            ]),
-                    },
+                    CommonOrganisationFactory(21),
+                    CommonOrderFactory(
+                        23,
+                        21,
+                        6678,
+                        0,
+                        [
+                            CommonOrderSublocationFactory(
+                                23,
+                                "XXXX",
+                                [
+                                    CommonOrderSublocationRecipientFactory(23, "AAAA", "XXXX"),
+                                    CommonOrderSublocationRecipientFactory(23, "AAAB", "XXXX"),
+                                    CommonOrderSublocationRecipientFactory(23, "AAAC", "XXXX"),
+                                ]
+                            ),
+                            CommonOrderSublocationFactory(
+                                23,
+                                "XXXY",
+                                [
+                                    CommonOrderSublocationRecipientFactory(23, "BAAA", "XXXY"),
+                                    CommonOrderSublocationRecipientFactory(23, "BAAB", "XXXY"),
+                                    CommonOrderSublocationRecipientFactory(23, "BAAC", "XXXY"),
+                                ]),
+                            CommonOrderSublocationFactory(
+                                23,
+                                "XXXZ",
+                                [
+                                    CommonOrderSublocationRecipientFactory(23, "CAAA", "XXXZ"),
+                                    CommonOrderSublocationRecipientFactory(23, "CAAB", "XXXZ"),
+                                ]),
+                        ]),
                     8,
                 ],
                 [
-                    CommonOrganisationFactory(76),
-                    CommonOrderFactory(76, 31, 3456),
-                    new List<OrderSublocation>
-                    {
-                        CommonOrderSublocationFactory(
-                            "ZXXX",
-                            [
-                            ]),
-                        CommonOrderSublocationFactory(
-                            "ZXXY",
-                            [
-                            ]),
-                        CommonOrderSublocationFactory(
-                            "ZXXZ",
-                            [
-                            ]),
-                    },
+                    CommonOrganisationFactory(31),
+                    CommonOrderFactory(
+                        76,
+                        31,
+                        8192,
+                        0,
+                        [
+                            CommonOrderSublocationFactory(
+                                76,
+                                "ZXXX",
+                                [
+                                ]),
+                            CommonOrderSublocationFactory(
+                                76,
+                                "ZXXY",
+                                [
+                                ]),
+                            CommonOrderSublocationFactory(
+                                76,
+                                "ZXXZ",
+                                [
+                                ]),
+                        ]),
                     0,
                 ],
             ];
@@ -441,13 +454,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task GetOrderTotalRecipientCount_ReturnsInt(
             Organisation organisation,
             Order order,
-            List<OrderSublocation> orderSublocations,
             int expectedRecipientCount,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
             order.OrderingParty = organisation;
-            order.OrderSublocations = orderSublocations;
 
             context.Add(order);
 
@@ -495,43 +506,93 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             exception!.GetType().Should().Be(expectedExceptionType);
         }
 
-        public static IEnumerable<object[]> SetSublocationsNotValidData()
+        public static IEnumerable<object[]> SetSublocationsSingleOrderNotValidData()
         {
-            Order completedOrder = CommonOrderFactory(67, 21);
-            completedOrder.Completed = new DateTime(2024, 05, 03);
+            Order completeOrder = CommonOrderFactory(
+                45,
+                32,
+                7864,
+                0,
+                [CommonOrderSublocationFactory(45, "XXXA", [], true)]);
+            completeOrder.Completed = new DateTime(2024, 01, 03);
 
-            Order populatedOrderWithMatchingSublocations = CommonOrderFactory(83, 45);
-            populatedOrderWithMatchingSublocations.OrderSublocations =
-            [
-                CommonOrderSublocationFactory("XXXX"), CommonOrderSublocationFactory("XXXY"),
-            ];
+            Order terminatedOrder = CommonOrderFactory(
+                11,
+                76,
+                4312,
+                0,
+                [CommonOrderSublocationFactory(11, "XXXB", [], true)]);
+            terminatedOrder.IsTerminated = true;
 
-            var addHashSet = new HashSet<string> { "XXXX", "XXXY", "XXXZ" };
+            Order deletedOrder = CommonOrderFactory(
+                51,
+                55,
+                9841,
+                0,
+                [CommonOrderSublocationFactory(51, "XXXC", [], true)]);
+            deletedOrder.IsDeleted = true;
+
+            Order expiredOrder = CommonOrderFactory(
+                36,
+                66,
+                4327,
+                0,
+                [CommonOrderSublocationFactory(36, "XXXD", [], true)]);
+            expiredOrder.CommencementDate = new DateTime(2024, 01, 01);
+            expiredOrder.MaximumTerm = 3;
+
+            var addHashSet = new HashSet<string> { "XXYY" };
 
             return
             [
                 [
-                    CommonOrganisationFactory(21), completedOrder,
-                    addHashSet,
-                    "Cannot set sublocations on a completed order.",
+                    CommonOrganisationFactory(32), completeOrder, addHashSet,
+                    "Sublocations cannot be edited for this order.",
                 ],
                 [
-                    CommonOrganisationFactory(78), CommonOrderFactory(33, 78),
-                    new HashSet<string> { "FFGH" },
+                    CommonOrganisationFactory(76), terminatedOrder,
+
+                    addHashSet, "Sublocations cannot be edited for this order.",
+                ],
+                [
+                    CommonOrganisationFactory(55), deletedOrder,
+                    addHashSet,
+                    "Sequence contains no elements", // Filter at the order entity level will prevent order being included
+                ],
+
+                [
+                    CommonOrganisationFactory(66), expiredOrder,
+                    addHashSet, "Sublocations cannot be edited for this order.",
+                ],
+
+                [
+                    CommonOrganisationFactory(78), CommonOrderFactory(
+                        61,
+                        78,
+                        0,
+                        0,
+                        [
+                            CommonOrderSublocationFactory(
+                                61,
+                                "XXXZ",
+                                [],
+                                true),
+                        ]
+                    ),
+                    addHashSet,
                     "One or more requested Ids not found or not valid for this organisation.",
                 ],
             ];
         }
 
         [Theory]
-        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsNotValidData))]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsSingleOrderNotValidData))]
         public static async Task SetSublocations_RejectsInvalidOperations(
             Organisation organisation,
             Order order,
             HashSet<string> sublocationOdsCodes,
             string expectedMessage,
             [Frozen] BuyingCatalogueDbContext context,
-            [Frozen] IOdsService odsService,
             OrderService service)
         {
             order.OrderingParty = organisation;
@@ -540,8 +601,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
 
             context.ChangeTracker.Clear();
-
-            odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns([]);
 
             Exception exception = await Record.ExceptionAsync(async () =>
             {
@@ -556,13 +615,61 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             exception!.Message.Should().Be(expectedMessage);
         }
 
+        public static IEnumerable<object[]> SetSublocationsNotMostRecentRevisionInvalid()
+        {
+            return
+            [
+                [
+                    CommonOrganisationFactory(78),
+                    new List<Order>
+                    {
+                        CommonOrderFactory(45, 78, 5555, 0, [CommonOrderSublocationFactory(45, "XXXA", [], true)]),
+                        CommonOrderFactory(87, 78, 5555, 1, [CommonOrderSublocationFactory(87, "XXXA", [])]),
+                        CommonOrderFactory(92, 78, 5555, 2, [CommonOrderSublocationFactory(92, "XXXA", [])]),
+                    },
+                    new HashSet<string> { "XXXA" },
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsNotMostRecentRevisionInvalid))]
+        public static async Task SetSublocations_RejectsNotMostRecentOrder(
+            Organisation organisation,
+            List<Order> orders,
+            HashSet<string> sublocationOdsCodes,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            context.Add(organisation);
+            context.AddRange(orders);
+
+            Order workingOrder = orders.First(x => x.Revision == 1);
+
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocations(
+                    workingOrder.CallOffId,
+                    organisation.InternalIdentifier,
+                    sublocationOdsCodes);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be("Can only set sublocations on the most recent order.");
+        }
+
         public static IEnumerable<object[]> SetSublocationsData()
         {
             return
             [
                 // Adds
                 [
-                    CommonOrganisationFactory(78), CommonOrderFactory(33, 78),
+                    CommonOrganisationFactory(78), CommonOrderFactory(33, 78, 6887, 0, []),
                     new List<EntityOdsOrganisation>
                     {
                         CommonEntityOdsOrganisationFactory("XXXX"),
@@ -578,8 +685,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                     new HashSet<string> { "XXXX", "XXXY" },
                     new List<OrderSublocation>
                     {
-                        CommonOrderSublocationFactory("XXXX", null, false, 33),
-                        CommonOrderSublocationFactory("XXXY", null, false, 33),
+                        CommonOrderSublocationFactory(33, "XXXX"), CommonOrderSublocationFactory(33, "XXXY"),
                     },
                 ],
 
@@ -587,13 +693,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 [
                     CommonOrganisationFactory(31),
                     CommonOrderFactory(
+                        467,
                         31,
-                        64,
-                        0,
+                        6443,
                         0,
                         [
-                            CommonOrderSublocationFactory("YXXA"), CommonOrderSublocationFactory("YXXB"),
-                            CommonOrderSublocationFactory("YXXC"),
+                            CommonOrderSublocationFactory(467, "YXXA"), CommonOrderSublocationFactory(467, "YXXB"),
+                            CommonOrderSublocationFactory(467, "YXXC"),
                         ]),
                     new List<EntityOdsOrganisation>
                     {
@@ -610,8 +716,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                     new HashSet<string> { "YXXB", "YXXC" },
                     new List<OrderSublocation>
                     {
-                        CommonOrderSublocationFactory("YXXB", null, false, 64),
-                        CommonOrderSublocationFactory("YXXC", null, false, 64),
+                        CommonOrderSublocationFactory(467, "YXXB"), CommonOrderSublocationFactory(467, "YXXC"),
                     },
                 ],
 
@@ -620,13 +725,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 [
                     CommonOrganisationFactory(87),
                     CommonOrderFactory(
+                        721,
                         87,
                         55,
                         0,
-                        0,
                         [
-                            CommonOrderSublocationFactory("ZXXA"), CommonOrderSublocationFactory("ZXXB"),
-                            CommonOrderSublocationFactory("ZXXC"),
+                            CommonOrderSublocationFactory(721, "ZXXA"), CommonOrderSublocationFactory(721, "ZXXB"),
+                            CommonOrderSublocationFactory(721, "ZXXC"),
                         ]),
                     new List<EntityOdsOrganisation>
                     {
@@ -649,10 +754,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                     new HashSet<string> { "ZXXB", "ZXXC", "ZXXD", "ZXXE" },
                     new List<OrderSublocation>
                     {
-                        CommonOrderSublocationFactory("ZXXB", null, false, 55),
-                        CommonOrderSublocationFactory("ZXXC", null, false, 55),
-                        CommonOrderSublocationFactory("ZXXD", null, false, 55),
-                        CommonOrderSublocationFactory("ZXXE", null, false, 55),
+                        CommonOrderSublocationFactory(721, "ZXXB"),
+                        CommonOrderSublocationFactory(721, "ZXXC"),
+                        CommonOrderSublocationFactory(721, "ZXXD"),
+                        CommonOrderSublocationFactory(721, "ZXXE"),
                     },
                 ],
             ];
@@ -1778,8 +1883,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         private static Order CommonOrderFactory(
-            int customOrganisationId = 0,
             int customId = 0,
+            int customOrganisationId = 0,
             int customOrderNumber = 0,
             int customRevision = 0,
             ICollection<OrderSublocation> orderSublocations = null)
@@ -1788,7 +1893,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             return new Order
             {
                 Id = customId == 0 ? random.Next() : customId,
-                OrderNumber = customOrderNumber == 0 ? CommonOrderNumber : customId,
+                OrderNumber = customOrderNumber == 0 ? CommonOrderNumber : customOrderNumber,
                 Revision = customRevision,
                 Description = $"An order {customId}",
                 OrderingPartyId = customOrganisationId == 0 ? CommonOrganisationId : customOrganisationId,
@@ -1798,14 +1903,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         private static OrderSublocation CommonOrderSublocationFactory(
+            int orderId,
             string sublocationOdsCode,
             List<OrderSublocationRecipient> sublocationRecipients = null,
-            bool hasOrganisation = false,
-            int customOrderId = 0)
+            bool hasOrganisation = false)
         {
             return new OrderSublocation
             {
-                OrderId = customOrderId == 0 ? CommonOrderNumber : customOrderId,
+                OrderId = orderId,
                 SublocationOdsCode = sublocationOdsCode,
                 OwnerOdsCode = CommonOrganisationExternalIdentifier,
                 SublocationRecipients = sublocationRecipients,
@@ -1815,9 +1920,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         }
 
         private static OrderSublocationRecipient CommonOrderSublocationRecipientFactory(
+            int orderId,
             string recipientOdsCode,
             string parentSublocationOdsCode,
-            int orderId = 0,
             bool hasOrganisation = false)
         {
             return new OrderSublocationRecipient

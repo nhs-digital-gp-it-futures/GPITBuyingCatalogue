@@ -330,16 +330,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 throw new ArgumentException(@"sublocationOdsCodes is null or empty", nameof(sublocationOdsCodes));
             }
 
+            var hasSubsequentRevisions = await HasSubsequentRevisions(callOffId);
+
+            if (hasSubsequentRevisions)
+            {
+                throw new InvalidOperationException(
+                    "Can only set sublocations on the most recent order.");
+            }
+
+            var orderId = await GetOrderId(callOffId);
+
             Order order = await dbContext.Orders
-                .Where(x => x.OrderingParty.InternalIdentifier == internalOrgId && x.CallOffId == callOffId)
+                .Where(x => x.OrderingParty.InternalIdentifier == internalOrgId && x.Id == orderId)
                 .Include(x => x.OrderingParty)
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .FirstAsync();
 
-            if (order.Completed.HasValue)
+            var orderIsEditable =
+                order.OrderStatus == OrderStatus.InProgress;
+
+            if (!orderIsEditable)
             {
-                throw new InvalidOperationException("Cannot set sublocations on a completed order.");
+                throw new InvalidOperationException(
+                    "Sublocations cannot be edited for this order.");
             }
 
             IEnumerable<ServiceContractOdsOrganisation> validSublocations =
@@ -352,8 +366,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 throw new InvalidOperationException(
                     "One or more requested Ids not found or not valid for this organisation.");
             }
-
-            var orderId = await GetOrderId(callOffId);
 
             HashSet<string> orderSublocations =
                 order.OrderSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
