@@ -343,7 +343,7 @@ public static class CompetitionOrderServiceTests
         order.SupplierId.Should().Be(solution.CatalogueItem.SupplierId);
         order.OrderRecipients.Should()
             .BeEquivalentTo(
-                competition.FlattenedRecipients.Select(x => new OrderRecipient(x.Id)),
+                competition.FlattenedRecipients.Select(x => new OrderRecipient(x.RecipientOdsCode)),
                 opt => opt.Excluding(m => m.OrderId).Excluding(m => m.Order).Excluding(m => m.OdsOrganisation));
         order.OrderItems.Select(o => o.CatalogueItemId).Should().BeEquivalentTo([solution.CatalogueItemId]);
         order.SelectedFrameworkId.Should().Be(competition.FrameworkId);
@@ -426,10 +426,10 @@ public static class CompetitionOrderServiceTests
         solutionService.Price = servicePrice;
         solutionService.Service = additionalService.CatalogueItem;
 
-        solutionService.Quantities = competition.FlattenedRecipients.Select(
-                x => new ServiceQuantitySublocationRecipient
+        solutionService.Quantities = competition.FlattenedRecipients.Select(x =>
+                new ServiceQuantitySublocationRecipient
                 {
-                    OdsCode = x.Id, Quantity = 5, ServiceId = additionalService.CatalogueItemId,
+                    OdsCode = x.RecipientOdsCode, Quantity = 5, ServiceId = additionalService.CatalogueItemId,
                 })
             .ToList();
 
@@ -439,11 +439,11 @@ public static class CompetitionOrderServiceTests
         competitionSolution.IsWinningSolution = true;
         competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
 
-        competitionSolution.Quantities = competition.FlattenedRecipients.Select(
-                x => new SolutionQuantitySublocationRecipient
-                {
-                    OdsCode = x.Id, Quantity = 5, SolutionId = solution.CatalogueItemId,
-                })
+        competitionSolution.Quantities = competition.FlattenedRecipients
+            .Select(x => new SolutionQuantitySublocationRecipient
+            {
+                OdsCode = x.RecipientOdsCode, Quantity = 5, SolutionId = solution.CatalogueItemId,
+            })
             .ToList();
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };

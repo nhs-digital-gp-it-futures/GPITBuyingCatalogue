@@ -39,6 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.Property(o => o.SupplierId).HasMaxLength(6);
 
+            builder.Ignore(x => x.FlattenedRecipients);
+
             builder.HasOne(o => o.OrderingPartyContact)
                 .WithMany()
                 .HasForeignKey(o => o.OrderingPartyContactId)

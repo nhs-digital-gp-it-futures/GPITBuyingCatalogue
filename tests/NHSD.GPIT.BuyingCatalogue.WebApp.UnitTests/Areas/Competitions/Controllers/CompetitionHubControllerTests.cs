@@ -24,7 +24,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
 using Xunit;
-using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controllers;
 
@@ -1261,7 +1260,7 @@ public static class CompetitionHubControllerTests
     public static async Task GetRecipientQuantities_QuantityNotNull_ReturnsCorrectResult(
         string internalOrgId,
         string odsCode,
-        OdsOrganisation competitionRecipient,
+        CompetitionSublocationRecipient competitionRecipient,
         RecipientQuantityBase recipientQuantity,
         ServiceRecipient serviceRecipient,
         GpPracticeSize gpPracticeSize,
@@ -1269,9 +1268,9 @@ public static class CompetitionHubControllerTests
         [Frozen] IGpPracticeService gpPracticeService,
         CompetitionHubController controller)
     {
-        recipientQuantity.OdsCode = competitionRecipient.Id = serviceRecipient.OrgId = odsCode;
+        recipientQuantity.OdsCode = competitionRecipient.RecipientOdsCode = serviceRecipient.OrgId = odsCode;
 
-        var competitionRecipients = new List<OdsOrganisation> { competitionRecipient };
+        var competitionRecipients = new List<CompetitionSublocationRecipient> { competitionRecipient };
         var recipientQuantities = new List<RecipientQuantityBase> { recipientQuantity };
 
         odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
@@ -1284,7 +1283,7 @@ public static class CompetitionHubControllerTests
 
         var expected = new ServiceRecipientQuantityDto(
             recipientQuantity.OdsCode,
-            competitionRecipient.Name,
+            competitionRecipient.RecipientOrganisation.Name,
             recipientQuantity.Quantity,
             serviceRecipient.Location);
         var expectedList = new List<ServiceRecipientQuantityDto> { expected };
@@ -1298,16 +1297,16 @@ public static class CompetitionHubControllerTests
     public static async Task GetRecipientQuantities_QuantityNull_ReturnsCorrectResult(
         string internalOrgId,
         string odsCode,
-        OdsOrganisation competitionRecipient,
+        CompetitionSublocationRecipient competitionRecipient,
         ServiceRecipient serviceRecipient,
         GpPracticeSize gpPractice,
         [Frozen] IOdsService odsService,
         [Frozen] IGpPracticeService gpPracticeService,
         CompetitionHubController controller)
     {
-        gpPractice.OdsCode = competitionRecipient.Id = serviceRecipient.OrgId = odsCode;
+        gpPractice.OdsCode = competitionRecipient.RecipientOdsCode = serviceRecipient.OrgId = odsCode;
 
-        var competitionRecipients = new List<OdsOrganisation> { competitionRecipient };
+        var competitionRecipients = new List<CompetitionSublocationRecipient> { competitionRecipient };
         var recipientQuantities = Enumerable.Empty<RecipientQuantityBase>().ToList();
 
         odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
@@ -1320,7 +1319,7 @@ public static class CompetitionHubControllerTests
 
         var expected = new ServiceRecipientQuantityDto(
             gpPractice.OdsCode,
-            competitionRecipient.Name,
+            competitionRecipient.RecipientOrganisation.Name,
             gpPractice.NumberOfPatients,
             serviceRecipient.Location);
         var expectedList = new List<ServiceRecipientQuantityDto> { expected };
