@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -71,7 +70,7 @@ public class Competition
     ///     Gets all recipient organisations. Requires <see cref="CompetitionSublocations" /> and all child entities to
     ///     be loaded.
     /// </summary>
-    public IEnumerable<OdsOrganisation> FlattenedRecipients => CompetitionSublocations?
+    public IEnumerable<CompetitionSublocationRecipient> FlattenedRecipients => CompetitionSublocations?
         .Where(x => x.SublocationRecipients is { Count: > 0 })
-        .SelectMany(x => x.SublocationRecipients.Select(y => y.RecipientOrganisation));
+        .SelectMany(x => x.SublocationRecipients);
 }

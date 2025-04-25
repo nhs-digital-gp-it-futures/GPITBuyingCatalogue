@@ -224,8 +224,11 @@ public class CompetitionResultsController : Controller
             await competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(
                 internalOrgId,
                 competitionId);
-        IEnumerable<ServiceRecipientImportModel> recipients = competition.FlattenedRecipients.Select(
-            x => new ServiceRecipientImportModel { Organisation = x.Name, OdsCode = x.Id });
+        IEnumerable<ServiceRecipientImportModel> recipients = competition.FlattenedRecipients.Select(x =>
+            new ServiceRecipientImportModel
+            {
+                Organisation = x.RecipientOrganisation.Name, OdsCode = x.RecipientOdsCode,
+            });
 
         using var stream = new MemoryStream();
         await serviceRecipientImportService.CreateServiceRecipientTemplate(stream, recipients);

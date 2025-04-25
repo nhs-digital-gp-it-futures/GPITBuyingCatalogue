@@ -177,7 +177,8 @@ public class CompetitionOrderService : ICompetitionOrderService
             Description = $"Order created from competition: {competition.Id}",
             Created = DateTime.UtcNow,
             MaximumTerm = competition.ContractLength,
-            OrderRecipients = competition.FlattenedRecipients.Select(x => new OrderRecipient(x.Id)).ToList(),
+            OrderRecipients =
+                competition.FlattenedRecipients.Select(x => new OrderRecipient(x.RecipientOdsCode)).ToList(),
             OrderItems = orderItems.ToList(),
             OrderingPartyId = competition.OrganisationId,
             SupplierId = competitionSolution.Solution.CatalogueItem.SupplierId,

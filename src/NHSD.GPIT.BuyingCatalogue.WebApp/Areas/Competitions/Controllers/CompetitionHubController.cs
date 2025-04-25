@@ -20,7 +20,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
-using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
@@ -448,11 +447,11 @@ public class CompetitionHubController : Controller
     }
 
     internal async Task<IEnumerable<ServiceRecipientQuantityDto>> GetRecipientQuantities(
-        IReadOnlyList<OdsOrganisation> competitionRecipients,
+        IReadOnlyList<CompetitionSublocationRecipient> competitionRecipients,
         ICollection<RecipientQuantityBase> recipientQuantities,
         string internalOrgId)
     {
-        List<string> competitionRecipientIds = competitionRecipients.Select(x => x.Id).ToList();
+        List<string> competitionRecipientIds = competitionRecipients.Select(x => x.RecipientOdsCode).ToList();
         var practiceListSizes = await gpPracticeService.GetNumberOfPatients(competitionRecipientIds);
         IEnumerable<ServiceRecipient> organisations =
             await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
@@ -462,14 +461,14 @@ public class CompetitionHubController : Controller
         return competitionRecipients.Select(
             x =>
             {
-                var quantity = recipientQuantities?.FirstOrDefault(y => x.Id == y.OdsCode)?.Quantity
-                    ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.Id)?.NumberOfPatients;
+                var quantity = recipientQuantities?.FirstOrDefault(y => x.RecipientOdsCode == y.OdsCode)?.Quantity
+                    ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.RecipientOdsCode)?.NumberOfPatients;
 
-                var location = organisations?.FirstOrDefault(y => x.Id == y.OrgId)?.Location;
+                var location = organisations?.FirstOrDefault(y => x.RecipientOdsCode == y.OrgId)?.Location;
 
                 return new ServiceRecipientQuantityDto(
-                    x.Id,
-                    x.Name,
+                    x.RecipientOdsCode,
+                    x.RecipientOrganisation.Name,
                     quantity,
                     location);
             });

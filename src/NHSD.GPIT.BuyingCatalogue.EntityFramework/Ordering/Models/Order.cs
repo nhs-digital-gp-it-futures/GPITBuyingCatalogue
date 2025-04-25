@@ -121,6 +121,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public Competition Competition { get; set; }
 
+        public IEnumerable<OrderSublocationRecipient> FlattenedRecipients => OrderSublocations
+            ?.Where(x => x.SublocationRecipients is { Count: > 0 })
+            .SelectMany(x => x.SublocationRecipients);
+
         public IEnumerable<CatalogueItem> GetServices(CatalogueItemType catalogueItemType)
         {
             return catalogueItemType switch
