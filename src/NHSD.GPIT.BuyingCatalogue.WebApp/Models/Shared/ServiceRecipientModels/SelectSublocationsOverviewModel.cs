@@ -22,6 +22,7 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         ProcessType = "competition";
         ParentName = competition.Organisation.Name;
         Caption = competition.Name;
+        SetConditionalTitleAndAdvice(isConfirm);
     }
 
     public SelectSublocationsOverviewModel(
@@ -35,6 +36,7 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         ProcessType = "order";
         ParentName = order.OrderingParty.Name;
         Caption = order.Description;
+        SetConditionalTitleAndAdvice(isConfirm);
     }
 
     private SelectSublocationsOverviewModel(
@@ -47,7 +49,6 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         AddOrChangeSublocationsHref = addOrChangeSublocationsHref;
 
         BackLink = backLinkHref;
-        SetConditionalTitleAndAdvice(isConfirm);
     }
 
     public string ProcessType { get; init; }

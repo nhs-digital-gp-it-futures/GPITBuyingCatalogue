@@ -665,7 +665,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
 
             var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
-            redirectToActionResult.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectServiceRecipients));
+            redirectToActionResult.ActionName.Should().Be(nameof(ServiceRecipientsController.SelectSublocations));
             redirectToActionResult.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
         }
     }
