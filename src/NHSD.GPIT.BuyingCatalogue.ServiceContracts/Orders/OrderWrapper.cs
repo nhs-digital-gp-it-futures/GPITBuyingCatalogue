@@ -73,13 +73,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public bool IsAmendment => Order.CallOffId.IsAmendment;
 
-        public bool HasNewOrderRecipients => Order.OrderRecipients
-            .Any(r => Previous?.OrderRecipients?
-            .FirstOrDefault(x => x.OdsCode == r.OdsCode) == null);
+        public bool HasNewOrderRecipients => Order?.FlattenedRecipients is not null
+            && Previous?.FlattenedRecipients is not null
+            && !Order.FlattenedRecipients.All(cr => Previous!.FlattenedRecipients!.Select(pr => pr.RecipientOdsCode)
+                .Contains(cr.RecipientOdsCode));
 
-        public bool HasNewOrderItems => Order.OrderItems
-            .Any(r => Previous?.OrderItems?
-            .FirstOrDefault(x => x.CatalogueItemId == r.CatalogueItemId) == null);
+        public bool HasNewOrderItems => Order?.OrderItems is not null && !Order.OrderItems
+            .All(cr => Previous!.OrderItems!.Select(pr => pr.CatalogueItemId).Contains(cr.CatalogueItemId));
+
+        public bool HasSublocationsWithNoRecipients =>
+            Order?.OrderSublocations is not null
+            && Order.OrderSublocations.Any(x => x.SublocationRecipients.Count == 0);
 
         public ICollection<OrderItem> OrderItems =>
             Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)

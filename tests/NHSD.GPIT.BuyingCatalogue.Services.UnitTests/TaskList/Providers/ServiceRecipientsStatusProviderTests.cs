@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -11,9 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 {
     public static class ServiceRecipientsStatusProviderTests
     {
+        private static readonly OrderProgress ValidOrderState = new()
+        {
+            CommencementDateStatus = TaskProgress.Completed,
+        };
+
         [Theory]
         [MockAutoData]
-        public static void Get_OrderWrapperIsNull_ReturnsCannotStart(
+        public static void Get_OrderWrapperIsNull_Returns_CannotStart(
             ServiceRecipientsStatusProvider service)
         {
             var actual = service.Get(null, new OrderProgress());
@@ -23,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [MockAutoData]
-        public static void Get_OrderIsNull_ReturnsCannotStart(
+        public static void Get_OrderIsNull_Returns_CannotStart(
             ServiceRecipientsStatusProvider service)
         {
             var actual = service.Get(new OrderWrapper(), new OrderProgress());
@@ -33,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [MockAutoData]
-        public static void Get_StateIsNull_ReturnsCannotStart(
+        public static void Get_StateIsNull_Returns_CannotStart(
             Order order,
             ServiceRecipientsStatusProvider service)
         {
@@ -44,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [MockAutoData]
-        public static void Get_CommencementDateStatus_NotCompleted_ReturnsCannotStart(
+        public static void Get_CommencementDateStatus_NotCompleted_Returns_CannotStart(
             Order order,
             ServiceRecipientsStatusProvider service)
         {
@@ -60,34 +67,66 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [MockAutoData]
-        public static void Get_CommencementDateStatus_Completed_No_New_Recipients_ReturnsNotStarted(
+        public static void No_New_Recipients_Returns_NotStarted(
             Order order,
             ServiceRecipientsStatusProvider service)
         {
-            var state = new OrderProgress()
-            {
-                CommencementDateStatus = TaskProgress.Completed,
-            };
-
             order.OrderRecipients.Clear();
 
-            var actual = service.Get(new OrderWrapper(order), state);
+            TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
             actual.Should().Be(TaskProgress.NotStarted);
         }
 
         [Theory]
         [MockAutoData]
-        public static void Get_CommencementDateStatus_Completed_With_New_Recipients_ReturnsCompleted(
+        public static void New_Sublocations_No_Recipients_Returns_InProgress(
             Order order,
+            List<OrderSublocation> orderSublocations,
             ServiceRecipientsStatusProvider service)
         {
-            var state = new OrderProgress()
-            {
-                CommencementDateStatus = TaskProgress.Completed,
-            };
+            OrderSublocation sublocationWithNoRecipients = orderSublocations.First();
 
-            var actual = service.Get(new OrderWrapper(order), state);
+            sublocationWithNoRecipients.SublocationRecipients = [];
+
+            order.OrderSublocations = orderSublocations;
+
+            TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
+
+            actual.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void New_Sublocations_And_Recipients_And_IsAmendment_Returns_Amended(
+            Order previousOrder,
+            Order order,
+            List<OrderSublocation> orderSublocations,
+            ServiceRecipientsStatusProvider service)
+        {
+            order.OrderNumber = previousOrder.OrderNumber;
+            previousOrder.Revision = 1;
+            order.Revision = 2;
+            previousOrder.OrderSublocations = orderSublocations.Take(2).ToList();
+            order.OrderSublocations = orderSublocations;
+
+            var orders = new List<Order> { previousOrder, order };
+
+            TaskProgress actual = service.Get(new OrderWrapper(orders), ValidOrderState);
+
+            actual.Should().Be(TaskProgress.Amended);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void New_Sublocations_And_Recipients_Returns_Completed(
+            Order order,
+            List<OrderSublocation> orderSublocations,
+            ServiceRecipientsStatusProvider service)
+        {
+            order.OrderSublocations = orderSublocations;
+
+            TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
             actual.Should().Be(TaskProgress.Completed);
         }
