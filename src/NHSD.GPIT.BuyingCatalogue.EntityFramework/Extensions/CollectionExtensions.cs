@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -22,19 +23,24 @@ public static class CollectionExtensions
         this ICollection<OrderSublocationRecipient> recipients,
         CatalogueItemId catalogueItemId)
     {
-        return recipients != null && recipients.All(r => r.GetDeliveryDateForItem(catalogueItemId).HasValue);
+        if (recipients is not { Count: > 0 })
+        {
+            throw new ArgumentException("Recipients cannot be null or empty");
+        }
+
+        return recipients.All(r => r.GetDeliveryDateForItem(catalogueItemId).HasValue);
     }
 
     public static bool NoDeliveryDatesEntered(
         this ICollection<OrderSublocationRecipient> recipients,
         CatalogueItemId catalogueItemId)
     {
-        if (recipients != null)
+        if (recipients is not { Count: > 0 })
         {
-            return recipients.All(r => r.GetDeliveryDateForItem(catalogueItemId).HasValue == false);
+            throw new ArgumentException("Recipients cannot be null or empty");
         }
 
-        return false;
+        return recipients.All(r => r.GetDeliveryDateForItem(catalogueItemId).HasValue == false);
     }
 
     public static bool AllQuantitiesEntered(this ICollection<OrderSublocationRecipient> recipients, OrderItem orderItem)
