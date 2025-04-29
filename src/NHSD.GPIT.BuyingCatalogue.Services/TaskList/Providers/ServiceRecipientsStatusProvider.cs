@@ -15,14 +15,14 @@ public class ServiceRecipientsStatusProvider : ITaskProgressProvider
             return TaskProgress.CannotStart;
         }
 
-        if (!wrapper.FlattenedRecipients.Any())
-        {
-            return TaskProgress.NotStarted;
-        }
-
         if (wrapper.HasSublocationsWithNoRecipients)
         {
             return TaskProgress.InProgress;
+        }
+
+        if (!wrapper.FlattenedRecipients.Any())
+        {
+            return TaskProgress.NotStarted;
         }
 
         if (wrapper.HasNewOrderRecipients && wrapper.IsAmendment)

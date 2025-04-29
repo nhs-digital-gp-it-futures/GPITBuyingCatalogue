@@ -80,7 +80,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
         [Theory]
         [MockAutoData]
-        public static void New_Sublocations_No_Recipients_Returns_InProgress(
+        public static void Sublocations_But_No_Recipients_Returns_InProgress(
+            Order order,
+            List<OrderSublocation> orderSublocations,
+            ServiceRecipientsStatusProvider service)
+        {
+            orderSublocations.ForEach(x => x.SublocationRecipients = []);
+
+            order.OrderSublocations = orderSublocations;
+
+            TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
+
+            actual.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Complete_And_Incomplete_Sublocations_Returns_InProgress(
             Order order,
             List<OrderSublocation> orderSublocations,
             ServiceRecipientsStatusProvider service)
