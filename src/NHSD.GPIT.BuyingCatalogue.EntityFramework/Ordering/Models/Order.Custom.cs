@@ -324,23 +324,37 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
                 // only the new recipients or recipients from previous orders with missing values
                 // which might happen if we amend migrated order that wasn't global recipient compatible
-                return FlattenedRecipients.Where(cr =>
-                    {
-                        OrderSublocationRecipient previousRecipient =
-                            previous.FlattenedRecipients.FirstOrDefault(pr =>
-                                pr.RecipientOdsCode == cr.RecipientOdsCode);
-
-                        var isPreviousRecipientNullOrMissingCatalogueItem = previousRecipient is null
-                            || previousRecipient.OrderItemSublocationRecipients.All(oir =>
-                                oir.CatalogueItemId != catalogueItemId);
-
-                        return isPreviousRecipientNullOrMissingCatalogueItem;
-                    })
+                return FlattenedRecipients
+                    .Where(PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(previous, catalogueItemId))
                     .ToList();
             }
 
             // it doesn't exist on this order so no recipients apply
             return [];
+        }
+
+        private static Func<OrderSublocationRecipient, bool> PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(
+            Order previous,
+            CatalogueItemId catalogueItemId)
+                    {
+            return cr =>
+            {
+                        OrderSublocationRecipient previousRecipient =
+                            previous.FlattenedRecipients.FirstOrDefault(pr =>
+                                pr.RecipientOdsCode == cr.RecipientOdsCode);
+
+                var previousRecipientDidNotExist = previousRecipient is null;
+
+                if (previousRecipientDidNotExist)
+                {
+                    return true;
+            }
+
+                var previousRecipientDidNotHaveCatalogueItem =
+                    previousRecipient.OrderItemSublocationRecipients.All(oir => oir.CatalogueItemId != catalogueItemId);
+
+                return previousRecipientDidNotHaveCatalogueItem;
+            };
         }
 
         public bool Exists(CatalogueItemId catalogueItemId)
