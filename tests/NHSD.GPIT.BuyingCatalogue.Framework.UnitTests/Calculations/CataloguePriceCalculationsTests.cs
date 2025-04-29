@@ -453,55 +453,55 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         [Theory]
         [MockAutoData]
         public static void OrderItem_TotalCost_PerMonth_ReturnsExpected(
-            OrderRecipient recpient,
+            OrderSublocationRecipient recipient,
             int quantity,
             OrderItem orderItem,
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = TimeUnit.PerMonth;
             orderItem.OrderItemPrice = orderItemPrice;
-            recpient.OrderItemRecipients.Clear();
-            recpient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
+            recipient.OrderItemSublocationRecipients.Clear();
+            recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
 
             var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerMonth(quantity);
 
-            orderItem.TotalCost(new[] { recpient }).Should().Be(expectedResult);
+            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
         }
 
         [Theory]
         [MockAutoData]
         public static void OrderItem_TotalCost_PerYear_ReturnsExpected(
-            OrderRecipient recpient,
+            OrderSublocationRecipient recipient,
             int quantity,
             OrderItem orderItem,
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = TimeUnit.PerYear;
             orderItem.OrderItemPrice = orderItemPrice;
-            recpient.OrderItemRecipients.Clear();
-            recpient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
+            recipient.OrderItemSublocationRecipients.Clear();
+            recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
 
             var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerYear(quantity);
 
-            orderItem.TotalCost(new[] { recpient }).Should().Be(expectedResult);
+            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
         }
 
         [Theory]
         [MockAutoData]
         public static void OrderItem_TotalCost_OneOff_ReturnsExpected(
-            OrderRecipient recpient,
+            OrderSublocationRecipient recipient,
             int quantity,
             OrderItem orderItem,
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = null;
             orderItem.OrderItemPrice = orderItemPrice;
-            recpient.OrderItemRecipients.Clear();
-            recpient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
+            recipient.OrderItemSublocationRecipients.Clear();
+            recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
 
             var expectedResult = ((IPrice)orderItemPrice).CalculateOneOffCost(quantity);
 
-            orderItem.TotalCost(new[] { recpient }).Should().Be(expectedResult);
+            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
         }
 
         [Fact]

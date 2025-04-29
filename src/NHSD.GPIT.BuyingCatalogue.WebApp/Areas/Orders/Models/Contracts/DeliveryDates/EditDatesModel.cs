@@ -33,8 +33,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             CatalogueItemType = orderItem.CatalogueItem.CatalogueItemType;
             Description = orderItem.CatalogueItem.Name;
 
-            var recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId)
-                .Select(x => new RecipientDateModel(x, x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate, order.CommencementDate!.Value, organisations[x.OdsCode]))
+            RecipientDateModel[] recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId)
+                .Select(x => new RecipientDateModel(
+                    x,
+                    x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate,
+                    order.CommencementDate!.Value,
+                    organisations[x.RecipientOdsCode]))
                 .OrderBy(y => y.Description)
                 .ToArray();
 

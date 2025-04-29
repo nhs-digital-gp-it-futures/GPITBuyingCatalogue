@@ -89,11 +89,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new SelectRecipientsModel(
                 organisation,
                 recipients,
-                order.AddedOrderRecipients(null).Select(r => r.OdsCode),
+                order.AddedOrderRecipients(null).Select(r => r.RecipientOdsCode),
                 Enumerable.Empty<ServiceRecipientModel>().ToList(),
-                new string[] { },
-                selectionMode)
-            { };
+                [],
+                selectionMode);
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x
                 .Excluding(o => o.Title)
@@ -153,11 +152,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new SelectRecipientsModel(
                 organisation,
                 recipients,
-                order.AddedOrderRecipients(null).Select(r => r.OdsCode),
+                order.AddedOrderRecipients(null).Select(r => r.RecipientOdsCode),
                 Enumerable.Empty<ServiceRecipientModel>().ToList(),
-                new string[] { },
-                selectionMode)
-            { SelectAtLeast = atLeast };
+                [],
+                selectionMode) { SelectAtLeast = atLeast };
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x
                 .Excluding(o => o.Title)

@@ -31,9 +31,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            return order.HaveAllDeliveryDates(wrapper.RolledUp.OrderRecipients)
+            return order.HaveAllDeliveryDates(wrapper.RolledUp.FlattenedRecipients.ToList())
                 ? order.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed
-                : (anyDeliveryDatesEntered || defaultDeliveryDateEntered ? TaskProgress.InProgress : TaskProgress.NotStarted);
+                : anyDeliveryDatesEntered || defaultDeliveryDateEntered
+                    ? TaskProgress.InProgress
+                    : TaskProgress.NotStarted;
         }
     }
 }

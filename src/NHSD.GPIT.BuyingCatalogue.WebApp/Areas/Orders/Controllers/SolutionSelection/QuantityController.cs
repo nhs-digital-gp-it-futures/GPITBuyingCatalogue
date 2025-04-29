@@ -134,15 +134,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             IEnumerable<ServiceRecipient> organisationRecipients =
                 await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                     internalOrgId,
-                    orderRecipients.Select(x => x.OdsCode).ToList());
+                    orderRecipients.Select(x => x.RecipientOdsCode).ToList());
 
             IEnumerable<ServiceRecipientQuantityDto> recipients = orderRecipients.Join(
                 organisationRecipients,
-                orderRecipients => orderRecipients.OdsCode,
+                orderRecipients => orderRecipients.RecipientOdsCode,
                 organisationRecipients => organisationRecipients.OrgId,
                 (orderRecipients, organisationRecipients) => new ServiceRecipientQuantityDto(
-                    orderRecipients.OdsCode,
-                    orderRecipients.OdsOrganisation?.Name,
+                    orderRecipients.RecipientOdsCode,
+                    orderRecipients.RecipientOdsOrganisation?.Name,
                     orderRecipients.GetQuantityForItem(orderItem.CatalogueItemId),
                     organisationRecipients.Location));
 
@@ -275,7 +275,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             return View(model);
         }
 
-        private async Task SetPracticeSizes(SelectServiceRecipientQuantityModel model, OrderItem solution = null, ICollection<OrderRecipient> recipients = null)
+        private async Task SetPracticeSizes(
+            SelectServiceRecipientQuantityModel model,
+            OrderItem solution = null,
+            ICollection<OrderSublocationRecipient> recipients = null)
         {
             var odsCodes = model.SubLocations.SelectMany(x => x.ServiceRecipients).Where(x => x.Quantity == 0).Select(x => x.OdsCode).ToArray();
             var practiceSizes =
@@ -293,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     }
 
                     var existing = recipients
-                        ?.FirstOrDefault(x => x.OdsCode == serviceRecipient.OdsCode)
+                        ?.FirstOrDefault(x => x.RecipientOdsCode == serviceRecipient.OdsCode)
                         ?.GetQuantityForItem(solution.CatalogueItemId);
 
                     if (existing.HasValue)

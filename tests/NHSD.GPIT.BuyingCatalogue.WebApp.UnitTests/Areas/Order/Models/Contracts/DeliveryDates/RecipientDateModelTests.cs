@@ -11,15 +11,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         [Theory]
         [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            OrderRecipient recipient,
+            OrderSublocationRecipient recipient,
             DateTime? deliveryDate,
             DateTime commencementDate,
             string location)
         {
             var model = new RecipientDateModel(recipient, deliveryDate, commencementDate, location);
 
-            model.OdsCode.Should().Be(recipient.OdsCode);
-            model.Description.Should().Be(recipient.OdsOrganisation.Name);
+            model.OdsCode.Should().Be(recipient.RecipientOdsCode);
+            model.Description.Should().Be(recipient.RecipientOdsOrganisation.Name);
             model.CommencementDate.Should().Be(commencementDate);
             model.Location.Should().Be(location);
 

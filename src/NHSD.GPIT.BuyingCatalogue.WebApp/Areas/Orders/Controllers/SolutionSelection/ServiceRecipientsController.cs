@@ -426,14 +426,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             IEnumerable<ServiceRecipient> previousRecipients =
                 await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                     internalOrgId,
-                    wrapper.PreviousRecipientsOdsCodes());
+                    wrapper.Previous.FlattenedRecipients.Select(x => x.RecipientOdsCode));
             var previousRecipientsModel = MapToModel(previousRecipients, false);
+
+            IEnumerable<string> addedRecipientOdsCodes = wrapper.Order.AddedOrderRecipients(wrapper.Previous)
+                .Select(r => r.RecipientOdsCode);
+
+            if (wrapper.Order.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode is not null)
+            {
+                addedRecipientOdsCodes = addedRecipientOdsCodes.Append(
+                    wrapper.Order.AssociatedServicesOnlyDetails!.PracticeReorganisationOdsCode);
+            }
 
             var model =
                 new SelectRecipientsModel(
                     organisation,
                     possibleServiceRecipients,
-                    wrapper.AddedRecipientsOdsCodes(),
+                    addedRecipientOdsCodes,
                     previousRecipientsModel,
                     importedRecipientCodes,
                     selectionMode,
@@ -585,7 +594,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             IEnumerable<ServiceRecipient> previousRecipients =
                 await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                     internalOrgId,
-                    wrapper.PreviousRecipientsOdsCodes());
+                    wrapper.Previous.FlattenedRecipients.Select(x => x.RecipientOdsCode));
 
             var title = GetConfirmRecipientsTitle(orderType, callOffId.IsAmendment);
             var model = new ConfirmChangesModel

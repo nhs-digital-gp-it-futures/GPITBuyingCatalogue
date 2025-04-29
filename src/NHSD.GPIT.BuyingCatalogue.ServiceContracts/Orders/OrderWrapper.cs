@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
@@ -115,29 +114,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             return wrapper;
         }
 
-        public IEnumerable<string> AddedRecipientsOdsCodes()
+        public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId)
         {
-            var codes = Order.AddedOrderRecipients(Previous)
-                .Select(r => r.OdsCode);
-            if (Order.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode != null)
-            {
-                codes = codes.Append(Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode);
-            }
-
-            return codes;
+            return Order.DetermineOrderRecipients(Previous, catalogueItemId);
         }
-
-        public IEnumerable<string> PreviousRecipientsOdsCodes()
-        {
-            return (Previous?.OrderRecipients ?? Enumerable.Empty<OrderRecipient>())
-                .Select(r => r.OdsCode);
-        }
-
-        public ICollection<OrderRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId) => Order.DetermineOrderRecipients(Previous, catalogueItemId);
 
         public bool CanComplete()
         {
-            return Order.CanComplete(RolledUp.OrderRecipients, OrderItems);
+            return Order.CanComplete(RolledUp.FlattenedRecipients.ToList(), OrderItems);
         }
 
         public OrderRecipient InitialiseOrderRecipient(string odsCode)
@@ -148,8 +132,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                 Order.OrderItems.ToList().ForEach(i =>
                 {
                     if (Previous == null
-                    || !Previous.Exists(i.CatalogueItemId)
-                    || !Previous.OrderRecipients.Exists(odsCode))
+                        || !Previous.Exists(i.CatalogueItemId)
+                        || Previous.FlattenedRecipients.All(x => x.RecipientOdsCode != odsCode))
                     {
                         newRecipient.SetDeliveryDateForItem(i.CatalogueItemId, Order.DeliveryDate.Value);
                     }

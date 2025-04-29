@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using LinqKit;
@@ -133,14 +134,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             var model = new SummaryModel(wrapper, internalOrgId, hasSubsequentRevisions, implementationPlan);
 
             var result = model.BuildAmendOrderItemModel(orderItem);
+
+            List<OrderSublocationRecipient> flattenedRecipients = wrapper.RolledUp.FlattenedRecipients.ToList();
+
             result.CallOffId.Should().Be(order.CallOffId);
             result.OrderType.Should().Be(order.OrderType);
             result.IsAmendment.Should().Be(order.IsAmendment);
             result.IsOrderItemAdded.Should().BeTrue();
             result.OrderItemPrice.Should().Be(orderItem.OrderItemPrice);
             result.CatalogueItem.Should().Be(orderItem.CatalogueItem);
-            result.RolledUpRecipientsForItem.Should().BeEquivalentTo(wrapper.RolledUp.OrderRecipients.ForCatalogueItem(orderItem.CatalogueItemId));
-            result.RolledUpTotalQuantity.Should().Be(orderItem.TotalQuantity(wrapper.RolledUp.OrderRecipients.ForCatalogueItem(orderItem.CatalogueItemId)));
+            result.RolledUpRecipientsForItem.Should()
+                .BeEquivalentTo(flattenedRecipients.ForCatalogueItem(orderItem.CatalogueItemId));
+            result.RolledUpTotalQuantity.Should()
+                .Be(orderItem.TotalQuantity(flattenedRecipients.ForCatalogueItem(orderItem.CatalogueItemId)));
             result.PreviousTotalQuantity.Should().Be(0);
         }
 

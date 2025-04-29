@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             Dictionary<string, string> organisations =
                 (await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                     internalOrgId,
-                    orderRecipients.Select(x => x.OdsCode)))
+                    orderRecipients.Select(x => x.RecipientOdsCode)))
                 .ToDictionary(sr => sr.OrgId, sr => sr.Location);
 
             var model = new EditDatesModel(orderWrapper, catalogueItemId, organisations, source)
@@ -249,15 +249,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var solutionId = order.GetSolutionId();
 
             var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
-            var dates = (model.MatchDates == true && solutionId is not null)
+            List<RecipientDeliveryDateDto> dates = model.MatchDates == true && solutionId is not null
                 ? recipients
-                    .Select(
-                        x => new RecipientDeliveryDateDto(
-                            x.OdsCode,
-                            x.GetDeliveryDateForItem(solutionId.Value)!.Value))
+                    .Select(x => new RecipientDeliveryDateDto(
+                        x.RecipientOdsCode,
+                        x.GetDeliveryDateForItem(solutionId.Value)!.Value))
                     .ToList()
                 : recipients
-                    .Select(x => new RecipientDeliveryDateDto(x.OdsCode, order.DeliveryDate!.Value))
+                    .Select(x => new RecipientDeliveryDateDto(x.RecipientOdsCode, order.DeliveryDate!.Value))
                     .ToList();
 
             await deliveryDateService.SetDeliveryDates(order.Id, catalogueItemId, dates);

@@ -833,7 +833,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             [Frozen] IOrderService orderService,
             [Frozen] IDeliveryDateService deliveryDateService,
             DeliveryDatesController controller,
-            ICollection<OrderRecipient> recipients)
+            ICollection<OrderSublocationRecipient> recipients)
         {
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
@@ -863,7 +863,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             await deliveryDateService.Received().SetDeliveryDates(order.Id, catalogueItemId, Arg.Any<List<RecipientDeliveryDateDto>>());
 
             recipientDates.Count.Should().Be(recipients.Count);
-            recipientDates.Select(x => x.OdsCode).Should().BeEquivalentTo(recipients.Select(x => x.OdsCode));
+            recipientDates.Select(x => x.OdsCode).Should().BeEquivalentTo(recipients.Select(x => x.RecipientOdsCode));
 
             return recipientDates;
         }

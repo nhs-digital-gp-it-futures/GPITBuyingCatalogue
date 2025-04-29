@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             return CalculateForTerm(orderItem, order.GetTerm(), recipients);
         }
 
-        public static decimal TotalCost(this OrderItem orderItem, ICollection<OrderRecipient> recipients)
+        public static decimal TotalCost(this OrderItem orderItem, ICollection<OrderSublocationRecipient> recipients)
         {
             if (orderItem?.OrderItemPrice is null)
             {
@@ -116,7 +116,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
             };
         }
 
-        private static decimal CalculateForTerm(OrderItem orderItem, int term, ICollection<OrderRecipient> recipients)
+        private static decimal CalculateForTerm(
+            OrderItem orderItem,
+            int term,
+            ICollection<OrderSublocationRecipient> recipients)
         {
             if (orderItem == null)
                 return decimal.Zero;

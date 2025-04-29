@@ -636,7 +636,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             {
                 var selectedFundingType = OrderItemFundingType.None;
 
-                if (orderItem.TotalCost(order.OrderRecipients) == 0)
+                if (orderItem.TotalCost(order.FlattenedRecipients.ToList()) == 0)
                     selectedFundingType = OrderItemFundingType.NoFundingRequired;
                 else if (order.OrderingParty.OrganisationType == OrganisationType.GP)
                     selectedFundingType = OrderItemFundingType.LocalFundingOnly;

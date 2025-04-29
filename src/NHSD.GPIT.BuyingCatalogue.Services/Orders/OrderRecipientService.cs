@@ -29,13 +29,8 @@ public class OrderRecipientService : IOrderRecipientService
 
         var odsCodesExistingAndSelected = new List<string>(odsCodes);
 
-        // for newly created amendments we dont need to add in the
-        // previous recipients as we add all the recipients when the
-        // amended order is created however there might be some in
-        // progress amendments that this would help with
-        odsCodesExistingAndSelected.AddRange(wrapper.PreviousRecipientsOdsCodes());
-
-        var staleRecipients = currentOrderRecipients.Where(x => !odsCodesExistingAndSelected.Contains(x.OdsCode)).ToList();
+        List<OrderRecipient> staleRecipients =
+            currentOrderRecipients.Where(x => !odsCodesExistingAndSelected.Contains(x.OdsCode)).ToList();
         var newRecipients = odsCodesExistingAndSelected.Where(x => currentOrderRecipients.All(y => x != y.OdsCode)).ToList();
 
         dbContext.OrderRecipients.RemoveRange(staleRecipients);

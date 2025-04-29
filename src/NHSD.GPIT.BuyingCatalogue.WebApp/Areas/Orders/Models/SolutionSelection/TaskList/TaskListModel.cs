@@ -52,44 +52,62 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             if (CatalogueSolution != null)
             {
-                taskModels.Add(CatalogueSolution.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, CatalogueSolution)
-                {
-                    FromPreviousRevision = Previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
-                    HasNewRecipients = wrapper.HasNewOrderRecipients,
-                    NumberOfPrices = CatalogueSolution.CatalogueItem.CataloguePrices.Count,
-                    PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
-                        ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
-                        : 0,
-                    PreviousRecipients = Previous?.OrderRecipients.Count ?? 0,
-                    QuantityChanged = Previous?.OrderItems.Where(x => x.CatalogueItemId == CatalogueSolution.CatalogueItemId).FirstOrDefault().Quantity != wrapper.Order.GetSolutionOrderItem().Quantity,
-                    CanBeRemoved = false,
-                });
+                taskModels.Add(
+                    CatalogueSolution.CatalogueItemId,
+                    new TaskListOrderItemModel(
+                        internalOrgId,
+                        callOffId,
+                        OrderType,
+                        rolledUpOrder.FlattenedRecipients,
+                        CatalogueSolution)
+                    {
+                        FromPreviousRevision = Previous?.Exists(CatalogueSolution.CatalogueItemId) ?? false,
+                        HasNewRecipients = wrapper.HasNewOrderRecipients,
+                        NumberOfPrices = CatalogueSolution.CatalogueItem.CataloguePrices.Count,
+                        PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
+                            ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
+                            : 0,
+                        PreviousRecipients = Previous?.OrderRecipients.Count ?? 0,
+                        QuantityChanged =
+                            (Previous?.OrderItems ?? [])
+                            .FirstOrDefault(x => x.CatalogueItemId == CatalogueSolution.CatalogueItemId)
+                            ?.Quantity != wrapper.Order.GetSolutionOrderItem().Quantity,
+                        CanBeRemoved = false,
+                    });
             }
 
-            AdditionalServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, x)
-            {
-                FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
-                HasNewRecipients = wrapper.HasNewOrderRecipients,
-                NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
-                PriceId = x.CatalogueItem.CataloguePrices.Count == 1
-                    ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
-                    : 0,
-                PreviousRecipients = Previous?.OrderRecipients.Count ?? 0,
-                QuantityChanged = (Previous?.OrderItems.Where(y => y.CatalogueItemId == x.CatalogueItemId).FirstOrDefault()?.Quantity ?? 0) !=
-                    (currentAdditionalServices?.Where(y => y.CatalogueItemId == x.CatalogueItemId).FirstOrDefault()?.Quantity ?? 0),
-                CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.CatalogueItemId) ?? false)),
-            }));
+            AdditionalServices.ForEach(x => taskModels.Add(
+                x.CatalogueItemId,
+                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.FlattenedRecipients, x)
+                {
+                    FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
+                    HasNewRecipients = wrapper.HasNewOrderRecipients,
+                    NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
+                    PriceId = x.CatalogueItem.CataloguePrices.Count == 1
+                        ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
+                        : 0,
+                    PreviousRecipients = Previous?.OrderRecipients.Count ?? 0,
+                    QuantityChanged = ((Previous?.OrderItems ?? [])
+                            .FirstOrDefault(y => y.CatalogueItemId == x.CatalogueItemId)
+                            ?.Quantity ?? 0) !=
+                        (currentAdditionalServices?.Where(y => y.CatalogueItemId == x.CatalogueItemId)
+                            .FirstOrDefault()
+                            ?.Quantity ?? 0),
+                    CanBeRemoved = !(IsAmendment && (Previous?.Exists(x.CatalogueItemId) ?? false)),
+                }));
 
-            AssociatedServices.ForEach(x => taskModels.Add(x.CatalogueItemId, new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.OrderRecipients, x)
-            {
-                FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
-                HasNewRecipients = wrapper.HasNewOrderRecipients,
-                NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
-                PriceId = x.CatalogueItem.CataloguePrices.Count == 1
-                    ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
-                    : 0,
-                CanBeRemoved = !OrderType.MergerOrSplit && !IsAmendment,
-            }));
+            AssociatedServices.ForEach(x => taskModels.Add(
+                x.CatalogueItemId,
+                new TaskListOrderItemModel(internalOrgId, callOffId, OrderType, rolledUpOrder.FlattenedRecipients, x)
+                {
+                    FromPreviousRevision = Previous?.Exists(x.CatalogueItemId) ?? false,
+                    HasNewRecipients = wrapper.HasNewOrderRecipients,
+                    NumberOfPrices = x.CatalogueItem.CataloguePrices.Count,
+                    PriceId = x.CatalogueItem.CataloguePrices.Count == 1
+                        ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
+                        : 0,
+                    CanBeRemoved = !OrderType.MergerOrSplit && !IsAmendment,
+                }));
         }
 
         public Order Previous { get; set; }

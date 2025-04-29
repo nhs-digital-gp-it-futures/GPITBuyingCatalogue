@@ -5,6 +5,20 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public record OrderItemSublocationRecipient : IAudited
     {
+        public OrderItemSublocationRecipient()
+        {
+        }
+
+        public OrderItemSublocationRecipient(
+            int orderId,
+            string recipientOdsCode,
+            CatalogueItemId catalogueItemId)
+        {
+            OrderId = orderId;
+            OdsCode = recipientOdsCode;
+            CatalogueItemId = catalogueItemId;
+        }
+
         public int OrderId { get; set; }
 
         public CatalogueItemId CatalogueItemId { get; set; }

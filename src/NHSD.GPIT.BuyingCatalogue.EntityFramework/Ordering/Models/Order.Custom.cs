@@ -31,7 +31,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             Completed = DateTime.UtcNow;
         }
 
-        public bool CanComplete(ICollection<OrderRecipient> orderRecipients, ICollection<OrderItem> orderItems)
+        public bool CanComplete(
+            ICollection<OrderSublocationRecipient> orderRecipients,
+            ICollection<OrderItem> orderItems)
         {
             return
                 !string.IsNullOrWhiteSpace(Description)
@@ -50,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && OrderStatus == OrderStatus.InProgress;
         }
 
-        public bool HaveAllDeliveryDates(ICollection<OrderRecipient> orderRecipients)
+        public bool HaveAllDeliveryDates(ICollection<OrderSublocationRecipient> orderRecipients)
         {
             return OrderItems.All(x => orderRecipients.AllDeliveryDatesEntered(x.CatalogueItemId));
         }
@@ -301,31 +303,44 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return new OrderRecipient(Id, odsCode);
         }
 
-        public ICollection<OrderRecipient> AddedOrderRecipients(Order previous) => OrderRecipients
-            .Where(r => !(previous?.OrderRecipients?.Exists(r.OdsCode) ?? false)).ToList();
+        public ICollection<OrderSublocationRecipient> AddedOrderRecipients(Order previous)
+        {
+            return FlattenedRecipients
+                .Where(r => previous?.FlattenedRecipients?.All(x => x.RecipientOdsCode != r.RecipientOdsCode) ?? false)
+                .ToList();
+        }
 
-        public ICollection<OrderRecipient> DetermineOrderRecipients(Order previous, CatalogueItemId catalogueItemId)
+        public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(
+            Order previous,
+            CatalogueItemId catalogueItemId)
         {
             if (Exists(catalogueItemId))
             {
                 if (previous == null || !previous.Exists(catalogueItemId))
                 {
                     // No previous order or this order item is new, all recipients apply
-                    return OrderRecipients;
+                    return FlattenedRecipients.ToList();
                 }
 
                 // only the new recipients or recipients from previous orders with missing values
                 // which might happen if we amend migrated order that wasn't global recipient compatible
-                return OrderRecipients.Where(r =>
-                {
-                    var previousRecipient = previous.OrderRecipients.Get(r.OdsCode);
-                    return previousRecipient == null
-                            || previousRecipient.OrderItemRecipients.All(oir => oir.CatalogueItemId != catalogueItemId);
-                }).ToList();
+                return FlattenedRecipients.Where(cr =>
+                    {
+                        OrderSublocationRecipient previousRecipient =
+                            previous.FlattenedRecipients.FirstOrDefault(pr =>
+                                pr.RecipientOdsCode == cr.RecipientOdsCode);
+
+                        var isPreviousRecipientNullOrMissingCatalogueItem = previousRecipient is null
+                            || previousRecipient.OrderItemSublocationRecipients.All(oir =>
+                                oir.CatalogueItemId != catalogueItemId);
+
+                        return isPreviousRecipientNullOrMissingCatalogueItem;
+                    })
+                    .ToList();
             }
 
             // it doesn't exist on this order so no recipients apply
-            return Enumerable.Empty<OrderRecipient>().ToList();
+            return [];
         }
 
         public bool Exists(CatalogueItemId catalogueItemId)
@@ -342,9 +357,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return orderItem;
         }
 
-        private bool HaveAllQuantities(ICollection<OrderRecipient> orderRecipients)
+        private bool HaveAllQuantities(ICollection<OrderSublocationRecipient> orderRecipients)
         {
-            return OrderItems.All(x => orderRecipients.AllQuantitiesEntered(x));
+            return OrderItems.All(orderRecipients.AllQuantitiesEntered);
         }
     }
 }

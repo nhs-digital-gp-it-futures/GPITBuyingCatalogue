@@ -57,7 +57,7 @@
                         @if (Model.IsAmendment)
                         {
                             <nhs-table-cell style="width: 50px;">
-                                @if (Model.IsServiceRecipientAdded(serviceRecipient.OdsCode))
+                                @if (Model.IsServiceRecipientAdded(serviceRecipient.RecipientOdsCode))
                                 {
                                     <div class="bc-c-task-list__task-status">
                                         <strong class="nhsuk-tag nhsuk-tag--blue">Added</strong>
@@ -69,8 +69,8 @@
                                 }
                             </nhs-table-cell>
                         }
-                        <nhs-table-cell>@serviceRecipient.OdsOrganisation.Name (@serviceRecipient.OdsCode)</nhs-table-cell>
-                        <nhs-table-cell>@($"{Model.CallOffId}-{serviceRecipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")</nhs-table-cell>
+                        <nhs-table-cell>@serviceRecipient.RecipientOdsOrganisation.Name (@serviceRecipient.RecipientOdsCode)</nhs-table-cell>
+                        <nhs-table-cell>@($"{Model.CallOffId}-{serviceRecipient.RecipientOdsCode}-{ViewContext.HttpContext.NextLineId()}")</nhs-table-cell>
                         <nhs-table-cell>@deliveryDateText</nhs-table-cell>
                         <nhs-table-cell>
                             @if (hasServiceRecipientQuantities)

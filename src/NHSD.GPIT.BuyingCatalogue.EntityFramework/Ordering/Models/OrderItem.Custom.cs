@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
     {
         public OrderItemFundingType FundingType => OrderItemFunding?.OrderItemFundingType ?? OrderItemFundingType.None;
 
-        public int TotalQuantity(ICollection<OrderRecipient> recipients)
+        public int TotalQuantity(ICollection<OrderSublocationRecipient> recipients)
         {
             if (OrderItemPrice == null)
                 return 0;
@@ -19,10 +19,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 : Quantity ?? 0;
         }
 
-        public bool IsReadyForReview(bool isAmendment, ICollection<OrderRecipient> recipients) =>
-            (isAmendment && !recipients.Any())
-            || (OrderItemPrice != null
-            && TotalQuantity(recipients) > 0
-            && (!isAmendment || recipients.AllDeliveryDatesEntered(CatalogueItemId)));
+        public bool IsReadyForReview(bool isAmendment, ICollection<OrderSublocationRecipient> recipients)
+        {
+            return (isAmendment && recipients.Count == 0)
+                || (OrderItemPrice != null
+                    && TotalQuantity(recipients) > 0
+                    && (!isAmendment || recipients.AllDeliveryDatesEntered(CatalogueItemId)));
+        }
     }
 }

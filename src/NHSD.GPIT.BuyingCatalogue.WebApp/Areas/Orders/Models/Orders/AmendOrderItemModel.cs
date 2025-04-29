@@ -12,8 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public AmendOrderItemModel(
             CallOffId callOffId,
             OrderType orderType,
-            ICollection<OrderRecipient> recipients,
-            ICollection<OrderRecipient> previousRecipients,
+            ICollection<OrderSublocationRecipient> recipients,
+            ICollection<OrderSublocationRecipient> previousRecipients,
             OrderItem orderItem,
             OrderItem previous,
             bool isAmendment,
@@ -31,7 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             RolledUpRecipientsForItem = recipients
                 .ForCatalogueItem(orderItem.CatalogueItemId)
                 .ToList();
-            PreviousRecipientsForItem = (previousRecipients?.ForCatalogueItem(orderItem.CatalogueItemId) ?? Enumerable.Empty<OrderRecipient>()).ToList();
+            PreviousRecipientsForItem =
+                (previousRecipients?.ForCatalogueItem(orderItem.CatalogueItemId) ?? []).ToList();
         }
 
         public CallOffId CallOffId { get; }
@@ -48,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public CatalogueItem CatalogueItem => OrderItem.CatalogueItem;
 
-        public List<OrderRecipient> RolledUpRecipientsForItem { get; }
+        public List<OrderSublocationRecipient> RolledUpRecipientsForItem { get; }
 
         public int RolledUpTotalQuantity => OrderItem.TotalQuantity(RolledUpRecipientsForItem);
 
@@ -67,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public string PracticeReorganisationName { get; set; }
 
-        private List<OrderRecipient> PreviousRecipientsForItem { get; }
+        private List<OrderSublocationRecipient> PreviousRecipientsForItem { get; }
 
         private OrderItem OrderItem { get; }
 
@@ -77,8 +78,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public bool IsServiceRecipientAdded(string odsCode)
         {
-            var rolledUpRecipient = RolledUpRecipientsForItem.FirstOrDefault(x => x.OdsCode == odsCode);
-            var previousRecipient = PreviousRecipientsForItem.FirstOrDefault(x => x.OdsCode == odsCode);
+            OrderSublocationRecipient rolledUpRecipient =
+                RolledUpRecipientsForItem.FirstOrDefault(x => x.RecipientOdsCode == odsCode);
+            OrderSublocationRecipient previousRecipient =
+                PreviousRecipientsForItem.FirstOrDefault(x => x.RecipientOdsCode == odsCode);
 
             return (rolledUpRecipient != null && previousRecipient == null)
                 || Previous == null;
