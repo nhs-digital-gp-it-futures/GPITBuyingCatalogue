@@ -257,11 +257,20 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
             amendedOrder.InitialiseOrderItemsFrom(OrderItems);
 
-            foreach (var recipient in OrderRecipients)
+            foreach (OrderSublocation sublocation in OrderSublocations)
             {
-                amendedOrder.OrderRecipients.Add(
-                    amendedOrder.InitialiseOrderRecipient(
-                        recipient.OdsCode));
+                OrderSublocation newSublocation =
+                    amendedOrder.InitialiseOrderSublocation(sublocation.SublocationOdsCode);
+
+                foreach (OrderSublocationRecipient sublocationRecipient in sublocation.SublocationRecipients)
+                {
+                    newSublocation.SublocationRecipients.Add(
+                        amendedOrder.InitialiseOrderSublocationRecipient(
+                            sublocationRecipient.RecipientOdsCode,
+                            sublocation.SublocationOdsCode));
+                }
+
+                amendedOrder.OrderSublocations.Add(newSublocation);
             }
 
             return amendedOrder;
@@ -301,6 +310,23 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public OrderRecipient InitialiseOrderRecipient(string odsCode)
         {
             return new OrderRecipient(Id, odsCode);
+        }
+
+        public OrderSublocation InitialiseOrderSublocation(string sublocationOdsCode)
+        {
+            return new OrderSublocation { OrderId = Id, OwnerOdsCode = OrderingParty.ExternalIdentifier };
+        }
+
+        public OrderSublocationRecipient InitialiseOrderSublocationRecipient(
+            string recipientOdsCode,
+            string parentSublocationOdsCode)
+        {
+            return new OrderSublocationRecipient
+            {
+                OrderId = Id,
+                ParentSublocationOdsCode = parentSublocationOdsCode,
+                RecipientOdsCode = recipientOdsCode,
+            };
         }
 
         public ICollection<OrderSublocationRecipient> AddedOrderRecipients(Order previous)
