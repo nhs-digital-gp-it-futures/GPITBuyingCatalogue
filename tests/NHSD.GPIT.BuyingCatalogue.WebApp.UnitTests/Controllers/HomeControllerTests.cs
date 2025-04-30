@@ -208,5 +208,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Controllers
             result.Should().NotBeNull();
             result.ViewName.Should().BeNull();
         }
+
+        [Theory]
+        [MockInlineAutoData(null)]
+        [MockInlineAutoData(" ")]
+        [MockInlineAutoData("url")]
+        public static void Get_FrameworksExpired_ReturnsView(
+            string backLink,
+            HomeController controller)
+        {
+            var result = controller.FrameworksExpired(backLink).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should().BeOfType<NavBaseModel>();
+        }
     }
 }

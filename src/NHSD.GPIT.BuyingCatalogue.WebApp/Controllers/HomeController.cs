@@ -57,6 +57,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Controllers
         [HttpGet("accessibility-statement")]
         public IActionResult AccessibilityStatement() => View();
 
+        public IActionResult FrameworksExpired(string backLink = null)
+        {
+            var model = new NavBaseModel
+            {
+                BackLink = string.IsNullOrWhiteSpace(backLink)
+                    ? Url.Action(nameof(HomeController.Index), typeof(HomeController))
+                    : backLink,
+            };
+
+            return View(model);
+        }
+
         [HttpGet("unauthorized")]
         public IActionResult NotAuthorized() => View();
 
