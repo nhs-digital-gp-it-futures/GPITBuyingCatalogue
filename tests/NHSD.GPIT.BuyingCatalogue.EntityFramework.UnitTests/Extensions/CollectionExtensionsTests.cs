@@ -39,10 +39,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 
         [Theory]
         [MockAutoData]
-        public static void AllDeliveryDatesEntered_Returns_False_When_Null(CatalogueItemId catalogueItemId)
+        public static void AllDeliveryDatesEntered_Rejects_Null(CatalogueItemId catalogueItemId)
         {
-            OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(null, catalogueItemId)
-                .Should().BeFalse();
+            Exception exception = Record.Exception(() =>
+            {
+                OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(null, catalogueItemId);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(ArgumentException));
         }
 
         [Theory]
@@ -52,15 +57,21 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
             CatalogueItemId catalogueItemId)
         {
             OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(recipients, catalogueItemId)
-                .Should().BeFalse();
+                .Should()
+                .BeFalse();
         }
 
         [Theory]
         [MockAutoData]
-        public static void NoDeliveryDatesEntered_Returns_False_When_Null(CatalogueItemId catalogueItemId)
+        public static void NoDeliveryDatesEntered_Rejects_Null(CatalogueItemId catalogueItemId)
         {
-            OrderRecipientCollection.CollectionExtensions.NoDeliveryDatesEntered(null, catalogueItemId)
-                .Should().BeFalse();
+            Exception exception = Record.Exception(() =>
+            {
+                OrderRecipientCollection.CollectionExtensions.NoDeliveryDatesEntered(null, catalogueItemId);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(ArgumentException));
         }
 
         [Fact]
