@@ -336,19 +336,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         private static Func<OrderSublocationRecipient, bool> PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(
             Order previous,
             CatalogueItemId catalogueItemId)
-                    {
+        {
             return cr =>
             {
-                        OrderSublocationRecipient previousRecipient =
-                            previous.FlattenedRecipients.FirstOrDefault(pr =>
-                                pr.RecipientOdsCode == cr.RecipientOdsCode);
+                OrderSublocationRecipient previousRecipient =
+                    previous.FlattenedRecipients.FirstOrDefault(pr =>
+                        pr.RecipientOdsCode == cr.RecipientOdsCode);
 
                 var previousRecipientDidNotExist = previousRecipient is null;
 
                 if (previousRecipientDidNotExist)
                 {
                     return true;
-            }
+                }
 
                 var previousRecipientDidNotHaveCatalogueItem =
                     previousRecipient.OrderItemSublocationRecipients.All(oir => oir.CatalogueItemId != catalogueItemId);
