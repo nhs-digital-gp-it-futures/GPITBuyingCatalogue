@@ -1,10 +1,11 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
+@using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders.ReadyToStartModel
 @{
     ViewBag.Title = "Before you start an order";
-}
-
-@section Scripts {
 }
 
 <div>
@@ -15,7 +16,8 @@
                 <nhs-validation-summary />
                 <nhs-page-title title="@ViewBag.Title"
                                 caption="@Model!.OrganisationName" />
-                <partial name="Partials/_FrameworkExpiredAlert" />
+                <partial name="Partials/_FrameworkExpiredAlert"
+                         model="@(new NavBaseModel { BackLink = Url.Action(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { area = typeof(OrderController).AreaName(), internalOrgId = Model.InternalOrgId }) })"/>
                 <nhs-page-title advice="Before you start your order, you should know:" />
                 <ul>
                     <li>the framework you’re ordering from</li>

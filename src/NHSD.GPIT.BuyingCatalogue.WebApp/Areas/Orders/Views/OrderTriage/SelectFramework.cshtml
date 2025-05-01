@@ -1,33 +1,52 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage.SelectFrameworkModel
+﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage.SelectFrameworkModel
 @{
     ViewBag.Title = "Which framework are you buying from?";
 }
 
 <div>
-    <partial name="Partials/_BackLink" model="Model" />
+    <partial name="Partials/_BackLink" model="Model"/>
     <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
         <div class="nhsuk-grid-column-two-thirds">
-            <nhs-validation-summary RadioId="@nameof(Model.SelectedFrameworkId)" />
+            <nhs-validation-summary RadioId="@nameof(Model.SelectedFrameworkId)"/>
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.OrganisationName"
-                            advice="Select the procurement framework that the solution you want to order is available on." />
-            <form method="post">
-                <input type="hidden" asp-for="OrganisationName" />
-                <input type="hidden" asp-for="BackLink" />
-                <nhs-fieldset-form-label asp-for="SelectedFrameworkId">
-                    @for (int i = 0; i < Model.Frameworks.Count; i++)
-                    {
-                        <input type="hidden" asp-for="Frameworks[i].Text" />
-                        <input type="hidden" asp-for="Frameworks[i].Value" />
-                    }
-                    <nhs-radio-buttons asp-for="SelectedFrameworkId"
-                                       values="@Model.Frameworks.Cast<object>()"
-                                       display-name="Text"
-                                       value-name="Value"
-                                       disabled-name="Disabled"/>
-                </nhs-fieldset-form-label>
-                <nhs-submit-button class="nhsuk-u-margin-top-4" />
-            </form>
+                            advice="Select the procurement framework that the solution you want to order is available on."/>
+            @if (Model.Frameworks.Any())
+            {
+                <form method="post">
+                    <input type="hidden" asp-for="OrganisationName"/>
+                    <input type="hidden" asp-for="BackLink"/>
+                    <nhs-fieldset-form-label asp-for="SelectedFrameworkId">
+                        @for (var i = 0; i < Model.Frameworks.Count; i++)
+                        {
+                            <input type="hidden" asp-for="Frameworks[i].Text"/>
+                            <input type="hidden" asp-for="Frameworks[i].Value"/>
+                        }
+                        <nhs-radio-buttons asp-for="SelectedFrameworkId"
+                                           values="@Model.Frameworks.Cast<object>()"
+                                           display-name="Text"
+                                           value-name="Value"/>
+                    </nhs-fieldset-form-label>
+                    <nhs-submit-button class="nhsuk-u-margin-top-4"/>
+                </form>
+            }
+            else
+            {
+                <nhs-warning-callout label-text="Frameworks expired">
+                    <p>There are no valid frameworks and you cannot continue with this order.</p>
+
+                    <a asp-action="@nameof(HomeController.FrameworksExpired)"
+                       asp-controller="@typeof(HomeController).ControllerName()"
+                       asp-route-backLink="@(Url.Action(nameof(OrderTriageController.SelectFramework), typeof(OrderTriageController).ControllerName(), new { area = typeof(OrderTriageController).AreaName(), orderType = Model.OrderType, }))">Find
+                        out what framework expiry means for you</a>
+                </nhs-warning-callout>
+
+                <vc:nhs-anchor-button type="Primary" text="Back to dashboard" url="@(Url.Action(
+                                                                                       nameof(DashboardController.Organisation),
+                                                                                       typeof(DashboardController).ControllerName(),
+                                                                                       new { area = typeof(DashboardController).AreaName(), internalOrgId = Model.InternalOrgId }))"/>
+            }
         </div>
     </div>
 </div>

@@ -1,10 +1,16 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsModalSearch
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSuggestionSearch
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionsModel;
 @{
-    var PageTitle = Model.GetPageTitle();
-    ViewBag.Title = PageTitle.Title;
+    var pageTitle = Model.GetPageTitle();
+    ViewBag.Title = pageTitle.Title;
     Layout = "~/Views/Shared/Layouts/_AllBannersLayout.cshtml";
     ViewData["nhsuk-width-container"] = "bc-wider-container";
 }
@@ -15,29 +21,30 @@
 
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-page-title model="@PageTitle" />
+        <nhs-page-title model="@pageTitle"/>
         @if (!Model.SearchCriteriaApplied)
         {
-            <partial name="Partials/_FrameworkExpiredAlert" />
+            <partial name="Partials/_FrameworkExpiredAlert"
+                     model="@(new NavBaseModel { BackLink = Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { area = typeof(SolutionsController).AreaName() }) })"/>
         }
         <div class="nhsuk-grid-row">
             <div class="nhsuk-grid-column-one-third nshuk-card">
-                <partial name="_AdditionalFilters" model="@(Model.AdditionalFilters)" />
+                <partial name="_AdditionalFilters" model="@(Model.AdditionalFilters)"/>
             </div>
 
             <div class="nhsuk-grid-column-two-thirds" id="search">
                 <nhs-card title="Search Catalogue Solutions">
                     <div id="search-by">
                         <vc:nhs-suggestion-search id="marketing-suggestion-search"
-                                                    ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName())"
-                                                    title-text="Search by supplier or solution name"
-                                                    query-parameter-name="search" />
+                                                  ajax-url="@Url.Action(nameof(SolutionsController.FilterSearchSuggestions), typeof(SolutionsController).ControllerName())"
+                                                  title-text="Search by supplier or solution name"
+                                                  query-parameter-name="search"/>
                     </div>
                 </nhs-card>
             </div>
 
             <div class="nhsuk-grid-column-two-thirds" id="solutions-list">
-                <partial name="SearchResults" model="@Model.ResultsModel" />
+                <partial name="SearchResults" model="@Model.ResultsModel"/>
             </div>
         </div>
     </div>
