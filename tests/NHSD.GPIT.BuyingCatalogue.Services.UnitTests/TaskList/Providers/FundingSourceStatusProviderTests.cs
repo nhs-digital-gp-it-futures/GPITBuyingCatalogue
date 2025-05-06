@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -90,8 +91,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         public static void Get_SomeFundingSourceInfoEntered_ReturnsInProgress(
             OrderItemFunding funding,
             Order order,
+            List<OrderSublocation> orderSublocations,
             FundingSourceStatusProvider service)
         {
+            order.OrderSublocations = orderSublocations;
+
             var state = new OrderProgress
             {
                 DeliveryDates = TaskProgress.Completed,
@@ -112,8 +116,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             int revision,
             TaskProgress expectedTaskProgress,
             Order order,
+            List<OrderSublocation> orderSublocations,
             FundingSourceStatusProvider service)
         {
+            order.OrderSublocations = orderSublocations;
+
             var state = new OrderProgress
             {
                 DeliveryDates = TaskProgress.Completed,

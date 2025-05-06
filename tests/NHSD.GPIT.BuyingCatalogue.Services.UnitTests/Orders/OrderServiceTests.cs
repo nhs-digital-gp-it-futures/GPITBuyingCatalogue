@@ -948,7 +948,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             result.SupplierContact.Email.Should().Be(order.SupplierContact.Email);
             result.SupplierContact.Phone.Should().Be(order.SupplierContact.Phone);
 
-            result.OrderRecipients.Count.Should().Be(order.OrderRecipients.Count);
+            result.FlattenedRecipients.Count().Should().Be(order.FlattenedRecipients.Count());
             result.OrderItems.Count.Should().Be(order.OrderItems.Count);
         }
 

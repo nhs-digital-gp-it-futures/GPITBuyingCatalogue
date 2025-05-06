@@ -182,20 +182,29 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 }
             }
 
-            foreach (var recipient in order.OrderRecipients)
+            // Merge recipients on existing sublocations
+            foreach (OrderSublocation existingSublocation in OrderSublocations)
             {
-                var existingRecipient = OrderRecipients.FirstOrDefault(r => r.OdsCode == recipient.OdsCode);
-                if (existingRecipient == null)
+                OrderSublocation sublocationToApply =
+                    order.OrderSublocations.First(x => x.SublocationOdsCode == existingSublocation.SublocationOdsCode);
+
+                IEnumerable<OrderSublocationRecipient> sublocationRecipientsToApply =
+                    sublocationToApply.SublocationRecipients.Where(x =>
+                        existingSublocation.SublocationRecipients.All(y =>
+                            y.RecipientOdsCode != x.RecipientOdsCode));
+
+                foreach (OrderSublocationRecipient newSublocationRecipient in sublocationRecipientsToApply)
                 {
-                    OrderRecipients.Add(recipient);
+                    existingSublocation.SublocationRecipients.Add(newSublocationRecipient);
                 }
-                else
-                {
-                    foreach (var orderItemRecipient in recipient.OrderItemRecipients)
-                    {
-                        existingRecipient.OrderItemRecipients.Add(orderItemRecipient);
-                    }
-                }
+            }
+
+            IEnumerable<OrderSublocation> sublocationsToApply = order.OrderSublocations.Where(x =>
+                OrderSublocations.All(y => y.SublocationOdsCode != x.SublocationOdsCode));
+
+            foreach (OrderSublocation newSublocation in sublocationsToApply)
+            {
+                OrderSublocations.Add(newSublocation);
             }
         }
 
@@ -248,10 +257,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 Description = Description,
                 InitialPeriod = InitialPeriod,
                 MaximumTerm = MaximumTerm,
-                OrderingParty = OrderingParty,
+                OrderingPartyId = OrderingPartyId,
                 OrderingPartyContact = OrderingPartyContact.Clone(),
-                SelectedFramework = SelectedFramework,
-                Supplier = Supplier,
+                SelectedFrameworkId = SelectedFrameworkId,
+                SupplierId = SupplierId,
                 SupplierContact = SupplierContact.Clone(),
             };
 
@@ -260,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             foreach (OrderSublocation sublocation in OrderSublocations)
             {
                 OrderSublocation newSublocation =
-                    amendedOrder.InitialiseOrderSublocation(sublocation.SublocationOdsCode);
+                    amendedOrder.InitialiseOrderSublocation(sublocation.SublocationOdsCode, sublocation.OwnerOdsCode);
 
                 foreach (OrderSublocationRecipient sublocationRecipient in sublocation.SublocationRecipients)
                 {
@@ -312,14 +321,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return new OrderRecipient(Id, odsCode);
         }
 
-        public OrderSublocation InitialiseOrderSublocation(string sublocationOdsCode)
+        public OrderSublocation InitialiseOrderSublocation(string sublocationOdsCode, string ownerOdsCode)
         {
-            if (OrderingParty?.ExternalIdentifier is null)
-            {
-                throw new InvalidOperationException("Owner Ods code not available");
-            }
-
-            return new OrderSublocation(Id, sublocationOdsCode, OrderingParty.ExternalIdentifier);
+            return new OrderSublocation(Id, sublocationOdsCode, ownerOdsCode);
         }
 
         public OrderSublocationRecipient InitialiseOrderSublocationRecipient(
