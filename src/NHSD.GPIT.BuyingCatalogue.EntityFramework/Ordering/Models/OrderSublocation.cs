@@ -6,6 +6,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public record OrderSublocation : ISublocation
     {
+        public OrderSublocation()
+        {
+        }
+
+        public OrderSublocation(int orderId, string sublocationOdsCode, string ownerOdsCode)
+        {
+            OrderId = orderId;
+            SublocationOdsCode = sublocationOdsCode;
+            OwnerOdsCode = ownerOdsCode;
+        }
+
         public int OrderId { get; set; }
 
         public string SublocationOdsCode { get; set; }
@@ -14,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public Order Order { get; set; }
 
-        public ICollection<OrderSublocationRecipient> SublocationRecipients { get; set; }
+        public ICollection<OrderSublocationRecipient> SublocationRecipients { get; set; } = [];
 
         public OdsOrganisation SublocationOrganisation { get; set; }
     }

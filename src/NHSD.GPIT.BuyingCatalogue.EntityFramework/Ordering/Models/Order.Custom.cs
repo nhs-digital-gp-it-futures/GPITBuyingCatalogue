@@ -248,10 +248,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 Description = Description,
                 InitialPeriod = InitialPeriod,
                 MaximumTerm = MaximumTerm,
-                OrderingPartyId = OrderingPartyId,
+                OrderingParty = OrderingParty,
                 OrderingPartyContact = OrderingPartyContact.Clone(),
-                SelectedFrameworkId = SelectedFrameworkId,
-                SupplierId = SupplierId,
+                SelectedFramework = SelectedFramework,
+                Supplier = Supplier,
                 SupplierContact = SupplierContact.Clone(),
             };
 
@@ -314,7 +314,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderSublocation InitialiseOrderSublocation(string sublocationOdsCode)
         {
-            return new OrderSublocation { OrderId = Id, OwnerOdsCode = OrderingParty.ExternalIdentifier };
+            if (OrderingParty?.ExternalIdentifier is null)
+            {
+                throw new InvalidOperationException("Owner Ods code not available");
+            }
+
+            return new OrderSublocation(Id, sublocationOdsCode, OrderingParty.ExternalIdentifier);
         }
 
         public OrderSublocationRecipient InitialiseOrderSublocationRecipient(
