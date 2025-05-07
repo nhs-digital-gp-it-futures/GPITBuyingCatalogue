@@ -388,12 +388,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
+            List<OrderSublocation> orderSublocations,
             [Frozen] IOrderService orderService,
             [Frozen] IRoutingService routingService,
             [Frozen] IOdsService odsService,
             DeliveryDatesController controller)
         {
             order.SetupCatalogueSolution();
+            order.OrderSublocations = orderSublocations;
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
@@ -413,8 +415,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                     routeValues = callInfo.Arg<RouteValues>();
                 });
 
-            List<ServiceRecipient> organisations = order.OrderRecipients
-                .Select(x => new ServiceRecipient { OrgId = x.OdsCode, Location = "Test" })
+            List<ServiceRecipient> organisations = order.FlattenedRecipients
+                .Select(x => new ServiceRecipient { OrgId = x.RecipientOdsCode, Location = "Test" })
                 .ToList();
 
             odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
@@ -449,7 +451,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             DeliveryDatesController controller)
         {
             order.SetupCatalogueSolution();
-            order.OrderRecipients = new List<OrderRecipient>();
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
@@ -488,16 +489,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
+            List<OrderSublocation> orderSublocations,
             [Frozen] IOrderService orderService,
             [Frozen] IRoutingService routingService,
             [Frozen] IOdsService odsService,
             DeliveryDatesController controller)
         {
             order.SetupCatalogueSolution();
-
-            order.OrderRecipients.ForEach(x => x.OrderItemRecipients.FirstOrDefault().DeliveryDate = null);
+            order.OrderSublocations = orderSublocations;
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+
+            order.FlattenedRecipients.ForEach(x =>
+                x.OrderItemSublocationRecipients.Add(
+                    new OrderItemSublocationRecipient(
+                        order.Id,
+                        x.RecipientOdsCode,
+                        catalogueItemId) { DeliveryDate = null }));
 
             var orderWrapper = new OrderWrapper(order);
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId)
@@ -516,8 +524,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                     routeValues = callInfo.Arg<RouteValues>();
                 });
 
-            List<ServiceRecipient> organisations = order.OrderRecipients
-                .Select(x => new ServiceRecipient { OrgId = x.OdsCode, Location = "Test" })
+            List<ServiceRecipient> organisations = order.FlattenedRecipients
+                .Select(x => new ServiceRecipient { OrgId = x.RecipientOdsCode, Location = "Test" })
                 .ToList();
 
             odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
@@ -711,9 +719,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
 
-            order.OrderRecipients.ForEach(x => x.OrderItemRecipients
-                    .Where(y => y.CatalogueItemId != solutionId)
-                    .ForEach(z => x.OrderItemRecipients.Remove(z)));
+            order.FlattenedRecipients.ForEach(x => x.OrderItemSublocationRecipients
+                .Where(y => y.CatalogueItemId != solutionId)
+                .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
 
             var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
 
@@ -763,9 +771,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
 
-            order.OrderRecipients.ForEach(x => x.OrderItemRecipients
-                    .Where(y => y.CatalogueItemId != solutionId)
-                    .ForEach(z => x.OrderItemRecipients.Remove(z)));
+            order.FlattenedRecipients.ForEach(x => x.OrderItemSublocationRecipients
+                .Where(y => y.CatalogueItemId != solutionId)
+                .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
 
             var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
 
@@ -809,9 +817,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
+            List<OrderSublocation> orderSublocations,
             [Frozen] IOrderService orderService,
             DeliveryDatesController controller)
         {
+            order.OrderSublocations = orderSublocations;
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.Review(internalOrgId, callOffId);

@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                     throw new InvalidOperationException("Order recipients is null or empty");
                 }
 
-                if (Previous?.FlattenedRecipients is null || !Order.FlattenedRecipients.Any())
+                if (Previous?.FlattenedRecipients is null || !Previous.FlattenedRecipients.Any())
                 {
                     throw new InvalidOperationException("Previous order recipients is null or empty");
                 }
@@ -96,8 +96,29 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             }
         }
 
-        public bool HasNewOrderItems => Order?.OrderItems is not null && !Order.OrderItems
-            .All(cr => Previous!.OrderItems!.Select(pr => pr.CatalogueItemId).Contains(cr.CatalogueItemId));
+        public bool HasNewOrderItems
+        {
+            get
+            {
+                if (Order.Revision <= 1)
+                {
+                    return Order.OrderItems.Count > 0;
+                }
+
+                if (Order?.OrderItems is null || !Order.OrderItems.Any())
+                {
+                    throw new InvalidOperationException("Order items is null or empty");
+                }
+
+                if (Previous?.OrderItems is null || !Previous.OrderItems.Any())
+                {
+                    throw new InvalidOperationException("Previous order items is null or empty");
+                }
+
+                return Order.OrderItems.Any(ci =>
+                    Previous.OrderItems.All(pi => pi.CatalogueItemId != ci.CatalogueItemId));
+            }
+        }
 
         public bool HasSublocationsWithNoRecipients =>
             Order?.OrderSublocations is not null
