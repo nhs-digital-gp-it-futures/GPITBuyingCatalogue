@@ -72,10 +72,24 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public bool IsAmendment => Order.CallOffId.IsAmendment;
 
-        public bool HasNewOrderRecipients => Order?.FlattenedRecipients is not null
-            && Previous?.FlattenedRecipients is not null
-            && !Order.FlattenedRecipients.All(cr => Previous!.FlattenedRecipients!.Select(pr => pr.RecipientOdsCode)
-                .Contains(cr.RecipientOdsCode));
+        public bool HasNewOrderRecipients
+        {
+            get
+            {
+                if (Order?.FlattenedRecipients is null || !Order.FlattenedRecipients.Any())
+                {
+                    throw new InvalidOperationException("Order recipients is null or empty");
+                }
+
+                if (Previous?.FlattenedRecipients is null || !Order.FlattenedRecipients.Any())
+                {
+                    throw new InvalidOperationException("Previous order recipients is null or empty");
+                }
+
+                return Order.FlattenedRecipients.Any(cr =>
+                    Previous.FlattenedRecipients.All(pr => pr.RecipientOdsCode != cr.RecipientOdsCode));
+            }
+        }
 
         public bool HasNewOrderItems => Order?.OrderItems is not null && !Order.OrderItems
             .All(cr => Previous!.OrderItems!.Select(pr => pr.CatalogueItemId).Contains(cr.CatalogueItemId));
