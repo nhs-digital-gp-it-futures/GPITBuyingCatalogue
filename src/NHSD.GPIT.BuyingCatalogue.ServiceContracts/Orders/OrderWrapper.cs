@@ -76,6 +76,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         {
             get
             {
+                if (Order.Revision <= 1)
+                {
+                    return Order.FlattenedRecipients.Any();
+                }
+
                 if (Order?.FlattenedRecipients is null || !Order.FlattenedRecipients.Any())
                 {
                     throw new InvalidOperationException("Order recipients is null or empty");
