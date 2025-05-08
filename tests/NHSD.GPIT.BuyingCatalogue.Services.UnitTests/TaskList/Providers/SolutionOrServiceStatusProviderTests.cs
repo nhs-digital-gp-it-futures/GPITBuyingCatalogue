@@ -281,6 +281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         {
             var state = new OrderProgress { ServiceRecipients = TaskProgress.Completed };
 
+            previousOrder.OrderSublocations = orderSublocations;
             order.OrderSublocations = orderSublocations;
             order.Revision = 2;
             order.OrderType = OrderTypeEnum.Solution;
