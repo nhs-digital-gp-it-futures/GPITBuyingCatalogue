@@ -65,9 +65,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void WithValidArguments_Amendment_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order)
+            EntityFramework.Ordering.Models.Order order,
+            List<OrderSublocation> orderSublocations)
         {
+            order.OrderSublocations = orderSublocations;
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
+
+            order.OrderNumber = callOffId.OrderNumber;
+            order.Revision = callOffId.Revision;
+
+            order.FlattenedRecipients.ForEach(x => order.OrderItems.ForEach(y =>
+                x.OrderItemSublocationRecipients.Add(
+                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y.CatalogueItemId)
+                    {
+                        Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
+                    })));
 
             var amendment = order.BuildAmendment(2);
 
@@ -87,6 +99,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AdditionalService, Id = associatedService.CatalogueItemId }, CatalogueItemId = additionalService.CatalogueItemId },
                 new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AssociatedService, Id = associatedService.CatalogueItemId }, CatalogueItemId = associatedService.CatalogueItemId },
             };
+
+            amendment.FlattenedRecipients.ForEach(x => amendment.OrderItems.ForEach(y =>
+                x.OrderItemSublocationRecipients.Add(
+                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y.CatalogueItemId)
+                    {
+                        Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
+                    })));
 
             var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(new[] { order, amendment }));
 
@@ -114,6 +133,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             EntityFramework.Ordering.Models.Order order)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
+            order.OrderNumber = callOffId.OrderNumber;
+            order.Revision = callOffId.Revision;
+
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.AssociatedServicesOnlyDetails.Solution = serviceSolution;
 
@@ -148,8 +170,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void WithValidArguments_IncompleteOrder_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order)
+            EntityFramework.Ordering.Models.Order order,
+            List<OrderSublocation> orderSublocations)
         {
+            order.OrderSublocations = orderSublocations;
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
             var solution = order.OrderItems.ElementAt(0);
@@ -157,7 +181,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             order.OrderItems = new List<OrderItem> { solution };
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
 
             var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order));
 

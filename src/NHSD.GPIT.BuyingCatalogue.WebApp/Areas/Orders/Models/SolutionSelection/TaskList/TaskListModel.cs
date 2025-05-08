@@ -150,19 +150,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public IEnumerable<OrderItem> AssociatedServices { get; set; }
 
-        public TaskProgress Progress
-        {
-            get
-            {
-                if (taskModels.All(x => x.Value.PriceStatus == TaskProgress.Completed)
-                    && taskModels.All(x => x.Value.QuantityStatus is TaskProgress.Completed or TaskProgress.Amended))
-                {
-                    return TaskProgress.Completed;
-                }
-
-                return TaskProgress.InProgress;
-            }
-        }
+        public TaskProgress Progress =>
+            taskModels.All(x =>
+                x.Value.PriceStatus is TaskProgress.Completed
+                && x.Value.QuantityStatus is TaskProgress.Completed or TaskProgress.Amended)
+                ? TaskProgress.Completed
+                : TaskProgress.InProgress;
 
         public string OnwardLink { get; set; }
 
