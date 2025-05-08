@@ -120,13 +120,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             }
         }
 
-        public bool HasSublocationsWithNoRecipients =>
-            Order?.OrderSublocations is not null
-            && Order.OrderSublocations.Any(x => x.SublocationRecipients.Count == 0);
-
         public ICollection<OrderItem> OrderItems =>
             Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)
-            .ToList();
+                .ToList();
 
         public Order Last => previous.Any()
             ? previous.Last()

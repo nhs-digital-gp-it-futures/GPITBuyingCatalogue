@@ -41,6 +41,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && Supplier is not null
                 && CommencementDate is not null
                 && (HasValidCatalogueItems() || HasAssociatedService())
+                && !HasSublocationsWithNoRecipients()
                 && OrderItems.Count > 0
                 && HaveAllDeliveryDates(orderRecipients)
                 && HaveAllQuantities(orderRecipients)
@@ -167,6 +168,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 return OrderItems.Any(o => o.CatalogueItem.CatalogueItemType == CatalogueItemType.Solution
                     || o.CatalogueItem.CatalogueItemType == CatalogueItemType.AdditionalService);
             }
+        }
+
+        public bool HasSublocationsWithNoRecipients()
+        {
+            return OrderSublocations is { Count: > 1 }
+                && OrderSublocations.Any(x => x.SublocationRecipients.Count == 0);
         }
 
         public void Apply(Order order)

@@ -174,9 +174,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockAutoData]
         public static void Buttons_InProgressOrder_PropertiesCorrectlySet(
             string internalOrgId,
-            EntityFramework.Ordering.Models.Order order)
+            EntityFramework.Ordering.Models.Order order,
+            List<OrderSublocation> orderSublocations)
         {
-            SetInProgressOrder(order);
+            order.OrderSublocations = orderSublocations;
+
+            SetInProgressCanCompleteOrder(order);
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
 
             model.ButtonLabelText.Should().Be("Complete order");
@@ -187,9 +190,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockAutoData]
         public static void Buttons_InProgressAmendOrder_PropertiesCorrectlySet(
             string internalOrgId,
-            EntityFramework.Ordering.Models.Order order)
+            EntityFramework.Ordering.Models.Order order,
+            List<OrderSublocation> orderSublocations)
         {
-            SetInProgressOrder(order);
+            order.OrderSublocations = orderSublocations;
+            SetInProgressCanCompleteOrder(order);
             order.Revision = 2;
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
 
@@ -214,9 +219,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockAutoData]
         public static void Buttons_Incomplete_PropertiesCorrectlySet(
             string internalOrgId,
-            EntityFramework.Ordering.Models.Order order)
+            EntityFramework.Ordering.Models.Order order,
+            List<OrderSublocation> orderSublocations)
         {
-            SetInProgressOrder(order);
+            order.OrderSublocations = orderSublocations;
+            SetInProgressCanCompleteOrder(order);
             order.Contract = null;
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
 
@@ -238,12 +245,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.ButtonAdviceText.Should().Be("You can download and review your order summary here.");
         }
 
-        private static void SetInProgressOrder(EntityFramework.Ordering.Models.Order order)
+        private static void SetInProgressCanCompleteOrder(EntityFramework.Ordering.Models.Order order)
         {
             order.Contract = new Contract() { ContractBilling = new ContractBilling(), ImplementationPlan = new ImplementationPlan(), };
             order.ContractFlags.UseDefaultDataProcessing = true;
             order.Completed = null;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.ForEach(x =>
+            {
+                order.OrderSublocations.ForEach(y => y.SublocationRecipients.ForEach(z =>
+                    z.OrderItemSublocationRecipients.Add(
+                        new OrderItemSublocationRecipient(order.Id, z.RecipientOdsCode, x.CatalogueItemId)
+                        {
+                            Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
+                        })));
+                x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            });
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.IsTerminated = false;
         }
