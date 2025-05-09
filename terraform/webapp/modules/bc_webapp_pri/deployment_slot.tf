@@ -86,9 +86,6 @@ resource "azurerm_linux_web_app_slot" "slot" {
       site_config[0].scm_minimum_tls_version,
       site_config[0].ftps_state,
       site_config[0].application_stack[0].docker_image_name,
-      site_config[0].application_stack[0].docker_registry_url,
-      site_config[0].application_stack[0].docker_registry_username,
-      site_config[0].application_stack[0].docker_registry_password
     ]
   }
 }
