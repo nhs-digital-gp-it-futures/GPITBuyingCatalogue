@@ -388,14 +388,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations,
             [Frozen] IOrderService orderService,
             [Frozen] IRoutingService routingService,
             [Frozen] IOdsService odsService,
             DeliveryDatesController controller)
         {
             order.SetupCatalogueSolution();
-            order.OrderSublocations = orderSublocations;
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
@@ -489,23 +487,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations,
             [Frozen] IOrderService orderService,
             [Frozen] IRoutingService routingService,
             [Frozen] IOdsService odsService,
             DeliveryDatesController controller)
         {
             order.SetupCatalogueSolution();
-            order.OrderSublocations = orderSublocations;
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
             order.FlattenedRecipients.ForEach(x =>
-                x.OrderItemSublocationRecipients.Add(
-                    new OrderItemSublocationRecipient(
-                        order.Id,
-                        x.RecipientOdsCode,
-                        catalogueItemId) { DeliveryDate = null }));
+                x.OrderItemSublocationRecipients.ForEach(y => y.DeliveryDate = null));
 
             var orderWrapper = new OrderWrapper(order);
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId)
@@ -817,11 +809,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations,
             [Frozen] IOrderService orderService,
             DeliveryDatesController controller)
         {
-            order.OrderSublocations = orderSublocations;
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var result = await controller.Review(internalOrgId, callOffId);

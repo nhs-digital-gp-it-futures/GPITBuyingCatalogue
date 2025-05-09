@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -82,12 +83,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Sublocations_But_No_Recipients_Returns_InProgress(
             Order order,
-            List<OrderSublocation> orderSublocations,
             ServiceRecipientsStatusProvider service)
         {
-            orderSublocations.ForEach(x => x.SublocationRecipients = []);
-
-            order.OrderSublocations = orderSublocations;
+            order.OrderSublocations.ForEach(x => x.SublocationRecipients = []);
 
             TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
@@ -98,14 +96,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Complete_And_Incomplete_Sublocations_Returns_InProgress(
             Order order,
-            List<OrderSublocation> orderSublocations,
             ServiceRecipientsStatusProvider service)
         {
-            OrderSublocation sublocationWithNoRecipients = orderSublocations.First();
+            OrderSublocation sublocationWithNoRecipients = order.OrderSublocations.First();
 
             sublocationWithNoRecipients.SublocationRecipients = [];
-
-            order.OrderSublocations = orderSublocations;
 
             TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
@@ -117,14 +112,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         public static void New_Sublocations_And_Recipients_And_IsAmendment_Returns_Amended(
             Order previousOrder,
             Order order,
-            List<OrderSublocation> orderSublocations,
             ServiceRecipientsStatusProvider service)
         {
             order.OrderNumber = previousOrder.OrderNumber;
             previousOrder.Revision = 1;
             order.Revision = 2;
-            previousOrder.OrderSublocations = orderSublocations.Take(2).ToList();
-            order.OrderSublocations = orderSublocations;
+            previousOrder.OrderSublocations = order.OrderSublocations.Take(2).ToList();
 
             var orders = new List<Order> { previousOrder, order };
 
@@ -137,11 +130,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void New_Sublocations_And_Recipients_Returns_Completed(
             Order order,
-            List<OrderSublocation> orderSublocations,
             ServiceRecipientsStatusProvider service)
         {
-            order.OrderSublocations = orderSublocations;
-
             TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
             actual.Should().Be(TaskProgress.Completed);

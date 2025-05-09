@@ -174,11 +174,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockAutoData]
         public static void Buttons_InProgressOrder_PropertiesCorrectlySet(
             string internalOrgId,
-            EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations)
+            EntityFramework.Ordering.Models.Order order)
         {
-            order.OrderSublocations = orderSublocations;
-
             SetInProgressCanCompleteOrder(order);
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
 
@@ -190,10 +187,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockAutoData]
         public static void Buttons_InProgressAmendOrder_PropertiesCorrectlySet(
             string internalOrgId,
-            EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations)
+            EntityFramework.Ordering.Models.Order order)
         {
-            order.OrderSublocations = orderSublocations;
             SetInProgressCanCompleteOrder(order);
             order.Revision = 2;
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
@@ -219,10 +214,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
         [MockAutoData]
         public static void Buttons_Incomplete_PropertiesCorrectlySet(
             string internalOrgId,
-            EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations)
+            EntityFramework.Ordering.Models.Order order)
         {
-            order.OrderSublocations = orderSublocations;
             SetInProgressCanCompleteOrder(order);
             order.Contract = null;
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());

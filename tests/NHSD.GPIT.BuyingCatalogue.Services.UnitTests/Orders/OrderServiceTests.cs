@@ -253,20 +253,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task GetOrderWithSublocations_ReturnsOrder(
             Organisation organisation,
             Order order,
-            List<OrderSublocation> orderSublocations,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
             order.OrderingParty = organisation;
-
-            orderSublocations.ForEach(x =>
-            {
-                x.OwnerOdsCode = organisation.ExternalIdentifier;
-                x.OrderId = order.Id;
-                x.SublocationOrganisation.Id = x.SublocationOdsCode;
-            });
-
-            order.OrderSublocations = orderSublocations;
 
             context.Add(order);
 
@@ -292,28 +282,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task GetOrdersWithSublocationsAndSublocationRecipients_ReturnsOrder(
-            Organisation organisation,
             Order order,
-            List<OrderSublocation> orderSublocations,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            order.OrderingParty = organisation;
-
-            orderSublocations.ForEach(x =>
-            {
-                x.OwnerOdsCode = organisation.ExternalIdentifier;
-                x.OrderId = order.Id;
-                x.SublocationOrganisation.Id = x.SublocationOdsCode;
-                foreach (OrderSublocationRecipient orderSublocationRecipient in x.SublocationRecipients)
-                {
-                    orderSublocationRecipient.RecipientOdsOrganisation.Id =
-                        orderSublocationRecipient.RecipientOdsCode;
-                }
-            });
-
-            order.OrderSublocations = orderSublocations;
-
             context.Add(order);
 
             await context.SaveChangesAsync();
@@ -322,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             OrderWrapper result = await service.GetOrderWithSublocationsAndSublocationRecipients(
                 order.CallOffId,
-                organisation.InternalIdentifier
+                order.OrderingParty.InternalIdentifier
             );
 
             result.Should().NotBeNull();

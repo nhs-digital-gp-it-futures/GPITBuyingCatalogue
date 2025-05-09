@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -55,17 +55,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         public static void Get_DeliveryDatesNotComplete_ReturnsCannotStart(
             TaskProgress status,
             Order order,
-            List<OrderSublocation> orderSublocations,
             DeliveryDatesStatusProvider service)
         {
-            order.OrderSublocations = orderSublocations;
+            var state = new OrderProgress { SolutionOrService = status };
 
-            var state = new OrderProgress
-            {
-                SolutionOrService = status,
-            };
-
-            MoreEnumerable.ForEach(order.OrderRecipients, x => x.OrderItemRecipients.Clear());
+            MoreEnumerable.ForEach(order.FlattenedRecipients, x => x.OrderItemSublocationRecipients.Clear());
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -76,17 +70,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Get_NoDeliveryDatesEntered_ReturnsInProgress(
             Order order,
-            List<OrderSublocation> orderSublocations,
             DeliveryDatesStatusProvider service)
         {
-            order.OrderSublocations = orderSublocations;
+            var state = new OrderProgress { SolutionOrService = TaskProgress.Completed };
 
-            var state = new OrderProgress
-            {
-                SolutionOrService = TaskProgress.Completed,
-            };
-
-            MoreEnumerable.ForEach(order.OrderRecipients, x => x.OrderItemRecipients.Clear());
+            MoreEnumerable.ForEach(order.FlattenedRecipients, x => x.OrderItemSublocationRecipients.Clear());
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -97,15 +85,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Get_NoDeliveryDatesOrDefaultDeliveryDateEntered_ReturnsNotStarted(
             Order order,
-            List<OrderSublocation> orderSublocations,
             DeliveryDatesStatusProvider service)
         {
-            order.OrderSublocations = orderSublocations;
-
-            var state = new OrderProgress
-            {
-                SolutionOrService = TaskProgress.Completed,
-            };
+            var state = new OrderProgress { SolutionOrService = TaskProgress.Completed };
 
             MoreEnumerable.ForEach(order.FlattenedRecipients, x => x.OrderItemSublocationRecipients.Clear());
             order.DeliveryDate = null;
@@ -119,19 +101,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Get_SomeDeliveryDatesEntered_ReturnsInProgress(
             Order order,
-            List<OrderSublocation> orderSublocations,
             DeliveryDatesStatusProvider service)
         {
-            order.OrderSublocations = orderSublocations;
+            var state = new OrderProgress { SolutionOrService = TaskProgress.Completed };
 
-            var state = new OrderProgress
-            {
-                SolutionOrService = TaskProgress.Completed,
-            };
-
-            MoreEnumerable.ForEach(order.OrderRecipients, x => x.OrderItemRecipients.Clear());
+            MoreEnumerable.ForEach(order.FlattenedRecipients, x => x.OrderItemSublocationRecipients.Clear());
             var orderItem = order.OrderItems.First();
-            MoreEnumerable.ForEach(order.OrderRecipients, x => x.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today));
+            MoreEnumerable.ForEach(
+                order.FlattenedRecipients,
+                x => x.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today));
 
             var actual = service.Get(new OrderWrapper(order), state);
 
@@ -142,33 +120,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Get_AllDeliveryDatesEntered_ReturnsCompleted(
             Order order,
-            List<OrderSublocation> orderSublocations,
-            OrderItem orderItem,
             DeliveryDatesStatusProvider service)
         {
-            order.OrderItems = [orderItem];
-
-            orderSublocations.ForEach(x =>
+            order.OrderSublocations.ForEach(x =>
             {
-                x.OrderId = order.Id;
-                foreach (OrderSublocationRecipient sr in x.SublocationRecipients)
-                {
-                    sr.OrderItemSublocationRecipients =
-                    [
-                        new OrderItemSublocationRecipient(x.OrderId, sr.RecipientOdsCode, orderItem.CatalogueItemId)
-                        {
-                            DeliveryDate = order.DeliveryDate,
-                        },
-                    ];
-                }
+                x.SublocationRecipients.ForEach(y =>
+                    y.OrderItemSublocationRecipients.ForEach(z => z.DeliveryDate = order.DeliveryDate));
             });
 
-            order.OrderSublocations = orderSublocations;
-
-            var state = new OrderProgress
-            {
-                SolutionOrService = TaskProgress.Completed,
-            };
+            var state = new OrderProgress { SolutionOrService = TaskProgress.Completed };
 
             var actual = service.Get(new OrderWrapper(order), state);
 
