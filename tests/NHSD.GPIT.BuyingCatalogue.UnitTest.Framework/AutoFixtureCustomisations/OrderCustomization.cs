@@ -19,6 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                     .Without(x => x.Revision)
                     .Do(x => x.Revision = 1)
                     .With(o => o.OrderType, OrderTypeEnum.Solution)
+                    .With(o => o.OrderNumber, () => new Random().Next(1, 999999))
                     .Without(o => o.IsDeleted)
                     .Without(o => o.IsTerminated)
                     .Without(o => o.OrderTermination)
@@ -81,7 +82,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                     foreach (OrderSublocationRecipient osr in orderSublocationRecipients)
                     {
                         osr.ParentSublocationOdsCode = sublocation.SublocationOdsCode;
+
+                        sublocation.SublocationRecipients.Add(osr);
                     }
+
+                    order.OrderSublocations.Add(sublocation);
                 }
             }
 

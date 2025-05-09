@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using MoreLinq;
@@ -141,12 +140,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             string internalOrgId,
             CallOffId callOffId,
             Order order,
-            List<OrderSublocation> orderSublocations,
             DeliveryDatesProvider provider)
         {
             var deliveryDate = DateTime.Today;
 
-            order.OrderSublocations = orderSublocations;
             order.SetupCatalogueSolution();
             order.DeliveryDate = deliveryDate;
             var solution = order.OrderItems.First();
@@ -176,12 +173,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
                 string internalOrgId,
                 CallOffId callOffId,
                 Order order,
-                List<OrderSublocation> orderSublocations,
                 DeliveryDatesProvider provider)
         {
             var deliveryDate = DateTime.Today;
-
-            order.OrderSublocations = orderSublocations;
 
             order.SetupCatalogueSolution();
             order.DeliveryDate = deliveryDate;

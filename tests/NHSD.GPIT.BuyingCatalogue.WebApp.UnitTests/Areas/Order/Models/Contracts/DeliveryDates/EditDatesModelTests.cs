@@ -36,10 +36,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         [Theory]
         [MockAutoData]
         public static void MergerType_RecipientsCorrectlySet(
-            EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations)
+            EntityFramework.Ordering.Models.Order order)
         {
-            order.OrderSublocations = orderSublocations;
             order.OrderType = OrderTypeEnum.AssociatedServiceMerger;
             Dictionary<string, string> organisations = order.FlattenedRecipients
                 .ToDictionary(item => item.RecipientOdsCode, _ => Guid.NewGuid().ToString());
@@ -55,10 +53,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         [Theory]
         [MockAutoData]
         public static void SplitType_RecipientsCorrectlySet(
-            EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations)
+            EntityFramework.Ordering.Models.Order order)
         {
-            order.OrderSublocations = orderSublocations;
             order.OrderType = OrderTypeEnum.AssociatedServiceSplit;
             Dictionary<string, string> organisations = order.FlattenedRecipients
                 .ToDictionary(item => item.RecipientOdsCode, _ => Guid.NewGuid().ToString());
@@ -74,10 +70,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         [Theory]
         [MockAutoData]
         public static void Solution_RecipientsCorrectlySet(
-            EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations)
+            EntityFramework.Ordering.Models.Order order)
         {
-            order.OrderSublocations = orderSublocations;
             order.OrderType = OrderTypeEnum.Solution;
             Dictionary<string, string> organisations = order.FlattenedRecipients
                 .ToDictionary(item => item.RecipientOdsCode, _ => Guid.NewGuid().ToString());
@@ -92,10 +86,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         [Theory]
         [MockAutoData]
         public static void NullDates_RecipientsCorrectlySet(
-            EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations)
+            EntityFramework.Ordering.Models.Order order)
         {
-            order.OrderSublocations = orderSublocations;
             order.OrderType = OrderTypeEnum.AssociatedServiceSplit;
             order.FlattenedRecipients.ForEach(x =>
                 x.OrderItemSublocationRecipients.ForEach(y => y.DeliveryDate = null));

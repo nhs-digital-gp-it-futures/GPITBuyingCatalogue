@@ -65,10 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void WithValidArguments_Amendment_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations)
+            EntityFramework.Ordering.Models.Order order)
         {
-            order.OrderSublocations = orderSublocations;
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
             order.OrderNumber = callOffId.OrderNumber;
@@ -170,10 +168,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void WithValidArguments_IncompleteOrder_PropertiesSetCorrectly(
             string internalOrgId,
             CallOffId callOffId,
-            EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations)
+            EntityFramework.Ordering.Models.Order order)
         {
-            order.OrderSublocations = orderSublocations;
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
             var solution = order.OrderItems.ElementAt(0);
