@@ -5,6 +5,7 @@ primary_vpn                 = "$(tf_primaryvpn)"
 secondary_vpn               = [ $(secondary_vpn) ]
 nhsd_network_range          = "$(tf_nhsvpn)"
 app_url                     = "$(tf_appurl)"
+acr_subscription_id         = "$(tf_subscription)"
 dns_subscription_id         = "$(tf_dns_subscription)"
 infrastructure_subscription_id = "$(tf_infrastructure_subscription_id)"
 notify_api_key              = "$(tf_notifyapikey)"
