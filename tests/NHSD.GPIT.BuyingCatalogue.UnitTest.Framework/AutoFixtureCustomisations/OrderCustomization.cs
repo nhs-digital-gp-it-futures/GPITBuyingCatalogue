@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoFixture;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
@@ -49,22 +51,51 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                     IsDeleted = false,
                 };
 
+                AddOrderingParty(item, context);
+                AddOrderSublocations(item, context);
                 AddOrderItems(item, context);
 
                 return item;
             }
 
-            private static void AddOrderItemRecipients(Order order, OrderItem item, ISpecimenContext context)
+            private static void AddOrderingParty(Order order, ISpecimenContext context)
             {
-                foreach (var recipient in order.OrderRecipients)
+                var organisation = context.Create<Organisation>();
+
+                order.OrderingParty = organisation;
+                order.OrderingPartyId = organisation.Id;
+            }
+
+            private static void AddOrderSublocations(Order order, ISpecimenContext context)
+            {
+                IEnumerable<OrderSublocation> sublocations = context.CreateMany<OrderSublocation>();
+
+                foreach (OrderSublocation sublocation in sublocations)
                 {
-                    var orderItemRecipient = context.Create<OrderItemRecipient>();
+                    sublocation.OrderId = order.Id;
+                    sublocation.OwnerOdsCode = order.OrderingParty.ExternalIdentifier;
+
+                    IEnumerable<OrderSublocationRecipient> orderSublocationRecipients =
+                        context.CreateMany<OrderSublocationRecipient>();
+
+                    foreach (OrderSublocationRecipient osr in orderSublocationRecipients)
+                    {
+                        osr.ParentSublocationOdsCode = sublocation.SublocationOdsCode;
+                    }
+                }
+            }
+
+            private static void AddOrderItemSublocationRecipients(Order order, OrderItem item, ISpecimenContext context)
+            {
+                foreach (OrderSublocationRecipient recipient in order.FlattenedRecipients)
+                {
+                    var orderItemRecipient = context.Create<OrderItemSublocationRecipient>();
                     orderItemRecipient.OrderId = item.OrderId;
                     orderItemRecipient.OrderItem = item;
                     orderItemRecipient.CatalogueItemId = item.CatalogueItemId;
-                    orderItemRecipient.OdsCode = recipient.OdsCode;
+                    orderItemRecipient.OdsCode = recipient.RecipientOdsCode;
                     orderItemRecipient.Recipient = recipient;
-                    recipient.OrderItemRecipients.Add(orderItemRecipient);
+                    recipient.OrderItemSublocationRecipients.Add(orderItemRecipient);
                 }
             }
 
@@ -91,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
                 foreach (var orderItem in orderItems)
                 {
-                    AddOrderItemRecipients(item, orderItem, context);
+                    AddOrderItemSublocationRecipients(item, orderItem, context);
                     item.OrderItems.Add(orderItem);
                 }
             }

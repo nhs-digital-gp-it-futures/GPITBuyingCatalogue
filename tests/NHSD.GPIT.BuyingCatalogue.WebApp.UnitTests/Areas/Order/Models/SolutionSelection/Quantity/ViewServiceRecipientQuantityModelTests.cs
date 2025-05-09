@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             ProvisioningType provisioningType,
             string expectedQuantityColumnTitle,
             OrderItem item,
-            OrderRecipient[] recipients)
+            OrderSublocationRecipient[] recipients)
         {
             item.OrderItemPrice.ProvisioningType = provisioningType;
 

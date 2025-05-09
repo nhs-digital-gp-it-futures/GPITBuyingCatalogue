@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         private readonly ProvisioningType? provisioningType;
 
-        public ViewServiceRecipientQuantityModel(OrderItem orderItem, IEnumerable<OrderRecipient> recipients)
+        public ViewServiceRecipientQuantityModel(OrderItem orderItem, IEnumerable<OrderSublocationRecipient> recipients)
         {
             if (orderItem == null)
             {
@@ -32,8 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ServiceRecipients = recipients
                 .Select(x => new ServiceRecipientQuantityModel
                 {
-                    OdsCode = x.OdsCode,
-                    Name = x.OdsOrganisation.Name,
+                    OdsCode = x.RecipientOdsCode,
+                    Name = x.RecipientOdsOrganisation?.Name,
                     Quantity = x.GetQuantityForItem(orderItem.CatalogueItemId).GetValueOrDefault(),
                 })
                 .ToArray();
