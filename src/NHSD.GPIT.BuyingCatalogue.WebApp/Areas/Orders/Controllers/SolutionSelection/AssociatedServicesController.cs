@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             {
                 var catalogueItemId = associatedServices.Select(s => s.Id).First();
                 await AddOrderItems(internalOrgId, callOffId, new[] { catalogueItemId }.ToList());
-                await orderQuantityService.SetServiceRecipientQuantitiesToSameValue(order.Id, catalogueItemId, 1);
+                await orderQuantityService.SetServiceRecipientsSingleQuantity(order.Id, catalogueItemId, 1);
                 return RedirectToAction(
                     nameof(TaskListController.TaskList),
                     typeof(TaskListController).ControllerName(),

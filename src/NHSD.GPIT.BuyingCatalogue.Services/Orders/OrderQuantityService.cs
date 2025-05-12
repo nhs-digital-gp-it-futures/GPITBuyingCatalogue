@@ -24,8 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .FirstOrDefaultAsync(x => x.OrderId == orderId
                     && x.CatalogueItemId == catalogueItemId);
 
-            var orderRecipients = await dbContext.OrderRecipients
-                .Include(x => x.OrderItemRecipients)
+            List<OrderItemSublocationRecipient> orderItemSublocationRecipients = await dbContext
+                .OrderItemSublocationRecipients
                 .Where(x => x.OrderId == orderId)
                 .ToListAsync();
 
@@ -36,8 +36,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             orderItem.Quantity = null;
 
-            var toDelete = orderRecipients.Select(r => r.OrderItemRecipients.FirstOrDefault(i => i.CatalogueItemId == catalogueItemId));
-            dbContext.OrderItemRecipients.RemoveRange(toDelete);
+            IEnumerable<OrderItemSublocationRecipient> toDelete =
+                orderItemSublocationRecipients.Where(i => i.CatalogueItemId == catalogueItemId);
+            dbContext.OrderItemSublocationRecipients.RemoveRange(toDelete);
 
             await dbContext.SaveChangesAsync();
         }
@@ -62,41 +63,46 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task SetServiceRecipientQuantities(int orderId, CatalogueItemId catalogueItemId, List<OrderItemRecipientQuantityDto> quantities)
         {
-            if (quantities == null)
+            if (quantities is null or { Count: 0 })
             {
-                throw new ArgumentNullException(nameof(quantities));
+                throw new ArgumentException("quantities is null or empty");
             }
 
-            var recipients = await dbContext.OrderRecipients.Include(x => x.OrderItemRecipients).Where(x => x.OrderId == orderId).ToListAsync();
-            if (recipients.Count == 0)
+            List<OrderItemSublocationRecipient> recipientsForOrderAndCatalogueItem = await dbContext
+                .OrderItemSublocationRecipients.Where(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId)
+                .ToListAsync();
+            if (recipientsForOrderAndCatalogueItem.Count == 0)
             {
                 return;
             }
 
-            foreach (var recipient in recipients)
+            foreach (OrderItemSublocationRecipient recipient in recipientsForOrderAndCatalogueItem)
             {
-                var quantity = quantities.FirstOrDefault(x => x.OdsCode == recipient.OdsCode);
+                OrderItemRecipientQuantityDto quantity = quantities.FirstOrDefault(x => x.OdsCode == recipient.OdsCode);
 
                 if (quantity != null)
                 {
-                    recipient.SetQuantityForItem(catalogueItemId, quantity.Quantity);
+                    recipient.Quantity = quantity.Quantity;
                 }
             }
 
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task SetServiceRecipientQuantitiesToSameValue(int orderId, CatalogueItemId catalogueItemId, int quantity)
+        public async Task SetServiceRecipientsSingleQuantity(int orderId, CatalogueItemId catalogueItemId, int quantity)
         {
-            var recipients = await dbContext.OrderRecipients.Include(x => x.OrderItemRecipients).Where(x => x.OrderId == orderId).ToListAsync();
+            List<OrderItemSublocationRecipient> recipients = await dbContext.OrderItemSublocationRecipients
+                .Where(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId)
+                .ToListAsync();
+
             if (recipients.Count == 0)
             {
                 return;
             }
 
-            foreach (var recipient in recipients)
+            foreach (OrderItemSublocationRecipient recipient in recipients)
             {
-                recipient.SetQuantityForItem(catalogueItemId, quantity);
+                recipient.Quantity = quantity;
             }
 
             await dbContext.SaveChangesAsync();
