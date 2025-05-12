@@ -93,19 +93,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<OrderWrapper> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId)
         {
-            var orders = await dbContext.Orders
+            List<Order> orders = await dbContext.Orders
                 .Include(x => x.OrderingParty)
                 .Include(x => x.AssociatedServicesOnlyDetails.Solution)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.CatalogueItem)
-                    .ThenInclude(x => x.CataloguePrices.Where(p => p.PublishedStatus == PublicationStatus.Published))
-                    .ThenInclude(x => x.CataloguePriceTiers)
+                .ThenInclude(i => i.CatalogueItem)
+                .ThenInclude(x => x.CataloguePrices.Where(p => p.PublishedStatus == PublicationStatus.Published))
+                .ThenInclude(x => x.CataloguePriceTiers)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemPrice)
-                    .ThenInclude(ip => ip.OrderItemPriceTiers)
+                .ThenInclude(i => i.OrderItemPrice)
+                .ThenInclude(ip => ip.OrderItemPriceTiers)
                 .Include(o => o.SelectedFramework)
-                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
-                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.RecipientOdsOrganisation)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
@@ -117,20 +121,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<OrderWrapper> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId)
         {
-            var orders = await dbContext.Orders
+            List<Order> orders = await dbContext.Orders
                 .Include(x => x.OrderingParty)
                 .Include(x => x.AssociatedServicesOnlyDetails.Solution)
                 .Include(x => x.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.CatalogueItem)
+                .ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemFunding)
+                .ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemPrice)
-                    .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(t => t.LowerRange))
+                .ThenInclude(i => i.OrderItemPrice)
+                .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(t => t.LowerRange))
                 .Include(o => o.SelectedFramework)
-                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
-                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.RecipientOdsOrganisation)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
@@ -142,20 +150,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<OrderWrapper> GetOrderWithOrderItemsForFunding(CallOffId callOffId, string internalOrgId)
         {
-            var orders = await dbContext.Orders
+            List<Order> orders = await dbContext.Orders
                 .Include(x => x.OrderingParty)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.CatalogueItem)
+                .ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemFunding)
+                .ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemPrice)
-                    .ThenInclude(ip => ip.OrderItemPriceTiers)
+                .ThenInclude(i => i.OrderItemPrice)
+                .ThenInclude(ip => ip.OrderItemPriceTiers)
                 .Include(o => o.SelectedFramework)
-                .Include(x => x.OrderRecipients)
-                    .ThenInclude(x => x.OdsOrganisation)
-                .Include(x => x.OrderRecipients)
-                    .ThenInclude(x => x.OrderItemRecipients)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.RecipientOdsOrganisation)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
@@ -234,10 +244,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.Supplier)
                 .Include(x => x.SupplierContact)
                 .Include(x => x.SelectedFramework)
-                .Include(x => x.OrderRecipients)
-                .ThenInclude(x => x.OrderItemRecipients)
-                .Include(x => x.OrderRecipients)
-                .ThenInclude(x => x.OdsOrganisation)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.RecipientOdsOrganisation)
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .AsSplitQuery()
@@ -549,12 +561,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             dbContext.Contracts.RemoveRange(dbContext.Contracts.Where(x => x.OrderId == order.Id));
             dbContext.ContractFlags.RemoveRange(dbContext.ContractFlags.Where(x => x.OrderId == order.Id));
             dbContext.OrderDeletionApprovals.RemoveRange(dbContext.OrderDeletionApprovals.Where(x => x.OrderId == order.Id));
-            dbContext.OrderRecipients.RemoveRange(dbContext.OrderRecipients.Where(x => x.OrderId == order.Id));
+            dbContext.OrderSublocations.RemoveRange(dbContext.OrderSublocations.Where(x => x.OrderId == order.Id));
             dbContext.OrderItems.RemoveRange(dbContext.OrderItems.Where(x => x.OrderId == order.Id));
             dbContext.OrderItemFunding.RemoveRange(dbContext.OrderItemFunding.Where(x => x.OrderId == order.Id));
             dbContext.OrderItemPriceTiers.RemoveRange(dbContext.OrderItemPriceTiers.Where(x => x.OrderId == order.Id));
             dbContext.OrderItemPrices.RemoveRange(dbContext.OrderItemPrices.Where(x => x.OrderId == order.Id));
-            dbContext.OrderItemRecipients.RemoveRange(dbContext.OrderItemRecipients.Where(x => x.OrderId == order.Id));
             dbContext.Orders.Remove(order);
 
             await dbContext.SaveChangesAsync();
@@ -617,16 +628,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task SetFundingSourceForForceFundedItems(string internalOrgId, CallOffId callOffId)
         {
-            var order = await dbContext.Orders
+            Order order = await dbContext.Orders
                 .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.OrderItemPrice)
-                    .ThenInclude(oip => oip.OrderItemPriceTiers)
+                .ThenInclude(oi => oi.OrderItemPrice)
+                .ThenInclude(oip => oip.OrderItemPriceTiers)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.OrderItemFunding)
+                .ThenInclude(oi => oi.OrderItemFunding)
                 .Include(o => o.SelectedFramework)
                 .Include(o => o.OrderingParty)
-                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
-                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.RecipientOdsOrganisation)
                 .AsSplitQuery()
                 .FirstAsync(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision == callOffId.Revision
@@ -717,22 +732,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             return await dbContext.Orders
                 .Include(x => x.ContractFlags)
                 .Include(x => x.Contract)
-                    .ThenInclude(i => i.ImplementationPlan)
-                        .ThenInclude(m => m.Milestones)
+                .ThenInclude(i => i.ImplementationPlan)
+                .ThenInclude(m => m.Milestones)
                 .Include(x => x.Contract)
-                    .ThenInclude(i => i.ContractBilling)
-                        .ThenInclude(m => m.ContractBillingItems)
-                            .ThenInclude(m => m.Milestone)
+                .ThenInclude(i => i.ContractBilling)
+                .ThenInclude(m => m.ContractBillingItems)
+                .ThenInclude(m => m.Milestone)
                 .Include(x => x.Contract)
-                    .ThenInclude(i => i.ContractBilling)
-                        .ThenInclude(m => m.ContractBillingItems)
-                            .ThenInclude(m => m.OrderItem)
-                                .ThenInclude(m => m.CatalogueItem)
+                .ThenInclude(i => i.ContractBilling)
+                .ThenInclude(m => m.ContractBillingItems)
+                .ThenInclude(m => m.OrderItem)
+                .ThenInclude(m => m.CatalogueItem)
                 .Include(x => x.Contract)
-                    .ThenInclude(i => i.ContractBilling)
-                        .ThenInclude(m => m.Requirements)
-                            .ThenInclude(m => m.OrderItem)
-                                .ThenInclude(m => m.CatalogueItem)
+                .ThenInclude(i => i.ContractBilling)
+                .ThenInclude(m => m.Requirements)
+                .ThenInclude(m => m.OrderItem)
+                .ThenInclude(m => m.CatalogueItem)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
                 .Include(o => o.AssociatedServicesOnlyDetails.Solution)
@@ -745,18 +760,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(o => o.LastUpdatedByUser)
                 .Include(o => o.SelectedFramework)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.CatalogueItem)
-                    .ThenInclude(ci => ci.Solution)
-                    .ThenInclude(s => s.FrameworkSolutions)
-                    .ThenInclude(fs => fs.Framework)
+                .ThenInclude(i => i.CatalogueItem)
+                .ThenInclude(ci => ci.Solution)
+                .ThenInclude(s => s.FrameworkSolutions)
+                .ThenInclude(fs => fs.Framework)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemFunding)
+                .ThenInclude(i => i.OrderItemFunding)
                 .Include(o => o.OrderItems)
-                    .ThenInclude(i => i.OrderItemPrice)
-                    .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(pt => pt.LowerRange))
+                .ThenInclude(i => i.OrderItemPrice)
+                .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(pt => pt.LowerRange))
                 .Include(o => o.OrderTermination)
-                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
-                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.OrderItemSublocationRecipients)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(z => z.RecipientOdsOrganisation)
                 .AsNoTracking()
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber

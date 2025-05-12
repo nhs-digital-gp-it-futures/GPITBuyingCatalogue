@@ -243,9 +243,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             result.OrderingPartyContact.Should().NotBeNull();
             result.OrderingParty.Should().NotBeNull();
             result.SelectedFramework.Should().NotBeNull();
-            result.OrderRecipients.Count.Should().BeGreaterThan(0);
-            result.OrderRecipients.ForEach(i => i.OrderItemRecipients.Should().NotBeNull());
-            result.OrderRecipients.ForEach(i => i.OdsOrganisation.Should().NotBeNull());
+            result.FlattenedRecipients.Count().Should().BeGreaterThan(0);
+            result.FlattenedRecipients.ForEach(i => i.OrderItemSublocationRecipients.Should().NotBeNull());
+            result.FlattenedRecipients.ForEach(i => i.RecipientOdsOrganisation.Should().NotBeNull());
         }
 
         [Theory]
@@ -319,7 +319,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 expectedOrderSublocation.SublocationRecipients.Should()
                     .BeEquivalentTo(
                         actualSublocationRecipients,
-                        opt => opt.Excluding(m => m.Order).Excluding(m => m.ParentSublocation));
+                        opt => opt.Excluding(m => m.Order)
+                            .Excluding(m => m.ParentSublocation)
+                            .Excluding(m => m.OrderItemSublocationRecipients));
             }
         }
 
@@ -327,19 +329,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [MockInMemoryDbInlineAutoData(false, false)]
         [MockInMemoryDbInlineAutoData(true, true)]
         public static async Task GetOrderHasAnySublocations_ReturnsBool(
-            bool addSublocation,
+            bool hasSublocation,
             bool expectedResult,
             Order order,
-            Organisation organisation,
-            OrderSublocation orderSublocation,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            order.OrderingParty = organisation;
-
-            if (addSublocation)
+            if (!hasSublocation)
             {
-                order.OrderSublocations.Add(orderSublocation);
+                order.OrderSublocations = [];
             }
 
             context.Add(order);
@@ -348,7 +346,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.ChangeTracker.Clear();
 
-            var result = await service.GetOrderHasAnySublocations(order.CallOffId, organisation.InternalIdentifier);
+            var result = await service.GetOrderHasAnySublocations(
+                order.CallOffId,
+                order.OrderingParty.InternalIdentifier);
 
             Assert.Equal(expectedResult, result);
         }
@@ -971,11 +971,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.OrderTerminations.Count().Should().Be(1);
             context.Orders.Count().Should().Be(1);
             context.OrderDeletionApprovals.Count().Should().Be(1);
+            context.OrderSublocations.Count().Should().Be(3);
             context.OrderItems.Count().Should().Be(3);
             context.OrderItemFunding.Count().Should().Be(3);
             context.OrderItemPriceTiers.Count().Should().Be(9);
             context.OrderItemPrices.Count().Should().Be(3);
-            context.OrderItemRecipients.Count().Should().Be(9);
+            context.OrderItemSublocationRecipients.Count().Should().Be(27);
 
             await service.HardDeleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier);
 
@@ -986,11 +987,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.OrderTerminations.Should().BeEmpty();
             context.Orders.Should().BeEmpty();
             context.OrderDeletionApprovals.Should().BeEmpty();
+            context.OrderSublocations.Should().BeEmpty();
             context.OrderItems.Should().BeEmpty();
             context.OrderItemFunding.Should().BeEmpty();
             context.OrderItemPriceTiers.Should().BeEmpty();
             context.OrderItemPrices.Should().BeEmpty();
-            context.OrderItemRecipients.Should().BeEmpty();
+            context.OrderItemSublocationRecipients.Should().BeEmpty();
         }
 
         [Theory]
@@ -1810,13 +1812,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            order.OrderingPartyId = order.OrderingParty.Id;
-            order.OrderNumber = order.ContractOrderNumber.Id;
             order.Revision = 1;
+            context.Orders.Add(order);
+            await context.SaveChangesAsync();
+
             var amendment = order.BuildAmendment(2);
             amendment.OrderItems.Clear();
 
-            context.Orders.Add(order);
             context.Orders.Add(amendment);
             await context.SaveChangesAsync();
 
