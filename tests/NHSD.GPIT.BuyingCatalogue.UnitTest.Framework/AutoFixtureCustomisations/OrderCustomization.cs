@@ -5,6 +5,7 @@ using AutoFixture;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 {
@@ -49,10 +50,23 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
 
                 var item = new Order { IsDeleted = false, Id = new Random().Next(10001, 999999) };
 
+                AddOrderingParty(item);
                 AddOrderSublocations(item);
                 AddOrderItems(item);
 
                 return item;
+            }
+
+            private void AddOrderingParty(Order order)
+            {
+                Organisation orderingParty = fixture.Build<Organisation>()
+                    .Without(o => o.Orders)
+                    .Without(o => o.RelatedOrganisationOrganisations)
+                    .Without(o => o.RelatedOrganisationRelatedOrganisationNavigations)
+                    .Create();
+
+                order.OrderingParty = orderingParty;
+                order.OrderingPartyId = orderingParty.Id;
             }
 
             private void AddOrderItemSublocationRecipients(Order order, OrderItem item)
