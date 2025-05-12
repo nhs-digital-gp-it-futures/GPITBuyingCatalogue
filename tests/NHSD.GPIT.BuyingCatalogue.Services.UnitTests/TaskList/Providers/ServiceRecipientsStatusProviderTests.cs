@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             ServiceRecipientsStatusProvider service)
         {
-            order.OrderRecipients.Clear();
+            order.OrderSublocations.Clear();
 
             TaskProgress actual = service.Get(new OrderWrapper(order), ValidOrderState);
 
