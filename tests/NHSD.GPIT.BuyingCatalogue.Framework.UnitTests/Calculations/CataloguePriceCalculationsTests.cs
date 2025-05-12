@@ -429,6 +429,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
                 .With(o => o.OrderItems, new HashSet<OrderItem>([perMonthOrderItemUsedForTotal]))
                 .With(o => o.OrderSublocations, new List<OrderSublocation> { sublocation })
                 .With(o => o.MaximumTerm, maximumTerm)
+                .With(o => o.OrderNumber, new Random().Next(0, 999999))
                 .Create();
 
             var orderWrapper = new OrderWrapper(order);
@@ -654,6 +655,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             return fixture.Build<Order>()
                 .With(o => o.Revision, 1)
                 .With(o => o.CommencementDate, commencementDate)
+                .With(o => o.OrderNumber, new Random().Next(0, 999999))
                 .With(o => o.OrderItems, new HashSet<OrderItem>(orderItems))
                 .With(o => o.OrderSublocations, new List<OrderSublocation>(sublocations))
                 .With(o => o.MaximumTerm, maximumTerm)

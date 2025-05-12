@@ -323,6 +323,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                 .With(o => o.OrderSublocations, new List<OrderSublocation>(orderSublocations))
                 .With(o => o.Revision, 1)
                 .With(o => o.OrderItems, new HashSet<OrderItem>(orderItems))
+                .With(o => o.OrderNumber, new Random().Next(0, 999999))
                 .Create();
         }
 

@@ -102,6 +102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                             .With(osr => osr.OrderId, order.Id)
                             .With(osr => osr.ParentSublocation, sublocation)
                             .With(osr => osr.ParentSublocationOdsCode, sublocation.SublocationOdsCode)
+                            .Without(osr => osr.OrderItemSublocationRecipients)
                             .CreateMany()
                             .ToList();
 
