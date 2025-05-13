@@ -10,7 +10,6 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
@@ -304,7 +303,6 @@ public static class CompetitionOrderServiceTests
     public static async Task CreateOrder_WinningSolution_SetsOrderDetailsAsExpected(
         Organisation organisation,
         Competition competition,
-        List<OdsOrganisation> recipients,
         Solution solution,
         CompetitionSolution competitionSolution,
         List<CompetitionSublocation> competitionSublocations,
@@ -343,8 +341,11 @@ public static class CompetitionOrderServiceTests
         order.SupplierId.Should().Be(solution.CatalogueItem.SupplierId);
         order.FlattenedRecipients.Should()
             .BeEquivalentTo(
-                competition.FlattenedRecipients.Select(x => new OrderRecipient(x.RecipientOdsCode)),
-                opt => opt.Excluding(m => m.OrderId).Excluding(m => m.Order).Excluding(m => m.OdsOrganisation));
+                competition.FlattenedRecipients.Select(x => new OrderSublocationRecipient(x)),
+                opt => opt.Excluding(m => m.OrderId)
+                    .Excluding(m => m.Order)
+                    .Excluding(m => m.RecipientOdsOrganisation)
+                    .Excluding(m => m.ParentSublocation));
         order.OrderItems.Select(o => o.CatalogueItemId).Should().BeEquivalentTo([solution.CatalogueItemId]);
         order.SelectedFrameworkId.Should().Be(competition.FrameworkId);
         order.OrderType.Value.Should().Be(OrderTypeEnum.Solution);
