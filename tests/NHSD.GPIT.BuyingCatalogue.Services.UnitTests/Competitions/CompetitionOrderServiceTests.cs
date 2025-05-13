@@ -341,7 +341,7 @@ public static class CompetitionOrderServiceTests
         order.MaximumTerm.Should().Be(competition.ContractLength);
         order.OrderingPartyId.Should().Be(competition.OrganisationId);
         order.SupplierId.Should().Be(solution.CatalogueItem.SupplierId);
-        order.OrderRecipients.Should()
+        order.FlattenedRecipients.Should()
             .BeEquivalentTo(
                 competition.FlattenedRecipients.Select(x => new OrderRecipient(x.RecipientOdsCode)),
                 opt => opt.Excluding(m => m.OrderId).Excluding(m => m.Order).Excluding(m => m.OdsOrganisation));
@@ -461,7 +461,7 @@ public static class CompetitionOrderServiceTests
 
         var order = await dbContext.Order(callOffId);
 
-        order.OrderRecipients.SelectMany(x => x.OrderItemRecipients)
+        order.FlattenedRecipients.SelectMany(x => x.OrderItemSublocationRecipients)
             .GroupBy(x => x.CatalogueItemId)
             .Should()
             .HaveCount(2);

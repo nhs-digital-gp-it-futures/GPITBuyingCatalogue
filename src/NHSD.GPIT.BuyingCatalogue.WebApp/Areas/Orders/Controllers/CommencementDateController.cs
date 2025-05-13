@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var affectedDeliveryDates = order.OrderItems
-                .SelectMany(x => order.OrderRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
+                .SelectMany(x => order.FlattenedRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
                 .Count(x => x.HasValue && x.Value < model.Date);
 
             if (affectedDeliveryDates > 0)
@@ -94,10 +94,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
             var newCommencementDate = DateTime.ParseExact(parameters[0], DateFormat, CultureInfo.InvariantCulture);
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var affectedDeliveryDates = order.OrderItems
-                .SelectMany(x => order.OrderRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
+                .SelectMany(x => order.FlattenedRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
                 .Count(x => x.HasValue && x.Value < newCommencementDate);
             var totalDeliveryDates = order.OrderItems
-                .SelectMany(x => order.OrderRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
+                .SelectMany(x => order.FlattenedRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
                 .Count(x => x.HasValue);
 
             var model = new ConfirmChangesModel

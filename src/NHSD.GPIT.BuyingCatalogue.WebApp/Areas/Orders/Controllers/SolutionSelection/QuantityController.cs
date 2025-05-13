@@ -146,10 +146,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     orderRecipients.GetQuantityForItem(orderItem.CatalogueItemId),
                     organisationRecipients.Location));
 
-            IEnumerable<ServiceRecipientQuantityDto> previousRecipients = wrapper.Previous?.OrderRecipients?.Select(
-                x => new ServiceRecipientQuantityDto(
-                    x.OdsCode,
-                    x.OdsOrganisation?.Name,
+            IEnumerable<ServiceRecipientQuantityDto> previousRecipients =
+                wrapper.Previous?.FlattenedRecipients?.Select(x => new ServiceRecipientQuantityDto(
+                    x.RecipientOdsCode,
+                    x.RecipientOdsOrganisation?.Name,
                     x.GetQuantityForItem(orderItem.CatalogueItemId)));
 
             var practiceReorganisation = order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient;

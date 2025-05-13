@@ -67,7 +67,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                         PriceId = CatalogueSolution.CatalogueItem.CataloguePrices.Count == 1
                             ? CatalogueSolution.CatalogueItem.CataloguePrices.First().CataloguePriceId
                             : 0,
-                        PreviousRecipients = Previous?.OrderRecipients.Count ?? 0,
+                        PreviousRecipients = Previous?.FlattenedRecipients.Count() ?? 0,
                         QuantityChanged =
                             (Previous?.OrderItems ?? [])
                             .FirstOrDefault(x => x.CatalogueItemId == CatalogueSolution.CatalogueItemId)
@@ -86,7 +86,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
                     PriceId = x.CatalogueItem.CataloguePrices.Count == 1
                         ? x.CatalogueItem.CataloguePrices.First().CataloguePriceId
                         : 0,
-                    PreviousRecipients = Previous?.OrderRecipients.Count ?? 0,
+                    PreviousRecipients = Previous?.FlattenedRecipients.Count() ?? 0,
                     QuantityChanged = ((Previous?.OrderItems ?? [])
                             .FirstOrDefault(y => y.CatalogueItemId == x.CatalogueItemId)
                             ?.Quantity ?? 0) !=

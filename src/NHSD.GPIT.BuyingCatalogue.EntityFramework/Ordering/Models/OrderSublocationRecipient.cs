@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
@@ -8,6 +9,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     public record OrderSublocationRecipient : ISublocationRecipient
     {
+        public OrderSublocationRecipient()
+        {
+        }
+
+        public OrderSublocationRecipient(CompetitionSublocationRecipient competitionSublocationRecipient)
+        {
+            RecipientOdsCode = competitionSublocationRecipient.RecipientOdsCode;
+            ParentSublocationOdsCode = competitionSublocationRecipient.ParentSublocationOdsCode;
+        }
+
         public int OrderId { get; set; }
 
         public string RecipientOdsCode { get; set; }

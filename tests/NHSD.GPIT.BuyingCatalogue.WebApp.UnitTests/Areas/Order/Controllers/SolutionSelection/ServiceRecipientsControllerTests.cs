@@ -188,7 +188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var additionalService = order.OrderItems.First();
 
-            var importedRecipients = string.Join(',', order.OrderRecipients.Select(x => x.OdsCode));
+            var importedRecipients = string.Join(',', order.FlattenedRecipients.Select(x => x.RecipientOdsCode));
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order, amendment }));
 

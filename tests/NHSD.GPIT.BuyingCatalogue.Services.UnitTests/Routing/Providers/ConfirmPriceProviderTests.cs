@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             var catalogueItemId = orderItem.CatalogueItemId;
 
             orderItem.Quantity = null;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
 
             var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId)
             {

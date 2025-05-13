@@ -30,7 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         private readonly IOdsService odsService;
         private readonly IOrderService orderService;
-        private readonly IOrderRecipientService orderRecipientService;
         private readonly IOrderSublocationService orderSublocationService;
         private readonly IOrganisationsService organisationsService;
         private readonly IOrderItemService orderItemService;
@@ -38,15 +37,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public ServiceRecipientsController(
             IOdsService odsService,
             IOrderService orderService,
-            IOrderRecipientService orderRecipientService,
             IOrderSublocationService orderSublocationService,
             IOrganisationsService organisationsService,
             IOrderItemService orderItemService)
         {
             this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-            this.orderRecipientService =
-                orderRecipientService ?? throw new ArgumentNullException(nameof(orderRecipientService));
             this.orderSublocationService =
                 orderSublocationService ?? throw new ArgumentNullException(nameof(orderSublocationService));
             this.organisationsService =
@@ -626,7 +622,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 await orderService.SetOrderPracticeReorganisationRecipient(internalOrgId, callOffId, model.PracticeReorganisationRecipient.OdsCode);
             }
 
-            await orderRecipientService.SetOrderRecipients(internalOrgId, callOffId, model.Selected.Select(x => x.OdsCode));
+            // await orderRecipientService.SetOrderRecipients(internalOrgId, callOffId, model.Selected.Select(x => x.OdsCode));
 
             return RedirectToAction(
                 nameof(OrderController.Order),
