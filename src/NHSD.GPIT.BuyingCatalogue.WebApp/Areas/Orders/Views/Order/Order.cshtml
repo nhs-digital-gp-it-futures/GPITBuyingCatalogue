@@ -59,7 +59,7 @@
                     <nhs-task-list-item label-text="Service Recipients"
                                         label-hint="@Model.StatusDescription(OrderSummaryField.ServiceRecipients)"
                                         url="@Url.Action(Model.IsMergerOrSplit
-                                                 ? nameof(ServiceRecipientsController.SelectServiceRecipients)
+                                                 ? nameof(MergerOrSplitServiceRecipientsController.SelectServiceRecipients)
                                                  : nameof(ServiceRecipientsController.UploadOrSelectServiceRecipients),
                                                  typeof(ServiceRecipientsController).ControllerName(),
                                                  new { Model.InternalOrgId, Model.CallOffId })"

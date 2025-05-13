@@ -162,15 +162,13 @@ public class ImportServiceRecipientsController : Controller
 
         var validOdsCodes = GetValidOdsCodes(cachedRecipients, organisationServiceRecipients);
         await importService.Clear(cacheKey);
+
         return RedirectToAction(
-            nameof(ServiceRecipientsController.ConfirmChanges),
+            nameof(ServiceRecipientsController.ConfirmSublocations),
             typeof(ServiceRecipientsController).ControllerName(),
             new
             {
-                internalOrgId,
-                callOffId,
-                recipientIds = string.Join(',', validOdsCodes),
-                hasImported = true,
+                internalOrgId, callOffId, recipientIds = string.Join(',', validOdsCodes), hasImported = true,
             });
     }
 
@@ -191,7 +189,7 @@ public class ImportServiceRecipientsController : Controller
         await importService.Clear(cacheKey);
 
         return RedirectToAction(
-            nameof(ServiceRecipientsController.ConfirmChanges),
+            nameof(ServiceRecipientsController.ConfirmSublocations),
             typeof(ServiceRecipientsController).ControllerName(),
             new
             {

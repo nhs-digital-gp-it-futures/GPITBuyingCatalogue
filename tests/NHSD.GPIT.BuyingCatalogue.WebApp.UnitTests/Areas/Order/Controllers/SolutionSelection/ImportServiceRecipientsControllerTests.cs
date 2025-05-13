@@ -288,7 +288,7 @@ public static class ImportServiceRecipientsControllerTests
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmChanges));
+        result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
         result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
         result.RouteValues.Should()
             .BeEquivalentTo(
@@ -340,7 +340,7 @@ public static class ImportServiceRecipientsControllerTests
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmChanges));
+        result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
         result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
         result.RouteValues.Should()
             .BeEquivalentTo(

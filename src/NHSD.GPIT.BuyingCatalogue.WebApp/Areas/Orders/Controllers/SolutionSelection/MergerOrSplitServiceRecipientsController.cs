@@ -30,14 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
     {
         private const string ConfirmRecipientTitle = "Confirm Service Recipients";
 
-        private const string AdviceText =
-            "Review the organisations you’ve selected to receive the items you’re ordering. ";
-
-        private const string AdditionalAdviceText =
-            "Review the new organisations you’ve selected to receive the items you’re ordering.";
-
-        private const string UploadOrSelectViewName = "ServiceRecipients/UploadOrSelectServiceRecipient";
-
         private readonly IOdsService odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
 
         private readonly IOrderService orderService =
