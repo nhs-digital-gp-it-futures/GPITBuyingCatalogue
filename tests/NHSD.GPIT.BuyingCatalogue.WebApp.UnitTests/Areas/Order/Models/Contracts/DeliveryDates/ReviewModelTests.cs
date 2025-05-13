@@ -44,24 +44,27 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
 
         [Theory]
         [MockAutoData]
-        public static void OrderItemRecipients_ReturnsRecipientsForDate(
+        public static void OrderItemSublocationRecipients_ReturnsRecipientsForDate(
             EntityFramework.Ordering.Models.Order order,
             OrderItem solution,
-            OrderRecipient recipient,
-            OrderItemRecipient orderItemRecipient,
+            OrderSublocation sublocation,
+            OrderSublocationRecipient recipient,
+            OrderItemSublocationRecipient orderItemSublocationRecipient,
             DateTime date)
         {
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            orderItemRecipient.DeliveryDate = date;
-            orderItemRecipient.CatalogueItemId = solution.CatalogueItemId;
-            recipient.OrderItemRecipients.Clear();
-            recipient.OrderItemRecipients.Add(orderItemRecipient);
-
-            order.OrderRecipients.Clear();
-            order.OrderRecipients = new List<OrderRecipient>() { recipient };
-
+            sublocation.SublocationRecipients.Clear();
+            recipient.OrderItemSublocationRecipients.Clear();
+            order.OrderSublocations.Clear();
             order.OrderItems.Clear();
+
+            orderItemSublocationRecipient.DeliveryDate = date;
+            orderItemSublocationRecipient.CatalogueItemId = solution.CatalogueItemId;
+
+            recipient.OrderItemSublocationRecipients.Add(orderItemSublocationRecipient);
+            sublocation.SublocationRecipients.Add(recipient);
+            order.OrderSublocations.Add(sublocation);
             order.OrderItems.Add(solution);
 
             var model = new ReviewModel(new OrderWrapper(order));
@@ -77,20 +80,23 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         public static void OrderDates_ReturnsDatesForOrderItem(
             EntityFramework.Ordering.Models.Order order,
             OrderItem solution,
-            OrderRecipient recipient,
-            OrderItemRecipient orderItemRecipient,
+            OrderSublocation sublocation,
+            OrderSublocationRecipient recipient,
+            OrderItemSublocationRecipient orderItemSublocationRecipient,
             DateTime date)
         {
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            orderItemRecipient.DeliveryDate = date;
-            recipient.OrderItemRecipients.Clear();
-            recipient.OrderItemRecipients.Add(orderItemRecipient);
-
-            order.OrderRecipients.Clear();
-            order.OrderRecipients = new List<OrderRecipient>() { recipient };
-
+            sublocation.SublocationRecipients.Clear();
+            recipient.OrderItemSublocationRecipients.Clear();
+            order.OrderSublocations.Clear();
             order.OrderItems.Clear();
+
+            orderItemSublocationRecipient.DeliveryDate = date;
+
+            recipient.OrderItemSublocationRecipients.Add(orderItemSublocationRecipient);
+            sublocation.SublocationRecipients.Add(recipient);
+            order.OrderSublocations.Add(sublocation);
             order.OrderItems.Add(solution);
 
             var model = new ReviewModel(new OrderWrapper(order));
