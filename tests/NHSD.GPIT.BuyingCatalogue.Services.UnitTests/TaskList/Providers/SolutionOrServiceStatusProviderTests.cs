@@ -224,6 +224,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             });
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
+            order.FlattenedRecipients.ForEach(x => x.OrderItemSublocationRecipients.ForEach(y => y.Quantity = null));
+
             var actual = service.Get(new OrderWrapper(order), state);
 
             actual.Should().Be(TaskProgress.InProgress);
