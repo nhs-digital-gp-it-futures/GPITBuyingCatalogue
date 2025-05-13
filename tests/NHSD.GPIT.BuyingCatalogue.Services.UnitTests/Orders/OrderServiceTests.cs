@@ -57,22 +57,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task GetOrderWithCatalogueItemAndPrices_ReturnsExpectedResults(
-           Order order,
-           OrderItem orderItem,
-           CatalogueItem catalogueItem,
-           Organisation organisation,
-           EntityFramework.Catalogue.Models.Framework selectedFramework,
-           [Frozen] BuyingCatalogueDbContext context,
-           OrderService service)
+            Order order,
+            OrderItem orderItem,
+            CatalogueItem catalogueItem,
+            EntityFramework.Catalogue.Models.Framework selectedFramework,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
         {
-            order.OrderingPartyId = organisation.Id;
-            order.OrderingParty = organisation;
-
             order.SelectedFrameworkId = selectedFramework.Id;
             order.SelectedFramework = selectedFramework;
 
             orderItem.CatalogueItem = catalogueItem;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
 
@@ -83,7 +79,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var result = (await service.GetOrderWithCatalogueItemAndPrices(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
 
-            result.OrderingParty.Should().BeEquivalentTo(organisation);
             result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
             result.OrderItems.Count.Should().Be(1);
             var actual = result.OrderItems.First();
@@ -109,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.SelectedFramework = selectedFramework;
 
             orderItem.CatalogueItem = catalogueItem;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
 
@@ -134,19 +129,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Order order,
             OrderItem orderItem,
             CatalogueItem catalogueItem,
-            Organisation organisation,
             EntityFramework.Catalogue.Models.Framework selectedFramework,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            order.OrderingPartyId = organisation.Id;
-            order.OrderingParty = organisation;
-
             order.SelectedFrameworkId = selectedFramework.Id;
             order.SelectedFramework = selectedFramework;
 
             orderItem.CatalogueItem = catalogueItem;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
 
@@ -157,7 +148,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var result = (await service.GetOrderWithOrderItemsForFunding(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
 
-            result.OrderingParty.Should().BeEquivalentTo(organisation);
             result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
             result.OrderItems.Count.Should().Be(1);
             var actual = result.OrderItems.First();
@@ -204,7 +194,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Organisation orderingParty,
             List<OrderItem> orderItems,
             EntityFramework.Catalogue.Models.Framework framework,
-            List<OrderRecipient> orderRecipients,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
@@ -220,7 +209,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.OrderingPartyContact = orderingPartyContact;
             order.OrderingParty = orderingParty;
             order.SelectedFramework = framework;
-            order.OrderRecipients = orderRecipients;
 
             context.Orders.Add(order);
 
