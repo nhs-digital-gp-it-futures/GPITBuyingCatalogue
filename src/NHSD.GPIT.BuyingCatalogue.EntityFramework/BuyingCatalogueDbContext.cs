@@ -114,11 +114,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public DbSet<OrderDeletionApproval> OrderDeletionApprovals { get; set; }
 
         public DbSet<OrderItem> OrderItems { get; set; }
+
         public DbSet<OrderItemSublocationRecipient> OrderItemSublocationRecipients { get; set; }
 
         public DbSet<OrderItemFunding> OrderItemFunding { get; set; }
-
-        public DbSet<OrderItemRecipient> OrderItemRecipients { get; set; }
 
         public DbSet<OrderItemPrice> OrderItemPrices { get; set; }
 
