@@ -20,8 +20,8 @@
                 var recipientTitle = Model.OrderType.GetPracticeReorganisationRecipientTitle();
                 var recipientsTitle = Model.OrderType.GetServiceRecipientsTitle();
 
-                <input type="hidden" asp-for="PracticeReorganisationRecipient.Name" />
-                <input type="hidden" asp-for="PracticeReorganisationRecipient.OdsCode" />
+                <input type="hidden" asp-for="PracticeReorganisationRecipientRecipient.Name" />
+                <input type="hidden" asp-for="PracticeReorganisationRecipientRecipient.OdsCode" />
                 <div id="selected-service-recipients-practice-reorganisation">
 
                     <h3 style="white-space:nowrap">@recipientTitle</h3>
@@ -32,10 +32,10 @@
                             <nhs-table-column>ODS code</nhs-table-column>
                             <nhs-table-row-container>
                                 <nhs-table-cell>
-                                    @Model.PracticeReorganisationRecipient.Name
+                                    @Model.PracticeReorganisationRecipientRecipient.Name
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    @Model.PracticeReorganisationRecipient.OdsCode
+                                    @Model.PracticeReorganisationRecipientRecipient.OdsCode
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         </nhs-table>

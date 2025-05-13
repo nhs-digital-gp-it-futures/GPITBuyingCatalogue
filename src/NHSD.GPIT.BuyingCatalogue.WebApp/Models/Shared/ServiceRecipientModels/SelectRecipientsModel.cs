@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
-public class SelectRecipientsModel : NavBaseModel
+public sealed class SelectRecipientsModel : NavBaseModel
 {
+    public const int SelectAtLeast = 2;
+
     private readonly SelectionMode? selectionMode;
 
     public SelectRecipientsModel()
@@ -15,6 +18,8 @@ public class SelectRecipientsModel : NavBaseModel
 
     public SelectRecipientsModel(
         Organisation organisation,
+        CallOffId callOffId,
+        OrderType orderType,
         IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
         IEnumerable<string> existingRecipients,
         IEnumerable<ServiceRecipientModel> previouslySelectedRecipients,
@@ -22,6 +27,9 @@ public class SelectRecipientsModel : NavBaseModel
         SelectionMode? selectionMode = null,
         bool isAmendment = false)
     {
+        GetTitleAndAdviceFromOrderType(orderType);
+        Caption = $"Order {callOffId}";
+
         this.selectionMode = selectionMode;
 
         OrganisationName = organisation.Name;
@@ -46,7 +54,7 @@ public class SelectRecipientsModel : NavBaseModel
 
     public OrganisationType OrganisationType { get; set; }
 
-    public SublocationModel[] SubLocations { get; set; } = Array.Empty<SublocationModel>();
+    public SublocationModel[] SubLocations { get; set; } = [];
 
     public ServiceRecipientModel[] SearchRecipients => SubLocations.SelectMany(x => x.ServiceRecipients.Select(y => new ServiceRecipientModel { Name = y.Name, OdsCode = y.OdsCode })).OrderBy(x => x.Name).ToArray();
 
@@ -55,8 +63,6 @@ public class SelectRecipientsModel : NavBaseModel
     public List<ServiceRecipientModel> PreviouslySelected { get; set; }
 
     public bool ShouldExpand { get; set; }
-
-    public int? SelectAtLeast { get; set; }
 
     public bool IsAmendment { get; set; }
 
@@ -93,9 +99,12 @@ public class SelectRecipientsModel : NavBaseModel
                 if (recipients == null) return;
 
                 var enumeratedRecipients = recipients.ToArray();
-                var recipientsToSelect = enumeratedRecipients.Any() ? enumeratedRecipients.ToArray() : existingRecipients.ToArray();
+                var recipientsToSelect = enumeratedRecipients.Any()
+                    ? enumeratedRecipients.ToArray()
+                    : existingRecipients.ToArray();
 
-                var matchingRecipients = GetServiceRecipients().Where(x => recipientsToSelect.Contains(x.OdsCode)).ToList();
+                List<ServiceRecipientModel> matchingRecipients =
+                    GetServiceRecipients().Where(x => recipientsToSelect.Contains(x.OdsCode)).ToList();
                 if (!matchingRecipients.Any())
                     return;
 
@@ -105,5 +114,31 @@ public class SelectRecipientsModel : NavBaseModel
 
                 break;
         }
+    }
+
+    private void GetTitleAndAdviceFromOrderType(OrderType orderType)
+    {
+        switch (orderType.Value)
+        {
+            case OrderTypeEnum.AssociatedServiceSplit:
+            {
+                Title = "Service Recipients splitting";
+                Advice =
+                    "Select all the practices that will be involved in the split you’re ordering. They must all be using the same Catalogue Solution.";
+                break;
+            }
+
+            case OrderTypeEnum.AssociatedServiceMerger:
+            {
+                Title = "Service Recipients merging";
+                Advice =
+                    "Select all the practices that will be involved in the merger you’re ordering. They must all be using the same Catalogue Solution.";
+                break;
+            }
+
+            default: throw new ArgumentOutOfRangeException(nameof(orderType));
+        }
+
+        ;
     }
 }

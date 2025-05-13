@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using FluentValidation.TestHelper;
-using MoreLinq.Extensions;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
+﻿using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 using Xunit;
 
@@ -15,13 +12,15 @@ public static class SelectRecipientsModelValidatorTests
         SelectRecipientsModel model,
         SelectRecipientsModelValidator systemUnderTest)
     {
-        model.SelectAtLeast = null;
-        model.GetServiceRecipients().ForEach(x => x.Selected = false);
+        Assert.Fail("not implemented");
 
-        var result = systemUnderTest.TestValidate(model);
-
-        result.ShouldHaveValidationErrorFor("SubLocations[0].ServiceRecipients[0].Selected")
-            .WithErrorMessage(SelectRecipientsModelValidator.NoSelectionMadeErrorMessage);
+        // model.SelectAtLeast = null;
+        // model.GetServiceRecipients().ForEach(x => x.Selected = false);
+        //
+        // var result = systemUnderTest.TestValidate(model);
+        //
+        // result.ShouldHaveValidationErrorFor("SubLocations[0].ServiceRecipients[0].Selected")
+        //     .WithErrorMessage(SelectRecipientsModelValidator.NoSelectionMadeErrorMessage);
     }
 
     [Theory]
@@ -30,14 +29,16 @@ public static class SelectRecipientsModelValidatorTests
         SelectRecipientsModel model,
         SelectRecipientsModelValidator systemUnderTest)
     {
-        model.SelectAtLeast = 2;
-        model.GetServiceRecipients().ForEach(x => x.Selected = false);
-        model.GetServiceRecipients().First().Selected = true;
+        Assert.Fail("not implemented");
 
-        var result = systemUnderTest.TestValidate(model);
-
-        result.ShouldHaveValidationErrorFor("SubLocations[0].ServiceRecipients[0].Selected")
-            .WithErrorMessage(string.Format(SelectRecipientsModelValidator.SelectAtLeastErrorMessage, model.SelectAtLeast.Value));
+        // model.SelectAtLeast = 2;
+        // model.GetServiceRecipients().ForEach(x => x.Selected = false);
+        // model.GetServiceRecipients().First().Selected = true;
+        //
+        // var result = systemUnderTest.TestValidate(model);
+        //
+        // result.ShouldHaveValidationErrorFor("SubLocations[0].ServiceRecipients[0].Selected")
+        //     .WithErrorMessage(string.Format(SelectRecipientsModelValidator.SelectAtLeastErrorMessage, model.SelectAtLeast.Value));
     }
 
     [Theory]
@@ -49,12 +50,14 @@ public static class SelectRecipientsModelValidatorTests
         SelectRecipientsModel model,
         SelectRecipientsModelValidator systemUnderTest)
     {
-        model.SelectAtLeast = selectAtLeast;
-        model.GetServiceRecipients().ForEach(x => x.Selected = false);
-        model.GetServiceRecipients().First().Selected = true;
+        Assert.Fail("not implemented");
 
-        var result = systemUnderTest.TestValidate(model);
-
-        result.ShouldNotHaveAnyValidationErrors();
+        // model.SelectAtLeast = selectAtLeast;
+        // model.GetServiceRecipients().ForEach(x => x.Selected = false);
+        // model.GetServiceRecipients().First().Selected = true;
+        //
+        // var result = systemUnderTest.TestValidate(model);
+        //
+        // result.ShouldNotHaveAnyValidationErrors();
     }
 }

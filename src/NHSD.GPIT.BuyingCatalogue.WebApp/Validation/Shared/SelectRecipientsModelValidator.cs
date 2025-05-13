@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
@@ -11,17 +12,19 @@ public class SelectRecipientsModelValidator : AbstractValidator<SelectRecipients
 
     public SelectRecipientsModelValidator()
     {
-        RuleFor(x => x.SubLocations)
-            .Must(HaveMadeASelection)
-            .WithMessage(NoSelectionMadeErrorMessage)
-            .OverridePropertyName("SubLocations[0].ServiceRecipients[0].Selected")
-            .When(m => !m.SelectAtLeast.HasValue);
+        throw new NotImplementedException();
 
-        RuleFor(x => x.SubLocations)
-            .Must((m, x) => HaveMadeMinimumCountSelection(m.SelectAtLeast.Value, x))
-            .WithMessage(m => string.Format(SelectAtLeastErrorMessage, m.SelectAtLeast.Value))
-            .OverridePropertyName("SubLocations[0].ServiceRecipients[0].Selected")
-            .When(m => m.SelectAtLeast.HasValue);
+        // RuleFor(x => x.SubLocations)
+        //     .Must(HaveMadeASelection)
+        //     .WithMessage(NoSelectionMadeErrorMessage)
+        //     .OverridePropertyName("SubLocations[0].ServiceRecipients[0].Selected")
+        //     .When(m => !m.SelectAtLeast.HasValue);
+        //
+        // RuleFor(x => x.SubLocations)
+        //     .Must((m, x) => HaveMadeMinimumCountSelection(m.SelectAtLeast.Value, x))
+        //     .WithMessage(m => string.Format(SelectAtLeastErrorMessage, m.SelectAtLeast.Value))
+        //     .OverridePropertyName("SubLocations[0].ServiceRecipients[0].Selected")
+        //     .When(m => m.SelectAtLeast.HasValue);
     }
 
     private static bool HaveMadeMinimumCountSelection(int selectAtLeast, SublocationModel[] subLocations)

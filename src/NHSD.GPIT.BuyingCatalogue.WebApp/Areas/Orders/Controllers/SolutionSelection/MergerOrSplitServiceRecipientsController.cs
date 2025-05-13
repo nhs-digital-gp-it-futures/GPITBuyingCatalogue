@@ -11,7 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.UI.Components.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.ServiceRecipients;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
@@ -28,8 +27,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         IOrderItemService orderItemService)
         : Controller
     {
-        private const string ConfirmRecipientTitle = "Confirm Service Recipients";
-
         private readonly IOdsService odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
 
         private readonly IOrderService orderService =
@@ -48,9 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> SelectServiceRecipients(
             string internalOrgId,
             CallOffId callOffId,
-            SelectionMode? selectionMode = null,
-            string recipientIds = null,
-            string importedRecipients = null)
+            SelectionMode? selectionMode = null)
         {
             Organisation organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
             OrderWrapper wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
@@ -65,15 +60,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             List<ServiceRecipientModel> possibleServiceRecipients = MapToModel(
                 await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId),
                 true);
-            var importedRecipientCodes = UrlStringToValues(
-                string.Join(RecipientsConstants.Delimiter, recipientIds, importedRecipients));
-
-            PageTitleModel title = GetSelectMergeOrSplitServiceRecipientsTitle(wrapper.Order.OrderType);
 
             IEnumerable<ServiceRecipient> previousRecipients =
                 await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                     internalOrgId,
                     wrapper.Previous.FlattenedRecipients.Select(x => x.RecipientOdsCode));
+
             List<ServiceRecipientModel> previousRecipientsModel = MapToModel(previousRecipients, false);
 
             IEnumerable<string> addedRecipientOdsCodes = wrapper.Order.AddedOrderRecipients(wrapper.Previous)
@@ -88,30 +80,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var model =
                 new SelectRecipientsModel(
                     organisation,
+                    callOffId,
+                    wrapper.Order.OrderType,
                     possibleServiceRecipients,
                     addedRecipientOdsCodes,
                     previousRecipientsModel,
-                    importedRecipientCodes,
+                    [],
                     selectionMode,
                     wrapper.IsAmendment)
                 {
-                    Title = title.Title,
-                    Caption = $"Order {callOffId}",
-                    Advice = title.Advice,
-                    BackLink =
-                        wrapper.Order.OrderType.MergerOrSplit
-                            ? Url.Action(
-                                nameof(OrderController.Order),
-                                typeof(OrderController).ControllerName(),
-                                new { internalOrgId, callOffId })
-                            : Url.Action(
-                                nameof(ServiceRecipientsController.UploadOrSelectServiceRecipients),
-                                typeof(ServiceRecipientsController).ControllerName(),
-                                new { internalOrgId, callOffId }),
-                    HasImportedRecipients = !string.IsNullOrWhiteSpace(importedRecipients),
-                    SelectAtLeast = wrapper.Order.OrderType.MergerOrSplit
-                        ? 2
-                        : null,
+                    BackLink = Url.Action(
+                        nameof(OrderController.Order),
+                        typeof(OrderController).ControllerName(),
+                        new { internalOrgId, callOffId }),
                 };
 
             return View(model);
@@ -156,23 +137,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 .OrderType;
 
             var selectedRecipientOdsCodes = UrlStringToValues(recipientIds);
+
             List<ServiceRecipientModel> serviceRecipients = MapToModel(
                 await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                     internalOrgId,
                     selectedRecipientOdsCodes),
                 false);
-            PageTitleModel title = GetSelectRecipientForPracticeReorganisationTitle(orderType);
 
             var model = new RecipientForPracticeReorganisationModel(
                 organisation,
-                serviceRecipients)
-            {
-                Title = title.Title,
-                Caption = $"Order {callOffId}",
-                Advice = title.Advice,
-                BackLink = "",
-                SelectedOdsCode = selectedRecipientId,
-            };
+                callOffId,
+                orderType,
+                serviceRecipients) { BackLink = "", SelectedOdsCode = selectedRecipientId };
             return View(model);
         }
 
@@ -212,37 +188,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 false);
             ServiceRecipientModel practiceReorganisation = null;
 
-            if (orderType.MergerOrSplit)
-            {
-                practiceReorganisation = selectedRecipients.FirstOrDefault(r => r.OdsCode == selectedRecipientId);
-                if (practiceReorganisation == null)
-                {
-                    throw new InvalidOperationException(
-                        $"The selected merger or split recipient {selectedRecipientId} isn't in the list of recipients");
-                }
+            practiceReorganisation = selectedRecipients.FirstOrDefault(r => r.OdsCode == selectedRecipientId);
 
-                selectedRecipients.Remove(practiceReorganisation);
+            if (practiceReorganisation == null)
+            {
+                throw new InvalidOperationException(
+                    $"The selected merger or split recipient {selectedRecipientId} isn't in the list of recipients");
             }
+
+            selectedRecipients.Remove(practiceReorganisation);
 
             IEnumerable<ServiceRecipient> previousRecipients =
                 await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                     internalOrgId,
                     wrapper.Previous.FlattenedRecipients.Select(x => x.RecipientOdsCode));
 
-            PageTitleModel title = GetConfirmRecipientsTitle(orderType);
-            var model = new ConfirmChangesModel
+            var model = new ConfirmChangesModel(
+                callOffId,
+                orderType,
+                selectedRecipients,
+                practiceReorganisation,
+                MapToModel(previousRecipients, false))
             {
-                Title = title.Title,
-                Caption = $"Order {callOffId}",
-                Advice = title.Advice,
-                OrderType = orderType,
                 BackLink = Url.Action(
                     nameof(SelectRecipientForPracticeReorganisation),
                     new { internalOrgId, callOffId, recipientIds, selectedRecipientId }),
                 AddRemoveRecipientsLink = "",
-                Selected = selectedRecipients,
-                PracticeReorganisationRecipient = practiceReorganisation,
-                PreviouslySelected = MapToModel(previousRecipients, false),
             };
 
             return View(model);
@@ -254,75 +225,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CallOffId callOffId,
             ConfirmChangesModel model)
         {
-            if (model.OrderType.MergerOrSplit)
-            {
-                await orderService.SetOrderPracticeReorganisationRecipient(
-                    internalOrgId,
-                    callOffId,
-                    model.PracticeReorganisationRecipient.OdsCode);
-            }
+            await orderService.SetOrderPracticeReorganisationRecipient(
+                internalOrgId,
+                callOffId,
+                model.PracticeReorganisationRecipientRecipient.OdsCode);
 
-            // await orderRecipientService.SetOrderRecipients(internalOrgId, callOffId, model.Selected.Select(x => x.OdsCode));
+            await orderService.SetSublocationsAndRecipients(callOffId, internalOrgId, []);
 
             return RedirectToAction(
                 nameof(OrderController.Order),
                 typeof(OrderController).ControllerName(),
                 new { internalOrgId, callOffId });
-        }
-
-        private static PageTitleModel GetSelectMergeOrSplitServiceRecipientsTitle(OrderType orderType)
-        {
-            return orderType.Value switch
-            {
-                OrderTypeEnum.AssociatedServiceSplit => new PageTitleModel
-                {
-                    Title = "Service Recipients splitting",
-                    Advice =
-                        "Select all the practices that will be involved in the split you’re ordering. They must all be using the same Catalogue Solution.",
-                },
-                OrderTypeEnum.AssociatedServiceMerger => new PageTitleModel
-                {
-                    Title = "Service Recipients merging",
-                    Advice =
-                        "Select all the practices that will be involved in the merger you’re ordering. They must all be using the same Catalogue Solution.",
-                },
-                _ => throw new ArgumentOutOfRangeException(nameof(orderType)),
-            };
-        }
-
-        private static PageTitleModel GetSelectRecipientForPracticeReorganisationTitle(OrderType orderType)
-        {
-            return new PageTitleModel
-            {
-                Title = orderType.GetPracticeReorganisationRecipientTitle(),
-                Advice = orderType.Value switch
-                {
-                    OrderTypeEnum.AssociatedServiceSplit =>
-                        "Select the Service Recipient that will be losing patients as part of the split.",
-                    OrderTypeEnum.AssociatedServiceMerger =>
-                        "Select the Service Recipient that will still exist after the merger.",
-                    _ => throw new InvalidOperationException(
-                        $"Unsupported orderType {orderType.Value} in {nameof(GetSelectRecipientForPracticeReorganisationTitle)}"),
-                },
-            };
-        }
-
-        private static PageTitleModel GetConfirmRecipientsTitle(OrderType orderType)
-        {
-            return orderType.Value switch
-            {
-                OrderTypeEnum.AssociatedServiceSplit => new PageTitleModel
-                {
-                    Title = ConfirmRecipientTitle,
-                    Advice = "Review the practices involved in the split you’re ordering.",
-                },
-                OrderTypeEnum.AssociatedServiceMerger => new PageTitleModel
-                {
-                    Title = ConfirmRecipientTitle,
-                    Advice = "Review the practices involved in the merger you’re ordering.",
-                },
-                _ => throw new ArgumentOutOfRangeException(nameof(orderType)),
-            };
         }
 
         private static string[] UrlStringToValues(string recipientIds)

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using Xunit;
@@ -19,6 +20,8 @@ public static class SelectRecipientsModelTests
     {
         var model = new SelectRecipientsModel(
             organisation,
+            new CallOffId(),
+            OrderTypeEnum.AssociatedServiceSplit, // TEMP
             serviceRecipients,
             existingRecipients,
             [],
@@ -53,6 +56,8 @@ public static class SelectRecipientsModelTests
 
         var model = new SelectRecipientsModel(
             organisation,
+            new CallOffId(),
+            OrderTypeEnum.AssociatedServiceSplit, // TEMP
             serviceRecipients,
             existingRecipients,
             [],
@@ -75,6 +80,8 @@ public static class SelectRecipientsModelTests
 
         var model = new SelectRecipientsModel(
             organisation,
+            new CallOffId(),
+            OrderTypeEnum.AssociatedServiceSplit, // TEMP
             serviceRecipients,
             existingRecipients,
             [],
@@ -95,6 +102,8 @@ public static class SelectRecipientsModelTests
 
         var model = new SelectRecipientsModel(
             organisation,
+            new CallOffId(),
+            OrderTypeEnum.AssociatedServiceSplit, // TEMP
             serviceRecipients,
             existingRecipients,
             [],
@@ -116,6 +125,8 @@ public static class SelectRecipientsModelTests
 
         var model = new SelectRecipientsModel(
             organisation,
+            new CallOffId(),
+            OrderTypeEnum.AssociatedServiceSplit, // TEMP
             serviceRecipients,
             existingRecipients,
             [],

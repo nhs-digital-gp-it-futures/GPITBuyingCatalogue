@@ -90,6 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var expected = new SelectRecipientsModel(
                 organisation,
+                new CallOffId(),
+                OrderTypeEnum.AssociatedServiceSplit, // TEMP
                 recipients,
                 order.AddedOrderRecipients(null).Select(r => r.RecipientOdsCode),
                 Enumerable.Empty<ServiceRecipientModel>().ToList(),
@@ -153,11 +155,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var expected = new SelectRecipientsModel(
                 organisation,
+                new CallOffId(),
+                OrderTypeEnum.AssociatedServiceOther, // TEMP
                 recipients,
                 order.AddedOrderRecipients(null).Select(r => r.RecipientOdsCode),
                 Enumerable.Empty<ServiceRecipientModel>().ToList(),
                 [],
-                selectionMode) { SelectAtLeast = atLeast };
+                selectionMode);
 
             actualResult.Model.Should().BeEquivalentTo(expected, x => x
                 .Excluding(o => o.Title)
@@ -198,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             organisationsService.GetOrganisationByInternalIdentifier(internalOrgId).Returns(organisation);
 
-            var result = await controller.SelectServiceRecipients(internalOrgId, callOffId, importedRecipients: importedRecipients);
+            IActionResult result = await controller.SelectServiceRecipients(internalOrgId, callOffId);
 
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeAssignableTo<SelectRecipientsModel>().Subject;
@@ -558,15 +562,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ConfirmChangesModel()
+            var expected = new ConfirmChangesModel
             {
                 Title = "Confirm Service Recipients",
                 Caption = $"Order {callOffId}",
                 Selected = serviceRecipients
                     .Where(r => r.OrgId != recipientIdFromList)
-                    .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
+                    .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
+                    .ToList(),
                 PreviouslySelected = new List<ServiceRecipientModel>(),
-                PracticeReorganisationRecipient = serviceRecipients
+                PracticeReorganisationRecipientRecipient = serviceRecipients
                     .Where(r => r.OrgId == recipientIdFromList)
                     .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
                     .First(),
