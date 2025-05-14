@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
             OrderType = orderType;
             Selected = selectedRecipients;
-            PracticeReorganisationRecipientRecipient = practiceReorganisationRecipient;
+            PracticeReorganisationRecipient = practiceReorganisationRecipient;
         }
 
         public ConfirmChangesModel(Organisation organisation)
@@ -50,11 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public OrderType OrderType { get; set; }
 
-        public ServiceRecipientModel PracticeReorganisationRecipientRecipient { get; set; }
+        public ServiceRecipientModel PracticeReorganisationRecipient { get; set; }
 
         public List<ServiceRecipientModel> Selected { get; set; } = [];
-
-        public List<ServiceRecipientModel> PreviouslySelected { get; set; } = [];
 
         private void GetTitleAndAdviceFromOrderType(OrderType orderType)
         {

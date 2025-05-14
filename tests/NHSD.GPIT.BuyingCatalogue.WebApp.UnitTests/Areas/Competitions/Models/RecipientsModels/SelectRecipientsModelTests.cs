@@ -23,8 +23,6 @@ public static class SelectRecipientsModelTests
             new CallOffId(),
             OrderTypeEnum.AssociatedServiceSplit, // TEMP
             serviceRecipients,
-            existingRecipients,
-            [],
             preSelectedRecipients);
 
         var groupedSubLocations = serviceRecipients.GroupBy(x => x.Location)
@@ -59,8 +57,6 @@ public static class SelectRecipientsModelTests
             new CallOffId(),
             OrderTypeEnum.AssociatedServiceSplit, // TEMP
             serviceRecipients,
-            existingRecipients,
-            [],
             preSelectedRecipients,
             selectionMode);
 
@@ -83,8 +79,6 @@ public static class SelectRecipientsModelTests
             new CallOffId(),
             OrderTypeEnum.AssociatedServiceSplit, // TEMP
             serviceRecipients,
-            existingRecipients,
-            [],
             preSelectedRecipients);
 
         model.GetSelectedServiceRecipients().Select(x => x.OdsCode).Should().BeEquivalentTo(preSelectedRecipients);
@@ -105,8 +99,6 @@ public static class SelectRecipientsModelTests
             new CallOffId(),
             OrderTypeEnum.AssociatedServiceSplit, // TEMP
             serviceRecipients,
-            existingRecipients,
-            [],
             preSelectedRecipients);
 
         model.HasSelectedRecipients().Should().BeFalse();
@@ -128,8 +120,6 @@ public static class SelectRecipientsModelTests
             new CallOffId(),
             OrderTypeEnum.AssociatedServiceSplit, // TEMP
             serviceRecipients,
-            existingRecipients,
-            [],
             preSelectedRecipients);
 
         model.GetSelectedServiceRecipients().Select(x => x.OdsCode).Should().BeEquivalentTo(preSelectedRecipients);

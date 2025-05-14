@@ -203,12 +203,47 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CallOffId callOffId,
             ConfirmChangesModel model)
         {
+            var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
+
+            Organisation organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
+
             await orderService.SetOrderPracticeReorganisationRecipient(
                 internalOrgId,
                 callOffId,
-                model.PracticeReorganisationRecipientRecipient.OdsCode);
+                model.PracticeReorganisationRecipient.OdsCode);
 
-            await orderService.SetSublocationsAndRecipients(callOffId, internalOrgId, []);
+            IReadOnlyList<ServiceRecipient> selectedAsServiceRecipient =
+                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    model.Selected.Select(x => x.OdsCode));
+
+            List<SublocationModel> recipientsAsSublocationModel = selectedAsServiceRecipient
+                .GroupBy(x => x.LocationOrgId)
+                .Select(x => new SublocationModel
+                {
+                    OdsCode = x.Key,
+                    ServiceRecipients = x.Select(y => new ServiceRecipientModel(y))
+                        .ToList(),
+                })
+                .ToList();
+
+            List<OrderSublocation> sublocationsAsEntityModel =
+                recipientsAsSublocationModel.Select(x => new OrderSublocation
+                    {
+                        OrderId = orderId,
+                        OwnerOdsCode = organisation.ExternalIdentifier,
+                        SublocationOdsCode = x.OdsCode,
+                        SublocationRecipients = x.ServiceRecipients.Select(y => new OrderSublocationRecipient
+                            {
+                                OrderId = orderId,
+                                ParentSublocationOdsCode = x.OdsCode,
+                                RecipientOdsCode = y.OdsCode,
+                            })
+                            .ToList(),
+                    })
+                    .ToList();
+
+            await orderService.SetSublocationsAndRecipients(callOffId, internalOrgId, sublocationsAsEntityModel);
 
             return RedirectToAction(
                 nameof(OrderController.Order),

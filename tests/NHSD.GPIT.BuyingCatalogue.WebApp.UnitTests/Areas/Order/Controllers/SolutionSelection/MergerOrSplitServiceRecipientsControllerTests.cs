@@ -93,8 +93,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 new CallOffId(),
                 OrderTypeEnum.AssociatedServiceSplit, // TEMP
                 recipients,
-                order.AddedOrderRecipients(null).Select(r => r.RecipientOdsCode),
-                Enumerable.Empty<ServiceRecipientModel>().ToList(),
                 [],
                 selectionMode);
 
@@ -158,8 +156,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 new CallOffId(),
                 OrderTypeEnum.AssociatedServiceOther, // TEMP
                 recipients,
-                order.AddedOrderRecipients(null).Select(r => r.RecipientOdsCode),
-                Enumerable.Empty<ServiceRecipientModel>().ToList(),
                 [],
                 selectionMode);
 
@@ -460,12 +456,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ConfirmChangesModel()
+            var expected = new ConfirmChangesModel
             {
                 Title = "Confirm Service Recipients",
                 Caption = $"Order {callOffId}",
-                Selected = serviceRecipients.Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location }).ToList(),
-                PreviouslySelected = new List<ServiceRecipientModel>(),
+                Selected = serviceRecipients.Select(x =>
+                        new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
+                    .ToList(),
                 OrderType = orderType,
             };
 
@@ -570,8 +567,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     .Where(r => r.OrgId != recipientIdFromList)
                     .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
                     .ToList(),
-                PreviouslySelected = new List<ServiceRecipientModel>(),
-                PracticeReorganisationRecipientRecipient = serviceRecipients
+                PracticeReorganisationRecipient = serviceRecipients
                     .Where(r => r.OrgId == recipientIdFromList)
                     .Select(x => new ServiceRecipientModel { Name = x.Name, OdsCode = x.OrgId, Location = x.Location })
                     .First(),
