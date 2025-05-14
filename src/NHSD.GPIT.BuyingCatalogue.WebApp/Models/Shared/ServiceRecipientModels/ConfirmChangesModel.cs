@@ -18,8 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             CallOffId callOffId,
             OrderType orderType,
             List<ServiceRecipientModel> selectedRecipients,
-            ServiceRecipientModel practiceReorganisationRecipient,
-            List<ServiceRecipientModel> previouslySelected)
+            ServiceRecipientModel practiceReorganisationRecipient)
         {
             GetTitleAndAdviceFromOrderType(orderType);
             Caption = $"Order {callOffId}";
@@ -27,7 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             OrderType = orderType;
             Selected = selectedRecipients;
             PracticeReorganisationRecipientRecipient = practiceReorganisationRecipient;
-            PreviouslySelected = previouslySelected;
         }
 
         public ConfirmChangesModel(Organisation organisation)

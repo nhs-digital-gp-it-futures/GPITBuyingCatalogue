@@ -21,8 +21,6 @@ public sealed class SelectRecipientsModel : NavBaseModel
         CallOffId callOffId,
         OrderType orderType,
         IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
-        IEnumerable<string> existingRecipients,
-        IEnumerable<ServiceRecipientModel> previouslySelectedRecipients,
         IEnumerable<string> preSelectedRecipients,
         SelectionMode? selectionMode = null,
         bool isAmendment = false)
@@ -34,20 +32,18 @@ public sealed class SelectRecipientsModel : NavBaseModel
 
         OrganisationName = organisation.Name;
         OrganisationType = organisation.OrganisationType.GetValueOrDefault();
-        PreviouslySelected = previouslySelectedRecipients.ToList();
 
         SubLocations = possibleServiceRecipients
             .GroupBy(x => x.Location)
-            .Select(
-                x => new SublocationModel(
-                    x.Key,
-                    x.Where(sr => PreviouslySelected.All(psr => psr.OdsCode != sr.OdsCode)).OrderBy(y => y.Name).ToList()))
+            .Select(x => new SublocationModel(
+                x.Key,
+                x.OrderBy(y => y.Name).ToList()))
             .OrderBy(x => x.Name)
             .ToArray();
 
         IsAmendment = isAmendment;
 
-        SelectServiceRecipients(existingRecipients, preSelectedRecipients);
+        SelectServiceRecipients(preSelectedRecipients);
     }
 
     public string OrganisationName { get; set; }
@@ -83,9 +79,7 @@ public sealed class SelectRecipientsModel : NavBaseModel
         return GetSelectedServiceRecipients().Any();
     }
 
-    private void SelectServiceRecipients(
-        IEnumerable<string> existingRecipients,
-        IEnumerable<string> recipients)
+    private void SelectServiceRecipients(IEnumerable<string> recipients)
     {
         switch (selectionMode)
         {
@@ -98,19 +92,13 @@ public sealed class SelectRecipientsModel : NavBaseModel
             default:
                 if (recipients == null) return;
 
-                var enumeratedRecipients = recipients.ToArray();
-                var recipientsToSelect = enumeratedRecipients.Any()
-                    ? enumeratedRecipients.ToArray()
-                    : existingRecipients.ToArray();
-
                 List<ServiceRecipientModel> matchingRecipients =
-                    GetServiceRecipients().Where(x => recipientsToSelect.Contains(x.OdsCode)).ToList();
-                if (!matchingRecipients.Any())
+                    GetServiceRecipients().Where(x => recipients.Contains(x.OdsCode)).ToList();
+
+                if (matchingRecipients.Count == 0)
                     return;
 
                 matchingRecipients.ForEach(x => x.Selected = true);
-
-                var allSelected = GetServiceRecipients().All(x => x.Selected);
 
                 break;
         }
@@ -138,7 +126,5 @@ public sealed class SelectRecipientsModel : NavBaseModel
 
             default: throw new ArgumentOutOfRangeException(nameof(orderType));
         }
-
-        ;
     }
 }

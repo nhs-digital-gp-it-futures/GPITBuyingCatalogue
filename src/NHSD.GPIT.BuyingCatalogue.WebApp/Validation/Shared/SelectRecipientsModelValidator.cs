@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
@@ -12,8 +11,6 @@ public class SelectRecipientsModelValidator : AbstractValidator<SelectRecipients
 
     public SelectRecipientsModelValidator()
     {
-        throw new NotImplementedException();
-
         // RuleFor(x => x.SubLocations)
         //     .Must(HaveMadeASelection)
         //     .WithMessage(NoSelectionMadeErrorMessage)
