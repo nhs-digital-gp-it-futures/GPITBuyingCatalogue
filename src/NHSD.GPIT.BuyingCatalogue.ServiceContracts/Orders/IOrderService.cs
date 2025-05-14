@@ -47,7 +47,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         Task SetSublocationsAndRecipients(
             CallOffId callOffId,
             string internalOrgId,
-            ICollection<OrderSublocation> competitionSublocations);
+            ICollection<OrderSublocation> orderSublocations);
 
         public Task<List<Order>> GetOrders(int organisationId);
 

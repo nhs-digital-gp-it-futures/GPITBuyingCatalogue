@@ -409,12 +409,63 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public Task SetSublocationsAndRecipients(
+        public async Task SetSublocationsAndRecipients(
             CallOffId callOffId,
             string internalOrgId,
-            ICollection<OrderSublocation> competitionSublocations)
+            ICollection<OrderSublocation> orderSublocations)
         {
-            throw new NotImplementedException();
+            ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
+
+            if (orderSublocations is null or { Count: 0 })
+            {
+                throw new ArgumentException(@"orderSublocations is null or empty", nameof(orderSublocations));
+            }
+
+            List<Order> orders = await dbContext.Orders
+                .Where(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.Revision <= callOffId.Revision
+                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .Include(x => x.OrderingParty)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ToListAsync();
+
+            var wrapper = OrderWrapper.Create(orders, callOffId);
+
+            if (wrapper.Order.OrderStatus is not OrderStatus.InProgress)
+            {
+                throw new InvalidOperationException(
+                    $"Cannot set sublocations / recipients on order as it is {wrapper.Order.OrderStatus}");
+            }
+
+            IReadOnlyList<OdsOrganisation> validSublocations =
+                await odsService.GetSublocationsByParentOdsCode(wrapper.Order.OrderingParty.ExternalIdentifier);
+
+            var validateSublocations = orderSublocations
+                .All(x => validSublocations.Select(y => y.OdsCode).Contains(x.SublocationOdsCode));
+
+            if (!validateSublocations)
+            {
+                throw new InvalidOperationException("Provided sublocations not valid for this organisation.");
+            }
+
+            foreach (OrderSublocation sublocation in orderSublocations)
+            {
+                IReadOnlyList<ServiceRecipient> validServiceRecipients =
+                    await odsService.GetServiceRecipientsBySublocation(sublocation.SublocationOdsCode);
+
+                var instanceCheck = sublocation.SublocationRecipients.All(x =>
+                    validServiceRecipients.Select(y => y.OrgId).Contains(x.RecipientOdsCode));
+
+                if (!instanceCheck)
+                {
+                    throw new InvalidOperationException(
+                        "Provided recipients not valid for this organisation or its sublocations.");
+                }
+            }
+
+            wrapper.Order.OrderSublocations = orderSublocations;
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<List<Order>> GetOrders(int organisationId)
