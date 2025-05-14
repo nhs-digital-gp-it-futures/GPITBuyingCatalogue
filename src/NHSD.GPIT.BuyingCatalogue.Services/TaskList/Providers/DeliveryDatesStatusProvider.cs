@@ -17,6 +17,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
             }
 
             var order = wrapper.Order;
+
+            if (!order.FlattenedRecipients.Any())
+            {
+                return TaskProgress.CannotStart;
+            }
+
             var anyDeliveryDatesEntered = !order.OrderItems
                 .All(x => wrapper
                     .DetermineOrderRecipients(x.CatalogueItemId)

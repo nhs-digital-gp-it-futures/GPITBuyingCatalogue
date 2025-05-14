@@ -61,7 +61,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId),
                 true);
 
-            IEnumerable<string> preSelectedRecipients = wrapper.FlattenedRecipients.Select(x => x.Id);
+            List<string> preSelectedRecipients = wrapper.FlattenedRecipients.Select(x => x.Id).ToList();
+
+            if (preSelectedRecipients.Count > 0
+                && wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode is not null)
+            {
+                preSelectedRecipients.Add(wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode);
+            }
 
             var model =
                 new SelectRecipientsModel(
