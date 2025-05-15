@@ -160,16 +160,20 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             return Order.CanComplete(RolledUp.FlattenedRecipients.ToList(), OrderItems);
         }
 
-        public OrderRecipient InitialiseOrderRecipient(string odsCode)
+        public OrderSublocationRecipient CreateRecipientWithExistingOrderContext(
+            string recipientOdsCode,
+            string parentSublocationOdsCode)
         {
-            var newRecipient = Order.InitialiseOrderRecipient(odsCode);
+            OrderSublocationRecipient newRecipient = Order.InitialiseOrderRecipient(
+                recipientOdsCode,
+                parentSublocationOdsCode);
             if (Order.DeliveryDate.HasValue)
             {
                 Order.OrderItems.ToList().ForEach(i =>
                 {
                     if (Previous == null
                         || !Previous.Exists(i.CatalogueItemId)
-                        || Previous.FlattenedRecipients.All(x => x.RecipientOdsCode != odsCode))
+                        || Previous.FlattenedRecipients.All(x => x.RecipientOdsCode != recipientOdsCode))
                     {
                         newRecipient.SetDeliveryDateForItem(i.CatalogueItemId, Order.DeliveryDate.Value);
                     }

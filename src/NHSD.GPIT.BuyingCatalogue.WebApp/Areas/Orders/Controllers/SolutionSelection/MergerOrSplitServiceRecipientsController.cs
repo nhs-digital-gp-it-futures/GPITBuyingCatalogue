@@ -209,7 +209,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CallOffId callOffId,
             ConfirmChangesModel model)
         {
-            var orderId = await orderService.GetOrderId(internalOrgId, callOffId);
+            OrderWrapper wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
 
             Organisation organisation = await organisationsService.GetOrganisationByInternalIdentifier(internalOrgId);
 
@@ -236,15 +236,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             List<OrderSublocation> sublocationsAsEntityModel =
                 recipientsAsSublocationModel.Select(x => new OrderSublocation
                     {
-                        OrderId = orderId,
+                        OrderId = wrapper.Order.Id,
                         OwnerOdsCode = organisation.ExternalIdentifier,
                         SublocationOdsCode = x.OdsCode,
-                        SublocationRecipients = x.ServiceRecipients.Select(y => new OrderSublocationRecipient
-                            {
-                                OrderId = orderId,
-                                ParentSublocationOdsCode = x.OdsCode,
-                                RecipientOdsCode = y.OdsCode,
-                            })
+                        SublocationRecipients = x.ServiceRecipients
+                            .Select(y =>
+                                wrapper.CreateRecipientWithExistingOrderContext(x.OdsCode, y.OdsCode))
                             .ToList(),
                     })
                     .ToList();

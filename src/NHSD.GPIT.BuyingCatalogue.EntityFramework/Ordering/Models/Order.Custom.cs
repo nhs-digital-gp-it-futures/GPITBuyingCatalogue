@@ -323,9 +323,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             };
         }
 
-        public OrderRecipient InitialiseOrderRecipient(string odsCode)
+        public OrderSublocationRecipient InitialiseOrderRecipient(
+            string recipientOdsCode,
+            string parentSublocationOdsCode)
         {
-            return new OrderRecipient(Id, odsCode);
+            return new OrderSublocationRecipient(Id, recipientOdsCode, parentSublocationOdsCode);
         }
 
         public OrderSublocation InitialiseOrderSublocation(string sublocationOdsCode, string ownerOdsCode)

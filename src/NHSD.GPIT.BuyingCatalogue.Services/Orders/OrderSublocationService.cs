@@ -73,9 +73,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Where(
                     OrderSublocationPrimaryKeyPredicate(parentOdsCode, orderId, sublocationOdsCode))
                 .Include(x => x.Order)
+                .ThenInclude(y => y.OrderingParty)
                 .Include(x => x.SublocationOrganisation)
                 .Include(x => x.SublocationRecipients)
                 .FirstAsync();
+
+            OrderWrapper wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(
+                sublocation.Order.CallOffId,
+                sublocation.Order.OrderingParty.InternalIdentifier);
 
             var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(sublocation.Order.CallOffId);
 
@@ -115,10 +120,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             removes.ExceptWith(newRecipientOdsCodes);
 
             List<OrderSublocationRecipient> sublocationRecipientsToAdd = adds
-                .Select(x => new OrderSublocationRecipient
-                {
-                    OrderId = orderId, RecipientOdsCode = x, ParentSublocationOdsCode = sublocationOdsCode,
-                })
+                .Select(x =>
+                    wrapper.CreateRecipientWithExistingOrderContext(x, sublocationOdsCode))
                 .ToList();
 
             sublocation.SublocationRecipients.AddRange(sublocationRecipientsToAdd);
