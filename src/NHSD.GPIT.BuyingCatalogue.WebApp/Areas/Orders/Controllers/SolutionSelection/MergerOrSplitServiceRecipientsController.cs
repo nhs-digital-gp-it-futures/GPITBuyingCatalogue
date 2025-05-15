@@ -234,14 +234,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 .ToList();
 
             List<OrderSublocation> sublocationsAsEntityModel =
-                recipientsAsSublocationModel.Select(x => new OrderSublocation
+                recipientsAsSublocationModel.Select(sl => new OrderSublocation
                     {
                         OrderId = wrapper.Order.Id,
                         OwnerOdsCode = organisation.ExternalIdentifier,
-                        SublocationOdsCode = x.OdsCode,
-                        SublocationRecipients = x.ServiceRecipients
-                            .Select(y =>
-                                wrapper.CreateRecipientWithExistingOrderContext(x.OdsCode, y.OdsCode))
+                        SublocationOdsCode = sl.OdsCode,
+                        SublocationRecipients = sl.ServiceRecipients
+                            .Select(sr =>
+                                wrapper.CreateRecipientWithExistingOrderContext(sr.OdsCode, sl.OdsCode))
                             .ToList(),
                     })
                     .ToList();

@@ -454,13 +454,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 IReadOnlyList<ServiceRecipient> validServiceRecipients =
                     await odsService.GetServiceRecipientsBySublocation(sublocation.SublocationOdsCode);
 
-                var instanceCheck = sublocation.SublocationRecipients.All(x =>
-                    validServiceRecipients.Select(y => y.OrgId).Contains(x.RecipientOdsCode));
+                List<OrderSublocationRecipient> invalidRecipients =
+                    sublocation.SublocationRecipients
+                        .Where(x => validServiceRecipients.All(y => y.OrgId != x.RecipientOdsCode))
+                        .ToList();
 
-                if (!instanceCheck)
+                if (invalidRecipients.Count > 0)
                 {
                     throw new InvalidOperationException(
-                        "Provided recipients not valid for this organisation or its sublocations.");
+                        $"Recipients {string.Join(string.Empty, ",", invalidRecipients.Select(x => x.RecipientOdsCode))} not valid for this organisation or its sublocations.");
                 }
             }
 
