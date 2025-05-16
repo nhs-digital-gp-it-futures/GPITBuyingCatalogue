@@ -21,9 +21,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         {
             Title = "Select sublocations for this competition";
             Caption = competition.Name;
-            Advice =
-                $"Select all the {competition.Organisation.Name} sublocations that will be part of this competition";
             BackLink = backLinkHref;
+
+            FormLabelText =
+                $"Select all the {competition.Organisation.Name} sublocations that will be part of this competition";
 
             ICollection<ISublocation> existingSublocations =
                 competition.CompetitionSublocations.Cast<ISublocation>().ToList();
@@ -35,13 +36,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public SelectSublocationsModel(
             OrderEntityModels.Order order,
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
-            string backLinkHref)
+            string backLinkHref,
+            bool isAmendment)
         {
             Title = "Select sublocations for this order";
             Caption = order.Description;
-            Advice =
-                $"Select all the {order.OrderingParty.Name} sublocations that will receive this order";
             BackLink = backLinkHref;
+
+            IsAmendment = isAmendment;
+
+            FormLabelText = $"Select all the {order.OrderingParty.Name} sublocations that will receive this order";
 
             ICollection<ISublocation> existingSublocations = order.OrderSublocations.Cast<ISublocation>().ToList();
 
@@ -51,18 +55,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public IReadOnlyList<SelectOption<string>> RenderedSublocations { get; init; }
 
-        private static List<SelectOption<string>> GetRenderedSublocations(
+        public bool? IsAmendment { get; init; }
+
+        public string FormLabelText { get; init; }
+
+        private List<SelectOption<string>> GetRenderedSublocations(
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
             ICollection<ISublocation> existingSublocations)
         {
             return possibleSublocations
-                .Select(
-                    sl => new SelectOption<string>
+                .Select(sl =>
+                {
+                    var selected = existingSublocations.Select(es => es.SublocationOdsCode).Contains(sl.OdsCode);
+                    return new SelectOption<string>
                     {
                         Text = sl.OdsCode,
                         Value = sl.OdsCode,
-                        Selected = existingSublocations.Select(es => es.SublocationOdsCode).Contains(sl.OdsCode),
-                    })
+                        Selected = selected,
+                        Disabled = selected && IsAmendment is true,
+                    };
+                })
                 .OrderBy(x => x.Text)
                 .ToList();
         }
