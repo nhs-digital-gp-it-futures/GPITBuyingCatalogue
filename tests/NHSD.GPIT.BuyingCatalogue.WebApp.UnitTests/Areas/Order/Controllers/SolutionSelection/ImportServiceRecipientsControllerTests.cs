@@ -12,7 +12,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CatalogueItems;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
@@ -86,25 +85,27 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IServiceRecipientImportService importService,
         ImportServiceRecipientsController controller)
     {
-        importService.ReadFromStream(Arg.Any<Stream>())
-            .Returns(
-                new List<ServiceRecipientImportModel> { new() { Organisation = "Fake Org", OdsCode = "ABC123" } });
+        Assert.Fail("needs fixing");
 
-        var result = (await controller.Index(
-                internalOrgId,
-                callOffId,
-                model))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.ValidateOds));
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(callOffId), callOffId },
-                });
+        // importService.ReadFromStream(Arg.Any<Stream>())
+        //     .Returns(
+        //         new List<ServiceRecipientImportModel> { new() { Organisation = "Fake Org", OdsCode = "ABC123" } });
+        //
+        // var result = (await controller.Index(
+        //         internalOrgId,
+        //         callOffId,
+        //         model))
+        //     .As<RedirectToActionResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.ActionName.Should().Be(nameof(controller.ValidateOds));
+        // result.RouteValues.Should()
+        //     .BeEquivalentTo(
+        //         new RouteValueDictionary
+        //         {
+        //             { nameof(internalOrgId), internalOrgId },
+        //             { nameof(callOffId), callOffId },
+        //         });
     }
 
     [Theory]
@@ -115,20 +116,22 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IServiceRecipientImportService importService,
         ImportServiceRecipientsController controller)
     {
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns((IList<ServiceRecipientImportModel>)null);
+        Assert.Fail("needs fixing");
 
-        var result = (await controller.ValidateOds(internalOrgId, callOffId))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.Index));
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(callOffId), callOffId },
-                });
+        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns((IList<ServiceRecipientImportModel>)null);
+        //
+        // var result = (await controller.ValidateOds(internalOrgId, callOffId))
+        //     .As<RedirectToActionResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.ActionName.Should().Be(nameof(controller.Index));
+        // result.RouteValues.Should()
+        //     .BeEquivalentTo(
+        //         new RouteValueDictionary
+        //         {
+        //             { nameof(internalOrgId), internalOrgId },
+        //             { nameof(callOffId), callOffId },
+        //         });
     }
 
     [Theory]
@@ -141,30 +144,32 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        var importedServiceRecipients = serviceRecipients.Take(2)
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-            .ToList();
-        importedServiceRecipients.First().OdsCode = "MISMATCH";
+        Assert.Fail("needs fixing");
 
-        var expectedModel = new ValidateOdsModel(
-            importedServiceRecipients.Take(1).ToList())
-        { Caption = callOffId.ToString() };
-
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-
-        var result = (await controller.ValidateOds(internalOrgId, callOffId))
-            .As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should()
-            .BeEquivalentTo(
-                expectedModel,
-                opt => opt
-                    .Excluding(m => m.BackLink)
-                    .Excluding(m => m.CancelLink)
-                    .Excluding(m => m.ContinueLink));
+        // var importedServiceRecipients = serviceRecipients.Take(2)
+        //     .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
+        //     .ToList();
+        // importedServiceRecipients.First().OdsCode = "MISMATCH";
+        //
+        // var expectedModel = new ValidateOdsModel(
+        //     importedServiceRecipients.Take(1).ToList())
+        // { Caption = callOffId.ToString() };
+        //
+        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+        //
+        // odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
+        //
+        // var result = (await controller.ValidateOds(internalOrgId, callOffId))
+        //     .As<ViewResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.Model.Should()
+        //     .BeEquivalentTo(
+        //         expectedModel,
+        //         opt => opt
+        //             .Excluding(m => m.BackLink)
+        //             .Excluding(m => m.CancelLink)
+        //             .Excluding(m => m.ContinueLink));
     }
 
     [Theory]
@@ -177,26 +182,28 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        var importedServiceRecipients = serviceRecipients.Take(2)
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-            .ToList();
+        Assert.Fail("needs fixing");
 
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-
-        var result = (await controller.ValidateOds(internalOrgId, callOffId))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.ValidateNames));
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(callOffId), callOffId },
-                });
+        // var importedServiceRecipients = serviceRecipients.Take(2)
+        //     .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
+        //     .ToList();
+        //
+        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+        //
+        // odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
+        //
+        // var result = (await controller.ValidateOds(internalOrgId, callOffId))
+        //     .As<RedirectToActionResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.ActionName.Should().Be(nameof(controller.ValidateNames));
+        // result.RouteValues.Should()
+        //     .BeEquivalentTo(
+        //         new RouteValueDictionary
+        //         {
+        //             { nameof(internalOrgId), internalOrgId },
+        //             { nameof(callOffId), callOffId },
+        //         });
     }
 
     [Theory]
@@ -207,20 +214,22 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IServiceRecipientImportService importService,
         ImportServiceRecipientsController controller)
     {
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns((IList<ServiceRecipientImportModel>)null);
+        Assert.Fail("needs fixing");
 
-        var result = (await controller.ValidateNames(internalOrgId, callOffId))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.Index));
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(callOffId), callOffId },
-                });
+        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns((IList<ServiceRecipientImportModel>)null);
+        //
+        // var result = (await controller.ValidateNames(internalOrgId, callOffId))
+        //     .As<RedirectToActionResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.ActionName.Should().Be(nameof(controller.Index));
+        // result.RouteValues.Should()
+        //     .BeEquivalentTo(
+        //         new RouteValueDictionary
+        //         {
+        //             { nameof(internalOrgId), internalOrgId },
+        //             { nameof(callOffId), callOffId },
+        //         });
     }
 
     [Theory]
@@ -233,37 +242,39 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        var importedServiceRecipients = serviceRecipients.Take(2)
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-            .ToList();
-        importedServiceRecipients.First().Organisation = "MISMATCH";
+        Assert.Fail("needs fixing");
 
-        var serviceRecipient = serviceRecipients.First();
-
-        var mismatchedNames = new List<(string, string, string)>
-        {
-            ("MISMATCH", serviceRecipient.Name, serviceRecipient.OrgId),
-        };
-
-        var expectedModel = new ValidateNamesModel(mismatchedNames)
-        {
-            Caption = callOffId.ToString(),
-        };
-
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-
-        var result = (await controller.ValidateNames(internalOrgId, callOffId))
-            .As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should()
-            .BeEquivalentTo(
-                expectedModel,
-                opt => opt
-                    .Excluding(m => m.BackLink)
-                    .Excluding(m => m.CancelLink));
+        // var importedServiceRecipients = serviceRecipients.Take(2)
+        //     .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
+        //     .ToList();
+        // importedServiceRecipients.First().Organisation = "MISMATCH";
+        //
+        // var serviceRecipient = serviceRecipients.First();
+        //
+        // var mismatchedNames = new List<(string, string, string)>
+        // {
+        //     ("MISMATCH", serviceRecipient.Name, serviceRecipient.OrgId),
+        // };
+        //
+        // var expectedModel = new ValidateNamesModel(mismatchedNames)
+        // {
+        //     Caption = callOffId.ToString(),
+        // };
+        //
+        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+        //
+        // odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
+        //
+        // var result = (await controller.ValidateNames(internalOrgId, callOffId))
+        //     .As<ViewResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.Model.Should()
+        //     .BeEquivalentTo(
+        //         expectedModel,
+        //         opt => opt
+        //             .Excluding(m => m.BackLink)
+        //             .Excluding(m => m.CancelLink));
     }
 
     [Theory]
@@ -276,29 +287,31 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        var recipientIds = serviceRecipients.Take(2)
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-            .ToList();
+        Assert.Fail("needs fixing");
 
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(recipientIds);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-
-        var result = (await controller.ValidateNames(internalOrgId, callOffId))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
-        result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(callOffId), callOffId },
-                    { nameof(recipientIds), string.Join(',', recipientIds.Select(s => s.OdsCode)) },
-                    { "hasImported", true },
-                });
+        // var recipientIds = serviceRecipients.Take(2)
+        //     .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
+        //     .ToList();
+        //
+        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(recipientIds);
+        //
+        // odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
+        //
+        // var result = (await controller.ValidateNames(internalOrgId, callOffId))
+        //     .As<RedirectToActionResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
+        // result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
+        // result.RouteValues.Should()
+        //     .BeEquivalentTo(
+        //         new RouteValueDictionary
+        //         {
+        //             { nameof(internalOrgId), internalOrgId },
+        //             { nameof(callOffId), callOffId },
+        //             { nameof(recipientIds), string.Join(',', recipientIds.Select(s => s.OdsCode)) },
+        //             { "hasImported", true },
+        //         });
     }
 
     [Theory]
@@ -314,44 +327,46 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        var recipientIds = serviceRecipients
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-            .ToList();
+        Assert.Fail("needs fixing");
 
-        recipientIds.First().OdsCode = "MISMATCH";
-        recipientIds.Skip(1).First().Organisation = "MISMATCH";
-
-        var firstServiceRecipient = serviceRecipients.First();
-
-        var mismatchedNames = new List<(string, string, string)>
-        {
-            ("MISMATCH", firstServiceRecipient.Name, firstServiceRecipient.OrgId),
-        };
-
-        var model = new ValidateNamesModel(mismatchedNames);
-
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(recipientIds);
-
-        catalogueItemService.GetCatalogueItemName(catalogueItemId).Returns(catalogueItemName);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-
-        var result = (await controller.ValidateNames(internalOrgId, callOffId, catalogueItemId, model))
-            .As<RedirectToActionResult>();
-
-        result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
-        result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
-        result.RouteValues.Should()
-            .BeEquivalentTo(
-                new RouteValueDictionary
-                {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(callOffId), callOffId },
-                    { nameof(catalogueItemId), catalogueItemId },
-                    { nameof(recipientIds), string.Join(',', recipientIds.Skip(1).Select(x => x.OdsCode)) },
-                    { "hasImported", true },
-                });
+        // var recipientIds = serviceRecipients
+        //     .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
+        //     .ToList();
+        //
+        // recipientIds.First().OdsCode = "MISMATCH";
+        // recipientIds.Skip(1).First().Organisation = "MISMATCH";
+        //
+        // var firstServiceRecipient = serviceRecipients.First();
+        //
+        // var mismatchedNames = new List<(string, string, string)>
+        // {
+        //     ("MISMATCH", firstServiceRecipient.Name, firstServiceRecipient.OrgId),
+        // };
+        //
+        // var model = new ValidateNamesModel(mismatchedNames);
+        //
+        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(recipientIds);
+        //
+        // catalogueItemService.GetCatalogueItemName(catalogueItemId).Returns(catalogueItemName);
+        //
+        // odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
+        //
+        // var result = (await controller.ValidateNames(internalOrgId, callOffId, catalogueItemId, model))
+        //     .As<RedirectToActionResult>();
+        //
+        // result.Should().NotBeNull();
+        // result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
+        // result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
+        // result.RouteValues.Should()
+        //     .BeEquivalentTo(
+        //         new RouteValueDictionary
+        //         {
+        //             { nameof(internalOrgId), internalOrgId },
+        //             { nameof(callOffId), callOffId },
+        //             { nameof(catalogueItemId), catalogueItemId },
+        //             { nameof(recipientIds), string.Join(',', recipientIds.Skip(1).Select(x => x.OdsCode)) },
+        //             { "hasImported", true },
+        //         });
     }
 
     [Theory]
