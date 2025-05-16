@@ -24,12 +24,12 @@ public sealed class ValidationCompleteModel : NavBaseModel
     }
 
     public ValidationCompleteModel(
-        string competitionName,
+        string caption,
         ValidationStatus validationStatus,
         IReadOnlyList<SublocationModel> sublocations)
     {
         Title = "Upload validated";
-        Caption = competitionName;
+        Caption = caption;
         InteractionNoun = "competition";
         Sublocations = sublocations;
         ValidationStatus = validationStatus;
