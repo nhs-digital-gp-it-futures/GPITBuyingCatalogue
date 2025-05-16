@@ -173,9 +173,18 @@ public class CompetitionImportServiceRecipientsController : Controller
         if (shouldShowValidateNamesScreen)
         {
             var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
+
+            var continueLink = Url.Action(
+                nameof(ValidationComplete),
+                typeof(CompetitionImportServiceRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId, validationStatus = ValidationStatus.PartialSuccess });
+
             var model = new ValidateNamesModel(mismatchedNames)
             {
-                BackLink = backAndCancelLink, CancelLink = backAndCancelLink, Caption = competitionName,
+                BackLink = backAndCancelLink,
+                CancelLink = backAndCancelLink,
+                Caption = competitionName,
+                ContinueLink = continueLink,
             };
             return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
         }
@@ -183,19 +192,6 @@ public class CompetitionImportServiceRecipientsController : Controller
         return RedirectToAction(
             nameof(ValidationComplete),
             new { internalOrgId, competitionId, validationStatus });
-    }
-
-    [HttpPost("validate")]
-    public IActionResult Validate(
-        string internalOrgId,
-        int competitionId,
-        ValidateNamesModel model)
-    {
-        // TODO: Replace with standard GET link when order functionality no longer requires POST.
-        return RedirectToAction(
-            nameof(ValidationComplete),
-            typeof(CompetitionImportServiceRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId, validationStatus = ValidationStatus.PartialSuccess });
     }
 
     [HttpGet("validation-complete")]

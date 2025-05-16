@@ -171,9 +171,18 @@ public class ImportServiceRecipientsController(
             OrderWrapper wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
 
             var orderDescription = wrapper.Order.Description;
+
+            var continueLink = Url.Action(
+                nameof(ValidationComplete),
+                typeof(CompetitionImportServiceRecipientsController).ControllerName(),
+                new { internalOrgId, callOffId, validationStatus = ValidationStatus.PartialSuccess });
+
             var model = new ValidateNamesModel(mismatchedNames)
             {
-                BackLink = backAndCancelLink, CancelLink = backAndCancelLink, Caption = orderDescription,
+                BackLink = backAndCancelLink,
+                CancelLink = backAndCancelLink,
+                Caption = orderDescription,
+                ContinueLink = continueLink,
             };
             return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
         }
@@ -181,19 +190,6 @@ public class ImportServiceRecipientsController(
         return RedirectToAction(
             nameof(ValidationComplete),
             new { internalOrgId, callOffId, validationStatus });
-    }
-
-    [HttpPost("validate")]
-    public IActionResult Validate(
-        string internalOrgId,
-        CallOffId callOffId,
-        ValidateNamesModel model)
-    {
-        // TODO: Replace with standard GET link when order functionality no longer requires POST.
-        return RedirectToAction(
-            nameof(ValidationComplete),
-            typeof(CompetitionImportServiceRecipientsController).ControllerName(),
-            new { internalOrgId, callOffId, validationStatus = ValidationStatus.PartialSuccess });
     }
 
     [HttpGet("validation-complete")]
