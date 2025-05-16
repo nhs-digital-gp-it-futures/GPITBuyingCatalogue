@@ -27,8 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
                     .Without(o => o.LastUpdatedByUser)
                     .Without(o => o.OrderItems)
                     .Without(o => o.Contract)
-                    .Without(o => o.OrderSublocations)
-                    .Without(o => o.OrderRecipients);
+                    .Without(o => o.OrderSublocations);
             }
 
             fixture.Customize<Order>(ComposerTransformation);

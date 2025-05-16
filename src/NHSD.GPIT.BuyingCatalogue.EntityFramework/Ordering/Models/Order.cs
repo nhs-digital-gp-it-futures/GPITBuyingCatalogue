@@ -16,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public Order()
         {
             OrderItems = new HashSet<OrderItem>();
-            OrderRecipients = new HashSet<OrderRecipient>();
             OrderEvents = new HashSet<OrderEvent>();
         }
 
@@ -104,8 +103,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public ICollection<OrderEvent> OrderEvents { get; set; }
 
         public ICollection<OrderItem> OrderItems { get; set; }
-
-        public ICollection<OrderRecipient> OrderRecipients { get; set; }
 
         public ICollection<OrderSublocation> OrderSublocations { get; set; } = [];
 

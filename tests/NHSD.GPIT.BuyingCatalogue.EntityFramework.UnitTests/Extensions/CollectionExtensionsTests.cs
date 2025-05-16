@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         {
             OrderRecipientCollection.CollectionExtensions.ForCatalogueItem(null, catalogueItemId)
                 .Should()
-                .BeEquivalentTo(new List<OrderRecipient>());
+                .BeEquivalentTo(new List<OrderSublocationRecipient>());
         }
 
         [Theory]
