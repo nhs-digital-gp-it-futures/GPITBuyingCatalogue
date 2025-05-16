@@ -127,6 +127,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<OrderSublocation> OrderSublocations { get; set; }
 
+        public DbSet<OrderSublocationRecipient> OrderSublocationRecipients { get; set; }
+
         public DbSet<ContractFlags> ContractFlags { get; set; }
 
         public DbSet<Contract> Contracts { get; set; }

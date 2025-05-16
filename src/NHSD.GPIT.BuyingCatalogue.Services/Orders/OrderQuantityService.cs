@@ -65,25 +65,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         {
             if (quantities is null or { Count: 0 })
             {
-                throw new ArgumentException("quantities is null or empty");
+                throw new ArgumentException($"{nameof(quantities)} is null or empty");
             }
 
-            List<OrderItemSublocationRecipient> recipientsForOrderAndCatalogueItem = await dbContext
-                .OrderItemSublocationRecipients.Where(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId)
+            List<OrderSublocationRecipient> recipients = await dbContext
+                .OrderSublocationRecipients.Where(x => x.OrderId == orderId)
                 .ToListAsync();
-            if (recipientsForOrderAndCatalogueItem.Count == 0)
+
+            if (recipients.Count == 0)
             {
-                return;
+                throw new InvalidOperationException(
+                    $"No recipients exist for the provided {nameof(orderId)}: {orderId}");
             }
 
-            foreach (OrderItemSublocationRecipient recipient in recipientsForOrderAndCatalogueItem)
+            foreach (OrderItemRecipientQuantityDto quantity in quantities)
             {
-                OrderItemRecipientQuantityDto quantity = quantities.FirstOrDefault(x => x.OdsCode == recipient.OdsCode);
+                OrderSublocationRecipient recipient = recipients.First(x => x.RecipientOdsCode == quantity.OdsCode);
 
-                if (quantity != null)
-                {
-                    recipient.Quantity = quantity.Quantity;
-                }
+                recipient.SetQuantityForItem(catalogueItemId, quantity.Quantity);
             }
 
             await dbContext.SaveChangesAsync();
