@@ -12,6 +12,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
         }
 
+        public OrderSublocation(OrderSublocation old)
+        {
+            SublocationOdsCode = old.SublocationOdsCode;
+            OwnerOdsCode = old.OwnerOdsCode;
+            SublocationRecipients = old.SublocationRecipients.Select(x => new OrderSublocationRecipient(x)).ToList();
+        }
+
         public OrderSublocation(CompetitionSublocation competitionSublocation)
         {
             SublocationOdsCode = competitionSublocation.SublocationOdsCode;

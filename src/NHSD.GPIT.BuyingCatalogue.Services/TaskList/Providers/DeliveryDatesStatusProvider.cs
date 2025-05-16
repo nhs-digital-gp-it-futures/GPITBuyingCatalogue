@@ -1,5 +1,6 @@
-﻿using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
@@ -23,10 +24,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            var anyDeliveryDatesEntered = !order.OrderItems
-                .All(x => wrapper
-                    .DetermineOrderRecipients(x.CatalogueItemId)
-                    .NoDeliveryDatesEntered(x.CatalogueItemId));
+            var anyDeliveryDatesEntered = order.OrderItems
+                .Any(x =>
+                {
+                    ICollection<OrderSublocationRecipient> recipients = wrapper
+                        .DetermineOrderRecipients(x.CatalogueItemId);
+
+                    if (recipients.Count == 0)
+                    {
+                        return false;
+                    }
+
+                    return recipients.Any(y => y.GetDeliveryDateForItem(x.CatalogueItemId).HasValue);
+                });
+
             var defaultDeliveryDateEntered = order.DeliveryDate.HasValue;
 
             var okToProgress = new[] { TaskProgress.Completed, TaskProgress.Amended };
@@ -37,11 +48,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                 return TaskProgress.CannotStart;
             }
 
-            return order.HaveAllDeliveryDates(wrapper.RolledUp.FlattenedRecipients.ToList())
-                ? order.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed
-                : anyDeliveryDatesEntered || defaultDeliveryDateEntered
-                    ? TaskProgress.InProgress
-                    : TaskProgress.NotStarted;
+            var allDeliveryDatesSet = order.HaveAllDeliveryDates(wrapper.RolledUp.FlattenedRecipients.ToList());
+
+            if (allDeliveryDatesSet && wrapper.HasNewOrderRecipients)
+            {
+                return order.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed;
+            }
+            else if ((anyDeliveryDatesEntered || defaultDeliveryDateEntered) && wrapper.HasNewOrderRecipients)
+            {
+                return TaskProgress.InProgress;
+            }
+            else
+            {
+                return TaskProgress.NotStarted;
+            }
         }
     }
 }

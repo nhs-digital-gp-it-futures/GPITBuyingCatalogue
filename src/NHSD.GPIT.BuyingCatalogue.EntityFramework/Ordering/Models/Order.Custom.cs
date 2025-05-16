@@ -273,21 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
             amendedOrder.InitialiseOrderItemsFrom(OrderItems);
 
-            foreach (OrderSublocation sublocation in OrderSublocations)
-            {
-                OrderSublocation newSublocation =
-                    amendedOrder.InitialiseOrderSublocation(sublocation.SublocationOdsCode, sublocation.OwnerOdsCode);
-
-                foreach (OrderSublocationRecipient sublocationRecipient in sublocation.SublocationRecipients)
-                {
-                    newSublocation.SublocationRecipients.Add(
-                        amendedOrder.InitialiseOrderSublocationRecipient(
-                            sublocationRecipient.RecipientOdsCode,
-                            sublocation.SublocationOdsCode));
-                }
-
-                amendedOrder.OrderSublocations.Add(newSublocation);
-            }
+            amendedOrder.OrderSublocations = OrderSublocations.Select(x => new OrderSublocation(x)).ToList();
 
             return amendedOrder;
         }
@@ -328,23 +314,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             string parentSublocationOdsCode)
         {
             return new OrderSublocationRecipient(Id, recipientOdsCode, parentSublocationOdsCode);
-        }
-
-        public OrderSublocation InitialiseOrderSublocation(string sublocationOdsCode, string ownerOdsCode)
-        {
-            return new OrderSublocation(Id, sublocationOdsCode, ownerOdsCode);
-        }
-
-        public OrderSublocationRecipient InitialiseOrderSublocationRecipient(
-            string recipientOdsCode,
-            string parentSublocationOdsCode)
-        {
-            return new OrderSublocationRecipient
-            {
-                OrderId = Id,
-                ParentSublocationOdsCode = parentSublocationOdsCode,
-                RecipientOdsCode = recipientOdsCode,
-            };
         }
 
         public ICollection<OrderSublocationRecipient> AddedOrderRecipients(Order previous)

@@ -50,9 +50,14 @@ public static class CollectionExtensions
             return false;
         }
 
-        return ((IPrice)orderItem.OrderItemPrice).IsPerServiceRecipient()
-            ? recipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue)
-            : orderItem.Quantity.HasValue;
+        var priceIsPerRecipient = ((IPrice)orderItem.OrderItemPrice).IsPerServiceRecipient();
+
+        if (priceIsPerRecipient)
+        {
+            return recipients.All(x => x.GetQuantityForItem(orderItem.CatalogueItemId).HasValue);
+        }
+
+        return orderItem.Quantity.HasValue;
     }
 
     public static bool SomeButNotAllNewQuantitiesEntered(

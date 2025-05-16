@@ -317,7 +317,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             await orderSublocationService.SetSublocationRecipients(
                 externalOrganisationId,
-                callOffId.OrderNumber,
+                orderId,
                 sublocationOdsCode,
                 pageSelections);
 
