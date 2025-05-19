@@ -20,17 +20,19 @@
         <form method="post">
             <div data-test-id="validate-names-table">
                 <nhs-table label-text="New Service Recipients">
+                    <nhs-table-column>Sublocation</nhs-table-column>
                     <nhs-table-column>Service Recipient</nhs-table-column>
                     <nhs-table-column>ODS code</nhs-table-column>
 
-                    @for ( var i = 0; i < Model.NewRecipients.Count; i++)
+                    @for (var i = 0; i < Model.NewRecipients.Count; i++)
                     {
                         <nhs-table-row-container>
+                            <nhs-table-cell>@Model.NewRecipients[i].LocationOrgId</nhs-table-cell>
                             <nhs-table-cell>@Model.NewRecipients[i].Name</nhs-table-cell>
                             <nhs-table-cell>@Model.NewRecipients[i].OdsCode</nhs-table-cell>
-                            <input type="hidden" asp-for="@Model.NewRecipients[i].Name" />
-                            <input type="hidden" asp-for="@Model.NewRecipients[i].OdsCode" />
-                            <input type="hidden" asp-for="@Model.NewRecipients[i].LocationOrgId" />
+                            <input type="hidden" asp-for="@Model.NewRecipients[i].Name"/>
+                            <input type="hidden" asp-for="@Model.NewRecipients[i].OdsCode"/>
+                            <input type="hidden" asp-for="@Model.NewRecipients[i].LocationOrgId"/>
                         </nhs-table-row-container>
                     }
                 </nhs-table>

@@ -315,6 +315,7 @@ public class ImportServiceRecipientsController(
         List<ServiceRecipientModel> newRecipients =
             wrapper.Order.FlattenedRecipients.Where(x => requestedRecipientOdsCodesForNew.Contains(x.RecipientOdsCode))
                 .Select(x => new ServiceRecipientModel(x, false))
+                .OrderBy(x => x.LocationOrgId)
                 .ToList();
 
         var hasMissing = previousRecipientsAsHashSet.Count > 0;
@@ -324,7 +325,7 @@ public class ImportServiceRecipientsController(
             NewRecipients = newRecipients, HasMissing = hasMissing, CancelLink = backAndCancelLink,
         };
 
-        return View("ServiceRecipients/ImportServiceRecipients/ValidateNewAmendmentRecipients", model);
+        return View("ServiceRecipients/ImportServiceRecipients/ValidateAmendmentRecipients", model);
 
         // Return new for each instance so hash set can be modified
         HashSet<string> RequestedRecipientOdsCodes()
