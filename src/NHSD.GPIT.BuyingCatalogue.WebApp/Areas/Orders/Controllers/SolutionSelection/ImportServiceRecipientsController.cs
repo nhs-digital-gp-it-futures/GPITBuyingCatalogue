@@ -187,6 +187,11 @@ public class ImportServiceRecipientsController(
             return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
         }
 
+        if (callOffId.IsAmendment)
+        {
+            return RedirectToAction(nameof(ValidateAmendment), new { internalOrgId, callOffId });
+        }
+
         return RedirectToAction(
             nameof(ValidationComplete),
             new { internalOrgId, callOffId, validationStatus });
@@ -268,9 +273,73 @@ public class ImportServiceRecipientsController(
             new DistributedCacheKey(User.UserId(), internalOrgId, callOffId));
 
         return RedirectToAction(
-            nameof(CompetitionRecipientsController.ConfirmSublocations),
-            typeof(CompetitionRecipientsController).ControllerName(),
+            nameof(ServiceRecipientsController.ConfirmSublocations),
+            typeof(ServiceRecipientsController).ControllerName(),
             new { internalOrgId, callOffId });
+    }
+
+    [HttpGet("validate-amendment")]
+    public async Task<IActionResult> ValidateAmendment(
+        string internalOrgId,
+        CallOffId callOffId,
+        bool acceptNoRemovalForAmendment)
+    {
+        var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, callOffId);
+        IList<ServiceRecipientImportModel> cachedRecipients = await importService.GetCached(cacheKey);
+
+        if (cachedRecipients is null)
+            return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
+
+        var backAndCancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId });
+
+        ValidationStatus validationStatus = acceptNoRemovalForAmendment
+            ? ValidationStatus.PartialSuccess
+            : ValidationStatus.Success;
+
+        OrderWrapper wrapper =
+            await orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId);
+
+        HashSet<string> previousRecipientsAsHashSet =
+            wrapper.Previous.FlattenedRecipients.Select(x => x.RecipientOdsCode).ToHashSet();
+
+        HashSet<string> requestedRecipientOdsCodesForMissing = RequestedRecipientOdsCodes();
+
+        HashSet<string> requestedRecipientOdsCodesForNew = RequestedRecipientOdsCodes();
+
+        // new recipient ods codes 
+        requestedRecipientOdsCodesForNew.ExceptWith(previousRecipientsAsHashSet);
+
+        // missing recipient ods codes
+        previousRecipientsAsHashSet.ExceptWith(requestedRecipientOdsCodesForMissing);
+
+        List<ServiceRecipientModel> newRecipients =
+            wrapper.Order.FlattenedRecipients.Where(x => requestedRecipientOdsCodesForNew.Contains(x.RecipientOdsCode))
+                .Select(x => new ServiceRecipientModel(x, false))
+                .ToList();
+
+        var hasMissing = previousRecipientsAsHashSet.Count > 0;
+
+        var model = new ValidateAmendmentRecipientsModel
+        {
+            NewRecipients = newRecipients, HasMissing = hasMissing, CancelLink = backAndCancelLink,
+        };
+
+        return View("ServiceRecipients/ImportServiceRecipients/ValidateNewAmendmentRecipients", model);
+
+        // Return new for each instance so hash set can be modified
+        HashSet<string> RequestedRecipientOdsCodes()
+        {
+            return cachedRecipients.Select(x => x.OdsCode).ToHashSet();
+        }
+    }
+
+    [HttpPost("validation-amendment")]
+    public async Task<IActionResult> ValidateAmendment(
+        string internalOrgId,
+        CallOffId callOffId,
+        ValidateAmendmentRecipientsModel model)
+    {
+        throw new NotImplementedException();
     }
 
     [HttpGet("download-template")]

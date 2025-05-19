@@ -1,0 +1,51 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients.ValidateAmendmentRecipientsModel
+@{
+    ViewBag.Title = "Confirm amendment upload";
+}
+
+<partial name="Partials/_BackLink" model="@Model"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.Caption"
+                        advice="The following Service Recipients have been identified to add to your amendment."/>
+        
+        @if (Model.HasMissing)
+        {
+            <nhs-inset-text>The CSV file you provided was missing some or all of the Service Recipients from previous revisions. Service Recipients from previous revisions cannot be removed, but we can add the new Service Recipients shown below.</nhs-inset-text>
+        }
+
+        <form method="post">
+            <div data-test-id="validate-names-table">
+                <nhs-table label-text="New Service Recipients">
+                    <nhs-table-column>Service Recipient</nhs-table-column>
+                    <nhs-table-column>ODS code</nhs-table-column>
+
+                    @for ( var i = 0; i < Model.NewRecipients.Count; i++)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@Model.NewRecipients[i].Name</nhs-table-cell>
+                            <nhs-table-cell>@Model.NewRecipients[i].OdsCode</nhs-table-cell>
+                            <input type="hidden" asp-for="@Model.NewRecipients[i].Name" />
+                            <input type="hidden" asp-for="@Model.NewRecipients[i].OdsCode" />
+                            <input type="hidden" asp-for="@Model.NewRecipients[i].LocationOrgId" />
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </div>
+            
+
+            <p>If you continue with your import, we’ll add these recipients to your amendment.</p>
+
+
+            <nhs-submit-button/>
+        </form>
+        <div>
+            <a href="@Model.CancelLink">
+                Cancel
+            </a>
+        </div>
+    </div>
+</div>
