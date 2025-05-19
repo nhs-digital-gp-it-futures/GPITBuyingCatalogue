@@ -281,8 +281,7 @@ public class ImportServiceRecipientsController(
     [HttpGet("validate-amendment")]
     public async Task<IActionResult> ValidateAmendment(
         string internalOrgId,
-        CallOffId callOffId,
-        bool acceptNoRemovalForAmendment)
+        CallOffId callOffId)
     {
         var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, callOffId);
         IList<ServiceRecipientImportModel> cachedRecipients = await importService.GetCached(cacheKey);
@@ -292,24 +291,17 @@ public class ImportServiceRecipientsController(
 
         var backAndCancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId });
 
-        ValidationStatus validationStatus = acceptNoRemovalForAmendment
-            ? ValidationStatus.PartialSuccess
-            : ValidationStatus.Success;
-
         OrderWrapper wrapper =
             await orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId);
 
         HashSet<string> previousRecipientsAsHashSet =
             wrapper.Previous.FlattenedRecipients.Select(x => x.RecipientOdsCode).ToHashSet();
 
-        HashSet<string> requestedRecipientOdsCodesForMissing = RequestedRecipientOdsCodes();
+        HashSet<string> requestedAmendRecipients = cachedRecipients.Select(x => x.OdsCode).ToHashSet();
 
-        HashSet<string> requestedRecipientOdsCodesForNew = RequestedRecipientOdsCodes();
+        HashSet<string> newRecipients = requestedAmendRecipients.Except(previousRecipientsAsHashSet).ToHashSet();
 
-        // new recipient ods codes 
-        requestedRecipientOdsCodesForNew.ExceptWith(previousRecipientsAsHashSet);
-
-        if (requestedRecipientOdsCodesForNew.Count == 0)
+        if (requestedAmendRecipients.Count == 0 || newRecipients.Count == 0)
         {
             var failedModel = new ValidateAmendmentRecipientsModel
             {
@@ -322,29 +314,25 @@ public class ImportServiceRecipientsController(
             return View("ServiceRecipients/ImportServiceRecipients/ValidateAmendmentRecipientsFailed", failedModel);
         }
 
-        // missing recipient ods codes
-        previousRecipientsAsHashSet.ExceptWith(requestedRecipientOdsCodesForMissing);
+        IReadOnlyList<ServiceRecipient> newRecipientDetails =
+            await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                newRecipients);
 
-        List<ServiceRecipientModel> newRecipients =
-            wrapper.Order.FlattenedRecipients.Where(x => requestedRecipientOdsCodesForNew.Contains(x.RecipientOdsCode))
-                .Select(x => new ServiceRecipientModel(x, false))
+        List<ServiceRecipientModel> newRecipientModels =
+            newRecipientDetails
+                .Select(x => new ServiceRecipientModel(x))
                 .OrderBy(x => x.LocationOrgId)
                 .ToList();
 
-        var hasMissing = previousRecipientsAsHashSet.Count > 0;
+        var hasMissingRecipients = previousRecipientsAsHashSet.Except(requestedAmendRecipients).Any();
 
         var model = new ValidateAmendmentRecipientsModel
         {
-            NewRecipients = newRecipients, HasMissing = hasMissing, CancelLink = backAndCancelLink,
+            NewRecipients = newRecipientModels, HasMissing = hasMissingRecipients, CancelLink = backAndCancelLink,
         };
 
         return View("ServiceRecipients/ImportServiceRecipients/ValidateAmendmentRecipients", model);
-
-        // Return new for each instance so hash set can be modified
-        HashSet<string> RequestedRecipientOdsCodes()
-        {
-            return cachedRecipients.Select(x => x.OdsCode).ToHashSet();
-        }
     }
 
     [HttpPost("validation-amendment")]
