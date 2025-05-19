@@ -408,7 +408,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                         && o.OrderingParty.InternalIdentifier == internalOrgId)
                     .Include(x => x.OrderingParty)
                     .Include(x => x.OrderSublocations)
-                    .ThenInclude(y => y.SublocationRecipients)
                     .ToListAsync();
 
                 var previousOrdersWrapped = OrderWrapper.Create(previousOrders, callOffId);
