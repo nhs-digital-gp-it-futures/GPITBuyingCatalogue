@@ -20,7 +20,7 @@ public class ServiceRecipientsStatusProvider : ITaskProgressProvider
             return TaskProgress.InProgress;
         }
 
-        if (!wrapper.FlattenedRecipients.Any())
+        if (!wrapper.Order.FlattenedRecipients.Any())
         {
             return TaskProgress.NotStarted;
         }

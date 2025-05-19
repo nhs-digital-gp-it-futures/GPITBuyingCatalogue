@@ -61,7 +61,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 await odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId),
                 true);
 
-            List<string> preSelectedRecipients = wrapper.FlattenedRecipients.Select(x => x.Id).ToList();
+            List<string> preSelectedRecipients =
+                wrapper.Order.FlattenedRecipients.Select(x => x.RecipientOdsCode).ToList();
 
             if (preSelectedRecipients.Count > 0
                 && wrapper.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode is not null)
