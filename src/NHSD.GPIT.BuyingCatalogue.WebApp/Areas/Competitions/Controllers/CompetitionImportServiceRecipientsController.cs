@@ -141,9 +141,8 @@ public class CompetitionImportServiceRecipientsController : Controller
                 new { internalOrgId, competitionId, validationStatus });
         }
 
-        var mismatchedOdsCodes =
-            new HashSet<string>(requestedRecipientOdsCodes);
-        mismatchedOdsCodes.ExceptWith(actualServiceRecipientsAsHashSet);
+        HashSet<string> mismatchedOdsCodes =
+            requestedRecipientOdsCodes.Except(actualServiceRecipientsAsHashSet).ToHashSet();
 
         var shouldShowValidateOdsScreen = mismatchedOdsCodes.Count > 0 && !acceptLossOfOdsIfMismatch;
 

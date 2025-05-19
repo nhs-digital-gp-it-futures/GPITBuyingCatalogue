@@ -386,11 +386,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             HashSet<string> orderSublocations =
                 order.OrderSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
 
-            HashSet<string> removes = [.. orderSublocations];
-            removes.ExceptWith(sublocationOdsCodes);
+            HashSet<string> removes = orderSublocations.Except(sublocationOdsCodes).ToHashSet();
 
-            HashSet<string> adds = [.. sublocationOdsCodes];
-            adds.ExceptWith(orderSublocations);
+            HashSet<string> adds = sublocationOdsCodes.Except(orderSublocations).ToHashSet();
 
             IEnumerable<OrderSublocation> locationsToAdd = adds.Select(x => new OrderSublocation
             {

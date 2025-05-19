@@ -127,8 +127,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             HashSet<string> orderSublocations =
                 order.Order.OrderSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
 
-            HashSet<string> removes = [.. orderSublocations];
-            removes.ExceptWith(sublocationOdsCodes);
+            HashSet<string> removes = orderSublocations.Except(sublocationOdsCodes).ToHashSet();
 
             var stringOfRemoves = JoinEnumerableStringsToCommaSeparatedString(removes);
 

@@ -134,8 +134,7 @@ public class CompetitionRecipientsController(
         HashSet<string> competitionSublocations =
             competition.CompetitionSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
 
-        HashSet<string> removes = [..competitionSublocations];
-        removes.ExceptWith(sublocationOdsCodes);
+        HashSet<string> removes = competitionSublocations.Except(sublocationOdsCodes).ToHashSet();
 
         var stringOfRemoves = JoinEnumerableStringsToCommaSeparatedString(removes);
 

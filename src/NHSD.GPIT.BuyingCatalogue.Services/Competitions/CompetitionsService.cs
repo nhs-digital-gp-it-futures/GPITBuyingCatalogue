@@ -328,11 +328,9 @@ public class CompetitionsService : ICompetitionsService
         HashSet<string> competitionSublocations =
             competition.CompetitionSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
 
-        HashSet<string> removes = [.. competitionSublocations];
-        removes.ExceptWith(sublocationOdsCodes);
+        HashSet<string> removes = competitionSublocations.Except(sublocationOdsCodes).ToHashSet();
 
-        HashSet<string> adds = [.. sublocationOdsCodes];
-        adds.ExceptWith(competitionSublocations);
+        HashSet<string> adds = sublocationOdsCodes.Except(competitionSublocations).ToHashSet();
 
         IEnumerable<CompetitionSublocation> locationsToAdd = adds.Select(
             x => new CompetitionSublocation
