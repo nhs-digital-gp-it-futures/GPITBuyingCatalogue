@@ -395,12 +395,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 OrderId = orderId, SublocationOdsCode = x, OwnerOdsCode = order.OrderingParty.ExternalIdentifier,
             });
 
-            order.OrderSublocations.AddRange(
-                locationsToAdd
-            );
+            order.OrderSublocations.AddRange(locationsToAdd);
 
             List<OrderSublocation> locationsToRemove =
                 order.OrderSublocations.Where(x => removes.Contains(x.SublocationOdsCode)).ToList();
+
+            if (order.IsAmendment)
+            {
+                List<Order> previousOrders = await dbContext.Orders
+                    .Where(o => o.OrderNumber == callOffId.OrderNumber
+                        && o.Revision <= callOffId.Revision
+                        && o.OrderingParty.InternalIdentifier == internalOrgId)
+                    .Include(x => x.OrderingParty)
+                    .Include(x => x.OrderSublocations)
+                    .ThenInclude(y => y.SublocationRecipients)
+                    .ToListAsync();
+
+                var previousOrdersWrapped = OrderWrapper.Create(previousOrders, callOffId);
+
+                ICollection<OrderSublocation> previousSublocations = previousOrdersWrapped.Previous.OrderSublocations;
+
+                var anySublocationsAlreadyInOrderHistory = locationsToRemove.Any(x =>
+                    previousSublocations.Any(y => y.SublocationOdsCode == x.SublocationOdsCode));
+
+                if (anySublocationsAlreadyInOrderHistory)
+                {
+                    throw new InvalidOperationException(
+                        "Cannot remove sublocations added by previous revision");
+                }
+            }
 
             order.OrderSublocations.RemoveRange(locationsToRemove);
 

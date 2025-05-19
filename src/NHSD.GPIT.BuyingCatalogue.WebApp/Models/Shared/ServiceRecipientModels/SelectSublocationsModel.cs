@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using CompetitionEntityModels = NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using OrderEntityModels = NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using ServiceModels = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
@@ -33,24 +33,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         }
 
         public SelectSublocationsModel(
-            OrderEntityModels.Order order,
+            OrderWrapper wrapper,
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
-            string backLinkHref,
-            bool isAmendment)
+            string backLinkHref)
         {
             Title = "Select sublocations for this order";
-            Caption = order.Description;
+            Caption = wrapper.Order.Description;
             BackLink = backLinkHref;
 
-            IsAmendment = isAmendment;
+            IsAmendment = wrapper.IsAmendment;
 
-            FormLabelText = $"Select all the {order.OrderingParty.Name} sublocations that will receive this order";
+            FormLabelText =
+                $"Select all the {wrapper.Order.OrderingParty.Name} sublocations that will receive this order";
 
+            // Current and previous order sublocations
             List<SublocationModel> existingSublocations =
-                order.OrderSublocations.Select(x => new SublocationModel(x, true)).ToList();
+                wrapper.Order.OrderSublocations.Select(x => new SublocationModel(x, true)).ToList();
 
-            RenderedSublocations =
-                GetRenderedSublocations(possibleSublocations, existingSublocations);
+            // Only previous order sublocations
+            List<SublocationModel> previousSublocations =
+                wrapper.Previous.OrderSublocations.Select(x => new SublocationModel(x, true)).ToList();
+
+            RenderedSublocations = IsAmendment is true
+                ? GetRenderedSublocations(possibleSublocations, existingSublocations, previousSublocations)
+                : GetRenderedSublocations(possibleSublocations, existingSublocations);
         }
 
         public IReadOnlyList<SelectOption<string>> RenderedSublocations { get; init; }
@@ -59,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         public string FormLabelText { get; init; }
 
-        private List<SelectOption<string>> GetRenderedSublocations(
+        private static List<SelectOption<string>> GetRenderedSublocations(
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
             ICollection<SublocationModel> existingSublocations)
         {
@@ -67,12 +73,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 .Select(sl =>
                 {
                     var selected = existingSublocations.Select(es => es.OdsCode).Contains(sl.OdsCode);
+                    return new SelectOption<string> { Text = sl.OdsCode, Value = sl.OdsCode, Selected = selected };
+                })
+                .OrderBy(x => x.Text)
+                .ToList();
+        }
+
+        private static List<SelectOption<string>> GetRenderedSublocations(
+            IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
+            ICollection<SublocationModel> existingSublocations,
+            ICollection<SublocationModel> previousOrderSublocations)
+        {
+            return possibleSublocations
+                .Select(sl =>
+                {
+                    var selected = existingSublocations.Select(es => es.OdsCode).Contains(sl.OdsCode);
+                    var sublocationPartOfPreviousOrder = previousOrderSublocations is not null
+                        && previousOrderSublocations.Any(x => x.OdsCode == sl.OdsCode);
+
                     return new SelectOption<string>
                     {
                         Text = sl.OdsCode,
                         Value = sl.OdsCode,
                         Selected = selected,
-                        Disabled = selected && IsAmendment is true,
+                        Disabled = sublocationPartOfPreviousOrder,
                     };
                 })
                 .OrderBy(x => x.Text)

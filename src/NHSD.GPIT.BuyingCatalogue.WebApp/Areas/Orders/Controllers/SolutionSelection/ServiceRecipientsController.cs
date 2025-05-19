@@ -100,10 +100,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new { callOffId, internalOrgId });
 
             var model = new SelectSublocationsModel(
-                wrapper.Order,
+                wrapper,
                 possibleSublocations,
-                backLinkHref,
-                wrapper.Order.IsAmendment);
+                backLinkHref);
             return View("ServiceRecipients/SelectSublocations", model);
         }
 
