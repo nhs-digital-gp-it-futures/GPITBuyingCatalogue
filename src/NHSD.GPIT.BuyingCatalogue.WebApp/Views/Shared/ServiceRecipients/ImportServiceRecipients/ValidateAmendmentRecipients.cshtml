@@ -14,7 +14,7 @@
         
         @if (Model.HasMissing)
         {
-            <nhs-inset-text>The CSV file you provided was missing some or all of the Service Recipients from previous revisions. Service Recipients from previous revisions cannot be removed, but we can add the new Service Recipients shown below.</nhs-inset-text>
+            <nhs-inset-text>The CSV file you provided was missing some or all of the service recipients from previous revisions. Service recipients from previous revisions cannot be removed, but we can add the new ones shown below.</nhs-inset-text>
         }
 
         <form method="post">
@@ -39,15 +39,13 @@
             </div>
             
 
-            <p>If you continue with your import, we’ll add these recipients to your amendment.</p>
-
-
-            <nhs-submit-button/>
+            <p>If you continue with your import, we’ll add these service recipients to your amendment.</p>
+            <nhs-button-group>
+                <nhs-submit-button/>
+                <a href="@Model.CancelLink">
+                    Cancel
+                </a>
+            </nhs-button-group>
         </form>
-        <div>
-            <a href="@Model.CancelLink">
-                Cancel
-            </a>
-        </div>
     </div>
 </div>

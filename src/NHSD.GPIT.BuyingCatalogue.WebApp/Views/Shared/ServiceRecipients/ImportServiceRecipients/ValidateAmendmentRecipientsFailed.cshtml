@@ -12,15 +12,14 @@
                         caption="@Model.Caption"
                         advice="There is a problem with your CSV file"/>
 
-        <p>We were unable to identify any new Service Recipients from your CSV file.</p>
-        <p>To select Service Recipients manually, please Continue. If you would like to try again, please Cancel and upload a new CSV file.</p>
-
-        <vc:nhs-anchor-button type="Primary" text="Save and continue" url="@Model.ContinueLink"/>
+        <p>We were unable to identify any new service recipients from your CSV file. To select service recipients manually, please continue.</p>
+        <p>If you would like to try again, cancel and upload a new CSV file.</p>
        
-        <div>
+        <nhs-button-group>
+            <vc:nhs-anchor-button type="Primary" text="Save and continue" url="@Model.ContinueLink"/>
             <a href="@Model.CancelLink">
                 Cancel
             </a>
-        </div>
+        </nhs-button-group>
     </div>
 </div>

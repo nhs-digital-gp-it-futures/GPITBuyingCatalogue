@@ -10,7 +10,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Caption"
-                        advice="There are discrepancies between the Service Recipient names in your CSV file and what we have on record."/>
+                        advice="There are discrepancies between the service recipient names in your CSV file and what we have on record."/>
 
 
         <div data-test-id="validate-names-table">
@@ -29,13 +29,13 @@
                 }
             </nhs-table>
         </div>
-        <p>If you continue with your import, we’ll use the Service Recipient names we have on record.</p>
+        <p>If you continue with your import, we’ll use the service recipient names we have on record.</p>
 
-        <vc:nhs-anchor-button text="Save and continue"/>
-        <div>
+        <nhs-button-group>
+            <vc:nhs-anchor-button text="Save and continue"/>
             <a href="@Model.CancelLink">
                 Cancel
             </a>
-        </div>
+        </nhs-button-group>
     </div>
 </div>
