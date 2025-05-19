@@ -309,6 +309,19 @@ public class ImportServiceRecipientsController(
         // new recipient ods codes 
         requestedRecipientOdsCodesForNew.ExceptWith(previousRecipientsAsHashSet);
 
+        if (requestedRecipientOdsCodesForNew.Count == 0)
+        {
+            var failedModel = new ValidateAmendmentRecipientsModel
+            {
+                ContinueLink = Url.Action(
+                    nameof(ServiceRecipientsController.SelectSublocations),
+                    typeof(ServiceRecipientsController).ControllerName(),
+                    new { internalOrgId, callOffId }),
+                CancelLink = backAndCancelLink,
+            };
+            return View("ServiceRecipients/ImportServiceRecipients/ValidateAmendmentRecipientsFailed", failedModel);
+        }
+
         // missing recipient ods codes
         previousRecipientsAsHashSet.ExceptWith(requestedRecipientOdsCodesForMissing);
 

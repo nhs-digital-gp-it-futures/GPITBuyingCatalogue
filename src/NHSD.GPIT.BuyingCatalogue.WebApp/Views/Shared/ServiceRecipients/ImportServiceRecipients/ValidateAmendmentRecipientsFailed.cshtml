@@ -1,0 +1,26 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients.ValidateAmendmentRecipientsModel
+@{
+    ViewBag.Title = "Confirm amendment upload";
+}
+
+<partial name="Partials/_BackLink" model="@Model"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.Caption"
+                        advice="There is a problem with your CSV file"/>
+
+        <p>We were unable to identify any new Service Recipients from your CSV file.</p>
+        <p>To select Service Recipients manually, please Continue. If you would like to try again, please Cancel and upload a new CSV file.</p>
+
+        <vc:nhs-anchor-button type="Primary" text="Save and continue" url="@Model.ContinueLink"/>
+       
+        <div>
+            <a href="@Model.CancelLink">
+                Cancel
+            </a>
+        </div>
+    </div>
+</div>
