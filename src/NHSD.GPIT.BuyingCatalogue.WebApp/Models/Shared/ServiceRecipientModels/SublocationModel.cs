@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
@@ -40,13 +39,24 @@ public record SublocationModel
     }
 
     public SublocationModel(
-        ISublocation competitionSublocation,
+        CompetitionSublocation competitionSublocation,
         string recipientHref,
         int serviceRecipientCount)
     {
         Name = competitionSublocation.SublocationOrganisation.Name;
         ServiceRecipientCount = serviceRecipientCount;
         OdsCode = competitionSublocation.SublocationOdsCode;
+        RecipientHref = recipientHref;
+    }
+
+    public SublocationModel(
+        OrderSublocation orderSublocation,
+        string recipientHref,
+        int serviceRecipientCount)
+    {
+        Name = orderSublocation.SublocationOrganisation.Name;
+        ServiceRecipientCount = serviceRecipientCount;
+        OdsCode = orderSublocation.SublocationOdsCode;
         RecipientHref = recipientHref;
     }
 

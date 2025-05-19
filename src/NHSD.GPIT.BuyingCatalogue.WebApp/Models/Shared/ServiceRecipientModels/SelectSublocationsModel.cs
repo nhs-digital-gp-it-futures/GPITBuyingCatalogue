@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using CompetitionEntityModels = NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using OrderEntityModels = NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -26,8 +25,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             FormLabelText =
                 $"Select all the {competition.Organisation.Name} sublocations that will be part of this competition";
 
-            ICollection<ISublocation> existingSublocations =
-                competition.CompetitionSublocations.Cast<ISublocation>().ToList();
+            List<SublocationModel> existingSublocations =
+                competition.CompetitionSublocations.Select(x => new SublocationModel(x, true)).ToList();
 
             RenderedSublocations =
                 GetRenderedSublocations(possibleSublocations, existingSublocations);
@@ -47,7 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
             FormLabelText = $"Select all the {order.OrderingParty.Name} sublocations that will receive this order";
 
-            ICollection<ISublocation> existingSublocations = order.OrderSublocations.Cast<ISublocation>().ToList();
+            List<SublocationModel> existingSublocations =
+                order.OrderSublocations.Select(x => new SublocationModel(x, true)).ToList();
 
             RenderedSublocations =
                 GetRenderedSublocations(possibleSublocations, existingSublocations);
@@ -61,12 +61,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         private List<SelectOption<string>> GetRenderedSublocations(
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
-            ICollection<ISublocation> existingSublocations)
+            ICollection<SublocationModel> existingSublocations)
         {
             return possibleSublocations
                 .Select(sl =>
                 {
-                    var selected = existingSublocations.Select(es => es.SublocationOdsCode).Contains(sl.OdsCode);
+                    var selected = existingSublocations.Select(es => es.OdsCode).Contains(sl.OdsCode);
                     return new SelectOption<string>
                     {
                         Text = sl.OdsCode,

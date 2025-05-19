@@ -438,21 +438,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             return View("ServiceRecipients/SelectSublocationsOverview", model);
 
-            async Task MapSublocationToSublocationModel(OrderSublocation competitionSublocation)
+            async Task MapSublocationToSublocationModel(OrderSublocation orderSublocation)
             {
                 var recipientHref = Url.Action(
                     nameof(SelectSublocationRecipients),
                     typeof(ServiceRecipientsController).ControllerName(),
-                    new { callOffId, internalOrgId, sublocationOdsCode = competitionSublocation.SublocationOdsCode });
+                    new { callOffId, internalOrgId, sublocationOdsCode = orderSublocation.SublocationOdsCode });
 
                 var serviceRecipientCount =
                     await orderSublocationService.GetCountForOrderSublocationRecipients(
                         wrapper.Order.OrderingParty.ExternalIdentifier,
                         wrapper.Order.Id,
-                        competitionSublocation.SublocationOdsCode);
+                        orderSublocation.SublocationOdsCode);
 
                 var sublocationModel = new SublocationModel(
-                    competitionSublocation,
+                    orderSublocation,
                     recipientHref,
                     serviceRecipientCount);
                 sublocations.Add(sublocationModel);
