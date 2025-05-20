@@ -479,13 +479,15 @@ public static class CompetitionRecipientsControllerTests
         List<ServiceRecipient> possibleRecipients,
         CompetitionSublocation workingSublocation,
         SublocationModel expectedSublocationModel,
-        List<ServiceRecipientModel> expectedRendered,
+        List<SelectOption<string>> expectedRendered,
         SelectionMode? selectionMode,
         [Frozen] ICompetitionSublocationService competitionSublocationService,
         [Frozen] IOrganisationsService organisationsService,
         [Frozen] IOdsService odsOrganisationsService,
         CompetitionRecipientsController controller)
     {
+        Assert.Fail("needs fixing");
+
         competition.OrganisationId = organisation.Id;
         competition.Organisation = organisation;
 
@@ -526,7 +528,6 @@ public static class CompetitionRecipientsControllerTests
                     .Excluding(m => m.Advice)
                     .Excluding(m => m.BackLink)
                     .Excluding(m => m.Sublocation)
-                    .Excluding(m => m.PreviouslySelected)
                     .Excluding(m => m.RenderedServiceRecipients));
 
         SublocationModel sublocationForFurtherEvaluation =
@@ -544,21 +545,21 @@ public static class CompetitionRecipientsControllerTests
                 expectedSublocationModel.ServiceRecipients,
                 CommonNameDescriptionExclusionConfig);
 
-        IEnumerable<ServiceRecipientModel> previouslySelectedServiceRecipientsForFurtherEvaluation =
-            result.Model.As<SelectSublocationRecipientsModel>().PreviouslySelected;
-
-        previouslySelectedServiceRecipientsForFurtherEvaluation.Should()
-            .BeEquivalentTo(
-                expectedSublocationModel.ServiceRecipients,
-                CommonNameDescriptionExclusionConfig);
-
-        IReadOnlyList<ServiceRecipientModel> renderedRecipientsForFurtherEvaluation =
-            result.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
-
-        renderedRecipientsForFurtherEvaluation.Should()
-            .BeEquivalentTo(
-                expectedModel.RenderedServiceRecipients,
-                CommonNameDescriptionExclusionConfig);
+        // IEnumerable<ServiceRecipientModel> previouslySelectedServiceRecipientsForFurtherEvaluation =
+        //     result.Model.As<SelectSublocationRecipientsModel>().PreviouslySelected;
+        //
+        // previouslySelectedServiceRecipientsForFurtherEvaluation.Should()
+        //     .BeEquivalentTo(
+        //         expectedSublocationModel.ServiceRecipients,
+        //         CommonNameDescriptionExclusionConfig);
+        //
+        // IReadOnlyList<ServiceRecipientModel> renderedRecipientsForFurtherEvaluation =
+        //     result.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
+        //
+        // renderedRecipientsForFurtherEvaluation.Should()
+        //     .BeEquivalentTo(
+        //         expectedModel.RenderedServiceRecipients,
+        //         CommonNameDescriptionExclusionConfig);
     }
 
     [Theory]
@@ -570,7 +571,7 @@ public static class CompetitionRecipientsControllerTests
             List<ServiceRecipient> possibleRecipients,
             CompetitionSublocation workingSublocation,
             SublocationModel expectedSublocationModel,
-            List<ServiceRecipientModel> expectedRendered,
+            List<SelectOption<string>> expectedRendered,
             [Frozen] ICompetitionSublocationService competitionSublocationService,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] IOdsService odsOrganisationsService,
@@ -652,7 +653,7 @@ public static class CompetitionRecipientsControllerTests
         Competition competition,
         string sublocationOdsCode,
         CompetitionSublocation existingCompetitionSublocation,
-        IReadOnlyList<ServiceRecipientModel> newRenderedServiceRecipients,
+        List<SelectOption<string>> newRenderedServiceRecipients,
         HashSet<string> expectedSets,
         [Frozen] IOrganisationsService organisationsService,
         [Frozen] ICompetitionSublocationService competitionSublocationService,

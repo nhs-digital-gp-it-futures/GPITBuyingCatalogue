@@ -120,11 +120,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             HashSet<string> sublocationOdsCodes =
                 selectSublocations.RenderedSublocations.Where(x => x.Selected).Select(y => y.Value).ToHashSet();
 
-            OrderWrapper order =
+            OrderWrapper wrapper =
                 await orderService.GetOrderWithSublocations(callOffId, internalOrgId);
 
             HashSet<string> orderSublocations =
-                order.Order.OrderSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
+                wrapper.Order.OrderSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
 
             HashSet<string> removes = orderSublocations.Except(sublocationOdsCodes).ToHashSet();
 
@@ -266,6 +266,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 typeof(ServiceRecipientsController).ControllerName(),
                 new { callOffId, internalOrgId });
 
+            if (callOffId.IsAmendment)
+            {
+                OrderWrapper orderHistory =
+                    await orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId);
+
+                var amendmentModel = new SelectSublocationRecipientsModel(
+                    orderHistory,
+                    sublocationAsSublocationModel,
+                    possibleRecipients,
+                    backLinkHref,
+                    selectionMode);
+
+                return View("ServiceRecipients/SelectSublocationRecipients", amendmentModel);
+            }
+
             var model = new SelectSublocationRecipientsModel(
                 orderSublocation.Order,
                 sublocationAsSublocationModel,
@@ -311,7 +326,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             HashSet<string> pageSelections = selectSublocationRecipientsModel.RenderedServiceRecipients
                 .Where(x => x.Selected)
-                .Select(y => y.OdsCode)
+                .Select(y => y.Value)
                 .ToHashSet();
 
             await orderSublocationService.SetSublocationRecipients(

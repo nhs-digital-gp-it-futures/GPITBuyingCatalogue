@@ -8,6 +8,9 @@
 
 @{
     ViewBag.Title = Model.Title;
+
+    var previousOrderRecipients = Model.RenderedServiceRecipients.Where(x => x.Disabled).ToList();
+
 }
 <partial name="Partials/_BackLink" model="Model"/>
 <script type="text/javascript" src="@Url.Content("~/js/Recipients.min.js")" asp-append-version="true"></script>
@@ -17,33 +20,26 @@
         <nhs-validation-summary/>
         <nhs-page-title model="@Model"/>
 
-        @if ((Model.PreviouslySelected?.Any() ?? false))
-        {
-            @if (Model.IsAmendment is true && (Model.PreviouslySelected?.Any() ?? false))
-            {
-                <div id="previously-selected-service-recipients">
-                    <nhs-details label-text="View Service Recipients from the previous revision" data-test-id="existing-recipients-details">
-                        <p>
-                            The previous revision had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
-                        </p>
 
-                        @foreach (var location in Model.PreviouslySelected.GroupBy(x => x.Location))
+        @if (Model.IsAmendment is true && (previousOrderRecipients.Count > 0))
+        {
+            <div id="previously-selected-service-recipients">
+                <nhs-details label-text="View Service Recipients from the previous revision" data-test-id="existing-recipients-details">
+                    <p>
+                        The previous revision had @previousOrderRecipients.Count Service @PluralOrSingular(previousOrderRecipients.Count)
+                    </p>
+
+                    <ul>
+                        @foreach (var item in previousOrderRecipients)
                         {
-                            <nhs-expander label-text="@location.Key"
-                            bold-title="true"
-                            data-test-id="existing-recipient-group-summary">
-                                <ul>
-                                    @foreach (var item in location)
-                                    {
-                                        <li>@item.Description</li>
-                                    }
-                                </ul>
-                            </nhs-expander>
+                            <li>@item.Text - @item.Value</li>
                         }
-                    </nhs-details>
-                </div>
-            }
+                    </ul>
+
+                </nhs-details>
+            </div>
         }
+
 
         <h3>Select organisations</h3>
         <div class="bc-u-max-width-full">
@@ -86,22 +82,31 @@
                         <nhs-table-column>ODS code</nhs-table-column>
                         @for (var i = 0; i < Model.RenderedServiceRecipients.Count; i++)
                         {
-                            var instanceSlice = i;
-                            
-                            <nhs-table-row-container id="@Model.RenderedServiceRecipients[instanceSlice].OdsCode">
-                                <nhs-table-cell>
-                                    <input type="hidden" asp-for="RenderedServiceRecipients[instanceSlice].OdsCode" />
-                                    <input type="hidden" asp-for="RenderedServiceRecipients[instanceSlice].Name"/>
-                                    <nhs-checkbox-container>
-                                        <nhs-checkbox asp-for="@Model.RenderedServiceRecipients[instanceSlice].Selected"
-                                                      label-text="@Model.RenderedServiceRecipients[instanceSlice].Name"
-                                                      checkbox-class="main-srs gather-data"/>
-                                    </nhs-checkbox-container>
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@Model.RenderedServiceRecipients[instanceSlice].OdsCode</div>
-                                </nhs-table-cell>
-                            </nhs-table-row-container>
+                            var localI = i;
+
+                            <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Text" />
+
+                            if (Model.RenderedServiceRecipients[localI].Disabled)
+                            {
+                                <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Value" />
+                                <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Selected" />
+                            }
+                            else
+                            {
+                                <nhs-table-row-container id="@Model.RenderedServiceRecipients[localI].Value">
+                                    <nhs-table-cell>
+                                        <nhs-checkbox-container>
+                                            <nhs-checkbox asp-for="@Model.RenderedServiceRecipients[localI].Selected"
+                                                          label-text="@Model.RenderedServiceRecipients[localI].Text"
+                                                          hidden-input="@Model.RenderedServiceRecipients[localI].Value"
+                                                          checkbox-class="main-srs gather-data"/>
+                                        </nhs-checkbox-container>
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@Model.RenderedServiceRecipients[localI].Value</div>
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
                         }
                     </nhs-table>
                 </nhs-expander-content>

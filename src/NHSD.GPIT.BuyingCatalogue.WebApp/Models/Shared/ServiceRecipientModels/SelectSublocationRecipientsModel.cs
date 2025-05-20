@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
@@ -15,43 +17,71 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public SelectSublocationRecipientsModel(
             Competition competition,
             SublocationModel selectedSublocation,
-            IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
+            IReadOnlyList<ServiceRecipientModel> possibleServiceRecipients,
             string backLinkHref,
-            SelectionMode? selectionMode = null,
-            bool isAmendment = false)
+            SelectionMode? selectionMode = null)
             : this(
                 selectedSublocation,
-                possibleServiceRecipients,
                 backLinkHref,
-                selectionMode,
-                isAmendment)
+                selectionMode)
         {
             Caption = competition.Name;
+            RenderedServiceRecipients = GetRenderedSublocations(
+                possibleServiceRecipients,
+                selectedSublocation.ServiceRecipients);
+            SelectServiceRecipients(RenderedServiceRecipients);
         }
 
         public SelectSublocationRecipientsModel(
             Order order,
             SublocationModel selectedSublocation,
-            IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
+            IReadOnlyList<ServiceRecipientModel> possibleServiceRecipients,
             string backLinkHref,
-            SelectionMode? selectionMode = null,
-            bool isAmendment = false)
+            SelectionMode? selectionMode = null)
             : this(
                 selectedSublocation,
-                possibleServiceRecipients,
                 backLinkHref,
-                selectionMode,
-                isAmendment)
+                selectionMode)
         {
             Caption = order.Description;
+            RenderedServiceRecipients = GetRenderedSublocations(
+                possibleServiceRecipients,
+                selectedSublocation.ServiceRecipients);
+
+            SelectServiceRecipients(RenderedServiceRecipients);
+        }
+
+        public SelectSublocationRecipientsModel(
+            OrderWrapper orders,
+            SublocationModel selectedSublocation,
+            IReadOnlyList<ServiceRecipientModel> possibleServiceRecipients,
+            string backLinkHref,
+            SelectionMode? selectionMode = null)
+            : this(
+                selectedSublocation,
+                backLinkHref,
+                selectionMode)
+        {
+            IsAmendment = true;
+            Caption = orders.Order.Description;
+
+            IReadOnlyList<ServiceRecipientModel> previousRecipients =
+                orders.Previous.OrderSublocations.First(x => x.SublocationOdsCode == selectedSublocation.OdsCode)
+                    .SublocationRecipients.Select(y => new ServiceRecipientModel(y, true))
+                    .ToList();
+
+            RenderedServiceRecipients = GetRenderedSublocations(
+                possibleServiceRecipients,
+                selectedSublocation.ServiceRecipients,
+                previousRecipients);
+
+            SelectServiceRecipients(RenderedServiceRecipients);
         }
 
         private SelectSublocationRecipientsModel(
             SublocationModel selectedSublocation,
-            IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
             string backLinkHref,
-            SelectionMode? selectionMode = null,
-            bool isAmendment = false)
+            SelectionMode? selectionMode = null)
         {
             Title = "Add service recipients";
             Advice = "Select all the organisations that will be receiving this order";
@@ -60,35 +90,60 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             SelectionMode = selectionMode;
 
             Sublocation = selectedSublocation;
-
-            IsAmendment = isAmendment;
-
-            WorkingServiceRecipients = PreviouslySelected
-                .Concat(
-                    possibleServiceRecipients.Where(
-                        nsr => PreviouslySelected.All(esr => esr.OdsCode != nsr.OdsCode)))
-                .OrderBy(x => x.Name)
-                .ToList();
-
-            SelectServiceRecipients(WorkingServiceRecipients);
-
-            RenderedServiceRecipients = WorkingServiceRecipients;
         }
 
         public SublocationModel Sublocation { get; init; }
 
-        public IReadOnlyCollection<ServiceRecipientModel> PreviouslySelected => Sublocation.ServiceRecipients;
-
         public bool? IsAmendment { get; init; }
 
-        public IReadOnlyList<ServiceRecipientModel> RenderedServiceRecipients { get; init; }
+        public List<SelectOption<string>> RenderedServiceRecipients { get; init; }
 
         public SelectionMode? SelectionMode { get; init; }
 
-        private List<ServiceRecipientModel> WorkingServiceRecipients { get; } = [];
+        private static IReadOnlyList<ServiceRecipientModel> MergePossibleAndExisting(
+            IReadOnlyList<ServiceRecipientModel> possibleRecipients,
+            IReadOnlyList<ServiceRecipientModel> existingRecipients)
+        {
+            return existingRecipients
+                .Concat(
+                    possibleRecipients.Where(nsr => existingRecipients.All(esr => esr.OdsCode != nsr.OdsCode)))
+                .OrderBy(x => x.Name)
+                .ToList();
+        }
+
+        private static List<SelectOption<string>> GetRenderedSublocations(
+            IReadOnlyList<ServiceRecipientModel> possibleRecipients,
+            IReadOnlyList<ServiceRecipientModel> existingRecipients,
+            IReadOnlyList<ServiceRecipientModel> previousOrderRecipients)
+        {
+            IReadOnlyList<ServiceRecipientModel> possibleSelections =
+                MergePossibleAndExisting(possibleRecipients, existingRecipients);
+
+            List<SelectOption<string>> possibleSelectOptions = possibleSelections.Select(x =>
+                    new SelectOption<string>(
+                        x.Name,
+                        x.OdsCode,
+                        x.Selected,
+                        previousOrderRecipients.Any(y => y.OdsCode == x.OdsCode)))
+                .ToList();
+
+            return possibleSelectOptions;
+        }
+
+        private static List<SelectOption<string>> GetRenderedSublocations(
+            IReadOnlyList<ServiceRecipientModel> possibleRecipients,
+            IReadOnlyList<ServiceRecipientModel> existingRecipients)
+        {
+            return MergePossibleAndExisting(possibleRecipients, existingRecipients)
+                .Select(x => new SelectOption<string>(
+                    x.Name,
+                    x.OdsCode,
+                    x.Selected))
+                .ToList();
+        }
 
         private void SelectServiceRecipients(
-            List<ServiceRecipientModel> modifyList)
+            List<SelectOption<string>> modifyList)
         {
             switch (SelectionMode)
             {

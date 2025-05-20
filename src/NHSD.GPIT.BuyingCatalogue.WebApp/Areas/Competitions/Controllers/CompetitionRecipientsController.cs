@@ -316,7 +316,7 @@ public class CompetitionRecipientsController(
 
         HashSet<string> pageSelections = selectSublocationRecipientsModel.RenderedServiceRecipients
             .Where(x => x.Selected)
-            .Select(y => y.OdsCode)
+            .Select(y => y.Value)
             .ToHashSet();
 
         await competitionSublocationService.SetSublocationRecipients(
