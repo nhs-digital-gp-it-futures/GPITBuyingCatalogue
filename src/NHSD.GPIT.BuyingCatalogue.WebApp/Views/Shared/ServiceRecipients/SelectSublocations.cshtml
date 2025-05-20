@@ -12,24 +12,22 @@
         
         @if (Model.IsAmendment is true)
         {
-            <nhs-inset-text>You cannot remove sublocations during an amendment.</nhs-inset-text>
+            <nhs-inset-text><p>You cannot remove sublocations during an amendment. If you are happy with the sublocations from the previous revision, you can continue without making a selection.</p></nhs-inset-text>
         }
-        
+
         @if (disabledSublocations.Count > 0)
         {
             <div id="previously-selected-sublocations">
-                <nhs-details label-text="View sublocations from the previous revision" data-test-id="existing-sublocations-details">
-                    <p>
-                        The previous revision had @disabledSublocations.Count Service @PluralOrSingular(disabledSublocations.Count)
-                    </p>
+                <p>
+                    The previous revision had @disabledSublocations.Count Service @PluralOrSingular(disabledSublocations.Count)
+                </p>
 
-                    <ul>
-                        @foreach (var item in disabledSublocations)
-                        {
-                            <li>@item.Text</li>
-                        }
-                    </ul>
-                </nhs-details>
+                <ul>
+                    @foreach (var item in disabledSublocations)
+                    {
+                        <li>@item.Text</li>
+                    }
+                </ul>
             </div>
         }
 
@@ -59,7 +57,6 @@
                     }
                 </nhs-checkbox-container>
             </nhs-fieldset-form-label>
-            <br/>
             <nhs-submit-button/>
         </form>
     </div>
