@@ -51,11 +51,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 wrapper.Order.OrderSublocations.Select(x => new SublocationModel(x, true)).ToList();
 
             // Only previous order sublocations
-            List<SublocationModel> previousSublocations =
+            List<SublocationModel> previousOrderSublocations =
                 wrapper.Previous.OrderSublocations.Select(x => new SublocationModel(x, true)).ToList();
 
             RenderedSublocations = IsAmendment is true
-                ? GetRenderedSublocations(possibleSublocations, existingSublocations, previousSublocations)
+                ? GetRenderedSublocations(possibleSublocations, existingSublocations, previousOrderSublocations)
                 : GetRenderedSublocations(possibleSublocations, existingSublocations);
         }
 
