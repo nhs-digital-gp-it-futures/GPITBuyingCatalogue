@@ -11,6 +11,8 @@ CREATE TABLE [ordering].[OrderItemSublocationRecipients]
     [SysEndTime] datetime2(0) GENERATED ALWAYS AS ROW END NOT NULL,
     PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),
     CONSTRAINT PK_OrderItemSublocationRecipients PRIMARY KEY ([OrderId], [CatalogueItemId] , [OdsCode]),
+    CONSTRAINT FK_OrderItemSublocationRecipients_Order FOREIGN KEY ([OrderId]) REFERENCES [ordering].[Orders] ([Id]),
+    CONSTRAINT FK_OrderItemSublocationRecipients_CatalogueItem FOREIGN KEY ([CatalogueItemId]) REFERENCES [catalogue].[CatalogueItems] ([Id]),
     CONSTRAINT FK_OrderItemSublocationRecipients_OrderItem FOREIGN KEY ([OrderId], [CatalogueItemId]) REFERENCES [ordering].[OrderItems] ([OrderId], [CatalogueItemId]) ON DELETE CASCADE,
     CONSTRAINT FK_OrderItemSublocationRecipients_SublocationRecipient FOREIGN KEY ([OrderId], [OdsCode]) REFERENCES [ordering].[OrderSublocationRecipients] ([OrderId], [RecipientOdsCode]) ON DELETE CASCADE,
     CONSTRAINT FK_OrderItemSublocationRecipients_LastUpdatedBy FOREIGN KEY (LastUpdatedBy) REFERENCES [users].[AspNetUsers]([Id]),
