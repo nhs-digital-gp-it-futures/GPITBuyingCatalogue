@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     [Serializable]
-    public sealed partial class OrderItem : IAudited
+    public sealed partial class OrderItem : IAudited, ICloneable<OrderItem>
     {
         public OrderItem()
         {
@@ -40,5 +40,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public OrderItemFunding OrderItemFunding { get; set; }
 
         public OrderItemPrice OrderItemPrice { get; set; }
+
+        public OrderItem Clone() => new(CatalogueItemId)
+        {
+            OrderItemPrice = OrderItemPrice?.Clone(),
+            EstimationPeriod = EstimationPeriod,
+            CatalogueItem = CatalogueItem,
+            Quantity = Quantity,
+        };
     }
 }
