@@ -470,9 +470,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
                 if (wrapper.IsAmendment)
                 {
+                    // Get precise recipient counts for accurate status
+                    var previousRevisionOrderId = wrapper.PreviousOrders[^1].Id;
+
                     previousRecipientCount = await orderSublocationService.GetCountForOrderSublocationRecipients(
                         wrapper.Order.OrderingParty.ExternalIdentifier,
-                        wrapper.Previous.Id,
+                        previousRevisionOrderId,
                         orderSublocation.SublocationOdsCode);
                 }
 
