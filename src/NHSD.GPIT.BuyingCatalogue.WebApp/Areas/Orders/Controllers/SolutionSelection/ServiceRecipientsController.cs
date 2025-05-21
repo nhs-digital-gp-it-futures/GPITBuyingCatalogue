@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -465,10 +466,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         wrapper.Order.Id,
                         orderSublocation.SublocationOdsCode);
 
+                var previousRecipientCount = 0;
+
+                if (wrapper.IsAmendment)
+                {
+                    previousRecipientCount = await orderSublocationService.GetCountForOrderSublocationRecipients(
+                        wrapper.Order.OrderingParty.ExternalIdentifier,
+                        wrapper.Previous.Id,
+                        orderSublocation.SublocationOdsCode);
+                }
+
+                TaskProgress taskProgress = serviceRecipientCount switch
+                {
+                    0 => TaskProgress.NotStarted,
+                    > 0 when !wrapper.IsAmendment => TaskProgress.Completed,
+                    > 0 when wrapper.IsAmendment && serviceRecipientCount == previousRecipientCount =>
+                        TaskProgress.Completed,
+                    > 0 when wrapper.IsAmendment && serviceRecipientCount > previousRecipientCount =>
+                        TaskProgress.Amended,
+                    _ => throw new ArgumentOutOfRangeException(
+                        nameof(serviceRecipientCount),
+                        @"No valid case for service recipient count"),
+                };
+
                 var sublocationModel = new SublocationModel(
                     orderSublocation,
                     recipientHref,
-                    serviceRecipientCount);
+                    serviceRecipientCount,
+                    taskProgress);
                 sublocations.Add(sublocationModel);
             }
         }

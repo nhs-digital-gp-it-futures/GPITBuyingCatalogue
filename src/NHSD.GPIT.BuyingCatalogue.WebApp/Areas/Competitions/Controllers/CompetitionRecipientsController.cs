@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
@@ -465,7 +466,13 @@ public class CompetitionRecipientsController(
                     competitionId,
                     competitionSublocation.SublocationOdsCode);
 
-            var sublocationModel = new SublocationModel(competitionSublocation, recipientHref, serviceRecipientCount);
+            TaskProgress taskProgress = serviceRecipientCount == 0 ? TaskProgress.NotStarted : TaskProgress.Completed;
+
+            var sublocationModel = new SublocationModel(
+                competitionSublocation,
+                recipientHref,
+                serviceRecipientCount,
+                taskProgress);
             sublocations.Add(sublocationModel);
         }
     }

@@ -41,23 +41,27 @@ public record SublocationModel
     public SublocationModel(
         CompetitionSublocation competitionSublocation,
         string recipientHref,
-        int serviceRecipientCount)
+        int serviceRecipientCount,
+        TaskProgress taskProgress)
     {
         Name = competitionSublocation.SublocationOrganisation.Name;
         ServiceRecipientCount = serviceRecipientCount;
         OdsCode = competitionSublocation.SublocationOdsCode;
         RecipientHref = recipientHref;
+        TaskProgress = taskProgress;
     }
 
     public SublocationModel(
         OrderSublocation orderSublocation,
         string recipientHref,
-        int serviceRecipientCount)
+        int serviceRecipientCount,
+        TaskProgress taskProgress)
     {
         Name = orderSublocation.SublocationOrganisation.Name;
         ServiceRecipientCount = serviceRecipientCount;
         OdsCode = orderSublocation.SublocationOdsCode;
         RecipientHref = recipientHref;
+        TaskProgress = taskProgress;
     }
 
     public string Name { get; init; }
@@ -70,7 +74,7 @@ public record SublocationModel
 
     public string RecipientHref { get; init; }
 
-    public TaskProgress TaskProgress => ServiceRecipientCount == 0 ? TaskProgress.NotStarted : TaskProgress.Completed;
+    public TaskProgress TaskProgress { get; init; }
 
     public bool? AllRecipientsSelected => ServiceRecipients?.All(x => x.Selected);
 }

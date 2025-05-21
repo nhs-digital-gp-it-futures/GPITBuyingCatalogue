@@ -66,9 +66,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Caption = orders.Order.Description;
 
             IReadOnlyList<ServiceRecipientModel> previousRecipients =
-                orders.Previous.OrderSublocations.First(x => x.SublocationOdsCode == selectedSublocation.OdsCode)
+                orders.Previous?.OrderSublocations
+                    .FirstOrDefault(x => x.SublocationOdsCode == selectedSublocation.OdsCode)
+                    ?
                     .SublocationRecipients.Select(y => new ServiceRecipientModel(y, true))
-                    .ToList();
+                    .ToList() ?? [];
 
             RenderedServiceRecipients = GetRenderedSublocations(
                 possibleServiceRecipients,
