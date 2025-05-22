@@ -387,23 +387,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 typeof(TaskListController).ControllerName(),
                 new { callOffId, internalOrgId });
 
+            if (!wrapper.HasNewOrderRecipients)
+            {
+                var amendModel = new AmendSublocationRecipientsNoSelectionModel(
+                    wrapper.Order,
+                    backLinkUrl,
+                    continueLinkUrl);
+
+                return View("ServiceRecipients/AmendSublocationRecipientsNoSelection", amendModel);
+            }
+
             var model = new ConfirmSublocationRecipientsModel(
                 wrapper.Order,
                 backLinkUrl,
                 continueLinkUrl);
 
             return View("ServiceRecipients/ConfirmSublocationRecipients", model);
-        }
-
-        [HttpPost("confirm-sublocation-recipients")]
-        public IActionResult ConfirmSublocationRecipientsPost(
-            string internalOrgId,
-            CallOffId callOffId)
-        {
-            return RedirectToAction(
-                nameof(TaskListController.TaskList),
-                typeof(TaskListController).ControllerName(),
-                new { callOffId, internalOrgId });
         }
 
         private static string JoinEnumerableStringsToCommaSeparatedString(IEnumerable<string> stringEnumerable)
