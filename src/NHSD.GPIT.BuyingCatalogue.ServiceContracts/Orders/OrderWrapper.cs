@@ -45,11 +45,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                     return null;
                 }
 
-                return previous.Aggregate((current, next) =>
+                return previous.Aggregate((originalOrder, amendment) =>
                 {
-                    current.Apply(next);
+                    originalOrder.Apply(amendment);
 
-                    return current;
+                    return originalOrder;
                 });
             });
 
@@ -95,9 +95,12 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Order RolledUp => rolledUpLazy.Value;
 
-        public static OrderWrapper Create(IEnumerable<Order> orders, CallOffId requestedCallOffId)
+        public static OrderWrapper Create(Order currentOrder, IEnumerable<Order> previousOrders, CallOffId requestedCallOffId)
         {
-            var wrapper = new OrderWrapper(orders);
+            var allOrders = previousOrders.ToList();
+            allOrders.Add(currentOrder);
+            
+            var wrapper = new OrderWrapper(allOrders);
             if (wrapper.Order == null)
             {
                 throw new InvalidOperationException($"Order not found {requestedCallOffId}");
@@ -133,7 +136,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public bool CanComplete()
         {
-            return Order.CanComplete(RolledUp.OrderRecipients, OrderItems);
+            return Order.CanComplete(Order.OrderRecipients, OrderItems);
         }
 
         public OrderRecipient InitialiseOrderRecipient(string odsCode)

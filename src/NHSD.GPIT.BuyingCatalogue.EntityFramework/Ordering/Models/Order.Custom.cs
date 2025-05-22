@@ -245,8 +245,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             foreach (var recipient in OrderRecipients)
             {
                 amendedOrder.OrderRecipients.Add(
-                    amendedOrder.InitialiseOrderRecipient(
-                        recipient.OdsCode));
+                    new OrderRecipient(Id, recipient.OdsCode));
             }
 
             return amendedOrder;
@@ -274,11 +273,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public OrderItem InitialiseOrderItem(CatalogueItemId catalogueItemId)
         {
             return new OrderItem { OrderId = Id, CatalogueItemId = catalogueItemId, Created = DateTime.UtcNow, };
-        }
-
-        public OrderRecipient InitialiseOrderRecipient(string odsCode)
-        {
-            return new OrderRecipient(Id, odsCode);
         }
 
         public ICollection<OrderRecipient> AddedOrderRecipients(Order previous) => OrderRecipients
