@@ -78,10 +78,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.SublocationRecipients)
                 .FirstAsync();
 
-            OrderWrapper wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(
-                sublocation.Order.CallOffId,
-                sublocation.Order.OrderingParty.InternalIdentifier);
-
             var hasSubsequentRevisions = await orderService.HasSubsequentRevisions(sublocation.Order.CallOffId);
 
             if (hasSubsequentRevisions)
@@ -113,9 +109,39 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     "One or more requested Ids not found or not valid for this sublocation.");
             }
 
-            HashSet<string> adds = newRecipientOdsCodes.Except(currentRecipientsOdsCodes).ToHashSet();
+            OrderWrapper wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(
+                sublocation.Order.CallOffId,
+                sublocation.Order.OrderingParty.InternalIdentifier);
 
             HashSet<string> removes = currentRecipientsOdsCodes.Except(newRecipientOdsCodes).ToHashSet();
+
+            if (wrapper.Order.IsAmendment)
+            {
+                Order previousOrder = wrapper.Previous;
+
+                if (previousOrder?.OrderSublocations is not { Count: > 0 })
+                {
+                    throw new InvalidOperationException(
+                        "Previous order sublocations must be populated to determine validity");
+                }
+
+                OrderSublocation previousSublocation =
+                    previousOrder.OrderSublocations.FirstOrDefault(x => x.SublocationOdsCode == sublocationOdsCode);
+
+                if (previousSublocation is not null)
+                {
+                    var anyRecipientsAlreadyInOrderHistory = removes.Any(x =>
+                        previousSublocation.SublocationRecipients.Any(y => y.RecipientOdsCode == x));
+
+                    if (anyRecipientsAlreadyInOrderHistory)
+                    {
+                        throw new InvalidOperationException(
+                            "Cannot remove recipients added by previous revision");
+                    }
+                }
+            }
+
+            HashSet<string> adds = newRecipientOdsCodes.Except(currentRecipientsOdsCodes).ToHashSet();
 
             List<OrderSublocationRecipient> sublocationRecipientsToAdd = adds
                 .Select(x =>

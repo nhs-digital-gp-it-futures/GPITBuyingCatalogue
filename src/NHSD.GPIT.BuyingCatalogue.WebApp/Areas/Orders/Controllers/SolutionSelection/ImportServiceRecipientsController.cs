@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CatalogueItems;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -24,8 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 [Route("order/organisation/{internalOrgId}/order/{callOffId}/import-service-recipients")]
 public class ImportServiceRecipientsController(
     IServiceRecipientImportService importService,
-    ICatalogueItemService catalogueItemService,
     IOrderService orderService,
+    IOrderSublocationService orderSublocationService,
     IOdsService odsService) : Controller
 {
     internal const int OdsCodeLength = 8;
@@ -42,10 +41,11 @@ public class ImportServiceRecipientsController(
     private readonly IServiceRecipientImportService importService =
         importService ?? throw new ArgumentNullException(nameof(importService));
 
-    private readonly ICatalogueItemService catalogueItemService =
-        catalogueItemService ?? throw new ArgumentNullException(nameof(catalogueItemService));
-
     private readonly IOrderService orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+
+    private readonly IOrderSublocationService orderSublocationService =
+        orderSublocationService ?? throw new ArgumentNullException(nameof(orderSublocationService));
+
     private readonly IOdsService odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
 
     [HttpGet]
@@ -340,7 +340,32 @@ public class ImportServiceRecipientsController(
         CallOffId callOffId,
         ValidateAmendmentRecipientsModel model)
     {
-        throw new NotImplementedException();
+        OrderWrapper wrapper =
+            await orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId);
+
+        HashSet<string> sublocations = model.NewRecipients.Select(x => x.LocationOrgId).ToHashSet();
+
+        await orderService.SetSublocations(callOffId, internalOrgId, sublocations);
+
+        IEnumerable<IGrouping<string, ServiceRecipientModel>> groupedRecipients =
+            model.NewRecipients.GroupBy(x => x.LocationOrgId);
+
+        foreach (IGrouping<string, ServiceRecipientModel> recipientGroup in groupedRecipients)
+        {
+            await orderSublocationService.SetSublocationRecipients(
+                wrapper.Order.OrderingParty.ExternalIdentifier,
+                wrapper.Order.Id,
+                recipientGroup.Key,
+                recipientGroup.Select(x => x.OdsCode).ToHashSet());
+        }
+
+        await importService.Clear(
+            new DistributedCacheKey(User.UserId(), internalOrgId, callOffId));
+
+        return RedirectToAction(
+            nameof(ServiceRecipientsController.ConfirmSublocations),
+            typeof(ServiceRecipientsController).ControllerName(),
+            new { internalOrgId, callOffId });
     }
 
     [HttpGet("download-template")]

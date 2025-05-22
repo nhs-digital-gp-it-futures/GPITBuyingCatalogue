@@ -388,18 +388,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             HashSet<string> removes = orderSublocations.Except(sublocationOdsCodes).ToHashSet();
 
-            HashSet<string> adds = sublocationOdsCodes.Except(orderSublocations).ToHashSet();
-
-            IEnumerable<OrderSublocation> locationsToAdd = adds.Select(x => new OrderSublocation
-            {
-                OrderId = orderId, SublocationOdsCode = x, OwnerOdsCode = order.OrderingParty.ExternalIdentifier,
-            });
-
-            order.OrderSublocations.AddRange(locationsToAdd);
-
-            List<OrderSublocation> locationsToRemove =
-                order.OrderSublocations.Where(x => removes.Contains(x.SublocationOdsCode)).ToList();
-
             if (order.IsAmendment)
             {
                 List<Order> previousOrders = await dbContext.Orders
@@ -414,8 +402,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
                 ICollection<OrderSublocation> previousSublocations = previousOrdersWrapped.Previous.OrderSublocations;
 
-                var anySublocationsAlreadyInOrderHistory = locationsToRemove.Any(x =>
-                    previousSublocations.Any(y => y.SublocationOdsCode == x.SublocationOdsCode));
+                var anySublocationsAlreadyInOrderHistory = removes.Any(x =>
+                    previousSublocations.Any(y => y.SublocationOdsCode == x));
 
                 if (anySublocationsAlreadyInOrderHistory)
                 {
@@ -423,6 +411,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                         "Cannot remove sublocations added by previous revision");
                 }
             }
+
+            HashSet<string> adds = sublocationOdsCodes.Except(orderSublocations).ToHashSet();
+
+            IEnumerable<OrderSublocation> locationsToAdd = adds.Select(x => new OrderSublocation
+            {
+                OrderId = orderId, SublocationOdsCode = x, OwnerOdsCode = order.OrderingParty.ExternalIdentifier,
+            });
+
+            order.OrderSublocations.AddRange(locationsToAdd);
+
+            List<OrderSublocation> locationsToRemove =
+                order.OrderSublocations.Where(x => removes.Contains(x.SublocationOdsCode)).ToList();
 
             order.OrderSublocations.RemoveRange(locationsToRemove);
 
@@ -439,6 +439,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             if (orderSublocations is null or { Count: 0 })
             {
                 throw new ArgumentException(@"orderSublocations is null or empty", nameof(orderSublocations));
+            }
+
+            var hasSubsequentRevisions = await HasSubsequentRevisions(callOffId);
+
+            if (hasSubsequentRevisions)
+            {
+                throw new InvalidOperationException(
+                    "Can only set sublocations on the most recent order.");
             }
 
             List<Order> orders = await dbContext.Orders
