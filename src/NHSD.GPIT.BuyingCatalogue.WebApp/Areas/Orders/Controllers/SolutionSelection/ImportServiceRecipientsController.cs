@@ -334,7 +334,7 @@ public class ImportServiceRecipientsController(
         return View("ServiceRecipients/ImportServiceRecipients/ValidateAmendmentRecipients", model);
     }
 
-    [HttpPost("validation-amendment")]
+    [HttpPost("validate-amendment")]
     public async Task<IActionResult> ValidateAmendment(
         string internalOrgId,
         CallOffId callOffId,
