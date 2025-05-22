@@ -150,7 +150,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public bool CanComplete()
         {
-            return Order.CanComplete(Order.OrderRecipients, OrderItems);
+            return Order.CanComplete(RolledUp.OrderRecipients, OrderItems);
         }
 
         public OrderRecipient InitialiseOrderRecipient(string odsCode)

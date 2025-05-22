@@ -87,7 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var order = await orders
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
-            
+
             return OrderWrapper.Create(order, previousOrders, callOffId);
         }
 
@@ -146,7 +146,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var order = await orders
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
-            
+
             return OrderWrapper.Create(order, previousOrders, callOffId);
         }
 
@@ -177,7 +177,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var order = await orders
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
-            
+
             return OrderWrapper.Create(order, previousOrders, callOffId);
         }
 
@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var order = await orders
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
-            
+
             return OrderWrapper.Create(order, previousOrders, callOffId);
         }
 
@@ -276,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var order = await orders
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
-            
+
             return OrderWrapper.Create(order, previousOrders, callOffId);
         }
 
@@ -389,6 +389,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ThenInclude(x => x.CatalogueItem)
                 .Include(x => x.OrderItems)
                 .ThenInclude(x => x.OrderItemPrice)
+                .ThenInclude(x => x.OrderItemPriceTiers)
                 .Include(x => x.OrderRecipients)
                 .AsSplitQuery()
                 .AsNoTracking()
