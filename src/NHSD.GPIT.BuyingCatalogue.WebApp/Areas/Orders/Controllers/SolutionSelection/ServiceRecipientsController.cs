@@ -387,7 +387,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 typeof(TaskListController).ControllerName(),
                 new { callOffId, internalOrgId });
 
-            if (!wrapper.HasNewOrderRecipients)
+            if (wrapper.IsAmendment && !wrapper.HasNewOrderRecipients)
             {
                 var amendModel = new AmendSublocationRecipientsNoSelectionModel(
                     wrapper.Order,
@@ -395,6 +395,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     continueLinkUrl);
 
                 return View("ServiceRecipients/AmendSublocationRecipientsNoSelection", amendModel);
+            }
+
+            if (wrapper.IsAmendment)
+            {
+                var amendWithNewRecipientsModel = new ConfirmSublocationRecipientsModel(
+                    wrapper,
+                    backLinkUrl,
+                    continueLinkUrl);
+
+                return View("ServiceRecipients/ConfirmSublocationRecipients", amendWithNewRecipientsModel);
             }
 
             var model = new ConfirmSublocationRecipientsModel(
