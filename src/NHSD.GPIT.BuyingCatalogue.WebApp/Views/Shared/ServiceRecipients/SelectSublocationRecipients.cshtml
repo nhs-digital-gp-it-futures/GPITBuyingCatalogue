@@ -32,7 +32,7 @@
                     <ul>
                         @foreach (var item in previousOrderRecipients)
                         {
-                            <li>@item.Text - @item.Value</li>
+                            <li>@item.Text (@item.Value)</li>
                         }
                     </ul>
 
@@ -64,7 +64,7 @@
             <nhs-expander-v2 id="recipients-expander" open="@(Model.SelectionMode is null || expandWhenNotValid)">
                 <nhs-expander-summary label-text="@Model.Sublocation.Name" bold-title="true">
                     <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">
-                        <b>@(Model.RenderedServiceRecipients.Count(r => r.Selected)) </b>
+                        <b>@(Model.RenderedServiceRecipients.Count(r => r.Selected && !r.Disabled)) </b>
                         recipients selected
                     </span>
                 </nhs-expander-summary>
