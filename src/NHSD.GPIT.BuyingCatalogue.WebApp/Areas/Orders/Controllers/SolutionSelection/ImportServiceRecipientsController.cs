@@ -345,6 +345,8 @@ public class ImportServiceRecipientsController(
 
         HashSet<string> sublocations = model.NewRecipients.Select(x => x.LocationOrgId).ToHashSet();
 
+        sublocations.AddRange(wrapper.Previous.OrderSublocations.Select(x => x.SublocationOdsCode));
+
         await orderService.SetSublocations(callOffId, internalOrgId, sublocations);
 
         IEnumerable<IGrouping<string, ServiceRecipientModel>> groupedRecipients =
@@ -352,11 +354,24 @@ public class ImportServiceRecipientsController(
 
         foreach (IGrouping<string, ServiceRecipientModel> recipientGroup in groupedRecipients)
         {
+            var workingSublocationKey = recipientGroup.Key;
+
+            HashSet<string> newRecipients = recipientGroup.Select(x => x.OdsCode).ToHashSet();
+
+            OrderSublocation previousSublocation =
+                wrapper.Previous.OrderSublocations.FirstOrDefault(x => x.SublocationOdsCode == workingSublocationKey);
+
+            if (previousSublocation is not null)
+            {
+                newRecipients.AddRange(previousSublocation.SublocationRecipients.Select(x => x.RecipientOdsCode));
+            }
+
             await orderSublocationService.SetSublocationRecipients(
                 wrapper.Order.OrderingParty.ExternalIdentifier,
                 wrapper.Order.Id,
-                recipientGroup.Key,
-                recipientGroup.Select(x => x.OdsCode).ToHashSet());
+                workingSublocationKey,
+                newRecipients
+            );
         }
 
         await importService.Clear(
