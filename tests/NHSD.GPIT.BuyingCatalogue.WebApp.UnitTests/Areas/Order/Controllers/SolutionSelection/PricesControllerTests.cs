@@ -427,11 +427,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             amendment.OrderNumber = original.OrderNumber;
             amendment.Revision = 2;
 
-            var orders = new[] { original, amendment };
-
             var orderItem = original.Clone().OrderItems.First();
 
-            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(orders));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(amendment, [original]));
 
             var result = await controller.ViewPrice(internalOrgId, callOffId, orderItem.CatalogueItemId);
 

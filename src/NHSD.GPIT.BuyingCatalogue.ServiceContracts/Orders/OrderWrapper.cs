@@ -18,25 +18,18 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             rolledUpLazy = new Lazy<Order>((Order)null);
         }
 
-        [Obsolete("Only used in tests - we should look to remove this")]
         public OrderWrapper(Order order)
+            : this(order, [])
         {
-            Order = order;
-            previousLazy = new Lazy<Order>((Order)null);
-            rolledUpLazy = new Lazy<Order>(() => Order.Clone());
         }
 
-        public OrderWrapper(IEnumerable<Order> orders)
+        public OrderWrapper(Order currentOrder, IEnumerable<Order> previousOrders)
         {
-            var ordered = orders.OrderBy(x => x.CallOffId.Revision).ToList();
+            ArgumentNullException.ThrowIfNull(currentOrder);
 
-            Order = ordered.Count != 0
-                ? ordered.Last()
-                : null;
+            Order = currentOrder;
 
-            previous = ordered.Count > 1
-                ? ordered.SkipLast(1).ToList()
-                : [];
+            previous = previousOrders.OrderBy(x => x.CallOffId.Revision).ToList();
 
             previousLazy = new Lazy<Order>(() =>
             {
@@ -108,25 +101,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         /// Gets a flattened order that projects the current amendment over the <see cref="Previous"/> order projection.
         /// </summary>
         public Order RolledUp => rolledUpLazy.Value;
-
-        public static OrderWrapper Create(Order currentOrder, IEnumerable<Order> previousOrders, CallOffId requestedCallOffId)
-        {
-            var allOrders = previousOrders.ToList();
-            allOrders.Add(currentOrder);
-
-            var wrapper = new OrderWrapper(allOrders);
-            if (wrapper.Order == null)
-            {
-                throw new InvalidOperationException($"Order not found {requestedCallOffId}");
-            }
-
-            if (wrapper.Order.CallOffId != requestedCallOffId)
-            {
-                throw new InvalidOperationException($"Latest order does not match {requestedCallOffId}");
-            }
-
-            return wrapper;
-        }
 
         public IEnumerable<string> AddedRecipientsOdsCodes()
         {

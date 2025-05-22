@@ -621,7 +621,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async void Get_MaximumShortlists_ReturnsExpectedResult(
+        public static async Task Get_MaximumShortlists_ReturnsExpectedResult(
             int filterId,
             FilterDetailsModel filterDetailsModel,
             [Frozen] IOrganisationsService organisationsService,

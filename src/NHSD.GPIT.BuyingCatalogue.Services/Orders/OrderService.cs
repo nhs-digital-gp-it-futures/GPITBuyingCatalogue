@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = await orders
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
 
-            return OrderWrapper.Create(order, previousOrders, callOffId);
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<OrderWrapper> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId)
@@ -116,7 +116,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var order = await orders.FirstOrDefaultAsync(x => x.Revision == callOffId.Revision);
 
-            return OrderWrapper.Create(order, previousOrders, callOffId);
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<OrderWrapper> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId)
@@ -147,7 +147,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = await orders
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
 
-            return OrderWrapper.Create(order, previousOrders, callOffId);
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<OrderWrapper> GetOrderWithOrderItemsForFunding(CallOffId callOffId, string internalOrgId)
@@ -178,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = await orders
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
 
-            return OrderWrapper.Create(order, previousOrders, callOffId);
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<OrderWrapper> GetOrderWithSupplier(CallOffId callOffId, string internalOrgId)
@@ -197,7 +197,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = await orders
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
 
-            return OrderWrapper.Create(order, previousOrders, callOffId);
+            return new OrderWrapper(order, previousOrders);
         }
 
         [ExcludeFromCodeCoverage(
@@ -239,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 }
             }
 
-            return OrderWrapper.Create(order, previousOrders, callOffId);
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<OrderWrapper> GetOrderForTaskListStatuses(CallOffId callOffId, string internalOrgId)
@@ -277,7 +277,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             var order = await orders
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
 
-            return OrderWrapper.Create(order, previousOrders, callOffId);
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<List<Order>> GetOrders(int organisationId)

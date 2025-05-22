@@ -492,7 +492,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async void Get_ResetPassword_ReturnsDefaultView(
+        public static async Task Get_ResetPassword_ReturnsDefaultView(
             string email,
             string token,
             UserManager<AspNetUser> mockUserManager,
