@@ -130,6 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision
                     && o.OrderingParty.InternalIdentifier == internalOrgId)
+                .AsNoTracking()
                 .ToListAsync();
 
             return OrderWrapper.Create(orders, callOffId);
@@ -354,17 +355,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
 
             return amendment;
-        }
-
-        public async Task EnsureOrderItemsForAmendment(string internalOrgId, CallOffId callOffId)
-        {
-            if (callOffId.IsAmendment)
-            {
-                var orderWrapper = await GetOrderWithOrderItems(callOffId, internalOrgId);
-                var order = orderWrapper.Order;
-                order.InitialiseOrderItemsFrom(orderWrapper.RolledUp.OrderItems);
-                await dbContext.SaveChangesAsync();
-            }
         }
 
         public async Task SoftDeleteOrder(CallOffId callOffId, string internalOrgId)

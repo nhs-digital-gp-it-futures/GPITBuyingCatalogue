@@ -9,8 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
     public class OrderWrapper
     {
         private readonly List<Order> previous = new();
-        private Lazy<Order> previousLazy;
-        private Lazy<Order> rolledUpLazy;
+        private readonly Lazy<Order> previousLazy;
+        private readonly Lazy<Order> rolledUpLazy;
 
         public OrderWrapper()
         {
@@ -30,26 +30,27 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         {
             var ordered = orders.OrderBy(x => x.CallOffId.Revision).ToList();
 
-            Order = ordered.Any()
+            Order = ordered.Count != 0
                 ? ordered.Last()
                 : null;
 
             previous = ordered.Count > 1
                 ? ordered.SkipLast(1).ToList()
-                : new List<Order>();
+                : [];
 
             previousLazy = new Lazy<Order>(() =>
             {
-                if (!previous.Any())
+                if (previous.Count == 0)
                 {
                     return null;
                 }
 
-                var output = previous.First().Clone();
+                return previous.Aggregate((current, next) =>
+                {
+                    current.Apply(next);
 
-                previous.Skip(1).ToList().ForEach(p => output.Apply(p.Clone()));
-
-                return output;
+                    return current;
+                });
             });
 
             rolledUpLazy = new Lazy<Order>(() =>
@@ -137,7 +138,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public OrderRecipient InitialiseOrderRecipient(string odsCode)
         {
-            var newRecipient = Order.InitialiseOrderRecipient(odsCode);
+            var newRecipient = new OrderRecipient(Order.Id, odsCode);
             if (Order.DeliveryDate.HasValue)
             {
                 Order.OrderItems.ToList().ForEach(i =>
