@@ -89,17 +89,31 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             ? previous.Last()
             : null;
 
+        /// <summary>
+        /// Gets or sets the most recent Order.
+        /// </summary>
+        /// <remarks>
+        /// This will be the order that is being placed at that time. That could either be the original order or an amendment.
+        /// </remarks>
         public Order Order { get; set; }
 
+        /// <summary>
+        /// Gets a flattened order that contains all previous amendments (excluding the current) projected over original order.
+        ///
+        /// Otherwise null if this <see cref="OrderWrapper"/> relates to an original order.
+        /// </summary>
         public Order Previous => previousLazy.Value;
 
+        /// <summary>
+        /// Gets a flattened order that projects the current amendment over the <see cref="Previous"/> order projection.
+        /// </summary>
         public Order RolledUp => rolledUpLazy.Value;
 
         public static OrderWrapper Create(Order currentOrder, IEnumerable<Order> previousOrders, CallOffId requestedCallOffId)
         {
             var allOrders = previousOrders.ToList();
             allOrders.Add(currentOrder);
-            
+
             var wrapper = new OrderWrapper(allOrders);
             if (wrapper.Order == null)
             {
