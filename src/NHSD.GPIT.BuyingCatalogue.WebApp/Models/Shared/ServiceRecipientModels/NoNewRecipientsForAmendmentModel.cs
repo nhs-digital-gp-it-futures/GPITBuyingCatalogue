@@ -2,13 +2,13 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
-    public sealed class AmendSublocationRecipientsNoSelectionModel : NavBaseModel
+    public sealed class NoNewRecipientsForAmendmentModel : NavBaseModel
     {
-        public AmendSublocationRecipientsNoSelectionModel()
+        public NoNewRecipientsForAmendmentModel()
         {
         }
 
-        public AmendSublocationRecipientsNoSelectionModel(
+        public NoNewRecipientsForAmendmentModel(
             Order order,
             string backLinkUrl,
             string continueLinkUrl)

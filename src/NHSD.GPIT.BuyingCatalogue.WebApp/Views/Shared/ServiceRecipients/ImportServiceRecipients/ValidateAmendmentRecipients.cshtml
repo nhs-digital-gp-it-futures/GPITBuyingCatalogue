@@ -10,11 +10,11 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Caption"
-                        advice="We have found the following Service Recipients to add to your amendment"/>
+                        advice="We have found the following service recipients to add to your amendment"/>
         
         @if (Model.HasMissing)
         {
-            <nhs-inset-text>The CSV file you provided was missing some or all of the service recipients from previous revisions. Service recipients from previous revisions cannot be removed, but we can add the new ones shown below.</nhs-inset-text>
+            <nhs-inset-text><p>The CSV file you provided was missing some or all of the service recipients from previous revisions. Service recipients from previous revisions cannot be removed, but we can add the new ones shown below.</p></nhs-inset-text>
         }
 
         <form method="post">

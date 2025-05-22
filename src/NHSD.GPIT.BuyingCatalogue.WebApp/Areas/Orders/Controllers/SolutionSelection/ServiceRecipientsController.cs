@@ -397,12 +397,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             if (wrapper.IsAmendment && !wrapper.HasNewOrderRecipients)
             {
-                var amendModel = new AmendSublocationRecipientsNoSelectionModel(
+                var amendModel = new NoNewRecipientsForAmendmentModel(
                     wrapper.Order,
                     backLinkUrl,
                     continueLinkUrl);
 
-                return View("ServiceRecipients/AmendSublocationRecipientsNoSelection", amendModel);
+                return View("ServiceRecipients/NoNewRecipientsForAmendment", amendModel);
             }
 
             if (wrapper.IsAmendment)
