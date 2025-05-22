@@ -219,10 +219,18 @@ public class CompetitionRecipientsController(
         string internalOrgId,
         int competitionId)
     {
-        if (removeSublocationsModel.ConfirmRemove is not true || removeSublocationsModel.SublocationOdsCodes is not
+        if (removeSublocationsModel.ConfirmRemove is null || removeSublocationsModel.SublocationOdsCodes is not
                 { Count: > 0 })
         {
             return BadRequest();
+        }
+
+        if (removeSublocationsModel.ConfirmRemove is false)
+        {
+            return RedirectToAction(
+                nameof(ConfirmSublocations),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId });
         }
 
         HashSet<string> sublocations = removeSublocationsModel.SublocationOdsCodes.ToHashSet();

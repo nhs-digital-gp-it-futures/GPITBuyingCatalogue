@@ -210,10 +210,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             string internalOrgId,
             CallOffId callOffId)
         {
-            if (removeSublocationsModel.ConfirmRemove is not true || removeSublocationsModel.SublocationOdsCodes is not
+            if (removeSublocationsModel.ConfirmRemove is null || removeSublocationsModel.SublocationOdsCodes is not
                     { Count: > 0 })
             {
                 return BadRequest();
+            }
+
+            if (removeSublocationsModel.ConfirmRemove is false)
+            {
+                return RedirectToAction(
+                    nameof(ConfirmSublocations),
+                    typeof(ServiceRecipientsController).ControllerName(),
+                    new { callOffId, internalOrgId });
             }
 
             HashSet<string> sublocations = removeSublocationsModel.SublocationOdsCodes.ToHashSet();
@@ -346,8 +354,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> ConfirmSublocations(string internalOrgId, CallOffId callOffId)
         {
             var backLink = Url.Action(
-                nameof(TaskListController.TaskList),
-                typeof(TaskListController).ControllerName(),
+                nameof(UploadOrSelectServiceRecipients),
+                typeof(ServiceRecipientsController).ControllerName(),
                 new { callOffId, internalOrgId });
 
             return await SelectSublocationsOverview(callOffId, internalOrgId, true, backLink);
@@ -383,8 +391,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new { callOffId, internalOrgId });
 
             var continueLinkUrl = Url.Action(
-                nameof(TaskListController.TaskList),
-                typeof(TaskListController).ControllerName(),
+                nameof(OrderController.Order),
+                typeof(OrderController).ControllerName(),
                 new { callOffId, internalOrgId });
 
             if (wrapper.IsAmendment && !wrapper.HasNewOrderRecipients)
@@ -520,8 +528,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             if (sublocationToComplete)
             {
                 return RedirectToAction(
-                    nameof(TaskListController.TaskList),
-                    typeof(TaskListController).ControllerName(),
+                    nameof(OrderController.Order),
+                    typeof(OrderController).ControllerName(),
                     new { callOffId, internalOrgId });
             }
 
