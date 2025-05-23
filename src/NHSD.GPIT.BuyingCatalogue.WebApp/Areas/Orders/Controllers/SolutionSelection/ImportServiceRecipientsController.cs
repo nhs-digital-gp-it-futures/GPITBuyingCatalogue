@@ -202,15 +202,15 @@ public class ImportServiceRecipientsController(
         CallOffId callOffId,
         ValidationStatus validationStatus)
     {
-        OrderWrapper wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
-
-        var orderDescription = wrapper.Order.Description;
-
         var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, callOffId);
 
         IList<ServiceRecipientImportModel> cachedRecipients = await importService.GetCached(cacheKey);
         if (cachedRecipients is null)
             return RedirectToAction(nameof(Index), new { internalOrgId, callOffId });
+
+        OrderWrapper wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
+
+        var orderDescription = wrapper.Order.Description;
 
         HashSet<string> requestedRecipientOdsCodes = cachedRecipients.Select(x => x.OdsCode).ToHashSet();
 
