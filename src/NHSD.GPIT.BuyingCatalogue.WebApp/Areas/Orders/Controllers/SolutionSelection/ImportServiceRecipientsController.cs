@@ -343,35 +343,44 @@ public class ImportServiceRecipientsController(
         OrderWrapper wrapper =
             await orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId);
 
-        HashSet<string> sublocations = model.NewRecipients.Select(x => x.LocationOrgId).ToHashSet();
+        HashSet<string> sublocationsToSet = model.NewRecipients.Select(x => x.LocationOrgId).ToHashSet();
 
-        sublocations.AddRange(wrapper.Previous.OrderSublocations.Select(x => x.SublocationOdsCode));
+        sublocationsToSet.AddRange(wrapper.Previous.OrderSublocations.Select(x => x.SublocationOdsCode));
 
-        await orderService.SetSublocations(callOffId, internalOrgId, sublocations);
+        await orderService.SetSublocations(callOffId, internalOrgId, sublocationsToSet);
 
-        IEnumerable<IGrouping<string, ServiceRecipientModel>> groupedRecipients =
-            model.NewRecipients.GroupBy(x => x.LocationOrgId);
+        Dictionary<string, List<ServiceRecipientModel>> newRecipientsGroupedBySublocationOdsCode =
+            model.NewRecipients.GroupBy(x => x.LocationOrgId).ToDictionary(g => g.Key, g => g.ToList());
 
-        foreach (IGrouping<string, ServiceRecipientModel> recipientGroup in groupedRecipients)
+        foreach (var sublocation in sublocationsToSet)
         {
-            var workingSublocationKey = recipientGroup.Key;
-
-            HashSet<string> newRecipients = recipientGroup.Select(x => x.OdsCode).ToHashSet();
-
             OrderSublocation previousSublocation =
-                wrapper.Previous.OrderSublocations.FirstOrDefault(x => x.SublocationOdsCode == workingSublocationKey);
+                wrapper.Previous.OrderSublocations.FirstOrDefault(x => x.SublocationOdsCode == sublocation);
+
+            newRecipientsGroupedBySublocationOdsCode.TryGetValue(
+                sublocation,
+                out List<ServiceRecipientModel> newRecipients);
+
+            var recipientsToSet = new HashSet<string>();
 
             if (previousSublocation is not null)
             {
-                newRecipients.AddRange(previousSublocation.SublocationRecipients.Select(x => x.RecipientOdsCode));
+                recipientsToSet.AddRange(previousSublocation.SublocationRecipients.Select(x => x.RecipientOdsCode));
             }
 
-            await orderSublocationService.SetSublocationRecipients(
-                wrapper.Order.OrderingParty.ExternalIdentifier,
-                wrapper.Order.Id,
-                workingSublocationKey,
-                newRecipients
-            );
+            if (newRecipients is not null)
+            {
+                recipientsToSet.AddRange(newRecipients.Select(x => x.OdsCode));
+            }
+
+            if (recipientsToSet is { Count: > 0 })
+            {
+                await orderSublocationService.SetSublocationRecipients(
+                    wrapper.Order.OrderingParty.ExternalIdentifier,
+                    wrapper.Order.Id,
+                    sublocation,
+                    recipientsToSet);
+            }
         }
 
         await importService.Clear(
