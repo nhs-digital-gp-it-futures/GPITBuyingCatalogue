@@ -239,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                 originalCatalogueItem,
                 CataloguePriceQuantityCalculationType.PerServiceRecipient,
                 provisioningType,
-                new HashSet<OrderSublocationRecipient> { recipient },
+                [recipient],
                 dbContext,
                 fixture);
 
@@ -718,9 +718,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         {
             if (catalogueItemIds != null)
             {
-                foreach (var catalogueItemId in catalogueItemIds)
+                foreach (CatalogueItemId catalogueItemId in catalogueItemIds)
                 {
-                    recipient.SetQuantityForItem(catalogueItemId, 1);
+                    recipient.OrderItemSublocationRecipients.Add(
+                        new OrderItemSublocationRecipient
+                        {
+                            OrderId = recipient.OrderId,
+                            OdsCode = recipient.RecipientOdsCode,
+                            CatalogueItemId = catalogueItemId,
+                            Quantity = 1,
+                            Recipient = recipient,
+                        });
                 }
             }
         }
