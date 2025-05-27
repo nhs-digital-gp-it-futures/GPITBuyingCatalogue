@@ -170,7 +170,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var prices = await GetPrices(orderId);
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
-            // TODO: Below query cannot be converted to SQL - fix (previous version also couldn't be)
             List<FullOrderCsvModel> items = await dbContext.OrderSublocationRecipients
                 .Include(x => x.OrderItemSublocationRecipients)
                 .ThenInclude(x => x.OrderItem)
