@@ -16,6 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             RecipientOdsCode = old.RecipientOdsCode;
             ParentSublocationOdsCode = old.ParentSublocationOdsCode;
+            OrderItemSublocationRecipients = [];
         }
 
         public OrderSublocationRecipient(int orderId, string recipientOdsCode, string parentSublocationOdsCode)
@@ -43,8 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OdsOrganisation RecipientOdsOrganisation { get; set; }
 
-        public ICollection<OrderItemSublocationRecipient> OrderItemSublocationRecipients { get; set; } =
-            new HashSet<OrderItemSublocationRecipient>();
+        public ICollection<OrderItemSublocationRecipient> OrderItemSublocationRecipients { get; set; } = [];
 
         public void SetQuantityForItem(CatalogueItemId catalogueItemId, int quantity)
         {
