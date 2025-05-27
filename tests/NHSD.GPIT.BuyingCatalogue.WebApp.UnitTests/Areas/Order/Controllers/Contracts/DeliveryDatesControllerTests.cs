@@ -52,16 +52,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
+            List<EntityFramework.Ordering.Models.Order> previousOrders,
             [Frozen] IOrderService orderService,
             DeliveryDatesController controller)
         {
-            orderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order));
+            var existingDeliveryDate = previousOrders.First().DeliveryDate;
+            orderService.GetOrderThin(callOffId, internalOrgId).Returns(new OrderWrapper(order, previousOrders));
 
             var result = await controller.SelectDate(internalOrgId, callOffId, setAllPDD: setAllPDD);
 
             await orderService.Received().GetOrderThin(callOffId, internalOrgId);
 
-            var expected = new SelectDateModel(internalOrgId, callOffId, order, setAllPDD, order.DeliveryDate);
+            var expected = new SelectDateModel(internalOrgId, callOffId, order, setAllPDD, existingDeliveryDate);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
