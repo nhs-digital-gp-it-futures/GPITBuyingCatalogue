@@ -24,8 +24,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 {
     public static class CsvServiceTests
     {
-        private static IEnumerable<string> OrderFields => new[]
-        {
+        private static IEnumerable<string> OrderFields =>
+        [
             "Call Off Agreement ID",
             "Call Off Ordering Party ID",
             "Call Off Ordering Party Name",
@@ -54,10 +54,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Tiered Array",
             "Initial Term",
             "Contract Length (Months)",
-        };
+        ];
 
-        private static IEnumerable<string> MergerFields => new[]
-        {
+        private static IEnumerable<string> MergerFields =>
+        [
             "Call Off Agreement ID",
             "Call Off Ordering Party ID",
             "Call Off Ordering Party Name",
@@ -86,10 +86,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Tiered Array",
             "Initial Term",
             "Contract Length (Months)",
-        };
+        ];
 
-        private static IEnumerable<string> SplitFields => new[]
-        {
+        private static IEnumerable<string> SplitFields =>
+        [
             "Call Off Agreement ID",
             "Call Off Ordering Party ID",
             "Call Off Ordering Party Name",
@@ -118,7 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Tiered Array",
             "Initial Term",
             "Contract Length (Months)",
-        };
+        ];
 
         [Fact]
         public static void Constructors_VerifyGuardClauses()
@@ -273,7 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Id =
                 order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode;
 
-            OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
+            OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [originalCatalogueItem.Id]);
             await SaveOrderWithRecipients(
                 order,
                 originalCatalogueItem,
@@ -317,7 +317,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceSplit;
 
-            OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
+            OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [originalCatalogueItem.Id]);
             await SaveOrderWithRecipients(
                 order,
                 originalCatalogueItem,
@@ -362,8 +362,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         {
             order.OrderType = OrderTypeEnum.Solution;
 
-            OrderSublocationRecipient recipient1 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-            OrderSublocationRecipient recipient2 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
+            OrderSublocationRecipient recipient1 = BuildOrderRecipient(fixture, [originalCatalogueItem.Id]);
+            OrderSublocationRecipient recipient2 = BuildOrderRecipient(fixture, [originalCatalogueItem.Id]);
             await SaveOrderWithRecipients(
                 order,
                 originalCatalogueItem,
@@ -412,8 +412,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         {
             order.OrderType = OrderTypeEnum.Solution;
 
-            OrderSublocationRecipient recipient1 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-            OrderSublocationRecipient recipient2 = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
+            OrderSublocationRecipient recipient1 = BuildOrderRecipient(fixture, [originalCatalogueItem.Id]);
+            OrderSublocationRecipient recipient2 = BuildOrderRecipient(fixture, [originalCatalogueItem.Id]);
             await SaveOrderWithRecipients(
                 order,
                 originalCatalogueItem,
@@ -452,45 +452,50 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             [Frozen] BuyingCatalogueDbContext dbContext,
             IFixture fixture)
         {
-            Assert.Fail("needs fixing");
+            order.OrderType = OrderTypeEnum.Solution;
+            OrderItem orderItem = BuildOrderItem(
+                fixture,
+                originalCatalogueItem,
+                OrderItemFundingType.LocalFunding,
+                provisioningType,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient);
 
-            // order.OrderType = OrderTypeEnum.Solution;
-            // OrderItem orderItem = BuildOrderItem(
-            //     fixture,
-            //     originalCatalogueItem,
-            //     OrderItemFundingType.LocalFunding,
-            //     provisioningType,
-            //     CataloguePriceQuantityCalculationType.PerServiceRecipient);
-            //
-            // var recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-            //
-            // order.Revision = 1;
-            // order.OrderingPartyId = order.OrderingParty.Id;
-            //
-            // order.OrderItems = new HashSet<OrderItem>() { orderItem };
-            // order.OrderRecipients = new HashSet<OrderRecipient>() { recipient };
-            //
-            // var amend = order.BuildAmendment(2);
-            // var addedRecipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-            // amend.OrderRecipients.Add(addedRecipient);
-            // amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
-            //
-            // dbContext.Orders.Add(order);
-            // dbContext.Orders.Add(amend);
-            //
-            // await dbContext.SaveChangesAsync();
-            // dbContext.ChangeTracker.Clear();
-            //
-            // await using var fullOrderStream = new MemoryStream();
-            // await service.CreateFullOrderCsvAsync(amend.Id, amend.OrderType, fullOrderStream);
-            // fullOrderStream.Position = 0;
-            //
-            // var records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap());
-            //
-            // records.Count().Should().Be(1);
-            // var record = records.First();
-            // record.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
-            // record.ServiceRecipientId.Should().Be(addedRecipient.OdsCode);
+            OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [originalCatalogueItem.Id]);
+
+            order.Revision = 1;
+            order.OrderingPartyId = order.OrderingParty.Id;
+
+            order.OrderSublocations = order.OrderSublocations.Take(1).ToList();
+
+            OrderSublocation workingSublocation = order.OrderSublocations.First();
+
+            workingSublocation.Order = order;
+
+            order.OrderItems = new HashSet<OrderItem> { orderItem };
+
+            workingSublocation.SublocationRecipients = [recipient];
+
+            Order amend = order.BuildAmendment(2);
+            OrderSublocationRecipient addedRecipient = BuildOrderRecipient(fixture, [originalCatalogueItem.Id]);
+            amend.OrderSublocations.First().SublocationRecipients.Add(addedRecipient);
+            amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
+
+            dbContext.Orders.Add(order);
+            dbContext.Orders.Add(amend);
+
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            await using var fullOrderStream = new MemoryStream();
+            await service.CreateFullOrderCsvAsync(amend.Id, amend.OrderType, fullOrderStream);
+            fullOrderStream.Position = 0;
+
+            List<FullOrderCsvModel> records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap());
+
+            records.Count().Should().Be(1);
+            FullOrderCsvModel record = records.First();
+            record.ProductId.Should().Be(originalCatalogueItem.Id.ToString());
+            record.ServiceRecipientId.Should().Be(addedRecipient.RecipientOdsCode);
         }
 
         [Theory]
@@ -506,64 +511,81 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             [Frozen] BuyingCatalogueDbContext dbContext,
             IFixture fixture)
         {
-            Assert.Fail("needs fixing");
+            order.OrderType = OrderTypeEnum.Solution;
+            OrderItem orderItem = BuildOrderItem(
+                fixture,
+                originalCatalogueItem,
+                OrderItemFundingType.LocalFunding,
+                provisioningType,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient);
 
-            // order.OrderType = OrderTypeEnum.Solution;
-            // OrderItem orderItem = BuildOrderItem(
-            //     fixture,
-            //     originalCatalogueItem,
-            //     OrderItemFundingType.LocalFunding,
-            //     provisioningType,
-            //     CataloguePriceQuantityCalculationType.PerServiceRecipient);
-            //
-            // var recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-            //
-            // order.Revision = 1;
-            // order.OrderingPartyId = order.OrderingParty.Id;
-            //
-            // order.OrderItems = new HashSet<OrderItem>() { orderItem };
-            // order.OrderRecipients = new HashSet<OrderRecipient>() { recipient };
-            //
-            // var amend = order.BuildAmendment(2);
-            // OrderItem addedOrderItem = BuildOrderItem(
-            //     fixture,
-            //     addedCatalogueItem,
-            //     OrderItemFundingType.LocalFunding,
-            //     provisioningType,
-            //     CataloguePriceQuantityCalculationType.PerServiceRecipient);
-            // var originalRecipient = amend.OrderRecipients.First();
-            // originalRecipient.SetQuantityForItem(addedCatalogueItem.Id, 1);
-            // var addedRecipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id, addedCatalogueItem.Id });
-            // amend.OrderRecipients.Add(addedRecipient);
-            // amend.OrderItems.Add(addedOrderItem);
-            // amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
-            //
-            // dbContext.Orders.Add(order);
-            // dbContext.Orders.Add(amend);
-            //
-            // await dbContext.SaveChangesAsync();
-            // dbContext.ChangeTracker.Clear();
-            //
-            // await using var fullOrderStream = new MemoryStream();
-            // await service.CreateFullOrderCsvAsync(amend.Id, amend.OrderType, fullOrderStream);
-            // fullOrderStream.Position = 0;
-            //
-            // var records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap()).ToList();
-            //
-            // records.Count.Should().Be(3);
-            // records[0].ServiceRecipientItemId.Should().EndWith("-0");
-            // records[1].ServiceRecipientItemId.Should().EndWith("-1");
-            // records[2].ServiceRecipientItemId.Should().EndWith("-2");
-            //
-            // records
-            //     .FirstOrDefault(r => r.ServiceRecipientId == addedRecipient.OdsCode && r.ProductId == addedCatalogueItem.Id.ToString())
-            //     .Should().NotBeNull();
-            // records
-            //     .FirstOrDefault(r => r.ServiceRecipientId == addedRecipient.OdsCode && r.ProductId == originalCatalogueItem.Id.ToString())
-            //     .Should().NotBeNull();
-            // records
-            //     .FirstOrDefault(r => r.ServiceRecipientId == originalRecipient.OdsCode && r.ProductId == addedCatalogueItem.Id.ToString())
-            //     .Should().NotBeNull();
+            OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [originalCatalogueItem.Id]);
+
+            order.Revision = 1;
+            order.OrderingPartyId = order.OrderingParty.Id;
+
+            order.OrderSublocations = order.OrderSublocations.Take(1).ToList();
+
+            OrderSublocation workingSublocation = order.OrderSublocations.First();
+
+            workingSublocation.Order = order;
+
+            order.OrderItems = new HashSet<OrderItem> { orderItem };
+
+            workingSublocation.SublocationRecipients = [recipient];
+
+            Order amend = order.BuildAmendment(2);
+            OrderItem addedOrderItem = BuildOrderItem(
+                fixture,
+                addedCatalogueItem,
+                OrderItemFundingType.LocalFunding,
+                provisioningType,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient);
+            OrderSublocationRecipient originalRecipient = amend.FlattenedRecipients.First();
+            originalRecipient.SetQuantityForItem(addedCatalogueItem.Id, 1);
+            OrderSublocationRecipient addedRecipient = BuildOrderRecipient(
+                fixture,
+                [originalCatalogueItem.Id, addedCatalogueItem.Id]);
+            amend.OrderSublocations.First().SublocationRecipients.Add(addedRecipient);
+            amend.OrderItems.Add(addedOrderItem);
+            amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
+
+            dbContext.Orders.Add(order);
+            dbContext.Orders.Add(amend);
+
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            await using var fullOrderStream = new MemoryStream();
+            await service.CreateFullOrderCsvAsync(amend.Id, amend.OrderType, fullOrderStream);
+            fullOrderStream.Position = 0;
+
+            List<FullOrderCsvModel> records =
+                GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap()).ToList();
+
+            records.Count.Should().Be(3);
+            records[0].ServiceRecipientItemId.Should().EndWith("-0");
+            records[1].ServiceRecipientItemId.Should().EndWith("-1");
+            records[2].ServiceRecipientItemId.Should().EndWith("-2");
+
+            records
+                .FirstOrDefault(r =>
+                    r.ServiceRecipientId == addedRecipient.RecipientOdsCode
+                    && r.ProductId == addedCatalogueItem.Id.ToString())
+                .Should()
+                .NotBeNull();
+            records
+                .FirstOrDefault(r =>
+                    r.ServiceRecipientId == addedRecipient.RecipientOdsCode
+                    && r.ProductId == originalCatalogueItem.Id.ToString())
+                .Should()
+                .NotBeNull();
+            records
+                .FirstOrDefault(r =>
+                    r.ServiceRecipientId == originalRecipient.RecipientOdsCode
+                    && r.ProductId == addedCatalogueItem.Id.ToString())
+                .Should()
+                .NotBeNull();
         }
 
         [Theory]
@@ -578,45 +600,50 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             [Frozen] BuyingCatalogueDbContext dbContext,
             IFixture fixture)
         {
-            Assert.Fail("needs fixing");
+            order.OrderType = OrderTypeEnum.Solution;
+            OrderItem orderItem = BuildOrderItem(
+                fixture,
+                originalCatalogueItem,
+                OrderItemFundingType.LocalFunding,
+                provisioningType,
+                CataloguePriceQuantityCalculationType.PerServiceRecipient);
 
-            // order.OrderType = OrderTypeEnum.Solution;
-            // OrderItem orderItem = BuildOrderItem(
-            //     fixture,
-            //     originalCatalogueItem,
-            //     OrderItemFundingType.LocalFunding,
-            //     provisioningType,
-            //     CataloguePriceQuantityCalculationType.PerServiceRecipient);
-            //
-            // var recipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-            //
-            // order.OrderNumber = order.ContractOrderNumber.Id;
-            // order.Revision = 1;
-            // order.OrderingPartyId = order.OrderingParty.Id;
-            //
-            // order.OrderItems = new HashSet<OrderItem>() { orderItem };
-            // order.OrderRecipients = new HashSet<OrderRecipient>() { recipient };
-            //
-            // var amend = order.BuildAmendment(2);
-            // var addedRecipient = BuildOrderRecipient(fixture, new[] { originalCatalogueItem.Id });
-            // amend.OrderRecipients.Add(addedRecipient);
-            // amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
-            //
-            // dbContext.Orders.Add(order);
-            // dbContext.Orders.Add(amend);
-            //
-            // await dbContext.SaveChangesAsync();
-            // dbContext.ChangeTracker.Clear();
-            //
-            // await using var fullOrderStream = new MemoryStream();
-            // await service.CreateFullOrderCsvAsync(amend.Id, amend.OrderType, fullOrderStream, true);
-            // fullOrderStream.Position = 0;
-            //
-            // var records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap());
-            //
-            // records.Count.Should().Be(2);
-            // records.Should().Contain(x => x.CallOffId == order.CallOffId);
-            // records.Should().Contain(x => x.CallOffId == amend.CallOffId);
+            OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [originalCatalogueItem.Id]);
+
+            order.OrderNumber = order.ContractOrderNumber.Id;
+            order.Revision = 1;
+            order.OrderingPartyId = order.OrderingParty.Id;
+
+            order.OrderSublocations = order.OrderSublocations.Take(1).ToList();
+
+            OrderSublocation workingSublocation = order.OrderSublocations.First();
+
+            workingSublocation.Order = order;
+
+            order.OrderItems = new HashSet<OrderItem> { orderItem };
+
+            workingSublocation.SublocationRecipients = [recipient];
+
+            Order amend = order.BuildAmendment(2);
+            OrderSublocationRecipient addedRecipient = BuildOrderRecipient(fixture, [originalCatalogueItem.Id]);
+            amend.OrderSublocations.First().SublocationRecipients.Add(addedRecipient);
+            amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
+
+            dbContext.Orders.Add(order);
+            dbContext.Orders.Add(amend);
+
+            await dbContext.SaveChangesAsync();
+            dbContext.ChangeTracker.Clear();
+
+            await using var fullOrderStream = new MemoryStream();
+            await service.CreateFullOrderCsvAsync(amend.Id, amend.OrderType, fullOrderStream, true);
+            fullOrderStream.Position = 0;
+
+            List<FullOrderCsvModel> records = GetRows<FullOrderCsvModel>(fullOrderStream, new FullOrderCsvModelMap());
+
+            records.Count.Should().Be(2);
+            records.Should().Contain(x => x.CallOffId == order.CallOffId);
+            records.Should().Contain(x => x.CallOffId == amend.CallOffId);
         }
 
         private static async Task SaveOrderWithRecipients(
@@ -653,7 +680,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         {
             using var streamReader = new StreamReader(fullOrderStream);
             using var csv = new CsvReader(streamReader, new CsvConfiguration(CultureInfo.InvariantCulture));
-            csv.Context.TypeConverterOptionsCache.AddOptions<DateTime?>(new TypeConverterOptions { Formats = new[] { "dd/MM/yyyy" } });
+            csv.Context.TypeConverterOptionsCache.AddOptions<DateTime?>(
+                new TypeConverterOptions
+                {
+                    Formats =
+                        ["dd/MM/yyyy"],
+                });
             csv.Context.TypeConverterCache.AddConverter<CallOffId>(new CallOffIdConverter());
             csv.Context.RegisterClassMap(map);
 
