@@ -89,11 +89,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             OrderingPartyStatusProvider service)
         {
             var previousOrders = orders.AsEnumerable().Reverse().Skip(1).ToList();
-            var previousOrder = previousOrders.First();
+            previousOrders.ForEach(x => x.OrderingPartyContact = originalContact);
             var amendedOrder = orders.Last();
 
             amendedOrder.Revision = orders.Count;
-            previousOrder.OrderingPartyContact = originalContact;
             amendedOrder.OrderingPartyContact = originalContact;
 
             var actual = service.Get(new OrderWrapper(amendedOrder, previousOrders), null);

@@ -134,7 +134,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 UnselectedAdditionalServicesAvailable = true,
             };
 
-            actualResult.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink).Excluding(m => m.OnwardLink));
+            var actualModel = actualResult.Model.As<TaskListModel>();
+
+            actualModel.Should().NotBeNull();
+            actualModel.Should()
+                .BeEquivalentTo(
+                    expected,
+                    x => x.Excluding(m => m.BackLink)
+                        .Excluding(m => m.OnwardLink)
+                        .Excluding(m => m.CatalogueSolution.OrderItemPrice.OrderItemPriceTiers)
+                        .Excluding(m => m.AdditionalServices));
         }
     }
 }

@@ -488,25 +488,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             string reason,
             OrderService service)
         {
+            originalOrder.OrderingParty = organisation;
+            originalOrder.OrderingPartyId = organisation.Id;
             originalOrder.Revision = 1;
             originalOrder.OrderNumber = originalOrder.ContractOrderNumber.Id;
-            var amendedOrder = originalOrder.BuildAmendment(2);
 
+            var amendedOrder = originalOrder.BuildAmendment(2);
             amendedOrder.Completed = DateTime.UtcNow;
             originalOrder.Completed = DateTime.UtcNow;
 
             var orders = new List<Order>() { originalOrder, amendedOrder };
 
-            organisation.Orders.AddRange(orders);
-
             context.Orders.AddRange(orders);
-            context.Organisations.Add(organisation);
 
             await context.Users.AddAsync(user);
 
             await context.SaveChangesAsync();
 
-            await service.TerminateOrder(amendedOrder.CallOffId, amendedOrder.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
+            await service.TerminateOrder(amendedOrder.CallOffId, organisation.InternalIdentifier, user.Id, terminationDate, reason);
 
             await IsTerminated(context, amendedOrder.Id, terminationDate, reason);
             await IsTerminated(context, originalOrder.Id, terminationDate, reason);
@@ -533,7 +532,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             context.ChangeTracker.Clear();
 
-            var bytes = Encoding.ASCII.GetBytes("Testing");
+            var bytes = "Testing"u8.ToArray();
 
             mockCsvService
                 .CreateFullOrderCsvAsync(order.Id, order.OrderType, Arg.Any<MemoryStream>(), false)

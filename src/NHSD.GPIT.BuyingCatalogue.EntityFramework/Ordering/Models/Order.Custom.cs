@@ -218,9 +218,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public Order Clone() => new()
         {
-                OrderItems = OrderItems.Select(x => x.Clone()).ToList(),
-                OrderRecipients = OrderRecipients.Select(x => x.Clone()).ToList(),
-            };
+            AssociatedServicesOnlyDetails = AssociatedServicesOnlyDetails,
+            OrderType = OrderType,
+            Description = Description,
+            OrderItems = OrderItems.Select(x => x.Clone()).ToList(),
+            OrderRecipients = OrderRecipients.Select(x => x.Clone()).ToList(),
+        };
 
         public Order BuildAmendment(int newRevision)
         {
@@ -245,7 +248,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             foreach (var recipient in OrderRecipients)
             {
                 amendedOrder.OrderRecipients.Add(
-                    new OrderRecipient(Id, recipient.OdsCode));
+                    new OrderRecipient(recipient.OdsCode));
             }
 
             return amendedOrder;

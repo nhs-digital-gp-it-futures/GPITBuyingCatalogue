@@ -670,7 +670,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
         private static OrderRecipient BuildOrderRecipient(IFixture fixture, CatalogueItemId[] catalogueItemIds = null)
         {
             var recipient = fixture.Build<OrderRecipient>()
+                .Without(r => r.OrderId)
                 .Without(r => r.OrderItemRecipients)
+                .Without(r => r.Order)
                 .Create();
             recipient.OdsCode = recipient.OdsOrganisation.Id;
 

@@ -437,18 +437,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task TerminateOrder(CallOffId callOffId, string internalOrgId, int userId, DateTime terminationDate, string reason)
         {
-            var orderWrapper = await GetOrderWithOrderItems(callOffId, internalOrgId);
+            var orders = dbContext.Orders
+                .Where(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
 
-            TerminateOrder(orderWrapper.Order, terminationDate, reason);
-
-            foreach (var order in orderWrapper.PreviousOrders)
+            foreach (var orderRevision in orders)
             {
-                TerminateOrder(order, terminationDate, reason);
+                TerminateOrder(orderRevision, terminationDate, reason);
             }
 
             await dbContext.SaveChangesAsync();
 
-            await SendEmailsAndSave(orderWrapper.Order, callOffId, userId, true);
+            var order = await orders
+                .Include(x => x.OrderingParty)
+                .Include(x => x.AssociatedServicesOnlyDetails.Solution)
+                .Include(x => x.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient)
+                .Include(o => o.OrderItems)
+                .ThenInclude(i => i.CatalogueItem)
+                .Include(o => o.OrderItems)
+                .ThenInclude(i => i.OrderItemFunding)
+                .Include(o => o.OrderItems)
+                .ThenInclude(i => i.OrderItemPrice)
+                .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(t => t.LowerRange))
+                .Include(o => o.SelectedFramework)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
+
+            await SendEmailsAndSave(order, callOffId, userId, true);
         }
 
         public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId)
