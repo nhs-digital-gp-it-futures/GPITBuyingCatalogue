@@ -434,6 +434,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             string internalOrgId,
             ICollection<OrderSublocation> orderSublocations)
         {
+            if (callOffId.IsAmendment)
+            {
+                throw new InvalidOperationException("Can only set sublocations and recipients on new orders.");
+            }
+
             ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
 
             if (orderSublocations is null or { Count: 0 })
@@ -460,13 +465,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var wrapper = OrderWrapper.Create(orders, callOffId);
 
-            if (wrapper.Order.OrderStatus is not OrderStatus.InProgress)
+            var orderIsEditable =
+                wrapper.Order.OrderStatus == OrderStatus.InProgress;
+
+            if (!orderIsEditable)
             {
                 throw new InvalidOperationException(
-                    $"Cannot set sublocations / recipients on order as it is {wrapper.Order.OrderStatus}");
+                    "Sublocations cannot be edited for this order.");
             }
 
-            IReadOnlyList<OdsOrganisation> validSublocations =
+            IReadOnlyList<ServiceContractOdsOrganisation> validSublocations =
                 await odsService.GetSublocationsByParentOdsCode(wrapper.Order.OrderingParty.ExternalIdentifier);
 
             var validateSublocations = orderSublocations
@@ -490,7 +498,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 if (invalidRecipients.Count > 0)
                 {
                     throw new InvalidOperationException(
-                        $"Recipients {string.Join(string.Empty, ",", invalidRecipients.Select(x => x.RecipientOdsCode))} not valid for this organisation or its sublocations.");
+                        "Provided recipients not valid for this organisation or its sublocations.");
                 }
             }
 

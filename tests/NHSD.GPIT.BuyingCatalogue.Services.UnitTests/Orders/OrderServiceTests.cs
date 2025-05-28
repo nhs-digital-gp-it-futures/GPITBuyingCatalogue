@@ -587,7 +587,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                         CommonOrderFactory(87, 78, 5555, 1, [CommonOrderSublocationFactory(87, "XXXA", [])]),
                         CommonOrderFactory(92, 78, 5555, 2, [CommonOrderSublocationFactory(92, "XXXA", [])]),
                     },
-                    new HashSet<string> { "XXXA" },
                 ],
             ];
         }
@@ -764,6 +763,222 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                         .Excluding(m => m.Order)
                         .Excluding(m => m.SublocationOrganisation)
                         .Excluding(m => m.SublocationRecipients));
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData("", true, typeof(ArgumentException))]
+        [MockInMemoryDbInlineAutoData(null, true, typeof(ArgumentNullException))]
+        [MockInMemoryDbInlineAutoData("MY-ORG-ID", false, typeof(ArgumentException))]
+        public static async Task SetSublocationsAndRecipients_RejectsNullParams(
+            string internalOrgId,
+            bool populateSublocations,
+            Type expectedExceptionType,
+            List<OrderSublocation> orderSublocations,
+            OrderService service)
+        {
+            var callOffId = new CallOffId(10001, 0);
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                if (!populateSublocations)
+                {
+                    await service.SetSublocationsAndRecipients(
+                        callOffId,
+                        internalOrgId,
+                        []);
+                }
+                else
+                {
+                    await service.SetSublocationsAndRecipients(
+                        callOffId,
+                        internalOrgId,
+                        orderSublocations);
+                }
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(expectedExceptionType);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task SetSublocationsAndRecipients_RejectsAmendment(
+            string internalOrgId,
+            OrderService service)
+        {
+            var callOffId = new CallOffId(10001, 3);
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocationsAndRecipients(
+                    callOffId,
+                    internalOrgId,
+                    []);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be("Can only set sublocations and recipients on new orders.");
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsNotMostRecentRevisionInvalid))]
+        public static async Task SetSublocationsAndRecipients_RejectsNotMostRecentOrder(
+            Organisation organisation,
+            List<Order> orders,
+            List<OrderSublocation> sublocations,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            context.Add(organisation);
+            context.AddRange(orders);
+
+            Order workingOrder = orders.First(x => x.Revision == 1);
+
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocationsAndRecipients(
+                    workingOrder.CallOffId,
+                    organisation.InternalIdentifier,
+                    sublocations);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be("Can only set sublocations on the most recent order.");
+        }
+
+        public static IEnumerable<object[]> SetSublocationsAndRecipientsSingleOrderNotValidData()
+        {
+            Order completeOrder = CommonOrderFactory(
+                45,
+                32,
+                7864,
+                0,
+                [CommonOrderSublocationFactory(45, "XXXA", [], true)]);
+            completeOrder.Completed = new DateTime(2024, 01, 03);
+
+            Order terminatedOrder = CommonOrderFactory(
+                11,
+                76,
+                4312,
+                0,
+                [CommonOrderSublocationFactory(11, "XXXB", [], true)]);
+            terminatedOrder.IsTerminated = true;
+
+            Order deletedOrder = CommonOrderFactory(
+                51,
+                55,
+                9841,
+                0,
+                [CommonOrderSublocationFactory(51, "XXXC", [], true)]);
+            deletedOrder.IsDeleted = true;
+
+            Order expiredOrder = CommonOrderFactory(
+                36,
+                66,
+                4327,
+                0,
+                [CommonOrderSublocationFactory(36, "XXXD", [], true)]);
+            expiredOrder.CommencementDate = new DateTime(2024, 01, 01);
+            expiredOrder.MaximumTerm = 3;
+
+            return
+            [
+                [
+                    CommonOrganisationFactory(45), completeOrder,
+                    new List<OrderSublocation> { CommonOrderSublocationFactory(45, "XXXA") },
+                    new List<ServiceContractOdsOrganisation>(), new List<ServiceRecipient>(),
+                    "Sublocations cannot be edited for this order.",
+                ],
+
+                [
+                    CommonOrganisationFactory(11), terminatedOrder,
+                    new List<OrderSublocation> { CommonOrderSublocationFactory(11, "XXXA") },
+                    new List<ServiceContractOdsOrganisation>(), new List<ServiceRecipient>(),
+                    "Sublocations cannot be edited for this order.",
+                ],
+                [
+                    CommonOrganisationFactory(51), deletedOrder,
+                    new List<OrderSublocation> { CommonOrderSublocationFactory(51, "XXXA") },
+                    new List<ServiceContractOdsOrganisation>(), new List<ServiceRecipient>(),
+                    "Sublocations cannot be edited for this order.",
+                ],
+                [
+                    CommonOrganisationFactory(46), expiredOrder,
+                    new List<OrderSublocation> { CommonOrderSublocationFactory(46, "XXXA") },
+                    new List<ServiceContractOdsOrganisation>(), new List<ServiceRecipient>(),
+                    "Sublocations cannot be edited for this order.",
+                ],
+                [
+                    CommonOrganisationFactory(98), CommonOrderFactory(
+                        61,
+                        78,
+                        0,
+                        0,
+                        [
+                        ]
+                    ),
+                    new List<OrderSublocation> { CommonOrderSublocationFactory(61, "XXXA") },
+                    new List<ServiceContractOdsOrganisation>(),
+                    new List<ServiceRecipient>(),
+                    "Provided sublocations not valid for this organisation.",
+                ],
+                [
+                    CommonOrganisationFactory(13), CommonOrderFactory(
+                        77,
+                        78,
+                        0,
+                        0,
+                        [
+                        ]
+                    ),
+                    new List<OrderSublocation> { CommonOrderSublocationFactory(77, "XXXA") },
+                    new List<ServiceContractOdsOrganisation>(),
+                    new List<ServiceRecipient>(),
+                    "Provided recipients not valid for this organisation or its sublocations.",
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsAndRecipientsSingleOrderNotValidData))]
+        public static async Task SetSublocationsAndRecipients_RejectsInvalidOperations(
+            Organisation organisation,
+            Order order,
+            List<OrderSublocation> sublocations,
+            List<ServiceContractOdsOrganisation> validSublocations,
+            List<ServiceRecipient> validServiceRecipients,
+            string expectedMessage,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] IOdsService odsService,
+            OrderService service)
+        {
+            order.OrderingParty = organisation;
+
+            context.Add(order);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns(validSublocations);
+            odsService.GetServiceRecipientsBySublocation(Arg.Any<string>()).ReturnsForAnyArgs(validServiceRecipients);
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocationsAndRecipients(
+                    order.CallOffId,
+                    organisation.InternalIdentifier,
+                    sublocations);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be(expectedMessage);
         }
 
         [Theory]
