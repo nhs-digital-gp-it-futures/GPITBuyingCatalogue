@@ -196,6 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IOrderService orderService,
             OrderSublocationService service)
         {
+            order.OrderingParty = organisation;
             context.Add(order);
             await context.SaveChangesAsync();
 
@@ -459,6 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             OrderSublocation expectedOrderSublocation,
             [Frozen] BuyingCatalogueDbContext context,
             [Frozen] IOdsService odsService,
+            [Frozen] IOrderService orderService,
             OrderSublocationService service)
         {
             order.OrderingParty = organisation;
@@ -472,6 +474,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             odsService.GetServiceRecipientsBySublocation(workingOrderSublocation.SublocationOdsCode)
                 .Returns(validSublocationRecipientsAsServiceModels);
+
+            orderService.GetOrderWithCatalogueItemAndPrices(order.CallOffId, order.OrderingParty.InternalIdentifier)
+                .Returns(new OrderWrapper(order));
 
             await service.SetSublocationRecipients(
                 organisation.ExternalIdentifier,
