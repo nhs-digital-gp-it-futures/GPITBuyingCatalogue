@@ -70,6 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             List<OrderSublocationRecipient> recipients = await dbContext
                 .OrderSublocationRecipients.Where(x => x.OrderId == orderId)
+                .Include(x => x.OrderItemSublocationRecipients)
                 .ToListAsync();
 
             if (recipients.Count == 0)

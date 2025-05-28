@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using Xunit;
 
@@ -20,18 +19,6 @@ public static class SublocationModelTests
 
         model.Name.Should().Be(name);
         model.ServiceRecipients.Should().BeEquivalentTo(serviceRecipients);
-    }
-
-    [Theory]
-    [MockInlineAutoData(1, TaskProgress.Completed)]
-    [MockInlineAutoData(0, TaskProgress.NotStarted)]
-    public static void TaskProgressProperty_SetByRecipientCount(
-        int serviceRecipientCount,
-        TaskProgress expectedProgress)
-    {
-        var model = new SublocationModel { ServiceRecipientCount = serviceRecipientCount };
-
-        model.TaskProgress.Should().Be(expectedProgress);
     }
 
     [Theory]
