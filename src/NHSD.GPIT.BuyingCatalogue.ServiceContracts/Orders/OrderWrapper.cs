@@ -38,12 +38,14 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                     return null;
                 }
 
-                return previous.Aggregate((originalOrder, amendment) =>
-                {
-                    originalOrder.Apply(amendment);
+                var output = previous.First().Clone();
 
-                    return originalOrder;
-                });
+                foreach (var amendment in previous.Skip(1))
+                {
+                    output.Apply(amendment);
+                }
+
+                return output;
             });
 
             rolledUpLazy = new Lazy<Order>(() =>

@@ -219,6 +219,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public Order Clone() => new()
         {
             AssociatedServicesOnlyDetails = AssociatedServicesOnlyDetails,
+            DeliveryDate = DeliveryDate,
+            Revision = Revision,
             OrderType = OrderType,
             Description = Description,
             OrderItems = OrderItems.Select(x => x.Clone()).ToList(),
