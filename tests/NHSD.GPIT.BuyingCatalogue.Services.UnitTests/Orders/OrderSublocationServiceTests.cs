@@ -307,7 +307,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Order order,
             HashSet<string> recipientOdsCodes,
             string expectedMessage,
-            [Frozen] IOdsService odsService,
             [Frozen] BuyingCatalogueDbContext context,
             OrderSublocationService service)
         {
@@ -328,6 +327,142 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                     order.Id,
                     orderSublocation.SublocationOdsCode,
                     recipientOdsCodes);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be(expectedMessage);
+        }
+
+        public static IEnumerable<object[]> SetSublocationRecipientsAmendedOrderNotValidData()
+        {
+            return
+            [
+                [
+                    CommonOrganisationFactory(32), new List<Order>
+                    {
+                        CommonOrderFactory(
+                            921,
+                            32,
+                            667,
+                            1,
+                            [],
+                            true),
+                        CommonOrderFactory(
+                            487,
+                            32,
+                            667,
+                            2,
+                            [
+                                CommonOrderSublocationFactory(
+                                    487,
+                                    "XXXA",
+                                    [
+                                        CommonOrderSublocationRecipientFactory(487, "AAAA", "XXXA"),
+                                        CommonOrderSublocationRecipientFactory(487, "AAAB", "XXXA"),
+                                    ],
+                                    true),
+                            ]),
+                    },
+                    new HashSet<string> { "AAAC" },
+
+                    new List<ServiceRecipient>
+                    {
+                        CommonServiceRecipientFactory("AAAA", "XXXA"),
+                        CommonServiceRecipientFactory("AAAB", "XXXA"),
+                        CommonServiceRecipientFactory("AAAC", "XXXA"),
+                    },
+                    "Previous order sublocations must be populated to determine validity",
+                ],
+                [
+                    CommonOrganisationFactory(76), new List<Order>
+                    {
+                        CommonOrderFactory(
+                            45,
+                            76,
+                            667,
+                            1,
+                            [
+                                CommonOrderSublocationFactory(
+                                    45,
+                                    "XXXB",
+                                    [
+                                        CommonOrderSublocationRecipientFactory(45, "BAAA", "XXXB"),
+                                        CommonOrderSublocationRecipientFactory(45, "BAAB", "XXXB"),
+                                    ]),
+                            ],
+                            true),
+                        CommonOrderFactory(
+                            431,
+                            76,
+                            667,
+                            2,
+                            [
+                                CommonOrderSublocationFactory(
+                                    431,
+                                    "XXXB",
+                                    [
+                                        CommonOrderSublocationRecipientFactory(431, "BAAA", "XXXB"),
+                                        CommonOrderSublocationRecipientFactory(431, "BAAB", "XXXB"),
+                                    ],
+                                    true),
+                            ]),
+                    },
+                    new HashSet<string> { "BAAC" },
+
+                    new List<ServiceRecipient>
+                    {
+                        CommonServiceRecipientFactory("BAAA", "XXXB"),
+                        CommonServiceRecipientFactory("BAAB", "XXXB"),
+                        CommonServiceRecipientFactory("BAAC", "XXXB"),
+                    },
+                    "Cannot remove recipients added by previous revision",
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationRecipientsAmendedOrderNotValidData))]
+        public static async Task SetSublocationRecipients_Amendment_RejectsInvalidOperations(
+            Organisation organisation,
+            List<Order> orders,
+            HashSet<string> recipientOdsCodesToSet,
+            List<ServiceRecipient> validRecipients,
+            string expectedMessage,
+            [Frozen] IOdsService odsService,
+            [Frozen] IOrderService orderService,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderSublocationService service)
+        {
+            context.Add(organisation);
+
+            orders.ForEach(x => x.OrderingParty = organisation);
+
+            context.AddRange(orders);
+
+            Order mostRecentOrder = orders.Last();
+
+            OrderSublocation orderSublocation = mostRecentOrder.OrderSublocations.First();
+
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            odsService.GetServiceRecipientsBySublocation(orderSublocation.SublocationOdsCode)
+                .Returns(validRecipients);
+
+            orderService.GetOrderWithCatalogueItemAndPrices(
+                    mostRecentOrder.CallOffId,
+                    mostRecentOrder.OrderingParty.InternalIdentifier)
+                .Returns(new OrderWrapper(orders));
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocationRecipients(
+                    organisation.ExternalIdentifier,
+                    orderSublocation.OrderId,
+                    orderSublocation.SublocationOdsCode,
+                    recipientOdsCodesToSet);
             });
 
             exception.Should().NotBeNull();
@@ -527,7 +662,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             int customOrganisationId = 0,
             int customOrderNumber = 0,
             int customRevision = 0,
-            ICollection<OrderSublocation> orderSublocations = null)
+            ICollection<OrderSublocation> orderSublocations = null,
+            bool isComplete = false)
         {
             var random = new Random();
             return new Order
@@ -539,6 +675,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 OrderingPartyId = customOrganisationId == 0 ? CommonOrganisationId : customOrganisationId,
                 SelectedFramework = new EntityFramework.Catalogue.Models.Framework { Id = random.Next().ToString() },
                 OrderSublocations = orderSublocations,
+                Completed = isComplete ? new DateTime(2023, 01, 01) : null,
             };
         }
 
