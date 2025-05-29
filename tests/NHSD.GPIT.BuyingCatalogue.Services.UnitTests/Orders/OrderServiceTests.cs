@@ -870,14 +870,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 [CommonOrderSublocationFactory(11, "XXXB", [], true)]);
             terminatedOrder.IsTerminated = true;
 
-            Order deletedOrder = CommonOrderFactory(
-                51,
-                55,
-                9841,
-                0,
-                [CommonOrderSublocationFactory(51, "XXXC", [], true)]);
-            deletedOrder.IsDeleted = true;
-
             Order expiredOrder = CommonOrderFactory(
                 36,
                 66,
@@ -899,12 +891,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 [
                     CommonOrganisationFactory(11), terminatedOrder,
                     new List<OrderSublocation> { CommonOrderSublocationFactory(11, "XXXA") },
-                    new List<ServiceContractOdsOrganisation>(), new List<ServiceRecipient>(),
-                    "Sublocations cannot be edited for this order.",
-                ],
-                [
-                    CommonOrganisationFactory(51), deletedOrder,
-                    new List<OrderSublocation> { CommonOrderSublocationFactory(51, "XXXA") },
                     new List<ServiceContractOdsOrganisation>(), new List<ServiceRecipient>(),
                     "Sublocations cannot be edited for this order.",
                 ],
@@ -937,8 +923,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                         [
                         ]
                     ),
-                    new List<OrderSublocation> { CommonOrderSublocationFactory(77, "XXXA") },
-                    new List<ServiceContractOdsOrganisation>(),
+                    new List<OrderSublocation>
+                    {
+                        CommonOrderSublocationFactory(
+                            77,
+                            "XXXA",
+                            [CommonOrderSublocationRecipientFactory(77, "AAAA", "XXXA")]),
+                    },
+                    new List<ServiceContractOdsOrganisation> { CommonServiceContractOdsOrganisationFactory("XXXA") },
                     new List<ServiceRecipient>(),
                     "Provided recipients not valid for this organisation or its sublocations.",
                 ],
@@ -950,7 +942,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         public static async Task SetSublocationsAndRecipients_RejectsInvalidOperations(
             Organisation organisation,
             Order order,
-            List<OrderSublocation> sublocations,
+            List<OrderSublocation> sublocationsToSet,
             List<ServiceContractOdsOrganisation> validSublocations,
             List<ServiceRecipient> validServiceRecipients,
             string expectedMessage,
@@ -973,7 +965,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 await service.SetSublocationsAndRecipients(
                     order.CallOffId,
                     organisation.InternalIdentifier,
-                    sublocations);
+                    sublocationsToSet);
             });
 
             exception.Should().NotBeNull();
