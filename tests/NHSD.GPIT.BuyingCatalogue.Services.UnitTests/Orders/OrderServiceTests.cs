@@ -575,6 +575,62 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             exception!.Message.Should().Be(expectedMessage);
         }
 
+        public static IEnumerable<object[]> SetSublocationsAmendedOrderNotValidData()
+        {
+            return
+            [
+                [
+                    CommonOrganisationFactory(32),
+                    CommonOrderFactory(566, 32, 789, 1, [CommonOrderSublocationFactory(566, "XXXA")]),
+                    CommonOrderFactory(5982, 32, 789, 2, [CommonOrderSublocationFactory(5982, "XXXA")]),
+                    new List<ServiceContractOdsOrganisation>
+                    {
+                        CommonServiceContractOdsOrganisationFactory("XXXA"),
+                        CommonServiceContractOdsOrganisationFactory("XXXB"),
+                    },
+                    new HashSet<string> { "XXXB" },
+                    "Cannot remove sublocations added by previous revision",
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsAmendedOrderNotValidData))]
+        public static async Task SetSublocations_RejectsInvalidAmendOperations(
+            Organisation organisation,
+            Order previousOrder,
+            Order order,
+            List<ServiceContractOdsOrganisation> validOdsOrganisations,
+            HashSet<string> sublocationOdsCodes,
+            string expectedMessage,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] IOdsService odsService,
+            OrderService service)
+        {
+            previousOrder.OrderingParty = organisation;
+            order.OrderingParty = organisation;
+
+            context.Add(previousOrder);
+            context.Add(order);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns(validOdsOrganisations);
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocations(
+                    order.CallOffId,
+                    organisation.InternalIdentifier,
+                    sublocationOdsCodes);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be(expectedMessage);
+        }
+
         public static IEnumerable<object[]> SetSublocationsNotMostRecentRevisionInvalid()
         {
             return
