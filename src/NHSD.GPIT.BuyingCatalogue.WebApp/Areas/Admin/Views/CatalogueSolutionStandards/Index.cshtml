@@ -1,0 +1,77 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionStandards.CatalogueSolutionStandardsModel
+
+@{
+    ViewBag.Title = "Standards";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="SelectedPublicationStatus"/>
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SolutionName"
+                        advice="Use the link to edit the status of the standard."/>
+
+        <nhs-fieldset-form-container label-text="Overarching Standards" asp-for="OverarchingStandards">
+            <nhs-table>
+                <nhs-table-column>Standard</nhs-table-column>
+                <nhs-table-column>Status</nhs-table-column>
+                <nhs-table-column>Action</nhs-table-column>
+
+                @foreach (var standard in Model.OverarchingStandards.OrderBy(x => x.Name))
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@standard.Name</nhs-table-cell>
+                        <nhs-table-cell>
+                            <nhs-tag
+                                colour="@(standard.Compliance is StandardCompliance.FullyMet ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Blue)"
+                                text="@(standard.Compliance.Description())"></nhs-tag>
+                        </nhs-table-cell>
+                        <nhs-table-cell>
+                            <a asp-action="@(nameof(CatalogueSolutionStandardsController.Edit))"
+                               asp-controller="@(typeof(CatalogueSolutionStandardsController).ControllerName())"
+                               asp-area="@(typeof(CatalogueSolutionStandardsController).AreaName())"
+                               asp-route-solutionId="@Model.SolutionId"
+                               asp-route-standardId="@standard.Id">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+        </nhs-fieldset-form-container>
+
+        @if (Model.OtherStandards.Count > 0)
+        {
+            <nhs-fieldset-form-container label-text="Other Standards" asp-for="OtherStandards">
+                <nhs-table>
+                    <nhs-table-column>Standard</nhs-table-column>
+                    <nhs-table-column>Status</nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+
+                    @foreach (var standard in Model.OtherStandards.OrderBy(x => x.Name))
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@standard.Name</nhs-table-cell>
+                            <nhs-table-cell>
+                                <nhs-tag
+                                    colour="@(standard.Compliance is StandardCompliance.FullyMet ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Blue)"
+                                    text="@(standard.Compliance.Description())"></nhs-tag>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <a asp-action="@(nameof(CatalogueSolutionStandardsController.Edit))"
+                                   asp-controller="@(typeof(CatalogueSolutionStandardsController).ControllerName())"
+                                   asp-area="@(typeof(CatalogueSolutionStandardsController).AreaName())"
+                                   asp-route-solutionId="@Model.SolutionId"
+                                   asp-route-standardId="@standard.Id">Edit</a>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </nhs-fieldset-form-container>
+        }
+
+        <vc:nhs-anchor-button type="Primary" text="Save and continue" url="@Model.BackLink"/>
+    </div>
+</div>

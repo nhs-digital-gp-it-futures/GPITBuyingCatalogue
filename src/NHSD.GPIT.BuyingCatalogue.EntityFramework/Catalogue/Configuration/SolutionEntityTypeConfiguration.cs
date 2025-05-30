@@ -69,18 +69,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
 
             builder.HasMany(x => x.InProgressStandards)
                 .WithMany()
-                .UsingEntity<SolutionInProgressStandard>(
+                .UsingEntity<InProgressSolutionStandard>(
                     right => right.HasOne(x => x.Standard)
                         .WithMany()
                         .HasForeignKey(x => x.StandardId)
-                        .HasConstraintName("FK_SolutionInProgressStandards_Standard"),
+                        .HasConstraintName("FK_InProgressSolutionStandards_Standard"),
                     left => left.HasOne(x => x.Solution)
                         .WithMany()
                         .HasForeignKey(x => x.SolutionId)
-                        .HasConstraintName("FK_SolutionInProgressStandards_Solution"),
+                        .HasConstraintName("FK_InProgressSolutionStandards_Solution"),
                     j =>
                     {
-                        j.ToTable("SolutionInProgressStandards", Schemas.Catalogue);
+                        j.ToTable("InProgressSolutionStandards", Schemas.Catalogue);
                         j.HasKey(x => new { x.SolutionId, x.StandardId });
                     });
         }

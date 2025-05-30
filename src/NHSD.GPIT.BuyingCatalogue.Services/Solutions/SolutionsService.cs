@@ -26,6 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public async Task<string> GetSolutionName(CatalogueItemId solutionId) => await dbContext.CatalogueItems
+            .Where(x => x.Id == solutionId)
+            .Select(x => x.Name)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
         public Task<CatalogueItem> GetSolutionThin(CatalogueItemId solutionId) =>
             dbContext.CatalogueItems.AsNoTracking()
             .Include(ci => ci.Supplier)
@@ -137,10 +143,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                         AdditionalServices = ci.Solution.AdditionalServices
                             .Any(add => add.CatalogueItem.PublishedStatus == PublicationStatus.Published)
                             ? TaskProgress.Completed
-                            : ci.Solution.AdditionalServices.Any()
+                            : ci.Solution.AdditionalServices.Count != 0
                                 ? TaskProgress.InProgress
                                 : TaskProgress.Optional,
-                        AssociatedServices = ci.SupplierServiceAssociations.Any()
+                        AssociatedServices = ci.SupplierServiceAssociations.Count != 0
                             ? TaskProgress.Completed
                             : TaskProgress.Optional,
                         Features = !string.IsNullOrWhiteSpace(ci.Solution.Features)
@@ -154,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                             : TaskProgress.Optional,
                         ListPrice = ci.CataloguePrices.Any(cp => cp.PublishedStatus == PublicationStatus.Published)
                             ? TaskProgress.Completed
-                            : ci.CataloguePrices.Any()
+                            : ci.CataloguePrices.Count != 0
                                 ? TaskProgress.InProgress
                                 : TaskProgress.NotStarted,
                         ApplicationType = ci.Solution.ApplicationTypeDetail != null
@@ -172,26 +178,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                                 && (ci.Solution.DataProcessingInformation.Details != null
                                     || ci.Solution.DataProcessingInformation.Location != null
                                     || ci.Solution.DataProcessingInformation.Officer != null
-                                    || ci.Solution.DataProcessingInformation.SubProcessors.Any())
+                                    || ci.Solution.DataProcessingInformation.SubProcessors.Count != 0)
                                     ? TaskProgress.InProgress
                                     : TaskProgress.NotStarted,
-                        DevelopmentPlans = ci.Solution.WorkOffPlans.Any()
+                        Standards = ci.Solution.InProgressStandards.Count != 0
                             ? TaskProgress.Completed
                             : TaskProgress.Optional,
-                        CapabilitiesAndEpics = ci.CatalogueItemCapabilities.Any()
+                        DevelopmentPlans = ci.Solution.WorkOffPlans.Count != 0
+                            ? TaskProgress.Completed
+                            : TaskProgress.Optional,
+                        CapabilitiesAndEpics = ci.CatalogueItemCapabilities.Count != 0
                             ? TaskProgress.Completed
                             : TaskProgress.NotStarted,
-                        SupplierDetails = ci.CatalogueItemContacts.Any()
+                        SupplierDetails = ci.CatalogueItemContacts.Count != 0
                             ? TaskProgress.Completed
                             : TaskProgress.NotStarted,
                         ServiceLevelAgreement = (ci.Solution.ServiceLevelAgreement != null &&
-                            ci.Solution.ServiceLevelAgreement.Contacts.Any() &&
-                            ci.Solution.ServiceLevelAgreement.ServiceHours.Any() &&
-                            ci.Solution.ServiceLevelAgreement.ServiceLevels.Any())
+                            ci.Solution.ServiceLevelAgreement.Contacts.Count != 0 &&
+                            ci.Solution.ServiceLevelAgreement.ServiceHours.Count != 0 &&
+                            ci.Solution.ServiceLevelAgreement.ServiceLevels.Count != 0)
                             ? TaskProgress.Completed
-                            : (ci.Solution.ServiceLevelAgreement.Contacts.Any() ||
-                                ci.Solution.ServiceLevelAgreement.ServiceHours.Any() ||
-                                ci.Solution.ServiceLevelAgreement.ServiceLevels.Any())
+                            : (ci.Solution.ServiceLevelAgreement.Contacts.Count != 0 ||
+                                ci.Solution.ServiceLevelAgreement.ServiceHours.Count != 0 ||
+                                ci.Solution.ServiceLevelAgreement.ServiceLevels.Count != 0)
                                 ? TaskProgress.InProgress
                                 : TaskProgress.NotStarted,
                     })
@@ -408,14 +417,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         public async Task SaveSupplierContacts(SupplierContactsModel model)
         {
-            if (model is null)
-                throw new ArgumentNullException(nameof(model));
+            ArgumentNullException.ThrowIfNull(model);
 
             model.SetSolutionId();
 
             var marketingContacts = await dbContext.MarketingContacts.Where(c => c.SolutionId == model.SolutionId).ToListAsync();
 
-            if (!marketingContacts.Any())
+            if (marketingContacts.Count == 0)
             {
                 dbContext.MarketingContacts.AddRange(model.ValidContacts());
             }
@@ -545,17 +553,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
             model.Frameworks.ValidateNotNull(nameof(CreateSolutionModel.Frameworks));
 
-            var dateTimeNow = DateTime.UtcNow;
-
-            var frameworkSolutions = new List<FrameworkSolution>();
-
-            foreach (var framework in model.Frameworks.Where(f => f.Selected))
-            {
-                frameworkSolutions.Add(new FrameworkSolution
-                {
-                    FrameworkId = framework.FrameworkId,
-                });
-            }
+            var frameworkSolutions = model.Frameworks.Where(f => f.Selected)
+                .Select(framework => new FrameworkSolution { FrameworkId = framework.FrameworkId })
+                .ToList();
 
             var catalogueItem = new CatalogueItem
             {
@@ -621,8 +621,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
 
         internal static ApplicationTypeDetail RemoveApplicationType(ApplicationTypeDetail applicationTypeDetail, ApplicationType applicationType)
         {
-            if (applicationTypeDetail is null)
-                throw new ArgumentNullException(nameof(applicationTypeDetail));
+            ArgumentNullException.ThrowIfNull(applicationTypeDetail);
 
             if (applicationTypeDetail.ApplicationTypes is not null)
             {

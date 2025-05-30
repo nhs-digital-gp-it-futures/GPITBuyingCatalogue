@@ -40,6 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
             DataProcessingStatus = solutionLoadingStatuses.DataProcessing;
             ListPriceStatus = solutionLoadingStatuses.ListPrice;
             CapabilitiesStatus = solutionLoadingStatuses.CapabilitiesAndEpics;
+            StandardsStatus = solutionLoadingStatuses.Standards;
             RoadmapStatus = solutionLoadingStatuses.DevelopmentPlans;
             SupplierDetailsStatus = solutionLoadingStatuses.SupplierDetails;
             SlaStatus = solutionLoadingStatuses.ServiceLevelAgreement;
@@ -69,6 +70,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
         public TaskProgress FeaturesStatus { get; init; }
 
         public TaskProgress ImplementationStatus { get; init; }
+
+        public TaskProgress StandardsStatus { get; init; }
 
         public TaskProgress RoadmapStatus { get; init; }
 

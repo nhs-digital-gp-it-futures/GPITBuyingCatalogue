@@ -2,8 +2,20 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 
-public class SolutionInProgressStandard
+public class InProgressSolutionStandard
 {
+    public InProgressSolutionStandard()
+    {
+    }
+
+    public InProgressSolutionStandard(
+        CatalogueItemId solutionId,
+        string standardId)
+    {
+        SolutionId = solutionId;
+        StandardId = standardId;
+    }
+
     public CatalogueItemId SolutionId { get; set; }
 
     public string StandardId { get; set; }
