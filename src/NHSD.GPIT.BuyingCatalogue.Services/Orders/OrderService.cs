@@ -110,6 +110,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.RecipientOdsOrganisation)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationOrganisation)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
                     && o.Revision <= callOffId.Revision

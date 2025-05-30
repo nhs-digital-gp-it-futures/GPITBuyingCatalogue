@@ -315,7 +315,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 expectedModel,
                 opt => opt
                     .Excluding(m => m.BackLink)
-                    .Excluding(m => m.CancelLink));
+                    .Excluding(m => m.CancelLink)
+                    .Excluding(m => m.ContinueLink));
     }
 
     [Theory]

@@ -432,7 +432,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             routeValues.CatalogueItemId.Should().Be(catalogueItemId);
             routeValues.Source.Should().BeNull();
 
-            var expected = new EditDatesModel(orderWrapper, catalogueItemId, organisations.ToDictionary(x => x.OrgId, x => x.Location));
+            var expected = new EditDatesModel(orderWrapper, catalogueItemId);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -535,7 +535,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             routeValues.CatalogueItemId.Should().Be(catalogueItemId);
             routeValues.Source.Should().BeNull();
 
-            var expected = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations.ToDictionary(x => x.OrgId, x => x.Location));
+            var expected = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));

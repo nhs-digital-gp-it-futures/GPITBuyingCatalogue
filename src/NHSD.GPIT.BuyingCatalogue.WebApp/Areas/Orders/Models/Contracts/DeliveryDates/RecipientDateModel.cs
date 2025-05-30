@@ -13,15 +13,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         public RecipientDateModel(
             OrderSublocationRecipient recipient,
             DateTime? deliveryDate,
-            DateTime commencementDate,
-            string location)
+            DateTime commencementDate)
         {
             OdsCode = recipient.RecipientOdsCode;
             Description = recipient.RecipientOdsOrganisation?.Name;
             CommencementDate = commencementDate;
 
             SetDateFields(deliveryDate);
-            Location = location;
+            Location = recipient.ParentSublocation.SublocationOrganisation.Name;
         }
 
         public string OdsCode { get; set; }

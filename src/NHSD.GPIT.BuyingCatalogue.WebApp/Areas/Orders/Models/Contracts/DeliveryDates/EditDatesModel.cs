@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
         {
         }
 
-        public EditDatesModel(OrderWrapper orderWrapper, CatalogueItemId catalogueItemId, IReadOnlyDictionary<string, string> organisations, RoutingSource? source = null)
+        public EditDatesModel(OrderWrapper orderWrapper, CatalogueItemId catalogueItemId, RoutingSource? source = null)
         {
             var order = orderWrapper.Order;
             InternalOrgId = order.OrderingParty.InternalIdentifier;
@@ -33,23 +33,30 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             CatalogueItemType = orderItem.CatalogueItem.CatalogueItemType;
             Description = orderItem.CatalogueItem.Name;
 
-            RecipientDateModel[] recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId)
+            ICollection<OrderSublocationRecipient> recipients = orderWrapper.DetermineOrderRecipients(catalogueItemId);
+
+            RecipientDateModel[] recipientDates = recipients
                 .Select(x => new RecipientDateModel(
                     x,
                     x.GetDeliveryDateForItem(orderItem.CatalogueItemId) ?? DeliveryDate,
-                    order.CommencementDate!.Value,
-                    organisations[x.RecipientOdsCode]))
+                    order.CommencementDate!.Value))
                 .OrderBy(y => y.Description)
                 .ToArray();
 
-            Recipients = OrderType.MergerOrSplit ?
-                new List<KeyValuePair<string, RecipientDateModel[]>> { new(OrderType.Value == OrderTypeEnum.AssociatedServiceSplit ? "Service Recipients receiving patients" : "Service Recipients to be merged", recipients) } :
-                recipients
+            Recipients = OrderType.MergerOrSplit
+                ?
+                [
+                    new KeyValuePair<string, RecipientDateModel[]>(
+                        OrderType.Value == OrderTypeEnum.AssociatedServiceSplit
+                            ? "Service Recipients receiving patients"
+                            : "Service Recipients to be merged",
+                        recipientDates),
+                ]
+                : recipientDates
                     .GroupBy(x => x.Location)
-                    .Select(
-                        x => new KeyValuePair<string, RecipientDateModel[]>(
-                            x.Key,
-                            x.OrderBy(y => y.Description).ToArray()))
+                    .Select(x => new KeyValuePair<string, RecipientDateModel[]>(
+                        x.Key,
+                        x.OrderBy(y => y.Description).ToArray()))
                     .ToList();
         }
 

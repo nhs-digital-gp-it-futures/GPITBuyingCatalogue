@@ -176,14 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var orderRecipients = orderWrapper.DetermineOrderRecipients(catalogueItemId);
-            Dictionary<string, string> organisations =
-                (await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                    internalOrgId,
-                    orderRecipients.Select(x => x.RecipientOdsCode)))
-                .ToDictionary(sr => sr.OrgId, sr => sr.Location);
-
-            var model = new EditDatesModel(orderWrapper, catalogueItemId, organisations, source)
+            var model = new EditDatesModel(orderWrapper, catalogueItemId, source)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
             };
