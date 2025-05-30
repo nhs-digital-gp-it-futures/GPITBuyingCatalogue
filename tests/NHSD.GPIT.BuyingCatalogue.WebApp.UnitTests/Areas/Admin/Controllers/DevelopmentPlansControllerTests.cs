@@ -154,6 +154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [MockAutoData]
         public static async Task Get_AddWorkOffPlan_ValidSolutionForId_ReturnsExpectedViewResult(
             [Frozen] ISolutionsService mockService,
+            [Frozen] ISolutionStandardsService solutionStandardsService,
             DevelopmentPlansController controller,
             Solution solution,
             List<Standard> standards)
@@ -162,7 +163,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             mockService.GetSolutionWithWorkOffPlans(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            mockService.GetSolutionStandardsForEditing(solution.CatalogueItemId).Returns(standards);
+            solutionStandardsService.GetInProgressStandards(solution.CatalogueItemId).Returns(standards);
 
             var actual = (await controller.AddWorkOffPlan(solution.CatalogueItemId)).As<ViewResult>();
 

@@ -550,8 +550,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [MockAutoData]
         public static async Task Get_Standards_GetSolutionAndStandardsFromService(
             Solution solution,
-            List<Standard> standards,
+            List<StandardComplianceModel> standards,
             [Frozen] ISolutionsService mockService,
+            [Frozen] ISolutionStandardsService solutionStandardsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
@@ -559,7 +560,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             mockService.GetSolutionWithBasicInformation(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            mockService.GetSolutionStandardsForMarketing(solution.CatalogueItemId).Returns(standards);
+            solutionStandardsService.GetSolutionStandards(solution.CatalogueItemId).Returns(standards);
 
             mockService.GetWorkOffPlans(solution.CatalogueItemId).Returns(new List<WorkOffPlan>());
 
@@ -568,7 +569,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
             await controller.Standards(solution.CatalogueItemId);
 
             await mockService.Received().GetSolutionWithBasicInformation(solution.CatalogueItemId);
-            await mockService.Received().GetSolutionStandardsForMarketing(solution.CatalogueItemId);
+            await solutionStandardsService.Received().GetSolutionStandards(solution.CatalogueItemId);
             await mockService.Received().GetWorkOffPlans(solution.CatalogueItemId);
             await mockService.Received().GetContentStatusForCatalogueItem(solution.CatalogueItemId);
         }
@@ -592,8 +593,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
         [MockAutoData]
         public static async Task Get_Standards_ValidSolutionForId_ReturnsExpectedResultView(
             Solution solution,
-            List<Standard> standards,
+            List<StandardComplianceModel> standards,
             [Frozen] ISolutionsService mockService,
+            [Frozen] ISolutionStandardsService solutionStandardsService,
             SolutionsController controller,
             CatalogueItemContentStatus contentStatus)
         {
@@ -607,7 +609,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             mockService.GetSolutionWithBasicInformation(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
-            mockService.GetSolutionStandardsForMarketing(solution.CatalogueItemId).Returns(standards);
+            solutionStandardsService.GetSolutionStandards(solution.CatalogueItemId).Returns(standards);
 
             mockService.GetWorkOffPlans(solution.CatalogueItemId).Returns(new List<WorkOffPlan>());
 

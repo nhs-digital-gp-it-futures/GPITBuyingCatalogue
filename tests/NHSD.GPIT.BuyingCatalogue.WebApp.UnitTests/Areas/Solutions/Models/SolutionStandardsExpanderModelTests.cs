@@ -2,6 +2,7 @@
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Models
     {
         [Theory]
         [MockAutoData]
-        public static void Constructor_PopulatesAllProperties(string title, string content, string testId, IList<Standard> standards, IList<string> standardsWithWorkOffPlans, CatalogueItemId solutionId, bool showAction)
+        public static void Constructor_PopulatesAllProperties(string title, string content, string testId, IList<StandardComplianceModel> standards, IList<string> standardsWithWorkOffPlans, CatalogueItemId solutionId, bool showAction)
         {
             var model = new SolutionStandardsExpanderModel(
                 title,

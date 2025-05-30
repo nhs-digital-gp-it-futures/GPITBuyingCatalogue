@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 {
@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
             string title,
             string content,
             string testId,
-            IEnumerable<Standard> standards,
+            IEnumerable<StandardComplianceModel> standards,
             IEnumerable<string> standardsWithWorkOffPlans,
             CatalogueItemId solutionId,
             bool showAction)
@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public string TestId { get; }
 
-        public IEnumerable<Standard> Standards { get; }
+        public IEnumerable<StandardComplianceModel> Standards { get; }
 
         public IEnumerable<string> StandardsWithWorkOffPlans { get; }
 
