@@ -2,7 +2,7 @@ variables:
   - name: dockerVersion
     value: '19.03.5'
   - name: dotnetVersion
-    value: '8.0.300'
+    value: '8.0.400'
   - name: MSBUILDSINGLELOADCONTEXT
     value: '1'
   - name: buildConfiguration

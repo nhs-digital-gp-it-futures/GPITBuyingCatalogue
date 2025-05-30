@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     [Serializable]
-    public sealed class OrderItemRecipient : IAudited
+    public sealed class OrderItemRecipient : IAudited, ICloneable<OrderItemRecipient>
     {
         public OrderItemRecipient()
         {
@@ -39,5 +39,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public OrderRecipient Recipient { get; set; }
 
         public OrderItem OrderItem { get; set; }
+
+        public OrderItemRecipient Clone() => new()
+        {
+            CatalogueItemId = CatalogueItemId, OdsCode = OdsCode, Quantity = Quantity, DeliveryDate = DeliveryDate,
+        };
     }
 }

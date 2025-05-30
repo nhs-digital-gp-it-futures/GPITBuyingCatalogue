@@ -216,8 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> ViewPrice(
             string internalOrgId,
             CallOffId callOffId,
-            CatalogueItemId catalogueItemId,
-            RoutingSource? source = null)
+            CatalogueItemId catalogueItemId)
         {
             var wrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
             var order = wrapper.Previous;

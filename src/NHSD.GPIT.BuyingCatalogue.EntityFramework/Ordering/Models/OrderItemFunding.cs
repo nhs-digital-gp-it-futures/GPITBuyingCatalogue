@@ -4,7 +4,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     [Serializable]
-    public sealed class OrderItemFunding : IAudited
+    public sealed class OrderItemFunding : IAudited, ICloneable<OrderItemFunding>
     {
         public int OrderId { get; set; }
 
@@ -19,5 +19,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public AspNetUser LastUpdatedByUser { get; set; }
 
         public OrderItem OrderItem { get; set; }
+
+        public OrderItemFunding Clone() =>
+            new() { CatalogueItemId = CatalogueItemId, OrderItemFundingType = OrderItemFundingType };
     }
 }

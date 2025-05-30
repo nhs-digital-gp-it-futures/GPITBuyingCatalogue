@@ -237,7 +237,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async void GetFilterSearchSuggestions_ReturnsJsonResult(
+        public static async Task GetFilterSearchSuggestions_ReturnsJsonResult(
             string search,
             Uri uri,
             List<SearchFilterModel> searchResults,
