@@ -154,7 +154,8 @@ public static class CompetitionRecipientsControllerTests
                 opt => opt.Excluding(m => m.BackLink)
                     .Excluding(m => m.Title)
                     .Excluding(m => m.Caption)
-                    .Excluding(m => m.Advice));
+                    .Excluding(m => m.Advice)
+                    .Excluding(m => m.FormLabelText));
     }
 
     [Theory]
@@ -1306,7 +1307,7 @@ public static class CompetitionRecipientsControllerTests
             CompetitionId = CommonCompetitionId,
             SublocationOdsCode = sublocationOdsCode,
             OwnerOdsCode = CommonOrganisationExternalIdentifier,
-            SublocationRecipients = sublocationRecipients,
+            SublocationRecipients = sublocationRecipients ?? [],
         };
     }
 

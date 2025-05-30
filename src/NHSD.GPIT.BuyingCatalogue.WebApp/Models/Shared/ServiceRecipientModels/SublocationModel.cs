@@ -23,8 +23,8 @@ public record SublocationModel
         Name = competitionSublocation.SublocationOrganisation?.Name;
         OdsCode = competitionSublocation.SublocationOdsCode;
         ServiceRecipientCount = competitionSublocation.SublocationRecipients.Count;
-        ServiceRecipients = competitionSublocation.SublocationRecipients?.Select(
-                x => new ServiceRecipientModel(x, presenceDeterminesSelected))
+        ServiceRecipients = competitionSublocation.SublocationRecipients
+            .Select(x => new ServiceRecipientModel(x, presenceDeterminesSelected))
             .ToArray();
     }
 

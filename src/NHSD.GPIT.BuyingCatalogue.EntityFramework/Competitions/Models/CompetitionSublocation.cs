@@ -13,7 +13,7 @@ public record CompetitionSublocation
 
     public Competition Competition { get; set; }
 
-    public ICollection<CompetitionSublocationRecipient> SublocationRecipients { get; set; }
+    public ICollection<CompetitionSublocationRecipient> SublocationRecipients { get; set; } = [];
 
     public OdsOrganisation SublocationOrganisation { get; set; }
 }
