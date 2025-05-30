@@ -11,7 +11,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 using ServiceRecipient = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.ServiceRecipient;
@@ -173,7 +172,6 @@ public class ImportServiceRecipientsController(
 
             var continueLink = Url.Action(
                 nameof(ValidationComplete),
-                typeof(CompetitionImportServiceRecipientsController).ControllerName(),
                 new { internalOrgId, callOffId, validationStatus = ValidationStatus.PartialSuccess });
 
             var model = new ValidateNamesModel(mismatchedNames)
