@@ -5,25 +5,33 @@
 
     var standardsList = Model.Standards.OrderBy(s => s.Name).Select(s => new SelectOption<string>(s.Name, s.Id));
 }
-<partial name="Partials/_BackLink" model="Model" />
+<partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-two-thirds">
-        <nhs-validation-summary />
+        <nhs-validation-summary/>
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
-                        advice="Provide the following information about a Work-off Plan item for your Catalogue Solution." />
+                        advice="Provide the following information about a Work-off Plan item for your Catalogue Solution."/>
         <form method="post">
-            <input type="hidden" asp-for="SolutionName" />
-            <input type="hidden" asp-for="SolutionId" />
-            <input type="hidden" asp-for="BackLink" />
+            <input type="hidden" asp-for="SolutionName"/>
+            <input type="hidden" asp-for="SolutionId"/>
+            <input type="hidden" asp-for="BackLink"/>
+
+            <nhs-inset-text>
+                If a standard isn't available you will need to go to the <a
+                    asp-action="@(nameof(CatalogueSolutionStandardsController.Index))"
+                    asp-controller="@(typeof(CatalogueSolutionStandardsController).ControllerName())"
+                    asp-area="@(typeof(CatalogueSolutionStandardsController).AreaName())"
+                    asp-route-solutionId="@Model.SolutionId">Catalogue solution standards page</a> and change the standard status to in progress.
+            </nhs-inset-text>
 
             <nhs-select asp-for="SelectedStandard"
                         asp-items="standardsList"
-                        label-text="Select Standard" />
+                        label-text="Select Standard"/>
 
             <nhs-input asp-for="Details"
                        label-text="Work-off Plan details"
-                       label-hint="For example, which part of a Standard still requires work to meet compliance?" />
+                       label-hint="For example, which part of a Standard still requires work to meet compliance?"/>
 
             <nhs-fieldset-form-label asp-for="@Model"
                                      label-text="Agreed completion date"
@@ -31,18 +39,18 @@
                 <nhs-date-input asp-for="@Model"
                                 day="@Model.Day"
                                 month="@Model.Month"
-                                year="@Model.Year" />
+                                year="@Model.Year"/>
             </nhs-fieldset-form-label>
             <br/>
-            <nhs-submit-button />
+            <nhs-submit-button/>
         </form>
         @if (Model.WorkOffPlanId.HasValue)
         {
             <vc:nhs-delete-button text="Delete Work-off Plan item"
                                   url="@Url.Action(
-                                    nameof(DevelopmentPlansController.DeleteWorkOffPlan),
-                                    typeof(DevelopmentPlansController).ControllerName(),
-                                    new { Model.SolutionId, Model.WorkOffPlanId })" />
+                                           nameof(DevelopmentPlansController.DeleteWorkOffPlan),
+                                           typeof(DevelopmentPlansController).ControllerName(),
+                                           new { Model.SolutionId, Model.WorkOffPlanId })"/>
         }
     </div>
 </div>

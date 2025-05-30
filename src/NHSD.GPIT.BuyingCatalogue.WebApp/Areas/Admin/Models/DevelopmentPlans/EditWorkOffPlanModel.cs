@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
@@ -21,14 +22,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans
             WorkOffPlanId = workOffPlan.Id;
         }
 
-        public EditWorkOffPlanModel(CatalogueItem catalogueItem, IList<Standard> standards)
+        public EditWorkOffPlanModel(CatalogueItem catalogueItem, IEnumerable<Standard> standards)
         {
             SolutionName = catalogueItem.Name;
             SolutionId = catalogueItem.Id;
-            Standards = standards;
+            Standards = standards.ToList();
         }
 
-        public EditWorkOffPlanModel(CatalogueItem catalogueItem, IList<Standard> standards, WorkOffPlan workOffPlan)
+        public EditWorkOffPlanModel(CatalogueItem catalogueItem, IEnumerable<Standard> standards, WorkOffPlan workOffPlan)
             : this(catalogueItem, standards)
         {
             WorkOffPlanId = workOffPlan.Id;

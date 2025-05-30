@@ -3,30 +3,43 @@
     ViewBag.Title = "Development plans";
 }
 
-<partial name="Partials/_BackLink" model="Model" />
+<partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
-                        advice="Let buyers know about any future development plans for your Catalogue Solution." />
+                        advice="Let buyers know about any future development plans for your Catalogue Solution."/>
 
         <h2>Work-off Plans</h2>
 
-        <vc:nhs-action-link text="Add a Work-off Plan item"
-                            url="@Url.Action(
-                                    nameof(DevelopmentPlansController.AddWorkOffPlan),
-                                    typeof(DevelopmentPlansController).ControllerName(),
-                                    new { Model.SolutionId})" />
+        @if (Model.HasInProgressStandards)
+        {
+            <vc:nhs-action-link text="Add a Work-off Plan item"
+                                url="@Url.Action(
+                                         nameof(DevelopmentPlansController.AddWorkOffPlan),
+                                         typeof(DevelopmentPlansController).ControllerName(),
+                                         new { Model.SolutionId })"/>
 
-        <p>Use the link to add information about each Work-off Plan item for your Catalogue Solution.</p>
-
+            <p>Use the link to add information about each Work-off Plan item for your Catalogue Solution.</p>
+        }
+        else
+        {
+            <p>
+                There are no standards available to add a work-off plan. You will need to go to the <a
+                    asp-action="@(nameof(CatalogueSolutionStandardsController.Index))"
+                    asp-controller="@(typeof(CatalogueSolutionStandardsController).ControllerName())"
+                    asp-area="@(typeof(CatalogueSolutionStandardsController).AreaName())"
+                    asp-route-solutionId="@Model.SolutionId">Catalogue solution standards page</a> and change the
+                standard status to in progress.
+            </p>
+        }
         <nhs-table data-test-id="workoffplans">
             <nhs-table-column>Name of Standard</nhs-table-column>
             <nhs-table-column>Details</nhs-table-column>
             <nhs-table-column>Agreed&nbsp;completion&nbsp;date</nhs-table-column>
             <nhs-table-column>Action</nhs-table-column>
-            @foreach (var workOffPlan in Model.WorkOffPlans.OrderBy(wp => wp.Standard.Name).OrderBy(wp => wp.Details))
+            @foreach (var workOffPlan in Model.WorkOffPlans.OrderBy(wp => wp.Standard.Name).ThenBy(wp => wp.Details))
             {
                 <nhs-table-row-container>
                     <nhs-table-cell>@workOffPlan.Standard.Name</nhs-table-cell>
@@ -34,29 +47,30 @@
                     <nhs-table-cell>@workOffPlan.CompletionDate.ToString("d MMM yyyy")</nhs-table-cell>
                     <nhs-table-cell>
                         <a href="@Url.Action(
-                                    nameof(DevelopmentPlansController.EditWorkOffPlan),
-                                    typeof(DevelopmentPlansController).ControllerName(),
-                                    new { solutionid = Model.SolutionId, workOffPlanId = workOffPlan.Id })">Edit</a>
+                                     nameof(DevelopmentPlansController.EditWorkOffPlan),
+                                     typeof(DevelopmentPlansController).ControllerName(),
+                                     new { solutionid = Model.SolutionId, workOffPlanId = workOffPlan.Id })">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
             }
         </nhs-table>
-        <br />
+        <br/>
         <h2>Roadmap</h2>
         <form method="post">
-            <input type="hidden" asp-for="BackLink" />
-            <input type="hidden" asp-for="SolutionName" />
-            <input type="hidden" asp-for="SolutionId" />
+            <input type="hidden" asp-for="BackLink"/>
+            <input type="hidden" asp-for="SolutionName"/>
+            <input type="hidden" asp-for="SolutionId"/>
             <nhs-input asp-for="Link"
                        label-text="Link to roadmap (optional)"
-                       label-hint="Provide a URL to a page that gives buyers further information about your roadmap." />
+                       label-hint="Provide a URL to a page that gives buyers further information about your roadmap."/>
 
             <div class="nhsuk-inset-text">
                 <span class="nhsuk-u-visually-hidden">Information: </span>
-                <p>This information will be published on the Buying Catalogue and therefore available to anyone. You should not include anything you consider commercially sensitive.</p>
+                <p>This information will be published on the Buying Catalogue and therefore available to anyone. You
+                    should not include anything you consider commercially sensitive.</p>
             </div>
 
-            <nhs-submit-button />
+            <nhs-submit-button/>
         </form>
     </div>
 </div>
