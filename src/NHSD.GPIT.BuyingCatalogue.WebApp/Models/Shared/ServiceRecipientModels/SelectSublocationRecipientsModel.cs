@@ -91,14 +91,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
             SelectionMode = selectionMode;
 
-            Sublocation = selectedSublocation;
+            SublocationName = selectedSublocation.Name;
         }
 
-        public SublocationModel Sublocation { get; init; }
+        public string SublocationName { get; init; }
 
         public bool? IsAmendment { get; init; }
 
         public List<SelectOption<string>> RenderedServiceRecipients { get; init; }
+
+        public bool AllRecipientsSelected => RenderedServiceRecipients.All(x => x.Selected);
 
         public SelectionMode? SelectionMode { get; init; }
 

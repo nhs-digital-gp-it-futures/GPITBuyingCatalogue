@@ -59,10 +59,10 @@
 
         <form method="post" id="sr-form">
             <hidden-inputs title="@Model.Title" advice="@Model.Advice" caption="@Model.Caption" />
-            <input type="hidden" asp-for="@Model.Sublocation.Name" />
+            <input type="hidden" asp-for="@Model.SublocationName" />
             <input type="hidden" asp-for="@Model.BackLink" />
             <nhs-expander-v2 id="recipients-expander" open="@(Model.SelectionMode is null || expandWhenNotValid)">
-                <nhs-expander-summary label-text="@Model.Sublocation.Name" bold-title="true">
+                <nhs-expander-summary label-text="@Model.SublocationName" bold-title="true">
                     <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">
                         <b>@(Model.RenderedServiceRecipients.Count(r => r.Selected && !r.Disabled)) </b>
                         recipients selected
@@ -72,7 +72,7 @@
                     <nhs-table id="sr-table">
                         <nhs-table-column>
                             <div class="nhsuk-checkboxes__item  nhsuk-content--js-only">
-                                <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll" id="selectAll" checked="@Model.Sublocation.AllRecipientsSelected"/>
+                                <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll" id="selectAll" checked="@Model.AllRecipientsSelected"/>
                                 <label for="selectAll" class="nhsuk-label nhsuk-checkboxes__label bold-label">
                                     Organisation
                                 </label>
