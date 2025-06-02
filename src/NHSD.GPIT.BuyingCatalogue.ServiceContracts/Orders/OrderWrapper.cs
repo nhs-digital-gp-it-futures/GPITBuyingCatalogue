@@ -143,6 +143,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         /// </summary>
         public Order RolledUp => rolledUpLazy.Value;
 
+        public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId)
+        {
+            return Order.DetermineOrderRecipients(Previous, catalogueItemId);
+        }
+
         public IEnumerable<string> AddedRecipientsOdsCodes()
         {
             var codes = Order.AddedOrderRecipients(Previous)
@@ -157,7 +162,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public IEnumerable<string> PreviousRecipientsOdsCodes()
         {
-            return Order.DetermineOrderRecipients(Previous, catalogueItemId);
+            return (Previous?.FlattenedRecipients ?? [])
+                .Select(r => r.RecipientOdsCode);
         }
 
         public bool CanComplete()
