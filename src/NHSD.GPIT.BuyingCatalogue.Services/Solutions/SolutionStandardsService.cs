@@ -14,8 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions;
 public class SolutionStandardsService(BuyingCatalogueDbContext context) : ISolutionStandardsService
 {
     public async Task<IEnumerable<StandardComplianceModel>> GetSolutionStandards(CatalogueItemId solutionId)
-    {
-        return await context.CatalogueItemCapabilities.Where(x => x.CatalogueItemId == solutionId)
+        => await context.CatalogueItemCapabilities.Where(x => x.CatalogueItemId == solutionId)
             .SelectMany(x => x.Capability.StandardCapabilities)
             .Select(x => x.Standard)
             .Union(context.Standards.Where(x => x.StandardType == StandardType.Overarching))
@@ -25,7 +24,6 @@ public class SolutionStandardsService(BuyingCatalogueDbContext context) : ISolut
                 x,
                 context.InProgressSolutionStandards.Any(y => y.SolutionId == solutionId && y.StandardId == x.Id)))
             .ToListAsync();
-    }
 
     public async Task<StandardComplianceModel> GetSolutionStandard(CatalogueItemId solutionId, string standardId) =>
         await context.Standards.Where(x => x.Id == standardId)
