@@ -72,4 +72,3 @@ public class CatalogueSolutionStandardsController(
             new { area = typeof(CatalogueSolutionStandardsController).AreaName(), solutionId });
     }
 }
-
