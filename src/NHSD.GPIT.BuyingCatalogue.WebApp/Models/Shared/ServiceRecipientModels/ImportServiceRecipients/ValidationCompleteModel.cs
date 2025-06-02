@@ -14,7 +14,7 @@ public sealed class ValidationCompleteModel : NavBaseModel
     private const string ValidationSucceededNextStep = "You will be able to confirm these changes in the next step.";
 
     private const string ValidationFailureAdvice =
-        "We Have received your CSV file. We have not been able to match any ODS Codes to what we have on record.";
+        "We have received your CSV file. We have not been able to match any ODS Codes to what we have on record.";
 
     private const string ValidationFailureNextStep = "Please try again, or select your service recipients manually.";
 
@@ -26,13 +26,15 @@ public sealed class ValidationCompleteModel : NavBaseModel
     public ValidationCompleteModel(
         string caption,
         ValidationStatus validationStatus,
-        IReadOnlyList<SublocationModel> sublocations)
+        IReadOnlyList<SublocationModel> sublocations,
+        string cancelHref)
     {
         Title = "Upload validated";
         Caption = caption;
         InteractionNoun = "competition";
         Sublocations = sublocations;
         ValidationStatus = validationStatus;
+        CancelHref = cancelHref;
 
         switch (validationStatus)
         {
