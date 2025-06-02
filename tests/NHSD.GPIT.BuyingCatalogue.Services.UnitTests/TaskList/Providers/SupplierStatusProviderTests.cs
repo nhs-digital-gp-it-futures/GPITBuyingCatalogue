@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -147,7 +148,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
             orders[2].SupplierContact = orders[1].SupplierContact;
 
-            var actual = service.Get(new OrderWrapper(orders), state);
+            var actual = service.Get(new OrderWrapper(orders.Last(), orders.SkipLast(1)), state);
 
             actual.Should().Be(TaskProgress.Completed);
         }
@@ -169,7 +170,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             orders[1].Revision = 2;
             orders[2].Revision = 3;
 
-            var actual = service.Get(new OrderWrapper(orders), state);
+            var actual = service.Get(new OrderWrapper(orders.Last(), orders.SkipLast(1)), state);
 
             actual.Should().Be(TaskProgress.Amended);
         }

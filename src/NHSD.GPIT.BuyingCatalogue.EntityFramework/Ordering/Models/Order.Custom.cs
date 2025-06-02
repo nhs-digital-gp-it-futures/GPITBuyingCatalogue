@@ -8,7 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public partial class Order
+    public partial class Order : ICloneable<Order>
     {
         public const string LocalFunding = "Local";
         public const string CentralFunding = "Central";
@@ -181,7 +181,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             // helps with backwards compatability - if we have an amendment where we didn't copy across all the items.
             foreach (var orderItemToApply in order.OrderItems)
             {
-                var existingOrderItem = OrderItems.FirstOrDefault(x => x.CatalogueItemId == orderItemToApply.CatalogueItemId);
+                var existingOrderItem =
+                    OrderItems.FirstOrDefault(x => x.CatalogueItemId == orderItemToApply.CatalogueItemId);
 
                 if (existingOrderItem == null)
                 {
@@ -233,25 +234,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return Id.GetHashCode();
         }
 
-        public Order Clone()
+        public Order Clone() => new()
         {
-            var inputSettings = new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Objects,
-                TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
-            };
-
-            var outputSettings = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Objects,
-            };
-
-            var serialised = JsonConvert.SerializeObject(this, inputSettings);
-            var output = JsonConvert.DeserializeObject<Order>(serialised, outputSettings);
-
-            return output;
-        }
+            AssociatedServicesOnlyDetails = AssociatedServicesOnlyDetails,
+            DeliveryDate = DeliveryDate,
+            Revision = Revision,
+            OrderType = OrderType,
+            Description = Description,
+            OrderItems = OrderItems.Select(x => x.Clone()).ToList(),
+            // TODO OrderRecipients = OrderRecipients.Select(x => x.Clone()).ToList(),
+        };
 
         public Order BuildAmendment(int newRevision)
         {
@@ -282,19 +274,17 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             foreach (var item in items)
             {
-                if (item.CatalogueItem.CatalogueItemType != CatalogueItemType.AssociatedService)
-                {
-                    var existingOrderItem = OrderItems.FirstOrDefault(x => x.CatalogueItemId == item.CatalogueItemId);
+                if (item.CatalogueItem.CatalogueItemType == CatalogueItemType.AssociatedService) continue;
+                var existingOrderItem = OrderItems.FirstOrDefault(x => x.CatalogueItemId == item.CatalogueItemId);
 
-                    if (existingOrderItem == null)
-                    {
-                        OrderItems.Add(
-                            InitialiseOrderItem(
-                                item.CatalogueItem.Id,
-                                item.OrderItemPrice?.Copy(),
-                                item.Quantity,
-                                item.EstimationPeriod));
-                    }
+                if (existingOrderItem == null)
+                {
+                    OrderItems.Add(
+                        InitialiseOrderItem(
+                            item.CatalogueItem.Id,
+                            item.OrderItemPrice?.Clone(),
+                            item.Quantity,
+                            item.EstimationPeriod));
                 }
             }
         }
@@ -307,13 +297,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 CatalogueItemId = catalogueItemId,
                 Created = DateTime.UtcNow,
             };
-        }
-
-        public OrderSublocationRecipient InitialiseOrderRecipient(
-            string recipientOdsCode,
-            string parentSublocationOdsCode)
-        {
-            return new OrderSublocationRecipient(Id, recipientOdsCode, parentSublocationOdsCode);
         }
 
         public ICollection<OrderSublocationRecipient> AddedOrderRecipients(Order previous)
@@ -375,7 +358,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return OrderItems.Any(x => x.CatalogueItemId == catalogueItemId);
         }
 
-        private OrderItem InitialiseOrderItem(CatalogueItemId catalogueItemId, OrderItemPrice orderItemPrice, int? quantity, TimeUnit? estimationPeriod)
+        private OrderItem InitialiseOrderItem(
+            CatalogueItemId catalogueItemId,
+            OrderItemPrice orderItemPrice,
+            int? quantity,
+            TimeUnit? estimationPeriod)
         {
             var orderItem = InitialiseOrderItem(catalogueItemId);
             orderItem.OrderItemPrice = orderItemPrice;

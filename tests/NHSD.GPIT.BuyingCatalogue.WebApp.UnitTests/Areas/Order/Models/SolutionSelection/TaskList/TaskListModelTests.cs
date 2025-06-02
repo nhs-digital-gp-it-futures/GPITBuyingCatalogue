@@ -98,14 +98,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AssociatedService, Id = associatedService.CatalogueItemId }, CatalogueItemId = associatedService.CatalogueItemId },
             };
 
+            var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(amendment, [order]));
             amendment.FlattenedRecipients.ForEach(x => amendment.OrderItems.ForEach(y =>
                 x.OrderItemSublocationRecipients.Add(
                     new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y.CatalogueItemId)
                     {
                         Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
                     })));
-
-            var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(new[] { order, amendment }));
 
             model.InternalOrgId.Should().BeEquivalentTo(internalOrgId);
             model.CallOffId.Should().BeEquivalentTo(callOffId);

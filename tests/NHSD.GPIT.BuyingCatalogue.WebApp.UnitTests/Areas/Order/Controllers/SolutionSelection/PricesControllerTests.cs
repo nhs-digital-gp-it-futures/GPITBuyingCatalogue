@@ -427,11 +427,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             amendment.OrderNumber = original.OrderNumber;
             amendment.Revision = 2;
 
-            var orders = new[] { original, amendment };
-
             var orderItem = original.Clone().OrderItems.First();
 
-            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(orders));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(amendment, [original]));
 
             var result = await controller.ViewPrice(internalOrgId, callOffId, orderItem.CatalogueItemId);
 
@@ -443,7 +441,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
-            actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink).Excluding(m => m.OnwardLink));
+            var actualModel = actual.Model.As<ViewPriceModel>();
+
+            actualModel.Should().NotBeNull();
+            actual.Model.Should()
+                .BeEquivalentTo(
+                    expected,
+                    x => x.Excluding(m => m.BackLink)
+                        .Excluding(m => m.OnwardLink)
+                        .Excluding(m => m.Tiers));
+
+            var actualTiers = actualModel.Tiers;
+
+            actualTiers.Should().BeEquivalentTo(expected.Tiers, opt => opt.Excluding(m => m.Id));
         }
     }
 }

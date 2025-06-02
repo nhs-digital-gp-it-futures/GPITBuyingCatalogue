@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
@@ -57,9 +56,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             List<Order> orders,
             DescriptionStatusProvider service)
         {
-            orders.Select((x, i) => (x, i)).ForEach(x => x.x.Revision = x.i + 1);
+            orders.Select((x, i) => (x, i)).ToList().ForEach(x => x.x.Revision = x.i + 1);
+            var ascendingOrders = orders.OrderBy(x => x.CallOffId.Revision).ToList();
+            var recentOrder = ascendingOrders.Last();
+            var previousOrders = ascendingOrders.SkipLast(1).ToList();
 
-            var wrapper = new OrderWrapper(orders);
+            var wrapper = new OrderWrapper(recentOrder, previousOrders);
 
             wrapper.Order.Description = wrapper.Last.Description;
 
@@ -74,9 +76,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             List<Order> orders,
             DescriptionStatusProvider service)
         {
-            orders.Select((x, i) => (x, i)).ForEach(x => x.x.Revision = x.i + 1);
+            orders.Select((x, i) => (x, i)).ToList().ForEach(x => x.x.Revision = x.i + 1);
+            var ascendingOrders = orders.OrderBy(x => x.CallOffId.Revision).ToList();
+            var recentOrder = ascendingOrders.Last();
+            var previousOrders = ascendingOrders.SkipLast(1).ToList();
 
-            var wrapper = new OrderWrapper(orders);
+            var wrapper = new OrderWrapper(recentOrder, previousOrders);
 
             wrapper.Order.Description = $"{wrapper.Last.Description} changed";
 

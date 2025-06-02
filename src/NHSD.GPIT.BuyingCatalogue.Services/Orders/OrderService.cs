@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<OrderWrapper> GetOrderThin(CallOffId callOffId, string internalOrgId)
         {
-            var orders = await dbContext.Orders
+            var orders = dbContext.Orders
                 .Include(o => o.AssociatedServicesOnlyDetails.Solution)
                 .Include(o => o.OrderingParty)
                 .Include(o => o.OrderingPartyContact)
@@ -82,18 +82,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .ThenInclude(i => i.CatalogueItem)
                 .Include(o => o.SelectedFramework)
                 .AsSplitQuery()
-                .AsNoTracking()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
-                    && o.Revision <= callOffId.Revision
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
+
+            var previousOrders = await orders
+                .AsNoTracking()
+                .Where(o => o.Revision < callOffId.Revision)
                 .ToListAsync();
 
-            return OrderWrapper.Create(orders, callOffId);
+            var order = await orders
+                .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
+
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<OrderWrapper> GetOrderWithCatalogueItemAndPrices(CallOffId callOffId, string internalOrgId)
         {
-            List<Order> orders = await dbContext.Orders
+            var orders = dbContext.Orders
                 .Include(x => x.OrderingParty)
                 .Include(x => x.AssociatedServicesOnlyDetails.Solution)
                 .Include(o => o.OrderItems)
@@ -114,16 +119,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ThenInclude(y => y.SublocationOrganisation)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
-                    && o.Revision <= callOffId.Revision
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .ToListAsync();
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
 
-            return OrderWrapper.Create(orders, callOffId);
+            var previousOrders = await orders.AsNoTracking().Where(o => o.Revision < callOffId.Revision).ToListAsync();
+
+            var order = await orders.FirstOrDefaultAsync(x => x.Revision == callOffId.Revision);
+
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<OrderWrapper> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId)
         {
-            List<Order> orders = await dbContext.Orders
+            var orders = dbContext.Orders
                 .Include(x => x.OrderingParty)
                 .Include(x => x.AssociatedServicesOnlyDetails.Solution)
                 .Include(x => x.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient)
@@ -143,16 +150,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ThenInclude(z => z.RecipientOdsOrganisation)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
-                    && o.Revision <= callOffId.Revision
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
+
+            var previousOrders = await orders
+                .AsNoTracking()
+                .Where(o => o.Revision < callOffId.Revision)
                 .ToListAsync();
 
-            return OrderWrapper.Create(orders, callOffId);
+            var order = await orders
+                .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
+
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<OrderWrapper> GetOrderWithOrderItemsForFunding(CallOffId callOffId, string internalOrgId)
         {
-            List<Order> orders = await dbContext.Orders
+            var orders = dbContext.Orders
                 .Include(x => x.OrderingParty)
                 .Include(o => o.OrderItems)
                 .ThenInclude(i => i.CatalogueItem)
@@ -170,65 +183,83 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ThenInclude(z => z.RecipientOdsOrganisation)
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
-                    && o.Revision <= callOffId.Revision
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
+
+            var previousOrders = await orders
+                .AsNoTracking()
+                .Where(o => o.Revision < callOffId.Revision)
                 .ToListAsync();
 
-            return OrderWrapper.Create(orders, callOffId);
+            var order = await orders
+                .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
+
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<OrderWrapper> GetOrderWithSupplier(CallOffId callOffId, string internalOrgId)
         {
-            var orders = await dbContext.Orders
+            var orders = dbContext.Orders
                 .Include(o => o.Supplier)
                 .Include(o => o.SupplierContact)
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
-                    && o.Revision <= callOffId.Revision
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
+
+            var previousOrders = await orders
+                .AsNoTracking()
+                .Where(o => o.Revision < callOffId.Revision)
                 .ToListAsync();
 
-            return OrderWrapper.Create(orders, callOffId);
+            var order = await orders
+                .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
+
+            return new OrderWrapper(order, previousOrders);
         }
 
-        [ExcludeFromCodeCoverage(Justification = "Method uses Temporal tables which the In-Memory provider doesn't support.")]
+        [ExcludeFromCodeCoverage(
+            Justification = "Method uses Temporal tables which the In-Memory provider doesn't support.")]
         public async Task<OrderWrapper> GetOrderForSummary(CallOffId callOffId, string internalOrgId)
         {
-            List<Order> orders = await OrdersForSummary(callOffId, internalOrgId);
+            var orders = OrdersForSummary(callOffId, internalOrgId);
+            var previousOrders = await orders
+                .AsNoTracking()
+                .Where(o => o.Revision < callOffId.Revision)
+                .ToListAsync();
 
-            foreach (var order in orders)
+            var order = await orders
+                .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
+
+            var supplier = order.Completed.HasValue
+                ? await dbContext.Suppliers.TemporalAsOf(order.Completed.Value)
+                    .FirstOrDefaultAsync(x => x.Id == order.SupplierId)
+                : null;
+
+            if (supplier != null)
             {
-                var supplier = order.Completed.HasValue
-                    ? await dbContext.Suppliers.TemporalAsOf(order.Completed.Value).FirstOrDefaultAsync(x => x.Id == order.SupplierId)
+                order.Supplier = supplier;
+            }
+
+            foreach (var solution in order.GetSolutions())
+            {
+                var sla = order.Completed.HasValue
+                    ? await dbContext.ServiceLevelAgreements.TemporalAsOf(order.Completed.Value)
+                        .Include(x => x.Contacts)
+                        .Include(x => x.ServiceLevels)
+                        .Include(x => x.ServiceHours)
+                        .FirstOrDefaultAsync(x => x.SolutionId == solution.CatalogueItemId)
                     : null;
 
-                if (supplier != null)
+                if (sla != null)
                 {
-                    order.Supplier = supplier;
-                }
-
-                foreach (var solution in order.GetSolutions())
-                {
-                    var sla = order.Completed.HasValue
-                        ? await dbContext.ServiceLevelAgreements.TemporalAsOf(order.Completed.Value)
-                            .Include(x => x.Contacts)
-                            .Include(x => x.ServiceLevels)
-                            .Include(x => x.ServiceHours)
-                            .FirstOrDefaultAsync(x => x.SolutionId == solution.CatalogueItemId)
-                        : null;
-
-                    if (sla != null)
-                    {
-                        solution.CatalogueItem.Solution.ServiceLevelAgreement = sla;
-                    }
+                    solution.CatalogueItem.Solution.ServiceLevelAgreement = sla;
                 }
             }
 
-            return OrderWrapper.Create(orders, callOffId);
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<OrderWrapper> GetOrderForTaskListStatuses(CallOffId callOffId, string internalOrgId)
         {
-            List<Order> orders = await dbContext.Orders
+            var orders = dbContext.Orders
                 .Include(x => x.ContractFlags)
                 .Include(x => x.Contract)
                 .ThenInclude(x => x.ImplementationPlan)
@@ -256,12 +287,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ThenInclude(y => y.SublocationRecipients)
                 .AsSplitQuery()
                 .AsNoTracking()
-                .Where(x => x.OrderNumber == callOffId.OrderNumber
-                    && x.Revision <= callOffId.Revision
-                    && x.OrderingParty.InternalIdentifier == internalOrgId)
+                .Where(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
+
+            var previousOrders = await orders
+                .AsNoTracking()
+                .Where(o => o.Revision < callOffId.Revision)
                 .ToListAsync();
 
-            return OrderWrapper.Create(orders, callOffId);
+            var order = await orders
+                .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
+
+            return new OrderWrapper(order, previousOrders);
         }
 
         public async Task<OrderWrapper> GetOrderWithSublocations(CallOffId callOffId, string internalOrgId)
@@ -611,8 +648,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<Order> AmendOrder(string internalOrgId, CallOffId callOffId)
         {
-            var orderWrapper = OrderWrapper.Create(await OrdersForSummary(callOffId, internalOrgId), callOffId);
-            var order = orderWrapper.Order;
+            var order = await dbContext.Orders.Include(x => x.OrderingPartyContact)
+                .Include(x => x.SupplierContact)
+                .Include(x => x.OrderItems)
+                .ThenInclude(x => x.CatalogueItem)
+                .Include(x => x.OrderItems)
+                .ThenInclude(x => x.OrderItemPrice)
+                .ThenInclude(x => x.OrderItemPriceTiers)
+                .Include(x => x.OrderRecipients)
+                .AsSplitQuery()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x =>
+                    x.Revision == callOffId.Revision && x.OrderNumber == callOffId.OrderNumber
+                    && x.OrderingParty.InternalIdentifier == internalOrgId);
 
             var amendment = order.BuildAmendment(await dbContext.NextRevision(order.OrderNumber));
 
@@ -621,17 +669,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
 
             return amendment;
-        }
-
-        public async Task EnsureOrderItemsForAmendment(string internalOrgId, CallOffId callOffId)
-        {
-            if (callOffId.IsAmendment)
-            {
-                var orderWrapper = await GetOrderWithOrderItems(callOffId, internalOrgId);
-                var order = orderWrapper.Order;
-                order.InitialiseOrderItemsFrom(orderWrapper.RolledUp.OrderItems);
-                await dbContext.SaveChangesAsync();
-            }
         }
 
         public async Task SoftDeleteOrder(CallOffId callOffId, string internalOrgId)
@@ -664,18 +701,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task TerminateOrder(CallOffId callOffId, string internalOrgId, int userId, DateTime terminationDate, string reason)
         {
-            var orderWrapper = await GetOrderWithOrderItems(callOffId, internalOrgId);
+            var orders = dbContext.Orders
+                .Where(o => o.OrderNumber == callOffId.OrderNumber
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
 
-            TerminateOrder(orderWrapper.Order, terminationDate, reason);
-
-            foreach (var order in orderWrapper.PreviousOrders)
+            foreach (var orderRevision in orders)
             {
-                TerminateOrder(order, terminationDate, reason);
+                TerminateOrder(orderRevision, terminationDate, reason);
             }
 
             await dbContext.SaveChangesAsync();
 
-            await SendEmailsAndSave(orderWrapper.Order, callOffId, userId, true);
+            var order = await orders
+                .Include(x => x.OrderingParty)
+                .Include(x => x.AssociatedServicesOnlyDetails.Solution)
+                .Include(x => x.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient)
+                .Include(o => o.OrderItems)
+                .ThenInclude(i => i.CatalogueItem)
+                .Include(o => o.OrderItems)
+                .ThenInclude(i => i.OrderItemFunding)
+                .Include(o => o.OrderItems)
+                .ThenInclude(i => i.OrderItemPrice)
+                .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(t => t.LowerRange))
+                .Include(o => o.SelectedFramework)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OdsOrganisation)
+                .Include(x => x.OrderRecipients).ThenInclude(x => x.OrderItemRecipients)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
+
+            await SendEmailsAndSave(order, callOffId, userId, true);
         }
 
         public async Task CompleteOrder(CallOffId callOffId, string internalOrgId, int userId)
@@ -818,9 +872,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                         : orderMessageSettings.UserTemplateId;
         }
 
-        private async Task<List<Order>> OrdersForSummary(CallOffId callOffId, string internalOrgId)
+        private IQueryable<Order> OrdersForSummary(CallOffId callOffId, string internalOrgId)
         {
-            return await dbContext.Orders
+            return dbContext.Orders
                 .Include(x => x.ContractFlags)
                 .Include(x => x.Contract)
                 .ThenInclude(i => i.ImplementationPlan)
@@ -870,9 +924,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .AsNoTracking()
                 .AsSplitQuery()
                 .Where(o => o.OrderNumber == callOffId.OrderNumber
-                    && o.Revision <= callOffId.Revision
-                    && o.OrderingParty.InternalIdentifier == internalOrgId)
-                .ToListAsync();
+                    && o.OrderingParty.InternalIdentifier == internalOrgId);
         }
     }
 }

@@ -15,22 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
 {
     public static class OrderWrapperTests
     {
-        [Theory]
-        [MockAutoData]
-        public static void OrderWrapper_Create_Throws_No_Order(CallOffId callOffId)
+        [Fact]
+        public static void OrderWrapper_Create_Throws_No_Order()
         {
-            var action = () => OrderWrapper.Create([], callOffId);
-            action.Should().Throw<InvalidOperationException>();
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static void OrderWrapper_Create_Throws_Order_Does_Not_Match_CallOffId(Order order)
-        {
-            order.Revision = 1;
-
-            var action = () => OrderWrapper.Create([order], new CallOffId(order.OrderNumber, 2));
-            action.Should().Throw<InvalidOperationException>();
+            var action = () => new OrderWrapper(null, []);
+            action.Should().Throw<ArgumentNullException>();
         }
 
         [Theory]
@@ -39,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
         {
             order.Revision = 1;
 
-            var orderWrapper = OrderWrapper.Create([order], order.CallOffId);
+            var orderWrapper = new OrderWrapper(order, []);
             orderWrapper.Should().NotBeNull();
         }
 
@@ -54,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             var amendedOrder = order.BuildAmendment(2);
             amendedOrder.Description = $"Edited-{order.Description}";
 
-            var orderWrapper = new OrderWrapper([order, amendedOrder]);
+            var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
             orderWrapper.Previous.Revision.Should().Be(1);
             orderWrapper.Previous.Description.Should().Be(order.Description);
@@ -84,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                 ],
                 organisation);
 
-            var orderWrapper = new OrderWrapper([order]);
+            var orderWrapper = new OrderWrapper(order);
 
             var result = orderWrapper.FundingTypesForItem(catalogueItem.Id);
 
@@ -116,7 +105,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             var amendedOrder = order.BuildAmendment(2);
             amendedOrder.OrderItems = [amendedOrderItem,];
 
-            var orderWrapper = new OrderWrapper([order, amendedOrder]);
+            var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
             var result = orderWrapper.FundingTypesForItem(catalogueItem.Id);
 
@@ -148,7 +137,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             var amendedOrder = order.BuildAmendment(2);
             amendedOrder.OrderItems = [amendedOrderItem];
 
-            var orderWrapper = new OrderWrapper([order, amendedOrder]);
+            var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
             var result = orderWrapper.FundingTypesForItem(catalogueItem.Id);
 
@@ -189,9 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                     ]),
             ];
 
-            var orderWrapper = new OrderWrapper([order, amendedOrder]);
-            var rolledUp = orderWrapper.RolledUp;
-            Console.WriteLine(rolledUp);
+            var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
             orderWrapper.Previous.OrderItems.Count.Should().Be(1);
             orderWrapper.Previous.FlattenedRecipients.Count().Should().Be(1);
@@ -254,9 +241,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
                     ]),
             ];
 
-            var orderWrapper = new OrderWrapper([order, amendedOrder]);
-            Order rolledUp = orderWrapper.RolledUp;
-            Console.WriteLine(rolledUp);
+            var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
             orderWrapper.Previous.OrderItems.Count.Should().Be(1);
             orderWrapper.Previous.FlattenedRecipients.Count().Should().Be(2);
@@ -333,11 +318,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             OrderItemFundingType? fundingType,
             CataloguePriceQuantityCalculationType cataloguePriceQuantityCalculationType = CataloguePriceQuantityCalculationType.PerServiceRecipient)
         {
-            var itemPrice = fixture.Build<OrderItemPrice>()
+            IPrice itemPrice = fixture.Build<OrderItemPrice>()
                 .Without(p => p.OrderItem)
                 .With(p => p.OrderItemPriceTiers, [])
                 .With(p => p.CataloguePriceQuantityCalculationType, cataloguePriceQuantityCalculationType)
-                .Create() as IPrice;
+                .Create();
 
             var funding = fundingType.HasValue
                 ? fixture.Build<OrderItemFunding>()

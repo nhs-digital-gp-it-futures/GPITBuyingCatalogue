@@ -28,6 +28,7 @@ resource "azurerm_linux_web_app_slot" "slot" {
     SESSION_IDLE_TIMEOUT = "60"
   }
 
+  # Configure Docker Image to load on start
   site_config {
     use_32_bit_worker             = true
     always_on                     = var.always_on
@@ -35,6 +36,13 @@ resource "azurerm_linux_web_app_slot" "slot" {
     ip_restriction_default_action = "Deny"
     ftps_state                    = "Disabled"
     http2_enabled                 = true
+
+    application_stack {
+      docker_image_name        = "${var.repository_name}:latest"
+      docker_registry_url      = "https://${var.docker_registry_server_url}"
+      docker_registry_username = var.docker_registry_server_username
+      docker_registry_password = var.docker_registry_server_password
+    }
 
     ip_restriction {
       name       = "APP_GATEWAY_ACCESS"
@@ -76,7 +84,8 @@ resource "azurerm_linux_web_app_slot" "slot" {
   lifecycle {
     ignore_changes = [
       site_config[0].scm_minimum_tls_version,
-      site_config[0].ftps_state
+      site_config[0].ftps_state,
+      site_config[0].application_stack[0].docker_image_name,
     ]
   }
 }

@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
             var amendedOrder = order.BuildAmendment(2);
 
-            var actual = service.Get(new OrderWrapper(new[] { order, amendedOrder }), state);
+            var actual = service.Get(new OrderWrapper(amendedOrder, [order]), state);
 
             actual.Should().Be(TaskProgress.NotStarted);
         }
@@ -131,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             });
             amendedOrder.OrderSublocations.Add(newOrderSublocation);
 
-            var actual = service.Get(new OrderWrapper(new[] { order, amendedOrder }), state);
+            var actual = service.Get(new OrderWrapper(amendedOrder, [order]), state);
 
             actual.Should().Be(TaskProgress.InProgress);
         }
@@ -160,7 +160,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
 
             amendedOrder.OrderItems.Add(orderItemToAdd);
 
-            var actual = service.Get(new OrderWrapper(new[] { order, amendedOrder }), state);
+            var actual = service.Get(new OrderWrapper(amendedOrder, [order]), state);
 
             actual.Should().Be(TaskProgress.InProgress);
         }

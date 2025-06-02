@@ -55,9 +55,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Calculations
                 return decimal.Zero;
             }
 
-            var total = orderWrapper.PreviousOrders
+            var previousOrders = orderWrapper.PreviousOrders
                 .Select((o, i) => new { Order = o, Previous = i > 0 ? orderWrapper.PreviousOrders[i - 1] : null })
-                .Sum(i => i.Order.TotalCost(i.Previous));
+                .ToList();
+
+            var total = previousOrders.Sum(i => i.Order.TotalCost(i.Previous));
 
             if (roundResult)
             {

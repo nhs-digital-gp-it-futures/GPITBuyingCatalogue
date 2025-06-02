@@ -577,7 +577,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             amendedOrder.OrderItems = new HashSet<OrderItem> { orderItem };
             amendedOrder.OrderSublocations.First().SublocationRecipients = [amendedRecipient];
 
-            var orderWrapper = new OrderWrapper([order, amendedOrder]);
+            var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
             orderWrapper.TotalPreviousCost().Should().Be(expectedOriginalTotal);
             orderWrapper.TotalCost().Should().Be(expectedOriginalTotal + expectedAmendmentTotal);
@@ -637,7 +637,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             revision3.OrderItems = new HashSet<OrderItem> { orderItem };
             revision3.OrderSublocations.First().SublocationRecipients = [revision3Recipient];
 
-            var orderWrapper = new OrderWrapper([order, revision2, revision3]);
+            var orderWrapper = new OrderWrapper(revision3, [order, revision2]);
 
             orderWrapper.TotalPreviousCost().Should().Be(expectedOriginalTotal + expectedRevision2Total);
             orderWrapper.TotalCost()

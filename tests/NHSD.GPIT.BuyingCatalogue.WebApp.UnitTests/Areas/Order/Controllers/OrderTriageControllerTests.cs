@@ -197,7 +197,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             List<EntityFramework.Catalogue.Models.Framework> frameworks,
             OrderTriageController controller)
         {
-            var expectedModel = new SelectFrameworkModel(organisation.Name, frameworks.OrderBy(f => f.IsExpired).ThenBy(f => f.Name).ToList(), null);
+            frameworks.ForEach(x => x.IsExpired = false);
+            frameworks.First().IsExpired = true;
+            var expectedModel = new SelectFrameworkModel(organisation, frameworks.Where(f => !f.IsExpired).OrderBy(f => f.Name).ToList(), null);
 
             service
                 .GetOrganisationByInternalIdentifier(organisation.InternalIdentifier)

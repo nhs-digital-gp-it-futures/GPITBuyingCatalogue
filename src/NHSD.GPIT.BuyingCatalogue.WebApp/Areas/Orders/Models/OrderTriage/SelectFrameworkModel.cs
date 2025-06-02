@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
@@ -14,15 +15,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage
         {
         }
 
-        public SelectFrameworkModel(string organisationName, IList<EntityFramework.Catalogue.Models.Framework> frameworks, string selectedFrameworkId)
+        public SelectFrameworkModel(Organisation organisation, IList<EntityFramework.Catalogue.Models.Framework> frameworks, string selectedFrameworkId)
         {
-            OrganisationName = organisationName;
+            InternalOrgId = organisation.InternalIdentifier;
+            OrganisationName = organisation.Name;
             SelectedFrameworkId = selectedFrameworkId;
 
             Frameworks = frameworks
-                .Select(f => new SelectOption<string>($"{f.ShortName}{(f.IsExpired ? " (Expired)" : string.Empty)}", f.Id, disabled: f.IsExpired))
+                .Select(f => new SelectOption<string>($"{f.ShortName}", f.Id))
                 .ToList();
         }
+
+        public string InternalOrgId { get; set; }
 
         public string OrganisationName { get; set; }
 
