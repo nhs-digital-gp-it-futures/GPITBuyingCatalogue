@@ -24,6 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public OrderWrapper(Order currentOrder, IEnumerable<Order> previousOrders)
         {
+            // TODO Guard on previous orders to make sure doesnt match current
             ArgumentNullException.ThrowIfNull(currentOrder);
 
             Order = currentOrder;

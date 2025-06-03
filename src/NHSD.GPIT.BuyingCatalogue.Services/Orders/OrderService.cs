@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<OrderWrapper> GetOrderWithOrderItems(CallOffId callOffId, string internalOrgId)
         {
-            var orders = dbContext.Orders
+            IQueryable<Order> orders = dbContext.Orders
                 .Include(x => x.OrderingParty)
                 .Include(x => x.AssociatedServicesOnlyDetails.Solution)
                 .Include(x => x.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient)
@@ -443,7 +443,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             {
                 List<Order> previousOrders = await dbContext.Orders
                     .Where(o => o.OrderNumber == callOffId.OrderNumber
-                        && o.Revision <= callOffId.Revision
+                        && o.Revision < callOffId.Revision
                         && o.OrderingParty.InternalIdentifier == internalOrgId)
                     .Include(x => x.OrderingParty)
                     .Include(x => x.OrderSublocations)
@@ -684,7 +684,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             var amendment = order.BuildAmendment(await dbContext.NextRevision(order.OrderNumber));
 
-            dbContext.Add(amendment);
+            dbContext.Orders.Add(amendment);
 
             await dbContext.SaveChangesAsync();
 

@@ -87,9 +87,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             return possibleSublocations
                 .Select(sl =>
                 {
-                    var selected = existingSublocations.Select(es => es.OdsCode).Contains(sl.OdsCode);
-                    var sublocationPartOfPreviousOrder = previousOrderSublocations is not null
-                        && previousOrderSublocations.Any(x => x.OdsCode == sl.OdsCode);
+                    var selected = previousOrderSublocations.Any(ps => ps.OdsCode == sl.OdsCode)
+                        || existingSublocations.Any(es => es.OdsCode == sl.OdsCode);
+
+                    var sublocationPartOfPreviousOrder = previousOrderSublocations.Any(x => x.OdsCode == sl.OdsCode);
 
                     return new SelectOption<string>
                     {

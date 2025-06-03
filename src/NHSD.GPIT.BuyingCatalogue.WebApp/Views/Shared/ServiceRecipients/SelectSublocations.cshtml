@@ -19,7 +19,7 @@
         {
             <div id="previously-selected-sublocations">
                 <p>
-                    The previous revision had @disabledSublocations.Count Service @PluralOrSingular(disabledSublocations.Count)
+                    The previous revision had @disabledSublocations.Count @PluralOrSingular(disabledSublocations.Count)
                 </p>
 
                 <ul>
@@ -64,6 +64,6 @@
 @{
     string PluralOrSingular(int total)
     {
-        return total == 1 ? "Sublocation:" : "Sublocations:";
+        return total == 1 ? "sublocation:" : "sublocations:";
     }
 }
