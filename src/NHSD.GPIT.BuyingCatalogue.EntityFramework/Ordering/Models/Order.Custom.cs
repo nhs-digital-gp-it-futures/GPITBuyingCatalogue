@@ -234,16 +234,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return Id.GetHashCode();
         }
 
-        public Order Clone() => new()
+        public Order Clone()
         {
-            AssociatedServicesOnlyDetails = AssociatedServicesOnlyDetails,
-            DeliveryDate = DeliveryDate,
-            Revision = Revision,
-            OrderType = OrderType,
-            Description = Description,
-            OrderItems = OrderItems.Select(x => x.Clone()).ToList(),
-            // TODO OrderRecipients = OrderRecipients.Select(x => x.Clone()).ToList(),
-        };
+            return new Order
+            {
+                AssociatedServicesOnlyDetails = AssociatedServicesOnlyDetails,
+                DeliveryDate = DeliveryDate,
+                Revision = Revision,
+                OrderType = OrderType,
+                Description = Description,
+                OrderItems = OrderItems.Select(x => x.Clone()).ToList(),
+                OrderSublocations = OrderSublocations.Select(x => x.Clone()).ToList(),
+            };
+        }
 
         public Order BuildAmendment(int newRevision)
         {
@@ -261,11 +264,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 SelectedFrameworkId = SelectedFrameworkId,
                 SupplierId = SupplierId,
                 SupplierContact = SupplierContact.Clone(),
+                OrderSublocations = OrderSublocations.Select(x => x.Clone()).ToList(),
             };
 
             amendedOrder.InitialiseOrderItemsFrom(OrderItems);
-
-            amendedOrder.OrderSublocations = OrderSublocations.Select(x => new OrderSublocation(x)).ToList();
 
             return amendedOrder;
         }

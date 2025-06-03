@@ -69,7 +69,7 @@
                                 }
                             </nhs-table-cell>
                         }
-                        <nhs-table-cell>@serviceRecipient.RecipientOdsOrganisation.Name (@serviceRecipient.RecipientOdsCode)</nhs-table-cell>
+                        <nhs-table-cell>@serviceRecipient.RecipientOdsOrganisation?.Name (@serviceRecipient.RecipientOdsCode)</nhs-table-cell>
                         <nhs-table-cell>@($"{Model.CallOffId}-{serviceRecipient.RecipientOdsCode}-{ViewContext.HttpContext.NextLineId()}")</nhs-table-cell>
                         <nhs-table-cell>@deliveryDateText</nhs-table-cell>
                         <nhs-table-cell>

@@ -5,17 +5,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public record OrderSublocation
+    public sealed class OrderSublocation : ICloneable<OrderSublocation>
     {
         public OrderSublocation()
         {
-        }
-
-        public OrderSublocation(OrderSublocation old)
-        {
-            SublocationOdsCode = old.SublocationOdsCode;
-            OwnerOdsCode = old.OwnerOdsCode;
-            SublocationRecipients = old.SublocationRecipients.Select(x => new OrderSublocationRecipient(x)).ToList();
         }
 
         public OrderSublocation(CompetitionSublocation competitionSublocation)
@@ -25,13 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             SublocationRecipients = competitionSublocation.SublocationRecipients
                 .Select(x => new OrderSublocationRecipient(x))
                 .ToList();
-        }
-
-        public OrderSublocation(int orderId, string sublocationOdsCode, string ownerOdsCode)
-        {
-            OrderId = orderId;
-            SublocationOdsCode = sublocationOdsCode;
-            OwnerOdsCode = ownerOdsCode;
         }
 
         public int OrderId { get; set; }
@@ -45,5 +31,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public ICollection<OrderSublocationRecipient> SublocationRecipients { get; set; } = [];
 
         public OdsOrganisation SublocationOrganisation { get; set; }
+
+        public OrderSublocation Clone()
+        {
+            return new OrderSublocation
+            {
+                SublocationOrganisation = SublocationOrganisation,
+                SublocationOdsCode = SublocationOdsCode,
+                OwnerOdsCode = OwnerOdsCode,
+                SublocationRecipients = SublocationRecipients.Select(x => x.Clone()).ToList(),
+            };
+        }
     }
 }

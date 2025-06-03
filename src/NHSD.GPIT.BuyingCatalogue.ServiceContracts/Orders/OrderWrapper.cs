@@ -148,24 +148,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             return Order.DetermineOrderRecipients(Previous, catalogueItemId);
         }
 
-        public IEnumerable<string> AddedRecipientsOdsCodes()
-        {
-            var codes = Order.AddedOrderRecipients(Previous)
-                .Select(r => r.RecipientOdsCode);
-            if (Order.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode != null)
-            {
-                codes = codes.Append(Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode);
-            }
-
-            return codes;
-        }
-
-        public IEnumerable<string> PreviousRecipientsOdsCodes()
-        {
-            return (Previous?.FlattenedRecipients ?? [])
-                .Select(r => r.RecipientOdsCode);
-        }
-
         public bool CanComplete()
         {
             return Order.CanComplete(RolledUp.FlattenedRecipients.ToList(), OrderItems);

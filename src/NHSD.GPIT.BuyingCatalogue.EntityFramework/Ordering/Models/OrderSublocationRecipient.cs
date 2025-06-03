@@ -6,17 +6,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public record OrderSublocationRecipient
+    public sealed class OrderSublocationRecipient : ICloneable<OrderSublocationRecipient>
     {
         public OrderSublocationRecipient()
         {
-        }
-
-        public OrderSublocationRecipient(OrderSublocationRecipient old)
-        {
-            RecipientOdsCode = old.RecipientOdsCode;
-            ParentSublocationOdsCode = old.ParentSublocationOdsCode;
-            OrderItemSublocationRecipients = [];
         }
 
         public OrderSublocationRecipient(int orderId, string recipientOdsCode, string parentSublocationOdsCode)
@@ -58,6 +51,18 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             }
 
             itemRecipient.Quantity = quantity;
+        }
+
+        public OrderSublocationRecipient Clone()
+        {
+            return new OrderSublocationRecipient
+            {
+                RecipientOdsOrganisation = RecipientOdsOrganisation,
+                RecipientOdsCode = RecipientOdsCode,
+                ParentSublocation = ParentSublocation,
+                ParentSublocationOdsCode = ParentSublocationOdsCode,
+                OrderItemSublocationRecipients = OrderItemSublocationRecipients.Select(x => x.Clone()).ToList(),
+            };
         }
 
         public void SetDeliveryDateForItem(CatalogueItemId catalogueItemId, DateTime deliveryDate)

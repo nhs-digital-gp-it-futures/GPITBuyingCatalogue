@@ -3,7 +3,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    public record OrderItemSublocationRecipient : IAudited
+    public sealed class OrderItemSublocationRecipient : IAudited, ICloneable<OrderItemSublocationRecipient>
     {
         public OrderItemSublocationRecipient()
         {
@@ -38,5 +38,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public OrderSublocationRecipient Recipient { get; set; }
 
         public OrderItem OrderItem { get; set; }
+
+        public OrderItemSublocationRecipient Clone()
+        {
+            return new OrderItemSublocationRecipient
+            {
+                CatalogueItemId = CatalogueItemId, OdsCode = OdsCode, Quantity = Quantity, DeliveryDate = DeliveryDate,
+            };
+        }
     }
 }
