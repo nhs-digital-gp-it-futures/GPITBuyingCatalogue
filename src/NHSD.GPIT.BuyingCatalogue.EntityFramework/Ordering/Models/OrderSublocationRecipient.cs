@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 RecipientOdsCode = RecipientOdsCode,
                 ParentSublocation = ParentSublocation,
                 ParentSublocationOdsCode = ParentSublocationOdsCode,
-                OrderItemSublocationRecipients = OrderItemSublocationRecipients.Select(x => x.Clone()).ToList(),
+                OrderItemSublocationRecipients = [],
             };
         }
 
