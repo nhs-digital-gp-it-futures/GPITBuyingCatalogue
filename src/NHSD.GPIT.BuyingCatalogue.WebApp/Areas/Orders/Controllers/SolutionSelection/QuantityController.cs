@@ -8,7 +8,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -131,20 +130,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
             var orderRecipients = wrapper.DetermineOrderRecipients(orderItem.CatalogueItemId);
-            IEnumerable<ServiceRecipient> organisationRecipients =
-                await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                    internalOrgId,
-                    orderRecipients.Select(x => x.RecipientOdsCode).ToList());
 
-            IEnumerable<ServiceRecipientQuantityDto> recipients = orderRecipients.Join(
-                organisationRecipients,
-                orderRecipients => orderRecipients.RecipientOdsCode,
-                organisationRecipients => organisationRecipients.OrgId,
-                (orderRecipients, organisationRecipients) => new ServiceRecipientQuantityDto(
-                    orderRecipients.RecipientOdsCode,
-                    orderRecipients.RecipientOdsOrganisation?.Name,
-                    orderRecipients.GetQuantityForItem(orderItem.CatalogueItemId),
-                    organisationRecipients.Location));
+            List<ServiceRecipientQuantityDto> recipientDtos = [];
+
+            Dictionary<string, string> sublocationNameCache = [];
+
+            foreach (OrderSublocationRecipient orderRecipient in orderRecipients)
+            {
+                var sublocationOdsCode = orderRecipient.ParentSublocationOdsCode;
+
+                var nameInCache = sublocationNameCache.TryGetValue(sublocationOdsCode, out var parentSublocationName);
+
+                if (!nameInCache)
+                {
+                    var sublocationName =
+                        await odsService.GetOrganisationName(sublocationOdsCode);
+                    parentSublocationName = sublocationNameCache[sublocationOdsCode] =
+                        sublocationName;
+                }
+
+                recipientDtos.Add(
+                    new ServiceRecipientQuantityDto(
+                        orderRecipient.RecipientOdsCode,
+                        orderRecipient.RecipientOdsOrganisation?.Name,
+                        orderRecipient.GetQuantityForItem(orderItem.CatalogueItemId),
+                        parentSublocationName));
+            }
 
             IEnumerable<ServiceRecipientQuantityDto> previousRecipients =
                 wrapper.Previous?.FlattenedRecipients?.Select(x => new ServiceRecipientQuantityDto(
@@ -159,11 +170,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 practiceReorganisation,
                 orderItem.CatalogueItem,
                 orderItem.OrderItemPrice,
-                recipients,
+                recipientDtos,
                 previousRecipients)
             {
-                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
-                Source = source,
+                BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues), Source = source,
             };
 
             if (orderItem.OrderItemPrice.ProvisioningType != ProvisioningType.Patient)

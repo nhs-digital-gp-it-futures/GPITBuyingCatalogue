@@ -41,7 +41,8 @@ public class TrudOdsService : IOdsService
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<(OdsOrganisation Organisation, string Error)> GetOrganisationByOdsCode(string odsCode)
+    public async Task<(OdsOrganisation Organisation, string Error)> GetValidatedBuyerOrganisationByOdsCode(
+        string odsCode)
     {
         var organisation = await context.OdsOrganisations.Include(x => x.Roles)
             .FirstOrDefaultAsync(x => string.Equals(x.Id, odsCode));
@@ -167,6 +168,19 @@ public class TrudOdsService : IOdsService
             .ToListAsync();
 
         return serviceRecipients;
+    }
+
+    public async Task<string> GetOrganisationName(string odsCode)
+    {
+        if (string.IsNullOrEmpty(odsCode))
+        {
+            throw new ArgumentException("odsCode cannot be null or empty");
+        }
+
+        EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation =
+            await context.OdsOrganisations.FirstAsync(x => string.Equals(x.Id, odsCode));
+
+        return organisation.Name;
     }
 
     public async Task UpdateOrganisationDetails(string odsCode)
