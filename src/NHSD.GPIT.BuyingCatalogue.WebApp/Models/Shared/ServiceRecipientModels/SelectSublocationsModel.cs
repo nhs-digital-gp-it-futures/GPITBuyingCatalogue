@@ -96,7 +96,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                         Text = sl.OdsCode,
                         Value = sl.OdsCode,
                         Selected = selected,
-                        Disabled = sublocationPartOfPreviousOrder,
+                        Hidden = sublocationPartOfPreviousOrder,
                     };
                 })
                 .OrderBy(x => x.Text)

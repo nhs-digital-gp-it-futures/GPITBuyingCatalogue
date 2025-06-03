@@ -9,7 +9,7 @@
 @{
     ViewBag.Title = Model.Title;
 
-    var previousOrderRecipients = Model.RenderedServiceRecipients.Where(x => x.Disabled).ToList();
+    var previousOrderRecipients = Model.RenderedServiceRecipients.Where(x => x.Hidden).ToList();
 
 }
 <partial name="Partials/_BackLink" model="Model"/>
@@ -64,7 +64,7 @@
             <nhs-expander-v2 id="recipients-expander" open="@(Model.SelectionMode is null || expandWhenNotValid)">
                 <nhs-expander-summary label-text="@Model.SublocationName" bold-title="true">
                     <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">
-                        <b>@(Model.RenderedServiceRecipients.Count(r => r.Selected && !r.Disabled)) </b>
+                        <b>@(Model.RenderedServiceRecipients.Count(r => r.Selected && !r.Hidden)) </b>
                         recipients selected
                     </span>
                 </nhs-expander-summary>
@@ -86,7 +86,7 @@
 
                             <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Text" />
 
-                            if (Model.RenderedServiceRecipients[localI].Disabled)
+                            if (Model.RenderedServiceRecipients[localI].Hidden)
                             {
                                 <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Value" />
                                 <input type="hidden" asp-for="@Model.RenderedServiceRecipients[localI].Selected" />

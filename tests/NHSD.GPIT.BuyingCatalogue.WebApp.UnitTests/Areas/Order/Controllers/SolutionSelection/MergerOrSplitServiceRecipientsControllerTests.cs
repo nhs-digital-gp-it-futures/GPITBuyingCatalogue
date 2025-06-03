@@ -192,7 +192,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var importedRecipients = string.Join(',', order.FlattenedRecipients.Select(x => x.RecipientOdsCode));
 
-            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order, amendment }));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId)
+                .Returns(new OrderWrapper(amendment, [order]));
 
             mockOdsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
 
@@ -238,7 +239,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             order.OrderType = orderType;
 
-            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order }));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var selectedOdsCodes = model.GetServiceRecipients().Where(x => x.Selected).Select(x => x.OdsCode);
             var recipientIds = selectedOdsCodes.ToRecipientsString();
@@ -272,7 +273,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             order.OrderType = orderType;
             var selectedRecipientId = order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode;
 
-            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order }));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             var recipientIds = model
                 .GetServiceRecipients()
@@ -311,7 +312,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             order.OrderType = orderType;
 
-            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order }));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             organisationsService.GetOrganisationByInternalIdentifier(internalOrgId).Returns(organisation);
 
@@ -338,7 +339,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             order.OrderType = orderType;
 
-            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(new[] { order }));
+            mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             mockOdsService
                 .GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(

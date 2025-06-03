@@ -1,7 +1,7 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectSublocationsModel
 @{
     ViewBag.Title = Model.Title;
-    var disabledSublocations = Model.RenderedSublocations.Where(x => x.Disabled).ToList();
+    var disabledSublocations = Model.RenderedSublocations.Where(x => x.Hidden).ToList();
 }
 <partial name="Partials/_BackLink" model="Model" />
 
@@ -42,7 +42,7 @@
                     {
                         <input type="hidden" asp-for="@Model.RenderedSublocations[i].Text" />
                         
-                        if (Model.RenderedSublocations[i].Disabled)
+                        if (Model.RenderedSublocations[i].Hidden)
                         {
                             <input type="hidden" asp-for="@Model.RenderedSublocations[i].Selected" />
                             <input type="hidden" asp-for="@Model.RenderedSublocations[i].Value" />

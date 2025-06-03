@@ -454,7 +454,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             orderService.GetOrderWithCatalogueItemAndPrices(
                     mostRecentOrder.CallOffId,
                     mostRecentOrder.OrderingParty.InternalIdentifier)
-                .Returns(new OrderWrapper(orders));
+                .Returns(new OrderWrapper(orders.Last(), orders.Take(orders.Count - 1)));
 
             Exception exception = await Record.ExceptionAsync(async () =>
             {

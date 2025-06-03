@@ -394,7 +394,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
         var expectedModel = new ValidationCompleteModel(
             competition.Name,
             ValidationStatus.Success,
-            sublocationsAsViewModel);
+            sublocationsAsViewModel,
+            string.Empty);
 
         var result = (await controller.ValidationComplete(
                 organisation.InternalIdentifier,
@@ -406,7 +407,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         result.Model.Should()
             .BeEquivalentTo(
                 expectedModel,
-                opt => opt.Excluding(m => m.Caption));
+                opt => opt.Excluding(m => m.Caption).Excluding(m => m.CancelHref));
     }
 
     [Theory]
@@ -416,7 +417,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         int competitionId,
         CompetitionImportServiceRecipientsController controller)
     {
-        var model = new ValidationCompleteModel("MY competition", ValidationStatus.Failure, []);
+        var model = new ValidationCompleteModel("MY competition", ValidationStatus.Failure, [], string.Empty);
 
         var result =
             (await controller.ValidationComplete(internalOrgId, competitionId, model))

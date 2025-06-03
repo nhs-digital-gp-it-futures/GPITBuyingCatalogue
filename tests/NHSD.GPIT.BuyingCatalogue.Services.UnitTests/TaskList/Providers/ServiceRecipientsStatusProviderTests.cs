@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -119,9 +118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             order.Revision = 2;
             previousOrder.OrderSublocations = order.OrderSublocations.Take(2).ToList();
 
-            var orders = new List<Order> { previousOrder, order };
-
-            TaskProgress actual = service.Get(new OrderWrapper(orders), ValidOrderState);
+            TaskProgress actual = service.Get(new OrderWrapper(order, [previousOrder]), ValidOrderState);
 
             actual.Should().Be(TaskProgress.Amended);
         }

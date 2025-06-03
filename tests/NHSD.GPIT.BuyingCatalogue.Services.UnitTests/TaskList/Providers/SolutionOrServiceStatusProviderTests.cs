@@ -269,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             });
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
-            TaskProgress actual = service.Get(new OrderWrapper([previousOrder, order]), state);
+            TaskProgress actual = service.Get(new OrderWrapper(order, [previousOrder]), state);
 
             actual.Should().Be(TaskProgress.Amended);
         }
