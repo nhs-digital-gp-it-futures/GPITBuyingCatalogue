@@ -85,13 +85,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             await orderService.SetSolutionId(internalOrgId, callOffId, catalogueItemId);
 
-            var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
-            var orderItem = wrapper.Order.OrderItem(catalogueItemId);
-
-            var publishedPrices = orderItem.CatalogueItem.CataloguePrices
-                .Where(x => x.PublishedStatus == PublicationStatus.Published)
-                .ToList();
-
             return RedirectToAction(
                 nameof(TaskListController.TaskList),
                 typeof(TaskListController).ControllerName(),

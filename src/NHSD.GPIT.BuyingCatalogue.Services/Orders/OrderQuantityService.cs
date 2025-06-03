@@ -91,19 +91,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task SetServiceRecipientsSingleQuantity(int orderId, CatalogueItemId catalogueItemId, int quantity)
         {
-            List<OrderItemSublocationRecipient> recipients = await dbContext.OrderItemSublocationRecipients
-                .Where(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId)
+            List<OrderSublocationRecipient> recipients = await dbContext
+                .OrderSublocationRecipients.Where(x => x.OrderId == orderId)
+                .Include(x => x.OrderItemSublocationRecipients)
                 .ToListAsync();
 
             if (recipients.Count == 0)
             {
-                return;
+                throw new InvalidOperationException(
+                    $"No recipients exist for the provided {nameof(orderId)}: {orderId}");
             }
 
-            foreach (OrderItemSublocationRecipient recipient in recipients)
-            {
-                recipient.Quantity = quantity;
-            }
+            recipients.ForEach(x => x.SetQuantityForItem(catalogueItemId, quantity));
 
             await dbContext.SaveChangesAsync();
         }

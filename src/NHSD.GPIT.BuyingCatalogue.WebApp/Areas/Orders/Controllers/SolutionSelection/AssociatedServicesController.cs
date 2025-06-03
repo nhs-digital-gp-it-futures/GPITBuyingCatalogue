@@ -84,9 +84,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 .ToList();
 
             await AddOrderItems(internalOrgId, callOffId, serviceIds);
-            CatalogueItemId? catalogueItemId = serviceIds.Any()
-                ? serviceIds.First()
-                : null;
 
             return RedirectToAction(
                     nameof(TaskListController.TaskList),
