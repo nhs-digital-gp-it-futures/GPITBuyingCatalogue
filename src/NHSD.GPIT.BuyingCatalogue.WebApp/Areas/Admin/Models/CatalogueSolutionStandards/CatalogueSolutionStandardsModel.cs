@@ -20,7 +20,8 @@ public class CatalogueSolutionStandardsModel : NavBaseModel
         var groupedStandards = standards.GroupBy(x => x.Type).ToList();
 
         OverarchingStandards = groupedStandards.Where(x => x.Key == StandardType.Overarching).SelectMany(x => x).ToList();
-        OtherStandards = groupedStandards.Where(x => x.Key != StandardType.Overarching).SelectMany(x => x).ToList();
+        OtherStandards = groupedStandards.Where(x => x.Key == StandardType.Other).SelectMany(x => x).ToList();
+        SupplementaryCareStandards = groupedStandards.Where(x => x.Key == StandardType.SupplementaryCare).SelectMany(x => x).ToList();
     }
 
     public CatalogueItemId SolutionId { get; }
@@ -30,4 +31,6 @@ public class CatalogueSolutionStandardsModel : NavBaseModel
     public ICollection<StandardComplianceModel> OverarchingStandards { get; }
 
     public ICollection<StandardComplianceModel> OtherStandards { get; }
+
+    public ICollection<StandardComplianceModel> SupplementaryCareStandards { get; }
 }
