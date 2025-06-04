@@ -36,7 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return new OrderSublocation
             {
-                SublocationOrganisation = SublocationOrganisation,
                 SublocationOdsCode = SublocationOdsCode,
                 OwnerOdsCode = OwnerOdsCode,
                 SublocationRecipients = SublocationRecipients.Select(x => x.Clone()).ToList(),

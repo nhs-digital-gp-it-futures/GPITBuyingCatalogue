@@ -264,10 +264,12 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 SelectedFrameworkId = SelectedFrameworkId,
                 SupplierId = SupplierId,
                 SupplierContact = SupplierContact.Clone(),
-                OrderSublocations = OrderSublocations.Select(x => x.Clone()).ToList(),
             };
 
             amendedOrder.InitialiseOrderItemsFrom(OrderItems);
+
+            amendedOrder.OrderSublocations =
+                OrderSublocations.Select(x => x.Clone()).ToList();
 
             return amendedOrder;
         }
@@ -299,13 +301,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 CatalogueItemId = catalogueItemId,
                 Created = DateTime.UtcNow,
             };
-        }
-
-        public ICollection<OrderSublocationRecipient> AddedOrderRecipients(Order previous)
-        {
-            return FlattenedRecipients
-                .Where(r => previous?.FlattenedRecipients?.All(x => x.RecipientOdsCode != r.RecipientOdsCode) ?? false)
-                .ToList();
         }
 
         public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(
