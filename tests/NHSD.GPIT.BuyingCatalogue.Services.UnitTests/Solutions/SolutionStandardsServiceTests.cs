@@ -239,6 +239,51 @@ public static class SolutionStandardsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
+    public static async Task SetSolutionStandardStatus_InProgressToFullyMet_RemovesWorkOffPlans(
+        Solution solution,
+        Standard standard,
+        List<WorkOffPlan> workOffPlans,
+        [Frozen] BuyingCatalogueDbContext dbContext,
+        SolutionStandardsService service)
+    {
+        workOffPlans.ForEach(x =>
+        {
+            x.SolutionId = solution.CatalogueItemId;
+            x.StandardId = standard.Id;
+            x.Solution = null;
+            x.Standard = null;
+        });
+        solution.InProgressStandards = new List<Standard> { standard };
+        standard.StandardCapabilities = Enumerable.Empty<StandardCapability>().ToList();
+        solution.CatalogueItem.CatalogueItemCapabilities = Enumerable.Empty<CatalogueItemCapability>().ToList();
+        solution.WorkOffPlans = Enumerable.Empty<WorkOffPlan>().ToList();
+
+        dbContext.Add(solution);
+        dbContext.Add(standard);
+        dbContext.WorkOffPlans.AddRange(workOffPlans);
+
+        await dbContext.SaveChangesAsync();
+
+        solution.InProgressStandards.Should().ContainSingle();
+        solution.WorkOffPlans.Should().NotBeEmpty();
+        dbContext.ChangeTracker.Clear();
+
+        await service.SetSolutionStandardStatus(solution.CatalogueItemId, standard.Id, StandardCompliance.FullyMet);
+
+        var updatedSolution = await dbContext.Solutions.AsNoTracking()
+            .Include(x => x.InProgressStandards)
+            .FirstOrDefaultAsync(x => x.CatalogueItemId == solution.CatalogueItemId);
+
+        var updatedWorkOffPlans = await dbContext.WorkOffPlans
+            .Where(x => x.SolutionId == solution.CatalogueItemId && x.StandardId == standard.Id)
+            .ToListAsync();
+
+        updatedSolution.InProgressStandards.Should().BeEmpty();
+        updatedWorkOffPlans.Should().BeEmpty();
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static async Task SetSolutionStandardStatus_FullyMetToFullyMet_DoesNothing(
         Solution solution,
         Standard standard,

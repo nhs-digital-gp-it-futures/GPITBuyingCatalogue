@@ -58,6 +58,12 @@ public class SolutionStandardsService(BuyingCatalogueDbContext context) : ISolut
                 break;
             case StandardCompliance.FullyMet:
                 context.InProgressSolutionStandards.Remove(inProgressSolutionStandard);
+
+                var workOffPlans =
+                    await context.WorkOffPlans.Where(x => x.SolutionId == solutionId && x.StandardId == standardId)
+                        .ToListAsync();
+
+                context.RemoveRange(workOffPlans);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(compliance), compliance, null);
