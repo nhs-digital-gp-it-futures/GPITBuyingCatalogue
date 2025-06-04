@@ -158,7 +158,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             string recipientOdsCode,
             string parentSublocationOdsCode)
         {
-            OrderSublocationRecipient newRecipient = new(Order.Id, recipientOdsCode, parentSublocationOdsCode);
+            OrderSublocationRecipient newRecipient = new(recipientOdsCode, parentSublocationOdsCode);
             if (Order.DeliveryDate.HasValue)
             {
                 Order.OrderItems.ToList().ForEach(i =>

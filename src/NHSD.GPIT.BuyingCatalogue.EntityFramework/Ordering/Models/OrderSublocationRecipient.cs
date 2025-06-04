@@ -12,9 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
         }
 
-        public OrderSublocationRecipient(int orderId, string recipientOdsCode, string parentSublocationOdsCode)
+        public OrderSublocationRecipient(string recipientOdsCode, string parentSublocationOdsCode)
         {
-            OrderId = orderId;
             RecipientOdsCode = recipientOdsCode;
             ParentSublocationOdsCode = parentSublocationOdsCode;
         }
