@@ -610,9 +610,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 
         [Theory]
         [MockInMemoryDbInlineAutoData(ProvisioningType.OnDemand)]
-
-        // [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
-        // [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Declarative)]
+        [MockInMemoryDbInlineAutoData(ProvisioningType.Patient)]
         public static async Task Amendment_ShowRevisions_Results_In_Two_Rows(
             ProvisioningType provisioningType,
             Order order,

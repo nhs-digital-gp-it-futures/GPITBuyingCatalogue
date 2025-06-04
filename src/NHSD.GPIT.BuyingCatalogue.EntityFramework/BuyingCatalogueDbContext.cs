@@ -203,6 +203,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
             return (await Order(internalOrgId, callOffId)).Id;
         }
 
+        public async Task<CallOffId> CallOffId(int orderId)
+        {
+            return (await Orders.FirstAsync(x => x.Id == orderId)).CallOffId;
+        }
+
         public async Task<int> NextOrderNumber()
         {
             var maxOrderNumber = await Orders

@@ -170,12 +170,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var prices = await GetPrices(orderId);
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
+            CallOffId callOffId = await dbContext.CallOffId(orderId);
+
+            List<int> previousOrderIds = await dbContext.Orders
+                .Where(x => x.OrderNumber == callOffId.OrderNumber && x.Revision < callOffId.Revision)
+                .Select(x => x.Id)
+                .ToListAsync();
+
+            IQueryable<string> previousRecipients = dbContext.OrderSublocationRecipients
+                .Where(or => previousOrderIds.Contains(or.OrderId))
+                .Select(or => or.RecipientOdsCode);
+
             List<FullOrderCsvModel> items = await dbContext.OrderSublocationRecipients
                 .Include(x => x.OrderItemSublocationRecipients)
                 .ThenInclude(x => x.OrderItem)
                 .ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
-                .Where(or => or.OrderId == orderId)
+                .Where(or => or.OrderId == orderId && !previousRecipients.Contains(or.RecipientOdsCode))
                 .SelectMany(
                     or => or.OrderItemSublocationRecipients,
                     (or, oir) => new FullOrderCsvModel
