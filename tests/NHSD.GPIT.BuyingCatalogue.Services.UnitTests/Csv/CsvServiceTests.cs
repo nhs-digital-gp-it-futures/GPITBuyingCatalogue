@@ -482,6 +482,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 
             OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [orderItem]);
 
+            order.OrderNumber = order.ContractOrderNumber.Id;
             order.Revision = 1;
             order.OrderingPartyId = order.OrderingParty.Id;
 
@@ -541,6 +542,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 
             OrderSublocationRecipient recipient = BuildOrderRecipient(fixture, [orderItem]);
 
+            orderItem.Order = order;
+
+            order.OrderNumber = order.ContractOrderNumber.Id;
             order.Revision = 1;
             order.OrderingPartyId = order.OrderingParty.Id;
 
@@ -638,11 +642,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
 
             order.OrderSublocations = order.OrderSublocations.Take(1).ToList();
 
-            order.OrderItems = new HashSet<OrderItem> { orderItem };
-
             OrderSublocation workingSublocation = order.OrderSublocations.First();
 
             workingSublocation.Order = order;
+
+            order.OrderItems = new HashSet<OrderItem> { orderItem };
 
             workingSublocation.SublocationRecipients = [recipient];
 
