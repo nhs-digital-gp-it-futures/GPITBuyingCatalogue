@@ -34,27 +34,32 @@
                 standard status to in progress.
             </p>
         }
-        <nhs-table data-test-id="workoffplans">
-            <nhs-table-column>Name of Standard</nhs-table-column>
-            <nhs-table-column>Details</nhs-table-column>
-            <nhs-table-column>Agreed&nbsp;completion&nbsp;date</nhs-table-column>
-            <nhs-table-column>Action</nhs-table-column>
-            @foreach (var workOffPlan in Model.WorkOffPlans.OrderBy(wp => wp.Standard.Name).ThenBy(wp => wp.Details))
-            {
-                <nhs-table-row-container>
-                    <nhs-table-cell>@workOffPlan.Standard.Name</nhs-table-cell>
-                    <nhs-table-cell>@workOffPlan.Details</nhs-table-cell>
-                    <nhs-table-cell>@workOffPlan.CompletionDate.ToString("d MMM yyyy")</nhs-table-cell>
-                    <nhs-table-cell>
-                        <a href="@Url.Action(
-                                     nameof(DevelopmentPlansController.EditWorkOffPlan),
-                                     typeof(DevelopmentPlansController).ControllerName(),
-                                     new { solutionid = Model.SolutionId, workOffPlanId = workOffPlan.Id })">Edit</a>
-                    </nhs-table-cell>
-                </nhs-table-row-container>
-            }
-        </nhs-table>
-        <br/>
+
+        @if (Model.WorkOffPlans.Count > 0)
+        {
+            <nhs-table data-test-id="workoffplans">
+                <nhs-table-column>Name of Standard</nhs-table-column>
+                <nhs-table-column>Details</nhs-table-column>
+                <nhs-table-column>Agreed&nbsp;completion&nbsp;date</nhs-table-column>
+                <nhs-table-column>Action</nhs-table-column>
+                @foreach (var workOffPlan in Model.WorkOffPlans.OrderBy(wp => wp.Standard.Name).ThenBy(wp => wp.Details))
+                {
+                    <nhs-table-row-container>
+                        <nhs-table-cell>@workOffPlan.Standard.Name</nhs-table-cell>
+                        <nhs-table-cell>@workOffPlan.Details</nhs-table-cell>
+                        <nhs-table-cell>@workOffPlan.CompletionDate.ToString("d MMM yyyy")</nhs-table-cell>
+                        <nhs-table-cell>
+                            <a href="@Url.Action(
+                                         nameof(DevelopmentPlansController.EditWorkOffPlan),
+                                         typeof(DevelopmentPlansController).ControllerName(),
+                                         new { solutionid = Model.SolutionId, workOffPlanId = workOffPlan.Id })">Edit</a>
+                        </nhs-table-cell>
+                    </nhs-table-row-container>
+                }
+            </nhs-table>
+            <br/>
+        }
+
         <h2>Roadmap</h2>
         <form method="post">
             <input type="hidden" asp-for="BackLink"/>

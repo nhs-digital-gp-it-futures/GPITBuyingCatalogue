@@ -18,11 +18,12 @@
             <input type="hidden" asp-for="BackLink"/>
 
             <nhs-inset-text>
-                If a standard isn't available you will need to go to the <a
-                    asp-action="@(nameof(CatalogueSolutionStandardsController.Index))"
-                    asp-controller="@(typeof(CatalogueSolutionStandardsController).ControllerName())"
-                    asp-area="@(typeof(CatalogueSolutionStandardsController).AreaName())"
-                    asp-route-solutionId="@Model.SolutionId">Catalogue solution standards page</a> and change the standard status to in progress.
+                <p>If a standard isn't available you will need to go to the <a
+                        asp-action="@(nameof(CatalogueSolutionStandardsController.Index))"
+                        asp-controller="@(typeof(CatalogueSolutionStandardsController).ControllerName())"
+                        asp-area="@(typeof(CatalogueSolutionStandardsController).AreaName())"
+                        asp-route-solutionId="@Model.SolutionId">Catalogue solution standards page</a> and change the
+                    standard status to in progress.</p>
             </nhs-inset-text>
 
             <nhs-select asp-for="SelectedStandard"
