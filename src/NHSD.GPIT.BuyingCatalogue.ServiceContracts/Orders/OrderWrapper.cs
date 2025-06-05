@@ -9,8 +9,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
     public class OrderWrapper
     {
         private readonly List<Order> previous = new();
-        private Lazy<Order> previousLazy;
-        private Lazy<Order> rolledUpLazy;
+        private readonly Lazy<Order> previousLazy;
+        private readonly Lazy<Order> rolledUpLazy;
 
         public OrderWrapper()
         {
@@ -18,36 +18,32 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             rolledUpLazy = new Lazy<Order>((Order)null);
         }
 
-        [Obsolete("Only used in tests - we should look to remove this")]
         public OrderWrapper(Order order)
+            : this(order, [])
         {
-            Order = order;
-            previousLazy = new Lazy<Order>((Order)null);
-            rolledUpLazy = new Lazy<Order>(() => Order.Clone());
         }
 
-        public OrderWrapper(IEnumerable<Order> orders)
+        public OrderWrapper(Order currentOrder, IEnumerable<Order> previousOrders)
         {
-            var ordered = orders.OrderBy(x => x.CallOffId.Revision).ToList();
+            ArgumentNullException.ThrowIfNull(currentOrder);
 
-            Order = ordered.Any()
-                ? ordered.Last()
-                : null;
+            Order = currentOrder;
 
-            previous = ordered.Count > 1
-                ? ordered.SkipLast(1).ToList()
-                : new List<Order>();
+            previous = previousOrders.OrderBy(x => x.CallOffId.Revision).ToList();
 
             previousLazy = new Lazy<Order>(() =>
             {
-                if (!previous.Any())
+                if (previous.Count == 0)
                 {
                     return null;
                 }
 
                 var output = previous.First().Clone();
 
-                previous.Skip(1).ToList().ForEach(p => output.Apply(p.Clone()));
+                foreach (var amendment in previous.Skip(1))
+                {
+                    output.Apply(amendment);
+                }
 
                 return output;
             });
@@ -88,27 +84,25 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
             ? previous.Last()
             : null;
 
+        /// <summary>
+        /// Gets or sets the most recent Order.
+        /// </summary>
+        /// <remarks>
+        /// This will be the order that is being placed at that time. That could either be the original order or an amendment.
+        /// </remarks>
         public Order Order { get; set; }
 
+        /// <summary>
+        /// Gets a flattened order that contains all previous amendments (excluding the current) projected over original order.
+        ///
+        /// Otherwise null if this <see cref="OrderWrapper"/> relates to an original order.
+        /// </summary>
         public Order Previous => previousLazy.Value;
 
+        /// <summary>
+        /// Gets a flattened order that projects the current amendment over the <see cref="Previous"/> order projection.
+        /// </summary>
         public Order RolledUp => rolledUpLazy.Value;
-
-        public static OrderWrapper Create(IEnumerable<Order> orders, CallOffId requestedCallOffId)
-        {
-            var wrapper = new OrderWrapper(orders);
-            if (wrapper.Order == null)
-            {
-                throw new InvalidOperationException($"Order not found {requestedCallOffId}");
-            }
-
-            if (wrapper.Order.CallOffId != requestedCallOffId)
-            {
-                throw new InvalidOperationException($"Latest order does not match {requestedCallOffId}");
-            }
-
-            return wrapper;
-        }
 
         public IEnumerable<string> AddedRecipientsOdsCodes()
         {
@@ -137,7 +131,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public OrderRecipient InitialiseOrderRecipient(string odsCode)
         {
-            var newRecipient = Order.InitialiseOrderRecipient(odsCode);
+            var newRecipient = new OrderRecipient(Order.Id, odsCode);
             if (Order.DeliveryDate.HasValue)
             {
                 Order.OrderItems.ToList().ForEach(i =>

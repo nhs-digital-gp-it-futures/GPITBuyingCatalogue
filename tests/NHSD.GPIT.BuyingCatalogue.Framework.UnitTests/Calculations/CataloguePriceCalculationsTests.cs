@@ -549,7 +549,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             amendedOrder.OrderItems = new HashSet<OrderItem> { orderItem };
             amendedOrder.OrderRecipients.Add(amendedRecipient);
 
-            var orderWrapper = new OrderWrapper(new[] { order, amendedOrder });
+            var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
             orderWrapper.TotalPreviousCost().Should().Be(expectedOriginalTotal);
             orderWrapper.TotalCost().Should().Be(expectedOriginalTotal + expectedAmendmentTotal);
@@ -601,7 +601,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             revision3.OrderItems = new HashSet<OrderItem> { orderItem };
             revision3.OrderRecipients = new HashSet<OrderRecipient> { revision3Recipient };
 
-            var orderWrapper = new OrderWrapper(new[] { order, revision2, revision3 });
+            var orderWrapper = new OrderWrapper(revision3, [order, revision2]);
 
             orderWrapper.TotalPreviousCost().Should().Be(expectedOriginalTotal + expectedRevision2Total);
             orderWrapper.TotalCost().Should().Be(expectedOriginalTotal + expectedRevision2Total + expectedRevision3Total);

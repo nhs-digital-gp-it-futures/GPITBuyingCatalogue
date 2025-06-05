@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Frameworks;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.FundingSources;
 
@@ -19,18 +18,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
         private readonly IOrderService orderService;
         private readonly IOrderItemService orderItemService;
         private readonly IOrderFrameworkService orderFrameworkService;
-        private readonly IFrameworkService frameworkService;
 
         public FundingSourceController(
             IOrderService orderService,
             IOrderItemService orderItemService,
-            IOrderFrameworkService orderFrameworkService,
-            IFrameworkService frameworkService)
+            IOrderFrameworkService orderFrameworkService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.orderItemService = orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
             this.orderFrameworkService = orderFrameworkService ?? throw new ArgumentNullException(nameof(orderFrameworkService));
-            this.frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
         }
 
         [Obsolete("Orders should be given a framework on creation going forward, however this remains to allow the framework to be set on any existing orders as a form of data migration. This is ONLY used when an order doesn't already have a framework set")]
@@ -96,7 +92,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.FundingSourc
         public async Task<IActionResult> FundingSources(string internalOrgId, CallOffId callOffId)
         {
             var orderWrapper = await orderService.GetOrderWithOrderItemsForFunding(callOffId, internalOrgId);
-            var order = orderWrapper.Order;
 
             var model = new FundingSources(internalOrgId, callOffId, orderWrapper)
             {

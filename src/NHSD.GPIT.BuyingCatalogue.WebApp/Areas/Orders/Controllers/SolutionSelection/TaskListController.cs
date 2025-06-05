@@ -45,11 +45,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         {
             var wrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
 
-            if (wrapper.IsAmendment)
-            {
-                await orderService.EnsureOrderItemsForAmendment(internalOrgId, callOffId);
-            }
-
             var order = wrapper.IsAmendment ? wrapper.RolledUp : wrapper.Order;
 
             var solutions = order.OrderType.AssociatedServicesOnly

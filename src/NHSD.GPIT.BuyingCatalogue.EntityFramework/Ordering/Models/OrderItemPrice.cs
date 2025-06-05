@@ -9,7 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     [Serializable]
-    public sealed class OrderItemPrice : IAudited, IPrice
+    public sealed class OrderItemPrice : IAudited, IPrice, ICloneable<OrderItemPrice>
     {
         public OrderItemPrice()
         {
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<OrderItemPriceTier> OrderItemPriceTiers { get; set; }
 
-        public OrderItemPrice Copy() => new(this);
+        public OrderItemPrice Clone() => new(this);
 
         public string ToPriceUnitString()
         {

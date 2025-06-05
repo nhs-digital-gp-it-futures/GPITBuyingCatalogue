@@ -54,6 +54,10 @@ variable "app_url" {
   type = string
 }
 
+variable "acr_subscription_id" {
+  type = string
+}
+
 variable "dns_subscription_id" {
   type = string
 }

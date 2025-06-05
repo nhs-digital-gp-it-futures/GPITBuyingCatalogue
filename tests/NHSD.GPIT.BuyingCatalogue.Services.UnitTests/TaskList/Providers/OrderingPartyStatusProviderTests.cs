@@ -68,14 +68,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             List<Order> orders,
             OrderingPartyStatusProvider service)
         {
-            var previousOrder = orders.AsEnumerable().Reverse().Skip(1).First();
+            var previousOrders = orders.AsEnumerable().Reverse().Skip(1).ToList();
+            var previousOrder = previousOrders.First();
             var amendedOrder = orders.Last();
 
             amendedOrder.Revision = orders.Count;
             previousOrder.OrderingPartyContact = originalContact;
             amendedOrder.OrderingPartyContact = editedContact;
 
-            var actual = service.Get(new(orders), null);
+            var actual = service.Get(new OrderWrapper(amendedOrder, previousOrders), null);
 
             actual.Should().Be(TaskProgress.Amended);
         }
@@ -87,14 +88,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             List<Order> orders,
             OrderingPartyStatusProvider service)
         {
-            var previousOrder = orders.AsEnumerable().Reverse().Skip(1).First();
+            var previousOrders = orders.AsEnumerable().Reverse().Skip(1).ToList();
+            previousOrders.ForEach(x => x.OrderingPartyContact = originalContact);
             var amendedOrder = orders.Last();
 
             amendedOrder.Revision = orders.Count;
-            previousOrder.OrderingPartyContact = originalContact;
             amendedOrder.OrderingPartyContact = originalContact;
 
-            var actual = service.Get(new(orders), null);
+            var actual = service.Get(new OrderWrapper(amendedOrder, previousOrders), null);
 
             actual.Should().Be(TaskProgress.Completed);
         }

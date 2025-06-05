@@ -88,7 +88,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
                 new OrderItem() { CatalogueItem = new CatalogueItem() { CatalogueItemType = CatalogueItemType.AssociatedService, Id = associatedService.CatalogueItemId }, CatalogueItemId = associatedService.CatalogueItemId },
             };
 
-            var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(new[] { order, amendment }));
+            var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(amendment, [order]));
 
             model.InternalOrgId.Should().BeEquivalentTo(internalOrgId);
             model.CallOffId.Should().BeEquivalentTo(callOffId);

@@ -1,4 +1,5 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
@@ -12,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.PublishStatus
     {
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async void SetPublicationStatus_SameStatus_DoesNotUpdatePublicationStatus(
+        public static async Task SetPublicationStatus_SameStatus_DoesNotUpdatePublicationStatus(
             CatalogueItem catalogueItem,
             [Frozen] BuyingCatalogueDbContext context,
             PublicationStatusService service)
@@ -29,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.PublishStatus
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async void SetPublicationStatus_InRemediationStatus_DoesNotSetPublishedDate(
+        public static async Task SetPublicationStatus_InRemediationStatus_DoesNotSetPublishedDate(
             CatalogueItem catalogueItem,
             [Frozen] BuyingCatalogueDbContext context,
             PublicationStatusService service)
@@ -48,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.PublishStatus
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async void SetPublicationStatus_DraftToPublished_SetsPublishedDate(
+        public static async Task SetPublicationStatus_DraftToPublished_SetsPublishedDate(
             CatalogueItem catalogueItem,
             [Frozen] BuyingCatalogueDbContext context,
             PublicationStatusService service)
@@ -67,7 +68,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.PublishStatus
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static async void SetPublicationStatus_PublishedToPublished_DoesNotSetPublishedDate(
+        public static async Task SetPublicationStatus_PublishedToPublished_DoesNotSetPublishedDate(
             CatalogueItem catalogueItem,
             [Frozen] BuyingCatalogueDbContext context,
             PublicationStatusService service)

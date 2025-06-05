@@ -1,3 +1,9 @@
+data "azurerm_container_registry" "acr" {
+  provider            = azurerm.acr
+  name                = "gpitfuturesdevacr"
+  resource_group_name = "gpitfutures-dev-rg-acr"
+}
+
 data "azurerm_virtual_network" "infrastructure_vnet" {
   name                = "${var.project}-infra-vnet"
   resource_group_name = "${var.project}-rg-sa"

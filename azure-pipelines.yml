@@ -1,8 +1,13 @@
 variables:
+  - name: dockerVersion
+    value: '19.03.5'
   - name: dotnetVersion
-    value: '8.0.300'
+    value: '8.0.400'
+  - name: MSBUILDSINGLELOADCONTEXT
+    value: '1'
   - name: buildConfiguration
     value: Release
+  - group: dev-acr-secrets
 
 trigger:
   branches:
@@ -38,10 +43,14 @@ jobs:
       - script: echo semVer $(setVersionStep.semVer)
         name: echovar
 
-  - job: buildAndPackage
+  - job: dockerBuildAndPush
     displayName: Build and Package
     variables:
       semVer: $[ dependencies.version.outputs['setVersionStep.semVer'] ]
+      ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+        latestTag: latest
+      ${{ if ne(variables['Build.SourceBranchName'], 'main') }}:
+        latestTag: latestbuild
 
     dependsOn: version
     pool:
@@ -68,6 +77,10 @@ jobs:
         displayName: 'Install Node.js'
         inputs:
           versionSpec: '14.x'
+
+      - task: DockerInstaller@0
+        inputs:
+          dockerVersion: $(dockerVersion)
 
       - task: Npm@1
         displayName: 'Run npm install'
@@ -110,18 +123,21 @@ jobs:
           arguments: '--no-build --configuration $(buildConfiguration) --collect:"XPlat Code Coverage;Format=opencover" -- xunit.parallelizeTestCollections=true'
           publishTestResults: false
 
-      - task: DotNetCoreCLI@2
-        displayName: 'Publish'
-        inputs:
-          command: 'publish'
-          projects: 'src/NHSD.GPIT.BuyingCatalogue.WebApp'
-          arguments: '--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/site-$(semVer)'
-          publishWebProjects: false
-          modifyOutputPath: false
-          zipAfterPublish: true
-
       - task: SonarCloudAnalyze@2
       - task: SonarCloudPublish@2
+
+      - task: Docker@2
+        displayName: 'Docker: Build and Push'
+        condition: succeeded()
+        inputs:
+          containerRegistry: 'gpitfuturesdevacr'
+          repository: 'nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp'
+          command: 'buildAndPush'
+          Dockerfile: 'src/**/NHSD.GPIT.BuyingCatalogue.WebApp/Dockerfile'
+          buildContext: './'
+          tags: |
+            $(semVer)
+            $(latestTag)
 
       - task: PowerShell@2
         inputs:
@@ -148,10 +164,6 @@ jobs:
       - publish: $(build.artifactStagingDirectory)/dacpacs
         displayName: Publish DACPAC
         artifact: dacpacs
-
-      - publish: $(build.artifactStagingDirectory)/site-$(semVer)
-        displayName: Publish site
-        artifact: coresite
 
   - job: createBuildArtifact
     displayName: Publish Terraform

@@ -5,7 +5,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
-public class OrderRecipient
+public class OrderRecipient : ICloneable<OrderRecipient>
 {
     public OrderRecipient()
     {
@@ -70,4 +70,10 @@ public class OrderRecipient
     public DateTime? GetDeliveryDateForItem(CatalogueItemId catalogueItemId) => OrderItemRecipients
         .FirstOrDefault(x => x.CatalogueItemId == catalogueItemId)
         ?.DeliveryDate;
+
+    public OrderRecipient Clone() => new(OdsCode)
+    {
+        OdsOrganisation = OdsOrganisation,
+        OrderItemRecipients = OrderItemRecipients.Select(x => x.Clone()).ToList(),
+    };
 }
