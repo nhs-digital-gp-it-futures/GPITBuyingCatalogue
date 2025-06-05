@@ -182,8 +182,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                                     ? TaskProgress.InProgress
                                     : TaskProgress.NotStarted,
                         Standards = ci.Solution.InProgressStandards.Count != 0
-                            ? TaskProgress.Completed
-                            : TaskProgress.Optional,
+                            ? TaskProgress.InProgress
+                            : TaskProgress.Completed,
                         DevelopmentPlans = ci.Solution.WorkOffPlans.Count != 0
                             ? TaskProgress.Completed
                             : TaskProgress.Optional,
