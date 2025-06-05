@@ -177,13 +177,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     internalOrgId,
                     UrlStringToValues(recipientIds)),
                 false);
-            ServiceRecipientModel practiceReorganisation = null;
 
-            practiceReorganisation = selectedRecipients.FirstOrDefault(r => r.OdsCode == selectedRecipientId);
+            ServiceRecipientModel practiceReorganisation =
+                selectedRecipients.FirstOrDefault(r => r.OdsCode == selectedRecipientId);
 
-            if (practiceReorganisation == null)
+            if (practiceReorganisation is null)
             {
-                throw new InvalidOperationException(
+                return BadRequest(
                     $"The selected merger or split recipient {selectedRecipientId} isn't in the list of recipients");
             }
 
@@ -257,7 +257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
         private static string[] UrlStringToValues(string recipientIds)
         {
-            return recipientIds.Split(
+            return recipientIds?.Split(
                 RecipientsConstants.Delimiter,
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
