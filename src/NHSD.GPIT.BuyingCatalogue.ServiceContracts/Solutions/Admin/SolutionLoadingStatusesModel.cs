@@ -14,6 +14,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Admin
 
         public TaskProgress Description { get; init; }
 
+        public TaskProgress Standards { get; init; }
+
         public TaskProgress DevelopmentPlans { get; init; }
 
         public TaskProgress Features { get; init; }

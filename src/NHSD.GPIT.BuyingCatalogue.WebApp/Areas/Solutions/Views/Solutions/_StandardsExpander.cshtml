@@ -1,7 +1,6 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions
 @using NHSD.GPIT.BuyingCatalogue.Framework.Extensions
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionStandardsExpanderModel
@@ -25,19 +24,18 @@
             <nhs-table-row-container>
                 <nhs-table-cell>@standard.Name</nhs-table-cell>
                 <nhs-table-cell>@standard.Description <p><a href="@standard.Url" target="_blank">More information about this Standard (opens in a new tab)</a></p></nhs-table-cell>
+                <nhs-table-cell><nhs-tag style="white-space:nowrap" colour="@(standard.Compliance is StandardCompliance.InProgress ? NhsTagsTagHelper.TagColour.Blue : NhsTagsTagHelper.TagColour.Green)" text="@(standard.Compliance.Description())" /></nhs-table-cell>
                 @if (Model.StandardsWithWorkOffPlans.Any(swp => swp == standard.Id))
                 {
-                    <nhs-table-cell><nhs-tag colour="Yellow" text="In&nbsp;Progress" /></nhs-table-cell>
                     <nhs-table-cell>
                         <a asp-action="@nameof(SolutionsController.DevelopmentPlans)"
                            asp-controller="@typeof(SolutionsController).ControllerName()"
                            asp-route-solutionId="@Model.SolutionId"
-                           asp-fragment="@standard.Id">View&nbsp;details</a>
+                           asp-fragment="@standard.Id">View details</a>
                     </nhs-table-cell>
                 }
                 else
                 {
-                    <nhs-table-cell><nhs-tag colour="Green" text="Fully&nbsp;met" /></nhs-table-cell>
                     <nhs-table-cell></nhs-table-cell>
                 }
             </nhs-table-row-container>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models;
 
@@ -8,12 +9,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {
         public SolutionStandardsModel(
             CatalogueItem catalogueItem,
-            IList<Standard> standards,
+            IEnumerable<StandardComplianceModel> standards,
             IEnumerable<string> standardsWithWorkOffPlans,
             CatalogueItemContentStatus contentStatus)
             : base(catalogueItem, contentStatus)
         {
-            Standards = standards;
+            Standards = standards.ToList();
             StandardsWithWorkOffPlans = standardsWithWorkOffPlans;
         }
 
@@ -23,7 +24,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
         public override int Index => 12;
 
-        public IList<Standard> Standards { get; init; }
+        public IList<StandardComplianceModel> Standards { get; init; }
 
         public IEnumerable<string> StandardsWithWorkOffPlans { get; init; }
     }

@@ -15,18 +15,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
     [Route("admin/catalogue-solutions/manage/{solutionId}/development-plans")]
-    public sealed class DevelopmentPlansController : Controller
+    public sealed class DevelopmentPlansController(
+        ISolutionsService solutionsService,
+        IDevelopmentPlansService developmentPlansService,
+        ISolutionStandardsService solutionStandardsService)
+        : Controller
     {
-        private readonly ISolutionsService solutionsService;
-        private readonly IDevelopmentPlansService developmentPlansService;
-
-        public DevelopmentPlansController(
-            ISolutionsService solutionsService,
-            IDevelopmentPlansService developmentPlansService)
-        {
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.developmentPlansService = developmentPlansService ?? throw new ArgumentNullException(nameof(developmentPlansService));
-        }
+        private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+        private readonly IDevelopmentPlansService developmentPlansService = developmentPlansService ?? throw new ArgumentNullException(nameof(developmentPlansService));
+        private readonly ISolutionStandardsService solutionStandardsService = solutionStandardsService ?? throw new ArgumentNullException(nameof(solutionStandardsService));
 
         [HttpGet]
         public async Task<IActionResult> DevelopmentPlans(CatalogueItemId solutionId)
@@ -35,12 +32,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
+            var inProgressStandards = await solutionStandardsService.GetInProgressStandards(solutionId);
             var model = new DevelopmentPlanModel(solution)
             {
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
                     typeof(CatalogueSolutionsController).ControllerName(),
                     new { solutionId }),
+                HasInProgressStandards = inProgressStandards.Any(),
             };
 
             return View(model);
@@ -55,7 +54,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
+                var inProgressStandards = await solutionStandardsService.GetInProgressStandards(solutionId);
                 model.WorkOffPlans = solution.Solution.WorkOffPlans;
+                model.HasInProgressStandards = inProgressStandards.Any();
                 return View(model);
             }
 
@@ -75,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (solution is null)
                 return BadRequest($"No Solution found for Id: {solutionId}");
 
-            var standards = await solutionsService.GetSolutionStandardsForEditing(solution.Id);
+            var standards = await solutionStandardsService.GetInProgressStandards(solution.Id);
 
             var model = new EditWorkOffPlanModel(solution, standards)
             {
