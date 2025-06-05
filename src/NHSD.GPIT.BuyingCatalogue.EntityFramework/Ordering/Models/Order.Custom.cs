@@ -176,38 +176,44 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                 && OrderSublocations.Any(x => x.SublocationRecipients.Count == 0);
         }
 
-        public void Apply(Order order)
+        public void Apply(Order orderToApply)
         {
             // helps with backwards compatability - if we have an amendment where we didn't copy across all the items.
-            foreach (var orderItemToApply in order.OrderItems)
+            foreach (OrderItem orderItemToApply in orderToApply.OrderItems)
             {
-                var existingOrderItem =
+                OrderItem currentOrderItem =
                     OrderItems.FirstOrDefault(x => x.CatalogueItemId == orderItemToApply.CatalogueItemId);
 
-                if (existingOrderItem == null)
+                if (currentOrderItem == null)
                 {
                     OrderItems.Add(orderItemToApply);
                 }
             }
 
             // Merge recipients on existing sublocations
-            foreach (OrderSublocation existingSublocation in OrderSublocations)
+            foreach (OrderSublocation currentOrderSublocation in OrderSublocations)
             {
                 OrderSublocation sublocationToApply =
-                    order.OrderSublocations.First(x => x.SublocationOdsCode == existingSublocation.SublocationOdsCode);
+                    orderToApply.OrderSublocations.FirstOrDefault(x =>
+                        x.SublocationOdsCode == currentOrderSublocation.SublocationOdsCode);
+
+                if (sublocationToApply is null)
+                {
+                    continue;
+                }
 
                 IEnumerable<OrderSublocationRecipient> sublocationRecipientsToApply =
                     sublocationToApply.SublocationRecipients.Where(x =>
-                        existingSublocation.SublocationRecipients.All(y =>
+                        currentOrderSublocation.SublocationRecipients.All(y =>
                             y.RecipientOdsCode != x.RecipientOdsCode));
 
                 foreach (OrderSublocationRecipient newSublocationRecipient in sublocationRecipientsToApply)
                 {
-                    existingSublocation.SublocationRecipients.Add(newSublocationRecipient);
+                    currentOrderSublocation.SublocationRecipients.Add(newSublocationRecipient);
                 }
             }
 
-            IEnumerable<OrderSublocation> sublocationsToApply = order.OrderSublocations.Where(x =>
+            IEnumerable<OrderSublocation> sublocationsToApply = orderToApply.OrderSublocations.Where(x =>
                 OrderSublocations.All(y => y.SublocationOdsCode != x.SublocationOdsCode));
 
             foreach (OrderSublocation newSublocation in sublocationsToApply)
@@ -295,12 +301,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public OrderItem InitialiseOrderItem(CatalogueItemId catalogueItemId)
         {
-            return new OrderItem
-            {
-                OrderId = Id,
-                CatalogueItemId = catalogueItemId,
-                Created = DateTime.UtcNow,
-            };
+            return new OrderItem { OrderId = Id, CatalogueItemId = catalogueItemId, Created = DateTime.UtcNow };
         }
 
         public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(

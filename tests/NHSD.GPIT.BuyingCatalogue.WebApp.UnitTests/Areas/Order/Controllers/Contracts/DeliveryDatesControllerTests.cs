@@ -454,6 +454,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
+            order.OrderSublocations.Clear();
+
             var orderWrapper = new OrderWrapper(order);
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(orderWrapper);
 
@@ -496,7 +498,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         {
             order.SetupCatalogueSolution();
 
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            CatalogueItemId catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
             order.FlattenedRecipients.ForEach(x =>
                 x.OrderItemSublocationRecipients.ForEach(y => y.DeliveryDate = null));
@@ -713,9 +715,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
 
-            order.FlattenedRecipients.ForEach(x => x.OrderItemSublocationRecipients
-                .Where(y => y.CatalogueItemId != solutionId)
-                .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
+            order.FlattenedRecipients.ToList()
+                .ForEach(x => x.OrderItemSublocationRecipients
+                    .Where(y => y.CatalogueItemId != solutionId)
+                    .ToList()
+                    .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
 
             var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
 
@@ -765,9 +769,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
 
-            order.FlattenedRecipients.ForEach(x => x.OrderItemSublocationRecipients
-                .Where(y => y.CatalogueItemId != solutionId)
-                .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
+            order.FlattenedRecipients.ToList()
+                .ForEach(x => x.OrderItemSublocationRecipients
+                    .Where(y => y.CatalogueItemId != solutionId)
+                    .ToList()
+                    .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
 
             var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
 
