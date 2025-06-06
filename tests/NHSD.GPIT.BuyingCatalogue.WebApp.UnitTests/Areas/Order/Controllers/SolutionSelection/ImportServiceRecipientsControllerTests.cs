@@ -9,9 +9,11 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CatalogueItems;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
@@ -22,6 +24,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
 public static class ImportServiceRecipientsControllerTests
 {
+    private const string MismatchOdsCode = "MISMATCH";
+    private const string MismatchOrganisationName = "MISMATCH organisation name";
+
     [Fact]
     public static void Constructors_VerifyGuardClauses()
     {
@@ -85,27 +90,24 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IServiceRecipientImportService importService,
         ImportServiceRecipientsController controller)
     {
-        Assert.Fail("needs fixing");
+        importService.ReadFromStream(Arg.Any<Stream>())
+            .Returns(
+                new List<ServiceRecipientImportModel> { new() { Organisation = "Fake Org", OdsCode = "ABC123" } });
 
-        // importService.ReadFromStream(Arg.Any<Stream>())
-        //     .Returns(
-        //         new List<ServiceRecipientImportModel> { new() { Organisation = "Fake Org", OdsCode = "ABC123" } });
-        //
-        // var result = (await controller.Index(
-        //         internalOrgId,
-        //         callOffId,
-        //         model))
-        //     .As<RedirectToActionResult>();
-        //
-        // result.Should().NotBeNull();
-        // result.ActionName.Should().Be(nameof(controller.ValidateOds));
-        // result.RouteValues.Should()
-        //     .BeEquivalentTo(
-        //         new RouteValueDictionary
-        //         {
-        //             { nameof(internalOrgId), internalOrgId },
-        //             { nameof(callOffId), callOffId },
-        //         });
+        var result = (await controller.Index(
+                internalOrgId,
+                callOffId,
+                model))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Validate));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { nameof(internalOrgId), internalOrgId }, { nameof(callOffId), callOffId },
+                });
     }
 
     [Theory]
@@ -116,27 +118,207 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IServiceRecipientImportService importService,
         ImportServiceRecipientsController controller)
     {
-        Assert.Fail("needs fixing");
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns((IList<ServiceRecipientImportModel>)null);
 
-        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns((IList<ServiceRecipientImportModel>)null);
-        //
-        // var result = (await controller.ValidateOds(internalOrgId, callOffId))
-        //     .As<RedirectToActionResult>();
-        //
-        // result.Should().NotBeNull();
-        // result.ActionName.Should().Be(nameof(controller.Index));
-        // result.RouteValues.Should()
-        //     .BeEquivalentTo(
-        //         new RouteValueDictionary
-        //         {
-        //             { nameof(internalOrgId), internalOrgId },
-        //             { nameof(callOffId), callOffId },
-        //         });
+        var result = (await controller.Validate(internalOrgId, callOffId, null))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.Index));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { nameof(internalOrgId), internalOrgId }, { nameof(callOffId), callOffId },
+                });
     }
 
     [Theory]
     [MockAutoData]
-    public static async Task ValidateOds_MismatchedOdsCodes_ReturnsViewWithModel(
+    public static async Task Validate_MismatchedOdsCodes_ReturnsMismatchedOdsView(
+        Organisation organisation,
+        EntityFramework.Ordering.Models.Order order,
+        List<ServiceRecipient> serviceRecipients,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] IOrderService ordersService,
+        [Frozen] IOdsService odsService,
+        ImportServiceRecipientsController controller)
+    {
+        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
+
+        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
+        importedServiceRecipients.First().OdsCode = MismatchOdsCode;
+        List<ServiceRecipientImportModel> expectedInvalidRecipients =
+            importedServiceRecipients.Where(x => x.OdsCode == MismatchOdsCode).ToList();
+        var expectedModel = new ValidateOdsModel(expectedInvalidRecipients) { Caption = order.Description };
+
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+
+        ordersService.GetOrderThin(order.CallOffId, organisation.InternalIdentifier)
+            .Returns(new OrderWrapper(order));
+
+        // This service call includes a filter to restrict by ods codes, but the controller logic should find mismatches regardless
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns(serviceRecipients);
+
+        var result = (await controller.Validate(organisation.InternalIdentifier, order.CallOffId, null))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt
+                    .Excluding(m => m.BackLink)
+                    .Excluding(m => m.CancelLink)
+                    .Excluding(m => m.ContinueLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Validate_MismatchedOdsCodes_SkipsIfDisclaimerAccepted(
+        Organisation organisation,
+        EntityFramework.Ordering.Models.Order order,
+        List<ServiceRecipient> serviceRecipients,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] IOrderService ordersService,
+        [Frozen] IOdsService odsService,
+        ImportServiceRecipientsController controller)
+    {
+        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
+
+        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
+        importedServiceRecipients.First().OdsCode = MismatchOdsCode;
+
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+
+        ordersService.GetOrderThin(order.CallOffId, organisation.InternalIdentifier)
+            .Returns(new OrderWrapper(order));
+
+        // This service call includes a filter to restrict by ods codes, but the controller logic should find mismatches regardless
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns(serviceRecipients);
+
+        var result = (await controller.Validate(organisation.InternalIdentifier, order.CallOffId, true))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(ImportServiceRecipientsController.ValidationComplete));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier },
+                    { "callOffId", order.CallOffId },
+                    { "validationStatus", ValidationStatus.PartialSuccess },
+                });
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Validate_AllMismatchedOdsCodes_FailedStatus(
+        Organisation organisation,
+        EntityFramework.Ordering.Models.Order order,
+        List<ServiceRecipient> serviceRecipients,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] IOrderService ordersService,
+        [Frozen] IOdsService odsService,
+        ImportServiceRecipientsController controller)
+    {
+        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
+
+        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
+        importedServiceRecipients.First().OdsCode = MismatchOdsCode;
+
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+
+        ordersService.GetOrderThin(order.CallOffId, organisation.InternalIdentifier)
+            .Returns(new OrderWrapper(order));
+
+        // This service call includes a filter to restrict by ods codes, but the controller logic should find mismatches regardless
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns([]);
+
+        var result = (await controller.Validate(organisation.InternalIdentifier, order.CallOffId, true))
+            .As<RedirectToActionResult>();
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(ImportServiceRecipientsController.ValidationComplete));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier },
+                    { "callOffId", order.CallOffId },
+                    { "validationStatus", ValidationStatus.Failure },
+                });
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Validate_MismatchedNames_ReturnsViewWithModel(
+        Organisation organisation,
+        EntityFramework.Ordering.Models.Order order,
+        List<ServiceRecipient> serviceRecipients,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] IOrderService ordersService,
+        [Frozen] IOdsService odsService,
+        ImportServiceRecipientsController controller)
+    {
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients.Take(3)
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
+
+        importedServiceRecipients.First().Organisation = MismatchOrganisationName;
+
+        ServiceRecipient serviceRecipient = serviceRecipients.First();
+
+        var mismatchedNames = new List<(string, string, string)>
+        {
+            (MismatchOrganisationName, serviceRecipient.Name, serviceRecipient.OrgId),
+        };
+
+        var expectedModel = new ValidateNamesModel(
+            mismatchedNames) { Caption = order.Description };
+
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+
+        ordersService.GetOrderThin(order.CallOffId, organisation.InternalIdentifier)
+            .Returns(new OrderWrapper(order));
+
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns(serviceRecipients);
+
+        var result = (await controller.Validate(organisation.InternalIdentifier, order.CallOffId, false))
+            .As<ViewResult>();
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt
+                    .Excluding(m => m.BackLink)
+                    .Excluding(m => m.CancelLink)
+                    .Excluding(m => m.ContinueLink));
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static async Task Validate_AllValid_Redirects(
         string internalOrgId,
         CallOffId callOffId,
         List<ServiceRecipient> serviceRecipients,
@@ -144,229 +326,29 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        Assert.Fail("needs fixing");
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients.Take(2)
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
 
-        // var importedServiceRecipients = serviceRecipients.Take(2)
-        //     .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-        //     .ToList();
-        // importedServiceRecipients.First().OdsCode = "MISMATCH";
-        //
-        // var expectedModel = new ValidateOdsModel(
-        //     importedServiceRecipients.Take(1).ToList())
-        // { Caption = callOffId.ToString() };
-        //
-        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
-        //
-        // odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-        //
-        // var result = (await controller.ValidateOds(internalOrgId, callOffId))
-        //     .As<ViewResult>();
-        //
-        // result.Should().NotBeNull();
-        // result.Model.Should()
-        //     .BeEquivalentTo(
-        //         expectedModel,
-        //         opt => opt
-        //             .Excluding(m => m.BackLink)
-        //             .Excluding(m => m.CancelLink)
-        //             .Excluding(m => m.ContinueLink));
-    }
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
 
-    [Theory]
-    [MockAutoData]
-    public static async Task ValidateOds_ValidOdsCodes_Redirects(
-        string internalOrgId,
-        CallOffId callOffId,
-        List<ServiceRecipient> serviceRecipients,
-        [Frozen] IServiceRecipientImportService importService,
-        [Frozen] IOdsService odsService,
-        ImportServiceRecipientsController controller)
-    {
-        Assert.Fail("needs fixing");
+        odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
 
-        // var importedServiceRecipients = serviceRecipients.Take(2)
-        //     .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-        //     .ToList();
-        //
-        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
-        //
-        // odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-        //
-        // var result = (await controller.ValidateOds(internalOrgId, callOffId))
-        //     .As<RedirectToActionResult>();
-        //
-        // result.Should().NotBeNull();
-        // result.ActionName.Should().Be(nameof(controller.ValidateNames));
-        // result.RouteValues.Should()
-        //     .BeEquivalentTo(
-        //         new RouteValueDictionary
-        //         {
-        //             { nameof(internalOrgId), internalOrgId },
-        //             { nameof(callOffId), callOffId },
-        //         });
-    }
+        var result = (await controller.Validate(internalOrgId, callOffId, null))
+            .As<RedirectToActionResult>();
 
-    [Theory]
-    [MockAutoData]
-    public static async Task ValidateNames_CachedRecipientsNull_Redirects(
-        string internalOrgId,
-        CallOffId callOffId,
-        [Frozen] IServiceRecipientImportService importService,
-        ImportServiceRecipientsController controller)
-    {
-        Assert.Fail("needs fixing");
+        var validationStatus = ValidationStatus.Success;
 
-        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns((IList<ServiceRecipientImportModel>)null);
-        //
-        // var result = (await controller.ValidateNames(internalOrgId, callOffId))
-        //     .As<RedirectToActionResult>();
-        //
-        // result.Should().NotBeNull();
-        // result.ActionName.Should().Be(nameof(controller.Index));
-        // result.RouteValues.Should()
-        //     .BeEquivalentTo(
-        //         new RouteValueDictionary
-        //         {
-        //             { nameof(internalOrgId), internalOrgId },
-        //             { nameof(callOffId), callOffId },
-        //         });
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task ValidateNames_MismatchedNames_ReturnsViewWithModel(
-        string internalOrgId,
-        CallOffId callOffId,
-        List<ServiceRecipient> serviceRecipients,
-        [Frozen] IServiceRecipientImportService importService,
-        [Frozen] IOdsService odsService,
-        ImportServiceRecipientsController controller)
-    {
-        Assert.Fail("needs fixing");
-
-        // var importedServiceRecipients = serviceRecipients.Take(2)
-        //     .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-        //     .ToList();
-        // importedServiceRecipients.First().Organisation = "MISMATCH";
-        //
-        // var serviceRecipient = serviceRecipients.First();
-        //
-        // var mismatchedNames = new List<(string, string, string)>
-        // {
-        //     ("MISMATCH", serviceRecipient.Name, serviceRecipient.OrgId),
-        // };
-        //
-        // var expectedModel = new ValidateNamesModel(mismatchedNames)
-        // {
-        //     Caption = callOffId.ToString(),
-        // };
-        //
-        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
-        //
-        // odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-        //
-        // var result = (await controller.ValidateNames(internalOrgId, callOffId))
-        //     .As<ViewResult>();
-        //
-        // result.Should().NotBeNull();
-        // result.Model.Should()
-        //     .BeEquivalentTo(
-        //         expectedModel,
-        //         opt => opt
-        //             .Excluding(m => m.BackLink)
-        //             .Excluding(m => m.CancelLink));
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task ValidateNames_ValidNames_Redirects(
-        string internalOrgId,
-        CallOffId callOffId,
-        List<ServiceRecipient> serviceRecipients,
-        [Frozen] IServiceRecipientImportService importService,
-        [Frozen] IOdsService odsService,
-        ImportServiceRecipientsController controller)
-    {
-        Assert.Fail("needs fixing");
-
-        // var recipientIds = serviceRecipients.Take(2)
-        //     .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-        //     .ToList();
-        //
-        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(recipientIds);
-        //
-        // odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-        //
-        // var result = (await controller.ValidateNames(internalOrgId, callOffId))
-        //     .As<RedirectToActionResult>();
-        //
-        // result.Should().NotBeNull();
-        // result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
-        // result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
-        // result.RouteValues.Should()
-        //     .BeEquivalentTo(
-        //         new RouteValueDictionary
-        //         {
-        //             { nameof(internalOrgId), internalOrgId },
-        //             { nameof(callOffId), callOffId },
-        //             { nameof(recipientIds), string.Join(',', recipientIds.Select(s => s.OdsCode)) },
-        //             { "hasImported", true },
-        //         });
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task ValidateNames_Post_Redirects(
-        string catalogueItemName,
-        string internalOrgId,
-        CallOffId callOffId,
-        CatalogueItemId catalogueItemId,
-        List<ServiceRecipient> serviceRecipients,
-        [Frozen] IServiceRecipientImportService importService,
-        [Frozen] ICatalogueItemService catalogueItemService,
-        [Frozen] IOdsService odsService,
-        ImportServiceRecipientsController controller)
-    {
-        Assert.Fail("needs fixing");
-
-        // var recipientIds = serviceRecipients
-        //     .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId, })
-        //     .ToList();
-        //
-        // recipientIds.First().OdsCode = "MISMATCH";
-        // recipientIds.Skip(1).First().Organisation = "MISMATCH";
-        //
-        // var firstServiceRecipient = serviceRecipients.First();
-        //
-        // var mismatchedNames = new List<(string, string, string)>
-        // {
-        //     ("MISMATCH", firstServiceRecipient.Name, firstServiceRecipient.OrgId),
-        // };
-        //
-        // var model = new ValidateNamesModel(mismatchedNames);
-        //
-        // importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(recipientIds);
-        //
-        // catalogueItemService.GetCatalogueItemName(catalogueItemId).Returns(catalogueItemName);
-        //
-        // odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
-        //
-        // var result = (await controller.ValidateNames(internalOrgId, callOffId, catalogueItemId, model))
-        //     .As<RedirectToActionResult>();
-        //
-        // result.Should().NotBeNull();
-        // result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
-        // result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
-        // result.RouteValues.Should()
-        //     .BeEquivalentTo(
-        //         new RouteValueDictionary
-        //         {
-        //             { nameof(internalOrgId), internalOrgId },
-        //             { nameof(callOffId), callOffId },
-        //             { nameof(catalogueItemId), catalogueItemId },
-        //             { nameof(recipientIds), string.Join(',', recipientIds.Skip(1).Select(x => x.OdsCode)) },
-        //             { "hasImported", true },
-        //         });
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(controller.ValidationComplete));
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { nameof(internalOrgId), internalOrgId },
+                    { nameof(callOffId), callOffId },
+                    { nameof(validationStatus), validationStatus },
+                });
     }
 
     [Theory]

@@ -102,7 +102,7 @@ public class ImportServiceRecipientsController(
     public async Task<IActionResult> Validate(
         string internalOrgId,
         CallOffId callOffId,
-        bool acceptLossOfOdsIfMismatch)
+        bool? acceptLossOfOdsIfMismatch)
     {
         var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, callOffId);
         var cachedRecipients = await importService.GetCached(cacheKey);
@@ -112,7 +112,7 @@ public class ImportServiceRecipientsController(
 
         var backAndCancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId });
 
-        ValidationStatus validationStatus = acceptLossOfOdsIfMismatch
+        ValidationStatus validationStatus = acceptLossOfOdsIfMismatch is true
             ? ValidationStatus.PartialSuccess
             : ValidationStatus.Success;
 
@@ -137,7 +137,7 @@ public class ImportServiceRecipientsController(
         HashSet<string> mismatchedOdsCodes =
             requestedRecipientOdsCodes.Except(actualServiceRecipientsAsHashSet).ToHashSet();
 
-        var shouldShowValidateOdsScreen = mismatchedOdsCodes.Count > 0 && !acceptLossOfOdsIfMismatch;
+        var shouldShowValidateOdsScreen = mismatchedOdsCodes.Count > 0 && acceptLossOfOdsIfMismatch is false;
 
         if (shouldShowValidateOdsScreen)
         {
