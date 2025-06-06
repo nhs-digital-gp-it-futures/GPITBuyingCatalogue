@@ -89,7 +89,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 })
                 .ToList();
 
-            var expected = new SelectRecipientsModel(
+            var expected = new SelectMergerOrSplitRecipientsModel(
                 organisation,
                 new CallOffId(),
                 OrderTypeEnum.AssociatedServiceOther, // TEMP
@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task Post_SelectServiceRecipients_WithModelErrors_ReturnsExpectedResult(
             string internalOrgId,
             CallOffId callOffId,
-            SelectRecipientsModel model,
+            SelectMergerOrSplitRecipientsModel model,
             MergerOrSplitServiceRecipientsController controller)
         {
             controller.ModelState.AddModelError("key", "errorMessage");
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             OrderTypeEnum orderType,
             string internalOrgId,
             CallOffId callOffId,
-            SelectRecipientsModel model,
+            SelectMergerOrSplitRecipientsModel model,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderService mockOrderService,
             MergerOrSplitServiceRecipientsController controller)

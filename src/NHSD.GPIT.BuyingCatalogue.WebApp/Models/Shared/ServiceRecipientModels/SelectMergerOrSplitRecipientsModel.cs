@@ -6,17 +6,17 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
-public sealed class SelectRecipientsModel : NavBaseModel
+public sealed class SelectMergerOrSplitRecipientsModel : NavBaseModel
 {
     public const int SelectAtLeast = 2;
 
     private readonly SelectionMode? selectionMode;
 
-    public SelectRecipientsModel()
+    public SelectMergerOrSplitRecipientsModel()
     {
     }
 
-    public SelectRecipientsModel(
+    public SelectMergerOrSplitRecipientsModel(
         Organisation organisation,
         CallOffId callOffId,
         OrderType orderType,

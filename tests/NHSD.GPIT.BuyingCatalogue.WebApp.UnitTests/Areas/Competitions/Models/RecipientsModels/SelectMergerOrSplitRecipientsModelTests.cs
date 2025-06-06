@@ -8,7 +8,7 @@ using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.RecipientsModels;
 
-public static class SelectRecipientsModelTests
+public static class SelectMergerOrSplitRecipientsModelTests
 {
     [Theory]
     [MockAutoData]
@@ -18,7 +18,7 @@ public static class SelectRecipientsModelTests
         List<string> existingRecipients,
         List<string> preSelectedRecipients)
     {
-        var model = new SelectRecipientsModel(
+        var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
             new CallOffId(),
             OrderTypeEnum.AssociatedServiceSplit, // TEMP
@@ -52,7 +52,7 @@ public static class SelectRecipientsModelTests
     {
         serviceRecipients.ForEach(x => x.Selected = false);
 
-        var model = new SelectRecipientsModel(
+        var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
             new CallOffId(),
             OrderTypeEnum.AssociatedServiceSplit, // TEMP
@@ -74,7 +74,7 @@ public static class SelectRecipientsModelTests
 
         var preSelectedRecipients = serviceRecipients.Take(2).Select(x => x.OdsCode).ToList();
 
-        var model = new SelectRecipientsModel(
+        var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
             new CallOffId(),
             OrderTypeEnum.AssociatedServiceSplit, // TEMP
@@ -94,7 +94,7 @@ public static class SelectRecipientsModelTests
     {
         serviceRecipients.ForEach(x => x.Selected = false);
 
-        var model = new SelectRecipientsModel(
+        var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
             new CallOffId(),
             OrderTypeEnum.AssociatedServiceSplit, // TEMP
@@ -115,7 +115,7 @@ public static class SelectRecipientsModelTests
         var preSelectedRecipients = serviceRecipients.Take(2).Select(x => x.OdsCode).ToList();
         var existingRecipients = serviceRecipients.Skip(2).Select(x => x.OdsCode).ToList();
 
-        var model = new SelectRecipientsModel(
+        var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
             new CallOffId(),
             OrderTypeEnum.AssociatedServiceSplit, // TEMP

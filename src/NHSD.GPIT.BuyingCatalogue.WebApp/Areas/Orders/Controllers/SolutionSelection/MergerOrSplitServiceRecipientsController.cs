@@ -71,7 +71,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             }
 
             var model =
-                new SelectRecipientsModel(
+                new SelectMergerOrSplitRecipientsModel(
                     organisation,
                     callOffId,
                     wrapper.Order.OrderType,
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         public async Task<IActionResult> SelectServiceRecipients(
             string internalOrgId,
             CallOffId callOffId,
-            SelectRecipientsModel model)
+            SelectMergerOrSplitRecipientsModel model)
         {
             if (!ModelState.IsValid)
             {
