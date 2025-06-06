@@ -69,13 +69,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
-            var expectedTotalRecipientCount = order.FlattenedRecipients.Count() * order.OrderItems.Count();
+            var expectedTotalRecipientCount = order.FlattenedRecipients.Count();
 
             var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
             model.Recipients.Count.Should().Be(order.OrderItems.Count);
             model.Recipients.Select(x => x.Key)
                 .Should()
-                .BeEquivalentTo(order.OrderItems.Select(x => x.CatalogueItem.Name), opt => opt.WithoutStrictOrdering());
+                .BeEquivalentTo(
+                    order.OrderSublocations.Select(x => x.SublocationOrganisation.Name),
+                    opt => opt.WithoutStrictOrdering());
             model.Recipients.SelectMany(x => x.Value).Count().Should().Be(expectedTotalRecipientCount);
         }
 
