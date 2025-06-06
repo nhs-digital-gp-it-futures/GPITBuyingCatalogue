@@ -137,7 +137,7 @@ public class ImportServiceRecipientsController(
         HashSet<string> mismatchedOdsCodes =
             requestedRecipientOdsCodes.Except(actualServiceRecipientsAsHashSet).ToHashSet();
 
-        var shouldShowValidateOdsScreen = mismatchedOdsCodes.Count > 0 && acceptLossOfOdsIfMismatch is false;
+        var shouldShowValidateOdsScreen = mismatchedOdsCodes.Count > 0 && acceptLossOfOdsIfMismatch is not true;
 
         if (shouldShowValidateOdsScreen)
         {

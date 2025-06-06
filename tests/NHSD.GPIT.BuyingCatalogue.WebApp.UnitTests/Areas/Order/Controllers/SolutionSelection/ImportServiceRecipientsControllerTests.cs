@@ -11,10 +11,12 @@ using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients;
 using Xunit;
@@ -319,35 +321,43 @@ public static class ImportServiceRecipientsControllerTests
     [Theory]
     [MockAutoData]
     public static async Task Validate_AllValid_Redirects(
-        string internalOrgId,
-        CallOffId callOffId,
+        Organisation organisation,
+        EntityFramework.Ordering.Models.Order order,
         List<ServiceRecipient> serviceRecipients,
         [Frozen] IServiceRecipientImportService importService,
+        [Frozen] ICompetitionsService competitionsService,
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients.Take(2)
+        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
+
+        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
 
         importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
 
-        odsService.GetServiceRecipientsByParentInternalIdentifier(internalOrgId).Returns(serviceRecipients);
+        competitionsService.GetCompetitionName(organisation.InternalIdentifier, order.Id)
+            .Returns(order.Description);
 
-        var result = (await controller.Validate(internalOrgId, callOffId, null))
+        // This service call includes a filter to restrict by ods codes, but the controller logic should find mismatches regardless
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns(serviceRecipients);
+
+        var result = (await controller.Validate(organisation.InternalIdentifier, order.CallOffId, false))
             .As<RedirectToActionResult>();
 
-        var validationStatus = ValidationStatus.Success;
-
         result.Should().NotBeNull();
-        result.ActionName.Should().Be(nameof(controller.ValidationComplete));
+        result.ActionName.Should().Be(nameof(CompetitionImportServiceRecipientsController.ValidationComplete));
         result.RouteValues.Should()
             .BeEquivalentTo(
                 new RouteValueDictionary
                 {
-                    { nameof(internalOrgId), internalOrgId },
-                    { nameof(callOffId), callOffId },
-                    { nameof(validationStatus), validationStatus },
+                    { "internalOrgId", organisation.InternalIdentifier },
+                    { "callOffId", order.CallOffId },
+                    { "validationStatus", ValidationStatus.Success },
                 });
     }
 
