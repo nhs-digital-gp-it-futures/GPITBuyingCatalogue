@@ -92,7 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expected = new SelectMergerOrSplitRecipientsModel(
                 organisation,
                 new CallOffId(),
-                OrderTypeEnum.AssociatedServiceOther, // TEMP
+                orderType,
                 recipients,
                 [],
                 selectionMode);
