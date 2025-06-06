@@ -13,7 +13,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -205,8 +204,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] IRoutingService routingService,
             [Frozen] IOrderService mockOrderService,
             [Frozen] IOdsService odsService,
-            QuantityController controller,
-            string location)
+            QuantityController controller)
         {
             var orderItem = order.OrderItems.First();
 
@@ -217,13 +215,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                    internalOrgId,
-                    Arg.Any<IEnumerable<string>>())
-                .Returns(
-                    order.FlattenedRecipients.Select(x =>
-                            new ServiceRecipient { OrgId = x.RecipientOdsCode, Location = location })
-                        .ToList());
+            odsService.GetOrganisationName(Arg.Any<string>())
+                .Returns(callInfo => order.OrderSublocations.First(x => x.SublocationOdsCode == callInfo.Arg<string>())
+                    .SublocationOrganisation.Name);
 
             routingService.GetRoute(
                     RoutingPoint.SelectQuantityBackLink,
@@ -241,7 +235,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     x.RecipientOdsCode,
                     x.RecipientOdsOrganisation?.Name,
                     x.GetQuantityForItem(orderItem.CatalogueItemId),
-                    location));
+                    x.ParentSublocation.SublocationOrganisation.Name));
 
             var expected = new SelectServiceRecipientQuantityModel(
                 order.OrderType,
@@ -261,14 +255,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             string internalOrgId,
             CallOffId callOffId,
             EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations,
             RoutingResult routingResult,
             [Frozen] IRoutingService routingService,
             [Frozen] IGpPracticeService mockGpPracticeService,
             [Frozen] IOrderService mockOrderService,
             [Frozen] IOdsService odsService,
-            QuantityController controller,
-            string location)
+            QuantityController controller)
         {
             var orderItem = order.OrderItems.First();
 
@@ -284,13 +276,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                             new GpPracticeSize { OdsCode = x.RecipientOdsCode, NumberOfPatients = NumberOfPatients })
                         .ToList());
 
-            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                    internalOrgId,
-                    Arg.Any<IEnumerable<string>>())
-                .Returns(
-                    order.FlattenedRecipients.Select(x =>
-                            new ServiceRecipient { OrgId = x.RecipientOdsCode, Location = location })
-                        .ToList());
+            odsService.GetOrganisationName(Arg.Any<string>())
+                .Returns(callInfo => order.OrderSublocations.First(x => x.SublocationOdsCode == callInfo.Arg<string>())
+                    .SublocationOrganisation.Name);
 
             routingService.GetRoute(
                     RoutingPoint.SelectQuantityBackLink,
@@ -308,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     x.RecipientOdsCode,
                     x.RecipientOdsOrganisation?.Name,
                     x.GetQuantityForItem(orderItem.CatalogueItemId),
-                    location));
+                    x.ParentSublocation.SublocationOrganisation.Name));
 
             var expected = new SelectServiceRecipientQuantityModel(
                 order.OrderType,
@@ -332,8 +320,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] IRoutingService routingService,
             [Frozen] IOrderService mockOrderService,
             [Frozen] IOdsService odsService,
-            QuantityController controller,
-            string location)
+            QuantityController controller)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
@@ -352,13 +339,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                    internalOrgId,
-                    Arg.Any<IEnumerable<string>>())
-                .Returns(
-                    order.FlattenedRecipients.Select(x =>
-                            new ServiceRecipient { OrgId = x.RecipientOdsCode, Location = location })
-                        .ToList());
+            odsService.GetOrganisationName(Arg.Any<string>())
+                .Returns(callInfo => order.OrderSublocations.First(x => x.SublocationOdsCode == callInfo.Arg<string>())
+                    .SublocationOrganisation.Name);
 
             routingService.GetRoute(
                     RoutingPoint.SelectQuantityBackLink,
@@ -376,7 +359,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     x.RecipientOdsCode,
                     x.RecipientOdsOrganisation?.Name,
                     x.GetQuantityForItem(orderItem.CatalogueItemId),
-                    location));
+                    x.ParentSublocation.SublocationOrganisation.Name));
 
             var expected = new SelectServiceRecipientQuantityModel(
                 order.OrderType,
