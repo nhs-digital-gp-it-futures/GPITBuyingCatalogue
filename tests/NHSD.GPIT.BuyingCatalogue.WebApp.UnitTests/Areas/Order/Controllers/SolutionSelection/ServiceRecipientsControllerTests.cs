@@ -1273,6 +1273,78 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         .Excluding(m => m.Advice));
         }
 
+        [Theory]
+        [MockAutoData]
+        public static async Task ConfirmSublocationsRecipients_ReturnsView_NoNewRecipients(
+            Organisation organisation,
+            EntityFramework.Ordering.Models.Order previousOrder,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService ordersService,
+            ServiceRecipientsController controller)
+        {
+            previousOrder.Revision = 1;
+            order.Revision = 2;
+
+            order.OrderSublocations = previousOrder.OrderSublocations;
+
+            var orderWrapper = new OrderWrapper(order, [previousOrder]);
+
+            var expectedModel = new NoNewRecipientsForAmendmentModel(orderWrapper.Order, "testUrl", "testUrl");
+
+            ordersService
+                .GetOrderWithSublocationsAndSublocationRecipients(
+                    order.CallOffId,
+                    organisation.InternalIdentifier)
+                .Returns(orderWrapper);
+
+            var result = (await controller.ConfirmSublocationRecipients(
+                organisation.InternalIdentifier,
+                order.CallOffId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should()
+                .BeEquivalentTo(
+                    expectedModel);
+            result.ViewName.Should().Be("ServiceRecipients/NoNewRecipientsForAmendment");
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task ConfirmSublocationsRecipients_ReturnsView_WithAmendmentDetails(
+            Organisation organisation,
+            EntityFramework.Ordering.Models.Order previousOrder,
+            EntityFramework.Ordering.Models.Order order,
+            [Frozen] IOrderService ordersService,
+            ServiceRecipientsController controller)
+        {
+            previousOrder.Revision = 1;
+            order.Revision = 2;
+
+            var orderWrapper = new OrderWrapper(order, [previousOrder]);
+
+            var expectedModel = new ConfirmSublocationRecipientsModel(orderWrapper, "testUrl", "testUrl");
+
+            ordersService
+                .GetOrderWithSublocationsAndSublocationRecipients(
+                    order.CallOffId,
+                    organisation.InternalIdentifier)
+                .Returns(orderWrapper);
+
+            var result = (await controller.ConfirmSublocationRecipients(
+                organisation.InternalIdentifier,
+                order.CallOffId)).As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should()
+                .BeEquivalentTo(
+                    expectedModel,
+                    opt => opt.Excluding(m => m.BackLink)
+                        .Excluding(m => m.Title)
+                        .Excluding(m => m.Caption)
+                        .Excluding(m => m.Advice));
+            result.ViewName.Should().Be("ServiceRecipients/ConfirmSublocationRecipients");
+        }
+
         private static Organisation CommonOrganisationFactory(int customId = 0)
         {
             return new Organisation
