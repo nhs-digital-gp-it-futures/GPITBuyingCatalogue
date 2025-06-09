@@ -17,7 +17,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NSubstitute.ReturnsExtensions;
@@ -126,7 +126,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .Be(typeof(ServiceRecipientsController).ControllerName());
         }
 
-        private static IEnumerable<object[]> ExistingAndNewSublocationsToRenderedSublocations()
+        public static IEnumerable<object[]> ExistingAndNewSublocationsToRenderedSublocations()
         {
             return
             [
@@ -271,7 +271,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             result.Model.Should().Be(selectSublocationsModel);
         }
 
-        private static IEnumerable<object[]> ExpectedSetsAndRemoves()
+        public static IEnumerable<object[]> ExpectedSetsAndRemoves()
         {
             return
             [
@@ -366,13 +366,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     new RouteValueDictionary
                     {
                         { "internalOrgId", organisation.InternalIdentifier },
-                        { "orderId", order.CallOffId },
+                        { "callOffId", order.CallOffId },
                         { "sublocations", sublocationsConcatString },
                         { "removes", removesConcatString },
                     });
         }
 
-        private static IEnumerable<object[]> RemoveSublocationsUrlParamsToModel()
+        public static IEnumerable<object[]> RemoveSublocationsUrlParamsToModel()
         {
             return
             [
@@ -533,7 +533,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             result.ActionName.Should().Be(nameof(controller.ConfirmSublocations));
             result.RouteValues.Should()
                 .BeEquivalentTo(
-                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "orderId", orderId } });
+                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", orderId } });
         }
 
         [Theory]
@@ -614,11 +614,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
-            result.ControllerName.Should().Be(typeof(CompetitionTaskListController).ControllerName());
+            result.ActionName.Should().Be(nameof(OrderController.Order));
+            result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
             result.RouteValues.Should()
                 .BeEquivalentTo(
-                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "orderId", orderId } });
+                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", orderId } });
         }
 
         [Theory]
@@ -642,7 +642,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             result.ActionName.Should().Be(nameof(controller.ConfirmSublocationRecipients));
             result.RouteValues.Should()
                 .BeEquivalentTo(
-                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "orderId", orderId } });
+                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", orderId } });
         }
 
         [Theory]
@@ -665,7 +665,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             result.Should().NotBeNull();
         }
 
-        private static IEnumerable<object[]> SelectionModesAndExpectedResults()
+        public static IEnumerable<object[]> SelectionModesAndExpectedResults()
         {
             List<ServiceRecipient> possibleRecipientRepo =
             [
@@ -846,7 +846,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     expectedModel.RenderedServiceRecipients);
         }
 
-        private static IEnumerable<object[]> PreviousSelectionsAndPotentialRecipientsToExpected()
+        public static IEnumerable<object[]> PreviousSelectionsAndPotentialRecipientsToExpected()
         {
             List<ServiceRecipient> possibleRecipientRepo =
             [
@@ -1031,7 +1031,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             returnedModel.Should().BeEquivalentTo(selectSublocationRecipientsModel);
         }
 
-        private static IEnumerable<object[]> SublocationExpectedSets()
+        public static IEnumerable<object[]> SublocationExpectedSets()
         {
             return
             [
@@ -1118,7 +1118,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .BeEquivalentTo(
                     new RouteValueDictionary
                     {
-                        { "internalOrgId", organisation.InternalIdentifier }, { "orderId", order.CallOffId },
+                        { "internalOrgId", organisation.InternalIdentifier }, { "callOffId", order.CallOffId },
                     });
         }
 
@@ -1200,11 +1200,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     .As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
-            result.ActionName.Should().Be(nameof(CompetitionTaskListController.Index));
-            result.ControllerName.Should().Be(typeof(CompetitionTaskListController).ControllerName());
+            result.ActionName.Should().Be(nameof(OrderController.Order));
+            result.ControllerName.Should().Be(typeof(OrderController).ControllerName());
             result.RouteValues.Should()
                 .BeEquivalentTo(
-                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "orderId", orderId } });
+                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", orderId } });
         }
 
         [Theory]
@@ -1228,7 +1228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             result.ActionName.Should().Be(nameof(controller.ConfirmSublocationRecipients));
             result.RouteValues.Should()
                 .BeEquivalentTo(
-                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "orderId", orderId } });
+                    new RouteValueDictionary { { "internalOrgId", internalOrganisationId }, { "callOffId", orderId } });
         }
 
         [Theory]
