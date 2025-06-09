@@ -7,6 +7,7 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using LinqKit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -14,6 +15,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
@@ -542,14 +544,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task AddSublocations_ReturnsSublocationsView(
             Organisation organisation,
             EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations,
             [Frozen] IOrderService ordersService,
             [Frozen] IOrderSublocationService orderSublocationService,
             ServiceRecipientsController controller)
         {
             order.OrderingPartyId = organisation.Id;
             order.OrderingParty = organisation;
-            order.OrderSublocations = orderSublocations;
+
+            ICollection<OrderSublocation> orderSublocations = order.OrderSublocations;
 
             ordersService.GetOrderWithSublocations(order.CallOffId, organisation.InternalIdentifier)
                 .Returns(new OrderWrapper(order));
@@ -1136,14 +1138,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task ConfirmSublocations_ReturnsSublocationsView(
             Organisation organisation,
             EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations,
             [Frozen] IOrderService ordersService,
             [Frozen] IOrderSublocationService orderSublocationService,
             ServiceRecipientsController controller)
         {
             order.OrderingPartyId = organisation.Id;
             order.OrderingParty = organisation;
-            order.OrderSublocations = orderSublocations;
+            ICollection<OrderSublocation> orderSublocations = order.OrderSublocations;
 
             ordersService.GetOrderWithSublocations(order.CallOffId, organisation.InternalIdentifier)
                 .Returns(new OrderWrapper(order));
@@ -1189,6 +1190,93 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .BeEquivalentTo(
                     expectedModel.Sublocations,
                     opt => opt.Excluding(slModel => slModel.RecipientHref).Excluding(slModel => slModel.TaskProgress));
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task ConfirmSublocations_Amendment_ReturnsSublocationsView_WithAmendedStatus(
+            Organisation organisation,
+            EntityFramework.Ordering.Models.Order previousOrder,
+            EntityFramework.Ordering.Models.Order order,
+            List<OrderSublocationRecipient> newSublocationRecipients,
+            [Frozen] IOrderService ordersService,
+            [Frozen] IOrderSublocationService orderSublocationService,
+            ServiceRecipientsController controller)
+        {
+            previousOrder.OrderingPartyId = order.OrderingPartyId;
+            previousOrder.OrderingParty = order.OrderingParty;
+            previousOrder.Revision = 1;
+
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+            order.OrderSublocations = previousOrder.OrderSublocations.Select(x => x.Clone()).ToList();
+            order.Revision = 2;
+
+            order.OrderSublocations.ForEach(x =>
+                x.SublocationOrganisation = CommonEntityOdsOrganisationFactory(x.SublocationOdsCode));
+
+            OrderSublocation sublocationForAmendment = order.OrderSublocations.First();
+
+            sublocationForAmendment.SublocationRecipients.AddRange(newSublocationRecipients);
+
+            var orderWrapper = new OrderWrapper(order, [previousOrder]);
+
+            ordersService.GetOrderWithSublocations(order.CallOffId, organisation.InternalIdentifier)
+                .Returns(orderWrapper);
+
+            orderSublocationService.GetCountForOrderSublocationRecipients(
+                    organisation.ExternalIdentifier,
+                    order.Id,
+                    Arg.Any<string>())
+                .Returns(call => order.OrderSublocations.First(x => x.SublocationOdsCode == call.ArgAt<string>(2))
+                    .SublocationRecipients.Count);
+
+            orderSublocationService.GetCountForOrderSublocationRecipients(
+                    organisation.ExternalIdentifier,
+                    previousOrder.Id,
+                    Arg.Any<string>())
+                .Returns(call => previousOrder.OrderSublocations
+                    .First(x => x.SublocationOdsCode == call.ArgAt<string>(2))
+                    .SublocationRecipients.Count);
+
+            var expectedModel = new SelectSublocationsOverviewModel
+            {
+                Title = "Confirm sublocations",
+                Caption = order.Description,
+                Advice = "Select a sublocation to amend the organisations in this order",
+                ProcessType = "order",
+                Sublocations = order.OrderSublocations.Select(x => new SublocationModel
+                    {
+                        Name = x.SublocationOrganisation.Name,
+                        ServiceRecipientCount = x.SublocationRecipients.Count,
+                        OdsCode = x.SublocationOdsCode,
+                        TaskProgress = x.SublocationOdsCode == sublocationForAmendment.SublocationOdsCode
+                            ? TaskProgress.Amended
+                            : TaskProgress.Completed,
+                    })
+                    .ToList(),
+                ParentName = organisation.Name,
+            };
+
+            var result =
+                (await controller.ConfirmSublocations(organisation.InternalIdentifier, order.CallOffId))
+                .As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should()
+                .BeEquivalentTo(
+                    expectedModel,
+                    opt => opt.Excluding(model => model.BackLink)
+                        .Excluding(model => model.AddOrChangeSublocationsHref)
+                        .Excluding(model => model.Sublocations));
+
+            IReadOnlyList<SublocationModel> sublocations =
+                result.Model.As<SelectSublocationsOverviewModel>().Sublocations;
+
+            sublocations.Should()
+                .BeEquivalentTo(
+                    expectedModel.Sublocations,
+                    opt => opt.Excluding(slModel => slModel.RecipientHref));
         }
 
         [Theory]
@@ -1245,12 +1333,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task ConfirmSublocationsRecipients_ReturnsView(
             Organisation organisation,
             EntityFramework.Ordering.Models.Order order,
-            List<OrderSublocation> orderSublocations,
             [Frozen] IOrderService ordersService,
             ServiceRecipientsController controller)
         {
-            order.OrderSublocations = orderSublocations;
-
             var expectedModel = new ConfirmSublocationRecipientsModel(order, "testUrl", "testUrl");
 
             ordersService
