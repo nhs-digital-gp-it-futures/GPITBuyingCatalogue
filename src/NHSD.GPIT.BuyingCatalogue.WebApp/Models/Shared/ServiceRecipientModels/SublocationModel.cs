@@ -32,7 +32,7 @@ public record SublocationModel
     {
         Name = orderSublocation.SublocationOrganisation?.Name;
         OdsCode = orderSublocation.SublocationOdsCode;
-        ServiceRecipientCount = orderSublocation.SublocationRecipients.Count;
+        ServiceRecipientCount = orderSublocation.SublocationRecipients?.Count;
         ServiceRecipients = orderSublocation.SublocationRecipients?.Select(
                 x => new ServiceRecipientModel(x, presenceDeterminesSelected))
             .ToArray();

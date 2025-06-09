@@ -237,7 +237,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns(possibleSublocations);
 
-            var expectedModel = new SelectSublocationsModel { RenderedSublocations = renderedSelections };
+            var expectedModel =
+                new SelectSublocationsModel { RenderedSublocations = renderedSelections, IsAmendment = false };
 
             var result = (await controller.SelectSublocations(organisation.InternalIdentifier, order.CallOffId))
                 .As<ViewResult>();
@@ -796,6 +797,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] IOrderSublocationService orderSublocationService,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] IOdsService odsOrganisationsService,
+            [Frozen] IOrderService orderService,
             ServiceRecipientsController controller)
         {
             order.OrderingPartyId = organisation.Id;
@@ -812,6 +814,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     order.Id,
                     workingSublocation.SublocationOdsCode)
                 .Returns(workingSublocation);
+
+            orderService.GetOrderId(order.CallOffId).Returns(order.Id);
 
             var expectedModel = new SelectSublocationRecipientsModel
             {
@@ -961,6 +965,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 [Frozen] IOrderSublocationService orderSublocationService,
                 [Frozen] IOrganisationsService organisationsService,
                 [Frozen] IOdsService odsOrganisationsService,
+                [Frozen] IOrderService orderService,
                 ServiceRecipientsController controller)
         {
             await SelectSublocationRecipients_SelectionMode_ReturnsViewAsExpected(
@@ -973,6 +978,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 orderSublocationService,
                 organisationsService,
                 odsOrganisationsService,
+                orderService,
                 controller);
         }
 
@@ -1076,6 +1082,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             HashSet<string> expectedSets,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] IOrderSublocationService orderSublocationService,
+            [Frozen] IOrderService orderService,
             ServiceRecipientsController controller)
         {
             existingOrderSublocation.SublocationOdsCode = sublocationOdsCode;
@@ -1096,6 +1103,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     order.Id,
                     sublocationOdsCode)
                 .Returns(existingOrderSublocation);
+
+            orderService.GetOrderId(order.CallOffId).Returns(order.Id);
 
             var result =
                 (await controller.SelectSublocationRecipients(
