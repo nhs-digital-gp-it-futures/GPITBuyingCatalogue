@@ -1180,6 +1180,115 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     expectedModel.RenderedServiceRecipients);
         }
 
+        public static IEnumerable<object[]> AmendmentNoNewRecipients()
+        {
+            List<ServiceRecipient> possibleRecipientRepo =
+            [
+            ];
+
+            return
+            [
+                // All 3 in previous order = no new recipients for amendment
+                [
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task AmendmentSelectSublocationRecipients_NoNewRecipientsAvailable_ReturnsViewAsExpected(
+            Organisation organisation,
+            [Frozen] IOrderSublocationService orderSublocationService,
+            [Frozen] IOrganisationsService organisationsService,
+            [Frozen] IOdsService odsOrganisationsService,
+            [Frozen] IOrderService orderService,
+            ServiceRecipientsController controller)
+        {
+            List<ServiceRecipient> possibleRecipients =
+            [
+                CommonServiceRecipientFactory("AAAA", "XXXX"),
+                CommonServiceRecipientFactory("AAAB", "XXXX"),
+                CommonServiceRecipientFactory("AAAC", "XXXX"),
+            ];
+
+            EntityFramework.Ordering.Models.Order previousOrder = CommonOrderFactory(0, organisation.Id, 0, 1);
+
+            OrderSublocation previousWorkingSublocation = CommonOrderSublocationFactory(
+                "XXXX",
+                [
+                    CommonOrderSublocationRecipientFactory("AAAA", "XXXX"),
+                    CommonOrderSublocationRecipientFactory("AAAB", "XXXX"),
+                    CommonOrderSublocationRecipientFactory("AAAC", "XXXX"),
+                ]);
+
+            EntityFramework.Ordering.Models.Order order = CommonOrderFactory(0, 0, 0, 2);
+
+            OrderSublocation workingSublocation = CommonOrderSublocationFactory(
+                "XXXX",
+                []);
+
+            previousOrder.OrderingPartyId = organisation.Id;
+            previousOrder.OrderingParty = organisation;
+            previousOrder.OrderSublocations = [previousWorkingSublocation];
+            previousWorkingSublocation.Order = previousOrder;
+
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+
+            workingSublocation.Order = order;
+
+            var orderWrapper = new OrderWrapper(order, [previousOrder]);
+
+            organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(organisation.InternalIdentifier)
+                .Returns(organisation.ExternalIdentifier);
+
+            orderSublocationService.GetOrderSublocationWithRecipients(
+                    organisation.ExternalIdentifier,
+                    order.Id,
+                    workingSublocation.SublocationOdsCode)
+                .Returns(workingSublocation);
+
+            odsOrganisationsService.GetServiceRecipientsBySublocation(workingSublocation.SublocationOdsCode)
+                .Returns(possibleRecipients);
+
+            orderService
+                .GetOrderWithSublocationsAndSublocationRecipients(order.CallOffId, organisation.InternalIdentifier)
+                .Returns(orderWrapper);
+
+            orderService.GetOrderId(order.CallOffId).Returns(order.Id);
+
+            var expectedModel = new NoNewRecipientsForSublocationAmendmentModel
+            {
+                PreviousOrderRecipients = previousWorkingSublocation.SublocationRecipients
+                    .Select(x => $"{x.RecipientOdsOrganisation.Name} ({x.RecipientOdsCode})")
+                    .ToList(),
+            };
+
+            var result =
+                (await controller.SelectSublocationRecipients(
+                    organisation.InternalIdentifier,
+                    order.CallOffId,
+                    workingSublocation.SublocationOdsCode))
+                .As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should()
+                .BeEquivalentTo(
+                    expectedModel,
+                    opt => opt.Excluding(m => m.Title)
+                        .Excluding(m => m.Caption)
+                        .Excluding(m => m.Advice)
+                        .Excluding(m => m.BackLink)
+                        .Excluding(m => m.PreviousOrderRecipients));
+
+            IReadOnlyList<string> previousRecipientsForFurtherEvaluation =
+                result.Model.As<NoNewRecipientsForSublocationAmendmentModel>().PreviousOrderRecipients;
+
+            previousRecipientsForFurtherEvaluation.Should()
+                .BeEquivalentTo(
+                    expectedModel.PreviousOrderRecipients);
+        }
+
         [Theory]
         [MockAutoData]
         public static async Task SelectSublocationRecipients_Post_ReturnsBadRequest(
