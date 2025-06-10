@@ -1039,6 +1039,63 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     },
                     null,
                 ],
+
+                // 2 in previous order = 1 visible for selection
+                [
+                    CommonOrganisationFactory(), CommonOrderFactory(0, 0, 0, 1),
+                    CommonOrderSublocationFactory("XXXX", [CommonOrderSublocationRecipientFactory("AAAA", "XXXX")]),
+                    CommonOrderFactory(0, 0, 0, 2),
+                    CommonOrderSublocationFactory(
+                        "XXXX",
+                        []),
+                    possibleRecipientRepo,
+
+                    new List<SelectOption<string>>
+                    {
+                        new(string.Empty, "AAAA", true, true),
+                        new(string.Empty, "AAAB", false),
+                        new(string.Empty, "AAAC", false),
+                    },
+                    null,
+                ],
+
+                // Select all selects all remaining recipients
+                [
+                    CommonOrganisationFactory(), CommonOrderFactory(0, 0, 0, 1),
+                    CommonOrderSublocationFactory("XXXX", [CommonOrderSublocationRecipientFactory("AAAA", "XXXX")]),
+                    CommonOrderFactory(0, 0, 0, 2),
+                    CommonOrderSublocationFactory(
+                        "XXXX",
+                        []),
+                    possibleRecipientRepo,
+
+                    new List<SelectOption<string>>
+                    {
+                        new(string.Empty, "AAAA", true, true),
+                        new(string.Empty, "AAAB", true),
+                        new(string.Empty, "AAAC", true),
+                    },
+                    SelectionMode.All,
+                ],
+
+                // Select none clears current order selection but keeps previous order
+                [
+                    CommonOrganisationFactory(), CommonOrderFactory(0, 0, 0, 1),
+                    CommonOrderSublocationFactory("XXXX", [CommonOrderSublocationRecipientFactory("AAAA", "XXXX")]),
+                    CommonOrderFactory(0, 0, 0, 2),
+                    CommonOrderSublocationFactory(
+                        "XXXX",
+                        [CommonOrderSublocationRecipientFactory("AAAC", "XXXX")]),
+                    possibleRecipientRepo,
+
+                    new List<SelectOption<string>>
+                    {
+                        new(string.Empty, "AAAA", true, true),
+                        new(string.Empty, "AAAB", false),
+                        new(string.Empty, "AAAC", false),
+                    },
+                    SelectionMode.None,
+                ],
             ];
         }
 
