@@ -26,6 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         }
 
         public IReadOnlyList<string> PreviousOrderRecipients { get; init; }
+
         public string SaveAndContinueLink { get; init; }
     }
 }

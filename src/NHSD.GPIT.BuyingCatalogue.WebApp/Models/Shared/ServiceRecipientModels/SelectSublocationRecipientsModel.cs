@@ -70,7 +70,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 selectedSublocation.ServiceRecipients,
                 previousServiceRecipients);
 
-            SelectServiceRecipients(RenderedServiceRecipients);
+            SelectServiceRecipients(RenderedServiceRecipients.Where(x => !x.Hidden).ToList());
         }
 
         private SelectSublocationRecipientsModel(
