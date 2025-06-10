@@ -475,25 +475,32 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task RemoveSublocations_Post_NoServiceCallsIfNo(
             string internalOrganisationId,
             CallOffId orderId,
-            List<string> sublocationIdsToRemove,
+            List<string> sublocationOdsCodes,
+            List<string> sublocationOdsCodesToDisplayForRemove,
             [Frozen] IOrderService ordersService,
             ServiceRecipientsController controller)
         {
             var callingModel =
-                new RemoveSublocationsModel { ConfirmRemove = false, Removes = sublocationIdsToRemove };
+                new RemoveSublocationsModel
+                {
+                    ConfirmRemove = false,
+                    SublocationOdsCodes = sublocationOdsCodes,
+                    Removes = sublocationOdsCodesToDisplayForRemove,
+                };
 
-            var result =
-                (await controller.RemoveSublocations(callingModel, internalOrganisationId, orderId))
-                .As<BadRequestResult>();
+            IActionResult result = await controller.RemoveSublocations(callingModel, internalOrganisationId, orderId);
 
             await ordersService.DidNotReceiveWithAnyArgs().SetSublocations(default, string.Empty, null);
 
-            result.Should().NotBeNull();
+            result.As<RedirectToActionResult>()
+                .ActionName
+                .Should()
+                .BeEquivalentTo(nameof(controller.ConfirmSublocations));
         }
 
         [Theory]
         [MockAutoData]
-        public static async Task RemoveSublocations_Post_NoServiceCallsIfNotPopulated(
+        public static async Task RemoveSublocations_Post_NoServiceCallsAndBadRequestNotPopulated(
             string internalOrganisationId,
             CallOffId orderId,
             [Frozen] IOrderService ordersService,
@@ -508,7 +515,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             await ordersService.DidNotReceiveWithAnyArgs().SetSublocations(default, string.Empty, null);
 
-            result.Should().NotBeNull();
+            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory]
@@ -517,11 +524,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             string internalOrganisationId,
             CallOffId orderId,
             List<string> sublocationOdsCodes,
+            List<string> sublocationOdsCodesToDisplayForRemove,
             [Frozen] IOrderService ordersService,
             ServiceRecipientsController controller)
         {
             var callingModel =
-                new RemoveSublocationsModel { ConfirmRemove = true, SublocationOdsCodes = sublocationOdsCodes };
+                new RemoveSublocationsModel
+                {
+                    ConfirmRemove = true,
+                    SublocationOdsCodes = sublocationOdsCodes,
+                    Removes = sublocationOdsCodesToDisplayForRemove,
+                };
 
             var result =
                 (await controller.RemoveSublocations(callingModel, internalOrganisationId, orderId))

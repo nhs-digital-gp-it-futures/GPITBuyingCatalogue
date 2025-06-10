@@ -211,7 +211,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CallOffId callOffId)
         {
             if (removeSublocationsModel.ConfirmRemove is null || removeSublocationsModel.SublocationOdsCodes is not
-                    { Count: > 0 })
+                    { Count: > 0 } || removeSublocationsModel.Removes is not { Count: > 0 })
             {
                 return BadRequest();
             }
