@@ -59,6 +59,37 @@ public static class ImportServiceRecipientsControllerTests
                     .Excluding(m => m.DownloadTemplateLink));
     }
 
+    public static IEnumerable<object[]> InvalidServiceRecipientsTestData()
+    {
+        return
+        [
+            [ImportServiceRecipientsController.InvalidFormat, null],
+            [ImportServiceRecipientsController.EmptyFile, new List<ServiceRecipientImportModel>()],
+            [
+                ImportServiceRecipientsController.InvalidFormat,
+                new List<ServiceRecipientImportModel> { new() { Organisation = string.Empty, OdsCode = "ABC123" } },
+            ],
+            [
+                ImportServiceRecipientsController.InvalidFormat,
+                new List<ServiceRecipientImportModel> { new() { Organisation = "Fake Org", OdsCode = string.Empty } },
+            ],
+            [
+                ImportServiceRecipientsController.OdsCodeExceedsLimit,
+                new List<ServiceRecipientImportModel>
+                {
+                    new() { Organisation = "Fake Org", OdsCode = new string('A', 10) },
+                },
+            ],
+            [
+                ImportServiceRecipientsController.OrganisationExceedsLimit,
+                new List<ServiceRecipientImportModel>
+                {
+                    new() { Organisation = new string('A', 300), OdsCode = "ABC123" },
+                },
+            ],
+        ];
+    }
+
     [Theory]
     [MockMemberAutoData(nameof(InvalidServiceRecipientsTestData))]
     public static async Task Index_InvalidRecipients_SetsModelError(
@@ -358,10 +389,9 @@ public static class ImportServiceRecipientsControllerTests
 
     public static IEnumerable<object[]> RecipientsToSublocationMapping()
     {
-        return new[]
-        {
-            new object[]
-            {
+        return
+        [
+            [
                 new List<ServiceRecipient>
                 {
                     new()
@@ -428,8 +458,8 @@ public static class ImportServiceRecipientsControllerTests
                         },
                     },
                 },
-            },
-        };
+            ],
+        ];
     }
 
     [Theory]
@@ -504,131 +534,112 @@ public static class ImportServiceRecipientsControllerTests
                 });
     }
 
-    // TODO: Needs more work
-    // public static IEnumerable<object[]> SublocationViewModelToSublocationEntityModelMapping()
-    // {
-    //     return new[]
-    //     {
-    //         new object[]
-    //         {
-    //             new Organisation
-    //             {
-    //                 Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
-    //             },
-    //             new Competition
-    //             {
-    //                 Id = 34, Name = "My Competition", Description = "Competition for competitiony things",
-    //             },
-    //             new List<SublocationModel>
-    //             {
-    //                 new()
-    //                 {
-    //                     OdsCode = "XXXX",
-    //                     ServiceRecipients =
-    //                         new List<ServiceRecipientModel>
-    //                         {
-    //                             new() { OdsCode = "AAAA", Name = "Surgery 1", LocationOrgId = "XXXX" },
-    //                             new() { OdsCode = "AAAB", Name = "Surgery 2", LocationOrgId = "XXXX" },
-    //                         },
-    //                 },
-    //                 new()
-    //                 {
-    //                     OdsCode = "XXXA",
-    //                     ServiceRecipients =
-    //                         new List<ServiceRecipientModel>
-    //                         {
-    //                             new() { OdsCode = "AAAC", Name = "Surgery 34", LocationOrgId = "XXXA" },
-    //                         },
-    //                 },
-    //             },
-    //             new List<CompetitionSublocation>
-    //             {
-    //                 new()
-    //                 {
-    //                     CompetitionId = 34,
-    //                     SublocationOdsCode = "XXXX",
-    //                     OwnerOdsCode = "FFGG",
-    //                     SublocationRecipients = new List<CompetitionSublocationRecipient>
-    //                     {
-    //                         new()
-    //                         {
-    //                             CompetitionId = 34,
-    //                             RecipientOdsCode = "AAAA",
-    //                             ParentSublocationOdsCode = "XXXX",
-    //                         },
-    //                         new()
-    //                         {
-    //                             CompetitionId = 34,
-    //                             RecipientOdsCode = "AAAB",
-    //                             ParentSublocationOdsCode = "XXXX",
-    //                         },
-    //                     },
-    //                 },
-    //                 new()
-    //                 {
-    //                     CompetitionId = 34,
-    //                     SublocationOdsCode = "XXXA",
-    //                     OwnerOdsCode = "FFGG",
-    //                     SublocationRecipients = new List<CompetitionSublocationRecipient>
-    //                     {
-    //                         new()
-    //                         {
-    //                             CompetitionId = 34,
-    //                             RecipientOdsCode = "AAAC",
-    //                             ParentSublocationOdsCode = "XXXA",
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     };
-    // }
-    //
-    // [Theory]
-    // [MockMemberAutoData(nameof(SublocationViewModelToSublocationEntityModelMapping))]
-    // public static async Task ValidateComplete_Post_PerformsExpectedFunctions(
-    //     Organisation organisation,
-    //     EntityFramework.Ordering.Models.Order order,
-    //     List<SublocationModel> sublocationsAsViewModel,
-    //     List<CompetitionSublocation> sublocationsAsEntityModel,
-    //     [Frozen] IServiceRecipientImportService importService,
-    //     [Frozen] IOrderService orderService,
-    //     ImportServiceRecipientsController controller)
-    // {
-    //     order.OrderingParty = organisation;
-    //
-    //     var wrappedOrder = new OrderWrapper(order);
-    //
-    //     orderService.GetOrderThin(order.CallOffId, organisation.InternalIdentifier).Returns(wrappedOrder);
-    //
-    //     var modelForPost = new ValidationCompleteModel
-    //     {
-    //         Sublocations = sublocationsAsViewModel,
-    //         ValidationStatus = ValidationStatus.Success,
-    //     };
-    //
-    //     var result =
-    //         (await controller.ValidationComplete(organisation.InternalIdentifier, order.CallOffId, modelForPost))
-    //         .As<RedirectToActionResult>();
-    //
-    //     await orderService.Received()
-    //         .SetCompetitionSublocationsAndRecipients(
-    //             Arg.Is<string>(s => s == organisation.InternalIdentifier),
-    //             Arg.Is<int>(i => i == order.CallOffId),
-    //             Arg.Is<List<CompetitionSublocation>>(
-    //                 list => AreListsEquivalentIgnoreOrder(list, sublocationsAsEntityModel)));
-    //
-    //     await importService.Received().Clear(Arg.Any<DistributedCacheKey>());
-    //
-    //     result.ActionName.Should().Be(nameof(CompetitionRecipientsController.ConfirmSublocations));
-    //     result.ControllerName.Should().Be(typeof(CompetitionRecipientsController).ControllerName());
-    //     result.RouteValues.Should()
-    //         .BeEquivalentTo(
-    //             new RouteValueDictionary
-    //             {
-    //                 { "internalOrgId", organisation.InternalIdentifier }, { "callOffId", order.CallOffId },
-    //             });
-    // }
+    public static IEnumerable<object[]> SublocationViewModelToSublocationEntityModelMapping()
+    {
+        return
+        [
+            [
+                new Organisation
+                {
+                    Id = 21, InternalIdentifier = "BB-FFGG", ExternalIdentifier = "FFGG", Name = "A Local ICB",
+                },
+                new EntityFramework.Ordering.Models.Order
+                {
+                    Id = 34, OrderNumber = 300, Revision = 1, Description = "My order",
+                },
+                new List<SublocationModel>
+                {
+                    new()
+                    {
+                        OdsCode = "XXXX",
+                        ServiceRecipients =
+                            new List<ServiceRecipientModel>
+                            {
+                                new() { OdsCode = "AAAA", Name = "Surgery 1", LocationOrgId = "XXXX" },
+                                new() { OdsCode = "AAAB", Name = "Surgery 2", LocationOrgId = "XXXX" },
+                            },
+                    },
+                    new()
+                    {
+                        OdsCode = "XXXA",
+                        ServiceRecipients =
+                            new List<ServiceRecipientModel>
+                            {
+                                new() { OdsCode = "AAAC", Name = "Surgery 34", LocationOrgId = "XXXA" },
+                            },
+                    },
+                },
+                new List<OrderSublocation>
+                {
+                    new()
+                    {
+                        OrderId = 34,
+                        SublocationOdsCode = "XXXX",
+                        OwnerOdsCode = "FFGG",
+                        SublocationRecipients = new List<OrderSublocationRecipient>
+                        {
+                            new() { OrderId = 34, RecipientOdsCode = "AAAA", ParentSublocationOdsCode = "XXXX" },
+                            new() { OrderId = 34, RecipientOdsCode = "AAAB", ParentSublocationOdsCode = "XXXX" },
+                        },
+                    },
+                    new()
+                    {
+                        OrderId = 34,
+                        SublocationOdsCode = "XXXA",
+                        OwnerOdsCode = "FFGG",
+                        SublocationRecipients = new List<OrderSublocationRecipient>
+                        {
+                            new() { OrderId = 34, RecipientOdsCode = "AAAC", ParentSublocationOdsCode = "XXXA" },
+                        },
+                    },
+                },
+            ],
+        ];
+    }
+
+    [Theory]
+    [MockMemberAutoData(nameof(SublocationViewModelToSublocationEntityModelMapping))]
+    public static async Task ValidateComplete_Post_PerformsExpectedFunctions(
+        Organisation organisation,
+        EntityFramework.Ordering.Models.Order order,
+        List<SublocationModel> sublocationsAsViewModel,
+        List<OrderSublocation> sublocationsAsEntityModel,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] IOrderService orderService,
+        ImportServiceRecipientsController controller)
+    {
+        order.OrderingParty = organisation;
+
+        var wrappedOrder = new OrderWrapper(order);
+
+        orderService.GetOrderThin(order.CallOffId, organisation.InternalIdentifier).Returns(wrappedOrder);
+
+        var modelForPost = new ValidationCompleteModel
+        {
+            Sublocations = sublocationsAsViewModel, ValidationStatus = ValidationStatus.Success,
+        };
+
+        var result =
+            (await controller.ValidationComplete(organisation.InternalIdentifier, order.CallOffId, modelForPost))
+            .As<RedirectToActionResult>();
+
+        await orderService.Received()
+            .SetSublocationsAndRecipients(
+                Arg.Is<CallOffId>(i => i == order.CallOffId),
+                Arg.Is<string>(s => s == organisation.InternalIdentifier),
+                Arg.Is<List<OrderSublocation>>(list => AreListsEquivalentIgnoreOrder(list, sublocationsAsEntityModel)));
+
+        await importService.Received().Clear(Arg.Any<DistributedCacheKey>());
+
+        result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
+        result.ControllerName.Should().Be(typeof(ServiceRecipientsController).ControllerName());
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier }, { "callOffId", order.CallOffId },
+                });
+    }
 
     [Theory]
     [MockAutoData]
@@ -654,42 +665,18 @@ public static class ImportServiceRecipientsControllerTests
                 });
     }
 
-    public static IEnumerable<object[]> InvalidServiceRecipientsTestData()
-        => new[]
+    private static bool AreListsEquivalentIgnoreOrder(
+        IReadOnlyList<OrderSublocation> actual,
+        IReadOnlyList<OrderSublocation> expected)
+    {
+        try
         {
-            new object[] { ImportServiceRecipientsController.InvalidFormat, null, },
-            new object[] { ImportServiceRecipientsController.EmptyFile, new List<ServiceRecipientImportModel>() },
-            new object[]
-            {
-                ImportServiceRecipientsController.InvalidFormat,
-                new List<ServiceRecipientImportModel>
-                {
-                    new() { Organisation = string.Empty, OdsCode = "ABC123", },
-                },
-            },
-            new object[]
-            {
-                ImportServiceRecipientsController.InvalidFormat,
-                new List<ServiceRecipientImportModel>
-                {
-                    new() { Organisation = "Fake Org", OdsCode = string.Empty },
-                },
-            },
-            new object[]
-            {
-                ImportServiceRecipientsController.OdsCodeExceedsLimit,
-                new List<ServiceRecipientImportModel>
-                {
-                    new() { Organisation = "Fake Org", OdsCode = new('A', 10) },
-                },
-            },
-            new object[]
-            {
-                ImportServiceRecipientsController.OrganisationExceedsLimit,
-                new List<ServiceRecipientImportModel>
-                {
-                    new() { Organisation = new('A', 300), OdsCode = "ABC123" },
-                },
-            },
-        };
+            actual.Should().BeEquivalentTo(expected, options => options.WithoutStrictOrdering());
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }
