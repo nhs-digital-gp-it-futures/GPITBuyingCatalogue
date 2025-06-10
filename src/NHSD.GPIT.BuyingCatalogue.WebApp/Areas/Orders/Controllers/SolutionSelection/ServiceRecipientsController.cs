@@ -280,8 +280,34 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 OrderWrapper orderHistory =
                     await orderService.GetOrderWithSublocationsAndSublocationRecipients(callOffId, internalOrgId);
 
+                IReadOnlyList<ServiceRecipientModel> previousRecipients =
+                    orderHistory.Previous?.OrderSublocations
+                        .FirstOrDefault(x => x.SublocationOdsCode == sublocationOdsCode)
+                        ?
+                        .SublocationRecipients.Select(y => new ServiceRecipientModel(y, true))
+                        .ToList() ?? [];
+
+                var allPossibleRecipientsAlreadySelectedInPrevious = possibleRecipients.All(x =>
+                    previousRecipients?.Any(y => x.OdsCode == y.OdsCode) ?? false);
+
+                if (allPossibleRecipientsAlreadySelectedInPrevious)
+                {
+                    var backAndContinueLink = Url.Action(
+                        nameof(ConfirmSublocations),
+                        typeof(ServiceRecipientsController).ControllerName(),
+                        new { callOffId, internalOrgId });
+
+                    var noNewModel = new NoNewRecipientsForSublocationAmendmentModel(
+                        orderHistory.Order,
+                        previousRecipients.Select(x => $"{x.Name} ({x.OdsCode})").ToList(),
+                        backAndContinueLink);
+
+                    return View("ServiceRecipients/NoNewRecipientsForSublocationAmendment", noNewModel);
+                }
+
                 var amendmentModel = new SelectSublocationRecipientsModel(
-                    orderHistory,
+                    orderHistory.Order,
+                    previousRecipients,
                     sublocationAsSublocationModel,
                     possibleRecipients,
                     backLinkHref,

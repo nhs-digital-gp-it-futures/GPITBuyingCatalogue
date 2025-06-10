@@ -4,7 +4,6 @@ using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
@@ -52,7 +51,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         }
 
         public SelectSublocationRecipientsModel(
-            OrderWrapper orders,
+            Order order,
+            IReadOnlyList<ServiceRecipientModel> previousServiceRecipients,
             SublocationModel selectedSublocation,
             IReadOnlyList<ServiceRecipientModel> possibleServiceRecipients,
             string backLinkHref,
@@ -63,19 +63,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 selectionMode)
         {
             IsAmendment = true;
-            Caption = orders.Order.Description;
-
-            IReadOnlyList<ServiceRecipientModel> previousRecipients =
-                orders.Previous?.OrderSublocations
-                    .FirstOrDefault(x => x.SublocationOdsCode == selectedSublocation.OdsCode)
-                    ?
-                    .SublocationRecipients.Select(y => new ServiceRecipientModel(y, true))
-                    .ToList() ?? [];
+            Caption = order.Description;
 
             RenderedServiceRecipients = GetRenderedSublocations(
                 possibleServiceRecipients,
                 selectedSublocation.ServiceRecipients,
-                previousRecipients);
+                previousServiceRecipients);
 
             SelectServiceRecipients(RenderedServiceRecipients);
         }

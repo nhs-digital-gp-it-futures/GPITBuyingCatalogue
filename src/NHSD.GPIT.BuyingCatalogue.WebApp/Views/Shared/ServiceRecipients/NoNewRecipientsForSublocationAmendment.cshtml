@@ -1,0 +1,39 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.NoNewRecipientsForSublocationAmendmentModel;
+@{
+    ViewBag.Title = Model.Title;
+}
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title model="@Model" />
+        
+        <div id="previously-selected-service-recipients">
+            <nhs-details label-text="View service recipients from the previous revision" data-test-id="existing-recipients-details">
+                <p>
+                    The previous revision had @Model.PreviousOrderRecipients.Count Service @PluralOrSingular(Model.PreviousOrderRecipients.Count)
+                </p>
+
+                <ul>
+                    @foreach (var item in Model.PreviousOrderRecipients)
+                    {
+                        <li>@item</li>
+                    }
+                </ul>
+
+            </nhs-details>
+        </div>
+
+        <p>All the available service recipients for this sublocation have already been included in previous revisions.</p> <p>You can continue and add or change other sublocations.</p>
+        <div class="nhsuk-u-margin-top-6">
+            <vc:nhs-anchor-button text="Save and continue" url="@Model.SaveAndContinueLink" type="Primary" />
+        </div>
+    </div>
+</div>
+
+@{
+    string PluralOrSingular(int total)
+    {
+        return total == 1 ? "Recipient:" : "Recipients:";
+    }
+}

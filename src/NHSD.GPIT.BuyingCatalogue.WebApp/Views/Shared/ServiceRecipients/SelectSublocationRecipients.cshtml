@@ -24,7 +24,7 @@
         @if (Model.IsAmendment is true && (previousOrderRecipients.Count > 0))
         {
             <div id="previously-selected-service-recipients">
-                <nhs-details label-text="View Service Recipients from the previous revision" data-test-id="existing-recipients-details">
+                <nhs-details label-text="View service recipients from the previous revision" data-test-id="existing-recipients-details">
                     <p>
                         The previous revision had @previousOrderRecipients.Count Service @PluralOrSingular(previousOrderRecipients.Count)
                     </p>
