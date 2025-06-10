@@ -1216,16 +1216,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             OrderSublocation previousWorkingSublocation = CommonOrderSublocationFactory(
                 "XXXX",
                 [
-                    CommonOrderSublocationRecipientFactory("AAAA", "XXXX"),
-                    CommonOrderSublocationRecipientFactory("AAAB", "XXXX"),
-                    CommonOrderSublocationRecipientFactory("AAAC", "XXXX"),
-                ]);
+                    CommonOrderSublocationRecipientFactory("AAAA", "XXXX", true),
+                    CommonOrderSublocationRecipientFactory("AAAB", "XXXX", true),
+                    CommonOrderSublocationRecipientFactory("AAAC", "XXXX", true),
+                ],
+                true);
 
             EntityFramework.Ordering.Models.Order order = CommonOrderFactory(0, 0, 0, 2);
 
             OrderSublocation workingSublocation = CommonOrderSublocationFactory(
                 "XXXX",
-                []);
+                [],
+                true);
 
             previousOrder.OrderingPartyId = organisation.Id;
             previousOrder.OrderingParty = organisation;
@@ -1279,6 +1281,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                         .Excluding(m => m.Caption)
                         .Excluding(m => m.Advice)
                         .Excluding(m => m.BackLink)
+                        .Excluding(m => m.SaveAndContinueLink)
                         .Excluding(m => m.PreviousOrderRecipients));
 
             IReadOnlyList<string> previousRecipientsForFurtherEvaluation =
