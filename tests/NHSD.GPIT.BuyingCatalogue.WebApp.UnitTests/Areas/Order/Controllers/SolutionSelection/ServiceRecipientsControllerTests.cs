@@ -694,10 +694,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [
                 // Repo + all mode = 3 selected
                 [
-                    CommonOrganisationFactory(), CommonOrderFactory(), possibleRecipientRepo,
+                    CommonOrganisationFactory(), CommonOrderFactory(),
                     CommonOrderSublocationFactory(
                         "XXXX",
                         []),
+                    possibleRecipientRepo,
 
                     new List<SelectOption<string>>
                     {
@@ -710,12 +711,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
                 // Repo + 1 selected all mode = 3 selected
                 [
-                    CommonOrganisationFactory(), CommonOrderFactory(), possibleRecipientRepo,
+                    CommonOrganisationFactory(), CommonOrderFactory(),
                     CommonOrderSublocationFactory(
                         "XXXX",
                         [
                             CommonOrderSublocationRecipientFactory("AAAA", "XXXX"),
                         ]),
+                    possibleRecipientRepo,
 
                     new List<SelectOption<string>>
                     {
@@ -728,7 +730,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
                 // Repo + 3 selected all mode = 3 selected
                 [
-                    CommonOrganisationFactory(), CommonOrderFactory(), possibleRecipientRepo,
+                    CommonOrganisationFactory(), CommonOrderFactory(),
                     CommonOrderSublocationFactory(
                         "XXXX",
                         [
@@ -736,6 +738,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                             CommonOrderSublocationRecipientFactory("AAAB", "XXXX"),
                             CommonOrderSublocationRecipientFactory("AAAC", "XXXX"),
                         ]),
+                    possibleRecipientRepo,
 
                     new List<SelectOption<string>>
                     {
@@ -748,10 +751,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
                 // Repo + 0 selected none mode = 0 selected
                 [
-                    CommonOrganisationFactory(), CommonOrderFactory(), possibleRecipientRepo,
+                    CommonOrganisationFactory(), CommonOrderFactory(),
                     CommonOrderSublocationFactory(
                         "XXXX",
                         []),
+                    possibleRecipientRepo,
 
                     new List<SelectOption<string>>
                     {
@@ -764,10 +768,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
                 // Repo + 1 selected none mode = 0 selected
                 [
-                    CommonOrganisationFactory(), CommonOrderFactory(), possibleRecipientRepo,
+                    CommonOrganisationFactory(), CommonOrderFactory(),
                     CommonOrderSublocationFactory(
                         "XXXX",
                         [CommonOrderSublocationRecipientFactory("AAAA", "XXXX")]),
+                    possibleRecipientRepo,
 
                     new List<SelectOption<string>>
                     {
@@ -780,7 +785,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
                 // Repo + 3 selected none mode = 0 selected
                 [
-                    CommonOrganisationFactory(), CommonOrderFactory(), possibleRecipientRepo,
+                    CommonOrganisationFactory(), CommonOrderFactory(),
                     CommonOrderSublocationFactory(
                         "XXXX",
                         [
@@ -788,6 +793,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                             CommonOrderSublocationRecipientFactory("AAAB", "XXXX"),
                             CommonOrderSublocationRecipientFactory("AAAC", "XXXX"),
                         ]),
+                    possibleRecipientRepo,
 
                     new List<SelectOption<string>>
                     {
@@ -805,8 +811,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         public static async Task SelectSublocationRecipients_SelectionMode_ReturnsViewAsExpected(
             Organisation organisation,
             EntityFramework.Ordering.Models.Order order,
-            List<ServiceRecipient> possibleRecipients,
             OrderSublocation workingSublocation,
+            List<ServiceRecipient> possibleRecipients,
             List<SelectOption<string>> expectedRendered,
             SelectionMode? selectionMode,
             [Frozen] IOrderSublocationService orderSublocationService,
@@ -822,13 +828,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(organisation.InternalIdentifier)
                 .Returns(organisation.ExternalIdentifier);
-            odsOrganisationsService.GetServiceRecipientsBySublocation(workingSublocation.SublocationOdsCode)
-                .Returns(possibleRecipients);
+
             orderSublocationService.GetOrderSublocationWithRecipients(
                     organisation.ExternalIdentifier,
                     order.Id,
                     workingSublocation.SublocationOdsCode)
                 .Returns(workingSublocation);
+
+            odsOrganisationsService.GetServiceRecipientsBySublocation(workingSublocation.SublocationOdsCode)
+                .Returns(possibleRecipients);
 
             orderService.GetOrderId(order.CallOffId).Returns(order.Id);
 
@@ -878,10 +886,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [
                 // 1 existing + repo = 3 rendered with 1 existing selected
                 [
-                    CommonOrganisationFactory(), CommonOrderFactory(), possibleRecipientRepo,
+                    CommonOrganisationFactory(), CommonOrderFactory(),
                     CommonOrderSublocationFactory(
                         "XXXX",
                         [CommonOrderSublocationRecipientFactory("AAAA", "XXXX")]),
+                    possibleRecipientRepo,
 
                     new List<SelectOption<string>>
                     {
@@ -893,10 +902,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
                 // 0 existing + repo = 3 rendered with 0 existing selected
                 [
-                    CommonOrganisationFactory(), CommonOrderFactory(), possibleRecipientRepo,
+                    CommonOrganisationFactory(), CommonOrderFactory(),
                     CommonOrderSublocationFactory(
                         "XXXX",
                         []),
+                    possibleRecipientRepo,
 
                     new List<SelectOption<string>>
                     {
@@ -908,7 +918,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
                 // 3 existing + repo = 3 rendered with 3 existing selected
                 [
-                    CommonOrganisationFactory(), CommonOrderFactory(), possibleRecipientRepo,
+                    CommonOrganisationFactory(), CommonOrderFactory(),
                     CommonOrderSublocationFactory(
                         "XXXX",
                         [
@@ -916,6 +926,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                             CommonOrderSublocationRecipientFactory("AAAB", "XXXX"),
                             CommonOrderSublocationRecipientFactory("AAAC", "XXXX"),
                         ]),
+                    possibleRecipientRepo,
 
                     new List<SelectOption<string>>
                     {
@@ -927,7 +938,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
                 // 3 existing + empty repo = 3 rendered with 3 existing selected
                 [
-                    CommonOrganisationFactory(), CommonOrderFactory(), new List<ServiceRecipient>(),
+                    CommonOrganisationFactory(), CommonOrderFactory(),
                     CommonOrderSublocationFactory(
                         "XXXX",
                         [
@@ -935,6 +946,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                             CommonOrderSublocationRecipientFactory("AAAB", "XXXX"),
                             CommonOrderSublocationRecipientFactory("AAAC", "XXXX"),
                         ]),
+                    new List<ServiceRecipient>(),
 
                     new List<SelectOption<string>>
                     {
@@ -946,7 +958,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
                 // 3 existing (not in repo) + repo = 6 rendered with 3 existing selected
                 [
-                    CommonOrganisationFactory(), CommonOrderFactory(), possibleRecipientRepo,
+                    CommonOrganisationFactory(), CommonOrderFactory(),
                     CommonOrderSublocationFactory(
                         "XXXX",
                         [
@@ -954,6 +966,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                             CommonOrderSublocationRecipientFactory("BAAB", "XXXX"),
                             CommonOrderSublocationRecipientFactory("BAAC", "XXXX"),
                         ]),
+                    possibleRecipientRepo,
 
                     new List<SelectOption<string>>
                     {
@@ -974,8 +987,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             SelectSublocationRecipients_PreviousSelectionsScenarios_ReturnsViewWithSelectionsAsExpected(
                 Organisation organisation,
                 EntityFramework.Ordering.Models.Order order,
-                List<ServiceRecipient> possibleRecipients,
                 OrderSublocation workingSublocation,
+                List<ServiceRecipient> possibleRecipients,
                 List<SelectOption<string>> expectedRendered,
                 [Frozen] IOrderSublocationService orderSublocationService,
                 [Frozen] IOrganisationsService organisationsService,
@@ -986,8 +999,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             await SelectSublocationRecipients_SelectionMode_ReturnsViewAsExpected(
                 organisation,
                 order,
-                possibleRecipients,
                 workingSublocation,
+                possibleRecipients,
                 expectedRendered,
                 null,
                 orderSublocationService,
@@ -995,6 +1008,119 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 odsOrganisationsService,
                 orderService,
                 controller);
+        }
+
+        public static IEnumerable<object[]> AmendmentSelectionModesAndExpectedResults()
+        {
+            List<ServiceRecipient> possibleRecipientRepo =
+            [
+                CommonServiceRecipientFactory("AAAA", "XXXX"),
+                CommonServiceRecipientFactory("AAAB", "XXXX"),
+                CommonServiceRecipientFactory("AAAC", "XXXX"),
+            ];
+
+            return
+            [
+                // 1 in previous order = 2 visible for selection
+                [
+                    CommonOrganisationFactory(), CommonOrderFactory(0, 0, 0, 1),
+                    CommonOrderSublocationFactory("XXXX", [CommonOrderSublocationRecipientFactory("AAAA", "XXXX")]),
+                    CommonOrderFactory(0, 0, 0, 2),
+                    CommonOrderSublocationFactory(
+                        "XXXX",
+                        []),
+                    possibleRecipientRepo,
+
+                    new List<SelectOption<string>>
+                    {
+                        new(string.Empty, "AAAA", true, true),
+                        new(string.Empty, "AAAB", false),
+                        new(string.Empty, "AAAC", false),
+                    },
+                    null,
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockMemberAutoData(nameof(AmendmentSelectionModesAndExpectedResults))]
+        public static async Task AmendmentSelectSublocationRecipients_SelectionMode_ReturnsViewAsExpected(
+            Organisation organisation,
+            EntityFramework.Ordering.Models.Order previousOrder,
+            OrderSublocation previousWorkingSublocation,
+            EntityFramework.Ordering.Models.Order order,
+            OrderSublocation workingSublocation,
+            List<ServiceRecipient> possibleRecipients,
+            List<SelectOption<string>> expectedRendered,
+            SelectionMode? selectionMode,
+            [Frozen] IOrderSublocationService orderSublocationService,
+            [Frozen] IOrganisationsService organisationsService,
+            [Frozen] IOdsService odsOrganisationsService,
+            [Frozen] IOrderService orderService,
+            ServiceRecipientsController controller)
+        {
+            previousOrder.OrderingPartyId = organisation.Id;
+            previousOrder.OrderingParty = organisation;
+            previousOrder.OrderSublocations = [previousWorkingSublocation];
+            previousWorkingSublocation.Order = previousOrder;
+
+            order.OrderingPartyId = organisation.Id;
+            order.OrderingParty = organisation;
+
+            workingSublocation.Order = order;
+
+            var orderWrapper = new OrderWrapper(order, [previousOrder]);
+
+            organisationsService.GetOrganisationExternalIdentifierByInternalIdentifier(organisation.InternalIdentifier)
+                .Returns(organisation.ExternalIdentifier);
+
+            orderSublocationService.GetOrderSublocationWithRecipients(
+                    organisation.ExternalIdentifier,
+                    order.Id,
+                    workingSublocation.SublocationOdsCode)
+                .Returns(workingSublocation);
+
+            odsOrganisationsService.GetServiceRecipientsBySublocation(workingSublocation.SublocationOdsCode)
+                .Returns(possibleRecipients);
+
+            orderService
+                .GetOrderWithSublocationsAndSublocationRecipients(order.CallOffId, organisation.InternalIdentifier)
+                .Returns(orderWrapper);
+
+            orderService.GetOrderId(order.CallOffId).Returns(order.Id);
+
+            var expectedModel = new SelectSublocationRecipientsModel
+            {
+                IsAmendment = true,
+                SublocationName = workingSublocation.SublocationOrganisation?.Name,
+                RenderedServiceRecipients = expectedRendered,
+                SelectionMode = selectionMode,
+            };
+
+            var result =
+                (await controller.SelectSublocationRecipients(
+                    organisation.InternalIdentifier,
+                    order.CallOffId,
+                    workingSublocation.SublocationOdsCode,
+                    selectionMode))
+                .As<ViewResult>();
+
+            result.Should().NotBeNull();
+            result.Model.Should()
+                .BeEquivalentTo(
+                    expectedModel,
+                    opt => opt.Excluding(m => m.Title)
+                        .Excluding(m => m.Caption)
+                        .Excluding(m => m.Advice)
+                        .Excluding(m => m.BackLink)
+                        .Excluding(m => m.RenderedServiceRecipients));
+
+            IReadOnlyList<SelectOption<string>> renderedRecipientsForFurtherEvaluation =
+                result.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
+
+            renderedRecipientsForFurtherEvaluation.Should()
+                .BeEquivalentTo(
+                    expectedModel.RenderedServiceRecipients);
         }
 
         [Theory]
