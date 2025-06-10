@@ -1021,6 +1021,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             return
             [
+                // Current logic will copy previous recipients to the current order so they need to be included in both
                 // 1 in previous order = 2 visible for selection
                 [
                     CommonOrganisationFactory(), CommonOrderFactory(0, 0, 0, 1),
@@ -1028,7 +1029,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     CommonOrderFactory(0, 0, 0, 2),
                     CommonOrderSublocationFactory(
                         "XXXX",
-                        []),
+                        [CommonOrderSublocationRecipientFactory("AAAA", "XXXX")]),
                     possibleRecipientRepo,
 
                     new List<SelectOption<string>>
@@ -1047,7 +1048,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     CommonOrderFactory(0, 0, 0, 2),
                     CommonOrderSublocationFactory(
                         "XXXX",
-                        []),
+                        [CommonOrderSublocationRecipientFactory("AAAA", "XXXX")]),
                     possibleRecipientRepo,
 
                     new List<SelectOption<string>>
@@ -1066,7 +1067,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     CommonOrderFactory(0, 0, 0, 2),
                     CommonOrderSublocationFactory(
                         "XXXX",
-                        []),
+                        [CommonOrderSublocationRecipientFactory("AAAA", "XXXX")]),
                     possibleRecipientRepo,
 
                     new List<SelectOption<string>>
@@ -1085,7 +1086,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     CommonOrderFactory(0, 0, 0, 2),
                     CommonOrderSublocationFactory(
                         "XXXX",
-                        [CommonOrderSublocationRecipientFactory("AAAC", "XXXX")]),
+                        [
+                            CommonOrderSublocationRecipientFactory("AAAA", "XXXX"),
+                            CommonOrderSublocationRecipientFactory("AAAC", "XXXX"),
+                        ]),
                     possibleRecipientRepo,
 
                     new List<SelectOption<string>>
