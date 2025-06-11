@@ -22,6 +22,15 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             action.Should().Throw<ArgumentNullException>();
         }
 
+        [Fact]
+        public static void OrderWrapper_Create_Throws_CurrentOrderMatchesPrevious()
+        {
+            Func<OrderWrapper> action = () => new OrderWrapper(new Order { Id = 22 }, [new Order { Id = 22 }]);
+            action.Should()
+                .Throw<InvalidOperationException>()
+                .WithMessage("Current order in wrapper must not match previous");
+        }
+
         [Theory]
         [MockAutoData]
         public static void OrderWrapper_Create(Order order)

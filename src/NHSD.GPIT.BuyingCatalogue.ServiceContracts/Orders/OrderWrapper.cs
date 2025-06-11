@@ -24,12 +24,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public OrderWrapper(Order currentOrder, IEnumerable<Order> previousOrders)
         {
-            // TODO Guard on previous orders to make sure doesnt match current
             ArgumentNullException.ThrowIfNull(currentOrder);
 
             Order = currentOrder;
 
             previous = previousOrders.OrderBy(x => x.CallOffId.Revision).ToList();
+
+            if (previous?.Any(x => x.Id == currentOrder.Id) ?? false)
+            {
+                throw new InvalidOperationException(
+                    "Current order in wrapper must not match previous"); // below creation of previous to avoid multiple enumeration
+            }
 
             previousLazy = new Lazy<Order>(() =>
             {
