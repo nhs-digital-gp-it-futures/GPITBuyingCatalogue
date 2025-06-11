@@ -15,9 +15,9 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         bool isConfirm,
         Competition competition,
         IEnumerable<SublocationModel> sublocations,
-        string addOrChangeSublocationsHref,
-        string backLinkHref)
-        : this(sublocations, addOrChangeSublocationsHref, backLinkHref)
+        string addOrChangeSublocationsLink,
+        string backLink)
+        : this(sublocations, addOrChangeSublocationsLink, backLink)
     {
         ProcessType = "competition";
         ParentName = competition.Organisation.Name;
@@ -29,9 +29,9 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         bool isConfirm,
         Order order,
         IEnumerable<SublocationModel> sublocations,
-        string addOrChangeSublocationsHref,
-        string backLinkHref)
-        : this(sublocations, addOrChangeSublocationsHref, backLinkHref)
+        string addOrChangeSublocationsLink,
+        string backLink)
+        : this(sublocations, addOrChangeSublocationsLink, backLink)
     {
         ProcessType = "order";
         ParentName = order.OrderingParty.Name;
@@ -41,18 +41,18 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
 
     private SelectSublocationsOverviewModel(
         IEnumerable<SublocationModel> sublocations,
-        string addOrChangeSublocationsHref,
-        string backLinkHref)
+        string addOrChangeSublocationsLink,
+        string backLink)
     {
         Sublocations = sublocations.ToList();
-        AddOrChangeSublocationsHref = addOrChangeSublocationsHref;
+        AddOrChangeSublocationsLink = addOrChangeSublocationsLink;
 
-        BackLink = backLinkHref;
+        BackLink = backLink;
     }
 
     public string ProcessType { get; init; }
 
-    public string AddOrChangeSublocationsHref { get; init; }
+    public string AddOrChangeSublocationsLink { get; init; }
 
     public string ParentName { get; init; }
 

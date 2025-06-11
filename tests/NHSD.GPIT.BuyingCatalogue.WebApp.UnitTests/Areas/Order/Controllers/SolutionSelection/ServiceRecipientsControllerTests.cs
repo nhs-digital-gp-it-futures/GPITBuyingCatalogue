@@ -62,10 +62,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             CallOffId callOffId,
             ServiceRecipientsController controller)
         {
-            var result = controller.UploadOrSelectServiceRecipients(internalOrgId, callOffId);
+            IActionResult result = controller.UploadOrSelectServiceRecipients(internalOrgId, callOffId);
 
-            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            var model = viewResult.Model.Should().BeOfType<UploadOrSelectServiceRecipientModel>().Subject;
+            ViewResult viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            UploadOrSelectServiceRecipientModel model = viewResult.Model.Should()
+                .BeOfType<UploadOrSelectServiceRecipientModel>()
+                .Subject;
 
             model.Should().NotBeNull();
             model.Caption.Should().Be($"Order {callOffId}");
@@ -82,10 +84,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             controller.ModelState.AddModelError("SomeError", "Error message");
 
-            var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
+            IActionResult result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
 
-            var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-            var returnedModel = viewResult.Model.Should().BeOfType<UploadOrSelectServiceRecipientModel>().Subject;
+            ViewResult viewResult = result.Should().BeOfType<ViewResult>().Subject;
+            UploadOrSelectServiceRecipientModel returnedModel =
+                viewResult.Model.Should().BeOfType<UploadOrSelectServiceRecipientModel>().Subject;
 
             returnedModel.Should().BeEquivalentTo(model);
         }
@@ -100,9 +103,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             model.ShouldUploadRecipients = true;
 
-            var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
+            IActionResult result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
 
-            var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            RedirectToActionResult redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             redirectToActionResult.ActionName.Should().Be(nameof(ImportServiceRecipientsController.Index));
             redirectToActionResult.ControllerName.Should()
                 .Be(typeof(ImportServiceRecipientsController).ControllerName());
@@ -119,9 +122,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             model.ShouldUploadRecipients = false;
 
-            var result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
+            IActionResult result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
 
-            var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            RedirectToActionResult redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             redirectToActionResult.ActionName.Should()
                 .Be(nameof(ServiceRecipientsController.SelectSublocations));
             redirectToActionResult.ControllerName.Should()
@@ -600,7 +603,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .BeEquivalentTo(
                     expectedModel,
                     opt => opt.Excluding(model => model.BackLink)
-                        .Excluding(model => model.AddOrChangeSublocationsHref)
+                        .Excluding(model => model.AddOrChangeSublocationsLink)
                         .Excluding(model => model.Sublocations));
 
             IReadOnlyList<SublocationModel> sublocations =
@@ -609,7 +612,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             sublocations.Should()
                 .BeEquivalentTo(
                     expectedModel.Sublocations,
-                    opt => opt.Excluding(slModel => slModel.RecipientHref).Excluding(slModel => slModel.TaskProgress));
+                    opt => opt.Excluding(slModel => slModel.RecipientLink).Excluding(slModel => slModel.TaskProgress));
         }
 
         [Theory]
@@ -1492,7 +1495,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .BeEquivalentTo(
                     expectedModel,
                     opt => opt.Excluding(model => model.BackLink)
-                        .Excluding(model => model.AddOrChangeSublocationsHref)
+                        .Excluding(model => model.AddOrChangeSublocationsLink)
                         .Excluding(model => model.Sublocations));
 
             IReadOnlyList<SublocationModel> sublocations =
@@ -1501,7 +1504,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             sublocations.Should()
                 .BeEquivalentTo(
                     expectedModel.Sublocations,
-                    opt => opt.Excluding(slModel => slModel.RecipientHref).Excluding(slModel => slModel.TaskProgress));
+                    opt => opt.Excluding(slModel => slModel.RecipientLink).Excluding(slModel => slModel.TaskProgress));
         }
 
         [Theory]
@@ -1579,7 +1582,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 .BeEquivalentTo(
                     expectedModel,
                     opt => opt.Excluding(model => model.BackLink)
-                        .Excluding(model => model.AddOrChangeSublocationsHref)
+                        .Excluding(model => model.AddOrChangeSublocationsLink)
                         .Excluding(model => model.Sublocations));
 
             IReadOnlyList<SublocationModel> sublocations =
@@ -1588,7 +1591,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             sublocations.Should()
                 .BeEquivalentTo(
                     expectedModel.Sublocations,
-                    opt => opt.Excluding(slModel => slModel.RecipientHref));
+                    opt => opt.Excluding(slModel => slModel.RecipientLink));
         }
 
         [Theory]

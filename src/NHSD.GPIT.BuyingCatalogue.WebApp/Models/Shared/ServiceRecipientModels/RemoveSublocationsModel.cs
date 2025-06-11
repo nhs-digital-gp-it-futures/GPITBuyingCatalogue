@@ -15,8 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Competition competition,
             IReadOnlyList<string> sublocations,
             IReadOnlyList<string> removes,
-            string backLinkHref)
-            : this(sublocations, removes, backLinkHref)
+            string backLink)
+            : this(sublocations, removes, backLink)
         {
             Caption = competition.Name;
             Advice = "Confirm you want to remove sublocations from this competition";
@@ -27,19 +27,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Order order,
             IReadOnlyList<string> sublocations,
             IReadOnlyList<string> removes,
-            string backLinkHref)
-            : this(sublocations, removes, backLinkHref)
+            string backLink)
+            : this(sublocations, removes, backLink)
         {
             Caption = order.Description;
             Advice = "Confirm you want to remove sublocations from this order";
             ListHeaderText = $"{order.OrderingParty.Name} {Pluralisation} to be removed:";
-            BackLink = backLinkHref;
+            BackLink = backLink;
         }
 
         private RemoveSublocationsModel(
             IReadOnlyList<string> sublocations,
             IReadOnlyList<string> removes,
-            string backLinkHref)
+            string backLink)
         {
             SublocationOdsCodes = sublocations;
             Removes = removes;
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 : "sublocations";
 
             Title = $"Remove {Pluralisation}";
-            BackLink = backLinkHref;
+            BackLink = backLink;
         }
 
         public bool? ConfirmRemove { get; init; }

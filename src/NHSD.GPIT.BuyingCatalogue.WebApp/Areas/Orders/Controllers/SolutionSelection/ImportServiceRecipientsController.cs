@@ -226,13 +226,13 @@ public class ImportServiceRecipientsController(
             })
             .ToList();
 
-        var cancelHref = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId });
+        var cancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, callOffId });
 
         var model = new ValidationCompleteModel(
             orderDescription,
             validationStatus,
             recipientsAsSublocations,
-            cancelHref);
+            cancelLink);
 
         return View("ServiceRecipients/ImportServiceRecipients/ValidationComplete", model);
     }

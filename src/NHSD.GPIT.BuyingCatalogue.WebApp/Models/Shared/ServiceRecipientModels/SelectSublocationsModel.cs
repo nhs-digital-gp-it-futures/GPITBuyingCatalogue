@@ -16,11 +16,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public SelectSublocationsModel(
             CompetitionEntityModels.Competition competition,
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
-            string backLinkHref)
+            string backLink)
         {
             Title = "Select sublocations for this competition";
             Caption = competition.Name;
-            BackLink = backLinkHref;
+            BackLink = backLink;
 
             FormLabelText =
                 $"Select all the {competition.Organisation.Name} sublocations that will be part of this competition";
@@ -35,11 +35,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
         public SelectSublocationsModel(
             OrderWrapper wrapper,
             IEnumerable<ServiceModels.OdsOrganisation> possibleSublocations,
-            string backLinkHref)
+            string backLink)
         {
             Title = "Select sublocations for this order";
             Caption = wrapper.Order.Description;
-            BackLink = backLinkHref;
+            BackLink = backLink;
 
             IsAmendment = wrapper.IsAmendment;
 

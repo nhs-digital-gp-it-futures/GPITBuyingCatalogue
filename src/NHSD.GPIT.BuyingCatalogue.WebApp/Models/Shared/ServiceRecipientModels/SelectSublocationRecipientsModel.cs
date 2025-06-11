@@ -17,11 +17,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Competition competition,
             SublocationModel selectedSublocation,
             IReadOnlyList<ServiceRecipientModel> possibleServiceRecipients,
-            string backLinkHref,
+            string backLink,
             SelectionMode? selectionMode = null)
             : this(
                 selectedSublocation,
-                backLinkHref,
+                backLink,
                 selectionMode)
         {
             Caption = competition.Name;
@@ -35,11 +35,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Order order,
             SublocationModel selectedSublocation,
             IReadOnlyList<ServiceRecipientModel> possibleServiceRecipients,
-            string backLinkHref,
+            string backLink,
             SelectionMode? selectionMode = null)
             : this(
                 selectedSublocation,
-                backLinkHref,
+                backLink,
                 selectionMode)
         {
             Caption = order.Description;
@@ -55,11 +55,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             IReadOnlyList<ServiceRecipientModel> previousServiceRecipients,
             SublocationModel selectedSublocation,
             IReadOnlyList<ServiceRecipientModel> possibleServiceRecipients,
-            string backLinkHref,
+            string backLink,
             SelectionMode? selectionMode = null)
             : this(
                 selectedSublocation,
-                backLinkHref,
+                backLink,
                 selectionMode)
         {
             IsAmendment = true;
@@ -75,12 +75,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         private SelectSublocationRecipientsModel(
             SublocationModel selectedSublocation,
-            string backLinkHref,
+            string backLink,
             SelectionMode? selectionMode = null)
         {
             Title = "Add service recipients";
             Advice = "Select all the organisations that will be receiving this order";
-            BackLink = backLinkHref;
+            BackLink = backLink;
 
             SelectionMode = selectionMode;
 

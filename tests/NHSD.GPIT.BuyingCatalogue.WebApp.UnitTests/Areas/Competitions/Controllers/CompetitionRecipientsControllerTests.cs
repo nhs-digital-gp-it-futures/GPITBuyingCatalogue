@@ -377,7 +377,7 @@ public static class CompetitionRecipientsControllerTests
             .BeEquivalentTo(
                 expectedModel,
                 opt => opt.Excluding(model => model.BackLink)
-                    .Excluding(model => model.AddOrChangeSublocationsHref)
+                    .Excluding(model => model.AddOrChangeSublocationsLink)
                     .Excluding(model => model.Sublocations));
 
         IReadOnlyList<SublocationModel> sublocations = result.Model.As<SelectSublocationsOverviewModel>().Sublocations;
@@ -385,7 +385,7 @@ public static class CompetitionRecipientsControllerTests
         sublocations.Should()
             .BeEquivalentTo(
                 expectedModel.Sublocations,
-                opt => opt.Excluding(slModel => slModel.RecipientHref).Excluding(slModel => slModel.TaskProgress));
+                opt => opt.Excluding(slModel => slModel.RecipientLink).Excluding(slModel => slModel.TaskProgress));
     }
 
     [Theory]
@@ -714,7 +714,7 @@ public static class CompetitionRecipientsControllerTests
             .BeEquivalentTo(
                 expectedModel,
                 opt => opt.Excluding(model => model.BackLink)
-                    .Excluding(model => model.AddOrChangeSublocationsHref)
+                    .Excluding(model => model.AddOrChangeSublocationsLink)
                     .Excluding(model => model.Sublocations));
 
         IReadOnlyList<SublocationModel> sublocations = result.Model.As<SelectSublocationsOverviewModel>().Sublocations;
@@ -722,7 +722,7 @@ public static class CompetitionRecipientsControllerTests
         sublocations.Should()
             .BeEquivalentTo(
                 expectedModel.Sublocations,
-                opt => opt.Excluding(slModel => slModel.RecipientHref).Excluding(slModel => slModel.TaskProgress));
+                opt => opt.Excluding(slModel => slModel.RecipientLink).Excluding(slModel => slModel.TaskProgress));
     }
 
     [Theory]

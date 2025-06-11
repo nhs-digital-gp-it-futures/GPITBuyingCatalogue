@@ -40,27 +40,27 @@ public record SublocationModel
 
     public SublocationModel(
         CompetitionSublocation competitionSublocation,
-        string recipientHref,
+        string recipientLink,
         int serviceRecipientCount,
         TaskProgress taskProgress)
     {
         Name = competitionSublocation.SublocationOrganisation.Name;
         ServiceRecipientCount = serviceRecipientCount;
         OdsCode = competitionSublocation.SublocationOdsCode;
-        RecipientHref = recipientHref;
+        RecipientLink = recipientLink;
         TaskProgress = taskProgress;
     }
 
     public SublocationModel(
         OrderSublocation orderSublocation,
-        string recipientHref,
+        string recipientLink,
         int serviceRecipientCount,
         TaskProgress taskProgress)
     {
         Name = orderSublocation.SublocationOrganisation.Name;
         ServiceRecipientCount = serviceRecipientCount;
         OdsCode = orderSublocation.SublocationOdsCode;
-        RecipientHref = recipientHref;
+        RecipientLink = recipientLink;
         TaskProgress = taskProgress;
     }
 
@@ -72,7 +72,7 @@ public record SublocationModel
 
     public int? ServiceRecipientCount { get; init; }
 
-    public string RecipientHref { get; init; }
+    public string RecipientLink { get; init; }
 
     public TaskProgress TaskProgress { get; init; }
 

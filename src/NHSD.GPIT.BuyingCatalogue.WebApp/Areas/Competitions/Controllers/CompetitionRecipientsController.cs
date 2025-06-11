@@ -103,7 +103,7 @@ public class CompetitionRecipientsController(
         IEnumerable<OdsOrganisation> possibleSublocations =
             await odsService.GetSublocationsByParentOdsCode(competition.Organisation.ExternalIdentifier);
 
-        var backLinkHref = Url.Action(
+        var backLink = Url.Action(
             nameof(UploadOrSelectServiceRecipients),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
@@ -111,7 +111,7 @@ public class CompetitionRecipientsController(
         var model = new SelectSublocationsModel(
             competition,
             possibleSublocations,
-            backLinkHref);
+            backLink);
         return View("ServiceRecipients/SelectSublocations", model);
     }
 
@@ -199,7 +199,7 @@ public class CompetitionRecipientsController(
             return NotFound();
         }
 
-        var backLinkHref = Url.Action(
+        var backLink = Url.Action(
             nameof(ConfirmSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
@@ -208,7 +208,7 @@ public class CompetitionRecipientsController(
             competition,
             parsedSublocations,
             parsedRemoves,
-            backLinkHref);
+            backLink);
 
         return View("ServiceRecipients/RemoveSublocations", model);
     }
@@ -277,7 +277,7 @@ public class CompetitionRecipientsController(
         List<ServiceRecipientModel> possibleRecipients =
             await GetServiceRecipientModelsBySublocation(sublocationOdsCode);
 
-        var backLinkHref = Url.Action(
+        var backLink = Url.Action(
             nameof(ConfirmSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
@@ -286,7 +286,7 @@ public class CompetitionRecipientsController(
             competitionSublocation.Competition,
             sublocationAsSublocationModel,
             possibleRecipients,
-            backLinkHref,
+            backLink,
             selectionMode);
 
         return View("ServiceRecipients/SelectSublocationRecipients", model);
@@ -430,7 +430,7 @@ public class CompetitionRecipientsController(
         string internalOrgId,
         int competitionId,
         bool isConfirm,
-        string backLinkHref)
+        string backLink)
     {
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
@@ -447,7 +447,7 @@ public class CompetitionRecipientsController(
             await MapSublocationToSublocationModel(s);
         }
 
-        var addOrChangeSublocationsHref = Url.Action(
+        var addOrChangeSublocationsLink = Url.Action(
             nameof(SelectSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
@@ -456,14 +456,14 @@ public class CompetitionRecipientsController(
             isConfirm,
             competition,
             sublocations,
-            addOrChangeSublocationsHref,
-            backLinkHref);
+            addOrChangeSublocationsLink,
+            backLink);
 
         return View("ServiceRecipients/SelectSublocationsOverview", model);
 
         async Task MapSublocationToSublocationModel(CompetitionSublocation competitionSublocation)
         {
-            var recipientHref = Url.Action(
+            var recipientLink = Url.Action(
                 nameof(SelectSublocationRecipients),
                 typeof(CompetitionRecipientsController).ControllerName(),
                 new { internalOrgId, competitionId, sublocationOdsCode = competitionSublocation.SublocationOdsCode });
@@ -478,7 +478,7 @@ public class CompetitionRecipientsController(
 
             var sublocationModel = new SublocationModel(
                 competitionSublocation,
-                recipientHref,
+                recipientLink,
                 serviceRecipientCount,
                 taskProgress);
             sublocations.Add(sublocationModel);

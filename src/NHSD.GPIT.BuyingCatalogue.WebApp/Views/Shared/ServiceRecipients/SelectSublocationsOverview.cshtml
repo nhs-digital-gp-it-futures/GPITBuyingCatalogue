@@ -31,14 +31,14 @@
                             <nhs-table-cell>@sublocation.OdsCode</nhs-table-cell>
                             <nhs-table-cell>@sublocation.ServiceRecipientCount</nhs-table-cell>
                             <nhs-table-cell><nhs-tag status-enum="@sublocation.TaskProgress"/></nhs-table-cell>
-                            <nhs-table-cell><a href="@sublocation.RecipientHref">Select</a></nhs-table-cell>
+                            <nhs-table-cell><a href="@sublocation.RecipientLink">Select</a></nhs-table-cell>
                         </nhs-table-row-container>
                     }
 
                 </nhs-table>
             </nhs-card-content>
             <nhs-card-footer>
-                <vc:add-or-change href="@Model.AddOrChangeSublocationsHref" noun-phrase="sublocations" is-change="@isChangeSublocations" />
+                <vc:add-or-change href="@Model.AddOrChangeSublocationsLink" noun-phrase="sublocations" is-change="@isChangeSublocations" />
             </nhs-card-footer>
         </nhs-card-v2>
         <form method="post">

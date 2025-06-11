@@ -397,7 +397,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         result.Model.Should()
             .BeEquivalentTo(
                 expectedModel,
-                opt => opt.Excluding(m => m.Caption).Excluding(m => m.CancelHref));
+                opt => opt.Excluding(m => m.Caption).Excluding(m => m.CancelLink));
     }
 
     [Theory]

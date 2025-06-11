@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             IEnumerable<OdsOrganisation> possibleSublocations =
                 await odsService.GetSublocationsByParentOdsCode(wrapper.Order.OrderingParty.ExternalIdentifier);
 
-            var backLinkHref = Url.Action(
+            var backLink = Url.Action(
                 nameof(UploadOrSelectServiceRecipients),
                 typeof(ServiceRecipientsController).ControllerName(),
                 new { callOffId, internalOrgId });
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             var model = new SelectSublocationsModel(
                 wrapper,
                 possibleSublocations,
-                backLinkHref);
+                backLink);
             return View("ServiceRecipients/SelectSublocations", model);
         }
 
@@ -190,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 return NotFound();
             }
 
-            var backLinkHref = Url.Action(
+            var backLink = Url.Action(
                 nameof(ConfirmSublocations),
                 typeof(ServiceRecipientsController).ControllerName(),
                 new { callOffId, internalOrgId });
@@ -199,7 +199,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 wrapper.Order,
                 parsedSublocations,
                 parsedRemoves,
-                backLinkHref);
+                backLink);
 
             return View("ServiceRecipients/RemoveSublocations", model);
         }
@@ -270,7 +270,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             List<ServiceRecipientModel> possibleRecipients =
                 await GetServiceRecipientModelsBySublocation(sublocationOdsCode);
 
-            var backLinkHref = Url.Action(
+            var backLink = Url.Action(
                 nameof(ConfirmSublocations),
                 typeof(ServiceRecipientsController).ControllerName(),
                 new { callOffId, internalOrgId });
@@ -310,7 +310,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     previousRecipients,
                     sublocationAsSublocationModel,
                     possibleRecipients,
-                    backLinkHref,
+                    backLink,
                     selectionMode);
 
                 return View("ServiceRecipients/SelectSublocationRecipients", amendmentModel);
@@ -320,7 +320,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 orderSublocation.Order,
                 sublocationAsSublocationModel,
                 possibleRecipients,
-                backLinkHref,
+                backLink,
                 selectionMode);
 
             return View("ServiceRecipients/SelectSublocationRecipients", model);
@@ -465,7 +465,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CallOffId callOffId,
             string internalOrgId,
             bool isConfirm,
-            string backLinkHref)
+            string backLink)
         {
             OrderWrapper wrapper =
                 await orderService.GetOrderWithSublocations(callOffId, internalOrgId);
@@ -482,7 +482,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 await MapSublocationToSublocationModel(s);
             }
 
-            var addOrChangeSublocationsHref = Url.Action(
+            var addOrChangeSublocationsLink = Url.Action(
                 nameof(SelectSublocations),
                 typeof(ServiceRecipientsController).ControllerName(),
                 new { callOffId, internalOrgId });
@@ -491,14 +491,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 isConfirm,
                 wrapper.Order,
                 sublocations,
-                addOrChangeSublocationsHref,
-                backLinkHref);
+                addOrChangeSublocationsLink,
+                backLink);
 
             return View("ServiceRecipients/SelectSublocationsOverview", model);
 
             async Task MapSublocationToSublocationModel(OrderSublocation orderSublocation)
             {
-                var recipientHref = Url.Action(
+                var recipientLink = Url.Action(
                     nameof(SelectSublocationRecipients),
                     typeof(ServiceRecipientsController).ControllerName(),
                     new { callOffId, internalOrgId, sublocationOdsCode = orderSublocation.SublocationOdsCode });
@@ -537,7 +537,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
                 var sublocationModel = new SublocationModel(
                     orderSublocation,
-                    recipientHref,
+                    recipientLink,
                     serviceRecipientCount,
                     taskProgress);
                 sublocations.Add(sublocationModel);

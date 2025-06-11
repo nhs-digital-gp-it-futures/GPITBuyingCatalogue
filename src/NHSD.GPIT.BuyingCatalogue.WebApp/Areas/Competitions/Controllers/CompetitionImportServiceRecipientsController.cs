@@ -224,13 +224,13 @@ public class CompetitionImportServiceRecipientsController : Controller
                 })
             .ToList();
 
-        var cancelHref = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId });
+        var cancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId });
 
         var model = new ValidationCompleteModel(
             competitionName,
             validationStatus,
             recipientsAsSublocations,
-            cancelHref);
+            cancelLink);
 
         return View("ServiceRecipients/ImportServiceRecipients/ValidationComplete", model);
     }
