@@ -655,7 +655,7 @@ public static class ImportServiceRecipientsControllerTests
                 });
     }
 
-    public static IEnumerable<object[]> AmendmentRecipientsToSublocationMapping()
+    public static IEnumerable<object[]> AmendmentValidationConfirmNewRecipients()
     {
         return
         [
@@ -878,7 +878,7 @@ public static class ImportServiceRecipientsControllerTests
     }
 
     [Theory]
-    [MockMemberAutoData(nameof(AmendmentRecipientsToSublocationMapping))]
+    [MockMemberAutoData(nameof(AmendmentValidationConfirmNewRecipients))]
     public static async Task ValidateAmendment_ReturnsViewWithModel(
         List<ServiceRecipient> serviceRecipients,
         EntityFramework.Ordering.Models.Order previousOrder,
@@ -934,6 +934,121 @@ public static class ImportServiceRecipientsControllerTests
                 opt => opt.Excluding(m => m.Caption).Excluding(m => m.CancelLink).Excluding(m => m.ContinueLink));
     }
 
+    public static IEnumerable<object[]> AmendmentRecipientsToSublocationMapping()
+    {
+        return
+        [
+            // Sets sublocation recipients with 1 previous and 2 new with new sublocation
+            [
+                new EntityFramework.Ordering.Models.Order
+                {
+                    Id = 112,
+                    OrderNumber = 300,
+                    Revision = 1,
+                    Description = "My order",
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXX",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient("AAAA", "XXXX"),
+                            ],
+                        },
+                    ],
+                },
+                new EntityFramework.Ordering.Models.Order
+                {
+                    Id = 34,
+                    OrderNumber = 300,
+                    Revision = 2,
+                    Description = "My order",
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXX",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient("AAAA", "XXXX"),
+                            ],
+                        },
+                    ],
+                },
+                new ValidateAmendmentRecipientsModel
+                {
+                    NewRecipients =
+                    [
+                        new ServiceRecipientModel { LocationOrgId = "XXXX", OdsCode = "AAAB" },
+                        new ServiceRecipientModel { LocationOrgId = "XXXA", OdsCode = "AAAC" },
+                    ],
+                },
+                new HashSet<string> { "XXXX", "XXXA" },
+                new Dictionary<string, HashSet<string>> { { "XXXX", ["AAAA", "AAAB"] }, { "XXXA", ["AAAC"] } },
+            ],
+        ];
+    }
+
+    [Theory]
+    [MockMemberAutoData(nameof(AmendmentRecipientsToSublocationMapping))]
+    public static async Task ValidateAmendment_Post_PerformsServiceCallsAndRedirectsAsExpected(
+        EntityFramework.Ordering.Models.Order previousOrder,
+        EntityFramework.Ordering.Models.Order order,
+        ValidateAmendmentRecipientsModel model,
+        HashSet<string> expectedOrderServiceSetSublocationsCall,
+        Dictionary<string, HashSet<string>> expectedOrderSublocationServiceSetSublocationRecipientsCall,
+        Organisation organisation,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] IOrderService orderService,
+        [Frozen] IOrderSublocationService orderSublocationService,
+        ImportServiceRecipientsController controller)
+    {
+        order.OrderingParty = organisation;
+
+        var wrappedOrder = new OrderWrapper(order, [previousOrder]);
+
+        orderService.GetOrderWithSublocationsAndSublocationRecipients(order.CallOffId, organisation.InternalIdentifier)
+            .Returns(wrappedOrder);
+
+        var result = (await controller.ValidateAmendment(
+                organisation.InternalIdentifier,
+                order.CallOffId,
+                model))
+            .As<RedirectToActionResult>();
+
+        var expectedRouteValues = new { internalOrgId = organisation.InternalIdentifier, callOffId = order.CallOffId };
+
+        result.Should().NotBeNull();
+        result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
+
+        // result.RouteValues.Should()
+        //     .BeEquivalentTo(expectedRouteValues);
+
+        await orderService.Received()
+            .SetSublocations(
+                order.CallOffId,
+                organisation.InternalIdentifier,
+                Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(
+                    hs,
+                    expectedOrderServiceSetSublocationsCall)));
+
+        foreach (KeyValuePair<string, HashSet<string>> kvp in
+                 expectedOrderSublocationServiceSetSublocationRecipientsCall)
+        {
+            await orderSublocationService.Received()
+                .SetSublocationRecipients(
+                    organisation.ExternalIdentifier,
+                    order.Id,
+                    kvp.Key,
+                    Arg.Is<HashSet<string>>(hs => AreStringHashSetsEquivalent(
+                        hs,
+                        kvp.Value)));
+        }
+
+        await importService.Received().Clear(Arg.Any<DistributedCacheKey>());
+    }
+
     private static bool AreListsEquivalentIgnoreOrder(
         IReadOnlyList<OrderSublocation> actual,
         IReadOnlyList<OrderSublocation> expected)
@@ -941,6 +1056,21 @@ public static class ImportServiceRecipientsControllerTests
         try
         {
             actual.Should().BeEquivalentTo(expected, options => options.WithoutStrictOrdering());
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool AreStringHashSetsEquivalent(
+        HashSet<string> actual,
+        HashSet<string> expected)
+    {
+        try
+        {
+            actual.Should().BeEquivalentTo(expected);
             return true;
         }
         catch
