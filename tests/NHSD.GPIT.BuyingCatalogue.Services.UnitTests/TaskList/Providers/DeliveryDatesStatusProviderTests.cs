@@ -47,6 +47,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
+        [MockAutoData]
+        public static void Get_NoRecipients_ReturnsCannotStart(
+            Order order,
+            DeliveryDatesStatusProvider service)
+        {
+            order.OrderSublocations.Clear();
+
+            TaskProgress actual = service.Get(new OrderWrapper(order), null);
+
+            actual.Should().Be(TaskProgress.CannotStart);
+        }
+
+        [Theory]
         [MockInlineAutoData(TaskProgress.CannotStart)]
         [MockInlineAutoData(TaskProgress.InProgress)]
         [MockInlineAutoData(TaskProgress.NotApplicable)]
