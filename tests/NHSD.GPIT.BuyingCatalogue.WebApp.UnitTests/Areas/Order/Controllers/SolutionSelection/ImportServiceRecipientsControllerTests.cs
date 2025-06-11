@@ -1017,13 +1017,15 @@ public static class ImportServiceRecipientsControllerTests
                 model))
             .As<RedirectToActionResult>();
 
-        var expectedRouteValues = new { internalOrgId = organisation.InternalIdentifier, callOffId = order.CallOffId };
-
         result.Should().NotBeNull();
         result.ActionName.Should().Be(nameof(ServiceRecipientsController.ConfirmSublocations));
 
-        // result.RouteValues.Should()
-        //     .BeEquivalentTo(expectedRouteValues);
+        result.RouteValues.Should()
+            .BeEquivalentTo(
+                new RouteValueDictionary
+                {
+                    { "internalOrgId", organisation.InternalIdentifier }, { "callOffId", order.CallOffId },
+                });
 
         await orderService.Received()
             .SetSublocations(
