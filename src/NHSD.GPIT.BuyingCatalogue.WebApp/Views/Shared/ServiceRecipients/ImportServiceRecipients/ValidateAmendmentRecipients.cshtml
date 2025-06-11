@@ -26,13 +26,14 @@
 
                     @for (var i = 0; i < Model.NewRecipients.Count; i++)
                     {
+                        var localI = i;
                         <nhs-table-row-container>
-                            <nhs-table-cell>@Model.NewRecipients[i].LocationOrgId</nhs-table-cell>
-                            <nhs-table-cell>@Model.NewRecipients[i].Name</nhs-table-cell>
-                            <nhs-table-cell>@Model.NewRecipients[i].OdsCode</nhs-table-cell>
-                            <input type="hidden" asp-for="@Model.NewRecipients[i].Name"/>
-                            <input type="hidden" asp-for="@Model.NewRecipients[i].OdsCode"/>
-                            <input type="hidden" asp-for="@Model.NewRecipients[i].LocationOrgId"/>
+                            <nhs-table-cell>@Model.NewRecipients[localI].LocationOrgId</nhs-table-cell>
+                            <nhs-table-cell>@Model.NewRecipients[localI].Name</nhs-table-cell>
+                            <nhs-table-cell>@Model.NewRecipients[localI].OdsCode</nhs-table-cell>
+                            <input type="hidden" asp-for="@Model.NewRecipients[localI].Name" />
+                            <input type="hidden" asp-for="@Model.NewRecipients[localI].OdsCode" />
+                            <input type="hidden" asp-for="@Model.NewRecipients[localI].LocationOrgId" />
                         </nhs-table-row-container>
                     }
                 </nhs-table>
