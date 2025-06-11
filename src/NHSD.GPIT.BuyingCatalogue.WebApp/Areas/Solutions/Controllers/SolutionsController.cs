@@ -27,7 +27,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         IAdditionalServicesService additionalServicesService,
         ISolutionsFilterService solutionsFilterService,
         IFrameworkService frameworkService,
-        IIntegrationsService integrationsService)
+        IIntegrationsService integrationsService,
+        ISolutionStandardsService solutionStandardsService)
         : Controller
     {
         private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
@@ -36,6 +37,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
         private readonly ISolutionsFilterService solutionsFilterService = solutionsFilterService ?? throw new ArgumentNullException(nameof(solutionsFilterService));
         private readonly IFrameworkService frameworkService = frameworkService ?? throw new ArgumentNullException(nameof(frameworkService));
         private readonly IIntegrationsService integrationsService = integrationsService ?? throw new ArgumentNullException(nameof(integrationsService));
+        private readonly ISolutionStandardsService solutionStandardsService = solutionStandardsService ?? throw new ArgumentNullException(nameof(solutionStandardsService));
 
         [HttpGet]
         public async Task<IActionResult> Index(
@@ -539,7 +541,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
             if (item.PublishedStatus == PublicationStatus.Suspended)
                 return RedirectToAction(nameof(Description), new { solutionId });
 
-            var standards = await solutionsService.GetSolutionStandardsForMarketing(solutionId);
+            var standards = await solutionStandardsService.GetSolutionStandards(solutionId);
 
             var standardsWithWorkOffPlans =
                 (await solutionsService.GetWorkOffPlans(solutionId)).Select(wp => wp.StandardId);

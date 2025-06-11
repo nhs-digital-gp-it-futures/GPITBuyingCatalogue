@@ -328,6 +328,39 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
         [Theory]
         [MockInMemoryDbAutoData]
+        public static async Task GetSolutionLoadingStatuses_With_InProgressStandards_Should_be_Status_InProgress(
+            Solution solution,
+            List<Standard> standards,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            solution.InProgressStandards = standards;
+            context.Solutions.Add(solution);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId);
+            actual.Standards.Should().Be(TaskProgress.InProgress);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetSolutionLoadingStatuses_With_No_InProgressStandards_Should_be_Status_InProgress(
+            Solution solution,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            solution.InProgressStandards = Enumerable.Empty<Standard>().ToList();
+            context.Solutions.Add(solution);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var actual = await service.GetSolutionLoadingStatuses(solution.CatalogueItemId);
+            actual.Standards.Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
         public static async Task GetSolutionStandardsForEditing_ReturnsStandardsForSolution(
             Solution solution,
             [Frozen] BuyingCatalogueDbContext context,

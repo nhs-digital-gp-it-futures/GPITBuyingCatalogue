@@ -1,0 +1,34 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionStandards.StandardPartialModel
+
+@{
+    var standardTypeName = Model.StandardType.Description();
+}
+
+<nhs-fieldset-form-container label-text="@standardTypeName Standards" asp-for="Standards">
+    <nhs-table>
+        <nhs-table-column>Standard</nhs-table-column>
+        <nhs-table-column>Status</nhs-table-column>
+        <nhs-table-column>Action</nhs-table-column>
+
+        @foreach (var standard in Model.Standards.OrderBy(x => x.Name))
+        {
+            <nhs-table-row-container>
+                <nhs-table-cell>@standard.Name</nhs-table-cell>
+                <nhs-table-cell>
+                    <nhs-tag
+                        colour="@(standard.Compliance is StandardCompliance.FullyMet ? NhsTagsTagHelper.TagColour.Green : NhsTagsTagHelper.TagColour.Blue)"
+                        text="@(standard.Compliance.Description())"></nhs-tag>
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a asp-action="@(nameof(CatalogueSolutionStandardsController.Edit))"
+                       asp-controller="@(typeof(CatalogueSolutionStandardsController).ControllerName())"
+                       asp-area="@(typeof(CatalogueSolutionStandardsController).AreaName())"
+                       asp-route-solutionId="@Model.SolutionId"
+                       asp-route-standardId="@standard.Id">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        }
+    </nhs-table>
+</nhs-fieldset-form-container>

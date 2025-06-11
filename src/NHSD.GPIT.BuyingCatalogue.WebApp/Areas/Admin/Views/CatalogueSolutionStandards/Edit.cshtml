@@ -1,0 +1,31 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions.Models
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionStandards.CatalogueSolutionStandardModel
+
+@{
+    ViewBag.Title = $"{Model.StandardName} status";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="SelectedPublicationStatus"/>
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SolutionName"/>
+
+        <nhs-inset-text>
+            <p>If the status of this standard is in progress you can add a Work-off plan item.</p>
+        </nhs-inset-text>
+
+        <form method="post">
+            <nhs-fieldset-form-label label-text="Standard status" size="Medium" asp-for="Compliance">
+                <nhs-radio-buttons asp-for="Compliance" values="@Model.ComplianceOptions.Cast<object>()"
+                                   display-name="Text"
+                                   value-name="Value" />
+            </nhs-fieldset-form-label>
+
+            <nhs-submit-button text="Save and continue"/>
+        </form>
+    </div>
+</div>
