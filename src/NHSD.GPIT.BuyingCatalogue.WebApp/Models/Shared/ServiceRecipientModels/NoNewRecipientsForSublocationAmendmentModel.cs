@@ -21,11 +21,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             BackLink = backLinkUrl;
 
             PreviousOrderRecipients = previousOrderRecipients;
+            PreviousNounPhrase = order.Revision == 2 ? "the previous revision" : "previous revisions";
 
             SaveAndContinueLink = backLinkUrl;
         }
 
         public IReadOnlyList<string> PreviousOrderRecipients { get; init; }
+
+        public string PreviousNounPhrase { get; init; }
 
         public string SaveAndContinueLink { get; init; }
     }

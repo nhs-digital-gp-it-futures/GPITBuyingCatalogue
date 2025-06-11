@@ -1187,20 +1187,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     expectedModel.RenderedServiceRecipients);
         }
 
-        public static IEnumerable<object[]> AmendmentNoNewRecipients()
-        {
-            List<ServiceRecipient> possibleRecipientRepo =
-            [
-            ];
-
-            return
-            [
-                // All 3 in previous order = no new recipients for amendment
-                [
-                ],
-            ];
-        }
-
         [Theory]
         [MockAutoData]
         public static async Task AmendmentSelectSublocationRecipients_NoNewRecipientsAvailable_ReturnsViewAsExpected(
@@ -1271,6 +1257,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 PreviousOrderRecipients = previousWorkingSublocation.SublocationRecipients
                     .Select(x => $"{x.RecipientOdsOrganisation.Name} ({x.RecipientOdsCode})")
                     .ToList(),
+                PreviousNounPhrase = "the previous revision",
             };
 
             var result =
