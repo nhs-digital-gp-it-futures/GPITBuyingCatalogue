@@ -176,9 +176,7 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
-
-        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
         importedServiceRecipients.First().OdsCode = MismatchOdsCode;
@@ -221,9 +219,7 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
-
-        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
         importedServiceRecipients.First().OdsCode = MismatchOdsCode;
@@ -265,9 +261,7 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
-
-        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
         importedServiceRecipients.First().OdsCode = MismatchOdsCode;
@@ -309,7 +303,7 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients.Take(3)
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
 
@@ -358,9 +352,7 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
-
-        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
 
@@ -474,9 +466,7 @@ public static class ImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         ImportServiceRecipientsController controller)
     {
-        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
-
-        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
 
