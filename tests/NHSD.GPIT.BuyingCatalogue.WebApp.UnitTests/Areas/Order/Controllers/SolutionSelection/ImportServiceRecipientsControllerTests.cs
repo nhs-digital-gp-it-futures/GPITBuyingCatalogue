@@ -665,6 +665,285 @@ public static class ImportServiceRecipientsControllerTests
                 });
     }
 
+    public static IEnumerable<object[]> AmendmentRecipientsToSublocationMapping()
+    {
+        return
+        [
+            // Same recipients requested as already in order history causes failure (both order revisions have same sublocation data as this is currently copied between revisions)
+            [
+                new List<ServiceRecipient>
+                {
+                    new()
+                    {
+                        Name = "Surgery 1",
+                        OrgId = "AAAA",
+                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        Location = "NHS Big Location XXXX",
+                        LocationOrgId = "XXXX",
+                    },
+                    new()
+                    {
+                        Name = "Surgery 34",
+                        OrgId = "AAAC",
+                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        Location = "NHS Unrelated Big Location XXXA",
+                        LocationOrgId = "XXXA",
+                    },
+                },
+                new EntityFramework.Ordering.Models.Order
+                {
+                    Id = 112,
+                    OrderNumber = 300,
+                    Revision = 1,
+                    Description = "My order",
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXX",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient("AAAA", "XXXX"),
+                            ],
+                        },
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXA",
+                            SublocationRecipients = [new OrderSublocationRecipient("AAAC", "XXXA")],
+                        },
+                    ],
+                },
+                new EntityFramework.Ordering.Models.Order
+                {
+                    Id = 34,
+                    OrderNumber = 300,
+                    Revision = 2,
+                    Description = "My order",
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXX",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient("AAAA", "XXXX"),
+                            ],
+                        },
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXA",
+                            SublocationRecipients = [new OrderSublocationRecipient("AAAC", "XXXA")],
+                        },
+                    ],
+                },
+                null,
+                false,
+                "ServiceRecipients/ImportServiceRecipients/ValidateAmendmentRecipientsFailed",
+            ],
+
+            // New recipients in addition to what is already in order causes hasMissing false
+            [
+                new List<ServiceRecipient>
+                {
+                    new()
+                    {
+                        Name = "Surgery 1",
+                        OrgId = "AAAA",
+                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        Location = "NHS Big Location XXXX",
+                        LocationOrgId = "XXXX",
+                    },
+                    new()
+                    {
+                        Name = "Surgery 2",
+                        OrgId = "AAAB",
+                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        Location = "NHS Big Location XXXX",
+                        LocationOrgId = "XXXX",
+                    },
+                    new()
+                    {
+                        Name = "Surgery 34",
+                        OrgId = "AAAC",
+                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        Location = "NHS Unrelated Big Location XXXA",
+                        LocationOrgId = "XXXA",
+                    },
+                },
+                new EntityFramework.Ordering.Models.Order
+                {
+                    Id = 112,
+                    OrderNumber = 300,
+                    Revision = 1,
+                    Description = "My order",
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXX",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient("AAAA", "XXXX"),
+                            ],
+                        },
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXA",
+                            SublocationRecipients = [new OrderSublocationRecipient("AAAC", "XXXA")],
+                        },
+                    ],
+                },
+                new EntityFramework.Ordering.Models.Order
+                {
+                    Id = 34,
+                    OrderNumber = 300,
+                    Revision = 2,
+                    Description = "My order",
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXX",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient("AAAA", "XXXX"),
+                            ],
+                        },
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXA",
+                            SublocationRecipients = [new OrderSublocationRecipient("AAAC", "XXXA")],
+                        },
+                    ],
+                },
+                new List<ServiceRecipient> { new() { OrgId = "AAAB", Name = "Surgery 34", LocationOrgId = "XXXX" } },
+                false,
+                "ServiceRecipients/ImportServiceRecipients/ValidateAmendmentRecipients",
+            ],
+
+            // Only New recipients causes hasMissing true (used to show disclaimer message)
+            [
+                new List<ServiceRecipient>
+                {
+                    new()
+                    {
+                        Name = "Surgery 2",
+                        OrgId = "AAAB",
+                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        Location = "NHS Big Location XXXX",
+                        LocationOrgId = "XXXX",
+                    },
+                },
+                new EntityFramework.Ordering.Models.Order
+                {
+                    Id = 112,
+                    OrderNumber = 300,
+                    Revision = 1,
+                    Description = "My order",
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXX",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient("AAAA", "XXXX"),
+                            ],
+                        },
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXA",
+                            SublocationRecipients = [new OrderSublocationRecipient("AAAC", "XXXA")],
+                        },
+                    ],
+                },
+                new EntityFramework.Ordering.Models.Order
+                {
+                    Id = 34,
+                    OrderNumber = 300,
+                    Revision = 2,
+                    Description = "My order",
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXX",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient("AAAA", "XXXX"),
+                            ],
+                        },
+                        new OrderSublocation
+                        {
+                            SublocationOdsCode = "XXXA",
+                            SublocationRecipients = [new OrderSublocationRecipient("AAAC", "XXXA")],
+                        },
+                    ],
+                },
+                new List<ServiceRecipient> { new() { OrgId = "AAAB", Name = "Surgery 34", LocationOrgId = "XXXX" } },
+                true,
+                "ServiceRecipients/ImportServiceRecipients/ValidateAmendmentRecipients",
+            ],
+        ];
+    }
+
+    [Theory]
+    [MockMemberAutoData(nameof(AmendmentRecipientsToSublocationMapping))]
+    public static async Task ValidateAmendment_ReturnsViewWithModel(
+        List<ServiceRecipient> serviceRecipients,
+        EntityFramework.Ordering.Models.Order previousOrder,
+        EntityFramework.Ordering.Models.Order order,
+        List<ServiceRecipient> expectedOdsServiceResultModels,
+        bool expectedHasMissing,
+        string expectedRoute,
+        Organisation organisation,
+        [Frozen] IServiceRecipientImportService importService,
+        [Frozen] IOrderService orderService,
+        [Frozen] IOdsService odsService,
+        ImportServiceRecipientsController controller)
+    {
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
+            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
+            .ToList();
+
+        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
+
+        order.OrderingParty = organisation;
+
+        var wrappedOrder = new OrderWrapper(order, [previousOrder]);
+
+        orderService.GetOrderWithSublocationsAndSublocationRecipients(order.CallOffId, organisation.InternalIdentifier)
+            .Returns(wrappedOrder);
+
+        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                organisation.InternalIdentifier,
+                Arg.Any<HashSet<string>>())
+            .Returns(expectedOdsServiceResultModels);
+
+        List<ServiceRecipientModel> expectedRecipientModels = expectedOdsServiceResultModels?
+            .Select(x => new ServiceRecipientModel(x))
+            .OrderBy(x => x.LocationOrgId)
+            .ToList();
+
+        var expectedModel = new ValidateAmendmentRecipientsModel
+        {
+            HasMissing = expectedHasMissing, NewRecipients = expectedRecipientModels,
+        };
+
+        var result = (await controller.ValidateAmendment(
+                organisation.InternalIdentifier,
+                order.CallOffId))
+            .As<ViewResult>();
+
+        result.ViewName.Should().BeEquivalentTo(expectedRoute);
+
+        result.Should().NotBeNull();
+        result.Model.Should()
+            .BeEquivalentTo(
+                expectedModel,
+                opt => opt.Excluding(m => m.Caption).Excluding(m => m.CancelLink).Excluding(m => m.ContinueLink));
+    }
+
     private static bool AreListsEquivalentIgnoreOrder(
         IReadOnlyList<OrderSublocation> actual,
         IReadOnlyList<OrderSublocation> expected)
