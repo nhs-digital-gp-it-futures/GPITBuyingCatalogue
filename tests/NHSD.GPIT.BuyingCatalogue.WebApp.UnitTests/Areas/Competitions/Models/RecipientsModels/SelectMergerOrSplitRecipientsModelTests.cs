@@ -15,13 +15,12 @@ public static class SelectMergerOrSplitRecipientsModelTests
     public static void Construct_SetsPropertiesAsExpected(
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
-        List<string> existingRecipients,
         List<string> preSelectedRecipients)
     {
         var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
-            new CallOffId(),
-            OrderTypeEnum.AssociatedServiceSplit, // TEMP
+            default,
+            OrderTypeEnum.AssociatedServiceSplit,
             serviceRecipients,
             preSelectedRecipients);
 
@@ -47,15 +46,14 @@ public static class SelectMergerOrSplitRecipientsModelTests
         bool expectedSelection,
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
-        List<string> existingRecipients,
         List<string> preSelectedRecipients)
     {
         serviceRecipients.ForEach(x => x.Selected = false);
 
         var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
-            new CallOffId(),
-            OrderTypeEnum.AssociatedServiceSplit, // TEMP
+            default,
+            OrderTypeEnum.AssociatedServiceSplit,
             serviceRecipients,
             preSelectedRecipients,
             selectionMode);
@@ -67,8 +65,7 @@ public static class SelectMergerOrSplitRecipientsModelTests
     [MockAutoData]
     public static void Construct_ImportedRecipients_SelectsImportedRecipients(
         Organisation organisation,
-        List<ServiceRecipientModel> serviceRecipients,
-        List<string> existingRecipients)
+        List<ServiceRecipientModel> serviceRecipients)
     {
         serviceRecipients.ForEach(x => x.Selected = false);
 
@@ -76,8 +73,8 @@ public static class SelectMergerOrSplitRecipientsModelTests
 
         var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
-            new CallOffId(),
-            OrderTypeEnum.AssociatedServiceSplit, // TEMP
+            default,
+            OrderTypeEnum.AssociatedServiceSplit,
             serviceRecipients,
             preSelectedRecipients);
 
@@ -89,15 +86,14 @@ public static class SelectMergerOrSplitRecipientsModelTests
     public static void Construct_InvalidImportedRecipients_DoesNotSelectImportedRecipients(
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
-        List<string> preSelectedRecipients,
-        List<string> existingRecipients)
+        List<string> preSelectedRecipients)
     {
         serviceRecipients.ForEach(x => x.Selected = false);
 
         var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
-            new CallOffId(),
-            OrderTypeEnum.AssociatedServiceSplit, // TEMP
+            default,
+            OrderTypeEnum.AssociatedServiceSplit,
             serviceRecipients,
             preSelectedRecipients);
 
@@ -113,12 +109,11 @@ public static class SelectMergerOrSplitRecipientsModelTests
         serviceRecipients.ForEach(x => x.Selected = false);
 
         var preSelectedRecipients = serviceRecipients.Take(2).Select(x => x.OdsCode).ToList();
-        var existingRecipients = serviceRecipients.Skip(2).Select(x => x.OdsCode).ToList();
 
         var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
-            new CallOffId(),
-            OrderTypeEnum.AssociatedServiceSplit, // TEMP
+            default,
+            OrderTypeEnum.AssociatedServiceSplit,
             serviceRecipients,
             preSelectedRecipients);
 

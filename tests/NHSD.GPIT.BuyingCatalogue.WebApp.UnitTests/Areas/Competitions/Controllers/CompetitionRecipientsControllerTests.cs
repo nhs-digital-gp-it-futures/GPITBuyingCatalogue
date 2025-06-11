@@ -1328,21 +1328,6 @@ public static class CompetitionRecipientsControllerTests
         return new ServiceRecipient { OrgId = orgId, LocationOrgId = locationOrgId };
     }
 
-    private static SublocationModel CommonSublocationModelFactory(
-        string odsCode,
-        IReadOnlyList<ServiceRecipientModel> serviceRecipients = null)
-    {
-        return new SublocationModel { OdsCode = odsCode, ServiceRecipients = serviceRecipients };
-    }
-
-    private static ServiceRecipientModel CommonServiceRecipientModelFactory(
-        string odsCode,
-        string locationOrgId,
-        bool selected)
-    {
-        return new ServiceRecipientModel { OdsCode = odsCode, LocationOrgId = locationOrgId, Selected = selected };
-    }
-
     private static bool AreStringHashSetsEquivalent(
         HashSet<string> actual,
         HashSet<string> expected)

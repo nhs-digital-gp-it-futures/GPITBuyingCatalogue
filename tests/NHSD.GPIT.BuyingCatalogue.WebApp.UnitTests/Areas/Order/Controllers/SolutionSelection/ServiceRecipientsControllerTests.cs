@@ -1804,14 +1804,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             return new EntityOdsOrganisation { Id = id, Name = $"An organisation - {id}", IsActive = true };
         }
 
-        private static ServiceContractOdsOrganisation CommonServiceContractOdsOrganisationFactory(string id)
-        {
-            return new ServiceContractOdsOrganisation
-            {
-                OdsCode = id, OrganisationName = $"An organisation - {id}", IsActive = true,
-            };
-        }
-
         private static bool AreStringHashSetsEquivalent(
             HashSet<string> actual,
             HashSet<string> expected)
