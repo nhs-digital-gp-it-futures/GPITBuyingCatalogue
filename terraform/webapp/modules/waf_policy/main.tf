@@ -24,6 +24,12 @@ locals {
       rules = [
         931130
       ]
+    },
+    {
+      rule_group_name = "REQUEST-933-APPLICATION-ATTACK-PHP",
+      rules = [
+        933160
+      ]
     }
   ]
 }

@@ -199,6 +199,16 @@
                     </nhs-table-cell>
                 </nhs-table-row-container>
                 <nhs-table-row-container>
+                    <nhs-table-cell>Standards</nhs-table-cell>
+                    <nhs-table-cell>No</nhs-table-cell>
+                    <nhs-table-cell><nhs-tag status-enum="@Model.StandardsStatus" /></nhs-table-cell>
+                    <nhs-table-cell>
+                        <a asp-controller="@typeof(CatalogueSolutionStandardsController).ControllerName()"
+                           asp-action="@nameof(CatalogueSolutionStandardsController.Index)"
+                           asp-route-solutionId="@Model.SolutionId">Edit</a>
+                    </nhs-table-cell>
+                </nhs-table-row-container>
+                <nhs-table-row-container>
                     <nhs-table-cell>Development plans</nhs-table-cell>
                     <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell>

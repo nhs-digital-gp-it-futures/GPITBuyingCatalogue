@@ -1,0 +1,36 @@
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionStandards
+
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionStandards.CatalogueSolutionStandardsModel
+
+@{
+    ViewBag.Title = "Standards";
+}
+
+<partial name="Partials/_BackLink" model="Model"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary RadioId="SelectedPublicationStatus"/>
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SolutionName"
+                        advice="Use the link to edit the status of the standard."/>
+
+
+        <partial name="_StandardsTablePartial"
+                 model="new StandardPartialModel(Model.SolutionId, StandardType.Overarching, Model.OverarchingStandards)"/>
+
+        @if (Model.SupplementaryCareStandards.Count > 0)
+        {
+            <partial name="_StandardsTablePartial"
+                     model="new StandardPartialModel(Model.SolutionId, StandardType.SupplementaryCare, Model.SupplementaryCareStandards)"/>
+        }
+
+        @if (Model.OtherStandards.Count > 0)
+        {
+            <partial name="_StandardsTablePartial"
+                     model="new StandardPartialModel(Model.SolutionId, StandardType.Other, Model.OtherStandards)"/>
+        }
+
+        <vc:nhs-anchor-button type="Primary" text="Save and continue" url="@Model.BackLink"/>
+    </div>
+</div>

@@ -13,7 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans
         {
         }
 
-        public DevelopmentPlanModel(CatalogueItem catalogueItem)
+        public DevelopmentPlanModel(
+            CatalogueItem catalogueItem)
         {
             catalogueItem.ValidateNotNull(nameof(catalogueItem));
 
@@ -31,5 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.DevelopmentPlans
         public string SolutionName { get; set; }
 
         public ICollection<WorkOffPlan> WorkOffPlans { get; set; }
+
+        public bool HasInProgressStandards { get; set; }
     }
 }

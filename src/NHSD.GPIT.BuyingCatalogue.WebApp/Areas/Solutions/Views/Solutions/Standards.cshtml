@@ -1,13 +1,11 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
-@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.DetailsAndExpander
+﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.SolutionStandardsModel
 
 @{
-    var overarchingStandards = Model.Standards.Where(s => s.StandardType == StandardType.Overarching).OrderBy(s => s.Name).ToList();
-    var supplementaryCareStandards = Model.Standards.Where(s => s.StandardType == StandardType.SupplementaryCare).OrderBy(s => s.Name).ToList();
-    var otherStandards = Model.Standards.Where(s => s.StandardType == StandardType.Other).OrderBy(s => s.Name).ToList();
+    var overarchingStandards = Model.Standards.Where(s => s.Type == StandardType.Overarching).OrderBy(s => s.Name).ToList();
+    var supplementaryCareStandards = Model.Standards.Where(s => s.Type == StandardType.SupplementaryCare).OrderBy(s => s.Name).ToList();
+    var otherStandards = Model.Standards.Where(s => s.Type == StandardType.Other).OrderBy(s => s.Name).ToList();
 
     var shouldShowOverarchingAction = overarchingStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
     var shouldShowSupplementaryCareStandardsAction = supplementaryCareStandards.Any(s => Model.StandardsWithWorkOffPlans.Any(swp => swp == s.Id));
@@ -25,7 +23,7 @@
         "supplementary-care-table",
         supplementaryCareStandards, Model.StandardsWithWorkOffPlans, Model.SolutionId, shouldShowSupplementaryCareStandardsAction);
 
-    var otherStandardsExpanderModel = new SolutionStandardsExpanderModel( 
+    var otherStandardsExpanderModel = new SolutionStandardsExpanderModel(
         "Other Standards",
         "These Standards are relevant to solutions that meet particular Capabilities",
         "other-table",
