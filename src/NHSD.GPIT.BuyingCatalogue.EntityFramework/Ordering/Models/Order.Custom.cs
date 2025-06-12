@@ -327,6 +327,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return [];
         }
 
+        public bool Exists(CatalogueItemId catalogueItemId)
+        {
+            return OrderItems.Any(x => x.CatalogueItemId == catalogueItemId);
+        }
+
         private static Func<OrderSublocationRecipient, bool> PreviousRecipientDidNotExistOrHaveCatalogueItemPredicate(
             Order previous,
             CatalogueItemId catalogueItemId)
@@ -349,11 +354,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
                 return previousRecipientDidNotHaveCatalogueItem;
             };
-        }
-
-        public bool Exists(CatalogueItemId catalogueItemId)
-        {
-            return OrderItems.Any(x => x.CatalogueItemId == catalogueItemId);
         }
 
         private OrderItem InitialiseOrderItem(
