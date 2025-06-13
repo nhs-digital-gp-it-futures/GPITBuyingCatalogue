@@ -36,6 +36,8 @@ resource "azurerm_linux_web_app_slot" "slot" {
     ip_restriction_default_action = "Deny"
     ftps_state                    = "Disabled"
     http2_enabled                 = true
+    container_registry_managed_identity_client_id = azurerm_user_assigned_identity.web_app_identity.client_id
+    container_registry_use_managed_identity = true
 
     application_stack {
       docker_image_name        = "${var.repository_name}:latest"
