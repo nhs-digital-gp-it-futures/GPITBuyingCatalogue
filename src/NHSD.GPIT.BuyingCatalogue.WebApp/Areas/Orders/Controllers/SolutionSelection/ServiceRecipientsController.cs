@@ -21,8 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         IOdsService odsService,
         IOrderService orderService,
         IOrderSublocationService orderSublocationService,
-        IOrganisationsService organisationsService,
-        IOrderItemService orderItemService)
+        IOrganisationsService organisationsService)
         : Controller
     {
         private readonly IOdsService odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
