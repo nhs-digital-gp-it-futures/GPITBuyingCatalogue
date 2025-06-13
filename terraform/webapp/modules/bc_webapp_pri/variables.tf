@@ -66,11 +66,7 @@ variable "docker_registry_server_url" {
   type = string
 }
 
-variable "docker_registry_server_username" {
-  type = string
-}
-
-variable "docker_registry_server_password" {
+variable "docker_registry_id" {
   type = string
 }
 

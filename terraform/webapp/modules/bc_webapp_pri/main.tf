@@ -21,6 +21,12 @@ resource "azurerm_user_assigned_identity" "web_app_identity" {
   }
 }
 
+resource "azurerm_role_assignment" "example" {
+  principal_id                     = azurerm_user_assigned_identity.web_app_identity.principal_id
+  role_definition_name             = "AcrPull"
+  scope                            = var.docker_registry_id
+}
+
 resource "azurerm_linux_web_app" "webapp" {
   name                                           = var.webapp_name
   location                                       = var.region
@@ -64,8 +70,6 @@ resource "azurerm_linux_web_app" "webapp" {
     application_stack {
       docker_image_name        = "${var.repository_name}:latest"
       docker_registry_url      = "https://${var.docker_registry_server_url}"
-      docker_registry_username = var.docker_registry_server_username
-      docker_registry_password = var.docker_registry_server_password
     }
 
     dynamic "ip_restriction" {

@@ -18,8 +18,7 @@ module "webapp" {
   app_gateway_ip                  = module.appgateway.appgateway_pip_ipaddress
   app_dns_url                     = var.app_url
   docker_registry_server_url      = data.azurerm_container_registry.acr.login_server
-  docker_registry_server_username = data.azurerm_container_registry.acr.admin_username
-  docker_registry_server_password = data.azurerm_container_registry.acr.admin_password
+  docker_registry_id              = data.azurerm_container_registry.acr.id
   create_slot                     = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0
   create_host_binding             = local.core_env == "dev" ? 1 : 0
   ssl_thumbprint                  = data.azurerm_key_vault_certificate.ssl_cert.thumbprint

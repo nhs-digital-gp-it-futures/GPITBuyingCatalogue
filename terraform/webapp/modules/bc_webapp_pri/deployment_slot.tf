@@ -40,8 +40,6 @@ resource "azurerm_linux_web_app_slot" "slot" {
     application_stack {
       docker_image_name        = "${var.repository_name}:latest"
       docker_registry_url      = "https://${var.docker_registry_server_url}"
-      docker_registry_username = var.docker_registry_server_username
-      docker_registry_password = var.docker_registry_server_password
     }
 
     ip_restriction {
