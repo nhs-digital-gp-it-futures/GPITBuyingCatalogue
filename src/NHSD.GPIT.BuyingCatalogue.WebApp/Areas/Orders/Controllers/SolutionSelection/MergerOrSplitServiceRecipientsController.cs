@@ -32,14 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private readonly IOrderService orderService =
             orderService ?? throw new ArgumentNullException(nameof(orderService));
 
-        private readonly IOrderSublocationService orderSublocationService =
-            orderSublocationService ?? throw new ArgumentNullException(nameof(orderSublocationService));
-
         private readonly IOrganisationsService organisationsService =
             organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
-
-        private readonly IOrderItemService orderItemService =
-            orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
 
         [HttpGet("select-recipients")]
         public async Task<IActionResult> SelectServiceRecipients(

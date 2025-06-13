@@ -36,9 +36,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         private readonly IOrganisationsService organisationsService =
             organisationsService ?? throw new ArgumentNullException(nameof(organisationsService));
 
-        private readonly IOrderItemService orderItemService =
-            orderItemService ?? throw new ArgumentNullException(nameof(orderItemService));
-
         [HttpGet("upload-or-select-service-recipients")]
         public IActionResult UploadOrSelectServiceRecipients(
             string internalOrgId,
