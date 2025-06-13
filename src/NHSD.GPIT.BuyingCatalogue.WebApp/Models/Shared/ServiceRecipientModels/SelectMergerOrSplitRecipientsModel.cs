@@ -52,8 +52,6 @@ public sealed class SelectMergerOrSplitRecipientsModel : NavBaseModel
 
     public SublocationModel[] SubLocations { get; set; } = [];
 
-    public ServiceRecipientModel[] SearchRecipients => SubLocations.SelectMany(x => x.ServiceRecipients.Select(y => new ServiceRecipientModel { Name = y.Name, OdsCode = y.OdsCode })).OrderBy(x => x.Name).ToArray();
-
     public bool HasImportedRecipients { get; set; }
 
     public List<ServiceRecipientModel> PreviouslySelected { get; set; }
@@ -61,6 +59,15 @@ public sealed class SelectMergerOrSplitRecipientsModel : NavBaseModel
     public bool ShouldExpand { get; set; }
 
     public bool IsAmendment { get; set; }
+
+    public ServiceRecipientModel[] GetSearchRecipients()
+    {
+        return SubLocations
+            .SelectMany(x =>
+                x.ServiceRecipients.Select(y => new ServiceRecipientModel { Name = y.Name, OdsCode = y.OdsCode }))
+            .OrderBy(x => x.Name)
+            .ToArray();
+    }
 
     public IEnumerable<ServiceRecipientModel> GetServiceRecipients()
     {

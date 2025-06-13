@@ -160,7 +160,7 @@
     id="search-recipients-modal"
     show-dialog-button-id="show-dialog"
     table-partial-view="ServiceRecipients/_recipientTable"
-    table-data="@Model.SearchRecipients"
+    table-data="@Model.GetSearchRecipients()"
     callback-function="updateRecipients"
     title="Search for Service Recipients"
     advice="Find and select the Service Recipients you want to include in this order."
