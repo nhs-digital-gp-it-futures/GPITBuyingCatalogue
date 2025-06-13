@@ -14,16 +14,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
             Value = value;
             Advice = null;
             Selected = false;
-            Hidden = false;
         }
 
-        public SelectOption(string text, TValue value, bool selected = false, bool hidden = false)
+        public SelectOption(string text, TValue value, bool selected = false)
         {
             Text = text;
             Value = value;
             Advice = null;
             Selected = selected;
-            Hidden = hidden;
         }
 
         public SelectOption(string text, string advice, TValue value)
@@ -32,6 +30,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Models
             Advice = advice;
             Value = value;
             Selected = false;
+        }
+
+        public SelectOption(string text, TValue value, bool selected, bool hidden)
+        {
+            Text = text;
+            Value = value;
+            Selected = selected;
+            Hidden = hidden;
         }
 
         public string Text { get; set; }
