@@ -18,6 +18,12 @@ BEGIN
         [CompletionDate] date DEFAULT '2019-12-31' NOT NULL
         )
 
+    DECLARE @InProgressStandards AS TABLE
+        (
+        [SolutionId] NVARCHAR(14) NOT NULL,
+        [StandardId] NVARCHAR(5) NOT NULL
+        )
+
     INSERT INTO @WorkOffPlans
         ([Id], [SolutionId], [StandardId], [Details], [CompletionDate])
     VALUES
@@ -26,8 +32,11 @@ BEGIN
         (3, @CatalogueSolution3Id, @OverarchingStandardId, 'Needs more work to implement', DATEADD(day, 90, SYSDATETIME())),
         (4, @CatalogueSolution4Id, @SupplementaryCareStandardId, 'Needs more work to implement', DATEADD(day, 233, SYSDATETIME()))
 
-
-    SET IDENTITY_INSERT catalogue.WorkOffPlans ON
+    INSERT INTO @InProgressStandards ([SolutionId], [StandardId]) VALUES
+        (@CatalogueSolution1Id, @OverarchingStandardId),
+        (@CatalogueSolution2Id, @SupplementaryCareStandardId),
+        (@CatalogueSolution3Id, @OverarchingStandardId),
+        (@CatalogueSolution4Id, @SupplementaryCareStandardId);
 
     MERGE INTO catalogue.WorkOffPlans AS TARGET
         USING @WorkOffPlans AS SOURCE
@@ -38,8 +47,15 @@ BEGIN
                         TARGET.[Details] = SOURCE.[Details],
                         TARGET.[CompletionDate] = SOURCE.[CompletionDate]
         WHEN NOT MATCHED THEN
-        INSERT (Id, [SolutionId], [StandardId], [Details], [CompletionDate])
-        VALUES(SOURCE.Id, SOURCE.[SolutionId], SOURCE.[StandardId], SOURCE.[Details], SOURCE.[CompletionDate]);
+        INSERT ([SolutionId], [StandardId], [Details], [CompletionDate])
+        VALUES(SOURCE.[SolutionId], SOURCE.[StandardId], SOURCE.[Details], SOURCE.[CompletionDate]);
 
-    SET IDENTITY_INSERT catalogue.WorkOffPlans OFF
+    MERGE INTO catalogue.InProgressSolutionStandards AS TARGET
+        USING @InProgressStandards AS SOURCE
+            ON TARGET.SolutionId = SOURCE.SolutionId AND TARGET.StandardId = SOURCE.StandardId
+        WHEN NOT MATCHED THEN
+        INSERT ([SolutionId], [StandardId])
+        VALUES(SOURCE.[SolutionId], SOURCE.[StandardId]);
+
+
 END
