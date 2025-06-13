@@ -30,12 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
             previous = previousOrders.OrderBy(x => x.CallOffId.Revision).ToList();
 
-            if (previous?.Any(x => x.Id == currentOrder.Id) ?? false)
-            {
-                throw new InvalidOperationException(
-                    "Current order in wrapper must not match previous"); // below creation of previous to avoid multiple enumeration
-            }
-
             previousLazy = new Lazy<Order>(() =>
             {
                 if (previous.Count == 0)
@@ -43,9 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                     return null;
                 }
 
-                var output = previous.First().Clone();
+                Order output = previous.First().Clone();
 
-                foreach (var amendment in previous.Skip(1))
+                foreach (Order amendment in previous.Skip(1))
                 {
                     output.Apply(amendment);
                 }
