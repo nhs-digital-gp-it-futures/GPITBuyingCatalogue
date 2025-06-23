@@ -320,7 +320,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     && o.OrderingParty.InternalIdentifier == internalOrgId);
 
             List<Order> previousOrders = await orders
-                .AsNoTracking()
                 .Where(o => o.Revision < callOffId.Revision)
                 .ToListAsync();
 
