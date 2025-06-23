@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MoreLinq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -19,7 +20,6 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.FilterModels;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using Notify.Client;
-using MoreEnumerable = MoreLinq.MoreEnumerable;
 using ServiceContractOdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
@@ -433,36 +433,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     "One or more requested Ids not found or not valid for this organisation.");
             }
 
-            HashSet<string> orderSublocations =
-                order.OrderSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
+            List<string> orderSublocations =
+                order.OrderSublocations.Select(x => x.SublocationOdsCode).ToList();
 
-            HashSet<string> removes = orderSublocations.Except(sublocationOdsCodes).ToHashSet();
+            IEnumerable<string> removes = orderSublocations.Except(sublocationOdsCodes);
 
-            if (order.IsAmendment)
-            {
-                List<Order> previousOrders = await dbContext.Orders
-                    .Where(o => o.OrderNumber == callOffId.OrderNumber
-                        && o.Revision < callOffId.Revision
-                        && o.OrderingParty.InternalIdentifier == internalOrgId)
-                    .Include(x => x.OrderingParty)
-                    .Include(x => x.OrderSublocations)
-                    .ToListAsync();
-
-                var previousOrdersWrapped = new OrderWrapper(order, previousOrders);
-
-                ICollection<OrderSublocation> previousSublocations = previousOrdersWrapped.Previous.OrderSublocations;
-
-                var anySublocationsAlreadyInOrderHistory = removes.Any(x =>
-                    previousSublocations.Any(y => y.SublocationOdsCode == x));
-
-                if (anySublocationsAlreadyInOrderHistory)
-                {
-                    throw new InvalidOperationException(
-                        "Cannot remove sublocations added by previous revision");
-                }
-            }
-
-            HashSet<string> adds = sublocationOdsCodes.Except(orderSublocations).ToHashSet();
+            IEnumerable<string> adds = sublocationOdsCodes.Except(orderSublocations);
 
             IEnumerable<OrderSublocation> locationsToAdd = adds.Select(x => new OrderSublocation
             {
@@ -571,7 +547,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                     .Where(o => o.OrderingPartyId == organisationId)
                     .ToListAsync())
                 .GroupBy(x => x.OrderNumber)
-                .SelectMany(x => MoreEnumerable.TakeUntil(x.OrderByDescending(y => y.Revision), y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated or OrderStatus.Expired))
+                .SelectMany(x =>
+                    x.OrderByDescending(y => y.Revision)
+                        .TakeUntil(y =>
+                            y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated or OrderStatus.Expired))
                 .ToList();
         }
 
@@ -605,13 +584,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
         public async Task<IList<SearchFilterModel>> GetOrdersBySearchTerm(int organisationId, string searchTerm)
         {
-            var baseData = (await dbContext
+            List<Order> baseData = (await dbContext
                     .Orders
                     .AsNoTracking()
                     .Where(o => o.OrderingPartyId == organisationId)
                     .ToListAsync())
                 .GroupBy(x => x.OrderNumber)
-                .SelectMany(x => MoreEnumerable.TakeUntil(x.OrderByDescending(y => y.Revision), y => y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated or OrderStatus.Expired))
+                .SelectMany(x =>
+                    x.OrderByDescending(y => y.Revision)
+                        .TakeUntil(y =>
+                            y.OrderStatus is OrderStatus.Completed or OrderStatus.Terminated or OrderStatus.Expired))
                 .ToList();
 
             var matches = baseData
