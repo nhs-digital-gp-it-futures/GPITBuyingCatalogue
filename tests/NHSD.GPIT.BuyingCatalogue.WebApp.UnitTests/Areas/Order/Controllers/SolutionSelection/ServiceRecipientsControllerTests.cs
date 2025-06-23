@@ -9,7 +9,9 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using LinqKit;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
@@ -353,6 +355,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] IOrderService ordersService,
             ServiceRecipientsController controller)
         {
+            var tempDataProvider = Substitute.For<ITempDataProvider>();
+
+            var context = Substitute.For<HttpContext>();
+
+            var tempData = new TempDataDictionary(context, tempDataProvider);
+
+            controller.TempData = tempData;
+
             order.OrderSublocations = existingSublocations;
             order.OrderingParty = organisation;
 
@@ -365,16 +375,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 (await controller.SelectSublocations(callingModel, organisation.InternalIdentifier, order.CallOffId))
                 .As<RedirectToActionResult>();
 
+            controller.TempData[ServiceRecipientsController.SublocationsKey]
+                .Should()
+                .BeEquivalentTo(sublocationsConcatString);
+            controller.TempData[ServiceRecipientsController.RemovesKey]
+                .Should()
+                .BeEquivalentTo(removesConcatString);
+
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.RemoveSublocations));
             result.RouteValues.Should()
                 .BeEquivalentTo(
                     new RouteValueDictionary
                     {
-                        { "internalOrgId", organisation.InternalIdentifier },
-                        { "callOffId", order.CallOffId },
-                        { "sublocations", sublocationsConcatString },
-                        { "removes", removesConcatString },
+                        { "internalOrgId", organisation.InternalIdentifier }, { "callOffId", order.CallOffId },
                     });
         }
 
@@ -439,9 +453,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             Organisation organisation,
             EntityFramework.Ordering.Models.Order order,
             [Frozen] IOrderService ordersService,
-            ServiceRecipientsController controller)
+            ServiceRecipientsController controller
+        )
         {
             order.OrderingParty = organisation;
+
+            var tempDataProvider = Substitute.For<ITempDataProvider>();
+
+            var context = Substitute.For<HttpContext>();
+
+            var tempData = new TempDataDictionary(context, tempDataProvider);
+
+            controller.TempData = tempData;
+
+            controller.TempData[ServiceRecipientsController.SublocationsKey] = sublocations;
+            controller.TempData[ServiceRecipientsController.RemovesKey] = removes;
 
             ordersService.GetOrderThin(order.CallOffId, organisation.InternalIdentifier)
                 .Returns(new OrderWrapper(order));
@@ -449,9 +475,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var result =
                 (await controller.RemoveSublocations(
                     organisation.InternalIdentifier,
-                    order.CallOffId,
-                    sublocations,
-                    removes))
+                    order.CallOffId))
                 .As<ViewResult>();
 
             result.Should().NotBeNull();

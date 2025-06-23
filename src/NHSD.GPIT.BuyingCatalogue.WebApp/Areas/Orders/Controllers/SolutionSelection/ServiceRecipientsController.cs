@@ -24,6 +24,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         IOrganisationsService organisationsService)
         : Controller
     {
+        public const string SublocationsKey = "sublocations";
+
+        public const string RemovesKey = "removes";
+
         private readonly IOdsService odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
 
         private readonly IOrderService orderService =
@@ -131,13 +135,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             {
                 var stringOfSublocations = JoinEnumerableStringsToCommaSeparatedString(sublocationOdsCodes);
 
+                TempData[SublocationsKey] = stringOfSublocations;
+                TempData[RemovesKey] = stringOfRemoves;
+
                 return RedirectToAction(
                     nameof(RemoveSublocations),
                     typeof(ServiceRecipientsController).ControllerName(),
-                    new
-                    {
-                        internalOrgId, callOffId, sublocations = stringOfSublocations, removes = stringOfRemoves,
-                    });
+                    new { callOffId, internalOrgId });
             }
 
             await orderService.SetSublocations(callOffId, internalOrgId, sublocationOdsCodes);
@@ -171,10 +175,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         [HttpGet("remove-sublocations")]
         public async Task<IActionResult> RemoveSublocations(
             string internalOrgId,
-            CallOffId callOffId,
-            string sublocations,
-            string removes)
+            CallOffId callOffId)
         {
+            var sublocations = TempData.Peek(SublocationsKey) as string;
+            var removes = TempData.Peek(RemovesKey) as string;
+
+            if (sublocations is null || removes is null)
+            {
+                return RedirectToAction(
+                    nameof(SelectSublocations),
+                    typeof(ServiceRecipientsController).ControllerName(),
+                    new { internalOrgId, callOffId });
+            }
+
             var parsedSublocations = SplitCommaSeparatedString(sublocations);
 
             var parsedRemoves = SplitCommaSeparatedString(removes);
@@ -207,7 +220,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             CallOffId callOffId)
         {
             if (removeSublocationsModel.ConfirmRemove is null || removeSublocationsModel.SublocationOdsCodes is not
-                    { Count: > 0 } || removeSublocationsModel.Removes is not { Count: > 0 })
+                    { Count: > 0 })
             {
                 return BadRequest();
             }
@@ -226,6 +239,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 callOffId,
                 internalOrgId,
                 sublocations);
+
+            TempData.Remove(SublocationsKey);
+            TempData.Remove(RemovesKey);
 
             return RedirectToAction(
                 nameof(ConfirmSublocations),
