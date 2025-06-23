@@ -219,8 +219,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             string internalOrgId,
             CallOffId callOffId)
         {
-            if (removeSublocationsModel.ConfirmRemove is null || removeSublocationsModel.SublocationOdsCodes is not
-                    { Count: > 0 })
+            if (!ModelState.IsValid)
+            {
+                return View("ServiceRecipients/RemoveSublocations", removeSublocationsModel);
+            }
+
+            if (removeSublocationsModel.SublocationOdsCodes is not
+                { Count: > 0 })
             {
                 return BadRequest();
             }
