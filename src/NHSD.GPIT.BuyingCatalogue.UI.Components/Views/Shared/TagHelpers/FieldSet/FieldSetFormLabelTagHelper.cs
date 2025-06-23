@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var labelHint = parentChildContext.IsTimeInput ? TimeInputConstants.TimeInputHint : LabelHint;
 
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, labelHint, formName);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(labelHint, formName);
 
             var errorMessage = BuildErrorMessage(formName);
 

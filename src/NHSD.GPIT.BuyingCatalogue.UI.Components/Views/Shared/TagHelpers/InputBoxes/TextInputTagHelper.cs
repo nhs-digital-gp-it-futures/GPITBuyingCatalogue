@@ -72,7 +72,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
 
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(LabelHint, For.Name);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator, VisuallyHiddenError);
             var input = GetInputBuilder();
             var counter = TagHelperBuilders.GetCounterBuilder(For, DefaultMaxLength, CharacterCountEnabled);
@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             {
                 builder.MergeAttribute(
                     TagHelperConstants.AriaDescribedBy,
-                    TagBuilder.CreateSanitizedId(string.Join(' ', describedBy), "_"));
+                    TagBuilder.CreateSanitizedId(string.Join(' ', describedBy), " "));
             }
 
             if (TagHelperFunctions.GetCustomAttributes<PasswordAttribute>(For)?.Any() == true)
