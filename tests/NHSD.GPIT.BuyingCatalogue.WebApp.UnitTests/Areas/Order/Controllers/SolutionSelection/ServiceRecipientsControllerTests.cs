@@ -469,7 +469,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             modelForFurtherComparison.ListHeaderText.Should()
                 .Be($"{order.OrderingParty.Name} {expectedModel.Pluralisation} to be removed:");
             modelForFurtherComparison.Title.Should().Be($"Remove {expectedModel.Pluralisation}");
-            modelForFurtherComparison.Caption.Should().Be(order.Description);
+            modelForFurtherComparison.Caption.Should().Be(order.CallOffId.ToString());
             modelForFurtherComparison.Advice.Should().Be("Confirm you want to remove sublocations from this order");
         }
 
@@ -581,7 +581,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expectedModel = new SelectSublocationsOverviewModel
             {
                 Title = "Add sublocations",
-                Caption = order.Description,
+                Caption = order.CallOffId.ToString(),
                 Advice = "Select a sublocation to add organisations to this order",
                 ProcessType = "order",
                 Sublocations = orderSublocations.Select(x => new SublocationModel
@@ -1460,7 +1460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expectedModel = new SelectSublocationsOverviewModel
             {
                 Title = "Confirm sublocations",
-                Caption = order.Description,
+                Caption = order.CallOffId.ToString(),
                 Advice = "Select a sublocation to amend the organisations in this order",
                 ProcessType = "order",
                 Sublocations = orderSublocations.Select(x => new SublocationModel
@@ -1544,7 +1544,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var expectedModel = new SelectSublocationsOverviewModel
             {
                 Title = "Confirm sublocations",
-                Caption = order.Description,
+                Caption = order.CallOffId.ToString(),
                 Advice = "Select a sublocation to amend the organisations in this order",
                 ProcessType = "order",
                 Sublocations = order.OrderSublocations.Select(x => new SublocationModel

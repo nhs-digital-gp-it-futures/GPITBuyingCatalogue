@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             string backLink)
         {
             Title = "Select sublocations for this order";
-            Caption = wrapper.Order.Description;
+            Caption = wrapper.Order.CallOffId.ToString();
             BackLink = backLink;
 
             IsAmendment = wrapper.IsAmendment;
@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 .Select(sl =>
                 {
                     var selected = existingSublocations.Select(es => es.OdsCode).Contains(sl.OdsCode);
-                    return new SelectOption<string> { Text = sl.OdsCode, Value = sl.OdsCode, Selected = selected };
+                    return new SelectOption<string>(sl.OdsCode, sl.OdsCode, selected);
                 })
                 .OrderBy(x => x.Text)
                 .ToList();
@@ -92,13 +92,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
                     var sublocationPartOfPreviousOrder = previousOrderSublocations.Any(x => x.OdsCode == sl.OdsCode);
 
-                    return new SelectOption<string>
-                    {
-                        Text = sl.OdsCode,
-                        Value = sl.OdsCode,
-                        Selected = selected,
-                        Hidden = sublocationPartOfPreviousOrder,
-                    };
+                    return new SelectOption<string>(
+                        sl.OdsCode,
+                        sl.OdsCode,
+                        selected,
+                        sublocationPartOfPreviousOrder
+                    );
                 })
                 .OrderBy(x => x.Text)
                 .ToList();

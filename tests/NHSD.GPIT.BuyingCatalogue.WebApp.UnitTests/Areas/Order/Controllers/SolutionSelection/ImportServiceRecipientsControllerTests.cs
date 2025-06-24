@@ -182,7 +182,7 @@ public static class ImportServiceRecipientsControllerTests
         importedServiceRecipients.First().OdsCode = MismatchOdsCode;
         List<ServiceRecipientImportModel> expectedInvalidRecipients =
             importedServiceRecipients.Where(x => x.OdsCode == MismatchOdsCode).ToList();
-        var expectedModel = new ValidateOdsModel(expectedInvalidRecipients) { Caption = order.Description };
+        var expectedModel = new ValidateOdsModel(expectedInvalidRecipients) { Caption = order.CallOffId.ToString() };
 
         importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
 
@@ -317,7 +317,7 @@ public static class ImportServiceRecipientsControllerTests
         };
 
         var expectedModel = new ValidateNamesModel(
-            mismatchedNames) { Caption = order.Description };
+            mismatchedNames) { Caption = order.CallOffId.ToString() };
 
         importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
 

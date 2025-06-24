@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 backLink,
                 selectionMode)
         {
-            Caption = order.Description;
+            Caption = order.CallOffId.ToString();
             RenderedServiceRecipients = GetRenderedSublocations(
                 possibleServiceRecipients,
                 selectedSublocation.ServiceRecipients);
@@ -63,7 +63,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 selectionMode)
         {
             IsAmendment = true;
-            Caption = order.Description;
+            Caption = order.CallOffId.ToString();
 
             RenderedServiceRecipients = GetRenderedSublocations(
                 possibleServiceRecipients,

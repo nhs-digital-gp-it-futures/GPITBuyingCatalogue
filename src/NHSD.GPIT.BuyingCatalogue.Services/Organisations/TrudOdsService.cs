@@ -172,10 +172,7 @@ public class TrudOdsService : IOdsService
 
     public async Task<string> GetOrganisationName(string odsCode)
     {
-        if (string.IsNullOrEmpty(odsCode))
-        {
-            throw new ArgumentException("odsCode cannot be null or empty");
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(odsCode);
 
         EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation =
             await context.OdsOrganisations.FirstAsync(x => string.Equals(x.Id, odsCode));

@@ -14,7 +14,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             string continueLinkUrl)
         {
             Title = "Confirm service recipients";
-            Caption = order.Description;
+            Caption = order.CallOffId.ToString();
             Advice = "No new service recipients have been selected for this amendment";
 
             BackLink = backLinkUrl;

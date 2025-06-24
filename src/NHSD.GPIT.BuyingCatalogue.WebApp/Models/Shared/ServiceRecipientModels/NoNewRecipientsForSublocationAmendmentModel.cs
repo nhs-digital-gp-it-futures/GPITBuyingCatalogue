@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             string backLinkUrl)
         {
             Title = "Add service recipients";
-            Caption = order.Description;
+            Caption = order.CallOffId.ToString();
             Advice = "No new service recipients can be selected for this sublocation";
 
             BackLink = backLinkUrl;

@@ -30,11 +30,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
                     ICollection<OrderSublocationRecipient> recipients = wrapper
                         .DetermineOrderRecipients(x.CatalogueItemId);
 
-                    if (recipients.Count == 0)
-                    {
-                        return false;
-                    }
-
                     return recipients.Any(y => y.GetDeliveryDateForItem(x.CatalogueItemId).HasValue);
                 });
 

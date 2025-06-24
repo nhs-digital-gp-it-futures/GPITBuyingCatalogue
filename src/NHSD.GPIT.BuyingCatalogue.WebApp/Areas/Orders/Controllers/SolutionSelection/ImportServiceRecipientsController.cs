@@ -143,7 +143,7 @@ public class ImportServiceRecipientsController(
         {
             OrderWrapper wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var orderDescription = wrapper.Order.Description;
+            var orderDescription = wrapper.Order.CallOffId.ToString();
 
             var model = new ValidateOdsModel(
                 cachedRecipients.Where(x => mismatchedOdsCodes.Contains(x.OdsCode)))
@@ -168,7 +168,7 @@ public class ImportServiceRecipientsController(
         {
             OrderWrapper wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-            var orderDescription = wrapper.Order.Description;
+            var orderDescription = wrapper.Order.CallOffId.ToString();
 
             var continueLink = Url.Action(
                 nameof(ValidationComplete),
@@ -208,7 +208,7 @@ public class ImportServiceRecipientsController(
 
         OrderWrapper wrapper = await orderService.GetOrderThin(callOffId, internalOrgId);
 
-        var orderDescription = wrapper.Order.Description;
+        var orderDescription = wrapper.Order.CallOffId.ToString();
 
         HashSet<string> requestedRecipientOdsCodes = cachedRecipients.Select(x => x.OdsCode).ToHashSet();
 

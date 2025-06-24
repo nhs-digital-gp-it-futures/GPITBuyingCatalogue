@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             string backLink)
             : this(sublocations, removes, backLink)
         {
-            Caption = order.Description;
+            Caption = order.CallOffId.ToString();
             Advice = "Confirm you want to remove sublocations from this order";
             ListHeaderText = $"{order.OrderingParty.Name} {Pluralisation} to be removed:";
             BackLink = backLink;

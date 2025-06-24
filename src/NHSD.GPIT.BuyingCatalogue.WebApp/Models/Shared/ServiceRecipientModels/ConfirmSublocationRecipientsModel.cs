@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             string continueLinkUrl)
             : this(backLinkUrl, continueLinkUrl)
         {
-            Caption = order.Description;
+            Caption = order.CallOffId.ToString();
             Advice = OrderAdvice;
 
             Sublocations = order.OrderSublocations
@@ -49,7 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             string continueLinkUrl)
             : this(backLinkUrl, continueLinkUrl)
         {
-            Caption = wrapper.Order.Description;
+            Caption = wrapper.Order.CallOffId.ToString();
             Advice = OrderAdvice;
 
             IEnumerable<OrderSublocation> sublocationsWithNewRecipients = wrapper.Order.OrderSublocations.Where(x =>
@@ -57,12 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 OrderSublocation previousSublocation = wrapper.Previous?.OrderSublocations
                     .FirstOrDefault(y => y.SublocationOdsCode == x.SublocationOdsCode);
 
-                if (previousSublocation is null)
-                {
-                    return true;
-                }
-
-                return x.SublocationRecipients.Count > previousSublocation.SublocationRecipients.Count;
+                return x.SublocationRecipients.Count > previousSublocation?.SublocationRecipients.Count;
             });
 
             Sublocations = sublocationsWithNewRecipients

@@ -35,7 +35,7 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
     {
         ProcessType = "order";
         ParentName = order.OrderingParty.Name;
-        Caption = order.Description;
+        Caption = order.CallOffId.ToString();
         SetConditionalTitleAndAdvice(isConfirm);
     }
 
