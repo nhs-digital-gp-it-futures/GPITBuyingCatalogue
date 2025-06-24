@@ -51,7 +51,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             BackLink = backLink;
         }
 
-        public bool? ConfirmRemove { get; init; }
+        public bool? ConfirmRemove { get; set; }
 
         public IEnumerable<SelectOption<bool>> ConfirmRemoveOptions => new List<SelectOption<bool>>
         {
