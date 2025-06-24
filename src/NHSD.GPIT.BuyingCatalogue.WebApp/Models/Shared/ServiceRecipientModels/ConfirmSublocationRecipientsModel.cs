@@ -57,7 +57,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 OrderSublocation previousSublocation = wrapper.Previous?.OrderSublocations
                     .FirstOrDefault(y => y.SublocationOdsCode == x.SublocationOdsCode);
 
-                return x.SublocationRecipients.Count > previousSublocation?.SublocationRecipients.Count;
+                return x.SublocationRecipients.Count > (previousSublocation?.SublocationRecipients.Count ?? 0);
             });
 
             Sublocations = sublocationsWithNewRecipients
