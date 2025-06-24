@@ -342,17 +342,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
                     previous.FlattenedRecipients.FirstOrDefault(pr =>
                         pr.RecipientOdsCode == cr.RecipientOdsCode);
 
-                var previousRecipientDidNotExist = previousRecipient is null;
-
-                if (previousRecipientDidNotExist)
-                {
-                    return true;
-                }
-
-                var previousRecipientDidNotHaveCatalogueItem =
-                    previousRecipient.OrderItemSublocationRecipients.All(oir => oir.CatalogueItemId != catalogueItemId);
-
-                return previousRecipientDidNotHaveCatalogueItem;
+                return previousRecipient is null
+                    || previousRecipient.OrderItemSublocationRecipients.All(oir =>
+                        oir.CatalogueItemId != catalogueItemId);
             };
         }
 
