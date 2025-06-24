@@ -304,14 +304,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
         public async Task<OrderWrapper> GetOrderWithSublocations(CallOffId callOffId, string internalOrgId)
         {
             IQueryable<Order> orders = dbContext.Orders
-                .Include(o => o.AssociatedServicesOnlyDetails.Solution)
                 .Include(o => o.OrderingParty)
-                .Include(o => o.OrderingPartyContact)
-                .Include(o => o.Supplier)
-                .Include(o => o.LastUpdatedByUser)
-                .Include(o => o.OrderItems)
-                .ThenInclude(i => i.CatalogueItem)
-                .Include(o => o.SelectedFramework)
                 .Include(o => o.OrderSublocations)
                 .ThenInclude(os => os.SublocationOrganisation)
                 .AsSplitQuery()
@@ -334,14 +327,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             string internalOrgId)
         {
             IQueryable<Order> orders = dbContext.Orders
-                .Include(o => o.AssociatedServicesOnlyDetails.Solution)
                 .Include(o => o.OrderingParty)
-                .Include(o => o.OrderingPartyContact)
-                .Include(o => o.Supplier)
-                .Include(o => o.LastUpdatedByUser)
-                .Include(o => o.OrderItems)
-                .ThenInclude(i => i.CatalogueItem)
-                .Include(o => o.SelectedFramework)
                 .Include(o => o.OrderSublocations)
                 .ThenInclude(os => os.SublocationOrganisation)
                 .Include(o => o.OrderSublocations)
