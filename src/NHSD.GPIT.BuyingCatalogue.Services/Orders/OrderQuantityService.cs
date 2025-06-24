@@ -61,7 +61,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task SetServiceRecipientQuantities(int orderId, CatalogueItemId catalogueItemId, List<OrderItemRecipientQuantityDto> quantities)
+        public async Task SetServiceRecipientQuantities(int orderId, CatalogueItemId catalogueItemId, int quantity)
+        {
+            List<OrderSublocationRecipient> recipients = await dbContext
+                .OrderSublocationRecipients.Where(x => x.OrderId == orderId)
+                .Include(x => x.OrderItemSublocationRecipients)
+                .ToListAsync();
+
+            if (recipients.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    $"No recipients exist for the provided {nameof(orderId)}: {orderId}");
+            }
+
+            recipients.ForEach(x => x.SetQuantityForItem(catalogueItemId, quantity));
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SetServiceRecipientQuantities(
+            int orderId,
+            CatalogueItemId catalogueItemId,
+            List<OrderItemRecipientQuantityDto> quantities)
         {
             if (quantities is null or { Count: 0 })
             {
@@ -85,24 +106,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
                 recipient.SetQuantityForItem(catalogueItemId, quantity.Quantity);
             }
-
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task SetServiceRecipientsSingleQuantity(int orderId, CatalogueItemId catalogueItemId, int quantity)
-        {
-            List<OrderSublocationRecipient> recipients = await dbContext
-                .OrderSublocationRecipients.Where(x => x.OrderId == orderId)
-                .Include(x => x.OrderItemSublocationRecipients)
-                .ToListAsync();
-
-            if (recipients.Count == 0)
-            {
-                throw new InvalidOperationException(
-                    $"No recipients exist for the provided {nameof(orderId)}: {orderId}");
-            }
-
-            recipients.ForEach(x => x.SetQuantityForItem(catalogueItemId, quantity));
 
             await dbContext.SaveChangesAsync();
         }

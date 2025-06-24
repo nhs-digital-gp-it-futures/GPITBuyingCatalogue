@@ -167,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
 
-            await service.SetServiceRecipientsSingleQuantity(order.Id, solution.CatalogueItemId, quantity);
+            await service.SetServiceRecipientQuantities(order.Id, solution.CatalogueItemId, quantity);
 
             Order dbOrder = await context.Orders
                 .Include(x => x.OrderSublocations)
