@@ -85,17 +85,15 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             return builder;
         }
 
-        public static TagBuilder GetLabelHintBuilder(ModelExpression aspFor, string hintText, string formName = null)
+        public static TagBuilder GetLabelHintBuilder(string hintText, string formName)
         {
-            if ((string.IsNullOrEmpty(aspFor?.Name) && string.IsNullOrEmpty(formName))
+            if (string.IsNullOrEmpty(formName)
                 || string.IsNullOrEmpty(hintText))
                 return null;
 
-            var name = !string.IsNullOrEmpty(aspFor?.Name) ? aspFor.Name : formName;
-
             var builder = new TagBuilder(TagHelperConstants.Div);
 
-            builder.GenerateId($"{name}-hint", "_");
+            builder.GenerateId($"{formName}-hint", "_");
             builder.AddCssClass(TagHelperConstants.NhsHint);
 
             builder.InnerHtml.AppendHtml(hintText);

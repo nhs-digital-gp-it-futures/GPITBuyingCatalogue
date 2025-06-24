@@ -35,7 +35,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.FieldS
             var formGroup = TagHelperBuilders.GetFormGroupBuilder();
             var fieldset = GetFieldsetBuilder(formName, LabelHint);
             var fieldsetheading = GetFieldSetLegendHeadingBuilder(SelectedSize, LabelText);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, formName);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(LabelHint, formName);
             var errorMessage = BuildErrorMessage(formName);
 
             var content = await output.GetChildContentAsync();

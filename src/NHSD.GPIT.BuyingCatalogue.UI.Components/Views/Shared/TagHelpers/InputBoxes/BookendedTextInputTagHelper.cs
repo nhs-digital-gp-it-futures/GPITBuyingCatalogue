@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InputB
             var formGroup = GetGovFormGroupBuilder();
             var label = TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
             SetLabelAriaDescription(label);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint, null);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(LabelHint, For.Name);
             var validation = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
             var inputWrapper = GetInputWrapper();
 

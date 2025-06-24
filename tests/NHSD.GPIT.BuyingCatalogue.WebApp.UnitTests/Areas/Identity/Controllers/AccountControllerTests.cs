@@ -677,8 +677,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 mockSignInManager,
                 passwordService: mockPasswordService);
 
-            var result = Assert.ThrowsAsync<InvalidOperationException>(async () => await controller.ResetPassword(model));
-            result.Result.Message.Should().Be("Unexpected errors whilst resetting password: " + errorMessage);
+            var result = await Assert.ThrowsAsync<InvalidOperationException>(() => controller.ResetPassword(model));
+            result.Message.Should().Be("Unexpected errors whilst resetting password: " + errorMessage);
 
             await mockPasswordService
                 .Received()
@@ -730,7 +730,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
 
         [Theory]
         [MockAutoData]
-        public static void UpdatePassword_UnexpectedErrors_ThrowsException(
+        public static async Task UpdatePassword_UnexpectedErrors_ThrowsException(
             UserManager<AspNetUser> mockUserManager,
             SignInManager<AspNetUser> mockSignInManager,
             UpdatePasswordViewModel model,
@@ -762,8 +762,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Identity.Controllers
                 HttpContext = new DefaultHttpContext { User = userPrincipal, },
             };
 
-            var result = Assert.ThrowsAsync<InvalidOperationException>(async () => await controller.UpdatePassword(model));
-            result.Result.Message.Should().Be("Unexpected errors whilst updating password: " + errorMessage);
+            var result = await Assert.ThrowsAsync<InvalidOperationException>(() => controller.UpdatePassword(model));
+            result.Message.Should().Be("Unexpected errors whilst updating password: " + errorMessage);
         }
 
         [Theory]
