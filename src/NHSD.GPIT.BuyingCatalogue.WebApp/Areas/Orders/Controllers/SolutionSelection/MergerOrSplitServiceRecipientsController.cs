@@ -190,7 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 BackLink = Url.Action(
                     nameof(SelectRecipientForPracticeReorganisation),
                     new { internalOrgId, callOffId, recipientIds, selectedRecipientId }),
-                AddRemoveRecipientsLink = "",
+                AddRemoveRecipientsLink = string.Empty,
             };
 
             return View(model);

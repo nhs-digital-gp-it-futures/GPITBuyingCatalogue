@@ -453,7 +453,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
 
-            if (orderSublocations is null or { Count: 0 })
+            if (orderSublocations is null || orderSublocations is { Count: 0 })
             {
                 throw new ArgumentException(@"orderSublocations is null or empty", nameof(orderSublocations));
             }

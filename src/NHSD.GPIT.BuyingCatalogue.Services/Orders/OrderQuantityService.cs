@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
             CatalogueItemId catalogueItemId,
             List<OrderItemRecipientQuantityDto> quantities)
         {
-            if (quantities is null or { Count: 0 })
+            if (quantities is null || quantities is { Count: 0 })
             {
                 throw new ArgumentException($"{nameof(quantities)} is null or empty");
             }
