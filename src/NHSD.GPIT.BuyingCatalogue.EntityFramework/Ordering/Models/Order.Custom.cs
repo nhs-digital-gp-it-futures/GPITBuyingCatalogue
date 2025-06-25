@@ -220,6 +220,29 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             {
                 OrderSublocations.Add(newSublocation);
             }
+
+            // Merge order item recipients on each recipient
+            foreach (OrderSublocationRecipient recipientToApply in orderToApply.FlattenedRecipients)
+            {
+                OrderSublocationRecipient existingRecipient = FlattenedRecipients.FirstOrDefault(x =>
+                    x.ParentSublocationOdsCode == recipientToApply.ParentSublocationOdsCode
+                    && x.RecipientOdsCode == recipientToApply.RecipientOdsCode);
+
+                if (existingRecipient is null)
+                {
+                    continue;
+                }
+
+                foreach (OrderItemSublocationRecipient newOrderItemSublocationRecipient in recipientToApply
+                             .OrderItemSublocationRecipients)
+                {
+                    if (existingRecipient.OrderItemSublocationRecipients.All(x =>
+                            x.CatalogueItemId != newOrderItemSublocationRecipient.CatalogueItemId))
+                    {
+                        existingRecipient.OrderItemSublocationRecipients.Add(newOrderItemSublocationRecipient);
+                    }
+                }
+            }
         }
 
         public bool Equals(Order other)
