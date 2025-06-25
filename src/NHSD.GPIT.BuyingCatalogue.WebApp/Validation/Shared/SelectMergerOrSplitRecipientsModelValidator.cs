@@ -6,15 +6,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 
 public class SelectMergerOrSplitRecipientsModelValidator : AbstractValidator<SelectMergerOrSplitRecipientsModel>
 {
-    private readonly string selectAtLeastErrorMessage =
-        $"Select at least {SelectMergerOrSplitRecipientsModel.SelectAtLeast} Service Recipients";
+    public const string SelectAtLeastErrorMessage = "Select at least {0} Service Recipients";
 
     public SelectMergerOrSplitRecipientsModelValidator()
     {
         RuleFor(x => x.SubLocations)
             .Must((_, x) => HaveMadeMinimumCountSelection(SelectMergerOrSplitRecipientsModel.SelectAtLeast, x))
             .WithMessage(_ => string.Format(
-                selectAtLeastErrorMessage,
+                SelectAtLeastErrorMessage,
                 SelectMergerOrSplitRecipientsModel.SelectAtLeast))
             .OverridePropertyName("SubLocations[0].ServiceRecipients[0].Selected");
     }

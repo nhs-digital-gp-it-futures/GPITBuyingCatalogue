@@ -20,7 +20,10 @@ public static class SelectMergerOrSplitRecipientsModelValidatorTests
         TestValidationResult<SelectMergerOrSplitRecipientsModel> result = systemUnderTest.TestValidate(model);
 
         result.ShouldHaveValidationErrorFor("SubLocations[0].ServiceRecipients[0].Selected")
-            .WithErrorMessage(systemUnderTest.SelectAtLeastErrorMessage);
+            .WithErrorMessage(
+                string.Format(
+                    SelectMergerOrSplitRecipientsModelValidator.SelectAtLeastErrorMessage,
+                    SelectMergerOrSplitRecipientsModel.SelectAtLeast));
     }
 
     [Theory]
@@ -37,7 +40,7 @@ public static class SelectMergerOrSplitRecipientsModelValidatorTests
         result.ShouldHaveValidationErrorFor("SubLocations[0].ServiceRecipients[0].Selected")
             .WithErrorMessage(
                 string.Format(
-                    systemUnderTest.SelectAtLeastErrorMessage,
+                    SelectMergerOrSplitRecipientsModelValidator.SelectAtLeastErrorMessage,
                     SelectMergerOrSplitRecipientsModel.SelectAtLeast));
     }
 

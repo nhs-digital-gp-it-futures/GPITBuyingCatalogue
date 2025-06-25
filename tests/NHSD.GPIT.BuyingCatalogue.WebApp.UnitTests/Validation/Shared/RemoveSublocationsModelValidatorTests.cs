@@ -29,7 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
 
             TestValidationResult<RemoveSublocationsModel> result = systemUnderTest.TestValidate(model);
             result.ShouldHaveValidationErrorFor("ConfirmRemove")
-                .WithErrorMessage(RemoveSublocationsModelValidator.GetNoSelectionMadeErrorMessage(model.Pluralisation));
+                .WithErrorMessage(
+                    string.Format(RemoveSublocationsModelValidator.NoSelectionMadeErrorMessage, model.Pluralisation));
         }
     }
 }
