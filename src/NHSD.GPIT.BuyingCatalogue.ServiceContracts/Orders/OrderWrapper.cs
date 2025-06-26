@@ -67,53 +67,13 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public bool IsAmendment => Order.CallOffId.IsAmendment;
 
-        public bool HasNewOrderRecipients
-        {
-            get
-            {
-                if (Order.Revision <= 1)
-                {
-                    return Order.FlattenedRecipients.Any();
-                }
+        public bool HasNewOrderRecipients => Order.FlattenedRecipients
+            .Any(r => Previous?.FlattenedRecipients?
+                .FirstOrDefault(x => x.RecipientOdsCode == r.RecipientOdsCode) == null);
 
-                if (Order?.FlattenedRecipients is null || !Order.FlattenedRecipients.Any())
-                {
-                    throw new InvalidOperationException("Order recipients is null or empty");
-                }
-
-                if (Previous?.FlattenedRecipients is null || !Previous.FlattenedRecipients.Any())
-                {
-                    throw new InvalidOperationException("Previous order recipients is null or empty");
-                }
-
-                return Order.FlattenedRecipients.Any(cr =>
-                    Previous.FlattenedRecipients.All(pr => pr.RecipientOdsCode != cr.RecipientOdsCode));
-            }
-        }
-
-        public bool HasNewOrderItems
-        {
-            get
-            {
-                if (Order.Revision <= 1)
-                {
-                    return Order.OrderItems.Count > 0;
-                }
-
-                if (Order?.OrderItems is null || !Order.OrderItems.Any())
-                {
-                    throw new InvalidOperationException("Order items is null or empty");
-                }
-
-                if (Previous?.OrderItems is null || !Previous.OrderItems.Any())
-                {
-                    throw new InvalidOperationException("Previous order items is null or empty");
-                }
-
-                return Order.OrderItems.Any(ci =>
-                    Previous.OrderItems.All(pi => pi.CatalogueItemId != ci.CatalogueItemId));
-            }
-        }
+        public bool HasNewOrderItems => Order.OrderItems
+            .Any(r => Previous?.OrderItems?
+                .FirstOrDefault(x => x.CatalogueItemId == r.CatalogueItemId) == null);
 
         public ICollection<OrderItem> OrderItems =>
             Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)
