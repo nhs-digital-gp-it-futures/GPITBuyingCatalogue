@@ -8,6 +8,7 @@ using BuyingCatalogueFunction.EpicsAndCapabilities.Interfaces;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -91,7 +92,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
                 StandardType = ParseStandardType(csv.GetField<string>("Type")),
                 Url = csv.GetField<string>("URL"),
                 Description = csv.GetField<string>("Description"),
-                IsMetByDefault = csv.GetField<bool>("Default - Fully Met", new IntBooleanConverter()),
+                IsMetByDefault = csv.GetField<bool>("Default - Fully Met", new BooleanConverter()),
             };
         }
 
