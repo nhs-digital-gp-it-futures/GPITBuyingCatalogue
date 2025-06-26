@@ -15,8 +15,7 @@ trigger:
       - develop
   paths:
     exclude:
-      - '**/BuyingCatalogueFunction*'
-      - '**/OrganisationImporter*'
+      - '**/BuyingCatalogueFunction*'\
 
 pr:
   - develop
