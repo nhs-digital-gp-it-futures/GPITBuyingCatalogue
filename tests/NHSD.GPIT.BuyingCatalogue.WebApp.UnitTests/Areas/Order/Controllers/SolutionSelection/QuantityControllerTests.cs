@@ -215,10 +215,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
-            odsService.GetOrganisationName(Arg.Any<string>())
-                .Returns(callInfo => order.OrderSublocations.First(x => x.SublocationOdsCode == callInfo.Arg<string>())
-                    .SublocationOrganisation.Name);
-
             routingService.GetRoute(
                     RoutingPoint.SelectQuantityBackLink,
                     Arg.Any<OrderWrapper>(),
@@ -275,10 +271,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     order.FlattenedRecipients.Select(x =>
                             new GpPracticeSize { OdsCode = x.RecipientOdsCode, NumberOfPatients = NumberOfPatients })
                         .ToList());
-
-            odsService.GetOrganisationName(Arg.Any<string>())
-                .Returns(callInfo => order.OrderSublocations.First(x => x.SublocationOdsCode == callInfo.Arg<string>())
-                    .SublocationOrganisation.Name);
 
             routingService.GetRoute(
                     RoutingPoint.SelectQuantityBackLink,
@@ -338,10 +330,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     .ForEach(x => x.Quantity = null));
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
-
-            odsService.GetOrganisationName(Arg.Any<string>())
-                .Returns(callInfo => order.OrderSublocations.First(x => x.SublocationOdsCode == callInfo.Arg<string>())
-                    .SublocationOrganisation.Name);
 
             routingService.GetRoute(
                     RoutingPoint.SelectQuantityBackLink,

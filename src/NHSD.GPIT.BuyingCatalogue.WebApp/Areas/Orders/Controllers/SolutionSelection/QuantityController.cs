@@ -133,28 +133,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             List<ServiceRecipientQuantityDto> recipientDtos = [];
 
-            Dictionary<string, string> sublocationNameCache = [];
-
             foreach (OrderSublocationRecipient orderRecipient in orderRecipients)
             {
-                var sublocationOdsCode = orderRecipient.ParentSublocationOdsCode;
-
-                var nameInCache = sublocationNameCache.TryGetValue(sublocationOdsCode, out var parentSublocationName);
-
-                if (!nameInCache)
-                {
-                    var sublocationName =
-                        await odsService.GetOrganisationName(sublocationOdsCode);
-                    parentSublocationName = sublocationNameCache[sublocationOdsCode] =
-                        sublocationName;
-                }
-
                 recipientDtos.Add(
                     new ServiceRecipientQuantityDto(
                         orderRecipient.RecipientOdsCode,
                         orderRecipient.RecipientOdsOrganisation?.Name,
                         orderRecipient.GetQuantityForItem(orderItem.CatalogueItemId),
-                        parentSublocationName));
+                        orderRecipient.ParentSublocation.SublocationOrganisation?.Name));
             }
 
             IEnumerable<ServiceRecipientQuantityDto> previousRecipients =

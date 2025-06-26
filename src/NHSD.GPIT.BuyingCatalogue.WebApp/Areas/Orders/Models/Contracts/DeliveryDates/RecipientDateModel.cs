@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
             CommencementDate = commencementDate;
 
             SetDateFields(deliveryDate);
-            Location = recipient.ParentSublocation.SublocationOrganisation.Name;
+            Location = recipient.ParentSublocation.SublocationOrganisation?.Name;
         }
 
         public string OdsCode { get; set; }

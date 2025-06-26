@@ -18,8 +18,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
             string internalIdentifier,
             IEnumerable<string> odsCodes);
 
-        Task<string> GetOrganisationName(string odsCode);
-
         Task UpdateOrganisationDetails(string odsCode);
     }
 }

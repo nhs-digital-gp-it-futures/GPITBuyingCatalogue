@@ -170,16 +170,6 @@ public class TrudOdsService : IOdsService
         return serviceRecipients;
     }
 
-    public async Task<string> GetOrganisationName(string odsCode)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(odsCode);
-
-        EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation =
-            await context.OdsOrganisations.FirstAsync(x => string.Equals(x.Id, odsCode));
-
-        return organisation.Name;
-    }
-
     public async Task UpdateOrganisationDetails(string odsCode)
     {
         var organisation = await context.Organisations.FirstOrDefaultAsync(x => x.ExternalIdentifier == odsCode);

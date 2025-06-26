@@ -143,6 +143,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ThenInclude(ip => ip.OrderItemPriceTiers.OrderBy(t => t.LowerRange))
                 .Include(o => o.SelectedFramework)
                 .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationOrganisation)
+                .Include(x => x.OrderSublocations)
                 .ThenInclude(y => y.SublocationRecipients)
                 .ThenInclude(z => z.OrderItemSublocationRecipients)
                 .Include(x => x.OrderSublocations)
