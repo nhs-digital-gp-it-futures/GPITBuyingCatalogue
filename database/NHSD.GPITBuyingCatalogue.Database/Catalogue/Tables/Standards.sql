@@ -7,6 +7,7 @@
     [Version] NVARCHAR(10) NULL, --TODO Remove column in future release
     StandardTypeId INT NOT NULL,
   	IsDeleted bit NOT NULL CONSTRAINT DF_Standards_IsDeleted DEFAULT(0),
+    [IsMetByDefault] BIT NOT NULL DEFAULT (0),
     LastUpdated datetime2(7) DEFAULT GETUTCDATE() NOT NULL,
     LastUpdatedBy int NULL,
     SysStartTime datetime2(0) GENERATED ALWAYS AS ROW START NOT NULL,

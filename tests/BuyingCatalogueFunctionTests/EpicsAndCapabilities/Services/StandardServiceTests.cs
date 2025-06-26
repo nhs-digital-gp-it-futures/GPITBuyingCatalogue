@@ -41,6 +41,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.StandardType.Should().Be(StandardType.Other);
             result.Url.Should().Be("https://test.com");
             result.Description.Should().Be("Description");
+            result.IsMetByDefault.Should().BeFalse();
         }
 
         [Theory]
@@ -66,6 +67,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
                 Description = standard.Description,
                 StandardType = standard.StandardType,
                 Url = standard.Url,
+                IsMetByDefault = standard.IsMetByDefault,
             };
 
             await service.Process(new List<StandardCsv>() { toProcess });
@@ -81,6 +83,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.Description.Should().Be(standard.Description);
             result.StandardType.Should().Be(standard.StandardType);
             result.Url.Should().Be(standard.Url);
+            result.IsMetByDefault.Should().Be(standard.IsMetByDefault);
         }
 
         [Theory]
@@ -101,6 +104,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
                 Description = "modified description",
                 StandardType = StandardType.Overarching,
                 Url = "http://test2.com",
+                IsMetByDefault = true,
             };
 
             await service.Process(new List<StandardCsv>() { toProcess });
@@ -116,6 +120,7 @@ namespace BuyingCatalogueFunctionTests.EpicsAndCapabilities.Services
             result.Description.Should().Be("modified description");
             result.Url.Should().Be("http://test2.com");
             result.StandardType.Should().Be(StandardType.Overarching);
+            result.IsMetByDefault.Should().BeTrue();
         }
 
         [Theory]
