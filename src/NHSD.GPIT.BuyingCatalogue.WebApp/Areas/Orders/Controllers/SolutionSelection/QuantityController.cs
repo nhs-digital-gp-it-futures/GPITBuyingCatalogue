@@ -11,6 +11,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.Quantity;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 
@@ -48,6 +49,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("quantity/{catalogueItemId}/select")]
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> SelectQuantity(
             string internalOrgId,
             CallOffId callOffId,
@@ -83,6 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("quantity/{catalogueItemId}/select")]
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> SelectQuantity(
             string internalOrgId,
             CallOffId callOffId,
@@ -114,6 +117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("quantity/{catalogueItemId}/service-recipient/select")]
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> SelectServiceRecipientQuantity(
             string internalOrgId,
             CallOffId callOffId,
@@ -186,6 +190,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("quantity/{catalogueItemId}/service-recipient/select")]
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> SelectServiceRecipientQuantity(
             string internalOrgId,
             CallOffId callOffId,
