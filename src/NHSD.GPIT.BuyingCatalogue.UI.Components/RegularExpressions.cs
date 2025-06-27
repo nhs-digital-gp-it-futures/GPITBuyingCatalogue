@@ -2,6 +2,9 @@
 
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components;
 
+/// <summary>
+/// Contains regular expressions used in helper classes.
+/// </summary>
 internal static partial class RegularExpressions
 {
     private const int MillisecondsTimeout = 500;

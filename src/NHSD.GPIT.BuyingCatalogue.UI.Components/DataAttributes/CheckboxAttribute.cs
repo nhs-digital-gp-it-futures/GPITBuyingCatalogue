@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 namespace NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public partial class CheckboxAttribute : Attribute
+    public class CheckboxAttribute : Attribute
     {
         public CheckboxAttribute(string displayText, [CallerMemberName] string propertyName = null)
         {
