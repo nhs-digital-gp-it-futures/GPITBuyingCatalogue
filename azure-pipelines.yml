@@ -13,9 +13,6 @@ trigger:
   branches:
     include:
       - develop
-  paths:
-    exclude:
-      - '**/BuyingCatalogueFunction*'\
 
 pr:
   - develop
@@ -125,6 +122,23 @@ jobs:
       - task: SonarCloudAnalyze@2
       - task: SonarCloudPublish@2
 
+      - task: DotNetCoreCLI@2
+        displayName: Publish BuyingCatalogueFunction
+        inputs:
+          command: "publish"
+          projects: "src/BuyingCatalogueFunction"
+          arguments: "--no-build --configuration $(buildConfiguration) -o $(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
+          publishWebProjects: false
+          modifyOutputPath: false
+          zipAfterPublish: true
+
+      - task: PublishBuildArtifacts@1
+        displayName: Package BuyingCatalogueFunction
+        inputs:
+          PathtoPublish: "$(Build.ArtifactStagingDirectory)/BuyingCatalogueFunction"
+          ArtifactName: "BuyingCatalogueFunction"
+          publishLocation: "Container"
+
       - task: Docker@2
         displayName: 'Docker: Build and Push'
         condition: succeeded()
@@ -170,6 +184,10 @@ jobs:
       vmImage: 'ubuntu-latest'
 
     steps:
+      - publish: terraform/functionapp
+        displayName: Publish Terraform - Function App
+        artifact: terraform-functionapp
+
       - publish: terraform/webapp
         displayName: Publish Terraform - WebApp
         artifact: build-artifact
