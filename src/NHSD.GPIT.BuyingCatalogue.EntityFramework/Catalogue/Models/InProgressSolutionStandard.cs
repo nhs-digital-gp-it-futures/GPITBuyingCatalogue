@@ -9,11 +9,17 @@ public class InProgressSolutionStandard
     }
 
     public InProgressSolutionStandard(
-        CatalogueItemId solutionId,
         string standardId)
     {
-        SolutionId = solutionId;
         StandardId = standardId;
+    }
+
+    public InProgressSolutionStandard(
+        CatalogueItemId solutionId,
+        string standardId)
+        : this(standardId)
+    {
+        SolutionId = solutionId;
     }
 
     public CatalogueItemId SolutionId { get; set; }

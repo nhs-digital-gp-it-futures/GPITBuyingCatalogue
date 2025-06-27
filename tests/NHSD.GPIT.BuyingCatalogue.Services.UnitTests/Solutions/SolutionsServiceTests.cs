@@ -764,9 +764,81 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Solutions
 
             _ = await service.AddCatalogueSolution(model);
 
-            var actual = await context.CatalogueItems.AsAsyncEnumerable().FirstAsync();
+            var actual = await context.CatalogueItems.FirstAsync();
 
             actual.Name.Should().Be(model.Name);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task AddCatalogueSolution_StandardsDefaultedAsMet_SetsInProgressSolutionStandards(
+            CreateSolutionModel model,
+            List<Standard> standards,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            standards.ForEach(x =>
+            {
+                x.StandardCapabilities = new List<StandardCapability>();
+                x.LastUpdatedByUser = null;
+                x.LastUpdatedBy = null;
+                x.IsMetByDefault = false;
+            });
+
+            context.Standards.RemoveRange(context.Standards);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var fullyMetStandard = standards.First();
+            var inProgressStandards = standards.Skip(1).ToList();
+
+            fullyMetStandard.IsMetByDefault = true;
+
+            context.Standards.AddRange(standards);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var catalogueItemId = await service.AddCatalogueSolution(model);
+
+            var solution = await context.Solutions.Include(x => x.InProgressStandards)
+                .FirstAsync(x => x.CatalogueItemId == catalogueItemId);
+
+            solution.Should().NotBeNull();
+            solution.InProgressStandards.Should().NotBeEmpty();
+            inProgressStandards.ForEach(x => solution.InProgressStandards.Should().Contain(y => y.Id == x.Id));
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task AddCatalogueSolution_NoStandardsDefaultedAsMet_EmptyInProgressSolutionStandards(
+            CreateSolutionModel model,
+            List<Standard> standards,
+            [Frozen] BuyingCatalogueDbContext context,
+            SolutionsService service)
+        {
+            standards.ForEach(x =>
+            {
+                x.StandardCapabilities = new List<StandardCapability>();
+                x.LastUpdatedByUser = null;
+                x.LastUpdatedBy = null;
+                x.IsMetByDefault = false;
+            });
+
+            context.Standards.RemoveRange(context.Standards);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            context.Standards.AddRange(standards);
+            await context.SaveChangesAsync();
+            context.ChangeTracker.Clear();
+
+            var catalogueItemId = await service.AddCatalogueSolution(model);
+
+            var solution = await context.Solutions.Include(x => x.InProgressStandards)
+                .FirstAsync(x => x.CatalogueItemId == catalogueItemId);
+
+            solution.Should().NotBeNull();
+            solution.InProgressStandards.Should().BeEmpty();
         }
 
         [Theory]

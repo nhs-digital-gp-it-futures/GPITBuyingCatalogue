@@ -571,6 +571,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                 SupplierId = model.SupplierId,
             };
 
+            var metByDefaultStandards = await dbContext.Standards.Where(x => x.IsMetByDefault)
+                .ToListAsync();
+
+            if (metByDefaultStandards.Count > 0)
+            {
+                var inProgressStandards = await dbContext.Standards.Where(x => !x.IsMetByDefault).ToListAsync();
+
+                catalogueItem.Solution.InProgressStandards = inProgressStandards;
+            }
+
             dbContext.CatalogueItems.Add(catalogueItem);
 
             await dbContext.SaveChangesAsync();
