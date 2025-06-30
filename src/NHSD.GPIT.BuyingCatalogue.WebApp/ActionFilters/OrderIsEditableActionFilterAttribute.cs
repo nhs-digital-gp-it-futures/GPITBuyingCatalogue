@@ -23,13 +23,7 @@ public class OrderIsEditableActionFilterAttribute(
 
     public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        if (context.Controller is not Controller controller)
-        {
-            await next();
-            return;
-        }
-
-        var userPrimaryOrganisationId = controller.User.GetPrimaryOrganisationInternalIdentifier();
+        var userPrimaryOrganisationId = context.HttpContext.User.GetPrimaryOrganisationInternalIdentifier();
 
         Match match = OrderFilterData.BasicCallOffIdRegex.Match(context.HttpContext.Request.Path);
 
@@ -49,8 +43,9 @@ public class OrderIsEditableActionFilterAttribute(
             return;
         }
 
-        var orderIsEditable = (await orderService.GetOrderThin(callOffId, userPrimaryOrganisationId)).Order.OrderStatus
-            == OrderStatus.InProgress;
+        OrderWrapper wrapper = await orderService.GetOrderThin(callOffId, userPrimaryOrganisationId);
+
+        var orderIsEditable = wrapper.Order.OrderStatus == OrderStatus.InProgress;
 
         if (!orderIsEditable)
         {

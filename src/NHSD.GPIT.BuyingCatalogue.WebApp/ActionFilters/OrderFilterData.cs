@@ -3,7 +3,7 @@
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 
 /// <summary>
-///     Partial to allow RegexGeneration
+///     Partial to allow RegexGeneration.
 /// </summary>
 public static partial class OrderFilterData
 {
