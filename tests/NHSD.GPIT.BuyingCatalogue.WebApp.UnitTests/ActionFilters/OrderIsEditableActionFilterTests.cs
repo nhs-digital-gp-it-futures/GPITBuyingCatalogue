@@ -17,7 +17,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters;
 
 public class OrderIsEditableActionFilterTests
 {
-    private const string orgIntId = "AABB";
+    private const string OrgIntId = "AABB";
 
     public static IEnumerable<object[]> OrderIsNotEditableData()
     {
@@ -29,7 +29,7 @@ public class OrderIsEditableActionFilterTests
                 {
                     Id = 55,
                     OrderNumber = 224876,
-                    OrderingParty = new Organisation { InternalIdentifier = orgIntId },
+                    OrderingParty = new Organisation { InternalIdentifier = OrgIntId },
                     IsTerminated = true,
                 },
             ],
@@ -40,7 +40,7 @@ public class OrderIsEditableActionFilterTests
                 {
                     Id = 55,
                     OrderNumber = 224876,
-                    OrderingParty = new Organisation { InternalIdentifier = orgIntId },
+                    OrderingParty = new Organisation { InternalIdentifier = OrgIntId },
                     IsDeleted = true,
                 },
             ],
@@ -51,7 +51,7 @@ public class OrderIsEditableActionFilterTests
                 {
                     Id = 55,
                     OrderNumber = 224876,
-                    OrderingParty = new Organisation { InternalIdentifier = orgIntId },
+                    OrderingParty = new Organisation { InternalIdentifier = OrgIntId },
                     CommencementDate = DateTime.UtcNow.AddMonths(-7),
                     MaximumTerm = 6,
                 },
@@ -63,7 +63,7 @@ public class OrderIsEditableActionFilterTests
                 {
                     Id = 55,
                     OrderNumber = 224876,
-                    OrderingParty = new Organisation { InternalIdentifier = orgIntId },
+                    OrderingParty = new Organisation { InternalIdentifier = OrgIntId },
                     CommencementDate = DateTime.UtcNow,
                     MaximumTerm = 6,
                     Completed = DateTime.UtcNow,
@@ -73,7 +73,7 @@ public class OrderIsEditableActionFilterTests
     }
 
     [Theory]
-    [MockInlineAutoData(nameof(OrderIsNotEditableData))]
+    [MockMemberAutoData(nameof(OrderIsNotEditableData))]
     public static async Task OnActionExecutionAsync_OrderIsNotEditable_ReturnsError(
         Order order,
         ActionExecutingContext context,
@@ -84,18 +84,19 @@ public class OrderIsEditableActionFilterTests
         var httpContextMock = Substitute.For<HttpContext>();
         var httpRequestMock = Substitute.For<HttpRequest>();
 
-        httpRequestMock.Path.Returns(new PathString($"/orders/organisation/{orgIntId}/{order.CallOffId}"));
+        httpRequestMock.Path.Returns(new PathString($"/orders/organisation/{OrgIntId}/{order.CallOffId}"));
         httpContextMock.User.Returns(
             new ClaimsPrincipal(
                 new ClaimsIdentity(
                 [
                     new Claim(ClaimTypes.Role, "Buyer"),
-                    new Claim("primaryOrganisationInternalIdentifier", orgIntId),
+                    new Claim("primaryOrganisationInternalIdentifier", OrgIntId),
                 ])));
 
         httpContextMock.Request.Returns(httpRequestMock);
 
         context.HttpContext = httpContextMock;
+        context.Result = new OkResult();
 
         orderService.GetOrderThin(order.CallOffId, order.OrderingParty.InternalIdentifier)
             .Returns(new OrderWrapper(order));
@@ -117,24 +118,25 @@ public class OrderIsEditableActionFilterTests
         var httpContextMock = Substitute.For<HttpContext>();
         var httpRequestMock = Substitute.For<HttpRequest>();
 
-        httpRequestMock.Path.Returns(new PathString($"/orders/organisation/{orgIntId}/{order.CallOffId}"));
+        httpRequestMock.Path.Returns(new PathString($"/orders/organisation/{OrgIntId}/{order.CallOffId}"));
         httpContextMock.User.Returns(
             new ClaimsPrincipal(
                 new ClaimsIdentity(
                 [
-                    new Claim(ClaimTypes.Role, "Buyer"), new Claim("primaryOrganisationInternalIdentifier", orgIntId),
+                    new Claim(ClaimTypes.Role, "Buyer"), new Claim("primaryOrganisationInternalIdentifier", OrgIntId),
                 ])));
 
         httpContextMock.Request.Returns(httpRequestMock);
 
         context.HttpContext = httpContextMock;
+        context.Result = new OkResult();
 
         order.IsTerminated = false;
         order.IsDeleted = false;
         order.CommencementDate = DateTime.UtcNow;
         order.MaximumTerm = 6;
         order.Completed = null;
-        order.OrderingParty.InternalIdentifier = orgIntId;
+        order.OrderingParty.InternalIdentifier = OrgIntId;
 
         orderService.GetOrderThin(order.CallOffId, order.OrderingParty.InternalIdentifier)
             .Returns(new OrderWrapper(order));
