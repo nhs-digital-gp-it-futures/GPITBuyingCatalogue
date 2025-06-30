@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Logging;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using Xunit;
@@ -18,6 +19,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.ActionFilters;
 public class OrderIsEditableActionFilterTests
 {
     private const string OrgIntId = "AABB";
+
+    [Theory]
+    [MockInlineAutoData("sfgsdfg")]
+    [MockInlineAutoData("C3321-91")]
+    [MockInlineAutoData("C0-9")]
+    public static async Task OnActionExecutionAsync_CallOffIdNotValid_LogsWarning(
+        string invalidCallOffIds,
+        ActionExecutingContext context,
+        ActionExecutionDelegate next,
+        [Frozen] ILogWrapper<OrderIsEditableActionFilterAttribute> logger,
+        OrderIsEditableActionFilterAttribute filter)
+    {
+        var httpContextMock = Substitute.For<HttpContext>();
+        var httpRequestMock = Substitute.For<HttpRequest>();
+
+        httpRequestMock.Path.Returns(new PathString($"/orders/organisation/{OrgIntId}/{invalidCallOffIds}"));
+        httpContextMock.Request.Returns(httpRequestMock);
+
+        context.HttpContext = httpContextMock;
+        context.Result = new OkResult();
+
+        await filter.OnActionExecutionAsync(context, next);
+
+        context.Result.Should().BeOfType<BadRequestResult>();
+
+        logger.Received().LogWarning("Unable to retrieve CallOffId from route url");
+    }
 
     public static IEnumerable<object[]> OrderIsNotEditableData()
     {
@@ -79,6 +107,7 @@ public class OrderIsEditableActionFilterTests
         ActionExecutingContext context,
         ActionExecutionDelegate next,
         [Frozen] IOrderService orderService,
+        [Frozen] ILogWrapper<OrderIsEditableActionFilterAttribute> logger,
         OrderIsEditableActionFilterAttribute filter)
     {
         var httpContextMock = Substitute.For<HttpContext>();
@@ -104,6 +133,8 @@ public class OrderIsEditableActionFilterTests
         await filter.OnActionExecutionAsync(context, next);
 
         context.Result.Should().BeOfType<BadRequestResult>();
+
+        logger.Received().LogWarning("Attempt was made to edit non editable order {CallOffId}", order.CallOffId);
     }
 
     [Theory]

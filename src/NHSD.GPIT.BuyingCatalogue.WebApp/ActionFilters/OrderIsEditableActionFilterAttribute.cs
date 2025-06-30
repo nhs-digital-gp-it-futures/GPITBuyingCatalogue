@@ -49,7 +49,7 @@ public class OrderIsEditableActionFilterAttribute(
 
         if (!orderIsEditable)
         {
-            logger.LogWarning($"Attempt was made to edit non editable order {callOffId}.");
+            logger.LogWarning("Attempt was made to edit non editable order {CallOffId}", callOffId);
             context.Result = new BadRequestResult();
             return;
         }
