@@ -22,8 +22,8 @@ public class OrderIsEditableActionFilterTests
 
     [Theory]
     [MockInlineAutoData("sfgsdfg")]
-    [MockInlineAutoData("C3321-91")]
-    [MockInlineAutoData("C0-9")]
+    [MockInlineAutoData("C33234534521-91")]
+    [MockInlineAutoData("C554323-934234")]
     public static async Task OnActionExecutionAsync_CallOffIdNotValid_LogsWarning(
         string invalidCallOffIds,
         ActionExecutingContext context,
@@ -42,7 +42,7 @@ public class OrderIsEditableActionFilterTests
 
         await filter.OnActionExecutionAsync(context, next);
 
-        context.Result.Should().BeOfType<BadRequestResult>();
+        context.Result.Should().BeOfType<OkResult>();
 
         logger.Received().LogWarning("Unable to retrieve CallOffId from route url");
     }

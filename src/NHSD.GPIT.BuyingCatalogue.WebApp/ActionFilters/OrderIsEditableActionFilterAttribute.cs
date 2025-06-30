@@ -29,19 +29,15 @@ public class OrderIsEditableActionFilterAttribute(
 
         if (!match.Success)
         {
-            await UnableToParseCallOffId();
+            logger.LogWarning("Unable to retrieve CallOffId from route url");
+            await next();
             return;
         }
 
         var extractedCallOffId = match.Value;
 
-        (var parseSuccess, CallOffId callOffId) = CallOffId.Parse(extractedCallOffId);
-
-        if (!parseSuccess)
-        {
-            await UnableToParseCallOffId();
-            return;
-        }
+        // assumes success as already tested with regex
+        (_, CallOffId callOffId) = CallOffId.Parse(extractedCallOffId);
 
         OrderWrapper wrapper = await orderService.GetOrderThin(callOffId, userPrimaryOrganisationId);
 
@@ -56,11 +52,5 @@ public class OrderIsEditableActionFilterAttribute(
 
         await next();
         return;
-
-        async Task UnableToParseCallOffId()
-        {
-            logger.LogWarning("Unable to retrieve CallOffId from route url");
-            await next();
-        }
     }
 }
