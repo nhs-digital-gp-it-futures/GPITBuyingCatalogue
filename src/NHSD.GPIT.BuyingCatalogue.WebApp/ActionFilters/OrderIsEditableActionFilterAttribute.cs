@@ -34,7 +34,7 @@ public class OrderIsEditableActionFilterAttribute(
             return;
         }
 
-        var extractedCallOffId = match.Value;
+        var extractedCallOffId = match.Groups[1].Value;
 
         // assumes success as already tested with regex
         (_, CallOffId callOffId) = CallOffId.Parse(extractedCallOffId);

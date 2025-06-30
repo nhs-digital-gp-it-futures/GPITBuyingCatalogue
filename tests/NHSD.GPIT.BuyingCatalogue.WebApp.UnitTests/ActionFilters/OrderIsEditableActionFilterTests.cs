@@ -34,7 +34,7 @@ public class OrderIsEditableActionFilterTests
         var httpContextMock = Substitute.For<HttpContext>();
         var httpRequestMock = Substitute.For<HttpRequest>();
 
-        httpRequestMock.Path.Returns(new PathString($"/orders/organisation/{OrgIntId}/{invalidCallOffIds}"));
+        httpRequestMock.Path.Returns(new PathString($"/orders/organisation/{OrgIntId}/{invalidCallOffIds}/action"));
         httpContextMock.Request.Returns(httpRequestMock);
 
         context.HttpContext = httpContextMock;
@@ -113,7 +113,7 @@ public class OrderIsEditableActionFilterTests
         var httpContextMock = Substitute.For<HttpContext>();
         var httpRequestMock = Substitute.For<HttpRequest>();
 
-        httpRequestMock.Path.Returns(new PathString($"/orders/organisation/{OrgIntId}/{order.CallOffId}"));
+        httpRequestMock.Path.Returns(new PathString($"/orders/organisation/{OrgIntId}/{order.CallOffId}/action"));
         httpContextMock.User.Returns(
             new ClaimsPrincipal(
                 new ClaimsIdentity(
@@ -149,7 +149,7 @@ public class OrderIsEditableActionFilterTests
         var httpContextMock = Substitute.For<HttpContext>();
         var httpRequestMock = Substitute.For<HttpRequest>();
 
-        httpRequestMock.Path.Returns(new PathString($"/orders/organisation/{OrgIntId}/{order.CallOffId}"));
+        httpRequestMock.Path.Returns(new PathString($"/orders/organisation/{OrgIntId}/{order.CallOffId}/action"));
         httpContextMock.User.Returns(
             new ClaimsPrincipal(
                 new ClaimsIdentity(
