@@ -401,15 +401,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .ThenInclude(y => y.SublocationRecipients)
                 .FirstAsync();
 
-            var orderIsEditable =
-                order.OrderStatus == OrderStatus.InProgress;
-
-            if (!orderIsEditable)
-            {
-                throw new InvalidOperationException(
-                    "Sublocations cannot be edited for this order.");
-            }
-
             IEnumerable<ServiceContractOdsOrganisation> validSublocations =
                 await odsService.GetSublocationsByParentOdsCode(order.OrderingParty.ExternalIdentifier);
 
@@ -485,15 +476,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
                 .FirstOrDefaultAsync(o => o.Revision == callOffId.Revision);
 
             var wrapper = new OrderWrapper(order, previousOrders);
-
-            var orderIsEditable =
-                wrapper.Order.OrderStatus == OrderStatus.InProgress;
-
-            if (!orderIsEditable)
-            {
-                throw new InvalidOperationException(
-                    "Sublocations cannot be edited for this order.");
-            }
 
             IReadOnlyList<ServiceContractOdsOrganisation> validSublocations =
                 await odsService.GetSublocationsByParentOdsCode(wrapper.Order.OrderingParty.ExternalIdentifier);

@@ -506,26 +506,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             return
             [
                 [
-                    CommonOrganisationFactory(32), completeOrder, addHashSet,
-                    "Sublocations cannot be edited for this order.",
-                ],
-                [
-                    CommonOrganisationFactory(76), terminatedOrder,
-
-                    addHashSet, "Sublocations cannot be edited for this order.",
-                ],
-                [
-                    CommonOrganisationFactory(55), deletedOrder,
-                    addHashSet,
-                    "Sequence contains no elements", // Filter at the order entity level will prevent order being included
-                ],
-
-                [
-                    CommonOrganisationFactory(66), expiredOrder,
-                    addHashSet, "Sublocations cannot be edited for this order.",
-                ],
-
-                [
                     CommonOrganisationFactory(78), CommonOrderFactory(
                         61,
                         78,
@@ -881,25 +861,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             return
             [
-                [
-                    CommonOrganisationFactory(45), completeOrder,
-                    new List<OrderSublocation> { CommonOrderSublocationFactory(45, "XXXA") },
-                    new List<ServiceContractOdsOrganisation>(), new List<ServiceRecipient>(),
-                    "Sublocations cannot be edited for this order.",
-                ],
-
-                [
-                    CommonOrganisationFactory(11), terminatedOrder,
-                    new List<OrderSublocation> { CommonOrderSublocationFactory(11, "XXXA") },
-                    new List<ServiceContractOdsOrganisation>(), new List<ServiceRecipient>(),
-                    "Sublocations cannot be edited for this order.",
-                ],
-                [
-                    CommonOrganisationFactory(46), expiredOrder,
-                    new List<OrderSublocation> { CommonOrderSublocationFactory(46, "XXXA") },
-                    new List<ServiceContractOdsOrganisation>(), new List<ServiceRecipient>(),
-                    "Sublocations cannot be edited for this order.",
-                ],
                 [
                     CommonOrganisationFactory(98), CommonOrderFactory(
                         61,
