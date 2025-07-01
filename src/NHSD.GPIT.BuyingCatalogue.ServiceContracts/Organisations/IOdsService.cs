@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 {
     public interface IOdsService
     {
-        Task<(OdsOrganisation Organisation, string Error)> GetOrganisationByOdsCode(string odsCode);
+        Task<(OdsOrganisation Organisation, string Error)> GetValidatedBuyerOrganisationByOdsCode(string odsCode);
 
         Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsByParentInternalIdentifier(string internalIdentifier);
 

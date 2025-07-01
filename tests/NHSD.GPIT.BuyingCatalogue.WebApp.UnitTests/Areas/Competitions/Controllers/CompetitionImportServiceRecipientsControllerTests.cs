@@ -148,9 +148,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
-
-        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
         importedServiceRecipients.First().OdsCode = MismatchOdsCode;
@@ -193,9 +191,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
-
-        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
         importedServiceRecipients.First().OdsCode = MismatchOdsCode;
@@ -236,9 +232,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
-
-        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
         importedServiceRecipients.First().OdsCode = MismatchOdsCode;
@@ -279,7 +273,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients.Take(3)
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
 
@@ -315,7 +309,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 expectedModel,
                 opt => opt
                     .Excluding(m => m.BackLink)
-                    .Excluding(m => m.CancelLink));
+                    .Excluding(m => m.CancelLink)
+                    .Excluding(m => m.ContinueLink));
     }
 
     [Theory]
@@ -329,9 +324,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
-
-        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
 
@@ -373,9 +366,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         [Frozen] IOdsService odsService,
         CompetitionImportServiceRecipientsController controller)
     {
-        List<ServiceRecipient> workingRecipients = serviceRecipients.Take(3).ToList();
-
-        List<ServiceRecipientImportModel> importedServiceRecipients = workingRecipients
+        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
             .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
             .ToList();
 
@@ -393,7 +384,8 @@ public static class CompetitionImportServiceRecipientsControllerTests
         var expectedModel = new ValidationCompleteModel(
             competition.Name,
             ValidationStatus.Success,
-            sublocationsAsViewModel);
+            sublocationsAsViewModel,
+            string.Empty);
 
         var result = (await controller.ValidationComplete(
                 organisation.InternalIdentifier,
@@ -405,7 +397,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         result.Model.Should()
             .BeEquivalentTo(
                 expectedModel,
-                opt => opt.Excluding(m => m.Caption));
+                opt => opt.Excluding(m => m.Caption).Excluding(m => m.CancelLink));
     }
 
     [Theory]
@@ -415,7 +407,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         int competitionId,
         CompetitionImportServiceRecipientsController controller)
     {
-        var model = new ValidationCompleteModel("MY competition", ValidationStatus.Failure, []);
+        var model = new ValidationCompleteModel("MY competition", ValidationStatus.Failure, [], string.Empty);
 
         var result =
             (await controller.ValidationComplete(internalOrgId, competitionId, model))

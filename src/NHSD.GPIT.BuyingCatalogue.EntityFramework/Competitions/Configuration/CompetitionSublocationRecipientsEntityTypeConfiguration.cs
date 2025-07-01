@@ -16,9 +16,9 @@ public class
 
         builder.Property(x => x.CompetitionId).IsRequired();
 
-        builder.Property(x => x.RecipientOdsCode).IsRequired();
+        builder.Property(x => x.RecipientOdsCode).HasMaxLength(10).IsRequired();
 
-        builder.Property(x => x.ParentSublocationOdsCode).IsRequired();
+        builder.Property(x => x.ParentSublocationOdsCode).HasMaxLength(10).IsRequired();
 
         builder.HasOne(x => x.Competition)
             .WithMany()

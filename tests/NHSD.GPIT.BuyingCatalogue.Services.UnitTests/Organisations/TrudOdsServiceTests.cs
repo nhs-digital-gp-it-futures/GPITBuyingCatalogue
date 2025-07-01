@@ -28,7 +28,7 @@ public class TrudOdsServiceTests
         string odsCode,
         TrudOdsService service)
     {
-        (MappedOdsOrganisation _, string error) = await service.GetOrganisationByOdsCode(odsCode);
+        (MappedOdsOrganisation _, var error) = await service.GetValidatedBuyerOrganisationByOdsCode(odsCode);
 
         error.Should().Be(TrudOdsService.InvalidOrganisationError);
     }
@@ -46,7 +46,7 @@ public class TrudOdsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        (MappedOdsOrganisation _, string error) = await service.GetOrganisationByOdsCode(organisation.Id);
+        (MappedOdsOrganisation _, var error) = await service.GetValidatedBuyerOrganisationByOdsCode(organisation.Id);
 
         error.Should().Be(TrudOdsService.InvalidOrgTypeError);
     }
@@ -77,7 +77,7 @@ public class TrudOdsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        (MappedOdsOrganisation _, string error) = await service.GetOrganisationByOdsCode(organisation.Id);
+        (MappedOdsOrganisation _, var error) = await service.GetValidatedBuyerOrganisationByOdsCode(organisation.Id);
 
         error.Should().Be(TrudOdsService.InvalidOrgTypeError);
     }
@@ -121,7 +121,8 @@ public class TrudOdsServiceTests
             },
         };
 
-        (MappedOdsOrganisation mappedOrganisation, string _) = await service.GetOrganisationByOdsCode(organisation.Id);
+        (MappedOdsOrganisation mappedOrganisation, var _) =
+            await service.GetValidatedBuyerOrganisationByOdsCode(organisation.Id);
 
         mappedOrganisation.Should().NotBeNull();
         mappedOrganisation.Should().BeEquivalentTo(expectedOrg);

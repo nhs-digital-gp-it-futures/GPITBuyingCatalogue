@@ -3,20 +3,19 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
-    [Serializable]
-    public sealed class OrderItemRecipient : IAudited, ICloneable<OrderItemRecipient>
+    public sealed class OrderItemSublocationRecipient : IAudited, ICloneable<OrderItemSublocationRecipient>
     {
-        public OrderItemRecipient()
+        public OrderItemSublocationRecipient()
         {
         }
 
-        public OrderItemRecipient(
+        public OrderItemSublocationRecipient(
             int orderId,
-            string odsCode,
+            string recipientOdsCode,
             CatalogueItemId catalogueItemId)
         {
             OrderId = orderId;
-            OdsCode = odsCode;
+            OdsCode = recipientOdsCode;
             CatalogueItemId = catalogueItemId;
         }
 
@@ -36,13 +35,16 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public AspNetUser LastUpdatedByUser { get; set; }
 
-        public OrderRecipient Recipient { get; set; }
+        public OrderSublocationRecipient Recipient { get; set; }
 
         public OrderItem OrderItem { get; set; }
 
-        public OrderItemRecipient Clone() => new()
+        public OrderItemSublocationRecipient Clone()
         {
-            CatalogueItemId = CatalogueItemId, OdsCode = OdsCode, Quantity = Quantity, DeliveryDate = DeliveryDate,
-        };
+            return new OrderItemSublocationRecipient
+            {
+                CatalogueItemId = CatalogueItemId, OdsCode = OdsCode, Quantity = Quantity, DeliveryDate = DeliveryDate,
+            };
+        }
     }
 }

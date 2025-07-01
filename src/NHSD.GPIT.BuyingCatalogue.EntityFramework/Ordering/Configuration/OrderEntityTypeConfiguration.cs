@@ -39,6 +39,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.Property(o => o.SupplierId).HasMaxLength(6);
 
+            builder.Ignore(x => x.FlattenedRecipients);
+
             builder.HasOne(o => o.OrderingPartyContact)
                 .WithMany()
                 .HasForeignKey(o => o.OrderingPartyContactId)
@@ -54,10 +56,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .WithMany()
                 .HasForeignKey(o => o.OrderNumber);
 
-            builder.HasMany(x => x.OrderRecipients)
-                .WithOne(x => x.Order)
-                .HasForeignKey(x => x.OrderId)
-                .HasConstraintName("FK_OrderRecipients_Orders");
+            builder.HasMany(x => x.OrderSublocations)
+                .WithOne(y => y.Order)
+                .HasForeignKey(y => y.OrderId)
+                .HasConstraintName("FK_OrderSublocations_Order");
+
+            builder.HasMany(x => x.OrderItems)
+                .WithOne(y => y.Order)
+                .HasForeignKey(y => y.OrderId)
+                .HasConstraintName("FK_OrderItems_Order");
 
             builder.HasMany(x => x.OrderEvents)
                 .WithOne()

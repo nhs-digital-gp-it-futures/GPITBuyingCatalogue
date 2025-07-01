@@ -109,7 +109,7 @@ public class CompetitionImportServiceRecipientsController : Controller
     public async Task<IActionResult> Validate(
         string internalOrgId,
         int competitionId,
-        bool acceptLossOfOdsIfMismatch)
+        bool? acceptLossOfOdsIfMismatch)
     {
         var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
         var cachedRecipients = await importService.GetCached(cacheKey);
@@ -119,7 +119,7 @@ public class CompetitionImportServiceRecipientsController : Controller
 
         var backAndCancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId });
 
-        ValidationStatus validationStatus = acceptLossOfOdsIfMismatch
+        ValidationStatus validationStatus = acceptLossOfOdsIfMismatch is true
             ? ValidationStatus.PartialSuccess
             : ValidationStatus.Success;
 
@@ -141,11 +141,10 @@ public class CompetitionImportServiceRecipientsController : Controller
                 new { internalOrgId, competitionId, validationStatus });
         }
 
-        var mismatchedOdsCodes =
-            new HashSet<string>(requestedRecipientOdsCodes);
-        mismatchedOdsCodes.ExceptWith(actualServiceRecipientsAsHashSet);
+        HashSet<string> mismatchedOdsCodes =
+            requestedRecipientOdsCodes.Except(actualServiceRecipientsAsHashSet).ToHashSet();
 
-        var shouldShowValidateOdsScreen = mismatchedOdsCodes.Count > 0 && !acceptLossOfOdsIfMismatch;
+        var shouldShowValidateOdsScreen = mismatchedOdsCodes.Count > 0 && acceptLossOfOdsIfMismatch is not true;
 
         if (shouldShowValidateOdsScreen)
         {
@@ -173,9 +172,18 @@ public class CompetitionImportServiceRecipientsController : Controller
         if (shouldShowValidateNamesScreen)
         {
             var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
+
+            var continueLink = Url.Action(
+                nameof(ValidationComplete),
+                typeof(CompetitionImportServiceRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId, validationStatus = ValidationStatus.PartialSuccess });
+
             var model = new ValidateNamesModel(mismatchedNames)
             {
-                BackLink = backAndCancelLink, CancelLink = backAndCancelLink, Caption = competitionName,
+                BackLink = backAndCancelLink,
+                CancelLink = backAndCancelLink,
+                Caption = competitionName,
+                ContinueLink = continueLink,
             };
             return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
         }
@@ -183,19 +191,6 @@ public class CompetitionImportServiceRecipientsController : Controller
         return RedirectToAction(
             nameof(ValidationComplete),
             new { internalOrgId, competitionId, validationStatus });
-    }
-
-    [HttpPost("validate")]
-    public IActionResult Validate(
-        string internalOrgId,
-        int competitionId,
-        ValidateNamesModel model)
-    {
-        // TODO: Replace with standard GET link when order functionality no longer requires POST.
-        return RedirectToAction(
-            nameof(ValidationComplete),
-            typeof(CompetitionImportServiceRecipientsController).ControllerName(),
-            new { internalOrgId, competitionId, validationStatus = ValidationStatus.PartialSuccess });
     }
 
     [HttpGet("validation-complete")]
@@ -229,7 +224,13 @@ public class CompetitionImportServiceRecipientsController : Controller
                 })
             .ToList();
 
-        var model = new ValidationCompleteModel(competitionName, validationStatus, recipientsAsSublocations);
+        var cancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId });
+
+        var model = new ValidationCompleteModel(
+            competitionName,
+            validationStatus,
+            recipientsAsSublocations,
+            cancelLink);
 
         return View("ServiceRecipients/ImportServiceRecipients/ValidationComplete", model);
     }

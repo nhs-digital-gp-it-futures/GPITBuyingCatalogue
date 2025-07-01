@@ -328,11 +328,9 @@ public class CompetitionsService : ICompetitionsService
         HashSet<string> competitionSublocations =
             competition.CompetitionSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
 
-        HashSet<string> removes = [.. competitionSublocations];
-        removes.ExceptWith(sublocationOdsCodes);
+        HashSet<string> removes = competitionSublocations.Except(sublocationOdsCodes).ToHashSet();
 
-        HashSet<string> adds = [.. sublocationOdsCodes];
-        adds.ExceptWith(competitionSublocations);
+        HashSet<string> adds = sublocationOdsCodes.Except(competitionSublocations).ToHashSet();
 
         IEnumerable<CompetitionSublocation> locationsToAdd = adds.Select(
             x => new CompetitionSublocation
@@ -342,9 +340,7 @@ public class CompetitionsService : ICompetitionsService
                 OwnerOdsCode = competition.Organisation.ExternalIdentifier,
             });
 
-        competition.CompetitionSublocations.AddRange(
-            locationsToAdd
-        );
+        competition.CompetitionSublocations.AddRange(locationsToAdd);
 
         List<CompetitionSublocation> locationsToRemove =
             competition.CompetitionSublocations.Where(x => removes.Contains(x.SublocationOdsCode)).ToList();
@@ -772,7 +768,7 @@ public class CompetitionsService : ICompetitionsService
     {
         ArgumentException.ThrowIfNullOrEmpty(internalOrgId);
 
-        if (competitionSublocations is null or { Count: 0 })
+        if (competitionSublocations is null || competitionSublocations is { Count: 0 })
         {
             throw new ArgumentException(@"competitionSublocations is null or empty", nameof(competitionSublocations));
         }

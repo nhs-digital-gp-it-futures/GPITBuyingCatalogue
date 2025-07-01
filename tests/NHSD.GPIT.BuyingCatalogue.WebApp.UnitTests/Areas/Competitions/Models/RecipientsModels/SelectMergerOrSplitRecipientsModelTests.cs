@@ -1,27 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using Xunit;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Models.RecipientsModels;
 
-public static class SelectRecipientsModelTests
+public static class SelectMergerOrSplitRecipientsModelTests
 {
     [Theory]
     [MockAutoData]
     public static void Construct_SetsPropertiesAsExpected(
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
-        List<string> existingRecipients,
         List<string> preSelectedRecipients)
     {
-        var model = new SelectRecipientsModel(
+        var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
+            default,
+            OrderTypeEnum.AssociatedServiceSplit,
             serviceRecipients,
-            existingRecipients,
-            [],
             preSelectedRecipients);
 
         var groupedSubLocations = serviceRecipients.GroupBy(x => x.Location)
@@ -46,16 +46,15 @@ public static class SelectRecipientsModelTests
         bool expectedSelection,
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
-        List<string> existingRecipients,
         List<string> preSelectedRecipients)
     {
         serviceRecipients.ForEach(x => x.Selected = false);
 
-        var model = new SelectRecipientsModel(
+        var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
+            default,
+            OrderTypeEnum.AssociatedServiceSplit,
             serviceRecipients,
-            existingRecipients,
-            [],
             preSelectedRecipients,
             selectionMode);
 
@@ -66,18 +65,17 @@ public static class SelectRecipientsModelTests
     [MockAutoData]
     public static void Construct_ImportedRecipients_SelectsImportedRecipients(
         Organisation organisation,
-        List<ServiceRecipientModel> serviceRecipients,
-        List<string> existingRecipients)
+        List<ServiceRecipientModel> serviceRecipients)
     {
         serviceRecipients.ForEach(x => x.Selected = false);
 
         var preSelectedRecipients = serviceRecipients.Take(2).Select(x => x.OdsCode).ToList();
 
-        var model = new SelectRecipientsModel(
+        var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
+            default,
+            OrderTypeEnum.AssociatedServiceSplit,
             serviceRecipients,
-            existingRecipients,
-            [],
             preSelectedRecipients);
 
         model.GetSelectedServiceRecipients().Select(x => x.OdsCode).Should().BeEquivalentTo(preSelectedRecipients);
@@ -88,16 +86,15 @@ public static class SelectRecipientsModelTests
     public static void Construct_InvalidImportedRecipients_DoesNotSelectImportedRecipients(
         Organisation organisation,
         List<ServiceRecipientModel> serviceRecipients,
-        List<string> preSelectedRecipients,
-        List<string> existingRecipients)
+        List<string> preSelectedRecipients)
     {
         serviceRecipients.ForEach(x => x.Selected = false);
 
-        var model = new SelectRecipientsModel(
+        var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
+            default,
+            OrderTypeEnum.AssociatedServiceSplit,
             serviceRecipients,
-            existingRecipients,
-            [],
             preSelectedRecipients);
 
         model.HasSelectedRecipients().Should().BeFalse();
@@ -112,13 +109,12 @@ public static class SelectRecipientsModelTests
         serviceRecipients.ForEach(x => x.Selected = false);
 
         var preSelectedRecipients = serviceRecipients.Take(2).Select(x => x.OdsCode).ToList();
-        var existingRecipients = serviceRecipients.Skip(2).Select(x => x.OdsCode).ToList();
 
-        var model = new SelectRecipientsModel(
+        var model = new SelectMergerOrSplitRecipientsModel(
             organisation,
+            default,
+            OrderTypeEnum.AssociatedServiceSplit,
             serviceRecipients,
-            existingRecipients,
-            [],
             preSelectedRecipients);
 
         model.GetSelectedServiceRecipients().Select(x => x.OdsCode).Should().BeEquivalentTo(preSelectedRecipients);

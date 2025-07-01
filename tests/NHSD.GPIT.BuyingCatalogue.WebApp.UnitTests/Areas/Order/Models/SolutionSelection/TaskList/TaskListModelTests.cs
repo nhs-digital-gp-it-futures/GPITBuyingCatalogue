@@ -69,6 +69,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
 
+            order.OrderNumber = callOffId.OrderNumber;
+            order.Revision = callOffId.Revision;
+
+            order.FlattenedRecipients.ForEach(x => order.OrderItems.ForEach(y =>
+                x.OrderItemSublocationRecipients.Add(
+                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y.CatalogueItemId)
+                    {
+                        Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
+                    })));
+
             var amendment = order.BuildAmendment(2);
 
             order.OrderType = OrderTypeEnum.Solution;
@@ -89,6 +99,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             };
 
             var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(amendment, [order]));
+            amendment.FlattenedRecipients.ForEach(x => amendment.OrderItems.ForEach(y =>
+                x.OrderItemSublocationRecipients.Add(
+                    new OrderItemSublocationRecipient(order.Id, x.RecipientOdsCode, y.CatalogueItemId)
+                    {
+                        Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
+                    })));
 
             model.InternalOrgId.Should().BeEquivalentTo(internalOrgId);
             model.CallOffId.Should().BeEquivalentTo(callOffId);
@@ -114,6 +130,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             EntityFramework.Ordering.Models.Order order)
         {
             callOffId = new CallOffId(callOffId.OrderNumber, 1);
+            order.OrderNumber = callOffId.OrderNumber;
+            order.Revision = callOffId.Revision;
+
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.AssociatedServicesOnlyDetails.Solution = serviceSolution;
 
@@ -157,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
 
             order.OrderItems = new List<OrderItem> { solution };
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
 
             var model = new TaskListModel(internalOrgId, callOffId, new OrderWrapper(order));
 

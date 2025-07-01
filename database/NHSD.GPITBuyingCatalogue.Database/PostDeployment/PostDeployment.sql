@@ -71,3 +71,4 @@
 :r ./MigrateWorkOffPlans.sql
 
 :r ./MigrationForCompetitionSublocationRecipients.sql
+:r ./MigrationForOrderSublocationRecipients.sql

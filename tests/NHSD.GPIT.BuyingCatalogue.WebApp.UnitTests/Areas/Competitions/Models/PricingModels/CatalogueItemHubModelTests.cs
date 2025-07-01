@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
@@ -19,7 +18,7 @@ public static class CatalogueItemHubModelTests
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
         int? globalQuantity,
-        Dictionary<OdsOrganisation, int?> recipientQuantities,
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities,
         CompetitionCatalogueItemPrice selectedPrice)
     {
         selectedPrice.Tiers = null;
@@ -47,7 +46,7 @@ public static class CatalogueItemHubModelTests
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
         int? globalQuantity,
-        Dictionary<OdsOrganisation, int?> recipientQuantities,
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities,
         CompetitionCatalogueItemPrice selectedPrice,
         List<CompetitionCatalogueItemPriceTier> tiers)
     {
@@ -69,7 +68,7 @@ public static class CatalogueItemHubModelTests
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
         int? globalQuantity,
-        Dictionary<OdsOrganisation, int?> recipientQuantities,
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities,
         CompetitionCatalogueItemPrice selectedPrice,
         List<CataloguePrice> catalogueItemPrices)
     {
@@ -92,7 +91,7 @@ public static class CatalogueItemHubModelTests
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
         int? globalQuantity,
-        Dictionary<OdsOrganisation, int?> recipientQuantities,
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities,
         CompetitionCatalogueItemPrice selectedPrice,
         List<CataloguePrice> catalogueItemPrices)
     {
@@ -115,7 +114,7 @@ public static class CatalogueItemHubModelTests
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
         int? globalQuantity,
-        Dictionary<OdsOrganisation, int?> recipientQuantities,
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities,
         CompetitionCatalogueItemPrice selectedPrice,
         List<CompetitionCatalogueItemPriceTier> tiers)
     {
@@ -137,7 +136,7 @@ public static class CatalogueItemHubModelTests
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
         int? globalQuantity,
-        Dictionary<OdsOrganisation, int?> recipientQuantities,
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities,
         CompetitionCatalogueItemPrice selectedPrice,
         List<CataloguePrice> catalogueItemPrices)
     {
@@ -182,7 +181,7 @@ public static class CatalogueItemHubModelTests
     public static void QuantityProgress_RecipientQuantitiesDefined_AsExpected(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
-        List<OdsOrganisation> organisations,
+        List<CompetitionSublocationRecipient> recipients,
         CompetitionCatalogueItemPrice selectedPrice,
         List<CompetitionCatalogueItemPriceTier> tiers)
     {
@@ -192,7 +191,7 @@ public static class CatalogueItemHubModelTests
             solutionId,
             catalogueItem,
             null,
-            organisations.ToDictionary(x => x, x => (int?)5),
+            recipients.ToDictionary(x => x, x => (int?)5),
             selectedPrice);
 
         model.PriceProgress.Should().Be(TaskProgress.Completed);
@@ -204,15 +203,16 @@ public static class CatalogueItemHubModelTests
     public static void QuantityProgress_RecipientQuantityMissing_AsExpected(
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
-        List<OdsOrganisation> organisations,
+        List<CompetitionSublocationRecipient> recipients,
         CompetitionCatalogueItemPrice selectedPrice,
         List<CompetitionCatalogueItemPriceTier> tiers)
     {
         selectedPrice.Tiers = tiers;
 
-        var organisation = organisations.First();
+        CompetitionSublocationRecipient organisation = recipients.First();
 
-        var recipientQuantities = organisations.ToDictionary(x => x, x => (int?)5);
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities =
+            recipients.ToDictionary(x => x, x => (int?)5);
 
         recipientQuantities[organisation] = null;
 

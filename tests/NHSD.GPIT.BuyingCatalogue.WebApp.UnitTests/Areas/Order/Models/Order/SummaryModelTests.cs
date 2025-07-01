@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using LinqKit;
@@ -133,14 +134,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             var model = new SummaryModel(wrapper, internalOrgId, hasSubsequentRevisions, implementationPlan);
 
             var result = model.BuildAmendOrderItemModel(orderItem);
+
+            List<OrderSublocationRecipient> flattenedRecipients = wrapper.RolledUp.FlattenedRecipients.ToList();
+
             result.CallOffId.Should().Be(order.CallOffId);
             result.OrderType.Should().Be(order.OrderType);
             result.IsAmendment.Should().Be(order.IsAmendment);
             result.IsOrderItemAdded.Should().BeTrue();
             result.OrderItemPrice.Should().Be(orderItem.OrderItemPrice);
             result.CatalogueItem.Should().Be(orderItem.CatalogueItem);
-            result.RolledUpRecipientsForItem.Should().BeEquivalentTo(wrapper.RolledUp.OrderRecipients.ForCatalogueItem(orderItem.CatalogueItemId));
-            result.RolledUpTotalQuantity.Should().Be(orderItem.TotalQuantity(wrapper.RolledUp.OrderRecipients.ForCatalogueItem(orderItem.CatalogueItemId)));
+            result.RolledUpRecipientsForItem.Should()
+                .BeEquivalentTo(flattenedRecipients.ForCatalogueItem(orderItem.CatalogueItemId));
+            result.RolledUpTotalQuantity.Should()
+                .Be(orderItem.TotalQuantity(flattenedRecipients.ForCatalogueItem(orderItem.CatalogueItemId)));
             result.PreviousTotalQuantity.Should().Be(0);
         }
 
@@ -170,7 +176,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order)
         {
-            SetInProgressOrder(order);
+            SetInProgressCanCompleteOrder(order);
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
 
             model.ButtonLabelText.Should().Be("Complete order");
@@ -183,7 +189,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order)
         {
-            SetInProgressOrder(order);
+            SetInProgressCanCompleteOrder(order);
             order.Revision = 2;
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
 
@@ -210,7 +216,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             string internalOrgId,
             EntityFramework.Ordering.Models.Order order)
         {
-            SetInProgressOrder(order);
+            SetInProgressCanCompleteOrder(order);
             order.Contract = null;
             var model = new SummaryModel(new OrderWrapper(order), internalOrgId, false, new ImplementationPlan());
 
@@ -232,12 +238,21 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             model.ButtonAdviceText.Should().Be("You can download and review your order summary here.");
         }
 
-        private static void SetInProgressOrder(EntityFramework.Ordering.Models.Order order)
+        private static void SetInProgressCanCompleteOrder(EntityFramework.Ordering.Models.Order order)
         {
             order.Contract = new Contract() { ContractBilling = new ContractBilling(), ImplementationPlan = new ImplementationPlan(), };
             order.ContractFlags.UseDefaultDataProcessing = true;
             order.Completed = null;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.ForEach(x =>
+            {
+                order.OrderSublocations.ForEach(y => y.SublocationRecipients.ForEach(z =>
+                    z.OrderItemSublocationRecipients.Add(
+                        new OrderItemSublocationRecipient(order.Id, z.RecipientOdsCode, x.CatalogueItemId)
+                        {
+                            Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
+                        })));
+                x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            });
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             order.IsTerminated = false;
         }

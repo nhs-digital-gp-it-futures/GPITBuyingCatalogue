@@ -92,11 +92,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
                     "One or more requested Ids not found or not valid for this sublocation.");
             }
 
-            HashSet<string> adds = [.. newRecipientOdsCodes];
-            adds.ExceptWith(currentRecipientsOdsCodes);
+            HashSet<string> adds = newRecipientOdsCodes.Except(currentRecipientsOdsCodes).ToHashSet();
 
-            HashSet<string> removes = [.. currentRecipientsOdsCodes];
-            removes.ExceptWith(newRecipientOdsCodes);
+            HashSet<string> removes = currentRecipientsOdsCodes.Except(newRecipientOdsCodes).ToHashSet();
 
             List<CompetitionSublocationRecipient> sublocationRecipientsToAdd = adds.Select(
                     x => new CompetitionSublocationRecipient

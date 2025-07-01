@@ -12,19 +12,22 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
     {
         public void Customize(IFixture fixture)
         {
-            static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<OrderItem> composer) => composer
-                .FromFactory(new OrderItemSpeciminBuilder())
-                .Without(oi => oi.OrderItemFunding)
-                .Without(oi => oi.Order)
-                .Without(oi => oi.OrderId)
-                .Without(oi => oi.OrderItemPrice)
-                .Without(oi => oi.CatalogueItem)
-                .Without(oi => oi.CatalogueItemId);
+            static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<OrderItem> composer)
+            {
+                return composer
+                    .FromFactory(new OrderItemSpecimenBuilder())
+                    .Without(oi => oi.OrderItemFunding)
+                    .Without(oi => oi.Order)
+                    .Without(oi => oi.OrderId)
+                    .Without(oi => oi.OrderItemPrice)
+                    .Without(oi => oi.CatalogueItem)
+                    .Without(oi => oi.CatalogueItemId);
+            }
 
             fixture.Customize<OrderItem>(ComposerTransformation);
         }
 
-        public sealed class OrderItemSpeciminBuilder : ISpecimenBuilder
+        public sealed class OrderItemSpecimenBuilder : ISpecimenBuilder
         {
             public object Create(object request, ISpecimenContext context)
             {

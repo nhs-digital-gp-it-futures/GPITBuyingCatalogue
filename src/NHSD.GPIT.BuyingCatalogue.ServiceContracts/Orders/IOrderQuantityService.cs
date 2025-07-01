@@ -10,8 +10,11 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         Task SetOrderItemQuantity(int orderId, CatalogueItemId catalogueItemId, int quantity);
 
-        Task SetServiceRecipientQuantities(int orderId, CatalogueItemId catalogueItemId, List<OrderItemRecipientQuantityDto> quantities);
+        Task SetServiceRecipientQuantities(int orderId, CatalogueItemId catalogueItemId, int quantity);
 
-        Task SetServiceRecipientQuantitiesToSameValue(int orderId, CatalogueItemId catalogueItemId, int quantity);
+        Task SetServiceRecipientQuantities(
+            int orderId,
+            CatalogueItemId catalogueItemId,
+            List<OrderItemRecipientQuantityDto> quantities);
     }
 }

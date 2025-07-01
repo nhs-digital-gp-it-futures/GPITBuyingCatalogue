@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
@@ -102,7 +103,7 @@ public class CompetitionRecipientsController(
         IEnumerable<OdsOrganisation> possibleSublocations =
             await odsService.GetSublocationsByParentOdsCode(competition.Organisation.ExternalIdentifier);
 
-        var backLinkHref = Url.Action(
+        var backLink = Url.Action(
             nameof(UploadOrSelectServiceRecipients),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
@@ -110,7 +111,7 @@ public class CompetitionRecipientsController(
         var model = new SelectSublocationsModel(
             competition,
             possibleSublocations,
-            backLinkHref);
+            backLink);
         return View("ServiceRecipients/SelectSublocations", model);
     }
 
@@ -134,8 +135,7 @@ public class CompetitionRecipientsController(
         HashSet<string> competitionSublocations =
             competition.CompetitionSublocations.Select(x => x.SublocationOdsCode).ToHashSet();
 
-        HashSet<string> removes = [..competitionSublocations];
-        removes.ExceptWith(sublocationOdsCodes);
+        HashSet<string> removes = competitionSublocations.Except(sublocationOdsCodes).ToHashSet();
 
         var stringOfRemoves = JoinEnumerableStringsToCommaSeparatedString(removes);
 
@@ -199,7 +199,7 @@ public class CompetitionRecipientsController(
             return NotFound();
         }
 
-        var backLinkHref = Url.Action(
+        var backLink = Url.Action(
             nameof(ConfirmSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
@@ -208,7 +208,7 @@ public class CompetitionRecipientsController(
             competition,
             parsedSublocations,
             parsedRemoves,
-            backLinkHref);
+            backLink);
 
         return View("ServiceRecipients/RemoveSublocations", model);
     }
@@ -219,10 +219,18 @@ public class CompetitionRecipientsController(
         string internalOrgId,
         int competitionId)
     {
-        if (removeSublocationsModel.ConfirmRemove is not true || removeSublocationsModel.SublocationOdsCodes is not
+        if (removeSublocationsModel.ConfirmRemove is null || removeSublocationsModel.SublocationOdsCodes is not
                 { Count: > 0 })
         {
             return BadRequest();
+        }
+
+        if (removeSublocationsModel.ConfirmRemove is false)
+        {
+            return RedirectToAction(
+                nameof(ConfirmSublocations),
+                typeof(CompetitionRecipientsController).ControllerName(),
+                new { internalOrgId, competitionId });
         }
 
         HashSet<string> sublocations = removeSublocationsModel.SublocationOdsCodes.ToHashSet();
@@ -269,7 +277,7 @@ public class CompetitionRecipientsController(
         List<ServiceRecipientModel> possibleRecipients =
             await GetServiceRecipientModelsBySublocation(sublocationOdsCode);
 
-        var backLinkHref = Url.Action(
+        var backLink = Url.Action(
             nameof(ConfirmSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
@@ -278,7 +286,7 @@ public class CompetitionRecipientsController(
             competitionSublocation.Competition,
             sublocationAsSublocationModel,
             possibleRecipients,
-            backLinkHref,
+            backLink,
             selectionMode);
 
         return View("ServiceRecipients/SelectSublocationRecipients", model);
@@ -317,7 +325,7 @@ public class CompetitionRecipientsController(
 
         HashSet<string> pageSelections = selectSublocationRecipientsModel.RenderedServiceRecipients
             .Where(x => x.Selected)
-            .Select(y => y.OdsCode)
+            .Select(y => y.Value)
             .ToHashSet();
 
         await competitionSublocationService.SetSublocationRecipients(
@@ -422,7 +430,7 @@ public class CompetitionRecipientsController(
         string internalOrgId,
         int competitionId,
         bool isConfirm,
-        string backLinkHref)
+        string backLink)
     {
         Competition competition =
             await competitionsService.GetCompetitionWithSublocations(internalOrgId, competitionId);
@@ -439,7 +447,7 @@ public class CompetitionRecipientsController(
             await MapSublocationToSublocationModel(s);
         }
 
-        var addOrChangeSublocationsHref = Url.Action(
+        var addOrChangeSublocationsLink = Url.Action(
             nameof(SelectSublocations),
             typeof(CompetitionRecipientsController).ControllerName(),
             new { internalOrgId, competitionId });
@@ -448,14 +456,14 @@ public class CompetitionRecipientsController(
             isConfirm,
             competition,
             sublocations,
-            addOrChangeSublocationsHref,
-            backLinkHref);
+            addOrChangeSublocationsLink,
+            backLink);
 
         return View("ServiceRecipients/SelectSublocationsOverview", model);
 
         async Task MapSublocationToSublocationModel(CompetitionSublocation competitionSublocation)
         {
-            var recipientHref = Url.Action(
+            var recipientLink = Url.Action(
                 nameof(SelectSublocationRecipients),
                 typeof(CompetitionRecipientsController).ControllerName(),
                 new { internalOrgId, competitionId, sublocationOdsCode = competitionSublocation.SublocationOdsCode });
@@ -466,7 +474,13 @@ public class CompetitionRecipientsController(
                     competitionId,
                     competitionSublocation.SublocationOdsCode);
 
-            var sublocationModel = new SublocationModel(competitionSublocation, recipientHref, serviceRecipientCount);
+            TaskProgress taskProgress = serviceRecipientCount == 0 ? TaskProgress.NotStarted : TaskProgress.Completed;
+
+            var sublocationModel = new SublocationModel(
+                competitionSublocation,
+                recipientLink,
+                serviceRecipientCount,
+                taskProgress);
             sublocations.Add(sublocationModel);
         }
     }

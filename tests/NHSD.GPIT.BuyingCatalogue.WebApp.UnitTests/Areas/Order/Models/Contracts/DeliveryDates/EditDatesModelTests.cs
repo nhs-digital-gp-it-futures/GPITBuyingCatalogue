@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using LinqKit;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
@@ -14,13 +13,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
         [Theory]
         [MockAutoData]
         public static void WithValidArguments_PropertiesCorrectlySet(
-            EntityFramework.Ordering.Models.Order order)
+            EntityFramework.Ordering.Models.Order order
+        )
         {
-            var organisations = order.OrderRecipients
-                .ToDictionary(item => item.OdsCode, _ => Guid.NewGuid().ToString());
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            CatalogueItemId catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
-            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
+            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
 
             model.InternalOrgId.Should().Be(order.OrderingParty.InternalIdentifier);
             model.CallOffId.Should().Be(order.CallOffId);
@@ -36,15 +34,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             EntityFramework.Ordering.Models.Order order)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceMerger;
-            var organisations = order.OrderRecipients
-                .ToDictionary(item => item.OdsCode, _ => Guid.NewGuid().ToString());
+
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
-            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
+            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
 
             model.Recipients.Count.Should().Be(1);
             model.Recipients.First().Key.Should().Be("Service Recipients to be merged");
-            model.Recipients.First().Value.Length.Should().Be(order.OrderRecipients.Count);
+            model.Recipients.First().Value.Length.Should().Be(order.FlattenedRecipients.Count());
         }
 
         [Theory]
@@ -53,15 +50,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             EntityFramework.Ordering.Models.Order order)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceSplit;
-            var organisations = order.OrderRecipients
-                .ToDictionary(item => item.OdsCode, _ => Guid.NewGuid().ToString());
+
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
-            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
+            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
 
             model.Recipients.Count.Should().Be(1);
             model.Recipients.First().Key.Should().Be("Service Recipients receiving patients");
-            model.Recipients.First().Value.Length.Should().Be(order.OrderRecipients.Count);
+            model.Recipients.First().Value.Length.Should().Be(order.FlattenedRecipients.Count());
         }
 
         [Theory]
@@ -70,14 +66,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             EntityFramework.Ordering.Models.Order order)
         {
             order.OrderType = OrderTypeEnum.Solution;
-            var organisations = order.OrderRecipients
-                .ToDictionary(item => item.OdsCode, _ => Guid.NewGuid().ToString());
+
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
-            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
-            model.Recipients.Count.Should().Be(organisations.Count);
-            model.Recipients.Select(x => x.Key).Should().BeEquivalentTo(organisations.Values);
-            model.Recipients.SelectMany(x => x.Value).Count().Should().Be(order.OrderRecipients.Count);
+            var expectedTotalRecipientCount = order.FlattenedRecipients.Count();
+
+            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
+            model.Recipients.Count.Should().Be(order.OrderItems.Count);
+            model.Recipients.Select(x => x.Key)
+                .Should()
+                .BeEquivalentTo(
+                    order.OrderSublocations.Select(x => x.SublocationOrganisation.Name),
+                    opt => opt.WithoutStrictOrdering());
+            model.Recipients.SelectMany(x => x.Value).Count().Should().Be(expectedTotalRecipientCount);
         }
 
         [Theory]
@@ -86,12 +87,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             EntityFramework.Ordering.Models.Order order)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceSplit;
-            order.OrderRecipients.ForEach(x => x.OrderItemRecipients.ForEach(y => y.DeliveryDate = null));
-            var organisations = order.OrderRecipients
-                .ToDictionary(item => item.OdsCode, _ => Guid.NewGuid().ToString());
+            order.FlattenedRecipients.ForEach(x =>
+                x.OrderItemSublocationRecipients.ForEach(y => y.DeliveryDate = null));
+
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
-            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations);
+            var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
 
             model.Recipients.Count.Should().Be(1);
             model.Recipients.First().Value.ForEach(x => x.Day.Should().Be($"{order.DeliveryDate.Value.Day:00}"));

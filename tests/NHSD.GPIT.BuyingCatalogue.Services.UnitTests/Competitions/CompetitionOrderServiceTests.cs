@@ -10,7 +10,6 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Competitions;
@@ -304,7 +303,6 @@ public static class CompetitionOrderServiceTests
     public static async Task CreateOrder_WinningSolution_SetsOrderDetailsAsExpected(
         Organisation organisation,
         Competition competition,
-        List<OdsOrganisation> recipients,
         Solution solution,
         CompetitionSolution competitionSolution,
         List<CompetitionSublocation> competitionSublocations,
@@ -341,10 +339,13 @@ public static class CompetitionOrderServiceTests
         order.MaximumTerm.Should().Be(competition.ContractLength);
         order.OrderingPartyId.Should().Be(competition.OrganisationId);
         order.SupplierId.Should().Be(solution.CatalogueItem.SupplierId);
-        order.OrderRecipients.Should()
+        order.FlattenedRecipients.Should()
             .BeEquivalentTo(
-                competition.FlattenedRecipients.Select(x => new OrderRecipient(x.Id)),
-                opt => opt.Excluding(m => m.OrderId).Excluding(m => m.Order).Excluding(m => m.OdsOrganisation));
+                competition.FlattenedRecipients.Select(x => new OrderSublocationRecipient(x)),
+                opt => opt.Excluding(m => m.OrderId)
+                    .Excluding(m => m.Order)
+                    .Excluding(m => m.RecipientOdsOrganisation)
+                    .Excluding(m => m.ParentSublocation));
         order.OrderItems.Select(o => o.CatalogueItemId).Should().BeEquivalentTo([solution.CatalogueItemId]);
         order.SelectedFrameworkId.Should().Be(competition.FrameworkId);
         order.OrderType.Value.Should().Be(OrderTypeEnum.Solution);
@@ -426,10 +427,10 @@ public static class CompetitionOrderServiceTests
         solutionService.Price = servicePrice;
         solutionService.Service = additionalService.CatalogueItem;
 
-        solutionService.Quantities = competition.FlattenedRecipients.Select(
-                x => new ServiceQuantitySublocationRecipient
+        solutionService.Quantities = competition.FlattenedRecipients.Select(x =>
+                new ServiceQuantitySublocationRecipient
                 {
-                    OdsCode = x.Id, Quantity = 5, ServiceId = additionalService.CatalogueItemId,
+                    OdsCode = x.RecipientOdsCode, Quantity = 5, ServiceId = additionalService.CatalogueItemId,
                 })
             .ToList();
 
@@ -439,11 +440,11 @@ public static class CompetitionOrderServiceTests
         competitionSolution.IsWinningSolution = true;
         competitionSolution.SolutionServices = new List<SolutionService> { solutionService };
 
-        competitionSolution.Quantities = competition.FlattenedRecipients.Select(
-                x => new SolutionQuantitySublocationRecipient
-                {
-                    OdsCode = x.Id, Quantity = 5, SolutionId = solution.CatalogueItemId,
-                })
+        competitionSolution.Quantities = competition.FlattenedRecipients
+            .Select(x => new SolutionQuantitySublocationRecipient
+            {
+                OdsCode = x.RecipientOdsCode, Quantity = 5, SolutionId = solution.CatalogueItemId,
+            })
             .ToList();
 
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
@@ -461,7 +462,7 @@ public static class CompetitionOrderServiceTests
 
         var order = await dbContext.Order(callOffId);
 
-        order.OrderRecipients.SelectMany(x => x.OrderItemRecipients)
+        order.FlattenedRecipients.SelectMany(x => x.OrderItemSublocationRecipients)
             .GroupBy(x => x.CatalogueItemId)
             .Should()
             .HaveCount(2);

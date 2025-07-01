@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
@@ -14,7 +15,31 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             Competition competition,
             IReadOnlyList<string> sublocations,
             IReadOnlyList<string> removes,
-            string backLinkHref)
+            string backLink)
+            : this(sublocations, removes, backLink)
+        {
+            Caption = competition.Name;
+            Advice = "Confirm you want to remove sublocations from this competition";
+            ListHeaderText = $"{competition.Organisation.Name} {Pluralisation} to be removed:";
+        }
+
+        public RemoveSublocationsModel(
+            Order order,
+            IReadOnlyList<string> sublocations,
+            IReadOnlyList<string> removes,
+            string backLink)
+            : this(sublocations, removes, backLink)
+        {
+            Caption = order.CallOffId.ToString();
+            Advice = "Confirm you want to remove sublocations from this order";
+            ListHeaderText = $"{order.OrderingParty.Name} {Pluralisation} to be removed:";
+            BackLink = backLink;
+        }
+
+        private RemoveSublocationsModel(
+            IReadOnlyList<string> sublocations,
+            IReadOnlyList<string> removes,
+            string backLink)
         {
             SublocationOdsCodes = sublocations;
             Removes = removes;
@@ -23,13 +48,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
                 : "sublocations";
 
             Title = $"Remove {Pluralisation}";
-            Caption = competition.Name;
-            Advice = "Confirm you want to remove sublocations from this competition";
-            ListHeaderText = $"{competition.Organisation.Name} {Pluralisation} to be removed:";
-            BackLink = backLinkHref;
+            BackLink = backLink;
         }
 
-        public bool? ConfirmRemove { get; init; }
+        public bool? ConfirmRemove { get; set; }
 
         public IEnumerable<SelectOption<bool>> ConfirmRemoveOptions => new List<SelectOption<bool>>
         {

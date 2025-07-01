@@ -8,6 +8,7 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.CommencementDate;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
@@ -51,7 +52,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CommencementDate(string internalOrgId, CallOffId callOffId, CommencementDateModel model)
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
+        public async Task<IActionResult> CommencementDate(
+            string internalOrgId,
+            CallOffId callOffId,
+            CommencementDateModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -60,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
 
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var affectedDeliveryDates = order.OrderItems
-                .SelectMany(x => order.OrderRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
+                .SelectMany(x => order.FlattenedRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
                 .Count(x => x.HasValue && x.Value < model.Date);
 
             if (affectedDeliveryDates > 0)
@@ -88,16 +93,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpGet("{details}/confirm")]
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> ConfirmChanges(string internalOrgId, CallOffId callOffId, string details)
         {
             var parameters = details.Split(Delimiter);
             var newCommencementDate = DateTime.ParseExact(parameters[0], DateFormat, CultureInfo.InvariantCulture);
             var order = (await orderService.GetOrderWithOrderItems(callOffId, internalOrgId)).Order;
             var affectedDeliveryDates = order.OrderItems
-                .SelectMany(x => order.OrderRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
+                .SelectMany(x => order.FlattenedRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
                 .Count(x => x.HasValue && x.Value < newCommencementDate);
             var totalDeliveryDates = order.OrderItems
-                .SelectMany(x => order.OrderRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
+                .SelectMany(x => order.FlattenedRecipients.Select(r => r.GetDeliveryDateForItem(x.CatalogueItemId)))
                 .Count(x => x.HasValue);
 
             var model = new ConfirmChangesModel
@@ -118,7 +124,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers
         }
 
         [HttpPost("{details}/confirm")]
-        public async Task<IActionResult> ConfirmChanges(string internalOrgId, CallOffId callOffId, string details, ConfirmChangesModel model)
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
+        public async Task<IActionResult> ConfirmChanges(
+            string internalOrgId,
+            CallOffId callOffId,
+            string details,
+            ConfirmChangesModel model)
         {
             if (!ModelState.IsValid)
             {

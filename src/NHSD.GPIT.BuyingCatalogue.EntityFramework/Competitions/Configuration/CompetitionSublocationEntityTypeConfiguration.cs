@@ -14,9 +14,9 @@ public class CompetitionSublocationEntityTypeConfiguration : IEntityTypeConfigur
 
         builder.Property(x => x.CompetitionId).IsRequired();
 
-        builder.Property(x => x.SublocationOdsCode).IsRequired();
+        builder.Property(x => x.SublocationOdsCode).HasMaxLength(10).IsRequired();
 
-        builder.Property(x => x.OwnerOdsCode).IsRequired();
+        builder.Property(x => x.OwnerOdsCode).HasMaxLength(10).IsRequired();
 
         builder.HasOne(x => x.Competition)
             .WithMany(y => y.CompetitionSublocations)

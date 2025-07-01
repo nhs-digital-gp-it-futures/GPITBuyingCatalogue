@@ -7,7 +7,7 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
 @using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectRecipientsModel;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectMergerOrSplitRecipientsModel;
 
 @{
     ViewBag.Title = Model.Title;
@@ -39,7 +39,7 @@
                 @if (Model.IsAmendment && (Model.PreviouslySelected?.Any() ?? false))
                 {
                     <div id="previously-selected-service-recipients">
-                        <nhs-details label-text="View Service Recipients from the previous revision" data-test-id="existing-recipients-details">
+                        <nhs-details label-text="View service recipients from the previous revision" data-test-id="existing-recipients-details">
                             <p>
                                 The previous revision had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
                             </p>
@@ -81,7 +81,6 @@
             <input type="hidden" asp-for="Title" />
             <input type="hidden" asp-for="Caption" />
             <input type="hidden" asp-for="Advice" />
-            <input type="hidden" asp-for="SelectAtLeast" />
             <input type="hidden" asp-for="OrganisationName" />
             <input type="hidden" asp-for="IsAmendment" />
 
@@ -161,7 +160,7 @@
     id="search-recipients-modal"
     show-dialog-button-id="show-dialog"
     table-partial-view="ServiceRecipients/_recipientTable"
-    table-data="@Model.SearchRecipients"
+    table-data="@Model.GetSearchRecipients()"
     callback-function="updateRecipients"
     title="Search for Service Recipients"
     advice="Find and select the Service Recipients you want to include in this order."

@@ -94,6 +94,7 @@
                     {
                         TaskProgress.Completed => Model.OrderType.MergerOrSplit ? "View" : "Change",
                         TaskProgress.Amended => "Change",
+                        TaskProgress.InProgress => "Change",
                         _ => "Start",
                     };
 

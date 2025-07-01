@@ -79,8 +79,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<Order> Orders { get; set; }
 
-        public DbSet<OrderRecipient> OrderRecipients { get; set; }
-
         public DbSet<Solution> Solutions { get; set; }
 
         public DbSet<Supplier> Suppliers { get; set; }
@@ -115,15 +113,19 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
 
         public DbSet<OrderItem> OrderItems { get; set; }
 
-        public DbSet<OrderItemFunding> OrderItemFunding { get; set; }
+        public DbSet<OrderItemSublocationRecipient> OrderItemSublocationRecipients { get; set; }
 
-        public DbSet<OrderItemRecipient> OrderItemRecipients { get; set; }
+        public DbSet<OrderItemFunding> OrderItemFunding { get; set; }
 
         public DbSet<OrderItemPrice> OrderItemPrices { get; set; }
 
         public DbSet<OrderItemPriceTier> OrderItemPriceTiers { get; set; }
 
         public DbSet<OrderTermination> OrderTerminations { get; set; }
+
+        public DbSet<OrderSublocation> OrderSublocations { get; set; }
+
+        public DbSet<OrderSublocationRecipient> OrderSublocationRecipients { get; set; }
 
         public DbSet<ContractFlags> ContractFlags { get; set; }
 
@@ -201,6 +203,11 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework
         public async Task<int> OrderId(string internalOrgId, CallOffId callOffId)
         {
             return (await Order(internalOrgId, callOffId)).Id;
+        }
+
+        public async Task<CallOffId> CallOffId(int orderId)
+        {
+            return (await Orders.FirstAsync(x => x.Id == orderId)).CallOffId;
         }
 
         public async Task<int> NextOrderNumber()

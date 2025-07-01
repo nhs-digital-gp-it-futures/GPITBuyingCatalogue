@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
-using FluentAssertions.Equivalency;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
@@ -29,13 +27,6 @@ public static class CompetitionRecipientsControllerTests
     private const int CommonOrganisationId = 21;
     private const string CommonOrganisationInternalIdentifier = "BB-FFGG";
     private const string CommonOrganisationExternalIdentifier = "FFGG";
-
-    private static readonly Func<EquivalencyAssertionOptions<ServiceRecipientModel>,
-            EquivalencyAssertionOptions<ServiceRecipientModel>>
-        CommonNameDescriptionExclusionConfig = opt =>
-            opt.Excluding(m => m.Name)
-                .Excluding(m => m.Description)
-                .WithoutStrictOrdering(); // Ordering provided by DB not controller
 
     [Fact]
     public static void Constructors_VerifyGuardClauses()
@@ -163,7 +154,8 @@ public static class CompetitionRecipientsControllerTests
                 opt => opt.Excluding(m => m.BackLink)
                     .Excluding(m => m.Title)
                     .Excluding(m => m.Caption)
-                    .Excluding(m => m.Advice));
+                    .Excluding(m => m.Advice)
+                    .Excluding(m => m.FormLabelText));
     }
 
     [Theory]
@@ -385,7 +377,7 @@ public static class CompetitionRecipientsControllerTests
             .BeEquivalentTo(
                 expectedModel,
                 opt => opt.Excluding(model => model.BackLink)
-                    .Excluding(model => model.AddOrChangeSublocationsHref)
+                    .Excluding(model => model.AddOrChangeSublocationsLink)
                     .Excluding(model => model.Sublocations));
 
         IReadOnlyList<SublocationModel> sublocations = result.Model.As<SelectSublocationsOverviewModel>().Sublocations;
@@ -393,7 +385,7 @@ public static class CompetitionRecipientsControllerTests
         sublocations.Should()
             .BeEquivalentTo(
                 expectedModel.Sublocations,
-                opt => opt.Excluding(slModel => slModel.RecipientHref).Excluding(slModel => slModel.TaskProgress));
+                opt => opt.Excluding(slModel => slModel.RecipientLink).Excluding(slModel => slModel.TaskProgress));
     }
 
     [Theory]
@@ -478,8 +470,7 @@ public static class CompetitionRecipientsControllerTests
         Competition competition,
         List<ServiceRecipient> possibleRecipients,
         CompetitionSublocation workingSublocation,
-        SublocationModel expectedSublocationModel,
-        List<ServiceRecipientModel> expectedRendered,
+        List<SelectOption<string>> expectedRendered,
         SelectionMode? selectionMode,
         [Frozen] ICompetitionSublocationService competitionSublocationService,
         [Frozen] IOrganisationsService organisationsService,
@@ -503,8 +494,7 @@ public static class CompetitionRecipientsControllerTests
 
         var expectedModel = new SelectSublocationRecipientsModel
         {
-            Sublocation = expectedSublocationModel,
-            IsAmendment = false,
+            SublocationName = workingSublocation.SublocationOrganisation?.Name,
             RenderedServiceRecipients = expectedRendered,
             SelectionMode = selectionMode,
         };
@@ -525,40 +515,14 @@ public static class CompetitionRecipientsControllerTests
                     .Excluding(m => m.Caption)
                     .Excluding(m => m.Advice)
                     .Excluding(m => m.BackLink)
-                    .Excluding(m => m.Sublocation)
-                    .Excluding(m => m.PreviouslySelected)
                     .Excluding(m => m.RenderedServiceRecipients));
 
-        SublocationModel sublocationForFurtherEvaluation =
-            result.Model.As<SelectSublocationRecipientsModel>().Sublocation;
-
-        sublocationForFurtherEvaluation.Should()
-            .BeEquivalentTo(
-                expectedSublocationModel,
-                opt => opt.Excluding(m => m.TaskProgress)
-                    .Excluding(m => m.ServiceRecipientCount)
-                    .Excluding(m => m.ServiceRecipients));
-
-        sublocationForFurtherEvaluation.ServiceRecipients.Should()
-            .BeEquivalentTo(
-                expectedSublocationModel.ServiceRecipients,
-                CommonNameDescriptionExclusionConfig);
-
-        IEnumerable<ServiceRecipientModel> previouslySelectedServiceRecipientsForFurtherEvaluation =
-            result.Model.As<SelectSublocationRecipientsModel>().PreviouslySelected;
-
-        previouslySelectedServiceRecipientsForFurtherEvaluation.Should()
-            .BeEquivalentTo(
-                expectedSublocationModel.ServiceRecipients,
-                CommonNameDescriptionExclusionConfig);
-
-        IReadOnlyList<ServiceRecipientModel> renderedRecipientsForFurtherEvaluation =
+        IReadOnlyList<SelectOption<string>> renderedRecipientsForFurtherEvaluation =
             result.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
 
         renderedRecipientsForFurtherEvaluation.Should()
             .BeEquivalentTo(
-                expectedModel.RenderedServiceRecipients,
-                CommonNameDescriptionExclusionConfig);
+                expectedModel.RenderedServiceRecipients);
     }
 
     [Theory]
@@ -569,8 +533,7 @@ public static class CompetitionRecipientsControllerTests
             Competition competition,
             List<ServiceRecipient> possibleRecipients,
             CompetitionSublocation workingSublocation,
-            SublocationModel expectedSublocationModel,
-            List<ServiceRecipientModel> expectedRendered,
+            List<SelectOption<string>> expectedRendered,
             [Frozen] ICompetitionSublocationService competitionSublocationService,
             [Frozen] IOrganisationsService organisationsService,
             [Frozen] IOdsService odsOrganisationsService,
@@ -581,7 +544,6 @@ public static class CompetitionRecipientsControllerTests
             competition,
             possibleRecipients,
             workingSublocation,
-            expectedSublocationModel,
             expectedRendered,
             null,
             competitionSublocationService,
@@ -652,7 +614,7 @@ public static class CompetitionRecipientsControllerTests
         Competition competition,
         string sublocationOdsCode,
         CompetitionSublocation existingCompetitionSublocation,
-        IReadOnlyList<ServiceRecipientModel> newRenderedServiceRecipients,
+        List<SelectOption<string>> newRenderedServiceRecipients,
         HashSet<string> expectedSets,
         [Frozen] IOrganisationsService organisationsService,
         [Frozen] ICompetitionSublocationService competitionSublocationService,
@@ -752,7 +714,7 @@ public static class CompetitionRecipientsControllerTests
             .BeEquivalentTo(
                 expectedModel,
                 opt => opt.Excluding(model => model.BackLink)
-                    .Excluding(model => model.AddOrChangeSublocationsHref)
+                    .Excluding(model => model.AddOrChangeSublocationsLink)
                     .Excluding(model => model.Sublocations));
 
         IReadOnlyList<SublocationModel> sublocations = result.Model.As<SelectSublocationsOverviewModel>().Sublocations;
@@ -760,7 +722,7 @@ public static class CompetitionRecipientsControllerTests
         sublocations.Should()
             .BeEquivalentTo(
                 expectedModel.Sublocations,
-                opt => opt.Excluding(slModel => slModel.RecipientHref).Excluding(slModel => slModel.TaskProgress));
+                opt => opt.Excluding(slModel => slModel.RecipientLink).Excluding(slModel => slModel.TaskProgress));
     }
 
     [Theory]
@@ -942,60 +904,6 @@ public static class CompetitionRecipientsControllerTests
         ];
     }
 
-    private static IEnumerable<object[]> ExpectedAddsFromSublocationSelection()
-    {
-        return
-        [
-            // 2 existing and 3 ticked resulting in 1 add
-            [
-                CommonOrganisationFactory(),
-                CommonCompetitionFactory(),
-                new List<CompetitionSublocation>
-                {
-                    CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXA"),
-                },
-                new List<SelectOption<string>>
-                {
-                    new() { Text = "XXXX", Value = "XXXX", Selected = true },
-                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
-                    new() { Text = "XXXE", Value = "XXXE", Selected = true },
-                },
-                new HashSet<string> { "XXXE" },
-                nameof(CompetitionRecipientsController.ConfirmSublocations),
-            ],
-
-            // 1 existing and 3 ticked resulting in 2 adds
-            [
-                CommonOrganisationFactory(),
-                CommonCompetitionFactory(),
-                new List<CompetitionSublocation> { CommonCompetitionSublocationFactory("XXXX") },
-                new List<SelectOption<string>>
-                {
-                    new() { Text = "XXXX", Value = "XXXX", Selected = true },
-                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
-                    new() { Text = "XXXE", Value = "XXXE", Selected = true },
-                },
-                new HashSet<string> { "XXXA", "XXXE" },
-                nameof(CompetitionRecipientsController.ConfirmSublocations),
-            ],
-
-            // 0 existing and 3 ticked resulting in 3 adds - also redirects to 'Add sublocation' page instead of 'confirm'
-            [
-                CommonOrganisationFactory(),
-                CommonCompetitionFactory(),
-                new List<CompetitionSublocation>(),
-                new List<SelectOption<string>>
-                {
-                    new() { Text = "XXXX", Value = "XXXX", Selected = true },
-                    new() { Text = "XXXA", Value = "XXXA", Selected = true },
-                    new() { Text = "XXXE", Value = "XXXE", Selected = true },
-                },
-                new HashSet<string> { "XXXX", "XXXA", "XXXE" },
-                nameof(CompetitionRecipientsController.AddSublocations),
-            ],
-        ];
-    }
-
     private static IEnumerable<object[]> ExpectedSetsAndRemoves()
     {
         return
@@ -1130,12 +1038,11 @@ public static class CompetitionRecipientsControllerTests
                     "XXXX",
                     [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX")]),
 
-                CommonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", true)]),
-                new List<ServiceRecipientModel>
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                    new(string.Empty, "AAAA", true),
+                    new(string.Empty, "AAAB", false),
+                    new(string.Empty, "AAAC", false),
                 },
             ],
 
@@ -1146,15 +1053,11 @@ public static class CompetitionRecipientsControllerTests
                     "XXXX",
                     []),
 
-                CommonSublocationModelFactory(
-                    "XXXX",
-                    [
-                    ]),
-                new List<ServiceRecipientModel>
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                    new(string.Empty, "AAAA", false),
+                    new(string.Empty, "AAAB", false),
+                    new(string.Empty, "AAAC", false),
                 },
             ],
 
@@ -1169,18 +1072,11 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
                     ]),
 
-                CommonSublocationModelFactory(
-                    "XXXX",
-                    [
-                        CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                        CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                        CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
-                    ]),
-                new List<ServiceRecipientModel>
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                    new(string.Empty, "AAAA", true),
+                    new(string.Empty, "AAAB", true),
+                    new(string.Empty, "AAAC", true),
                 },
             ],
 
@@ -1195,18 +1091,11 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
                     ]),
 
-                CommonSublocationModelFactory(
-                    "XXXX",
-                    [
-                        CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                        CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                        CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
-                    ]),
-                new List<ServiceRecipientModel>
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                    new(string.Empty, "AAAA", true),
+                    new(string.Empty, "AAAB", true),
+                    new(string.Empty, "AAAC", true),
                 },
             ],
 
@@ -1221,21 +1110,14 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("BAAC", "XXXX"),
                     ]),
 
-                CommonSublocationModelFactory(
-                    "XXXX",
-                    [
-                        CommonServiceRecipientModelFactory("BAAA", "XXXX", true),
-                        CommonServiceRecipientModelFactory("BAAB", "XXXX", true),
-                        CommonServiceRecipientModelFactory("BAAC", "XXXX", true),
-                    ]),
-                new List<ServiceRecipientModel>
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
-                    CommonServiceRecipientModelFactory("BAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("BAAB", "XXXX", true),
-                    CommonServiceRecipientModelFactory("BAAC", "XXXX", true),
+                    new(string.Empty, "AAAA", false),
+                    new(string.Empty, "AAAB", false),
+                    new(string.Empty, "AAAC", false),
+                    new(string.Empty, "BAAA", true),
+                    new(string.Empty, "BAAB", true),
+                    new(string.Empty, "BAAC", true),
                 },
             ],
         ];
@@ -1259,12 +1141,11 @@ public static class CompetitionRecipientsControllerTests
                     "XXXX",
                     []),
 
-                CommonSublocationModelFactory("XXXX", []),
-                new List<ServiceRecipientModel>
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                    new(string.Empty, "AAAA", true),
+                    new(string.Empty, "AAAB", true),
+                    new(string.Empty, "AAAC", true),
                 },
                 SelectionMode.All,
             ],
@@ -1278,12 +1159,11 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX"),
                     ]),
 
-                CommonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", true)]),
-                new List<ServiceRecipientModel>
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                    new(string.Empty, "AAAA", true),
+                    new(string.Empty, "AAAB", true),
+                    new(string.Empty, "AAAC", true),
                 },
                 SelectionMode.All,
             ],
@@ -1299,18 +1179,11 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
                     ]),
 
-                CommonSublocationModelFactory(
-                    "XXXX",
-                    [
-                        CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                        CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                        CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
-                    ]),
-                new List<ServiceRecipientModel>
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", true),
+                    new(string.Empty, "AAAA", true),
+                    new(string.Empty, "AAAB", true),
+                    new(string.Empty, "AAAC", true),
                 },
                 SelectionMode.All,
             ],
@@ -1322,12 +1195,11 @@ public static class CompetitionRecipientsControllerTests
                     "XXXX",
                     []),
 
-                CommonSublocationModelFactory("XXXX", []),
-                new List<ServiceRecipientModel>
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                    new(string.Empty, "AAAA", false),
+                    new(string.Empty, "AAAB", false),
+                    new(string.Empty, "AAAC", false),
                 },
                 SelectionMode.None,
             ],
@@ -1339,12 +1211,11 @@ public static class CompetitionRecipientsControllerTests
                     "XXXX",
                     [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX")]),
 
-                CommonSublocationModelFactory("XXXX", [CommonServiceRecipientModelFactory("AAAA", "XXXX", false)]),
-                new List<ServiceRecipientModel>
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                    new(string.Empty, "AAAA", false),
+                    new(string.Empty, "AAAB", false),
+                    new(string.Empty, "AAAC", false),
                 },
                 SelectionMode.None,
             ],
@@ -1360,18 +1231,11 @@ public static class CompetitionRecipientsControllerTests
                         CommonCompetitionSublocationRecipientFactory("AAAC", "XXXX"),
                     ]),
 
-                CommonSublocationModelFactory(
-                    "XXXX",
-                    [
-                        CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
-                        CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
-                        CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
-                    ]),
-                new List<ServiceRecipientModel>
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", false),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                    new(string.Empty, "AAAA", false),
+                    new(string.Empty, "AAAB", false),
+                    new(string.Empty, "AAAC", false),
                 },
                 SelectionMode.None,
             ],
@@ -1386,11 +1250,11 @@ public static class CompetitionRecipientsControllerTests
             [
                 CommonOrganisationFactory(), CommonCompetitionFactory(), "XXXX",
                 CommonCompetitionSublocationFactory("XXXX"),
-                new[]
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                    new(string.Empty, "AAAA", true),
+                    new(string.Empty, "AAAB", true),
+                    new(string.Empty, "AAAC", false),
                 },
                 new HashSet<string> { "AAAA", "AAAB" },
             ],
@@ -1401,11 +1265,11 @@ public static class CompetitionRecipientsControllerTests
                 CommonCompetitionSublocationFactory(
                     "XXXX",
                     [CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX")]),
-                new[]
+                new List<SelectOption<string>>
                 {
-                    CommonServiceRecipientModelFactory("AAAA", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAB", "XXXX", true),
-                    CommonServiceRecipientModelFactory("AAAC", "XXXX", false),
+                    new(string.Empty, "AAAA", true),
+                    new(string.Empty, "AAAB", true),
+                    new(string.Empty, "AAAC", false),
                 },
                 new HashSet<string> { "AAAA", "AAAB" },
             ],
@@ -1443,7 +1307,7 @@ public static class CompetitionRecipientsControllerTests
             CompetitionId = CommonCompetitionId,
             SublocationOdsCode = sublocationOdsCode,
             OwnerOdsCode = CommonOrganisationExternalIdentifier,
-            SublocationRecipients = sublocationRecipients,
+            SublocationRecipients = sublocationRecipients ?? [],
         };
     }
 
@@ -1462,21 +1326,6 @@ public static class CompetitionRecipientsControllerTests
     private static ServiceRecipient CommonServiceRecipientFactory(string orgId, string locationOrgId)
     {
         return new ServiceRecipient { OrgId = orgId, LocationOrgId = locationOrgId };
-    }
-
-    private static SublocationModel CommonSublocationModelFactory(
-        string odsCode,
-        IReadOnlyList<ServiceRecipientModel> serviceRecipients = null)
-    {
-        return new SublocationModel { OdsCode = odsCode, ServiceRecipients = serviceRecipients };
-    }
-
-    private static ServiceRecipientModel CommonServiceRecipientModelFactory(
-        string odsCode,
-        string locationOrgId,
-        bool selected)
-    {
-        return new ServiceRecipientModel { OdsCode = odsCode, LocationOrgId = locationOrgId, Selected = selected };
     }
 
     private static bool AreStringHashSetsEquivalent(

@@ -1,54 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
-public class SelectRecipientsModel : NavBaseModel
+public sealed class SelectMergerOrSplitRecipientsModel : NavBaseModel
 {
+    public const int SelectAtLeast = 2;
+
     private readonly SelectionMode? selectionMode;
 
-    public SelectRecipientsModel()
+    public SelectMergerOrSplitRecipientsModel()
     {
     }
 
-    public SelectRecipientsModel(
+    public SelectMergerOrSplitRecipientsModel(
         Organisation organisation,
+        CallOffId callOffId,
+        OrderType orderType,
         IEnumerable<ServiceRecipientModel> possibleServiceRecipients,
-        IEnumerable<string> existingRecipients,
-        IEnumerable<ServiceRecipientModel> previouslySelectedRecipients,
         IEnumerable<string> preSelectedRecipients,
         SelectionMode? selectionMode = null,
         bool isAmendment = false)
     {
+        GetTitleAndAdviceFromOrderType(orderType);
+        Caption = $"Order {callOffId}";
+
         this.selectionMode = selectionMode;
 
         OrganisationName = organisation.Name;
         OrganisationType = organisation.OrganisationType.GetValueOrDefault();
-        PreviouslySelected = previouslySelectedRecipients.ToList();
 
         SubLocations = possibleServiceRecipients
             .GroupBy(x => x.Location)
-            .Select(
-                x => new SublocationModel(
-                    x.Key,
-                    x.Where(sr => PreviouslySelected.All(psr => psr.OdsCode != sr.OdsCode)).OrderBy(y => y.Name).ToList()))
+            .Select(x => new SublocationModel(
+                x.Key,
+                x.OrderBy(y => y.Name).ToList()))
             .OrderBy(x => x.Name)
             .ToArray();
 
         IsAmendment = isAmendment;
 
-        SelectServiceRecipients(existingRecipients, preSelectedRecipients);
+        SelectServiceRecipients(preSelectedRecipients);
     }
 
     public string OrganisationName { get; set; }
 
     public OrganisationType OrganisationType { get; set; }
 
-    public SublocationModel[] SubLocations { get; set; } = Array.Empty<SublocationModel>();
-
-    public ServiceRecipientModel[] SearchRecipients => SubLocations.SelectMany(x => x.ServiceRecipients.Select(y => new ServiceRecipientModel { Name = y.Name, OdsCode = y.OdsCode })).OrderBy(x => x.Name).ToArray();
+    public SublocationModel[] SubLocations { get; set; } = [];
 
     public bool HasImportedRecipients { get; set; }
 
@@ -56,9 +58,16 @@ public class SelectRecipientsModel : NavBaseModel
 
     public bool ShouldExpand { get; set; }
 
-    public int? SelectAtLeast { get; set; }
-
     public bool IsAmendment { get; set; }
+
+    public ServiceRecipientModel[] GetSearchRecipients()
+    {
+        return SubLocations
+            .SelectMany(x =>
+                x.ServiceRecipients.Select(y => new ServiceRecipientModel { Name = y.Name, OdsCode = y.OdsCode }))
+            .OrderBy(x => x.Name)
+            .ToArray();
+    }
 
     public IEnumerable<ServiceRecipientModel> GetServiceRecipients()
     {
@@ -77,9 +86,7 @@ public class SelectRecipientsModel : NavBaseModel
         return GetSelectedServiceRecipients().Any();
     }
 
-    private void SelectServiceRecipients(
-        IEnumerable<string> existingRecipients,
-        IEnumerable<string> recipients)
+    private void SelectServiceRecipients(IEnumerable<string> recipients)
     {
         switch (selectionMode)
         {
@@ -92,18 +99,39 @@ public class SelectRecipientsModel : NavBaseModel
             default:
                 if (recipients == null) return;
 
-                var enumeratedRecipients = recipients.ToArray();
-                var recipientsToSelect = enumeratedRecipients.Any() ? enumeratedRecipients.ToArray() : existingRecipients.ToArray();
+                List<ServiceRecipientModel> matchingRecipients =
+                    GetServiceRecipients().Where(x => recipients.Contains(x.OdsCode)).ToList();
 
-                var matchingRecipients = GetServiceRecipients().Where(x => recipientsToSelect.Contains(x.OdsCode)).ToList();
-                if (!matchingRecipients.Any())
+                if (matchingRecipients.Count == 0)
                     return;
 
                 matchingRecipients.ForEach(x => x.Selected = true);
 
-                var allSelected = GetServiceRecipients().All(x => x.Selected);
-
                 break;
+        }
+    }
+
+    private void GetTitleAndAdviceFromOrderType(OrderType orderType)
+    {
+        switch (orderType.Value)
+        {
+            case OrderTypeEnum.AssociatedServiceSplit:
+            {
+                Title = "Service Recipients splitting";
+                Advice =
+                    "Select all the practices that will be involved in the split you’re ordering. They must all be using the same Catalogue Solution.";
+                break;
+            }
+
+            case OrderTypeEnum.AssociatedServiceMerger:
+            {
+                Title = "Service Recipients merging";
+                Advice =
+                    "Select all the practices that will be involved in the merger you’re ordering. They must all be using the same Catalogue Solution.";
+                break;
+            }
+
+            default: throw new ArgumentOutOfRangeException(nameof(orderType));
         }
     }
 }

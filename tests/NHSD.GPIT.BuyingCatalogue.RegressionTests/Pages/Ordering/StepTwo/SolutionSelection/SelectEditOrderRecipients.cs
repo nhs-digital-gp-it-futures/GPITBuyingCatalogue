@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         {
             CommonActions.PageLoadedCorrectGetIndex(
               typeof(ServiceRecipientsController),
-              nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
+              nameof(ServiceRecipientsController)).Should().BeTrue();
 
             CommonActions.ClickRecipientsExpander();
 

@@ -177,7 +177,7 @@ public class CompetitionOrderService : ICompetitionOrderService
             Description = $"Order created from competition: {competition.Id}",
             Created = DateTime.UtcNow,
             MaximumTerm = competition.ContractLength,
-            OrderRecipients = competition.FlattenedRecipients.Select(x => new OrderRecipient(x.Id)).ToList(),
+            OrderSublocations = competition.CompetitionSublocations.Select(x => new OrderSublocation(x)).ToList(),
             OrderItems = orderItems.ToList(),
             OrderingPartyId = competition.OrganisationId,
             SupplierId = competitionSolution.Solution.CatalogueItem.SupplierId,
@@ -200,8 +200,8 @@ public class CompetitionOrderService : ICompetitionOrderService
 
         foreach (var itemQuantity in competitionItemQuantities)
         {
-            OrderRecipient orderRecipient =
-                order.OrderRecipients.FirstOrDefault(x => x.OdsCode == itemQuantity.RecipientOdsCode);
+            OrderSublocationRecipient orderRecipient =
+                order.FlattenedRecipients.FirstOrDefault(x => x.RecipientOdsCode == itemQuantity.RecipientOdsCode);
 
             orderRecipient?.SetQuantityForItem(itemQuantity.ItemId, itemQuantity.Quantity);
         }

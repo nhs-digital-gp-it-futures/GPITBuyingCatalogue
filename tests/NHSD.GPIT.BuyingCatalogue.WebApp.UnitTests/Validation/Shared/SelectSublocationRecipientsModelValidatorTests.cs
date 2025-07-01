@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentValidation.TestHelper;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients;
 using Xunit;
@@ -37,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
                     new SelectSublocationRecipientsModel
                     {
                         RenderedServiceRecipients =
-                            [new ServiceRecipientModel { OdsCode = "AAA", Selected = true }],
+                            [new SelectOption<string> { Value = "AAA", Selected = true }],
                     },
                 ],
             ];
@@ -51,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Validation.Shared
                     new SelectSublocationRecipientsModel
                     {
                         RenderedServiceRecipients =
-                            [new ServiceRecipientModel { OdsCode = "AAA", Selected = false }],
+                            [new SelectOption<string> { Value = "AAA", Selected = false }],
                     },
                 ],
             ];

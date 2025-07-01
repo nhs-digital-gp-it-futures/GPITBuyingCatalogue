@@ -1,4 +1,5 @@
 ﻿using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
@@ -25,6 +26,17 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
             OdsCode = competitionSublocationRecipientEntityModel.RecipientOdsCode;
             Location = competitionSublocationRecipientEntityModel.ParentSublocation?.SublocationOrganisation?.Name;
             LocationOrgId = competitionSublocationRecipientEntityModel.ParentSublocationOdsCode;
+            Selected = selected;
+        }
+
+        public ServiceRecipientModel(
+            OrderSublocationRecipient orderSublocationRecipientEntityModel,
+            bool selected)
+        {
+            Name = orderSublocationRecipientEntityModel.RecipientOdsOrganisation?.Name;
+            OdsCode = orderSublocationRecipientEntityModel.RecipientOdsCode;
+            Location = orderSublocationRecipientEntityModel.ParentSublocation?.SublocationOrganisation?.Name;
+            LocationOrgId = orderSublocationRecipientEntityModel.ParentSublocationOdsCode;
             Selected = selected;
         }
 

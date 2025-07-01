@@ -74,7 +74,8 @@ public static class OrderingInformationModelTests
         competitionSolution.Solution = solution;
         competitionSolution.Quantity = null;
         competitionSolution.Quantities = competition.FlattenedRecipients
-            .Select(x => new SolutionQuantitySublocationRecipient { OdsCode = x.Id, Quantity = recipientQuantity })
+            .Select(x =>
+                new SolutionQuantitySublocationRecipient { OdsCode = x.RecipientOdsCode, Quantity = recipientQuantity })
             .ToList();
 
         var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
@@ -141,7 +142,8 @@ public static class OrderingInformationModelTests
         solutionService.Service = additionalService.CatalogueItem;
         solutionService.Quantity = null;
         solutionService.Quantities = competition.FlattenedRecipients
-            .Select(x => new ServiceQuantitySublocationRecipient { OdsCode = x.Id, Quantity = recipientQuantity })
+            .Select(x =>
+                new ServiceQuantitySublocationRecipient { OdsCode = x.RecipientOdsCode, Quantity = recipientQuantity })
             .ToList();
 
         var model = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);

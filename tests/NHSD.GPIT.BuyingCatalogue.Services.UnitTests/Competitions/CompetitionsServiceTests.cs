@@ -228,11 +228,11 @@ public static class CompetitionsServiceTests
                         [CommonCompetitionSublocationRecipientFactory("BAAA", "XXXA", true)],
                         true),
                 },
-                new List<EntityOdsOrganisation>
+                new List<CompetitionSublocationRecipient>
                 {
-                    CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX", true).RecipientOrganisation,
-                    CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX", true).RecipientOrganisation,
-                    CommonCompetitionSublocationRecipientFactory("BAAA", "XXXA", true).RecipientOrganisation,
+                    CommonCompetitionSublocationRecipientFactory("AAAA", "XXXX", true),
+                    CommonCompetitionSublocationRecipientFactory("AAAB", "XXXX", true),
+                    CommonCompetitionSublocationRecipientFactory("BAAA", "XXXA", true),
                 },
             ],
         ];
@@ -243,7 +243,7 @@ public static class CompetitionsServiceTests
     public static async Task
         GetCompetitionWithSublocationsAndSublocationRecipients_FlattenedRecipientsPropertyPopulated(
             List<CompetitionSublocation> competitionSublocations,
-            List<EntityOdsOrganisation> expectedOdsOrganisationRecipients,
+            List<CompetitionSublocationRecipient> expectedCompetitionSublocationRecipients,
             Competition competition,
             Organisation organisation,
             [Frozen] BuyingCatalogueDbContext context,
@@ -251,12 +251,11 @@ public static class CompetitionsServiceTests
     {
         competition.Organisation = organisation;
 
-        competitionSublocations.ForEach(
-            x =>
-            {
-                x.OwnerOdsCode = organisation.ExternalIdentifier;
-                x.CompetitionId = competition.Id;
-            });
+        competitionSublocations.ForEach(x =>
+        {
+            x.OwnerOdsCode = organisation.ExternalIdentifier;
+            x.CompetitionId = competition.Id;
+        });
 
         competition.CompetitionSublocations = competitionSublocations;
 
@@ -264,13 +263,16 @@ public static class CompetitionsServiceTests
 
         await context.SaveChangesAsync();
 
+        expectedCompetitionSublocationRecipients.ForEach(x => x.CompetitionId = competition.Id);
+
         context.ChangeTracker.Clear();
 
         Competition result = await service.GetCompetitionWithSublocationsAndSublocationRecipients(
             organisation.InternalIdentifier,
             competition.Id);
 
-        result.FlattenedRecipients.Should().BeEquivalentTo(expectedOdsOrganisationRecipients);
+        result.FlattenedRecipients.Should()
+            .BeEquivalentTo(expectedCompetitionSublocationRecipients, opt => opt.Excluding(m => m.ParentSublocation));
     }
 
     [Theory]
@@ -1121,12 +1123,6 @@ public static class CompetitionsServiceTests
     {
         Competition completedCompetition = CommonCompetitionFactory(67, 21);
         completedCompetition.Completed = new DateTime(2024, 05, 03);
-
-        Competition populatedCompetitionWithMatchingSublocations = CommonCompetitionFactory(83, 45);
-        populatedCompetitionWithMatchingSublocations.CompetitionSublocations =
-        [
-            CommonCompetitionSublocationFactory("XXXX"), CommonCompetitionSublocationFactory("XXXY"),
-        ];
 
         var addHashSet = new HashSet<string> { "XXXX", "XXXY", "XXXZ" };
 

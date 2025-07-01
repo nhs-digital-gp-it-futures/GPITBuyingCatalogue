@@ -16,47 +16,62 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
         {
             OrderRecipientCollection.CollectionExtensions.ForCatalogueItem(null, catalogueItemId)
                 .Should()
-                .BeEquivalentTo(new List<OrderRecipient>());
+                .BeEquivalentTo(new List<OrderSublocationRecipient>());
         }
 
         [Theory]
         [MockAutoData]
         public static void ForCatalogueItem_Returns_Recipients_With_Link_To_CatalogueItemId(
-            OrderRecipient recipient1,
+            OrderSublocationRecipient recipient1,
             CatalogueItemId catalogueItemId1,
-            OrderRecipient recipient2,
+            OrderSublocationRecipient recipient2,
             CatalogueItemId catalogueItemId2)
         {
             recipient1.SetDeliveryDateForItem(catalogueItemId1, DateTime.Now);
             recipient2.SetDeliveryDateForItem(catalogueItemId2, DateTime.Now);
 
-            OrderRecipientCollection.CollectionExtensions.ForCatalogueItem(new List<OrderRecipient> { recipient1, recipient2 }, catalogueItemId1)
+            OrderRecipientCollection.CollectionExtensions.ForCatalogueItem(
+                    new List<OrderSublocationRecipient> { recipient1, recipient2 },
+                    catalogueItemId1)
                 .Should()
-                .BeEquivalentTo(new List<OrderRecipient> { recipient1 });
+                .BeEquivalentTo(new List<OrderSublocationRecipient> { recipient1 });
         }
 
         [Theory]
         [MockAutoData]
-        public static void AllDeliveryDatesEntered_Returns_False_When_Null(CatalogueItemId catalogueItemId)
+        public static void AllDeliveryDatesEntered_Rejects_Null(CatalogueItemId catalogueItemId)
         {
-            OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(null, catalogueItemId)
-                .Should().BeFalse();
+            Exception exception = Record.Exception(() =>
+            {
+                OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(null, catalogueItemId);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(ArgumentException));
         }
 
         [Theory]
         [MockAutoData]
-        public static void AllDeliveryDatesEntered_Returns_False_When_Recipients_No_Linked_To_CatalogueItemId(OrderRecipient[] recipients, CatalogueItemId catalogueItemId)
+        public static void AllDeliveryDatesEntered_Returns_False_When_Recipients_No_Linked_To_CatalogueItemId(
+            OrderSublocationRecipient[] recipients,
+            CatalogueItemId catalogueItemId)
         {
             OrderRecipientCollection.CollectionExtensions.AllDeliveryDatesEntered(recipients, catalogueItemId)
-                .Should().BeFalse();
+                .Should()
+                .BeFalse();
         }
 
         [Theory]
         [MockAutoData]
-        public static void NoDeliveryDatesEntered_Returns_False_When_Null(CatalogueItemId catalogueItemId)
+        public static void NoDeliveryDatesEntered_Rejects_Null(CatalogueItemId catalogueItemId)
         {
-            OrderRecipientCollection.CollectionExtensions.NoDeliveryDatesEntered(null, catalogueItemId)
-                .Should().BeFalse();
+            Exception exception = Record.Exception(() =>
+            {
+                OrderRecipientCollection.CollectionExtensions.NoDeliveryDatesEntered(null, catalogueItemId);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(ArgumentException));
         }
 
         [Fact]
@@ -68,7 +83,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 
         [Theory]
         [MockAutoData]
-        public static void AllQuantitiesEntered_Returns_False_When_OrderItem_Null(OrderRecipient[] recipients)
+        public static void AllQuantitiesEntered_Returns_False_When_OrderItem_Null(
+            OrderSublocationRecipient[] recipients)
         {
             OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(recipients, null)
                 .Should().BeFalse();
@@ -76,7 +92,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 
         [Theory]
         [MockAutoData]
-        public static void AllQuantitiesEntered_Returns_False_When_Recipient_Null(OrderRecipient[] recipients, OrderItem orderItem)
+        public static void AllQuantitiesEntered_Returns_False_When_Recipient_Null(
+            OrderSublocationRecipient[] recipients,
+            OrderItem orderItem)
         {
             OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(recipients, orderItem)
                 .Should().BeFalse();
@@ -84,7 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 
         [Theory]
         [MockAutoData]
-        public static void AllQuantitiesEntered_Returns_False_When_OrderItemPrice_Null(OrderRecipient[] recipients, OrderItem orderItem)
+        public static void AllQuantitiesEntered_Returns_False_When_OrderItemPrice_Null(
+            OrderSublocationRecipient[] recipients,
+            OrderItem orderItem)
         {
             orderItem.OrderItemPrice = null;
             OrderRecipientCollection.CollectionExtensions.AllQuantitiesEntered(recipients, orderItem)
@@ -101,25 +121,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
 
         [Theory]
         [MockAutoData]
-        public static void SomeButNotAllQuantitiesEntered_Returns_False_When_OrderItemPrice_Null(OrderRecipient[] recipients, OrderItem orderItem)
+        public static void SomeButNotAllQuantitiesEntered_Returns_False_When_OrderItemPrice_Null(
+            OrderSublocationRecipient[] recipients,
+            OrderItem orderItem)
         {
             orderItem.OrderItemPrice = null;
             OrderRecipientCollection.CollectionExtensions.SomeButNotAllNewQuantitiesEntered(recipients, orderItem)
                 .Should().BeFalse();
-        }
-
-        [Fact]
-        public static void Exists_Returns_False_When_Null()
-        {
-            OrderRecipientCollection.CollectionExtensions.Exists(null, string.Empty)
-                .Should().BeFalse();
-        }
-
-        [Fact]
-        public static void Get_Returns_Nul_When_Recipients_Null()
-        {
-            OrderRecipientCollection.CollectionExtensions.Get(null, string.Empty)
-                .Should().BeNull();
         }
     }
 }

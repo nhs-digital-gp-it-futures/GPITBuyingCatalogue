@@ -41,7 +41,8 @@ public class TrudOdsService : IOdsService
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<(OdsOrganisation Organisation, string Error)> GetOrganisationByOdsCode(string odsCode)
+    public async Task<(OdsOrganisation Organisation, string Error)> GetValidatedBuyerOrganisationByOdsCode(
+        string odsCode)
     {
         var organisation = await context.OdsOrganisations.Include(x => x.Roles)
             .FirstOrDefaultAsync(x => string.Equals(x.Id, odsCode));

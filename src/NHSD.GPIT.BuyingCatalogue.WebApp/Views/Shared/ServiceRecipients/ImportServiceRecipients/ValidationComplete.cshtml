@@ -25,14 +25,12 @@
                     <input type="hidden" asp-for="@Model.Sublocations[i].ServiceRecipients[j].Location" />
                 }
             }
-            
-            <nhs-submit-button/>
-        </form>
-
-            <div>
-                <a href="@Model.CancelHref">
+            <nhs-button-group>
+                <nhs-submit-button/>
+                <a href="@Model.CancelLink">
                     Cancel
                 </a>
-            </div>
+            </nhs-button-group>
+        </form>
     </div>
 </div>

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
 
@@ -14,22 +15,44 @@ public sealed class SelectSublocationsOverviewModel : NavBaseModel
         bool isConfirm,
         Competition competition,
         IEnumerable<SublocationModel> sublocations,
-        string addOrChangeSublocationsHref,
-        string backLinkHref)
+        string addOrChangeSublocationsLink,
+        string backLink)
+        : this(sublocations, addOrChangeSublocationsLink, backLink)
     {
         ProcessType = "competition";
-        Sublocations = sublocations.ToList();
         ParentName = competition.Organisation.Name;
-        AddOrChangeSublocationsHref = addOrChangeSublocationsHref;
-
-        BackLink = backLinkHref;
         Caption = competition.Name;
         SetConditionalTitleAndAdvice(isConfirm);
     }
 
+    public SelectSublocationsOverviewModel(
+        bool isConfirm,
+        Order order,
+        IEnumerable<SublocationModel> sublocations,
+        string addOrChangeSublocationsLink,
+        string backLink)
+        : this(sublocations, addOrChangeSublocationsLink, backLink)
+    {
+        ProcessType = "order";
+        ParentName = order.OrderingParty.Name;
+        Caption = order.CallOffId.ToString();
+        SetConditionalTitleAndAdvice(isConfirm);
+    }
+
+    private SelectSublocationsOverviewModel(
+        IEnumerable<SublocationModel> sublocations,
+        string addOrChangeSublocationsLink,
+        string backLink)
+    {
+        Sublocations = sublocations.ToList();
+        AddOrChangeSublocationsLink = addOrChangeSublocationsLink;
+
+        BackLink = backLink;
+    }
+
     public string ProcessType { get; init; }
 
-    public string AddOrChangeSublocationsHref { get; init; }
+    public string AddOrChangeSublocationsLink { get; init; }
 
     public string ParentName { get; init; }
 
