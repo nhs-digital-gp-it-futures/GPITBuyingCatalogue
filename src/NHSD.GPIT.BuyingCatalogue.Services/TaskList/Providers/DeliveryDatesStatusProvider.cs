@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
             var allDeliveryDatesSet = order.HaveAllDeliveryDates(wrapper.RolledUp.FlattenedRecipients.ToList());
 
-            if (allDeliveryDatesSet && wrapper.HasNewOrderRecipients)
+            if (allDeliveryDatesSet && (wrapper.HasNewOrderRecipients || wrapper.HasNewOrderItems))
             {
                 return order.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed;
             }
