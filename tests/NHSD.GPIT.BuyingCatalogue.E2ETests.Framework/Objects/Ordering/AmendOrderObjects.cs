@@ -6,6 +6,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
     {
         public static By CancelLink => By.LinkText("Cancel");
 
-        public static By ProcurementSupportLink => By.LinkText("Get procurement support");
+        public static By ProcurementSupportLink => By.LinkText("Contact procurement hub for support");
     }
 }

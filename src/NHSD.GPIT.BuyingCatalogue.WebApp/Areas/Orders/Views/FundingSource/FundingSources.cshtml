@@ -34,9 +34,9 @@
                 @if (Model.OrderItemsSelectable != null && Model.OrderItemsSelectable.Any())
                 {
                     <div style="display:block; align-items:center;">
-                        <h3 class="header-with-detail">
+                        <h2 class="header-with-detail">
                             Funding information (costs exclude VAT)
-                        </h3>
+                        </h2>
 
                         <span class="detail">
                             <strong>@Model.OrderItemsSelectable.Where(x => x.FundingType != OrderItemFundingType.None).Count()</strong> of <strong>@Model.OrderItemsSelectable.Count()</strong> started

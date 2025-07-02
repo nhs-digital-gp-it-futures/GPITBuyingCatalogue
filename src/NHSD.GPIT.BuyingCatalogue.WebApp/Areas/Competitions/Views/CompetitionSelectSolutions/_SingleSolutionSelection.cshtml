@@ -8,7 +8,7 @@
     <p>Your selected filter has only returned 1 result. You therefore do not need to carry out a competition and can instead use a direct award to procure this solution.</p>
 </nhs-inset-text>
 
-<h3 class="nhsuk-heading-s">
+<h2 class="nhsuk-heading-s">
     <a asp-action="@nameof(SolutionsController.Description)"
        asp-controller="@typeof(SolutionsController).ControllerName()"
        asp-area="@typeof(SolutionsController).AreaName()"
@@ -17,8 +17,8 @@
         @solution.SolutionName (opens in a new tab)
     </a>
     <span class="nhsuk-caption-m nhsuk-caption--bottom>">@solution.SupplierName</span>
-</h3>
-<h4 class="nhsuk-heading-xs nhsuk-u-margin-bottom-2">Additional Services required:</h4>
+</h2>
+<h3 class="nhsuk-heading-xs nhsuk-u-margin-bottom-2">Additional Services required:</h3>
 <p class="nhsuk-body">@solution.GetAdditionalServicesList()</p>
 
 <form method="post">
