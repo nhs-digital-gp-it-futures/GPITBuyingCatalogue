@@ -8,6 +8,7 @@ using BuyingCatalogueFunction.EpicsAndCapabilities.Interfaces;
 using BuyingCatalogueFunction.EpicsAndCapabilities.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
@@ -54,6 +55,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             using var csv = new CsvReader(streamReader, new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 TrimOptions = TrimOptions.Trim,
+                MissingFieldFound = null,
             });
 
             var standards = new List<StandardCsv>();
@@ -61,7 +63,6 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             csv.ReadHeader();
             while (await csv.ReadAsync())
             {
-                // ID,Name,Type,URL,Description,Framework
                 var standard = Map(csv);
                 standards.Add(standard);
             }
@@ -91,6 +92,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
                 StandardType = ParseStandardType(csv.GetField<string>("Type")),
                 Url = csv.GetField<string>("URL"),
                 Description = csv.GetField<string>("Description"),
+                IsMetByDefault = csv.GetField<bool>("Default - Fully Met", new BooleanConverter()),
             };
         }
 
@@ -120,6 +122,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
                 Url = standard.Url,
                 StandardType = standard.StandardType,
                 IsDeleted = false,
+                IsMetByDefault = standard.IsMetByDefault,
             };
 
             await dbContext.Standards.AddAsync(newStandard);
@@ -133,6 +136,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Services
             existing.Url = standard.Url;
             existing.StandardType = standard.StandardType;
             existing.IsDeleted = false;
+            existing.IsMetByDefault = standard.IsMetByDefault;
 
             var status = dbContext.Entry(existing);
             if (status.State == EntityState.Modified)
