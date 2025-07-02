@@ -87,8 +87,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             if (name.Contains("Model", StringComparison.OrdinalIgnoreCase))
                 name = name.Replace("Model", string.Empty);
 
-            var pattern = new Regex(@"[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+");
-            return string.Join("-", pattern.Matches(name)).ToLower();
+            return string.Join("-", RegularExpressions.KebabNameRegex().Matches(name)).ToLower();
         }
 
         public static void TellParentTagIfThisTagIsInError(
@@ -174,10 +173,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             if (!((ConditionalContext)value).ContainsConditionalContent)
                 return false;
 
-            if (conditionalContext is null)
-                return false;
-
-            return true;
+            return conditionalContext is not null;
         }
     }
 }

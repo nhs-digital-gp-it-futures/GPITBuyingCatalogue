@@ -15,11 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
     {
         private readonly DbContextOptions<BuyingCatalogueDbContext> dbContextOptions;
 
-        public InMemoryDbCustomization(string dbName)
+        public InMemoryDbCustomization()
         {
             dbContextOptions = new DbContextOptionsBuilder<BuyingCatalogueDbContext>()
                 .EnableSensitiveDataLogging()
-                .UseInMemoryDatabase(dbName)
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))
                 .Options;
         }

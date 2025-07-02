@@ -20,11 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.DataAttributes
 
         private static string PascalCaseToKebabCase(string input)
         {
-            if (string.IsNullOrEmpty(input))
-                return string.Empty;
-
-            var pattern = new Regex(@"[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+");
-            return string.Join("-", pattern.Matches(input)).ToLower();
+            return string.IsNullOrEmpty(input)
+                ? string.Empty
+                : string.Join("-", RegularExpressions.KebabNameRegex().Matches(input)).ToLower();
         }
     }
 }

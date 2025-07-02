@@ -33,6 +33,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Configuration
                 .IsRequired()
                 .HasColumnName("StandardTypeId");
 
+            builder.Property(s => s.IsMetByDefault)
+                .IsRequired()
+                .HasDefaultValue(false);
+
             builder.Property(s => s.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
             builder.HasQueryFilter(o => !o.IsDeleted);
