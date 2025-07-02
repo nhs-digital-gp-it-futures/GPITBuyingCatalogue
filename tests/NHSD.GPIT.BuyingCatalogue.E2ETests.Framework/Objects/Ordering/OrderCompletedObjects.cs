@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By ReturnToDashboardButton => By.LinkText("Return to orders dashboard");
 
-        public static By ContactProcurementLink => By.LinkText("Get procurement support");
+        public static By ContactProcurementLink => By.LinkText("Contact procurement hub for support");
 
         public static By SupportingDocuments => By.Id("supporting-documents");
 

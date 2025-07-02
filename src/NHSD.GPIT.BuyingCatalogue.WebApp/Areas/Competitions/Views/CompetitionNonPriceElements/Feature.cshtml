@@ -25,7 +25,7 @@
             <nhs-fieldset-form-label asp-for="AvailableComplianceLevels"
                                      label-text="Is this a must or should requirement?"
                                      label-hint="Is it essential that the winning solution meets this requirement or is it a nice-to-have?"
-                                     size="Medium">
+                                     size="Large">
                 <nhs-radio-buttons asp-for="SelectedCompliance" values="@Model.AvailableComplianceLevels"
                                    value-name="Value"
                                    display-name="Text"/>
@@ -40,12 +40,6 @@
                 <nhs-submit-button/>
                 <a href="@Model.BackLink">Cancel</a>
             </nhs-button-group>
-@*             @if (Model.CanDelete)
-            {
-                <div>
-                    <vc:nhs-delete-button text="Delete this requirement" url="@Url.Action(nameof(CompetitionNonPriceElementsController.DeleteFeature), typeof(CompetitionNonPriceElementsController).ControllerName(), new { Model.InternalOrgId, Model.CompetitionId, requirementId = Model.FeaturesCriteriaId })"/>
-                </div>
-            } *@
         </form>
 
     </div>
