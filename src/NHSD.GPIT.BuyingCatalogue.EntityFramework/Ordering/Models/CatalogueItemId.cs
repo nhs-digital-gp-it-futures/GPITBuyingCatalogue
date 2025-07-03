@@ -1,22 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.TypeConverters;
 using static System.FormattableString;
 
 namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 {
     [TypeConverter(typeof(CatalogueItemIdTypeConverter))]
-    public readonly struct CatalogueItemId
+    public readonly struct CatalogueItemId : IEquatable<CatalogueItemId>
     {
         public const int MaxItemIdLength = 7;
         public const int MaxSupplierId = 999999;
-
-        private const string Pattern = @"^(?<supplierId>\d{1,6})-(?<itemId>\S{1,7})$";
-
-        private static readonly Lazy<Regex> Regex = new(() => new Regex(Pattern, RegexOptions.Compiled));
 
         [JsonConstructor]
         public CatalogueItemId(int supplierId, string itemId)
@@ -48,22 +42,34 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             return !(left == right);
         }
 
-        public static (bool Success, CatalogueItemId Id) Parse(string catalogueItemId)
+        public static bool TryParse(string catalogueItemId, out CatalogueItemId id)
         {
-            var match = Regex.Value.Match(catalogueItemId);
-            if (!match.Success)
-                return (false, default);
+            id = default;
 
-            var supplierId = int.Parse(match.Groups["supplierId"].Value, CultureInfo.InvariantCulture);
-            var itemId = match.Groups["itemId"].Value;
+            if (string.IsNullOrWhiteSpace(catalogueItemId))
+                return false;
 
-            return (true, new CatalogueItemId(supplierId, itemId));
+            var catalogueId = catalogueItemId.AsSpan();
+            var dashIndex = catalogueId.IndexOf('-');
+
+            if (dashIndex == -1)
+                return false;
+
+            if (!int.TryParse(catalogueId[..dashIndex], out var supplierId))
+                return false;
+
+            var itemId = catalogueId[(dashIndex + 1)..];
+            if (itemId.IsEmpty)
+                return false;
+
+            id = new CatalogueItemId(supplierId, itemId.ToString());
+
+            return true;
         }
 
         public static CatalogueItemId ParseExact(string catalogueItemId)
         {
-            (bool success, CatalogueItemId id) = Parse(catalogueItemId);
-            if (!success)
+            if (!TryParse(catalogueItemId, out var id))
                 throw new FormatException();
 
             return id;
@@ -99,10 +105,15 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId NextAssociatedServiceId()
         {
-            if (!int.TryParse(ItemId.Replace("S-", string.Empty), out var itemId))
+            const string associatedServiceIdPrefix = "S-";
+
+            var itemIdSpan = ItemId.AsSpan();
+            if (!itemIdSpan.StartsWith(associatedServiceIdPrefix) || !int.TryParse(
+                    itemIdSpan[(itemIdSpan.IndexOf("-") + 1)..],
+                    out var itemId))
                 throw new FormatException();
 
-            return new CatalogueItemId(SupplierId, $"S-{itemId + 1:D3}");
+            return new CatalogueItemId(SupplierId, $"{associatedServiceIdPrefix}{itemId + 1:D3}");
         }
 
         public CatalogueItemId NextAdditionalServiceId()
