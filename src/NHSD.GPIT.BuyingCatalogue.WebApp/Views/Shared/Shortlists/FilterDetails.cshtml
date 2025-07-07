@@ -27,7 +27,7 @@
                 else
                 {
                     <span class="bc-flex-container" style="justify-content: space-between">
-                        <h3 class="header-with-detail">@Model.FilterDetails.Name (@Model.ResultsCount)</h3>
+                        <h2 class="header-with-detail nhsuk-heading-m">@Model.FilterDetails.Name (@Model.ResultsCount)</h2>
                         <vc:nhs-anchor-button text="Download results (PDF)"
                                                  url="@Url.Action(nameof(ManageFiltersController.DownloadResults),
                                                                     typeof(ManageFiltersController).ControllerName(),

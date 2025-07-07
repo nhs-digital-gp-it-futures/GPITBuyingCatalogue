@@ -61,7 +61,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
                 ? TagHelperBuilders.GetInlineLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText)
                 : TagHelperBuilders.GetLabelBuilder(ViewContext, For, htmlGenerator, null, LabelText);
             var errorMessage = TagHelperBuilders.GetValidationBuilder(ViewContext, For, htmlGenerator);
-            var hint = TagHelperBuilders.GetLabelHintBuilder(For, LabelHint);
+            var hint = TagHelperBuilders.GetLabelHintBuilder(LabelHint, For.Name);
 
             var selectList = TagHelperBuilders.GetSelectListBuilder(
                 htmlGenerator,

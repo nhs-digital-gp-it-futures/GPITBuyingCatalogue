@@ -13,5 +13,7 @@ namespace BuyingCatalogueFunction.EpicsAndCapabilities.Models
         public string Url { get; set; }
 
         public string Description { get; set; }
+
+        public bool IsMetByDefault { get; set; }
     }
 }

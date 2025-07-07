@@ -17,7 +17,7 @@ public class MockMemberAutoDataAttribute(string memberName, params object[] para
 public class MockInMemoryDbAutoDataAttribute() : AutoDataAttribute(
     () => FixtureFactoryV2.Create(
         new BuyingCatalogueDbContextCustomization(),
-        new InMemoryDbCustomization(Guid.NewGuid().ToString()),
+        new InMemoryDbCustomization(),
         new UserManagerCustomization()));
 
 public class MockInMemoryDbInlineAutoDataAttribute(params object[] arguments)
@@ -29,7 +29,7 @@ public class MockInMemoryDbMemberAutoDataAttribute(string memberName, params obj
         parameters,
         () => FixtureFactoryV2.Create(
             new BuyingCatalogueDbContextCustomization(),
-            new InMemoryDbCustomization(Guid.NewGuid().ToString()),
+            new InMemoryDbCustomization(),
             new UserManagerCustomization()));
 
 #pragma warning restore SA1402

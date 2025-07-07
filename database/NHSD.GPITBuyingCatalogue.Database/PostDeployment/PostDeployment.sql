@@ -68,7 +68,6 @@
 :r ./TestData/Competitions/InsertCompetitions.sql
 :r ./TestData/Solutions/InsertServiceLevels.sql
 :r ./TestData/InsertWorkOffPlans.sql
-:r ./MigrateWorkOffPlans.sql
 
 :r ./MigrationForCompetitionSublocationRecipients.sql
 :r ./MigrationForOrderSublocationRecipients.sql

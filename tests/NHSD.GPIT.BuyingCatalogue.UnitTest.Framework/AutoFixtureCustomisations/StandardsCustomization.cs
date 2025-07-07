@@ -11,7 +11,8 @@ namespace NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.AutoFixtureCustomisations
         {
             static ISpecimenBuilder ComposerTransformation(ICustomizationComposer<Standard> composer) => composer
                 .Without(s => s.StandardCapabilities)
-                .With(s => s.IsDeleted, false);
+                .With(s => s.IsDeleted, false)
+                .With(s => s.IsMetByDefault, false);
 
             fixture.Customize<Standard>(ComposerTransformation);
         }
