@@ -124,7 +124,7 @@ namespace NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers
             {
                 builder.MergeAttribute(
                     TagHelperConstants.AriaDescribedBy,
-                    TagBuilder.CreateSanitizedId(string.Join(' ', describedBy), " "));
+                    string.Join(' ', describedBy.Select(x => TagBuilder.CreateSanitizedId(x, "_"))));
             }
 
             if (TagHelperFunctions.GetCustomAttributes<PasswordAttribute>(For)?.Any() == true)

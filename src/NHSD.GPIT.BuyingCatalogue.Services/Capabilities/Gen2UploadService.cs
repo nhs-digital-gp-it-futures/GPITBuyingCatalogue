@@ -76,7 +76,7 @@ public class Gen2UploadService : CsvServiceBase, IGen2UploadService
 
         var catalogueItemIdValid = !string.IsNullOrWhiteSpace(baseRecord.SolutionId)
             && Gen2ValidationRegex.CatalogueItemIdRegex().IsMatch(baseRecord.SolutionId)
-            && CatalogueItemId.Parse(baseRecord.SolutionId).Success;
+            && CatalogueItemId.TryParse(baseRecord.SolutionId, out _);
 
         var capabilityIdValid = !string.IsNullOrWhiteSpace(baseRecord.CapabilityId)
             && Gen2ValidationRegex.CapabilityIdRegex().IsMatch(baseRecord.CapabilityId);
