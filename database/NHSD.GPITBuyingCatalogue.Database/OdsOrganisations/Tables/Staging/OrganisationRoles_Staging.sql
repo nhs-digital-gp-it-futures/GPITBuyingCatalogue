@@ -4,4 +4,5 @@
     [OrganisationId]    NVARCHAR(10)    NOT NULL,
     [RoleId]            NVARCHAR(10)    NOT NULL,
     [IsPrimaryRole]     BIT             NOT NULL DEFAULT(0),
+    [IsActive]          BIT             NOT NULL DEFAULT (1),
 )

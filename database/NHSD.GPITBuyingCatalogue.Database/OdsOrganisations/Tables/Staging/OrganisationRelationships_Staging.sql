@@ -4,4 +4,5 @@
     [RelationshipTypeId]        NVARCHAR(10)            NOT NULL,
     [TargetOrganisationId]      NVARCHAR(10)            NOT NULL,
     [OwnerOrganisationId]       NVARCHAR(10)            NOT NULL,
+    [IsActive]                  BIT                     NOT NULL DEFAULT (1),
 )

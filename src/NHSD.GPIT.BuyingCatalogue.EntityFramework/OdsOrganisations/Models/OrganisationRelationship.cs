@@ -24,6 +24,8 @@ public class OrganisationRelationship
 
     public string TargetOrganisationId { get; set; }
 
+    public bool IsActive { get; set; }
+
     public virtual OdsOrganisation OwnerOrganisation { get; set; }
 
     public virtual OdsOrganisation TargetOrganisation { get; set; }
