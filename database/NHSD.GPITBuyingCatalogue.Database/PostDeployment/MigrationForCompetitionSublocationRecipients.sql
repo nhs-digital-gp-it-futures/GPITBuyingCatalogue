@@ -14,7 +14,9 @@ FROM [GPITBuyingCatalogue].[competitions].[CompetitionRecipients] [cr]
     JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel2]
     ON [rel].[OwnerOrganisationId] = [rel2].[TargetOrganisationId]
 WHERE [rel].[RelationshipTypeId] = @CompetitionSublocationIsCommissionedBy
-    AND [rel2].[RelationshipTypeId] = @CompetitionSublocationIsLocatedInTheGeographyOf;
+    AND [rel2].[RelationshipTypeId] = @CompetitionSublocationIsLocatedInTheGeographyOf
+    AND [rel].[IsActive] = 1
+    AND [rel2].[IsActive] = 1;
 
 INSERT INTO [GPITBuyingCatalogue].[competitions].[CompetitionSublocationRecipients]
     ([CompetitionId], [ParentSublocationOdsCode], [RecipientOdsCode])
