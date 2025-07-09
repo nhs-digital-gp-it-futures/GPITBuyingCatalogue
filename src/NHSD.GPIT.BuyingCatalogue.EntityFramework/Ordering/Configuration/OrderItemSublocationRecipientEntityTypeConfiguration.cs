@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
         {
             builder.ToTable("OrderItemSublocationRecipients", Schemas.Ordering);
 
-            builder.HasKey(x => new { x.OrderId, x.CatalogueItemId, x.OdsCode });
+            builder.HasKey(x => new { x.OrderId, x.CatalogueItemId, x.ParentSublocationOdsCode, x.RecipientOdsCode });
 
             builder.Property(x => x.OrderId).IsRequired();
 
@@ -20,7 +20,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
                 .HasMaxLength(14)
                 .HasConversion(id => id.ToString(), id => CatalogueItemId.ParseExact(id));
 
-            builder.Property(x => x.OdsCode).HasMaxLength(10);
+            builder.Property(x => x.ParentSublocationOdsCode).HasMaxLength(10);
+
+            builder.Property(x => x.RecipientOdsCode).HasMaxLength(10);
 
             builder.Property(x => x.LastUpdated).HasDefaultValue(DateTime.UtcNow);
 
@@ -31,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Configuration
 
             builder.HasOne(x => x.Recipient)
                 .WithMany(y => y.OrderItemSublocationRecipients)
-                .HasForeignKey(x => new { x.OrderId, x.OdsCode })
+                .HasForeignKey(x => new { x.OrderId, x.ParentSublocationOdsCode, x.RecipientOdsCode })
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_OrderItemSublocationRecipients_SublocationRecipient");
 

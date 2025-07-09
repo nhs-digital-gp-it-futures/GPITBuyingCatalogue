@@ -6,9 +6,9 @@ public record CompetitionSublocationRecipient
 {
     public int CompetitionId { get; set; }
 
-    public string RecipientOdsCode { get; set; }
-
     public string ParentSublocationOdsCode { get; set; }
+
+    public string RecipientOdsCode { get; set; }
 
     public Competition Competition { get; set; }
 

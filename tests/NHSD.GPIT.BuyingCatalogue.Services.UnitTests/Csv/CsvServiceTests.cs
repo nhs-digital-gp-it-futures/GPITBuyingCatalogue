@@ -770,7 +770,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                     new OrderItemSublocationRecipient
                     {
                         OrderId = recipient.OrderId,
-                        OdsCode = recipient.RecipientOdsCode,
+                        RecipientOdsCode = recipient.RecipientOdsCode,
                         CatalogueItemId = orderItem.CatalogueItemId,
                         Quantity = 1,
                         Recipient = recipient,

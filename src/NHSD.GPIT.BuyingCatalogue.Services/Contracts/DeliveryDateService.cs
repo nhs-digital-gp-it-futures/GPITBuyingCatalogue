@@ -72,7 +72,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
             foreach (OrderItemSublocationRecipient recipient in orderItemSublocationRecipients)
             {
-                RecipientDeliveryDateDto dto = deliveryDates.FirstOrDefault(x => x.OdsCode == recipient.OdsCode);
+                RecipientDeliveryDateDto dto =
+                    deliveryDates.FirstOrDefault(x => x.OdsCode == recipient.RecipientOdsCode);
 
                 if (dto != null)
                 {

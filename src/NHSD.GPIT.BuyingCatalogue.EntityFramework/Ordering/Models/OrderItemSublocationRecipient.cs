@@ -15,7 +15,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
             CatalogueItemId catalogueItemId)
         {
             OrderId = orderId;
-            OdsCode = recipientOdsCode;
+            RecipientOdsCode = recipientOdsCode;
             CatalogueItemId = catalogueItemId;
         }
 
@@ -23,7 +23,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public CatalogueItemId CatalogueItemId { get; set; }
 
-        public string OdsCode { get; set; }
+        public string ParentSublocationOdsCode { get; set; }
+
+        public string RecipientOdsCode { get; set; }
 
         public int? Quantity { get; set; }
 
@@ -43,7 +45,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         {
             return new OrderItemSublocationRecipient
             {
-                CatalogueItemId = CatalogueItemId, OdsCode = OdsCode, Quantity = Quantity, DeliveryDate = DeliveryDate,
+                CatalogueItemId = CatalogueItemId,
+                RecipientOdsCode = RecipientOdsCode,
+                Quantity = Quantity,
+                DeliveryDate = DeliveryDate,
             };
         }
     }

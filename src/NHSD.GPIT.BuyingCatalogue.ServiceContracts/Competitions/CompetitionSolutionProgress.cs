@@ -41,10 +41,10 @@ public readonly struct CompetitionSolutionProgress(
                 ICollection<CompetitionSublocationRecipient> recipients)
             {
                 return (solution.Quantity.HasValue || (solution.Quantities.Any()
-                        && recipients.All(x => solution.Quantities.Any(y => y.OdsCode == x.RecipientOdsCode))))
+                        && recipients.All(x => solution.Quantities.Any(y => y.RecipientOdsCode == x.RecipientOdsCode))))
                     && (!solution.SolutionServices.Any()
                         || solution.SolutionServices.All(x => x.Quantity.HasValue || (x.Quantities.Any()
-                            && recipients.All(y => x.Quantities.Any(z => z.OdsCode == y.RecipientOdsCode)))));
+                            && recipients.All(y => x.Quantities.Any(z => z.RecipientOdsCode == y.RecipientOdsCode)))));
             }
 
             if (PriceProgress is not TaskProgress.Completed) return TaskProgress.CannotStart;

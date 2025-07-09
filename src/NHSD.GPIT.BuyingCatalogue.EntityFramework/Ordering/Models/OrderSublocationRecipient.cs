@@ -26,9 +26,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public int OrderId { get; set; }
 
-        public string RecipientOdsCode { get; set; }
-
         public string ParentSublocationOdsCode { get; set; }
+
+        public string RecipientOdsCode { get; set; }
 
         public Order Order { get; set; }
 

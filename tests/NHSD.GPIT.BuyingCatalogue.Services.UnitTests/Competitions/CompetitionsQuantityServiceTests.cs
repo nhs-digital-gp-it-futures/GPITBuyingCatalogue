@@ -224,14 +224,13 @@ public static class CompetitionsQuantityServiceTests
             {
                 IsShortlisted = true,
                 Quantity = quantity,
-                Quantities = odsOrganisations.Select(
-                        x => new SolutionQuantitySublocationRecipient
-                        {
-                            CompetitionId = competition.Id,
-                            SolutionId = solution.CatalogueItemId,
-                            OdsCode = x.Id,
-                            Quantity = quantity,
-                        })
+                Quantities = odsOrganisations.Select(x => new SolutionQuantitySublocationRecipient
+                    {
+                        CompetitionId = competition.Id,
+                        SolutionId = solution.CatalogueItemId,
+                        RecipientOdsCode = x.Id,
+                        Quantity = quantity,
+                    })
                     .ToList(),
             });
 
@@ -280,15 +279,14 @@ public static class CompetitionsQuantityServiceTests
                     new(competition.Id, solution.CatalogueItemId, additionalService.CatalogueItemId, true)
                     {
                         Quantity = quantity,
-                        Quantities = odsOrganisations.Select(
-                                x => new ServiceQuantitySublocationRecipient
-                                {
-                                    CompetitionId = competition.Id,
-                                    SolutionId = solution.CatalogueItemId,
-                                    ServiceId = additionalService.CatalogueItemId,
-                                    OdsCode = x.Id,
-                                    Quantity = quantity,
-                                })
+                        Quantities = odsOrganisations.Select(x => new ServiceQuantitySublocationRecipient
+                            {
+                                CompetitionId = competition.Id,
+                                SolutionId = solution.CatalogueItemId,
+                                ServiceId = additionalService.CatalogueItemId,
+                                RecipientOdsCode = x.Id,
+                                Quantity = quantity,
+                            })
                             .ToList(),
                     },
                 },

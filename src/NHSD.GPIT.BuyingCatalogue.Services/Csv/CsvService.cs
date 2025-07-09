@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var previousRecipients =
                 dbContext.OrderItemSublocationRecipients.Where(or => previousOrderIds.Contains(or.OrderId))
                     .Select(or =>
-                        new { or.CatalogueItemId, or.OdsCode });
+                        new { or.CatalogueItemId, OdsCode = or.RecipientOdsCode });
 
             List<FullOrderCsvModel> items = await dbContext.OrderSublocationRecipients
                 .Include(x => x.OrderItemSublocationRecipients)
@@ -189,8 +189,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .AsNoTracking()
                 .Where(or => or.OrderId == orderId)
                 .SelectMany(
-                    or => or.OrderItemSublocationRecipients.Where(
-                        y => !previousRecipients.Any(z => z.OdsCode == y.OdsCode && z.CatalogueItemId == y.CatalogueItemId)),
+                    or => or.OrderItemSublocationRecipients.Where(y =>
+                        !previousRecipients.Any(z =>
+                            z.OdsCode == y.RecipientOdsCode && z.CatalogueItemId == y.CatalogueItemId)),
                     (or, oir) => new FullOrderCsvModel
                     {
                         CallOffId = or.Order.CallOffId,

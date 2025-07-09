@@ -12,13 +12,13 @@ public class
     {
         builder.ToTable("CompetitionSublocationRecipients", Schemas.Competitions);
 
-        builder.HasKey(x => new { x.CompetitionId, x.RecipientOdsCode });
+        builder.HasKey(x => new { x.CompetitionId, x.ParentSublocationOdsCode, x.RecipientOdsCode });
 
         builder.Property(x => x.CompetitionId).IsRequired();
 
-        builder.Property(x => x.RecipientOdsCode).HasMaxLength(10).IsRequired();
-
         builder.Property(x => x.ParentSublocationOdsCode).HasMaxLength(10).IsRequired();
+
+        builder.Property(x => x.RecipientOdsCode).HasMaxLength(10).IsRequired();
 
         builder.HasOne(x => x.Competition)
             .WithMany()

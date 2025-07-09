@@ -1268,7 +1268,7 @@ public static class CompetitionHubControllerTests
         [Frozen] IGpPracticeService gpPracticeService,
         CompetitionHubController controller)
     {
-        recipientQuantity.OdsCode = competitionRecipient.RecipientOdsCode = serviceRecipient.OrgId = odsCode;
+        recipientQuantity.RecipientOdsCode = competitionRecipient.RecipientOdsCode = serviceRecipient.OrgId = odsCode;
 
         var competitionRecipients = new List<CompetitionSublocationRecipient> { competitionRecipient };
         var recipientQuantities = new List<RecipientQuantityBase> { recipientQuantity };
@@ -1282,7 +1282,7 @@ public static class CompetitionHubControllerTests
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
 
         var expected = new ServiceRecipientQuantityDto(
-            recipientQuantity.OdsCode,
+            recipientQuantity.RecipientOdsCode,
             competitionRecipient.RecipientOrganisation.Name,
             recipientQuantity.Quantity,
             serviceRecipient.Location);

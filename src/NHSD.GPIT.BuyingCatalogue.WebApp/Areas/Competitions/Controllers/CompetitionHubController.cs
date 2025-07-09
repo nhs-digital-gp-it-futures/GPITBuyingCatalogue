@@ -461,7 +461,8 @@ public class CompetitionHubController : Controller
         return competitionRecipients.Select(
             x =>
             {
-                var quantity = recipientQuantities?.FirstOrDefault(y => x.RecipientOdsCode == y.OdsCode)?.Quantity
+                var quantity = recipientQuantities?.FirstOrDefault(y => x.RecipientOdsCode == y.RecipientOdsCode)
+                        ?.Quantity
                     ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.RecipientOdsCode)?.NumberOfPatients;
 
                 var location = organisations?.FirstOrDefault(y => x.RecipientOdsCode == y.OrgId)?.Location;

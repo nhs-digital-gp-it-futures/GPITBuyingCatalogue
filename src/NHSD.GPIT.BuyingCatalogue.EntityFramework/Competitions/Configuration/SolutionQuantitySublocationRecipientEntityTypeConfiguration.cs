@@ -12,13 +12,15 @@ public class
     {
         builder.ToTable("SolutionQuantitiesSublocationRecipients", Schemas.Competitions);
 
-        builder.HasKey(x => new { x.CompetitionId, x.SolutionId, x.OdsCode });
+        builder.HasKey(x => new { x.CompetitionId, x.SolutionId, x.ParentSublocationOdsCode, x.RecipientOdsCode });
 
         builder.Property(x => x.CompetitionId).IsRequired();
 
         builder.Property(x => x.SolutionId).IsRequired();
 
-        builder.Property(x => x.OdsCode).IsRequired();
+        builder.Property(x => x.ParentSublocationOdsCode).HasMaxLength(10).IsRequired();
+
+        builder.Property(x => x.RecipientOdsCode).HasMaxLength(10).IsRequired();
 
         builder.Property(x => x.Quantity).IsRequired();
 
@@ -30,7 +32,7 @@ public class
 
         builder.HasOne(x => x.CompetitionSublocationRecipient)
             .WithMany()
-            .HasForeignKey(x => new { x.CompetitionId, x.OdsCode })
+            .HasForeignKey(x => new { x.CompetitionId, x.ParentSublocationOdsCode, x.RecipientOdsCode })
             .HasConstraintName("FK_SolutionQuantitiesSublocationRecipients_SublocationRecipient")
             .OnDelete(DeleteBehavior.Cascade);
     }
