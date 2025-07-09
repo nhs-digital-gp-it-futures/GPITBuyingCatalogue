@@ -23,6 +23,9 @@ public class OrganisationRoleEntityTypeConfiguration : IEntityTypeConfiguration<
         builder.Property(x => x.IsPrimaryRole)
             .IsRequired();
 
+        builder.Property(x => x.IsActive)
+            .IsRequired();
+
         builder.HasIndex(x => x.RoleId)
             .HasDatabaseName("IX_RoleId_OrganisationId")
             .IncludeProperties(x => x.OrganisationId)

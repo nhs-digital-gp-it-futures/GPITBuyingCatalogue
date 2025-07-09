@@ -4,7 +4,7 @@ AS
     BEGIN TRY
         -- Merge RoleTypes
         MERGE INTO ods_organisations.RoleTypes AS TARGET
-        using ods_organisations.RoleTypes_Staging AS SOURCE
+        USING ods_organisations.RoleTypes_Staging AS SOURCE
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
           UPDATE SET TARGET.[Description] = SOURCE.[Description]
@@ -16,7 +16,7 @@ AS
       
         -- Merge RelationshipTypes
         MERGE INTO ods_organisations.RelationshipTypes AS TARGET
-        using ods_organisations.RelationshipTypes_Staging AS SOURCE
+        USING ods_organisations.RelationshipTypes_Staging AS SOURCE
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
           UPDATE SET TARGET.[Description] = SOURCE.[Description]
@@ -28,7 +28,7 @@ AS
       
         -- Merge OdsOrganisations
         MERGE INTO ods_organisations.OdsOrganisations AS TARGET
-        using ods_organisations.OdsOrganisations_Staging AS SOURCE
+        USING ods_organisations.OdsOrganisations_Staging AS SOURCE
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
           UPDATE SET TARGET.[Name]         = SOURCE.[Name],
@@ -55,33 +55,39 @@ AS
       
         -- Merge OrganisationRoles
         MERGE INTO ods_organisations.OrganisationRoles AS TARGET
-        using ods_organisations.OrganisationRoles_Staging AS SOURCE
+        USING ods_organisations.OrganisationRoles_Staging AS SOURCE
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
           UPDATE SET TARGET.[OrganisationId]    = SOURCE.[OrganisationId],
                      TARGET.[RoleId]            = SOURCE.[RoleId],
-                     TARGET.[IsPrimaryRole]     = SOURCE.[IsPrimaryRole]
+                     TARGET.[IsPrimaryRole]     = SOURCE.[IsPrimaryRole],
+                     TARGET.[IsActive]          = SOURCE.[IsActive]
+        WHEN NOT MATCHED BY SOURCE THEN UPDATE SET TARGET.[IsActive] = 0
         WHEN NOT MATCHED BY TARGET THEN
-          INSERT ([Id], [OrganisationId], [RoleId], [IsPrimaryRole])
+          INSERT ([Id], [OrganisationId], [RoleId], [IsPrimaryRole], [IsActive])
           VALUES (SOURCE.[Id],
                   SOURCE.[OrganisationId],
                   SOURCE.[RoleId],
-                  SOURCE.[IsPrimaryRole]);
+                  SOURCE.[IsPrimaryRole],
+                  SOURCE.[IsActive]);
       
         -- Merge OrganisationRelationships
         MERGE INTO ods_organisations.OrganisationRelationships AS TARGET
-        using ods_organisations.OrganisationRelationships_Staging AS SOURCE
+        USING ods_organisations.OrganisationRelationships_Staging AS SOURCE
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
           UPDATE SET TARGET.[RelationshipTypeId]    = SOURCE.[RelationshipTypeId],
                      TARGET.[TargetOrganisationId]  = SOURCE.[TargetOrganisationId],
-                     TARGET.[OwnerOrganisationId]   = SOURCE.[OwnerOrganisationId]
+                     TARGET.[OwnerOrganisationId]   = SOURCE.[OwnerOrganisationId],
+                     TARGET.[IsActive]              = SOURCE.[IsActive]
+        WHEN NOT MATCHED BY SOURCE THEN UPDATE SET TARGET.[IsActive] = 0
         WHEN NOT MATCHED BY TARGET THEN
-          INSERT ([Id], [RelationshipTypeId], [TargetOrganisationId], [OwnerOrganisationId])
+          INSERT ([Id], [RelationshipTypeId], [TargetOrganisationId], [OwnerOrganisationId], [IsActive])
           VALUES (SOURCE.[Id],
                   SOURCE.[RelationshipTypeId],
                   SOURCE.[TargetOrganisationId],
-                  SOURCE.[OwnerOrganisationId]);
+                  SOURCE.[OwnerOrganisationId],
+                  SOURCE.[IsActive]);
 
         COMMIT TRAN
     END TRY

@@ -90,7 +90,7 @@ public class OdsOrganisationMapping
             return odsOrganisation;
         }
 
-        return trudData.OrganisationsRoot.Organisations.ToDictionary(x => x.OrgId.Extension, v => MapToOdsOrganisationInternal(v));
+        return trudData.OrganisationsRoot.Organisations.ToDictionary(x => x.OrgId.Extension, MapToOdsOrganisationInternal);
     }
 
     private static IEnumerable<OrganisationRelationship> MapOrganisationRelationships(
@@ -100,7 +100,7 @@ public class OdsOrganisationMapping
     {
         foreach (var trudOrganisation in trudOrganisations.Where(x => x.RelationshipsRoot?.Relationship?.Count > 0))
         {
-            foreach (var trudRelationship in trudOrganisation.RelationshipsRoot.Relationship.Where(x => string.Equals(TrudCodeSystemKeys.ActiveStatus, x.Status.Value)))
+            foreach (var trudRelationship in trudOrganisation.RelationshipsRoot.Relationship)
             {
                 var parentOrgId = trudRelationship.Target.OrgId.Extension;
                 if (!mappedOrganisations.TryGetValue(parentOrgId, out _))
@@ -117,6 +117,10 @@ public class OdsOrganisationMapping
                     RelationshipTypeId = trudRelationship.Id,
                     OwnerOrganisationId = parentOrgId,
                     TargetOrganisationId = trudOrganisation.OrgId.Extension,
+                    IsActive = string.Equals(
+                        trudRelationship.Status.Value,
+                        TrudCodeSystemKeys.ActiveStatus,
+                        StringComparison.OrdinalIgnoreCase),
                 };
 
                 yield return relationship;
@@ -126,19 +130,17 @@ public class OdsOrganisationMapping
 
     private static IEnumerable<OrganisationRole> MapOrganisationRoles(IEnumerable<Organisation> trudOrganisations)
     {
-        foreach (var trudOrganisation in trudOrganisations.Where(x => x.RolesRoot?.Roles?.Count > 0))
+        return from trudOrganisation in trudOrganisations.Where(x => x.RolesRoot?.Roles?.Count > 0) from role in trudOrganisation.RolesRoot.Roles select new OrganisationRole()
         {
-            foreach (var role in trudOrganisation.RolesRoot.Roles)
-            {
-                yield return new()
-                {
-                    Id = role.UniqueRoleId,
-                    RoleId = role.Id,
-                    OrganisationId = trudOrganisation.OrgId.Extension,
-                    IsPrimaryRole = role.PrimaryRole
-                };
-            }
-        }
+            Id = role.UniqueRoleId,
+            RoleId = role.Id,
+            OrganisationId = trudOrganisation.OrgId.Extension,
+            IsPrimaryRole = role.PrimaryRole,
+            IsActive = string.Equals(
+                role.Status.Value,
+                TrudCodeSystemKeys.ActiveStatus,
+                StringComparison.OrdinalIgnoreCase),
+        };
     }
 
     private static IEnumerable<T> MapCodeSystemTo<T>(OrgRefData trudData, string key)

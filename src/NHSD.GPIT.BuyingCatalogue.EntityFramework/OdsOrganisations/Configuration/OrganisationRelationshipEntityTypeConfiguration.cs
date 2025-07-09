@@ -24,6 +24,9 @@ public class OrganisationRelationshipEntityTypeConfiguration : IEntityTypeConfig
             .WithMany(x => x.Parents)
             .HasForeignKey(x => x.TargetOrganisationId);
 
+        builder.Property(x => x.IsActive)
+            .IsRequired();
+
         builder.HasIndex(x => new { x.RelationshipTypeId, x.OwnerOrganisationId, x.TargetOrganisationId })
             .HasDatabaseName("IX_RelationshipType_TargetOwnerOrganisationId")
             .IsClustered(false);

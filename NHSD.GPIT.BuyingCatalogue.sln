@@ -66,7 +66,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHSD.GPIT.BuyingCatalogue.R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyingCatalogueFunction", "src\BuyingCatalogueFunction\BuyingCatalogueFunction.csproj", "{62162806-6B06-413F-A050-D44C0C96EA4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyingCatalogueFunctionTests", "tests\BuyingCatalogueFunctionTests\BuyingCatalogueFunctionTests.csproj", "{89FBB38C-4D4C-4E21-B578-6FA6A60F7F14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyingCatalogueFunctionUnitTests", "tests\BuyingCatalogueFunctionUnitTests\BuyingCatalogueFunctionUnitTests.csproj", "{89FBB38C-4D4C-4E21-B578-6FA6A60F7F14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
