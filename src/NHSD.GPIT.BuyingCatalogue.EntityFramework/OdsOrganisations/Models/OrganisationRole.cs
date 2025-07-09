@@ -22,6 +22,8 @@ public class OrganisationRole
 
     public bool IsPrimaryRole { get; set; }
 
+    public bool IsActive { get; set; }
+
     public virtual OdsOrganisation Organisation { get; set; }
 
     public virtual RoleType RoleType { get; set; }
