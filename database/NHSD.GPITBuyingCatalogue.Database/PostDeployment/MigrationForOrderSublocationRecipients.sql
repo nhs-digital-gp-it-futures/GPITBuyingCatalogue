@@ -2,8 +2,10 @@ BEGIN TRANSACTION
 
 DECLARE @OrderSublocationIsCommissionedBy VARCHAR(3)
 DECLARE @OrderSublocationIsLocatedInTheGeographyOf VARCHAR(3)
+DECLARE @IcbSublocationRole VARCHAR(10)
 SET @OrderSublocationIsCommissionedBy = 'RE4'
 SET @OrderSublocationIsLocatedInTheGeographyOf = 'RE5'
+SET @IcbSublocationRole = 'RO319'
 
 INSERT INTO [GPITBuyingCatalogue].[ordering].[OrderSublocations]
     ([OrderId], [SublocationOdsCode], [OwnerOdsCode])
@@ -17,6 +19,30 @@ WHERE [rel].[RelationshipTypeId] = @OrderSublocationIsCommissionedBy
     AND [rel2].[RelationshipTypeId] = @OrderSublocationIsLocatedInTheGeographyOf
     AND [rel].[IsActive] = 1
     AND [rel2].[IsActive] = 1;
+
+INSERT INTO [GPITBuyingCatalogue].[ordering].[OrderSublocations]
+    ([OrderId], [SublocationOdsCode], [OwnerOdsCode])
+SELECT DISTINCT
+    [or].[OrderId],
+    [or].[OdsCode] AS [SublocationOdsCode],
+    [rel2].[OwnerOrganisationId] AS [OwnerOdsCode]
+FROM
+    [GPITBuyingCatalogue].[ordering].[OrderRecipients] [or]
+    JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRoles] [role]
+    ON [or].[OdsCode] = [role].[OrganisationId]
+    JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel2]
+    ON [or].[OdsCode] = [rel2].[TargetOrganisationId]
+WHERE 
+    [role].[RoleId] = @IcbSublocationRole
+    AND [rel2].[RelationshipTypeId] = @OrderSublocationIsLocatedInTheGeographyOf
+    AND [role].[IsActive] = 1
+    AND [rel2].[IsActive] = 1
+    AND NOT EXISTS (
+        SELECT 1
+    FROM [GPITBuyingCatalogue].[ordering].[OrderSublocations] [os]
+    WHERE [os].[OrderId] = [or].[OrderId]
+        AND [os].[SublocationOdsCode] = [or].[OdsCode]
+    );
 
 INSERT INTO [GPITBuyingCatalogue].[ordering].[OrderSublocationRecipients]
     ([OrderId], [ParentSublocationOdsCode], [RecipientOdsCode])
