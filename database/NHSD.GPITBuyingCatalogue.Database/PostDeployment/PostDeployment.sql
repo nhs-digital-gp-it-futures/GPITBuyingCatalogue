@@ -70,4 +70,3 @@
 :r ./TestData/InsertWorkOffPlans.sql
 
 :r ./MigrationForCompetitionSublocationRecipients.sql
-:r ./MigrationForOrderSublocationRecipients.sql
