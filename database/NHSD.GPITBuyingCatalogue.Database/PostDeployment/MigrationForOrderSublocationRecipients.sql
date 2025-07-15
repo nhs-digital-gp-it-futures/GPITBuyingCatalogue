@@ -32,17 +32,16 @@ FROM
     ON [or].[OdsCode] = [role].[OrganisationId]
     JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel2]
     ON [or].[OdsCode] = [rel2].[TargetOrganisationId]
-WHERE 
-    [role].[RoleId] = @IcbSublocationRole
+WHERE [role].[RoleId] = @IcbSublocationRole
     AND [rel2].[RelationshipTypeId] = @OrderSublocationIsLocatedInTheGeographyOf
     AND [role].[IsActive] = 1
     AND [rel2].[IsActive] = 1
     AND NOT EXISTS (
-        SELECT 1
+ SELECT 1
     FROM [GPITBuyingCatalogue].[ordering].[OrderSublocations] [os]
     WHERE [os].[OrderId] = [or].[OrderId]
         AND [os].[SublocationOdsCode] = [or].[OdsCode]
-    );
+ );
 
 INSERT INTO [GPITBuyingCatalogue].[ordering].[OrderSublocationRecipients]
     ([OrderId], [ParentSublocationOdsCode], [RecipientOdsCode])
