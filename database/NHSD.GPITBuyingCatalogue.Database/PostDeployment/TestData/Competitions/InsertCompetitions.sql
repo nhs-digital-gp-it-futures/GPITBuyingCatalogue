@@ -103,578 +103,592 @@ BEGIN
     INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (12, N'10052-002', 0, N'Test data')
     INSERT [competitions].[CompetitionSolutions] ([CompetitionId], [SolutionId], [IsShortlisted], [Justification]) VALUES (12, N'99999-89', 1, NULL)
 
+    BEGIN -- Sublocations
+        INSERT INTO 
+            [competitions].[CompetitionSublocations] ([CompetitionId], [SublocationOdsCode], [RecipientOdsCode]) 
+            VALUES (5, '02T', 'QWO'),
+                (5,	'03R', 'QWO'),
+                (5,	'15F', 'QWO'),
+                (5,	'36J', 'QWO'),
+                (5,	'X2C4Y', 'QWO'),
+                (6,	'02T', 'QWO'),
+                (7,	'03R', 'QWO'),
+                (8,	'36J', 'QWO'),
+                (9,	'03R', 'QWO'),
+                (10, '03R', 'QWO'),
+                (11, '03R',	'QWO'),
+                (12, '03R',	'QWO')
+    END
+    
+
     BEGIN -- Service Recipients
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'A99905')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'A99930')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'A99973')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B82007')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B82053')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83002')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83005')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83008')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83009')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83010')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83012')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83014')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83015')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83016')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83017')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83018')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83019')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83022')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83023')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83026')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83028')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83029')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83030')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83031')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83032')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83033')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83034')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83035')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83037')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83038')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83039')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83041')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83042')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83045')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83051')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83052')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83054')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83055')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83056')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83058')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83062')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83063')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83064')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83067')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83602')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83604')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83611')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83614')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83617')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83620')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83621')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83622')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83624')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83626')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83627')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83628')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83629')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83641')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83642')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83653')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83657')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83659')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83660')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83661')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83662')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83666')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83667')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B83699')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84001')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84004')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84005')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84006')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84007')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84008')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84009')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84010')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84011')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84012')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84013')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84014')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84016')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84019')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84612')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84613')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84618')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B84623')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85001')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85002')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85004')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85005')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85006')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85008')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85009')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85010')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85012')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85014')
-
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85015')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85016')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85018')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85019')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85022')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85023')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85024')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85026')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85027')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85028')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85030')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85031')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85032')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85033')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85036')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85037')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85038')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85041')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85042')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85048')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85051')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85054')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85055')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85058')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85059')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85060')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85061')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85062')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85606')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85610')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85611')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85612')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85614')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85619')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85620')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85622')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85623')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85634')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85636')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85640')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85641')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85645')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85646')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85650')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85652')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85655')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85657')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85658')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85659')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B85660')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86001')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86002')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86004')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86005')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86006')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86007')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86008')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86009')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86010')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86011')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86012')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86013')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86014')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86015')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86016')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86017')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86018')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86019')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86022')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86024')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86028')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86029')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86030')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86032')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86033')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86034')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86035')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86036')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86038')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86039')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86041')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86042')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86043')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86048')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86049')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86050')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86051')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86052')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86054')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86055')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86056')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86057')
-
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86058')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86059')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86060')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86061')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86062')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86064')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86066')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86067')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86068')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86069')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86070')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86071')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86075')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86081')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86086')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86089')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86092')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86093')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86094')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86096')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86100')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86101')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86103')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86104')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86106')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86108')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86109')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86110')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86623')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86625')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86642')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86643')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86648')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86654')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86655')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86658')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86666')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86667')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86669')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86672')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86673')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86675')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86678')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86681')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B86685')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87001')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87002')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87004')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87005')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87006')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87007')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87008')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87009')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87011')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87012')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87013')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87015')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87016')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87017')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87018')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87019')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87022')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87026')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87027')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87028')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87030')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87031')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87032')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87033')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87036')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87039')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87041')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87042')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87600')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87602')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87604')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'B87616')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00081')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00084')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00100')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00167')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00226')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00227')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00262')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00291')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00329')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00442')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00554')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00556')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00629')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00630')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00631')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00635')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00670')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00693')
-
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00698')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00704')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00819')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00820')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00835')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00839')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00840')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00848')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y00896')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01069')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01118')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01126')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01141')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01231')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01616')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01728')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01775')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01882')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01885')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01909')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01912')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01952')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y01953')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02002')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02041')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02189')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02288')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02333')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02339')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02459')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02494')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02509')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02572')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02643')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02645')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02655')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02731')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y02738')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03012')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03013')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03190')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03267')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03268')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03322')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03391')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03418')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03554')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03561')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03564')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03604')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03655')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03709')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03777')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03889')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y03892')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04083')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04099')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04100')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04113')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04166')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04174')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04203')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04204')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04205')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04266')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04346')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04347')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04348')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04349')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04350')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04351')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04352')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04377')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04378')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04391')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04392')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04393')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04394')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04482')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04567')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04572')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04703')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04706')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04714')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04885')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04899')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y04918')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05001')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05018')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05027')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05094')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05147')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05180')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05216')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05221')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05305')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05306')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05371')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05397')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05398')
-
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05404')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05409')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05483')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05484')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05620')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05623')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05737')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05740')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05776')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05777')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05793')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05798')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05799')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05800')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05801')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05802')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05803')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05805')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05806')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05807')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05808')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05809')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05811')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05812')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05819')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05823')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05863')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05864')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05875')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05903')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05959')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05974')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05992')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05993')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y05999')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06097')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06098')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06102')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06109')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06110')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06111')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06140')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06272')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06362')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06429')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06477')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06483')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06490')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06491')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06492')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06493')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06504')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06506')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06517')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06608')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06624')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06625')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06659')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06716')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06722')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06735')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06737')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06768')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06801')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06862')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06876')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06896')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06939')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06940')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06941')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06946')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y06992')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07036')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07122')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07123')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07199')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07201')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07206')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07207')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07208')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07225')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07271')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07272')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07275')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07306')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07460')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07470')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07692')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07718')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (5, N'Y07789')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'A99930')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84001')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84004')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84005')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84006')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84007')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84008')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84009')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84010')
-
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84011')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84012')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84013')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84014')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84016')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84019')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84612')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84613')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84618')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'B84623')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y00262')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y01882')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y02572')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y02645')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y02655')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y03418')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y03655')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y04885')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y05620')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y05740')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y06490')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y06491')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y06492')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y06493')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (6, N'Y06896')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (7, N'B87003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (7, N'B87020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (7, N'B87021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (7, N'B87025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (7, N'B87044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (7, N'Y01953')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'A99905')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'B83062')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'B83620')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'B83641')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'Y04346')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'Y04347')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'Y05798')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'Y05799')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'Y06862')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (8, N'Y07199')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'B87003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'B87020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'B87021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'B87025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'B87044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (9, N'Y01953')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'B87003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'B87020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'B87021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'B87025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'B87044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (10, N'Y01953')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'B87003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'B87020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'B87021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'B87025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'B87044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (11, N'Y01953')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'B87003')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'B87020')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'B87021')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'B87025')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'B87044')
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [OdsCode]) VALUES (12, N'Y01953')
+        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [ParentSublocationOdsCode], [RecipientOdsCode]) VALUES 
+        (5,'36J','A99905'),
+        (5,'02T','A99930'),
+        (5,'36J','A99973'),
+        (5,'36J','B82007'),
+        (5,'36J','B82053'),
+        (5,'36J','B83002'),
+        (5,'36J','B83005'),
+        (5,'36J','B83008'),
+        (5,'36J','B83009'),
+        (5,'36J','B83010'),
+        (5,'36J','B83012'),
+        (5,'36J','B83014'),
+        (5,'36J','B83015'),
+        (5,'36J','B83016'),
+        (5,'36J','B83017'),
+        (5,'36J','B83018'),
+        (5,'36J','B83019'),
+        (5,'36J','B83020'),
+        (5,'36J','B83022'),
+        (5,'36J','B83023'),
+        (5,'36J','B83025'),
+        (5,'36J','B83026'),
+        (5,'36J','B83028'),
+        (5,'36J','B83029'),
+        (5,'36J','B83030'),
+        (5,'36J','B83031'),
+        (5,'36J','B83032'),
+        (5,'36J','B83033'),
+        (5,'36J','B83034'),
+        (5,'36J','B83035'),
+        (5,'36J','B83037'),
+        (5,'36J','B83038'),
+        (5,'36J','B83039'),
+        (5,'36J','B83041'),
+        (5,'36J','B83042'),
+        (5,'36J','B83045'),
+        (5,'36J','B83051'),
+        (5,'36J','B83052'),
+        (5,'36J','B83054'),
+        (5,'36J','B83055'),
+        (5,'36J','B83056'),
+        (5,'36J','B83058'),
+        (5,'36J','B83062'),
+        (5,'36J','B83063'),
+        (5,'36J','B83064'),
+        (5,'36J','B83067'),
+        (5,'36J','B83602'),
+        (5,'36J','B83604'),
+        (5,'36J','B83611'),
+        (5,'36J','B83614'),
+        (5,'36J','B83617'),
+        (5,'36J','B83620'),
+        (5,'36J','B83621'),
+        (5,'36J','B83622'),
+        (5,'36J','B83624'),
+        (5,'36J','B83626'),
+        (5,'36J','B83627'),
+        (5,'36J','B83628'),
+        (5,'36J','B83629'),
+        (5,'36J','B83641'),
+        (5,'36J','B83642'),
+        (5,'36J','B83653'),
+        (5,'36J','B83657'),
+        (5,'36J','B83659'),
+        (5,'36J','B83660'),
+        (5,'36J','B83661'),
+        (5,'36J','B83662'),
+        (5,'36J','B83666'),
+        (5,'36J','B83667'),
+        (5,'36J','B83699'),
+        (5,'02T','B84001'),
+        (5,'02T','B84003'),
+        (5,'02T','B84004'),
+        (5,'02T','B84005'),
+        (5,'02T','B84006'),
+        (5,'02T','B84007'),
+        (5,'02T','B84008'),
+        (5,'02T','B84009'),
+        (5,'02T','B84010'),
+        (5,'02T','B84011'),
+        (5,'02T','B84012'),
+        (5,'02T','B84013'),
+        (5,'02T','B84014'),
+        (5,'02T','B84016'),
+        (5,'02T','B84019'),
+        (5,'02T','B84021'),
+        (5,'02T','B84612'),
+        (5,'02T','B84613'),
+        (5,'02T','B84618'),
+        (5,'02T','B84623'),
+        (5,'X2C4Y','B85001'),
+        (5,'X2C4Y','B85002'),
+        (5,'X2C4Y','B85004'),
+        (5,'X2C4Y','B85005'),
+        (5,'X2C4Y','B85006'),
+        (5,'X2C4Y','B85008'),
+        (5,'X2C4Y','B85009'),
+        (5,'X2C4Y','B85010'),
+        (5,'X2C4Y','B85012'),
+        (5,'X2C4Y','B85014'),
+        (5,'X2C4Y','B85015'),
+        (5,'X2C4Y','B85016'),
+        (5,'X2C4Y','B85018'),
+        (5,'X2C4Y','B85019'),
+        (5,'X2C4Y','B85020'),
+        (5,'X2C4Y','B85021'),
+        (5,'X2C4Y','B85022'),
+        (5,'X2C4Y','B85023'),
+        (5,'X2C4Y','B85024'),
+        (5,'X2C4Y','B85025'),
+        (5,'X2C4Y','B85026'),
+        (5,'X2C4Y','B85027'),
+        (5,'X2C4Y','B85028'),
+        (5,'X2C4Y','B85030'),
+        (5,'X2C4Y','B85031'),
+        (5,'X2C4Y','B85032'),
+        (5,'X2C4Y','B85033'),
+        (5,'X2C4Y','B85036'),
+        (5,'X2C4Y','B85037'),
+        (5,'X2C4Y','B85038'),
+        (5,'X2C4Y','B85041'),
+        (5,'X2C4Y','B85042'),
+        (5,'X2C4Y','B85044'),
+        (5,'X2C4Y','B85048'),
+        (5,'X2C4Y','B85051'),
+        (5,'X2C4Y','B85054'),
+        (5,'X2C4Y','B85055'),
+        (5,'X2C4Y','B85058'),
+        (5,'X2C4Y','B85059'),
+        (5,'X2C4Y','B85060'),
+        (5,'X2C4Y','B85061'),
+        (5,'X2C4Y','B85062'),
+        (5,'X2C4Y','B85606'),
+        (5,'X2C4Y','B85610'),
+        (5,'X2C4Y','B85611'),
+        (5,'X2C4Y','B85612'),
+        (5,'X2C4Y','B85614'),
+        (5,'X2C4Y','B85619'),
+        (5,'X2C4Y','B85620'),
+        (5,'X2C4Y','B85622'),
+        (5,'X2C4Y','B85623'),
+        (5,'X2C4Y','B85634'),
+        (5,'X2C4Y','B85636'),
+        (5,'X2C4Y','B85640'),
+        (5,'X2C4Y','B85641'),
+        (5,'X2C4Y','B85645'),
+        (5,'X2C4Y','B85646'),
+        (5,'X2C4Y','B85650'),
+        (5,'X2C4Y','B85652'),
+        (5,'X2C4Y','B85655'),
+        (5,'X2C4Y','B85657'),
+        (5,'X2C4Y','B85658'),
+        (5,'X2C4Y','B85659'),
+        (5,'X2C4Y','B85660'),
+        (5,'15F','B86001'),
+        (5,'15F','B86002'),
+        (5,'15F','B86003'),
+        (5,'15F','B86004'),
+        (5,'15F','B86005'),
+        (5,'15F','B86006'),
+        (5,'15F','B86007'),
+        (5,'15F','B86008'),
+        (5,'15F','B86009'),
+        (5,'15F','B86010'),
+        (5,'15F','B86011'),
+        (5,'15F','B86012'),
+        (5,'15F','B86013'),
+        (5,'15F','B86014'),
+        (5,'15F','B86015'),
+        (5,'15F','B86016'),
+        (5,'15F','B86017'),
+        (5,'15F','B86018'),
+        (5,'15F','B86019'),
+        (5,'15F','B86020'),
+        (5,'15F','B86022'),
+        (5,'15F','B86024'),
+        (5,'15F','B86025'),
+        (5,'15F','B86028'),
+        (5,'15F','B86029'),
+        (5,'15F','B86030'),
+        (5,'15F','B86032'),
+        (5,'15F','B86033'),
+        (5,'15F','B86034'),
+        (5,'15F','B86035'),
+        (5,'15F','B86036'),
+        (5,'15F','B86038'),
+        (5,'15F','B86039'),
+        (5,'15F','B86041'),
+        (5,'15F','B86042'),
+        (5,'15F','B86043'),
+        (5,'15F','B86044'),
+        (5,'15F','B86048'),
+        (5,'15F','B86049'),
+        (5,'15F','B86050'),
+        (5,'15F','B86051'),
+        (5,'15F','B86052'),
+        (5,'15F','B86054'),
+        (5,'15F','B86055'),
+        (5,'15F','B86056'),
+        (5,'15F','B86057'),
+        (5,'15F','B86058'),
+        (5,'15F','B86059'),
+        (5,'15F','B86060'),
+        (5,'15F','B86061'),
+        (5,'15F','B86062'),
+        (5,'15F','B86064'),
+        (5,'15F','B86066'),
+        (5,'15F','B86067'),
+        (5,'15F','B86068'),
+        (5,'15F','B86069'),
+        (5,'15F','B86070'),
+        (5,'15F','B86071'),
+        (5,'15F','B86075'),
+        (5,'15F','B86081'),
+        (5,'15F','B86086'),
+        (5,'15F','B86089'),
+        (5,'15F','B86092'),
+        (5,'15F','B86093'),
+        (5,'15F','B86094'),
+        (5,'15F','B86096'),
+        (5,'15F','B86100'),
+        (5,'15F','B86101'),
+        (5,'15F','B86103'),
+        (5,'15F','B86104'),
+        (5,'15F','B86106'),
+        (5,'15F','B86108'),
+        (5,'15F','B86109'),
+        (5,'15F','B86110'),
+        (5,'15F','B86623'),
+        (5,'15F','B86625'),
+        (5,'15F','B86642'),
+        (5,'15F','B86643'),
+        (5,'15F','B86648'),
+        (5,'15F','B86654'),
+        (5,'15F','B86655'),
+        (5,'15F','B86658'),
+        (5,'15F','B86666'),
+        (5,'15F','B86667'),
+        (5,'15F','B86669'),
+        (5,'15F','B86672'),
+        (5,'15F','B86673'),
+        (5,'15F','B86675'),
+        (5,'15F','B86678'),
+        (5,'15F','B86681'),
+        (5,'15F','B86685'),
+        (5,'03R','B87001'),
+        (5,'03R','B87002'),
+        (5,'03R','B87003'),
+        (5,'03R','B87004'),
+        (5,'03R','B87005'),
+        (5,'03R','B87006'),
+        (5,'03R','B87007'),
+        (5,'03R','B87008'),
+        (5,'03R','B87009'),
+        (5,'03R','B87011'),
+        (5,'03R','B87012'),
+        (5,'03R','B87013'),
+        (5,'03R','B87015'),
+        (5,'03R','B87016'),
+        (5,'03R','B87017'),
+        (5,'03R','B87018'),
+        (5,'03R','B87019'),
+        (5,'03R','B87020'),
+        (5,'03R','B87021'),
+        (5,'03R','B87022'),
+        (5,'03R','B87025'),
+        (5,'03R','B87026'),
+        (5,'03R','B87027'),
+        (5,'03R','B87028'),
+        (5,'03R','B87030'),
+        (5,'03R','B87031'),
+        (5,'03R','B87032'),
+        (5,'03R','B87033'),
+        (5,'03R','B87036'),
+        (5,'03R','B87039'),
+        (5,'03R','B87041'),
+        (5,'03R','B87042'),
+        (5,'03R','B87044'),
+        (5,'03R','B87600'),
+        (5,'03R','B87602'),
+        (5,'03R','B87604'),
+        (5,'03R','B87616'),
+        (5,'X2C4Y','Y00081'),
+        (5,'03R','Y00084'),
+        (5,'36J','Y00100'),
+        (5,'36J','Y00167'),
+        (5,'36J','Y00226'),
+        (5,'36J','Y00227'),
+        (5,'02T','Y00262'),
+        (5,'15F','Y00291'),
+        (5,'15F','Y00329'),
+        (5,'15F','Y00442'),
+        (5,'15F','Y00554'),
+        (5,'15F','Y00556'),
+        (5,'36J','Y00629'),
+        (5,'36J','Y00630'),
+        (5,'36J','Y00631'),
+        (5,'36J','Y00635'),
+        (5,'36J','Y00670'),
+        (5,'15F','Y00693'),
+        (5,'36J','Y00698'),
+        (5,'36J','Y00704'),
+        (5,'36J','Y00819'),
+        (5,'36J','Y00820'),
+        (5,'15F','Y00835'),
+        (5,'15F','Y00839'),
+        (5,'15F','Y00840'),
+        (5,'15F','Y00848'),
+        (5,'36J','Y00896'),
+        (5,'03R','Y01069'),
+        (5,'36J','Y01118'),
+        (5,'36J','Y01126'),
+        (5,'15F','Y01141'),
+        (5,'15F','Y01231'),
+        (5,'15F','Y01616'),
+        (5,'36J','Y01728'),
+        (5,'X2C4Y','Y01775'),
+        (5,'02T','Y01882'),
+        (5,'36J','Y01885'),
+        (5,'X2C4Y','Y01909'),
+        (5,'15F','Y01912'),
+        (5,'X2C4Y','Y01952'),
+        (5,'03R','Y01953'),
+        (5,'15F','Y02002'),
+        (5,'15F','Y02041'),
+        (5,'15F','Y02189'),
+        (5,'15F','Y02288'),
+        (5,'15F','Y02333'),
+        (5,'15F','Y02339'),
+        (5,'15F','Y02459'),
+        (5,'15F','Y02494'),
+        (5,'03R','Y02509'),
+        (5,'02T','Y02572'),
+        (5,'X2C4Y','Y02643'),
+        (5,'02T','Y02645'),
+        (5,'02T','Y02655'),
+        (5,'03R','Y02731'),
+        (5,'36J','Y02738'),
+        (5,'X2C4Y','Y03012'),
+        (5,'X2C4Y','Y03013'),
+        (5,'36J','Y03190'),
+        (5,'X2C4Y','Y03267'),
+        (5,'X2C4Y','Y03268'),
+        (5,'15F','Y03322'),
+        (5,'36J','Y03391'),
+        (5,'02T','Y03418'),
+        (5,'15F','Y03554'),
+        (5,'15F','Y03561'),
+        (5,'15F','Y03564'),
+        (5,'03R','Y03604'),
+        (5,'02T','Y03655'),
+        (5,'X2C4Y','Y03709'),
+        (5,'X2C4Y','Y03777'),
+        (5,'15F','Y03889'),
+        (5,'15F','Y03892'),
+        (5,'03R','Y04083'),
+        (5,'36J','Y04099'),
+        (5,'36J','Y04100'),
+        (5,'03R','Y04113'),
+        (5,'15F','Y04166'),
+        (5,'36J','Y04174'),
+        (5,'15F','Y04203'),
+        (5,'15F','Y04204'),
+        (5,'15F','Y04205'),
+        (5,'X2C4Y','Y04266'),
+        (5,'36J','Y04346'),
+        (5,'36J','Y04347'),
+        (5,'36J','Y04348'),
+        (5,'36J','Y04349'),
+        (5,'36J','Y04350'),
+        (5,'36J','Y04351'),
+        (5,'36J','Y04352'),
+        (5,'15F','Y04377'),
+        (5,'36J','Y04378'),
+        (5,'36J','Y04391'),
+        (5,'36J','Y04392'),
+        (5,'36J','Y04393'),
+        (5,'36J','Y04394'),
+        (5,'15F','Y04482'),
+        (5,'15F','Y04567'),
+        (5,'15F','Y04572'),
+        (5,'X2C4Y','Y04703'),
+        (5,'15F','Y04706'),
+        (5,'X2C4Y','Y04714'),
+        (5,'02T','Y04885'),
+        (5,'36J','Y04899'),
+        (5,'X2C4Y','Y04918'),
+        (5,'X2C4Y','Y05001'),
+        (5,'15F','Y05018'),
+        (5,'15F','Y05027'),
+        (5,'36J','Y05094'),
+        (5,'15F','Y05147'),
+        (5,'36J','Y05180'),
+        (5,'15F','Y05216'),
+        (5,'15F','Y05221'),
+        (5,'03R','Y05305'),
+        (5,'03R','Y05306'),
+        (5,'X2C4Y','Y05371'),
+        (5,'36J','Y05397'),
+        (5,'36J','Y05398'),
+        (5,'15F','Y05404'),
+        (5,'03R','Y05409'),
+        (5,'36J','Y05483'),
+        (5,'36J','Y05484'),
+        (5,'02T','Y05620'),
+        (5,'15F','Y05623'),
+        (5,'03R','Y05737'),
+        (5,'02T','Y05740'),
+        (5,'36J','Y05776'),
+        (5,'15F','Y05777'),
+        (5,'15F','Y05793'),
+        (5,'36J','Y05798'),
+        (5,'36J','Y05799'),
+        (5,'36J','Y05800'),
+        (5,'36J','Y05801'),
+        (5,'36J','Y05802'),
+        (5,'36J','Y05803'),
+        (5,'15F','Y05805'),
+        (5,'36J','Y05806'),
+        (5,'36J','Y05807'),
+        (5,'36J','Y05808'),
+        (5,'36J','Y05809'),
+        (5,'36J','Y05811'),
+        (5,'36J','Y05812'),
+        (5,'03R','Y05819'),
+        (5,'36J','Y05823'),
+        (5,'15F','Y05863'),
+        (5,'15F','Y05864'),
+        (5,'36J','Y05875'),
+        (5,'36J','Y05903'),
+        (5,'03R','Y05959'),
+        (5,'X2C4Y','Y05974'),
+        (5,'15F','Y05992'),
+        (5,'15F','Y05993'),
+        (5,'15F','Y05999'),
+        (5,'15F','Y06097'),
+        (5,'15F','Y06098'),
+        (5,'15F','Y06102'),
+        (5,'15F','Y06109'),
+        (5,'15F','Y06110'),
+        (5,'15F','Y06111'),
+        (5,'36J','Y06140'),
+        (5,'15F','Y06272'),
+        (5,'X2C4Y','Y06362'),
+        (5,'36J','Y06429'),
+        (5,'03R','Y06477'),
+        (5,'X2C4Y','Y06483'),
+        (5,'02T','Y06490'),
+        (5,'02T','Y06491'),
+        (5,'02T','Y06492'),
+        (5,'02T','Y06493'),
+        (5,'15F','Y06504'),
+        (5,'X2C4Y','Y06506'),
+        (5,'36J','Y06517'),
+        (5,'36J','Y06608'),
+        (5,'03R','Y06624'),
+        (5,'03R','Y06625'),
+        (5,'X2C4Y','Y06659'),
+        (5,'03R','Y06716'),
+        (5,'36J','Y06722'),
+        (5,'15F','Y06735'),
+        (5,'36J','Y06737'),
+        (5,'15F','Y06768'),
+        (5,'X2C4Y','Y06801'),
+        (5,'36J','Y06862'),
+        (5,'15F','Y06876'),
+        (5,'02T','Y06896'),
+        (5,'15F','Y06939'),
+        (5,'15F','Y06940'),
+        (5,'15F','Y06941'),
+        (5,'03R','Y06946'),
+        (5,'36J','Y06992'),
+        (5,'15F','Y07036'),
+        (5,'03R','Y07122'),
+        (5,'15F','Y07123'),
+        (5,'36J','Y07199'),
+        (5,'X2C4Y','Y07201'),
+        (5,'X2C4Y','Y07206'),
+        (5,'X2C4Y','Y07207'),
+        (5,'X2C4Y','Y07208'),
+        (5,'36J','Y07225'),
+        (5,'X2C4Y','Y07271'),
+        (5,'15F','Y07272'),
+        (5,'X2C4Y','Y07275'),
+        (5,'36J','Y07306'),
+        (5,'X2C4Y','Y07460'),
+        (5,'15F','Y07470'),
+        (5,'15F','Y07692'),
+        (5,'15F','Y07718'),
+        (5,'15F','Y07789'),
+        (6,'02T','A99930'),
+        (6,'02T','B84001'),
+        (6,'02T','B84003'),
+        (6,'02T','B84004'),
+        (6,'02T','B84005'),
+        (6,'02T','B84006'),
+        (6,'02T','B84007'),
+        (6,'02T','B84008'),
+        (6,'02T','B84009'),
+        (6,'02T','B84010'),
+        (6,'02T','B84011'),
+        (6,'02T','B84012'),
+        (6,'02T','B84013'),
+        (6,'02T','B84014'),
+        (6,'02T','B84016'),
+        (6,'02T','B84019'),
+        (6,'02T','B84021'),
+        (6,'02T','B84612'),
+        (6,'02T','B84613'),
+        (6,'02T','B84618'),
+        (6,'02T','B84623'),
+        (6,'02T','Y00262'),
+        (6,'02T','Y01882'),
+        (6,'02T','Y02572'),
+        (6,'02T','Y02645'),
+        (6,'02T','Y02655'),
+        (6,'02T','Y03418'),
+        (6,'02T','Y03655'),
+        (6,'02T','Y04885'),
+        (6,'02T','Y05620'),
+        (6,'02T','Y05740'),
+        (6,'02T','Y06490'),
+        (6,'02T','Y06491'),
+        (6,'02T','Y06492'),
+        (6,'02T','Y06493'),
+        (6,'02T','Y06896'),
+        (7,'03R','B87003'),
+        (7,'03R','B87020'),
+        (7,'03R','B87021'),
+        (7,'03R','B87025'),
+        (7,'03R','B87044'),
+        (7,'03R','Y01953'),
+        (8,'36J','A99905'),
+        (8,'36J','B83062'),
+        (8,'36J','B83620'),
+        (8,'36J','B83641'),
+        (8,'36J','Y04346'),
+        (8,'36J','Y04347'),
+        (8,'36J','Y05798'),
+        (8,'36J','Y05799'),
+        (8,'36J','Y06862'),
+        (8,'36J','Y07199'),
+        (9,'03R','B87003'),
+        (9,'03R','B87020'),
+        (9,'03R','B87021'),
+        (9,'03R','B87025'),
+        (9,'03R','B87044'),
+        (9,'03R','Y01953'),
+        (10,'03R','B87003'),
+        (10,'03R','B87020'),
+        (10,'03R','B87021'),
+        (10,'03R','B87025'),
+        (10,'03R','B87044'),
+        (10,'03R','Y01953'),
+        (11,'03R','B87003'),
+        (11,'03R','B87020'),
+        (11,'03R','B87021'),
+        (11,'03R','B87025'),
+        (11,'03R','B87044'),
+        (11,'03R','Y01953'),
+        (12,'03R','B87003'),
+        (12,'03R','B87020'),
+        (12,'03R','B87021'),
+        (12,'03R','B87025'),
+        (12,'03R','B87044'),
+        (12,'03R','Y01953')
     END
 
     INSERT [competitions].[SolutionServices] ([CompetitionId], [SolutionId], [ServiceId], [IsRequired]) VALUES (1, N'10000-001', N'10000-001A003', 1)

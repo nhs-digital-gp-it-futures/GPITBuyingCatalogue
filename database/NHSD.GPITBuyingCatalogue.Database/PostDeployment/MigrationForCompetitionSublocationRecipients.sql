@@ -20,7 +20,7 @@ WHERE [rel].[RelationshipTypeId] = @CompetitionSublocationIsCommissionedBy
 
 INSERT INTO [GPITBuyingCatalogue].[competitions].[CompetitionSublocationRecipients]
     ([CompetitionId], [ParentSublocationOdsCode], [RecipientOdsCode])
-SELECT [cr].[CompetitionId], [cr].[OdsCode] AS [RecipientOdsCode], [rel].[OwnerOrganisationId] AS [ParentSublocationOdsCode]
+SELECT [cr].[CompetitionId], [rel].[OwnerOrganisationId] AS [ParentSublocationOdsCode], [cr].[OdsCode] AS [RecipientOdsCode]
 FROM [GPITBuyingCatalogue].[competitions].[CompetitionRecipients] [cr]
     JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel]
     ON [cr].[OdsCode] = [rel].[TargetOrganisationId]
