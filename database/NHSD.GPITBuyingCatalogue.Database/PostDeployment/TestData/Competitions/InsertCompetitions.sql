@@ -105,7 +105,7 @@ BEGIN
 
     BEGIN -- Sublocations
         INSERT INTO 
-            [competitions].[CompetitionSublocations] ([CompetitionId], [SublocationOdsCode], [RecipientOdsCode]) 
+            [competitions].[CompetitionSublocations] ([CompetitionId], [SublocationOdsCode], [OwnerOdsCode]) 
             VALUES (5, '02T', 'QWO'),
                 (5,	'03R', 'QWO'),
                 (5,	'15F', 'QWO'),
@@ -122,7 +122,7 @@ BEGIN
     
 
     BEGIN -- Service Recipients
-        INSERT [competitions].[CompetitionRecipients] ([CompetitionId], [ParentSublocationOdsCode], [RecipientOdsCode]) VALUES 
+        INSERT [competitions].[CompetitionSublocationRecipients] ([CompetitionId], [ParentSublocationOdsCode], [RecipientOdsCode]) VALUES 
         (5,'36J','A99905'),
         (5,'02T','A99930'),
         (5,'36J','A99973'),

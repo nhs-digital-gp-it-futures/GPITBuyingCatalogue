@@ -309,7 +309,7 @@ BEGIN
     FROM catalogue.CataloguePriceTiers
     WHERE CataloguePriceId = @CatalogueSolutionPriceId
 
-    INSERT INTO ordering.OrderSublocations (OrderId, ParentSublocationOdsCode, OwnerOdsCode)
+    INSERT INTO ordering.OrderSublocations (OrderId, SublocationOdsCode, OwnerOdsCode)
     VALUES
     (@OrderId, '02T', @OrderingPartyOdsCode),
     (@OrderId, '03R', @OrderingPartyOdsCode)
