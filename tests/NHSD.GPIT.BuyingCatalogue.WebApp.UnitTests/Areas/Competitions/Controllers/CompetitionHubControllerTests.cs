@@ -1282,6 +1282,7 @@ public static class CompetitionHubControllerTests
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
 
         var expected = new ServiceRecipientQuantityDto(
+            competitionRecipient.ParentSublocationOdsCode,
             recipientQuantity.RecipientOdsCode,
             competitionRecipient.RecipientOrganisation.Name,
             recipientQuantity.Quantity,
@@ -1318,6 +1319,7 @@ public static class CompetitionHubControllerTests
         var serviceRecipients = await controller.GetRecipientQuantities(competitionRecipients, recipientQuantities, internalOrgId);
 
         var expected = new ServiceRecipientQuantityDto(
+            competitionRecipient.ParentSublocationOdsCode,
             gpPractice.OdsCode,
             competitionRecipient.RecipientOrganisation.Name,
             gpPractice.NumberOfPatients,

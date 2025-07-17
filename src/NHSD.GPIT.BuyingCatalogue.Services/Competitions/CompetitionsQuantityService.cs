@@ -65,7 +65,12 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
 
         solution.Quantities = serviceRecipients
             .Select(x =>
-                new SolutionQuantitySublocationRecipient { RecipientOdsCode = x.OdsCode, Quantity = x.Quantity!.Value })
+                new SolutionQuantitySublocationRecipient
+                {
+                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                    RecipientOdsCode = x.RecipientOdsCode,
+                    Quantity = x.Quantity!.Value,
+                })
             .ToList();
 
         if (dbContext.ChangeTracker.HasChanges())
@@ -84,7 +89,12 @@ public class CompetitionsQuantityService : ICompetitionsQuantityService
 
         service.Quantities = serviceRecipients
             .Select(x =>
-                new ServiceQuantitySublocationRecipient { RecipientOdsCode = x.OdsCode, Quantity = x.Quantity!.Value })
+                new ServiceQuantitySublocationRecipient
+                {
+                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                    RecipientOdsCode = x.RecipientOdsCode,
+                    Quantity = x.Quantity!.Value,
+                })
             .ToList();
 
         await dbContext.SaveChangesAsync();

@@ -39,7 +39,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
 
             foreach (var serviceRecipient in srs)
             {
-                var recipient = serviceRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
+                ServiceRecipientQuantityDto recipient =
+                    serviceRecipients.First(x =>
+                        x.RecipientOdsCode == serviceRecipient.RecipientOdsCode && x.ParentSublocationOdsCode
+                        == serviceRecipient.ParentSublocationOdsCode);
 
                 serviceRecipient.Name.Should().Be(recipient.Name);
                 serviceRecipient.InputQuantity.Should().Be($"{recipient.Quantity}");
@@ -79,7 +82,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
 
             foreach (var serviceRecipient in model.SubLocations.SelectMany(x => x.ServiceRecipients))
             {
-                var recipient = serviceRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
+                ServiceRecipientQuantityDto recipient =
+                    serviceRecipients.First(x =>
+                        x.RecipientOdsCode == serviceRecipient.RecipientOdsCode && x.ParentSublocationOdsCode
+                        == serviceRecipient.ParentSublocationOdsCode);
 
                 serviceRecipient.Name.Should().Be(recipient.Name);
                 serviceRecipient.InputQuantity.Should().Be($"{recipient.Quantity}");
@@ -109,7 +115,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models.Quantity
 
             foreach (var serviceRecipient in model.SubLocations.SelectMany(x => x.ServiceRecipients))
             {
-                var recipient = serviceRecipients.First(x => x.OdsCode == serviceRecipient.OdsCode);
+                ServiceRecipientQuantityDto recipient =
+                    serviceRecipients.First(x =>
+                        x.RecipientOdsCode == serviceRecipient.RecipientOdsCode && x.ParentSublocationOdsCode
+                        == serviceRecipient.ParentSublocationOdsCode);
 
                 serviceRecipient.Name.Should().Be(recipient.Name);
                 serviceRecipient.InputQuantity.Should().Be($"{recipient.Quantity}");

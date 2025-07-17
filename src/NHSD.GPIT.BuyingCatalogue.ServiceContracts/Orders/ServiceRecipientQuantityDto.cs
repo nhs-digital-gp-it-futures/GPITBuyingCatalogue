@@ -7,26 +7,31 @@
         }
 
         public ServiceRecipientQuantityDto(
-            string odsCode,
+            string parentSublocationOdsCode,
+            string recipientOdsCode,
             string name,
             int? quantity)
         {
-            OdsCode = odsCode;
+            ParentSublocationOdsCode = parentSublocationOdsCode;
+            RecipientOdsCode = recipientOdsCode;
             Name = name;
             Quantity = quantity;
         }
 
         public ServiceRecipientQuantityDto(
-            string odsCode,
+            string parentSublocationOdsCode,
+            string recipientOdsCode,
             string name,
             int? quantity,
             string location)
-            : this(odsCode, name, quantity)
+            : this(parentSublocationOdsCode, recipientOdsCode, name, quantity)
         {
             Location = location;
         }
 
-        public string OdsCode { get; set; }
+        public string ParentSublocationOdsCode { get; set; }
+
+        public string RecipientOdsCode { get; set; }
 
         public string Name { get; set; }
 

@@ -86,10 +86,9 @@ public sealed class SelectServiceRecipientQuantityModel : NavBaseModel
     {
         return recipients
             .GroupBy(x => x.Location)
-            .Select(
-                x => new SubLocationModel(
-                    x.Key,
-                    x.Select(CreateServiceRecipient).ToArray()))
+            .Select(x => new SubLocationModel(
+                x.Key,
+                x.Select(CreateServiceRecipient).ToArray()))
             .ToArray();
     }
 
@@ -97,7 +96,8 @@ public sealed class SelectServiceRecipientQuantityModel : NavBaseModel
     {
         var recipientQuantityModel = new ServiceRecipientQuantityModel
         {
-            OdsCode = recipientQuantity.OdsCode,
+            ParentSublocationOdsCode = recipientQuantity.ParentSublocationOdsCode,
+            RecipientOdsCode = recipientQuantity.RecipientOdsCode,
             Name = recipientQuantity.Name,
             Quantity = recipientQuantity.Quantity ?? 0,
             InputQuantity = recipientQuantity.Quantity.HasValue

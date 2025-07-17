@@ -148,7 +148,9 @@ public static class OrderingInformationModelTests
             .Select(x =>
                 new ServiceQuantitySublocationRecipient
                 {
-                    RecipientOdsCode = x.RecipientOdsCode, Quantity = recipientQuantity,
+                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                    RecipientOdsCode = x.RecipientOdsCode,
+                    Quantity = recipientQuantity,
                 })
             .ToList();
 

@@ -32,7 +32,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             ServiceRecipients = recipients
                 .Select(x => new ServiceRecipientQuantityModel
                 {
-                    OdsCode = x.RecipientOdsCode,
+                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                    RecipientOdsCode = x.RecipientOdsCode,
                     Name = x.RecipientOdsOrganisation?.Name,
                     Quantity = x.GetQuantityForItem(orderItem.CatalogueItemId).GetValueOrDefault(),
                 })

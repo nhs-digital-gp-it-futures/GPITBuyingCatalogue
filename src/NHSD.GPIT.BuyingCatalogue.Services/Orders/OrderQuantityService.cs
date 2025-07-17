@@ -102,7 +102,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Orders
 
             foreach (OrderItemRecipientQuantityDto quantity in quantities)
             {
-                OrderSublocationRecipient recipient = recipients.First(x => x.RecipientOdsCode == quantity.OdsCode);
+                OrderSublocationRecipient recipient = recipients.First(x =>
+                    x.RecipientOdsCode == quantity.RecipientOdsCode
+                    && x.ParentSublocationOdsCode == quantity.ParentSublocationOdsCode);
 
                 recipient.SetQuantityForItem(catalogueItemId, quantity.Quantity);
             }

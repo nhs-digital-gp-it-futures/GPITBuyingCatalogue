@@ -73,6 +73,7 @@ public static class CompetitionsQuantityServiceTests
         Organisation organisation,
         Competition competition,
         Solution solution,
+        OdsOrganisation sublocation,
         List<OdsOrganisation> odsOrganisations,
         int quantity,
         [Frozen] BuyingCatalogueDbContext context,
@@ -94,7 +95,7 @@ public static class CompetitionsQuantityServiceTests
             organisation.InternalIdentifier,
             competition.Id,
             solution.CatalogueItemId,
-            odsOrganisations.Select(x => new ServiceRecipientQuantityDto(x.Id, x.Name, quantity)));
+            odsOrganisations.Select(x => new ServiceRecipientQuantityDto(sublocation.Id, x.Id, x.Name, quantity)));
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Quantities)
@@ -162,6 +163,7 @@ public static class CompetitionsQuantityServiceTests
         Competition competition,
         Solution solution,
         AdditionalService additionalService,
+        OdsOrganisation sublocation,
         List<OdsOrganisation> odsOrganisations,
         int quantity,
         [Frozen] BuyingCatalogueDbContext context,
@@ -193,7 +195,7 @@ public static class CompetitionsQuantityServiceTests
             competition.Id,
             solution.CatalogueItemId,
             additionalService.CatalogueItemId,
-            odsOrganisations.Select(x => new ServiceRecipientQuantityDto(x.Id, x.Name, quantity)));
+            odsOrganisations.Select(x => new ServiceRecipientQuantityDto(sublocation.Id, x.Id, x.Name, quantity)));
 
         var updatedCompetition = await context.Competitions.Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.SolutionServices)
@@ -213,6 +215,7 @@ public static class CompetitionsQuantityServiceTests
         Organisation organisation,
         Competition competition,
         Solution solution,
+        OdsOrganisation sublocation,
         List<OdsOrganisation> odsOrganisations,
         int quantity,
         [Frozen] BuyingCatalogueDbContext context,
@@ -228,6 +231,7 @@ public static class CompetitionsQuantityServiceTests
                     {
                         CompetitionId = competition.Id,
                         SolutionId = solution.CatalogueItemId,
+                        ParentSublocationOdsCode = sublocation.Id,
                         RecipientOdsCode = x.Id,
                         Quantity = quantity,
                     })
@@ -264,6 +268,7 @@ public static class CompetitionsQuantityServiceTests
         Competition competition,
         Solution solution,
         AdditionalService additionalService,
+        OdsOrganisation sublocation,
         List<OdsOrganisation> odsOrganisations,
         int quantity,
         [Frozen] BuyingCatalogueDbContext context,
@@ -284,6 +289,7 @@ public static class CompetitionsQuantityServiceTests
                                 CompetitionId = competition.Id,
                                 SolutionId = solution.CatalogueItemId,
                                 ServiceId = additionalService.CatalogueItemId,
+                                ParentSublocationOdsCode = sublocation.Id,
                                 RecipientOdsCode = x.Id,
                                 Quantity = quantity,
                             })

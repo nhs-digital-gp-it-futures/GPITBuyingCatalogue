@@ -338,14 +338,14 @@ public class CompetitionHubController : Controller
         }
 
         List<ServiceRecipientQuantityDto> quantities = model.SubLocations.SelectMany(x => x.ServiceRecipients)
-            .Select(
-                x => new ServiceRecipientQuantityDto
-                {
-                    OdsCode = x.OdsCode,
-                    Quantity = string.IsNullOrWhiteSpace(x.InputQuantity)
-                        ? x.Quantity
-                        : int.Parse(x.InputQuantity),
-                })
+            .Select(x => new ServiceRecipientQuantityDto
+            {
+                ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                RecipientOdsCode = x.RecipientOdsCode,
+                Quantity = string.IsNullOrWhiteSpace(x.InputQuantity)
+                    ? x.Quantity
+                    : int.Parse(x.InputQuantity),
+            })
             .ToList();
 
         if (serviceId is null)
@@ -468,6 +468,7 @@ public class CompetitionHubController : Controller
                 var location = organisations?.FirstOrDefault(y => x.RecipientOdsCode == y.OrgId)?.Location;
 
                 return new ServiceRecipientQuantityDto(
+                    x.ParentSublocationOdsCode,
                     x.RecipientOdsCode,
                     x.RecipientOrganisation.Name,
                     quantity,

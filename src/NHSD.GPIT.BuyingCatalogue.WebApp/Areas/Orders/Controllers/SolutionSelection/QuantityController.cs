@@ -141,6 +141,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             {
                 recipientDtos.Add(
                     new ServiceRecipientQuantityDto(
+                        orderRecipient.ParentSublocationOdsCode,
                         orderRecipient.RecipientOdsCode,
                         orderRecipient.RecipientOdsOrganisation?.Name,
                         orderRecipient.GetQuantityForItem(orderItem.CatalogueItemId),
@@ -152,6 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     ?.Where(x =>
                         x.OrderItemSublocationRecipients.Any(y => y.CatalogueItemId == orderItem.CatalogueItemId))
                     .Select(x => new ServiceRecipientQuantityDto(
+                        x.ParentSublocationOdsCode,
                         x.RecipientOdsCode,
                         x.RecipientOdsOrganisation?.Name,
                         x.GetQuantityForItem(orderItem.CatalogueItemId)));
@@ -204,10 +206,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
 
             var orderWrapper = await orderService.GetOrderWithCatalogueItemAndPrices(callOffId, internalOrgId);
             var order = orderWrapper.Order;
-            var quantities = model.SubLocations.SelectMany(x => x.ServiceRecipients)
+            List<OrderItemRecipientQuantityDto> quantities = model.SubLocations.SelectMany(x => x.ServiceRecipients)
                 .Select(x => new OrderItemRecipientQuantityDto
                 {
-                    OdsCode = x.OdsCode,
+                    ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                    RecipientOdsCode = x.RecipientOdsCode,
                     Quantity = string.IsNullOrWhiteSpace(x.InputQuantity)
                         ? x.Quantity
                         : int.Parse(x.InputQuantity),
@@ -284,7 +287,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
             OrderItem solution = null,
             ICollection<OrderSublocationRecipient> recipients = null)
         {
-            var odsCodes = model.SubLocations.SelectMany(x => x.ServiceRecipients).Where(x => x.Quantity == 0).Select(x => x.OdsCode).ToArray();
+            var odsCodes = model.SubLocations.SelectMany(x => x.ServiceRecipients)
+                .Where(x => x.Quantity == 0)
+                .Select(x => x.RecipientOdsCode)
+                .ToArray();
             var practiceSizes =
                 (await gpPracticeService.GetNumberOfPatients(odsCodes)).ToDictionary(
                     x => x.OdsCode,
@@ -300,7 +306,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     }
 
                     var existing = recipients
-                        ?.FirstOrDefault(x => x.RecipientOdsCode == serviceRecipient.OdsCode)
+                        ?.FirstOrDefault(x =>
+                            x.RecipientOdsCode == serviceRecipient.RecipientOdsCode && x.ParentSublocationOdsCode
+                            == serviceRecipient.ParentSublocationOdsCode)
                         ?.GetQuantityForItem(solution.CatalogueItemId);
 
                     if (existing.HasValue)
@@ -309,7 +317,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     }
                     else
                     {
-                        if (practiceSizes.TryGetValue(serviceRecipient.OdsCode, out var quantity))
+                        if (practiceSizes.TryGetValue(serviceRecipient.RecipientOdsCode, out var quantity))
                         {
                             serviceRecipient.InputQuantity = $"{quantity}";
                         }

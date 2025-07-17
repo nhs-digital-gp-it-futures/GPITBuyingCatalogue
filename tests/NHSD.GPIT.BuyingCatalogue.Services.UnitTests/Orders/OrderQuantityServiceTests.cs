@@ -130,7 +130,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 .Select(r =>
                     new OrderItemRecipientQuantityDto
                     {
-                        OdsCode = r.RecipientOdsCode, Quantity = fixture.Create<int>(),
+                        ParentSublocationOdsCode = r.ParentSublocationOdsCode,
+                        RecipientOdsCode = r.RecipientOdsCode,
+                        Quantity = fixture.Create<int>(),
                     })
                 .ToList();
 
@@ -147,7 +149,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             foreach (OrderSublocationRecipient i in dbOrder.FlattenedRecipients)
             {
-                OrderItemRecipientQuantityDto quantity = quantities.First(x => x.OdsCode == i.RecipientOdsCode);
+                OrderItemRecipientQuantityDto quantity = quantities.First(x =>
+                    x.RecipientOdsCode == i.RecipientOdsCode
+                    && x.ParentSublocationOdsCode == i.ParentSublocationOdsCode);
                 i.GetQuantityForItem(actual.CatalogueItemId).Should().Be(quantity.Quantity);
             }
         }

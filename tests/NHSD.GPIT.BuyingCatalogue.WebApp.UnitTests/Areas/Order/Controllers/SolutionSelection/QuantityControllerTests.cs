@@ -228,6 +228,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients.Select(x =>
                 new ServiceRecipientQuantityDto(
+                    x.ParentSublocationOdsCode,
                     x.RecipientOdsCode,
                     x.RecipientOdsOrganisation?.Name,
                     x.GetQuantityForItem(orderItem.CatalogueItemId),
@@ -285,6 +286,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients.Select(x =>
                 new ServiceRecipientQuantityDto(
+                    x.ParentSublocationOdsCode,
                     x.RecipientOdsCode,
                     x.RecipientOdsOrganisation?.Name,
                     x.GetQuantityForItem(orderItem.CatalogueItemId),
@@ -344,6 +346,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients.Select(x =>
                 new ServiceRecipientQuantityDto(
+                    x.ParentSublocationOdsCode,
                     x.RecipientOdsCode,
                     x.RecipientOdsOrganisation?.Name,
                     x.GetQuantityForItem(orderItem.CatalogueItemId),
@@ -413,11 +416,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, model);
 
-            foreach (var dto in actual)
+            foreach (OrderItemRecipientQuantityDto dto in actual)
             {
                 model.SubLocations.SelectMany(x => x.ServiceRecipients)
-                    .First(x => x.OdsCode == dto.OdsCode)
-                    .Quantity.Should().Be(dto.Quantity == 0 ? 1 : dto.Quantity);
+                    .First(x => x.RecipientOdsCode == dto.RecipientOdsCode
+                        && x.ParentSublocationOdsCode == dto.ParentSublocationOdsCode)
+                    .Quantity.Should()
+                    .Be(dto.Quantity == 0 ? 1 : dto.Quantity);
             }
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
