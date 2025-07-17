@@ -773,14 +773,14 @@ public class CompetitionsService : ICompetitionsService
         foreach (var competitionSolution in competition.CompetitionSolutions)
         {
             var priceScore = competitionSolution.GetScoreByType(ScoreType.Price);
-            var nonPriceScores = competitionSolution.Scores.Where(x => x.ScoreType is not ScoreType.Price).ToList();
 
+            var nonPriceScores = competitionSolution.Scores.Where(x => x.ScoreType is not ScoreType.Price).ToList();
             var nonPriceScoreSum = nonPriceScores.Sum(x => x.WeightedScore);
             var nonPriceWeightedScore = CompetitionFormulas.CalculateWeightedScore(
                 nonPriceScoreSum,
                 competition.Weightings?.NonPrice.GetValueOrDefault() ?? 0);
 
-            var totalScore = nonPriceWeightedScore + priceScore.Score;
+            var totalScore = nonPriceWeightedScore + priceScore.WeightedScore;
             solutionsAndScores[competitionSolution] = totalScore;
         }
 
