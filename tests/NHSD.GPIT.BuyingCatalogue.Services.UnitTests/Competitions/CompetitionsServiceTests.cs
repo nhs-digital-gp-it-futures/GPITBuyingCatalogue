@@ -3170,35 +3170,51 @@ public static class CompetitionsServiceTests
 
     [Theory]
     [MockAutoData]
-    public static void SetWinningSolution(
+    public static void SetWinningSolution_SetsExpectedWinningSolution(
         Competition competition,
         CompetitionSolution winningSolution,
+        CompetitionSolution secondWinningSolution,
         CompetitionSolution nonWinningSolution)
     {
-        winningSolution.IsWinningSolution = true;
+        winningSolution.IsWinningSolution = false;
         winningSolution.Scores = new List<SolutionScore>
         {
-            new(ScoreType.Price, 5, 3.5M),
-            new(ScoreType.Implementation, 5, 3.5M),
-            new(ScoreType.Interoperability, 3, 0.75M),
-            new(ScoreType.ServiceLevel, 2, 0.5M),
+            new(ScoreType.Price, 1, 0.3M),
+            new(ScoreType.Features, 5, 2M),
+            new(ScoreType.Implementation, 5, 1.5M),
+            new(ScoreType.Interoperability, 5, 1.5M),
+        };
+
+        secondWinningSolution.IsWinningSolution = false;
+        secondWinningSolution.Scores = new List<SolutionScore>
+        {
+            new(ScoreType.Price, 1, 0.3M),
+            new(ScoreType.Features, 5, 2M),
+            new(ScoreType.Implementation, 5, 1.5M),
+            new(ScoreType.Interoperability, 5, 1.5M),
         };
 
         nonWinningSolution.IsWinningSolution = false;
         nonWinningSolution.Scores = new List<SolutionScore>
         {
-            new(ScoreType.Price, 2, 1.4M),
-            new(ScoreType.Implementation, 5, 3.5M),
-            new(ScoreType.Interoperability, 3, 0.75M),
-            new(ScoreType.ServiceLevel, 2, 0.5M),
+            new(ScoreType.Price, 5, 1.5M),
+            new(ScoreType.Features, 3, 1.2M),
+            new(ScoreType.Implementation, 3, 0.9M),
+            new(ScoreType.Interoperability, 3, 0.9M),
         };
 
-        competition.Weightings = new() { Price = 70, NonPrice = 30 };
-        competition.CompetitionSolutions = new List<CompetitionSolution> { winningSolution, nonWinningSolution };
+        competition.Weightings = new() { Price = 30, NonPrice = 70 };
+        competition.NonPriceElements = new()
+        {
+            NonPriceWeights = new() { Features = 40, Implementation = 30, Interoperability = 30 },
+        };
+
+        competition.CompetitionSolutions = new List<CompetitionSolution> { winningSolution, secondWinningSolution, nonWinningSolution };
 
         CompetitionsService.SetWinningSolution(competition);
 
         winningSolution.IsWinningSolution.Should().BeTrue();
+        secondWinningSolution.IsWinningSolution.Should().BeTrue();
         nonWinningSolution.IsWinningSolution.Should().BeFalse();
     }
 
