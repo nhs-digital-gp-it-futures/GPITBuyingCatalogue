@@ -727,7 +727,7 @@ public static class ImportServiceRecipientsControllerTests
                     ],
                 },
                 null,
-                false,
+                null,
                 "ServiceRecipients/ImportServiceRecipients/ValidateAmendmentRecipientsFailed",
             ],
 
@@ -884,7 +884,7 @@ public static class ImportServiceRecipientsControllerTests
         EntityFramework.Ordering.Models.Order previousOrder,
         EntityFramework.Ordering.Models.Order order,
         List<ServiceRecipient> expectedOdsServiceResultModels,
-        bool expectedHasMissing,
+        bool? expectedHasMissing,
         string expectedRoute,
         Organisation organisation,
         [Frozen] IServiceRecipientImportService importService,

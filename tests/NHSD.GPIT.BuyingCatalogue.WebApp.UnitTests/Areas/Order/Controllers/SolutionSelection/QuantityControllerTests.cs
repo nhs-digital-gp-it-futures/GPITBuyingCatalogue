@@ -203,7 +203,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             RoutingResult routingResult,
             [Frozen] IRoutingService routingService,
             [Frozen] IOrderService mockOrderService,
-            [Frozen] IOdsService odsService,
             QuantityController controller)
         {
             var orderItem = order.OrderItems.First();
@@ -256,7 +255,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] IRoutingService routingService,
             [Frozen] IGpPracticeService mockGpPracticeService,
             [Frozen] IOrderService mockOrderService,
-            [Frozen] IOdsService odsService,
             QuantityController controller)
         {
             var orderItem = order.OrderItems.First();
@@ -313,7 +311,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             RoutingResult routingResult,
             [Frozen] IRoutingService routingService,
             [Frozen] IOrderService mockOrderService,
-            [Frozen] IOdsService odsService,
             QuantityController controller)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);

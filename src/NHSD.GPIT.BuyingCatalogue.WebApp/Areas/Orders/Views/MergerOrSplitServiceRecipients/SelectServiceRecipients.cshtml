@@ -22,10 +22,10 @@
 
         @if ((Model.SubLocations?.Any() ?? false) && Model.OrganisationType != OrganisationType.GP)
         {
-            if (Model.HasImportedRecipients
+            if (Model.HasImportedRecipients is true
             || (Model.PreviouslySelected?.Any() ?? false))
             {
-                    @if (Model.HasImportedRecipients)
+                    @if (Model.HasImportedRecipients is true)
                     {
                         <nhs-inset-text>
                             <p>
@@ -36,7 +36,7 @@
                         </nhs-inset-text>
                     }
 
-                @if (Model.IsAmendment && (Model.PreviouslySelected?.Any() ?? false))
+                @if (Model.IsAmendment is true && (Model.PreviouslySelected?.Any() ?? false))
                 {
                     <div id="previously-selected-service-recipients">
                         <nhs-details label-text="View service recipients from the previous revision" data-test-id="existing-recipients-details">
@@ -96,7 +96,7 @@
                     var expandWhenNotValid = !ViewData.ModelState.IsValid && lIndex == 0;
 
                     <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
-                    <nhs-expander-v2 id="recipients-expander" open="@(expandWhenNotValid || Model.ShouldExpand || location.ServiceRecipients.Any(x => x.Selected))">
+                    <nhs-expander-v2 id="recipients-expander" open="@(expandWhenNotValid || Model.ShouldExpand is true || location.ServiceRecipients.Any(x => x.Selected))">
                         <nhs-expander-summary label-text="@location.Name" bold-title="true">
                             <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">
                                 <b>@(location.ServiceRecipients.Count(r => r.Selected)) </b>
@@ -139,7 +139,7 @@
                 <br />
                 <nhs-button-group>
                     <nhs-submit-button />
-                    @if (Model.IsAmendment)
+                    @if (Model.IsAmendment is true)
                     {
                         <vc:nhs-anchor-button type="Secondary" text="Cancel"
                                               url="@Model.BackLink"/>

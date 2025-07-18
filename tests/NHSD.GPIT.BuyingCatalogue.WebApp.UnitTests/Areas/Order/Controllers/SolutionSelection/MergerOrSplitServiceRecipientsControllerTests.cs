@@ -46,16 +46,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         }
 
         [Theory]
-        [MockInlineAutoData(null, OrderTypeEnum.AssociatedServiceSplit, 2)]
-        [MockInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceSplit, 2)]
-        [MockInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceSplit, 2)]
-        [MockInlineAutoData(null, OrderTypeEnum.AssociatedServiceMerger, 2)]
-        [MockInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceMerger, 2)]
-        [MockInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceMerger, 2)]
+        [MockInlineAutoData(null, OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceSplit)]
+        [MockInlineAutoData(null, OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(SelectionMode.None, OrderTypeEnum.AssociatedServiceMerger)]
+        [MockInlineAutoData(SelectionMode.All, OrderTypeEnum.AssociatedServiceMerger)]
         public static async Task Get_SelectServiceRecipients_MergerSplitOther_ReturnsExpectedResult(
             SelectionMode selectionMode,
             OrderTypeEnum orderType,
-            int? atLeast,
             Organisation organisation,
             string internalOrgId,
             CallOffId callOffId,
@@ -91,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var expected = new SelectMergerOrSplitRecipientsModel(
                 organisation,
-                new CallOffId(),
+                default,
                 orderType,
                 recipients,
                 [],

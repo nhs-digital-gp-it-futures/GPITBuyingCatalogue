@@ -292,8 +292,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                                 "XXXZ",
                                 [],
                                 true),
-                        ]
-                    ),
+                        ]),
                     addHashSet,
                     "One or more requested Ids not found or not valid for this sublocation.",
                 ],

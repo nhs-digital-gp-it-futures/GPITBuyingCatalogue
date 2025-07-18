@@ -1233,7 +1233,6 @@ public static class CompetitionsServiceTests
             ],
 
             // Adds and removes
-
             [
                 CommonOrganisationFactory(87),
                 CommonCompetitionFactory(

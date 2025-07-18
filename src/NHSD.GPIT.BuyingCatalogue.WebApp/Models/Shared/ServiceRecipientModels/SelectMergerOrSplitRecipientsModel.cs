@@ -48,17 +48,17 @@ public sealed class SelectMergerOrSplitRecipientsModel : NavBaseModel
 
     public string OrganisationName { get; set; }
 
-    public OrganisationType OrganisationType { get; set; }
+    public OrganisationType? OrganisationType { get; set; }
 
     public SublocationModel[] SubLocations { get; set; } = [];
 
-    public bool HasImportedRecipients { get; set; }
+    public bool? HasImportedRecipients { get; set; }
 
     public List<ServiceRecipientModel> PreviouslySelected { get; set; }
 
-    public bool ShouldExpand { get; set; }
+    public bool? ShouldExpand { get; set; }
 
-    public bool IsAmendment { get; set; }
+    public bool? IsAmendment { get; set; }
 
     public ServiceRecipientModel[] GetSearchRecipients()
     {

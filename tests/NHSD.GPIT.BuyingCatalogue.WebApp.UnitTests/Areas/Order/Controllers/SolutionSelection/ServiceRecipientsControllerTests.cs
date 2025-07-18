@@ -184,8 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                             [
                                 CommonOrderSublocationRecipientFactory("AAAC", "XXXA"),
                             ]),
-                        CommonOrderSublocationFactory(
-                            "XXXE"),
+                        CommonOrderSublocationFactory("XXXE"),
                     },
                     new List<OdsOrganisation>
                     {
@@ -461,8 +460,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                     opt => opt
                         .Excluding(m => m.BackLink)
                         .Excluding(m => m.Caption)
-                        .Excluding(m => m.ListHeaderText)
-                );
+                        .Excluding(m => m.ListHeaderText));
 
             var modelForFurtherComparison = result.Model.As<RemoveSublocationsModel>();
 
@@ -872,8 +870,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 result.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
 
             renderedRecipientsForFurtherEvaluation.Should()
-                .BeEquivalentTo(
-                    expectedModel.RenderedServiceRecipients);
+                .BeEquivalentTo(expectedModel.RenderedServiceRecipients);
         }
 
         public static IEnumerable<object[]> PreviousSelectionsAndPotentialRecipientsToExpected()
@@ -1183,8 +1180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 result.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
 
             renderedRecipientsForFurtherEvaluation.Should()
-                .BeEquivalentTo(
-                    expectedModel.RenderedServiceRecipients);
+                .BeEquivalentTo(expectedModel.RenderedServiceRecipients);
         }
 
         [Theory]
@@ -1282,8 +1278,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
                 result.Model.As<NoNewRecipientsForSublocationAmendmentModel>().PreviousOrderRecipients;
 
             previousRecipientsForFurtherEvaluation.Should()
-                .BeEquivalentTo(
-                    expectedModel.PreviousOrderRecipients);
+                .BeEquivalentTo(expectedModel.PreviousOrderRecipients);
         }
 
         [Theory]
@@ -1690,8 +1685,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             result.Should().NotBeNull();
             result.Model.Should()
-                .BeEquivalentTo(
-                    expectedModel);
+                .BeEquivalentTo(expectedModel);
             result.ViewName.Should().Be("ServiceRecipients/NoNewRecipientsForAmendment");
         }
 

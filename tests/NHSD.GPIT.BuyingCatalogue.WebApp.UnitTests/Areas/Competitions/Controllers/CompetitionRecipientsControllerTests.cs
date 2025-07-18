@@ -50,10 +50,12 @@ public static class CompetitionRecipientsControllerTests
         competitionsService.GetCompetition(internalOrgId, competitionId)
             .Returns(competition);
 
-        var result = await controller.UploadOrSelectServiceRecipients(internalOrgId, competitionId);
+        IActionResult result = await controller.UploadOrSelectServiceRecipients(internalOrgId, competitionId);
 
-        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        var model = viewResult.Model.Should().BeOfType<UploadOrSelectServiceRecipientModel>().Subject;
+        ViewResult viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        UploadOrSelectServiceRecipientModel model = viewResult.Model.Should()
+            .BeOfType<UploadOrSelectServiceRecipientModel>()
+            .Subject;
 
         model.Should().NotBeNull();
         model.Caption.Should().Be(competition.Name);
@@ -76,8 +78,9 @@ public static class CompetitionRecipientsControllerTests
 
         IActionResult result = await controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
 
-        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        var returnedModel = viewResult.Model.Should().BeOfType<UploadOrSelectServiceRecipientModel>().Subject;
+        ViewResult viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        UploadOrSelectServiceRecipientModel returnedModel =
+            viewResult.Model.Should().BeOfType<UploadOrSelectServiceRecipientModel>().Subject;
 
         returnedModel.Should().BeEquivalentTo(model);
     }
@@ -97,9 +100,10 @@ public static class CompetitionRecipientsControllerTests
 
         IActionResult result = await controller.UploadOrSelectServiceRecipients(model, internalOrgId, competitionId);
 
-        var redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        RedirectToActionResult redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirectToActionResult.ActionName.Should().Be(nameof(CompetitionImportServiceRecipientsController.Index));
-        redirectToActionResult.ControllerName.Should().Be(typeof(CompetitionImportServiceRecipientsController).ControllerName());
+        redirectToActionResult.ControllerName.Should()
+            .Be(typeof(CompetitionImportServiceRecipientsController).ControllerName());
     }
 
     [Theory]
@@ -243,8 +247,7 @@ public static class CompetitionRecipientsControllerTests
                 opt => opt
                     .Excluding(m => m.BackLink)
                     .Excluding(m => m.Caption)
-                    .Excluding(m => m.ListHeaderText)
-            );
+                    .Excluding(m => m.ListHeaderText));
 
         var modelForFurtherComparison = result.Model.As<RemoveSublocationsModel>();
 
@@ -347,9 +350,8 @@ public static class CompetitionRecipientsControllerTests
                 organisation.ExternalIdentifier,
                 competition.Id,
                 Arg.Any<string>())
-            .Returns(
-                call => competitionSublocations.First(x => x.SublocationOdsCode == call.ArgAt<string>(2))
-                    .SublocationRecipients.Count);
+            .Returns(call => competitionSublocations.First(x => x.SublocationOdsCode == call.ArgAt<string>(2))
+                .SublocationRecipients.Count);
 
         var expectedModel = new SelectSublocationsOverviewModel
         {
@@ -357,13 +359,12 @@ public static class CompetitionRecipientsControllerTests
             Caption = competition.Name,
             Advice = "Select a sublocation to add organisations to this competition",
             ProcessType = "competition",
-            Sublocations = competitionSublocations.Select(
-                    x => new SublocationModel
-                    {
-                        Name = x.SublocationOrganisation.Name,
-                        ServiceRecipientCount = x.SublocationRecipients.Count,
-                        OdsCode = x.SublocationOdsCode,
-                    })
+            Sublocations = competitionSublocations.Select(x => new SublocationModel
+                {
+                    Name = x.SublocationOrganisation.Name,
+                    ServiceRecipientCount = x.SublocationRecipients.Count,
+                    OdsCode = x.SublocationOdsCode,
+                })
                 .ToList(),
             ParentName = organisation.Name,
         };
@@ -521,8 +522,7 @@ public static class CompetitionRecipientsControllerTests
             result.Model.As<SelectSublocationRecipientsModel>().RenderedServiceRecipients;
 
         renderedRecipientsForFurtherEvaluation.Should()
-            .BeEquivalentTo(
-                expectedModel.RenderedServiceRecipients);
+            .BeEquivalentTo(expectedModel.RenderedServiceRecipients);
     }
 
     [Theory]
@@ -684,9 +684,8 @@ public static class CompetitionRecipientsControllerTests
                 organisation.ExternalIdentifier,
                 competition.Id,
                 Arg.Any<string>())
-            .Returns(
-                call => competitionSublocations.First(x => x.SublocationOdsCode == call.ArgAt<string>(2))
-                    .SublocationRecipients.Count);
+            .Returns(call => competitionSublocations.First(x => x.SublocationOdsCode == call.ArgAt<string>(2))
+                .SublocationRecipients.Count);
 
         var expectedModel = new SelectSublocationsOverviewModel
         {
@@ -694,13 +693,12 @@ public static class CompetitionRecipientsControllerTests
             Caption = competition.Name,
             Advice = "Select a sublocation to amend the organisations in this competition",
             ProcessType = "competition",
-            Sublocations = competitionSublocations.Select(
-                    x => new SublocationModel
-                    {
-                        Name = x.SublocationOrganisation.Name,
-                        ServiceRecipientCount = x.SublocationRecipients.Count,
-                        OdsCode = x.SublocationOdsCode,
-                    })
+            Sublocations = competitionSublocations.Select(x => new SublocationModel
+                {
+                    Name = x.SublocationOrganisation.Name,
+                    ServiceRecipientCount = x.SublocationRecipients.Count,
+                    OdsCode = x.SublocationOdsCode,
+                })
                 .ToList(),
             ParentName = organisation.Name,
         };
@@ -866,8 +864,7 @@ public static class CompetitionRecipientsControllerTests
                         [
                             CommonCompetitionSublocationRecipientFactory("AAAC", "XXXA"),
                         ]),
-                    CommonCompetitionSublocationFactory(
-                        "XXXE"),
+                    CommonCompetitionSublocationFactory("XXXE"),
                 },
                 new List<OdsOrganisation>
                 {

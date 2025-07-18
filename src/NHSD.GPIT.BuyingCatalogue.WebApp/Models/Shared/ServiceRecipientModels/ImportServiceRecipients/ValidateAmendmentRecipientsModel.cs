@@ -14,7 +14,7 @@ public class ValidateAmendmentRecipientsModel : NavBaseModel
 
     public string ContinueLink { get; set; }
 
-    public bool HasMissing { get; set; }
+    public bool? HasMissing { get; set; }
 
     public IReadOnlyList<ServiceRecipientModel> NewRecipients { get; set; }
 }

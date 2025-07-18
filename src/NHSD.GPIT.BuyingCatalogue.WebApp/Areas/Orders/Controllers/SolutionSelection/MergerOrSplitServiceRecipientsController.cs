@@ -256,7 +256,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         }
 
-        private List<ServiceRecipientModel> MapToModel(IEnumerable<ServiceRecipient> recipients, bool orderByName)
+        private static List<ServiceRecipientModel> MapToModel(
+            IEnumerable<ServiceRecipient> recipients,
+            bool orderByName)
         {
             if (orderByName)
             {

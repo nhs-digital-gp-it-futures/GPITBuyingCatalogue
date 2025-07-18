@@ -282,8 +282,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             OrderWrapper result = await service.GetOrderWithSublocationsAndSublocationRecipients(
                 order.CallOffId,
-                order.OrderingParty.InternalIdentifier
-            );
+                order.OrderingParty.InternalIdentifier);
 
             result.Should().NotBeNull();
 
@@ -360,8 +359,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                                     CommonOrderSublocationRecipientFactory(23, "AAAA", "XXXX"),
                                     CommonOrderSublocationRecipientFactory(23, "AAAB", "XXXX"),
                                     CommonOrderSublocationRecipientFactory(23, "AAAC", "XXXX"),
-                                ]
-                            ),
+                                ]),
                             CommonOrderSublocationFactory(
                                 23,
                                 "XXXY",
@@ -517,8 +515,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                                 "XXXZ",
                                 [],
                                 true),
-                        ]
-                    ),
+                        ]),
                     addHashSet,
                     "One or more requested Ids not found or not valid for this organisation.",
                 ],
@@ -660,7 +657,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 ],
 
                 // Adds and removes
-
                 [
                     CommonOrganisationFactory(87),
                     CommonOrderFactory(
@@ -868,8 +864,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                         0,
                         0,
                         [
-                        ]
-                    ),
+                        ]),
                     new List<OrderSublocation> { CommonOrderSublocationFactory(61, "XXXA") },
                     new List<ServiceContractOdsOrganisation>(),
                     new List<ServiceRecipient>(),
@@ -882,8 +877,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                         0,
                         0,
                         [
-                        ]
-                    ),
+                        ]),
                     new List<OrderSublocation>
                     {
                         CommonOrderSublocationFactory(

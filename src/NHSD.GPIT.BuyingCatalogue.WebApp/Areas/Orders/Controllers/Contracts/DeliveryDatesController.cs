@@ -9,7 +9,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 
@@ -25,18 +24,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         private readonly IDeliveryDateService deliveryDateService;
         private readonly IOrderService orderService;
         private readonly IRoutingService routingService;
-        private readonly IOdsService odsService;
 
         public DeliveryDatesController(
             IDeliveryDateService deliveryDateService,
             IOrderService orderService,
-            IRoutingService routingService,
-            IOdsService odsService)
+            IRoutingService routingService)
         {
             this.deliveryDateService = deliveryDateService ?? throw new ArgumentNullException(nameof(deliveryDateService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
-            this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
         }
 
         [HttpGet("select")]

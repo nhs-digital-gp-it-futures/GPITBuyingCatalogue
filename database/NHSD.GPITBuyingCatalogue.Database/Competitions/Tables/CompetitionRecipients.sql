@@ -1,4 +1,4 @@
-﻿/* TODO: Deprecated - remove when sublocation feature stable */
+﻿-- TODO: Deprecated - remove when sublocation feature stable
 CREATE TABLE [competitions].[CompetitionRecipients]
 (
     [CompetitionId] INT NOT NULL,

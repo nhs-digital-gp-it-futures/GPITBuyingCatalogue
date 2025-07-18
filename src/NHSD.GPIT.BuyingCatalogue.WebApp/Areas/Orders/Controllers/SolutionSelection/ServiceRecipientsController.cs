@@ -533,9 +533,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                         TaskProgress.Completed,
                     > 0 when wrapper.IsAmendment && serviceRecipientCount > previousRecipientCount =>
                         TaskProgress.Amended,
-                    _ => throw new ArgumentOutOfRangeException(
-                        nameof(serviceRecipientCount),
-                        @"No valid case for service recipient count"),
+                    _ => throw new InvalidOperationException("No valid case for service recipient count"),
                 };
 
                 var sublocationModel = new SublocationModel(
