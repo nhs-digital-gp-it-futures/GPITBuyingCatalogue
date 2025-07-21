@@ -3,14 +3,18 @@ BEGIN TRANSACTION
 BEGIN TRY
 
 -- Manually insert outlier CSU which doesn't fit data structure
-
 INSERT INTO [GPITBuyingCatalogue].[ordering].[OrderSublocations]
     ([OrderId], [SublocationOdsCode], [OwnerOdsCode])
-VALUES
-    (10571, '0CX', '0CX')
+SELECT 10571, '0CX', '0CX'
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM [GPITBuyingCatalogue].[ordering].[OrderSublocations]
+    WHERE [OrderId] = 10571
+        AND [SublocationOdsCode] = '0CX'
+        AND [OwnerOdsCode] = '0CX'
+    );
 
 -- Insert missing relationships
-
 DECLARE @odsOrganisationRelationships AS TABLE
                                                  (
     [Id] INT NOT NULL PRIMARY KEY,
@@ -310,16 +314,16 @@ MERGE INTO [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships]
         USING @odsOrganisationRelationships AS SOURCE
         ON TARGET.[Id] = SOURCE.[Id]
         WHEN MATCHED THEN
-            UPDATE SET TARGET.[Id] = SOURCE.[Id],
-                       TARGET.[RelationshipTypeId] = SOURCE.[RelationshipTypeId],
-                       TARGET.[TargetOrganisationId] = SOURCE.[TargetOrganisationId],
-                       TARGET.[OwnerOrganisationId] = SOURCE.[OwnerOrganisationId]
+        UPDATE SET 
+            TARGET.[RelationshipTypeId] = SOURCE.[RelationshipTypeId],
+            TARGET.[TargetOrganisationId] = SOURCE.[TargetOrganisationId],
+            TARGET.[OwnerOrganisationId] = SOURCE.[OwnerOrganisationId],
+            TARGET.[IsActive] = SOURCE.[IsActive]
         WHEN NOT MATCHED BY TARGET THEN
             INSERT ([Id], [RelationshipTypeId], [TargetOrganisationId], [OwnerOrganisationId], [IsActive])
             VALUES (SOURCE.[Id], SOURCE.[RelationshipTypeId], SOURCE.[TargetOrganisationId], SOURCE.[OwnerOrganisationId], SOURCE.[IsActive]);
 
 -- Migrate sublocations, sublocation recipients, and order items
-
 DECLARE @OrderSublocationIsCommissionedBy VARCHAR(3)
 DECLARE @OrderSublocationIsLocatedInTheGeographyOf VARCHAR(3)
 DECLARE @IcbSublocationRole VARCHAR(10)
@@ -328,7 +332,6 @@ SET @OrderSublocationIsLocatedInTheGeographyOf = 'RE5'
 SET @IcbSublocationRole = 'RO319'
 
 -- Migrate sublocations based on relationship
-
 INSERT INTO [GPITBuyingCatalogue].[ordering].[OrderSublocations]
     ([OrderId], [SublocationOdsCode], [OwnerOdsCode])
 SELECT DISTINCT [or].[OrderId], [rel].[OwnerOrganisationId] AS [SublocationOdsCode], [rel2].[OwnerOrganisationId] AS [OwnerOdsCode]
@@ -340,14 +343,20 @@ FROM [GPITBuyingCatalogue].[ordering].[OrderRecipients] [or]
 WHERE [rel].[RelationshipTypeId] = @OrderSublocationIsCommissionedBy
     AND [rel2].[RelationshipTypeId] = @OrderSublocationIsLocatedInTheGeographyOf
     AND [rel].[IsActive] = 1
-    AND [rel2].[IsActive] = 1;
-
+    AND [rel2].[IsActive] = 1
+    AND NOT EXISTS (
+        SELECT 1
+    FROM [GPITBuyingCatalogue].[ordering].[OrderSublocations] [os]
+    WHERE [os].[OrderId] = [
+   or].[OrderId]
+  AND [os].[SublocationOdsCode] = [rel].[OwnerOrganisationId]
+  AND [os].[OwnerOdsCode] = [rel2].[OwnerOrganisationId]
+    );
 
 -- Migrate sublocations based on role (sublocation as recipient outliers)
-
 INSERT INTO [GPITBuyingCatalogue].[ordering].[OrderSublocations]
     ([OrderId], [SublocationOdsCode], [OwnerOdsCode])
-SELECT DISTINCT [or].[OrderId], [or].[OdsCode] AS [SublocationOdsCode], [rel2].[OwnerOrganisationId] AS [OwnerOdsCode]
+SELECT DISTINCT [or].[OrderId], [or].[OdsCode], [rel2].[OwnerOrganisationId]
 FROM [GPITBuyingCatalogue].[ordering].[OrderRecipients] [or]
     JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRoles] [role]
     ON [or].[OdsCode] = [role].[OrganisationId]
@@ -358,31 +367,50 @@ WHERE [role].[RoleId] = @IcbSublocationRole
     AND [role].[IsActive] = 1
     AND [rel2].[IsActive] = 1
     AND NOT EXISTS (
- SELECT 1
+        SELECT 1
     FROM [GPITBuyingCatalogue].[ordering].[OrderSublocations] [os]
-    WHERE [os].[OrderId] = [or].[OrderId]
-        AND [os].[SublocationOdsCode] = [or].[OdsCode]
- );
+    WHERE [os].[OrderId] = [
+   or].[OrderId]
+  AND [os].[SublocationOdsCode] = [
+   or].[OdsCode]
+  AND [os].[OwnerOdsCode] = [rel2].[OwnerOrganisationId]
+    );
 
 -- Migrate recipients based on sublocation parent relationship
-
 INSERT INTO [GPITBuyingCatalogue].[ordering].[OrderSublocationRecipients]
     ([OrderId], [ParentSublocationOdsCode], [RecipientOdsCode])
 SELECT [or].[OrderId], [rel].[OwnerOrganisationId] AS [ParentSublocationOdsCode], [or].[OdsCode] AS [RecipientOdsCode]
 FROM [GPITBuyingCatalogue].[ordering].[OrderRecipients] [or]
     JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel]
     ON [or].[OdsCode] = [rel].[TargetOrganisationId]
-WHERE [rel].[RelationshipTypeId] = @OrderSublocationIsCommissionedBy AND [rel].[IsActive] = 1;
+WHERE [rel].[RelationshipTypeId] = @OrderSublocationIsCommissionedBy
+    AND [rel].[IsActive] = 1
+    AND NOT EXISTS (
+        SELECT 1
+    FROM [GPITBuyingCatalogue].[ordering].[OrderSublocationRecipients] [osr]
+    WHERE [osr].[OrderId] = [
+   or].[OrderId]
+  AND [osr].[ParentSublocationOdsCode] = [rel].[OwnerOrganisationId]
+  AND [] osr.[RecipientOdsCode] = [
+   or].[OdsCode]
+    );
 
 INSERT INTO [GPITBuyingCatalogue].[ordering].[OrderItemSublocationRecipients]
     ([OrderId], [CatalogueItemId], [ParentSublocationOdsCode], [RecipientOdsCode], [Quantity], [DeliveryDate], [LastUpdated], [LastUpdatedBy])
 SELECT [oir].[OrderId], [oir].[CatalogueItemId], [osr].[ParentSublocationOdsCode], [osr].[RecipientOdsCode], [oir].[Quantity], [oir].[DeliveryDate], [oir].[LastUpdated], [oir].[LastUpdatedBy]
 FROM [GPITBuyingCatalogue].[ordering].[OrderItemRecipients] [oir]
     JOIN [GPITBuyingCatalogue].[ordering].[OrderSublocationRecipients] [osr]
-    ON [oir].[OrderId] = [osr].[OrderId] AND [oir].[OdsCode] = [osr].[RecipientOdsCode];
+    ON [oir].[OrderId] = [osr].[OrderId] AND [oir].[OdsCode] = [osr].[RecipientOdsCode]
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM [GPITBuyingCatalogue].[ordering].[OrderItemSublocationRecipients] [oisr]
+    WHERE [oisr].[OrderId] = [oir].[OrderId]
+  AND [oisr].[CatalogueItemId] = [oir].[CatalogueItemId]
+  AND [oisr].[ParentSublocationOdsCode] = [osr].[ParentSublocationOdsCode]
+  AND [oisr].[RecipientOdsCode] = [osr].[RecipientOdsCode]
+    );
 
 -- Remove temp relationships
-
 DELETE FROM [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] 
 WHERE [Id] IN (SELECT Id
 FROM @odsOrganisationRelationships);
