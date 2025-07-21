@@ -76,7 +76,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static void UploadOrSelectServiceRecipients_Post_InvalidModel_ReturnsViewWithModel(
+        public static async Task UploadOrSelectServiceRecipients_Post_InvalidModel_ReturnsViewWithModel(
             UploadOrSelectServiceRecipientModel model,
             string internalOrgId,
             CallOffId callOffId,
@@ -84,7 +84,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             controller.ModelState.AddModelError("SomeError", "Error message");
 
-            IActionResult result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
+            IActionResult result = await controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
 
             ViewResult viewResult = result.Should().BeOfType<ViewResult>().Subject;
             UploadOrSelectServiceRecipientModel returnedModel =
@@ -95,7 +95,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static void UploadOrSelectServiceRecipients_Post_UploadRecipients_RedirectsToImportController(
+        public static async Task UploadOrSelectServiceRecipients_Post_UploadRecipients_RedirectsToImportController(
             UploadOrSelectServiceRecipientModel model,
             string internalOrgId,
             CallOffId callOffId,
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
         {
             model.ShouldUploadRecipients = true;
 
-            IActionResult result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
+            IActionResult result = await controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
 
             RedirectToActionResult redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             redirectToActionResult.ActionName.Should().Be(nameof(ImportServiceRecipientsController.Index));
@@ -113,20 +113,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
         [Theory]
         [MockAutoData]
-        public static void
-            UploadOrSelectServiceRecipients_Post_DoNotUploadRecipients_RedirectsToSelectServiceRecipientsAction(
+        public static async Task
+            UploadOrSelectServiceRecipients_Post_DoNotUploadRecipients_RedirectsToSelectSublocationAction(
                 UploadOrSelectServiceRecipientModel model,
                 string internalOrgId,
                 CallOffId callOffId,
+                [Frozen] IOrderService orderService,
                 ServiceRecipientsController controller)
         {
             model.ShouldUploadRecipients = false;
 
-            IActionResult result = controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
+            orderService.GetOrderHasAnySublocations(callOffId, internalOrgId).Returns(false);
+
+            IActionResult result = await controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
 
             RedirectToActionResult redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
             redirectToActionResult.ActionName.Should()
                 .Be(nameof(ServiceRecipientsController.SelectSublocations));
+            redirectToActionResult.ControllerName.Should()
+                .Be(typeof(ServiceRecipientsController).ControllerName());
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static async Task
+            UploadOrSelectServiceRecipients_Post_DoNotUploadRecipients_HasSublocations_RedirectsToConfirmSublocationAction(
+                UploadOrSelectServiceRecipientModel model,
+                string internalOrgId,
+                CallOffId callOffId,
+                [Frozen] IOrderService orderService,
+                ServiceRecipientsController controller)
+        {
+            model.ShouldUploadRecipients = false;
+
+            orderService.GetOrderHasAnySublocations(callOffId, internalOrgId).Returns(true);
+
+            IActionResult result = await controller.UploadOrSelectServiceRecipients(model, internalOrgId, callOffId);
+
+            RedirectToActionResult redirectToActionResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+            redirectToActionResult.ActionName.Should()
+                .Be(nameof(ServiceRecipientsController.ConfirmSublocations));
             redirectToActionResult.ControllerName.Should()
                 .Be(typeof(ServiceRecipientsController).ControllerName());
         }

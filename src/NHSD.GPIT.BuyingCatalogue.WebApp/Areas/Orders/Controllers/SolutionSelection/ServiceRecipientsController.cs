@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("upload-or-select-service-recipients")]
-        public IActionResult UploadOrSelectServiceRecipients(
+        public async Task<IActionResult> UploadOrSelectServiceRecipients(
             UploadOrSelectServiceRecipientModel model,
             string internalOrgId,
             CallOffId callOffId)
@@ -71,8 +71,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
                     new { internalOrgId, callOffId });
             }
 
+            var orderHasSublocations = await orderService.GetOrderHasAnySublocations(callOffId, internalOrgId);
+
             return RedirectToAction(
-                nameof(SelectSublocations),
+                orderHasSublocations ? nameof(ConfirmSublocations) : nameof(SelectSublocations),
                 typeof(ServiceRecipientsController).ControllerName(),
                 new { internalOrgId, callOffId });
         }
