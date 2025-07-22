@@ -6,14 +6,14 @@ DECLARE @CompetitionSublocationIsLocatedInTheGeographyOf VARCHAR(3)
 SET @CompetitionSublocationIsCommissionedBy = 'RE4'
 SET @CompetitionSublocationIsLocatedInTheGeographyOf = 'RE5'
 
-INSERT INTO [GPITBuyingCatalogue].[competitions].[CompetitionSublocations]
+INSERT INTO [competitions].[CompetitionSublocations]
     ([CompetitionId], [SublocationOdsCode], [OwnerOdsCode])
 SELECT DISTINCT [cr].[CompetitionId], [rel].[OwnerOrganisationId] AS [SublocationOdsCode],
                 [rel2].[OwnerOrganisationId] AS [OwnerOdsCode]
-    FROM [GPITBuyingCatalogue].[competitions].[CompetitionRecipients] [cr]
-             JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel]
+    FROM [competitions].[CompetitionRecipients] [cr]
+             JOIN [ods_organisations].[OrganisationRelationships] [rel]
                   ON [cr].[OdsCode] = [rel].[TargetOrganisationId]
-             JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel2]
+             JOIN [ods_organisations].[OrganisationRelationships] [rel2]
                   ON [rel].[OwnerOrganisationId] = [rel2].[TargetOrganisationId]
     WHERE [rel].[RelationshipTypeId] = @CompetitionSublocationIsCommissionedBy
       AND [rel2].[RelationshipTypeId] = @CompetitionSublocationIsLocatedInTheGeographyOf
@@ -21,23 +21,23 @@ SELECT DISTINCT [cr].[CompetitionId], [rel].[OwnerOrganisationId] AS [Sublocatio
       AND [rel2].[IsActive] = 1
       AND NOT EXISTS (
         SELECT 1
-            FROM [GPITBuyingCatalogue].[competitions].[CompetitionSublocations] [cs]
+            FROM [competitions].[CompetitionSublocations] [cs]
             WHERE [cs].[CompetitionId] = [cr].[CompetitionId]
               AND [cs].[SublocationOdsCode] = [rel].[OwnerOrganisationId]
               AND [cs].[OwnerOdsCode] = [rel2].[OwnerOrganisationId]);
 
-INSERT INTO [GPITBuyingCatalogue].[competitions].[CompetitionSublocationRecipients]
+INSERT INTO [competitions].[CompetitionSublocationRecipients]
     ([CompetitionId], [ParentSublocationOdsCode], [RecipientOdsCode])
 SELECT [cr].[CompetitionId], [rel].[OwnerOrganisationId] AS [ParentSublocationOdsCode],
        [cr].[OdsCode] AS [RecipientOdsCode]
-    FROM [GPITBuyingCatalogue].[competitions].[CompetitionRecipients] [cr]
-             JOIN [GPITBuyingCatalogue].[ods_organisations].[OrganisationRelationships] [rel]
+    FROM [competitions].[CompetitionRecipients] [cr]
+             JOIN [ods_organisations].[OrganisationRelationships] [rel]
                   ON [cr].[OdsCode] = [rel].[TargetOrganisationId]
     WHERE [rel].[RelationshipTypeId] = @CompetitionSublocationIsCommissionedBy
       AND [rel].[IsActive] = 1
       AND NOT EXISTS (
         SELECT 1
-            FROM [GPITBuyingCatalogue].[competitions].[CompetitionSublocationRecipients] [csr]
+            FROM [competitions].[CompetitionSublocationRecipients] [csr]
             WHERE [csr].[CompetitionId] = [cr].[CompetitionId]
               AND [csr].[ParentSublocationOdsCode] = [rel].[OwnerOrganisationId]
               AND [csr].[RecipientOdsCode] = [cr].[OdsCode]);
