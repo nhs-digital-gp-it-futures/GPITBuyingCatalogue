@@ -1,3 +1,4 @@
+IF UPPER('$(INSERT_TEST_DATA)') = 'FALSE'
 BEGIN TRANSACTION
 
 DECLARE @CompetitionSublocationIsCommissionedBy VARCHAR(3)
