@@ -1,4 +1,4 @@
-IF UPPER('$(INSERT_TEST_DATA)') = 'FALSE'
+IF DB_NAME() = 'BuyingCatalogue-production'
 BEGIN
     BEGIN TRANSACTION
 
