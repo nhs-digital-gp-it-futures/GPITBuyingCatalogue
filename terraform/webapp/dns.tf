@@ -2,12 +2,12 @@ locals {
   dns_resource_group_name = "${var.project}-dynamic-core-rg"
   dns_resource_name = replace(var.app_url, "${var.environment}.", "")
 
-  cname_target = local.core_env == "dev" ? module.webapp.webapp_default_site_hostname : module.appgateway.appgateway_pip_fqdn
+  cname_target = local.use_app_gateway ? module.appgateway.appgateway_pip_fqdn : module.webapp.webapp_default_site_hostname
 }
 
 resource "azurerm_dns_cname_record" "alias" {
   provider            = azurerm.dns
-  count               = local.core_env == "dev" || local.core_env == "preprod" ? 1 : 0
+  count               = local.use_dns_cname ? 1 : 0
   name                = var.environment
   zone_name           = local.dns_resource_name
   resource_group_name = local.dns_resource_group_name
@@ -19,7 +19,7 @@ resource "azurerm_dns_cname_record" "alias" {
 
 resource "azurerm_dns_txt_record" "verification" {
   provider            = azurerm.dns
-  count               = local.core_env == "dev" || local.core_env == "preprod" ? 1 : 0
+  count               = local.use_dns_cname ? 1 : 0
   name                = "asuid.${var.environment}"
   zone_name           = local.dns_resource_name
   resource_group_name = local.dns_resource_group_name

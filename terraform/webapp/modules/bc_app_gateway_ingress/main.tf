@@ -2,7 +2,7 @@ resource "azurerm_application_gateway" "app_gateway" {
   name                = local.gateway_name
   location            = var.region
   resource_group_name = var.rg_name
-  count               = var.core_env != "dev" ? 1 : 0
+  count               = var.use_app_gateway ? 1 : 0
   firewall_policy_id  = var.firewall_policy_id
 
   sku {

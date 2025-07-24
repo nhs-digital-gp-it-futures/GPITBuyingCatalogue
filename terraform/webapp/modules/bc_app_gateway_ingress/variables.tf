@@ -36,8 +36,8 @@ variable "app_dns_url" {
   type = string
 }
 
-variable "core_env" {
-  type = string
+variable "use_app_gateway" {
+  type = bool
 }
 
 variable "log_analytics_workspace_id" {

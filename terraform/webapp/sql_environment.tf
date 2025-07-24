@@ -26,7 +26,7 @@ resource "azurerm_mssql_virtual_network_rule" "sqlvnetrule" {
 
 module "sql_server_sec" {
   source                     = "./modules/bc_sql_server"
-  count                      = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
+  count                      = local.is_live_environment ? 1 : 0 
   environment                = var.environment
   region                     = local.sql_region2
   resource_group             = azurerm_resource_group.sql-server.name
