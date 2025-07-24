@@ -1,7 +1,7 @@
 module "sql_databases_pri" {
   source                = "./modules/bc_sql_dbs_webapp"
 
-  count                 = !local.is_dr ? 1 : 0
+  count                 = 1
   environment           = var.environment
   project               = var.project
   server_id             = join("", module.sql_server_pri[*].sql_server_id)
