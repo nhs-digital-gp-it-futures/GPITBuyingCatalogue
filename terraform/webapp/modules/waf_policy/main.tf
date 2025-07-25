@@ -32,6 +32,10 @@ locals {
       ]
     }
   ]
+  xss_excluded_query_parameters = [
+    "search",
+    "need to do the rest"
+  ]
 }
 
 resource "azurerm_web_application_firewall_policy" "waf_policy" {
@@ -58,6 +62,20 @@ resource "azurerm_web_application_firewall_policy" "waf_policy" {
       match_variable          = "RequestCookieNames"
       selector_match_operator = "Equals"
       selector                = "buyingcatalogue-cookie-consent"
+    }
+
+    dynamic "exclusion" {
+    for_each = toset(local.xss_excluded_query_parameters)
+        content {
+            match_variable          = "QueryString"
+            selector_match_operator = "Equals"
+            selector                = exclusion.value
+
+            exclusions {
+                rule_group_name = "REQUEST-941-APPLICATION-ATTACK-XSS"
+                rule_ids        = ["941100"]
+            }
+        }
     }
 
     managed_rule_set {
