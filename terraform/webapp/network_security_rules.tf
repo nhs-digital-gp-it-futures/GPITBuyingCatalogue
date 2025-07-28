@@ -1,6 +1,6 @@
 resource "azurerm_network_security_rule" "Public" {
   name                        = "AllowPublicAccess"
-  count                       = local.shortenv == "production" ? 1 : 0 
+  count                       = local.gateway_public_access ? 1 : 0 
   resource_group_name         = azurerm_resource_group.app-gateway.name
   network_security_group_name = azurerm_network_security_group.gateway.name
   source_address_prefix       = "*"

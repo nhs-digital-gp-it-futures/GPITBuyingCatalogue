@@ -26,8 +26,8 @@ variable "server_id" {
   type = string
 }
 
-variable "core_env" {
-  type = string
+variable "is_live_environment" {
+  type = bool
 }
 
 variable "log_analytics_workspace_id" {

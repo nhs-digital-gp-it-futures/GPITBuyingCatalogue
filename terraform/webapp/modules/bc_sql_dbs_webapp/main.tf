@@ -2,7 +2,7 @@ resource "azurerm_mssql_database" "sql_main_primary" {
   name      = "BuyingCatalogue-${var.environment}"
   server_id = var.server_id
   collation = var.sql_collation
-  sku_name  = var.core_env != "dev" ? "S1" : "S0"
+  sku_name  = var.is_live_environment ? "S1" : "S0"
 
   tags = {
     environment  = var.environment,
@@ -10,13 +10,13 @@ resource "azurerm_mssql_database" "sql_main_primary" {
   }
 
   short_term_retention_policy {
-    retention_days = var.core_env != "dev" ? 30 : 7
+    retention_days = var.is_live_environment ? 30 : 7
   }
 
   long_term_retention_policy {
-    weekly_retention          = var.core_env != "dev" ? "P12W" : null
-    monthly_retention         = var.core_env != "dev" ? "P12M" : null
-    yearly_retention          = var.core_env != "dev" ? "P6Y" : null
+    weekly_retention          = var.is_live_environment ? "P12W" : null
+    monthly_retention         = var.is_live_environment ? "P12M" : null
+    yearly_retention          = var.is_live_environment ? "P6Y" : null
     week_of_year              = 1
     immutable_backups_enabled = false
   }
@@ -60,7 +60,7 @@ resource "azurerm_mssql_database" "sql_main_primary_replica" {
   create_mode                 = "Secondary"
   server_id                   = data.azurerm_mssql_server.sql_replica_server[0].id
   creation_source_database_id = azurerm_mssql_database.sql_main_primary.id
-  sku_name                    = var.core_env != "dev" ? "S1" : "S0"
+  sku_name                    = var.is_live_environment ? "S1" : "S0"
   tags = {
     environment  = var.environment,
     architecture = "new"
