@@ -60,17 +60,6 @@ resource "azurerm_web_application_firewall_policy" "waf_policy" {
       selector                = "buyingcatalogue-cookie-consent"
     }
 
-    exclusion {
-        match_variable          = "QueryString"
-        selector_match_operator = "Equals"
-        selector                = "search"
-
-        exclusions {
-            rule_group_name = "REQUEST-941-APPLICATION-ATTACK-XSS"
-            rule_ids        = ["941100"]
-        }
-    }
-
     managed_rule_set {
       type    = "OWASP"
       version = "3.2"
