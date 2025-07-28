@@ -61,15 +61,13 @@ resource "azurerm_web_application_firewall_policy" "waf_policy" {
     }
 
     exclusion {
-        content {
-            match_variable          = "QueryString"
-            selector_match_operator = "Equals"
-            selector                = "search"
+        match_variable          = "QueryString"
+        selector_match_operator = "Equals"
+        selector                = "search"
 
-            exclusions {
-                rule_group_name = "REQUEST-941-APPLICATION-ATTACK-XSS"
-                rule_ids        = ["941100"]
-            }
+        exclusions {
+            rule_group_name = "REQUEST-941-APPLICATION-ATTACK-XSS"
+            rule_ids        = ["941100"]
         }
     }
 
