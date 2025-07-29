@@ -243,13 +243,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Order
             order.Contract = new Contract() { ContractBilling = new ContractBilling(), ImplementationPlan = new ImplementationPlan(), };
             order.ContractFlags.UseDefaultDataProcessing = true;
             order.Completed = null;
+            order.CommencementDate = DateTime.Now.AddMonths(6);
+            order.MaximumTerm = 12;
             order.OrderItems.ForEach(x =>
             {
                 order.OrderSublocations.ForEach(y => y.SublocationRecipients.ForEach(z =>
                     z.OrderItemSublocationRecipients.Add(
                         new OrderItemSublocationRecipient(order.Id, z.RecipientOdsCode, x.CatalogueItemId)
                         {
-                            Quantity = 5, DeliveryDate = new DateTime(2024, 01, 01),
+                            Quantity = 5, DeliveryDate = DateTime.Now.AddMonths(6),
                         })));
                 x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
             });
