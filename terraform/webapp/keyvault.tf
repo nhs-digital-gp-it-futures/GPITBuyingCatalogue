@@ -1,7 +1,7 @@
 module "keyvault" {
   source                    = "./modules/keyvault"
 
-  count = !local.is_dr ? 1 : 0
+  count = 1
 
   environment               = var.environment
   region                    = var.region

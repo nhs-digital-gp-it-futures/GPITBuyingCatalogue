@@ -12,7 +12,7 @@ resource "azurerm_application_insights" "appinsights" {
 }
 
 resource "azurerm_application_insights_standard_web_test" "app_webtest" {
-  count                   = local.core_env != "dev" ? 1 : 0
+  count                   = local.is_live_environment ? 1 : 0
   name                    = "health-check"
   resource_group_name     = azurerm_resource_group.app-insights.name
   location                = var.region

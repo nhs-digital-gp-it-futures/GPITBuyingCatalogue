@@ -1,6 +1,6 @@
 module "sql_server_pri" {
   source                     = "./modules/bc_sql_server"
-  count                      = !local.is_dr ? 1 : 0
+  count                      = 1
   environment                = var.environment
   region                     = var.region
   resource_group             = azurerm_resource_group.sql-server.name
@@ -17,7 +17,7 @@ resource "azurerm_mssql_virtual_network_rule" "sqlvnetrule" {
   name                = "${var.project}-${var.environment}-subnet-rule"
   server_id           = join("", module.sql_server_pri[*].sql_server_id)
   subnet_id           = azurerm_subnet.backend.id
-  count               = !local.is_dr ? 1 : 0
+  count               = 1
 
   depends_on = [
     module.sql_server_pri
@@ -26,7 +26,7 @@ resource "azurerm_mssql_virtual_network_rule" "sqlvnetrule" {
 
 module "sql_server_sec" {
   source                     = "./modules/bc_sql_server"
-  count                      = local.shortenv == "preprod" || local.shortenv == "production" ? 1 : 0 
+  count                      = local.is_live_environment ? 1 : 0 
   environment                = var.environment
   region                     = local.sql_region2
   resource_group             = azurerm_resource_group.sql-server.name
