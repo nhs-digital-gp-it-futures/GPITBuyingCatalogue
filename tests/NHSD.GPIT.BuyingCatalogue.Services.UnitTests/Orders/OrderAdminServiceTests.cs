@@ -197,6 +197,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             OrderAdminService service,
             DateTime completedDate)
         {
+            foreach (Order order in orders)
+            {
+                order.OrderingParty = organisation;
+            }
+
             orders.First().Completed = null;
             for (int i = 1; i < orders.Count; i++)
             {

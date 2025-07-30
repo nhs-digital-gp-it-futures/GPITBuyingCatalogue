@@ -1,15 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Contracts;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates;
 
@@ -25,18 +24,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         private readonly IDeliveryDateService deliveryDateService;
         private readonly IOrderService orderService;
         private readonly IRoutingService routingService;
-        private readonly IOdsService odsService;
 
         public DeliveryDatesController(
             IDeliveryDateService deliveryDateService,
             IOrderService orderService,
-            IRoutingService routingService,
-            IOdsService odsService)
+            IRoutingService routingService)
         {
             this.deliveryDateService = deliveryDateService ?? throw new ArgumentNullException(nameof(deliveryDateService));
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.routingService = routingService ?? throw new ArgumentNullException(nameof(routingService));
-            this.odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
         }
 
         [HttpGet("select")]
@@ -156,10 +152,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
         {
             var orderWrapper = await orderService.GetOrderWithOrderItems(callOffId, internalOrgId);
 
-            // If there are no new recipients for this item (e.g. the original solution in a amend)
-            if (orderWrapper.DetermineOrderRecipients(catalogueItemId).IsNullOrEmpty())
+            // If there are no new recipients for this item (e.g. the original solution in an amend)
+            if (orderWrapper.DetermineOrderRecipients(catalogueItemId) is null or { Count: 0 })
             {
-                var next = routingService.GetRoute(
+                RoutingResult next = routingService.GetRoute(
                     RoutingPoint.EditDeliveryDates,
                     orderWrapper,
                     new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
@@ -172,11 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
                 orderWrapper,
                 new RouteValues(internalOrgId, callOffId, catalogueItemId) { Source = source });
 
-            var orderRecipients = orderWrapper.DetermineOrderRecipients(catalogueItemId);
-            var organisations = (await odsService.GetServiceRecipientsById(internalOrgId, orderRecipients.Select(x => x.OdsCode)))
-                .ToDictionary(sr => sr.OrgId, sr => sr.Location);
-
-            var model = new EditDatesModel(orderWrapper, catalogueItemId, organisations, source)
+            var model = new EditDatesModel(orderWrapper, catalogueItemId, source)
             {
                 BackLink = Url.Action(route.ActionName, route.ControllerName, route.RouteValues),
             };
@@ -242,15 +234,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.Contracts
             var solutionId = order.GetSolutionId();
 
             var recipients = wrapper.DetermineOrderRecipients(catalogueItemId);
-            var dates = (model.MatchDates == true && solutionId is not null)
+            List<RecipientDeliveryDateDto> dates = model.MatchDates == true && solutionId is not null
                 ? recipients
-                    .Select(
-                        x => new RecipientDeliveryDateDto(
-                            x.OdsCode,
-                            x.GetDeliveryDateForItem(solutionId.Value)!.Value))
+                    .Select(x => new RecipientDeliveryDateDto(
+                        x.RecipientOdsCode,
+                        x.GetDeliveryDateForItem(solutionId.Value)!.Value))
                     .ToList()
                 : recipients
-                    .Select(x => new RecipientDeliveryDateDto(x.OdsCode, order.DeliveryDate!.Value))
+                    .Select(x => new RecipientDeliveryDateDto(x.RecipientOdsCode, order.DeliveryDate!.Value))
                     .ToList();
 
             await deliveryDateService.SetDeliveryDates(order.Id, catalogueItemId, dates);

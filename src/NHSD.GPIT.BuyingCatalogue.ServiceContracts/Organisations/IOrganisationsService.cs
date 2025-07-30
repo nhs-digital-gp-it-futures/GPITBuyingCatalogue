@@ -12,6 +12,8 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations
 
         Task<Organisation> GetOrganisationByInternalIdentifier(string internalIdentifier);
 
+        Task<string> GetOrganisationExternalIdentifierByInternalIdentifier(string internalIdentifier);
+
         Task<List<Organisation>> GetOrganisationsByInternalIdentifiers(string[] internalIdentifiers);
 
         Task<List<Organisation>> GetOrganisationsBySearchTerm(string searchTerm);

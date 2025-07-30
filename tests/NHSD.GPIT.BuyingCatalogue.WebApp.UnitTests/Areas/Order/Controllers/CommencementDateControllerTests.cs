@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -107,7 +108,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 MaximumTerm = $"{maximumTerm}",
             };
 
-            order.OrderRecipients.SelectMany(x => x.OrderItemRecipients).ForEach(x => x.DeliveryDate = null);
+            order.FlattenedRecipients.SelectMany(x => x.OrderItemSublocationRecipients)
+                .ForEach(x => x.DeliveryDate = null);
 
             orderService
                 .GetOrderWithOrderItems(order.CallOffId, internalOrgId)
@@ -152,7 +154,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
                 MaximumTerm = $"{maximumTerm}",
             };
 
-            order.OrderItems.ForEach(i => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(i.CatalogueItemId, DateTime.Today)));
+            order.OrderItems.ForEach(i =>
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(i.CatalogueItemId, DateTime.Today)));
 
             orderService
                 .GetOrderWithOrderItems(order.CallOffId, internalOrgId)
@@ -196,7 +199,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             CommencementDateController controller)
         {
             order.CommencementDate = DateTime.Today;
-            var dates = order.OrderRecipients.SelectMany(x => x.OrderItemRecipients).ToList();
+            List<OrderItemSublocationRecipient> dates = order.FlattenedRecipients
+                .SelectMany(x => x.OrderItemSublocationRecipients)
+                .ToList();
             dates.ForEach(x => x.DeliveryDate = DateTime.Today);
 
             orderService

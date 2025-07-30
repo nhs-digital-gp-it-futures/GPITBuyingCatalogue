@@ -11,6 +11,15 @@ BEGIN
     WHERE
         UserName = 'SueSmith@email.com';
 
+    Declare @OrderingPartyOdsCode NVARCHAR(10);
+
+    SELECT
+        @OrderingPartyOdsCode = ExternalIdentifier
+    FROM
+        organisations.Organisations
+    WHERE
+        Id = @OrderingParty
+
     DECLARE
         @SupplierId INT = 99999, --notEmis Health,
         @CatalogueSolutionId NVARCHAR(14) = '99999-89', --NotEmis Web GP
@@ -300,19 +309,24 @@ BEGIN
     FROM catalogue.CataloguePriceTiers
     WHERE CataloguePriceId = @CatalogueSolutionPriceId
 
-    INSERT INTO ordering.OrderRecipients (OrderId, OdsCode)
+    INSERT INTO ordering.OrderSublocations (OrderId, SublocationOdsCode, OwnerOdsCode)
     VALUES
-    (@OrderId, 'B84007'),
-    (@OrderId, 'B84016'),
-    (@OrderId, 'B84613'),
-    (@OrderId, 'Y02572');
+    (@OrderId, '02T', @OrderingPartyOdsCode),
+    (@OrderId, '03R', @OrderingPartyOdsCode)
 
-    INSERT INTO ordering.OrderItemRecipients (OrderId, CatalogueItemId, OdsCode, Quantity)
+    INSERT INTO ordering.OrderSublocationRecipients (OrderId, ParentSublocationOdsCode, RecipientOdsCode)
     VALUES
-    (@OrderId, @CatalogueSolutionId, 'B84007', 123),
-    (@OrderId, @CatalogueSolutionId, 'B84016', 234),
-    (@OrderId, @CatalogueSolutionId, 'B84613', 345),
-    (@OrderId, @CatalogueSolutionId, 'Y02572', 456);
+    (@OrderId, '02T', 'B84007'),
+    (@OrderId, '02T', 'B84016'),
+    (@OrderId, '02T', 'B84613'),
+    (@OrderId, '02T', 'Y02572');
+
+    INSERT INTO ordering.OrderItemSublocationRecipients (OrderId, CatalogueItemId, ParentSublocationOdsCode, RecipientOdsCode, Quantity)
+    VALUES
+    (@OrderId, @CatalogueSolutionId,'02T', 'B84007', 123),
+    (@OrderId, @CatalogueSolutionId,'02T', 'B84016', 234),
+    (@OrderId, @CatalogueSolutionId,'02T', 'B84613', 345),
+    (@OrderId, @CatalogueSolutionId,'02T', 'Y02572', 456);
 
     --insert add ser
 
@@ -348,12 +362,12 @@ BEGIN
     FROM catalogue.CataloguePriceTiers
     WHERE CataloguePriceId = @AdditionalServicePriceId
 
-    INSERT INTO ordering.OrderItemRecipients (OrderId, CatalogueItemId, OdsCode, Quantity)
+    INSERT INTO ordering.OrderItemSublocationRecipients (OrderId, CatalogueItemId, ParentSublocationOdsCode, RecipientOdsCode, Quantity)
     VALUES
-    (@OrderId, @AdditionalServiceId, 'B84007', 123),
-    (@OrderId, @AdditionalServiceId, 'B84016', 234),
-    (@OrderId, @AdditionalServiceId, 'B84613', 345),
-    (@OrderId, @AdditionalServiceId, 'Y02572', 456);
+    (@OrderId, @AdditionalServiceId, '02T', 'B84007', 123),
+    (@OrderId, @AdditionalServiceId, '02T', 'B84016', 234),
+    (@OrderId, @AdditionalServiceId, '02T', 'B84613', 345),
+    (@OrderId, @AdditionalServiceId, '02T', 'Y02572', 456);
 
     UPDATE ordering.Orders SET OrderNumber = Id
 END

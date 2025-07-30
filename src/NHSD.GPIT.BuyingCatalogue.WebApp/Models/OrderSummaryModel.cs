@@ -46,8 +46,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
             var model = new AmendOrderItemModel(
                 CallOffId,
                 Order.OrderType,
-                RolledUp.OrderRecipients,
-                Previous?.OrderRecipients,
+                RolledUp.FlattenedRecipients.ToList(),
+                Previous?.FlattenedRecipients.ToList(),
                 solution,
                 Previous?.OrderItem(solution.CatalogueItemId),
                 Order.IsAmendment,

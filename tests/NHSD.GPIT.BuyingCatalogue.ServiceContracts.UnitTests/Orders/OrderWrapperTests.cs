@@ -6,6 +6,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Xunit;
@@ -54,11 +55,23 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
 
         [Theory]
         [MockAutoData]
-        public static void OrderWrapper_FundingTypesForItem_Returnds_None_When_No_Funding(CatalogueItem catalogueItem, IFixture fixture)
+        public static void OrderWrapper_FundingTypesForItem_Returns_None_When_No_Funding(
+            CatalogueItem catalogueItem,
+            IFixture fixture,
+            Organisation organisation)
         {
             OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, null);
 
-            Order order = BuildOrder(fixture, [orderItem], [BuildOrderRecipient(fixture, [orderItem.CatalogueItemId])]);
+            Order order = BuildOrder(
+                fixture,
+                [orderItem],
+                [
+                    BuildOrderSublocation(
+                        fixture,
+                        "XXXX",
+                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem.CatalogueItemId])]),
+                ],
+                organisation);
 
             var orderWrapper = new OrderWrapper(order);
 
@@ -66,17 +79,29 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
 
             result.Should()
                 .NotBeEmpty()
-                .And.BeEquivalentTo(new OrderItemFundingType[] { OrderItemFundingType.None });
+                .And.BeEquivalentTo([OrderItemFundingType.None]);
         }
 
         [Theory]
         [MockAutoData]
-        public static void OrderWrapper_FundingTypesForItem_Returnds_Multiple(CatalogueItem catalogueItem, IFixture fixture)
+        public static void OrderWrapper_FundingTypesForItem_Returns_Multiple(
+            CatalogueItem catalogueItem,
+            IFixture fixture,
+            Organisation organisation)
         {
             OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
             OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.MixedFunding);
 
-            Order order = BuildOrder(fixture, [orderItem], [BuildOrderRecipient(fixture, [orderItem.CatalogueItemId])]);
+            Order order = BuildOrder(
+                fixture,
+                [orderItem],
+                [
+                    BuildOrderSublocation(
+                        fixture,
+                        "XXXX",
+                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem.CatalogueItemId])]),
+                ],
+                organisation);
             var amendedOrder = order.BuildAmendment(2);
             amendedOrder.OrderItems = [amendedOrderItem,];
 
@@ -86,17 +111,29 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
 
             result.Should()
                 .NotBeEmpty()
-                .And.BeEquivalentTo(new OrderItemFundingType[] { OrderItemFundingType.LocalFunding, OrderItemFundingType.MixedFunding });
+                .And.BeEquivalentTo([OrderItemFundingType.LocalFunding, OrderItemFundingType.MixedFunding]);
         }
 
         [Theory]
         [MockAutoData]
-        public static void OrderWrapper_FundingTypesForItem_Distinct_Result(CatalogueItem catalogueItem, IFixture fixture)
+        public static void OrderWrapper_FundingTypesForItem_Distinct_Result(
+            CatalogueItem catalogueItem,
+            Organisation organisation,
+            IFixture fixture)
         {
             OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
             OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
 
-            Order order = BuildOrder(fixture, [orderItem], [BuildOrderRecipient(fixture, [orderItem.CatalogueItemId])]);
+            Order order = BuildOrder(
+                fixture,
+                [orderItem],
+                [
+                    BuildOrderSublocation(
+                        fixture,
+                        "XXXX",
+                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem.CatalogueItemId])]),
+                ],
+                organisation);
             var amendedOrder = order.BuildAmendment(2);
             amendedOrder.OrderItems = [amendedOrderItem];
 
@@ -106,91 +143,140 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
 
             result.Should()
                 .NotBeEmpty()
-                .And.BeEquivalentTo(new OrderItemFundingType[] { OrderItemFundingType.LocalFunding });
+                .And.BeEquivalentTo([OrderItemFundingType.LocalFunding]);
         }
 
         [Theory]
         [MockAutoData]
-        public static void OrderWrapper_RolledUp_Uses_Old_OrderItem_Data(CatalogueItem catalogueItem, IFixture fixture)
+        public static void OrderWrapper_RolledUp_Uses_Old_OrderItem_Data_Single_sublocation(
+            CatalogueItem catalogueItem,
+            IFixture fixture,
+            Organisation organisation)
         {
             OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
             OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.MixedFunding);
 
-            Order order = BuildOrder(fixture, [orderItem], [BuildOrderRecipient(fixture, [orderItem.CatalogueItemId])]);
+            Order order = BuildOrder(
+                fixture,
+                [orderItem],
+                [
+                    BuildOrderSublocation(
+                        fixture,
+                        "XXXX",
+                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem.CatalogueItemId])]),
+                ],
+                organisation);
             var amendedOrder = order.BuildAmendment(2);
             amendedOrder.OrderItems = [amendedOrderItem];
-            amendedOrder.OrderRecipients = [BuildOrderRecipient(fixture, [catalogueItem.Id])];
+            amendedOrder.OrderSublocations =
+            [
+                BuildOrderSublocation(
+                    fixture,
+                    "XXXX",
+                    [
+                        BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id]),
+                    ]),
+            ];
 
             var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
             orderWrapper.Previous.OrderItems.Count.Should().Be(1);
-            orderWrapper.Previous.OrderRecipients.Count.Should().Be(1);
+            orderWrapper.Previous.FlattenedRecipients.Count().Should().Be(1);
             orderWrapper.Previous.OrderItems.First().FundingType.Should().Be(OrderItemFundingType.LocalFunding);
 
             orderWrapper.Order.OrderItems.Count.Should().Be(1);
-            orderWrapper.Order.OrderRecipients.Count.Should().Be(1);
+            orderWrapper.Order.FlattenedRecipients.Count().Should().Be(1);
             orderWrapper.Order.OrderItems.First().FundingType.Should().Be(OrderItemFundingType.MixedFunding);
 
             orderWrapper.RolledUp.OrderItems.Count.Should().Be(1);
-            orderWrapper.RolledUp.OrderRecipients.Count.Should().Be(2);
+            orderWrapper.RolledUp.FlattenedRecipients.Count().Should().Be(2);
             orderWrapper.RolledUp.OrderItems.First().FundingType.Should().Be(OrderItemFundingType.LocalFunding);
         }
 
         [Theory]
         [MockAutoData]
-        public static void OrderWrapper_RolledUp_New_Recipients_For_Existing_Order_Item(CatalogueItem catalogueItem, IFixture fixture)
+        public static void OrderWrapper_RolledUp_Uses_Old_OrderItem_Data_Multiple_sublocations(
+            CatalogueItem catalogueItem,
+            IFixture fixture,
+            Organisation organisation)
         {
             OrderItem orderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.LocalFunding);
+            OrderItem amendedOrderItem = BuildOrderItem(fixture, catalogueItem, OrderItemFundingType.MixedFunding);
 
-            Order order = BuildOrder(fixture, [orderItem], [BuildOrderRecipient(fixture, [orderItem.CatalogueItemId])]);
-            var amendedOrder = order.BuildAmendment(2);
-            amendedOrder.OrderRecipients.Add(BuildOrderRecipient(fixture, [catalogueItem.Id]));
+            Order order = BuildOrder(
+                fixture,
+                [orderItem],
+                [
+                    BuildOrderSublocation(
+                        fixture,
+                        "XXXX",
+                        [BuildOrderSublocationRecipient(fixture, "XXXX", [orderItem.CatalogueItemId])]),
+                    BuildOrderSublocation(
+                        fixture,
+                        "XXXY",
+                        [BuildOrderSublocationRecipient(fixture, "XXXY", [orderItem.CatalogueItemId])]),
+                ],
+                organisation);
+            Order amendedOrder = order.BuildAmendment(2);
+            amendedOrder.OrderItems = [amendedOrderItem];
+            amendedOrder.OrderSublocations =
+            [
+                BuildOrderSublocation(
+                    fixture,
+                    "XXXX",
+                    [
+                        BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id]),
+                    ]),
+                BuildOrderSublocation(
+                    fixture,
+                    "XXXY",
+                    [
+                        BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id]),
+                    ]),
+                BuildOrderSublocation(
+                    fixture,
+                    "XXXZ",
+                    [
+                        BuildOrderSublocationRecipient(fixture, "XXXX", [catalogueItem.Id]),
+                    ]),
+            ];
 
             var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
             orderWrapper.Previous.OrderItems.Count.Should().Be(1);
-            orderWrapper.Previous.OrderRecipients.Count.Should().Be(1);
+            orderWrapper.Previous.FlattenedRecipients.Count().Should().Be(2);
+            orderWrapper.Previous.OrderItems.First().FundingType.Should().Be(OrderItemFundingType.LocalFunding);
 
             orderWrapper.Order.OrderItems.Count.Should().Be(1);
-            orderWrapper.Order.OrderRecipients.Count.Should().Be(2);
-            orderWrapper.AddedRecipientsOdsCodes().Count().Should().Be(1);
-            orderWrapper.DetermineOrderRecipients(catalogueItem.Id).Count.Should().Be(1);
+            orderWrapper.Order.FlattenedRecipients.Count().Should().Be(3);
+            orderWrapper.Order.OrderItems.First().FundingType.Should().Be(OrderItemFundingType.MixedFunding);
 
             orderWrapper.RolledUp.OrderItems.Count.Should().Be(1);
-            orderWrapper.RolledUp.OrderRecipients.Count.Should().Be(2);
+            orderWrapper.RolledUp.FlattenedRecipients.Count().Should().Be(5);
+            orderWrapper.RolledUp.OrderItems.First().FundingType.Should().Be(OrderItemFundingType.LocalFunding);
         }
 
-        [Theory]
-        [MockAutoData]
-        public static void OrderWrapper_RolledUp_New_Recipients_For_New_Order_Item(CatalogueItem originalCatalogueItem, CatalogueItem addedCatalogueItem, IFixture fixture)
+        private static OrderSublocation BuildOrderSublocation(
+            IFixture fixture,
+            string sublocationOdsCode,
+            OrderSublocationRecipient[] orderSublocationRecipients)
         {
-            OrderItem orderItem = BuildOrderItem(fixture, originalCatalogueItem, OrderItemFundingType.LocalFunding);
-            OrderItem amendedOrderItem = BuildOrderItem(fixture, addedCatalogueItem, OrderItemFundingType.MixedFunding);
+            OrderSublocation sublocation = fixture.Build<OrderSublocation>()
+                .With(s => s.SublocationRecipients, new List<OrderSublocationRecipient>(orderSublocationRecipients))
+                .With(s => s.SublocationOdsCode, sublocationOdsCode)
+                .Create();
 
-            Order order = BuildOrder(fixture, [orderItem], [BuildOrderRecipient(fixture, [originalCatalogueItem.Id])]);
-            var amendedOrder = order.BuildAmendment(2);
-            amendedOrder.OrderItems.Add(amendedOrderItem);
-            amendedOrder.OrderRecipients.Add(BuildOrderRecipient(fixture, [addedCatalogueItem.Id]));
-
-            var orderWrapper = new OrderWrapper(amendedOrder, [order]);
-
-            orderWrapper.Previous.OrderItems.Count.Should().Be(1);
-            orderWrapper.Previous.OrderRecipients.Count.Should().Be(1);
-
-            orderWrapper.Order.OrderItems.Count.Should().Be(2);
-            orderWrapper.Order.OrderRecipients.Count.Should().Be(2);
-            orderWrapper.AddedRecipientsOdsCodes().Count().Should().Be(1);
-            orderWrapper.DetermineOrderRecipients(originalCatalogueItem.Id).Count.Should().Be(1);
-            orderWrapper.DetermineOrderRecipients(addedCatalogueItem.Id).Count.Should().Be(2);
-
-            orderWrapper.RolledUp.OrderItems.Count.Should().Be(2);
-            orderWrapper.RolledUp.OrderRecipients.Count.Should().Be(2);
+            return sublocation;
         }
 
-        private static OrderRecipient BuildOrderRecipient(IFixture fixture, CatalogueItemId[] catalogueItemIds = null)
+        private static OrderSublocationRecipient BuildOrderSublocationRecipient(
+            IFixture fixture,
+            string sublocationOdsCode,
+            CatalogueItemId[] catalogueItemIds = null)
         {
-            var recipient = fixture.Build<OrderRecipient>()
-                .Without(r => r.OrderItemRecipients)
+            OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
+                .Without(r => r.OrderItemSublocationRecipients)
+                .With(r => r.ParentSublocationOdsCode, sublocationOdsCode)
                 .Create();
 
             UpdateRecipientToItem(recipient, catalogueItemIds);
@@ -198,7 +284,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             return recipient;
         }
 
-        private static void UpdateRecipientToItem(OrderRecipient recipient, CatalogueItemId[] catalogueItemIds)
+        private static void UpdateRecipientToItem(
+            OrderSublocationRecipient recipient,
+            CatalogueItemId[] catalogueItemIds)
         {
             if (catalogueItemIds != null)
             {
@@ -209,12 +297,18 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.UnitTests.Orders
             }
         }
 
-        private static Order BuildOrder(IFixture fixture, OrderItem[] orderItems, OrderRecipient[] recipients)
+        private static Order BuildOrder(
+            IFixture fixture,
+            OrderItem[] orderItems,
+            OrderSublocation[] orderSublocations,
+            Organisation organisation)
         {
             return fixture.Build<Order>()
-                .With(o => o.OrderRecipients, new HashSet<OrderRecipient>(recipients))
+                .With(o => o.OrderingParty, organisation)
+                .With(o => o.OrderSublocations, new List<OrderSublocation>(orderSublocations))
                 .With(o => o.Revision, 1)
                 .With(o => o.OrderItems, new HashSet<OrderItem>(orderItems))
+                .With(o => o.OrderNumber, new Random().Next(0, 999999))
                 .Create();
         }
 

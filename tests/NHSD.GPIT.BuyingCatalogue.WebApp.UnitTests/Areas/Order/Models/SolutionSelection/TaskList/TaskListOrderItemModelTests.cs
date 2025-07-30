@@ -83,10 +83,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem,
-            OrderRecipient[] recipients)
+            OrderSublocationRecipient[] recipients)
         {
             orderItem.Quantity = null;
-            recipients.ForEach(x => x.OrderItemRecipients.Clear());
+            recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
 
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
@@ -103,7 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem,
-            OrderRecipient[] recipients)
+            OrderSublocationRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = provisioningType;
             if (cataloguePriceQuantityCalculationType.HasValue)
@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             }
 
             orderItem.Quantity = 1;
-            recipients.ForEach(x => x.OrderItemRecipients.Clear());
+            recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
 
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem,
-            OrderRecipient[] recipients)
+            OrderSublocationRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = provisioningType;
             if (cataloguePriceQuantityCalculationType.HasValue)
@@ -149,13 +149,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         [MockInlineAutoData(ProvisioningType.Patient, null)]
         [MockInlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
         [MockInlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient)]
-        public static void QuantityStatus_Amendment_PerServiceRecipient_Price_OrderItemRecipientQuantitiesEntered_ExpectedResult(
-            ProvisioningType provisioningType,
-            CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem,
-            OrderRecipient[] recipients)
+        public static void
+            QuantityStatus_Amendment_PerServiceRecipient_Price_OrderItemRecipientQuantitiesEntered_ExpectedResult(
+                ProvisioningType provisioningType,
+                CataloguePriceQuantityCalculationType? cataloguePriceQuantityCalculationType,
+                string internalOrgId,
+                CallOffId callOffId,
+                OrderItem orderItem,
+                OrderSublocationRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = provisioningType;
             if (cataloguePriceQuantityCalculationType.HasValue)
@@ -181,14 +182,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem,
-            OrderRecipient[] recipients)
+            OrderSublocationRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
                 CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
             orderItem.Quantity = 1;
-            recipients.ForEach(x => x.OrderItemRecipients.Clear());
+            recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
 
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
 
@@ -197,18 +198,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
         [Theory]
         [MockAutoData]
-        public static void QuantityStatus_Amendment_PerOrderItemProvisioningType_OrderItemQuantityEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem,
-            OrderRecipient[] recipients)
+        public static void
+            QuantityStatus_Amendment_PerOrderItemProvisioningType_OrderItemQuantityEntered_ExpectedResult(
+                string internalOrgId,
+                CallOffId callOffId,
+                OrderItem orderItem,
+                OrderSublocationRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
                 CataloguePriceQuantityCalculationType.PerSolutionOrService;
 
             orderItem.Quantity = 1;
-            recipients.ForEach(x => x.OrderItemRecipients.Clear());
+            recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
 
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem)
             {
@@ -222,11 +224,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
 
         [Theory]
         [MockAutoData]
-        public static void QuantityStatus_PerOrderItemProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
-            string internalOrgId,
-            CallOffId callOffId,
-            OrderItem orderItem,
-            OrderRecipient[] recipients)
+        public static void
+            QuantityStatus_PerOrderItemProvisioningType_OrderItemRecipientQuantitiesEntered_ExpectedResult(
+                string internalOrgId,
+                CallOffId callOffId,
+                OrderItem orderItem,
+                OrderSublocationRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Declarative;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType =
@@ -250,7 +253,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             string internalOrgId,
             CallOffId callOffId,
             OrderItem orderItem,
-            OrderRecipient[] recipients)
+            OrderSublocationRecipient[] recipients)
         {
             orderItem.OrderItemPrice.ProvisioningType = provisioningType;
             if (cataloguePriceQuantityCalculationType.HasValue)
@@ -259,7 +262,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             }
 
             orderItem.Quantity = null;
-            recipients.ForEach(x => x.OrderItemRecipients.Clear());
+            recipients.ForEach(x => x.OrderItemSublocationRecipients.Clear());
             recipients.First().SetQuantityForItem(orderItem.CatalogueItemId, 1);
 
             var model = new TaskListOrderItemModel(internalOrgId, callOffId, null, recipients, orderItem);
@@ -272,7 +275,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
         public static void QuantityStatus_AssociatedServiceAmendment_ExpectedResult(
             string internalOrgId,
             OrderItem orderItem,
-            OrderRecipient[] recipients)
+            OrderSublocationRecipient[] recipients)
         {
             var callOffId = new CallOffId(1, 2);
 
@@ -291,7 +294,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Solution
             TaskProgress taskProgress,
             string internalOrgId,
             OrderItem orderItem,
-            OrderRecipient[] recipients)
+            OrderSublocationRecipient[] recipients)
         {
             var callOffId = new CallOffId(1, 2);
 

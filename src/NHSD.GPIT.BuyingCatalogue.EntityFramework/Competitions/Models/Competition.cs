@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Filtering.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -14,7 +14,6 @@ public class Competition
     public Competition()
     {
         CompetitionSolutions = new HashSet<CompetitionSolution>();
-        Recipients = new HashSet<OdsOrganisation>();
     }
 
     public int Id { get; set; }
@@ -63,7 +62,15 @@ public class Competition
 
     public ICollection<CompetitionSolution> CompetitionSolutions { get; set; }
 
-    public ICollection<OdsOrganisation> Recipients { get; set; }
+    public ICollection<CompetitionSublocation> CompetitionSublocations { get; set; } = [];
 
     public ICollection<Order> Orders { get; set; }
+
+    /// <summary>
+    ///     Gets all recipient organisations. Requires <see cref="CompetitionSublocations" /> and all child entities to
+    ///     be loaded.
+    /// </summary>
+    public IEnumerable<CompetitionSublocationRecipient> FlattenedRecipients => CompetitionSublocations?
+        .Where(x => x.SublocationRecipients is { Count: > 0 })
+        .SelectMany(x => x.SublocationRecipients);
 }

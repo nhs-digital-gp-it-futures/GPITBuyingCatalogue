@@ -16,13 +16,14 @@ public class OrderingInformationModel : NavBaseModel
 
     public OrderingInformationModel(
         Competition competition,
-        CompetitionSolution competitionSolution)
+        CompetitionSolution competitionSolution,
+        int totalRecipientCount)
     {
         InternalOrgId = competition.Organisation.InternalIdentifier;
         CompetitionId = competition.Id;
         CompetitionName = competition.Name;
 
-        NumberOfRecipients = competition.Recipients.Count;
+        NumberOfRecipients = totalRecipientCount;
         ContractLength = competition.ContractLength.GetValueOrDefault();
 
         CompetitionSolution = competitionSolution;

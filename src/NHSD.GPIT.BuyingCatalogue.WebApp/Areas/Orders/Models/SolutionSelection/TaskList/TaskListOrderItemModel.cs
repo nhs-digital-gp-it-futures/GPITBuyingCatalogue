@@ -12,7 +12,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
     {
         private readonly OrderItem rolledUpOrderItem;
 
-        public TaskListOrderItemModel(string internalOrgId, CallOffId callOffId, OrderType orderType, IEnumerable<OrderRecipient> rolledUpOrderRecipients, OrderItem rolledUpOrderItem)
+        public TaskListOrderItemModel(
+            string internalOrgId,
+            CallOffId callOffId,
+            OrderType orderType,
+            IEnumerable<OrderSublocationRecipient> rolledUpOrderRecipients,
+            OrderItem rolledUpOrderItem)
         {
             this.rolledUpOrderItem = rolledUpOrderItem;
 
@@ -24,7 +29,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
             CatalogueItemId = rolledUpOrderItem?.CatalogueItemId ?? default;
             Name = rolledUpOrderItem?.CatalogueItem?.Name ?? string.Empty;
-            RolledUpOrderRecipients = (rolledUpOrderRecipients ?? Enumerable.Empty<OrderRecipient>()).ToList();
+            RolledUpOrderRecipients = (rolledUpOrderRecipients ?? []).ToList();
         }
 
         public string InternalOrgId { get; set; }
@@ -39,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
 
         public bool HasNewRecipients { get; set; }
 
-        public List<OrderRecipient> RolledUpOrderRecipients { get; set; }
+        public List<OrderSublocationRecipient> RolledUpOrderRecipients { get; set; }
 
         public int PreviousRecipients { get; set; }
 

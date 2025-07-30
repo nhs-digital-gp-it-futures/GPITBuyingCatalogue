@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -57,8 +58,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Routing.Providers
                 .Distinct()
                 .ToList();
 
-            var solutionOdsCodes = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId).Select(x => x.OdsCode);
-            var nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(catalogueItemId.Value).Select(x => x.OdsCode);
+            IEnumerable<string> solutionOdsCodes = orderWrapper.DetermineOrderRecipients(solution.CatalogueItemId)
+                .Select(x => x.RecipientOdsCode);
+            IEnumerable<string> nextItemOdsCodes = orderWrapper.DetermineOrderRecipients(catalogueItemId.Value)
+                .Select(x => x.RecipientOdsCode);
             var crossOver = solutionOdsCodes.Intersect(nextItemOdsCodes);
 
             if (!solutionDates.Any()

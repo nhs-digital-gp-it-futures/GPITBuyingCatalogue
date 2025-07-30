@@ -234,7 +234,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             string error,
             OrganisationsController controller)
         {
-            mockOdsService.GetOrganisationByOdsCode(model.OdsCode).Returns((null, error));
+            mockOdsService.GetValidatedBuyerOrganisationByOdsCode(model.OdsCode).Returns((null, error));
             var result = (await controller.Find(model)).As<ViewResult>();
 
             result.Should().NotBeNull();
@@ -254,7 +254,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             OdsOrganisation organisation,
             OrganisationsController controller)
         {
-            mockOdsService.GetOrganisationByOdsCode(model.OdsCode).Returns((organisation, null));
+            mockOdsService.GetValidatedBuyerOrganisationByOdsCode(model.OdsCode).Returns((organisation, null));
 
             mockOrganisationsService.OrganisationExists(organisation).Returns(true);
 
@@ -276,7 +276,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             OdsOrganisation organisation,
             OrganisationsController controller)
         {
-            mockOdsService.GetOrganisationByOdsCode(model.OdsCode).Returns((organisation, null));
+            mockOdsService.GetValidatedBuyerOrganisationByOdsCode(model.OdsCode).Returns((organisation, null));
             var result = (await controller.Find(model)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
@@ -296,7 +296,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             OdsOrganisation organisation,
             OrganisationsController controller)
         {
-            mockOdsService.GetOrganisationByOdsCode(ods).Returns((organisation, null));
+            mockOdsService.GetValidatedBuyerOrganisationByOdsCode(ods).Returns((organisation, null));
 
             var result = (await controller.Select(ods)).As<ViewResult>();
 
@@ -351,7 +351,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             OdsOrganisation organisation,
             OrganisationsController controller)
         {
-            mockOdsService.GetOrganisationByOdsCode(ods).Returns((organisation, null));
+            mockOdsService.GetValidatedBuyerOrganisationByOdsCode(ods).Returns((organisation, null));
 
             var result = (await controller.Create(ods)).As<ViewResult>();
             result.Should().NotBeNull();
@@ -390,7 +390,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             string error,
             OrganisationsController controller)
         {
-            mockOdsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode).Returns((organisation, null));
+            mockOdsService.GetValidatedBuyerOrganisationByOdsCode(model.OdsOrganisation.OdsCode)
+                .Returns((organisation, null));
 
             mockOrgService.AddOrganisation(organisation).Returns((0, error));
 
@@ -416,7 +417,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             int orgId,
             OrganisationsController controller)
         {
-            mockOdsService.GetOrganisationByOdsCode(model.OdsOrganisation.OdsCode).Returns((organisation, null));
+            mockOdsService.GetValidatedBuyerOrganisationByOdsCode(model.OdsOrganisation.OdsCode)
+                .Returns((organisation, null));
 
             mockOrgService.AddOrganisation(organisation).Returns((orgId, null));
 

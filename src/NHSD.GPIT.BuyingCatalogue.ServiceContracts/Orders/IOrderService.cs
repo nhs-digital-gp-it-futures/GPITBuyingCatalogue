@@ -29,6 +29,26 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public Task<OrderWrapper> GetOrderForTaskListStatuses(CallOffId callOffId, string internalOrgId);
 
+        public Task<OrderWrapper> GetOrderWithSublocations(CallOffId callOffId, string internalOrgId);
+
+        public Task<OrderWrapper> GetOrderWithSublocationsAndSublocationRecipients(
+            CallOffId callOffId,
+            string internalOrgId);
+
+        public Task<int> GetOrderTotalRecipientCount(CallOffId callOffId, string internalOrgId);
+
+        public Task<bool> GetOrderHasAnySublocations(CallOffId callOffId, string internalOrgId);
+
+        Task SetSublocations(
+            CallOffId callOffId,
+            string internalOrgId,
+            HashSet<string> sublocationOdsCodes);
+
+        Task SetSublocationsAndRecipients(
+            CallOffId callOffId,
+            string internalOrgId,
+            ICollection<OrderSublocation> orderSublocations);
+
         public Task<List<Order>> GetOrders(int organisationId);
 
         public Task<(PagedList<Order> Orders, IEnumerable<CallOffId> OrderIds)> GetPagedOrders(int organisationId, PageOptions options, string search = null);

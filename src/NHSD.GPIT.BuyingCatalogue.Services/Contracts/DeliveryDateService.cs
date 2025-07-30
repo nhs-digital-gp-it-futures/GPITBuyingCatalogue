@@ -54,7 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task ResetRecipientDeliveryDates(int orderId)
         {
-            var recipients = await dbContext.OrderItemRecipients
+            List<OrderItemSublocationRecipient> recipients = await dbContext.OrderItemSublocationRecipients
                 .Where(x => x.OrderId == orderId)
                 .ToListAsync();
 
@@ -65,17 +65,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
 
         public async Task SetDeliveryDates(int orderId, CatalogueItemId catalogueItemId, List<RecipientDeliveryDateDto> deliveryDates)
         {
-            var recipients = await dbContext.OrderRecipients.Include(x => x.OrderItemRecipients)
-                .Where(x => x.OrderId == orderId)
+            List<OrderItemSublocationRecipient> orderItemSublocationRecipients = await dbContext
+                .OrderItemSublocationRecipients
+                .Where(x => x.OrderId == orderId && x.CatalogueItemId == catalogueItemId)
                 .ToListAsync();
 
-            foreach (var recipient in recipients)
+            foreach (OrderItemSublocationRecipient recipient in orderItemSublocationRecipients)
             {
-                var dto = deliveryDates.FirstOrDefault(x => x.OdsCode == recipient.OdsCode);
+                RecipientDeliveryDateDto dto =
+                    deliveryDates.FirstOrDefault(x => x.OdsCode == recipient.RecipientOdsCode);
 
                 if (dto != null)
                 {
-                    recipient.SetDeliveryDateForItem(catalogueItemId, dto.DeliveryDate);
+                    recipient.DeliveryDate = dto.DeliveryDate;
                 }
             }
 
@@ -91,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Contracts
                 order.DeliveryDate = null;
             }
 
-            var recipients = await dbContext.OrderItemRecipients
+            List<OrderItemSublocationRecipient> recipients = await dbContext.OrderItemSublocationRecipients
                 .Where(x => x.OrderId == orderId && x.DeliveryDate < commencementDate)
                 .ToListAsync();
 

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
@@ -39,7 +41,8 @@ public class TrudOdsService : IOdsService
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<(OdsOrganisation Organisation, string Error)> GetOrganisationByOdsCode(string odsCode)
+    public async Task<(OdsOrganisation Organisation, string Error)> GetValidatedBuyerOrganisationByOdsCode(
+        string odsCode)
     {
         var organisation = await context.OdsOrganisations.Include(x => x.Roles)
             .FirstOrDefaultAsync(x => string.Equals(x.Id, odsCode));
@@ -76,12 +79,10 @@ public class TrudOdsService : IOdsService
             };
         }
 
-        var subLocations = await context.OrganisationRelationships
+        List<string> subLocations = await context.OrganisationRelationships
             .AsNoTracking()
-            .Where(x => x.OwnerOrganisationId == organisation.ExternalIdentifier
-                && x.RelationshipTypeId == settings.InGeographyOfRelType
-                && x.TargetOrganisation.IsActive
-                && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.SubLocationRoleId))
+            .Where(
+                SublocationsForOrganisationExternalIdentifierPredicate(organisation.ExternalIdentifier))
             .Select(x => x.TargetOrganisation.Id)
             .ToListAsync();
 
@@ -104,10 +105,48 @@ public class TrudOdsService : IOdsService
         return serviceRecipients;
     }
 
-    public async Task<IEnumerable<ServiceRecipient>> GetServiceRecipientsById(string internalIdentifier, IEnumerable<string> odsCodes)
+    public async Task<IReadOnlyList<OdsOrganisation>> GetSublocationsByParentOdsCode(string parentOdsCode)
+    {
+        if (string.IsNullOrEmpty(parentOdsCode))
+            throw new ArgumentException(InvalidIdExceptionMessage, nameof(parentOdsCode));
+
+        List<OdsOrganisation> subLocations = await context.OrganisationRelationships
+            .AsNoTracking()
+            .Where(
+                SublocationsForOrganisationExternalIdentifierPredicate(parentOdsCode))
+            .Select(x => MapOrganisation(x.TargetOrganisation))
+            .ToListAsync();
+
+        return subLocations;
+    }
+
+    public async Task<IReadOnlyList<ServiceRecipient>> GetServiceRecipientsBySublocation(
+        string sublocationOdsCode)
+    {
+        if (string.IsNullOrEmpty(sublocationOdsCode))
+            throw new ArgumentException(InvalidIdExceptionMessage, nameof(sublocationOdsCode));
+
+        List<ServiceRecipient> sublocationRecipients = await context.OrganisationRelationships
+            .AsNoTracking()
+            .Where(
+                x => x.OwnerOrganisationId == sublocationOdsCode &&
+                    x.RelationshipTypeId == settings.IsCommissionedByRelType)
+            .Include(x => x.TargetOrganisation)
+            .ThenInclude(y => y.Roles)
+            .Include(x => x.OwnerOrganisation)
+            .Select(SelectServiceRecipientFromRelationshipPredicate())
+            .OrderBy(x => x.Name)
+            .ToListAsync();
+
+        return sublocationRecipients;
+    }
+
+    public async Task<IReadOnlyList<ServiceRecipient>> GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+        string internalIdentifier,
+        IEnumerable<string> odsCodes)
     {
         var organisation = await context.Organisations.FirstOrDefaultAsync(x => x.InternalIdentifier == internalIdentifier);
-        if (organisation is null) return Enumerable.Empty<ServiceRecipient>();
+        if (organisation is null) return [];
 
         var subLocations = await context.OrganisationRelationships
             .AsNoTracking()
@@ -118,21 +157,14 @@ public class TrudOdsService : IOdsService
             .Select(x => x.TargetOrganisation.Id)
             .ToListAsync();
 
-        var serviceRecipients = await context.OrganisationRelationships.AsNoTracking()
+        List<ServiceRecipient> serviceRecipients = await context.OrganisationRelationships.AsNoTracking()
             .Where(
                 x => subLocations.Contains(x.OwnerOrganisationId)
                     && odsCodes.Contains(x.TargetOrganisationId)
                     && x.TargetOrganisation.IsActive
                     && x.RelationshipTypeId == settings.IsCommissionedByRelType
                     && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.GetPrimaryRoleId(OrganisationType.GP)))
-            .Select(
-                x => new ServiceRecipient
-                {
-                    Name = x.TargetOrganisation.Name,
-                    OrgId = x.TargetOrganisationId,
-                    PrimaryRoleId = x.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
-                    Location = x.OwnerOrganisation.Name,
-                })
+            .Select(SelectServiceRecipientFromRelationshipPredicate())
             .ToListAsync();
 
         return serviceRecipients;
@@ -177,11 +209,33 @@ public class TrudOdsService : IOdsService
         },
     };
 
+    private static Expression<Func<OrganisationRelationship, ServiceRecipient>>
+        SelectServiceRecipientFromRelationshipPredicate()
+    {
+        return x => new ServiceRecipient
+        {
+            Name = x.TargetOrganisation.Name,
+            OrgId = x.TargetOrganisation.Id,
+            PrimaryRoleId = x.TargetOrganisation.Roles.FirstOrDefault(y => y.IsPrimaryRole).RoleId,
+            Location = x.OwnerOrganisation.Name,
+            LocationOrgId = x.OwnerOrganisation.Id,
+        };
+    }
+
     private static string GetPrimaryRoleId(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation) =>
         organisation.Roles.FirstOrDefault(x => x.IsPrimaryRole)?.RoleId;
 
     private static bool HasSecondaryRole(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation, string roleId) =>
         organisation.Roles.Any(x => !x.IsPrimaryRole && x.RoleId == roleId);
+
+    private Expression<Func<OrganisationRelationship, bool>> SublocationsForOrganisationExternalIdentifierPredicate(
+        string parentOdsCode)
+    {
+        return x => x.OwnerOrganisationId == parentOdsCode
+            && x.RelationshipTypeId == settings.InGeographyOfRelType
+            && x.TargetOrganisation.IsActive
+            && x.TargetOrganisation.Roles.Any(y => y.RoleId == settings.SubLocationRoleId);
+    }
 
     private bool IsBuyerOrganisation(EntityFramework.OdsOrganisations.Models.OdsOrganisation organisation)
     {

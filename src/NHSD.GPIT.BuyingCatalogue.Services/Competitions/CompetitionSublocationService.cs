@@ -1,0 +1,128 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
+
+namespace NHSD.GPIT.BuyingCatalogue.Services.Competitions
+{
+    public class CompetitionSublocationService(BuyingCatalogueDbContext dbContext, IOdsService odsService)
+        : ICompetitionSublocationService
+    {
+        private readonly BuyingCatalogueDbContext dbContext =
+            dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+
+        private readonly IOdsService odsService = odsService ?? throw new ArgumentNullException(nameof(odsService));
+
+        public async Task<CompetitionSublocation> GetCompetitionSublocationWithRecipients(
+            string externalOrgId,
+            int competitionId,
+            string sublocationOdsCode)
+        {
+            return await dbContext
+                .CompetitionSublocations
+                .AsNoTracking()
+                .Where(
+                    CompetitionSublocationPrimaryKeyPredicate(externalOrgId, competitionId, sublocationOdsCode))
+                .Include(x => x.Competition)
+                .Include(x => x.SublocationOrganisation)
+                .Include(x => x.SublocationRecipients)
+                .ThenInclude(y => y.RecipientOrganisation)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<int> GetCountForCompetitionSublocationRecipients(
+            string externalOrgId,
+            int competitionId,
+            string sublocationOdsCode)
+        {
+            return await dbContext.CompetitionSublocations
+                .Where(CompetitionSublocationPrimaryKeyPredicate(externalOrgId, competitionId, sublocationOdsCode))
+                .Include(x => x.SublocationRecipients)
+                .SelectMany(s => s.SublocationRecipients)
+                .CountAsync();
+        }
+
+        public async Task SetSublocationRecipients(
+            string parentOdsCode,
+            int competitionId,
+            string sublocationOdsCode,
+            HashSet<string> newRecipientOdsCodes)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(parentOdsCode);
+            ArgumentException.ThrowIfNullOrEmpty(sublocationOdsCode);
+            if (newRecipientOdsCodes is null or { Count: 0 })
+            {
+                throw new ArgumentException(@"recipientOdsCodes is null or empty", nameof(newRecipientOdsCodes));
+            }
+
+            CompetitionSublocation sublocation = await dbContext
+                .CompetitionSublocations
+                .Where(
+                    CompetitionSublocationPrimaryKeyPredicate(parentOdsCode, competitionId, sublocationOdsCode))
+                .Include(x => x.Competition)
+                .Include(x => x.SublocationOrganisation)
+                .Include(x => x.SublocationRecipients)
+                .FirstAsync();
+
+            if (sublocation.Competition.Completed.HasValue)
+            {
+                throw new InvalidOperationException(
+                    "Cannot set sublocation recipients on a completed competition.");
+            }
+
+            IEnumerable<ServiceRecipient> validRecipientsForSublocation =
+                await odsService.GetServiceRecipientsBySublocation(sublocationOdsCode);
+
+            HashSet<string> currentRecipientsOdsCodes =
+                sublocation.SublocationRecipients.Select(x => x.RecipientOdsCode).ToHashSet();
+
+            var allIdsValid = newRecipientOdsCodes.All(x => validRecipientsForSublocation.Any(y => y.OrgId == x));
+
+            if (!allIdsValid)
+            {
+                throw new InvalidOperationException(
+                    "One or more requested Ids not found or not valid for this sublocation.");
+            }
+
+            HashSet<string> adds = newRecipientOdsCodes.Except(currentRecipientsOdsCodes).ToHashSet();
+
+            HashSet<string> removes = currentRecipientsOdsCodes.Except(newRecipientOdsCodes).ToHashSet();
+
+            List<CompetitionSublocationRecipient> sublocationRecipientsToAdd = adds.Select(
+                    x => new CompetitionSublocationRecipient
+                    {
+                        CompetitionId = competitionId,
+                        RecipientOdsCode = x,
+                        ParentSublocationOdsCode = sublocationOdsCode,
+                    })
+                .ToList();
+
+            sublocation.SublocationRecipients.AddRange(sublocationRecipientsToAdd);
+
+            List<CompetitionSublocationRecipient> sublocationRecipientsToRemove =
+                sublocation.SublocationRecipients.Where(x => removes.Contains(x.RecipientOdsCode)).ToList();
+
+            sublocation.SublocationRecipients.RemoveRange(sublocationRecipientsToRemove);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        private static Expression<Func<CompetitionSublocation, bool>> CompetitionSublocationPrimaryKeyPredicate(
+            string externalOrgId,
+            int competitionId,
+            string sublocationOdsCode)
+        {
+            return x => x.OwnerOdsCode == externalOrgId
+                && x.CompetitionId == competitionId
+                && x.SublocationOdsCode == sublocationOdsCode;
+        }
+    }
+}

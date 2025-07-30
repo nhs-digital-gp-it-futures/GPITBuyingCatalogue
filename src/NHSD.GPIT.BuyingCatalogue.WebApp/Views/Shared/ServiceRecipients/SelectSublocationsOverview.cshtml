@@ -1,0 +1,55 @@
+﻿
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.AddOrChange
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Card
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectSublocationsOverviewModel;
+
+@{
+    ViewBag.Title = Model.Title;
+
+    var isChangeSublocations = Model.Sublocations.Count > 0;
+}
+
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title model="@Model"/>
+        <nhs-card-v2>
+            <nhs-card-content title="Sublocations for @Model.ParentName">
+                <nhs-table>
+                    <nhs-table-column>Sublocation</nhs-table-column>
+                    <nhs-table-column>Organisations added</nhs-table-column>
+                    <nhs-table-column>Status</nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+
+                    @foreach (var sublocation in @Model.Sublocations)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>@sublocation.OdsCode</nhs-table-cell>
+                            <nhs-table-cell>@sublocation.ServiceRecipientCount</nhs-table-cell>
+                            <nhs-table-cell><nhs-tag status-enum="@sublocation.TaskProgress"/></nhs-table-cell>
+                            <nhs-table-cell><a href="@sublocation.RecipientLink">Select</a></nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+
+                </nhs-table>
+            </nhs-card-content>
+            <nhs-card-footer>
+                <vc:add-or-change href="@Model.AddOrChangeSublocationsLink" noun-phrase="sublocations" is-change="@isChangeSublocations" />
+            </nhs-card-footer>
+        </nhs-card-v2>
+        <form method="post">
+            @for (var i = 0; i < Model.Sublocations.Count; i++)
+            {
+                <input type="hidden" asp-for="@Model.Sublocations[i].Name" />
+                <input type="hidden" asp-for="@Model.Sublocations[i].OdsCode" />
+                <input type="hidden" asp-for="@Model.Sublocations[i].ServiceRecipientCount" />
+            }  
+
+        <nhs-submit-button/>
+        </form>
+    </div>
+</div>

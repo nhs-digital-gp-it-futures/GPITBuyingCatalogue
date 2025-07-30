@@ -38,6 +38,8 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
 
         builder.Property(x => x.ContractLength).HasMaxLength(36);
 
+        builder.Ignore(x => x.FlattenedRecipients);
+
         builder.HasOne(x => x.Weightings)
             .WithOne()
             .HasForeignKey<Weightings>(x => x.CompetitionId)
@@ -67,21 +69,9 @@ internal sealed class CompetitionEntityTypeConfiguration : IEntityTypeConfigurat
             .OnDelete(DeleteBehavior.NoAction)
             .HasConstraintName("FK_Competitions_LastUpdatedBy");
 
-        builder.HasMany(x => x.Recipients)
-            .WithMany()
-            .UsingEntity<CompetitionRecipient>(
-                r => r.HasOne(x => x.OdsOrganisation)
-                    .WithMany()
-                    .HasForeignKey(x => x.OdsCode)
-                    .HasConstraintName("FK_CompetitionRecipients_ServiceRecipient"),
-                l => l.HasOne(x => x.Competition)
-                    .WithMany()
-                    .HasForeignKey(x => x.CompetitionId)
-                    .HasConstraintName("FK_CompetitionRecipients_Competition"),
-                j =>
-                {
-                    j.ToTable("CompetitionRecipients", Schemas.Competitions);
-                    j.HasKey(x => new { x.CompetitionId, x.OdsCode });
-                });
+        builder.HasMany(x => x.CompetitionSublocations)
+            .WithOne(y => y.Competition)
+            .HasForeignKey(y => y.CompetitionId)
+            .HasConstraintName("FK_CompetitionSublocations_Competition");
     }
 }

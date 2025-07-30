@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
@@ -68,7 +69,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             DeliveryDateService service)
         {
             order.DeliveryDate = null;
-            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
+            order.OrderItems.ForEach(x =>
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
@@ -77,13 +79,16 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             await service.SetAllDeliveryDates(order.OrderingParty.InternalIdentifier, order.CallOffId, deliveryDate);
             context.ChangeTracker.Clear();
 
-            var dbOrder = await context.Orders
-                .Include(x => x.OrderRecipients)
-                .ThenInclude(x => x.OrderItemRecipients)
+            Order dbOrder = await context.Orders.Include(x => x.OrderItems)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(x => x.OrderItemSublocationRecipients)
                 .FirstAsync(x => x.Id == order.Id);
 
             dbOrder.DeliveryDate.Should().Be(deliveryDate);
-            dbOrder.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(deliveryDate)));
+            dbOrder.OrderItems.ForEach(x =>
+                order.FlattenedRecipients.ForEach(r =>
+                    r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(deliveryDate)));
         }
 
         [Theory]
@@ -95,19 +100,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             DeliveryDateService service)
         {
             order.DeliveryDate = null;
-            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
+            order.OrderItems.ForEach(x =>
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
             await service.ResetRecipientDeliveryDates(order.Id);
             context.ChangeTracker.Clear();
 
-            var dbOrder = await context.Orders
-                .Include(x => x.OrderRecipients)
-                .ThenInclude(x => x.OrderItemRecipients)
+            Order dbOrder = await context.Orders.Include(x => x.OrderItems)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(x => x.OrderItemSublocationRecipients)
                 .FirstAsync(x => x.Id == order.Id);
 
-            dbOrder.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(null)));
+            dbOrder.OrderItems.ForEach(x =>
+                order.FlattenedRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(null)));
         }
 
         [Theory]
@@ -121,34 +129,40 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             var newDate = initialDate.AddDays(1);
 
             order.DeliveryDate = initialDate;
-            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
+            order.OrderItems.ForEach(x =>
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, initialDate)));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
             var orderItem = order.OrderItems.First();
             var catalogueItemId = orderItem.CatalogueItemId;
 
-            var deliveryDates = order.OrderRecipients
-                .Select(x => new RecipientDeliveryDateDto(x.OdsCode, newDate))
+            List<RecipientDeliveryDateDto> deliveryDates = order.FlattenedRecipients
+                .Select(x => new RecipientDeliveryDateDto(x.RecipientOdsCode, newDate))
                 .ToList();
 
             await service.SetDeliveryDates(order.Id, catalogueItemId, deliveryDates);
             context.ChangeTracker.Clear();
 
-            var dbOrder = await context.Orders
-                .Include(x => x.OrderRecipients)
-                    .ThenInclude(x => x.OrderItemRecipients)
+            Order dbOrder = await context.Orders.Include(x => x.OrderItems)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(x => x.OrderItemSublocationRecipients)
                 .FirstAsync(x => x.Id == order.Id);
 
             dbOrder.DeliveryDate.Should().Be(initialDate);
 
             dbOrder.OrderItems
                 .Where(o => o.CatalogueItemId == orderItem.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(newDate)));
+                .ForEach(x =>
+                    order.FlattenedRecipients.ForEach(r =>
+                        r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(newDate)));
 
             dbOrder.OrderItems
                 .Where(o => o.CatalogueItemId != orderItem.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(initialDate)));
+                .ForEach(x =>
+                    order.FlattenedRecipients.ForEach(r =>
+                        r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(initialDate)));
         }
 
         [Theory]
@@ -159,20 +173,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             DeliveryDateService service)
         {
             order.DeliveryDate = DateTime.Today;
-            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, DateTime.Today)));
+            order.OrderItems.ForEach(x =>
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, DateTime.Today)));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
             await service.ResetDeliveryDates(order.Id, DateTime.Today.AddDays(1));
             context.ChangeTracker.Clear();
 
-            var dbOrder = await context.Orders
-                .Include(x => x.OrderRecipients)
-                    .ThenInclude(x => x.OrderItemRecipients)
+            Order dbOrder = await context.Orders.Include(x => x.OrderItems)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(x => x.OrderItemSublocationRecipients)
                 .FirstAsync(x => x.Id == order.Id);
 
             dbOrder.DeliveryDate.Should().BeNull();
-            dbOrder.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().BeNull()));
+            dbOrder.OrderItems.ForEach(x =>
+                order.FlattenedRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().BeNull()));
         }
 
         [Theory]
@@ -183,28 +200,35 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Contracts
             DeliveryDateService service)
         {
             order.DeliveryDate = DateTime.Today;
-            order.OrderItems.ForEach(x => order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, DateTime.Today)));
+            order.OrderItems.ForEach(x =>
+                order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(x.CatalogueItemId, DateTime.Today)));
             var orderItem = order.OrderItems.First();
-            order.OrderRecipients.ForEach(r => r.SetDeliveryDateForItem(orderItem.CatalogueItemId, DateTime.Today.AddDays(1)));
+            order.FlattenedRecipients.ForEach(r => r.SetDeliveryDateForItem(
+                orderItem.CatalogueItemId,
+                DateTime.Today.AddDays(1)));
             context.Orders.Add(order);
             await context.SaveChangesAsync();
 
             await service.ResetDeliveryDates(order.Id, DateTime.Today.AddDays(1));
             context.ChangeTracker.Clear();
 
-            var dbOrder = await context.Orders
-                .Include(x => x.OrderRecipients)
-                    .ThenInclude(x => x.OrderItemRecipients)
+            Order dbOrder = await context.Orders.Include(x => x.OrderItems)
+                .Include(x => x.OrderSublocations)
+                .ThenInclude(y => y.SublocationRecipients)
+                .ThenInclude(x => x.OrderItemSublocationRecipients)
                 .FirstAsync(x => x.Id == order.Id);
 
             dbOrder.DeliveryDate.Should().BeNull();
             dbOrder.OrderItems
                 .Where(o => o.CatalogueItemId == orderItem.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(DateTime.Today.AddDays(1))));
+                .ForEach(x => order.FlattenedRecipients.ForEach(r =>
+                    r.GetDeliveryDateForItem(x.CatalogueItemId).Should().Be(DateTime.Today.AddDays(1))));
 
             dbOrder.OrderItems
                 .Where(o => o.CatalogueItemId != orderItem.CatalogueItemId)
-                .ForEach(x => order.OrderRecipients.ForEach(r => r.GetDeliveryDateForItem(x.CatalogueItemId).Should().BeNull()));
+                .ForEach(x =>
+                    order.FlattenedRecipients.ForEach(r =>
+                        r.GetDeliveryDateForItem(x.CatalogueItemId).Should().BeNull()));
         }
     }
 }

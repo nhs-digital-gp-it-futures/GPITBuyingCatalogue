@@ -13,7 +13,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -204,23 +203,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             RoutingResult routingResult,
             [Frozen] IRoutingService routingService,
             [Frozen] IOrderService mockOrderService,
-            [Frozen] IOdsService odsService,
-            QuantityController controller,
-            string location)
+            QuantityController controller)
         {
             var orderItem = order.OrderItems.First();
 
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             orderItem.OrderItemPrice.ProvisioningType = provisioningType;
             orderItem.OrderItemPrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.ForEach(x => x.Quantity = null));
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.ForEach(x => x.Quantity = null));
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
-
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(
-                 order.OrderRecipients.Select(
-                            x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
-                        .ToList());
 
             routingService.GetRoute(
                     RoutingPoint.SelectQuantityBackLink,
@@ -233,8 +225,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            var recipients = order.OrderRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
+            IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients.Select(x =>
+                new ServiceRecipientQuantityDto(
+                    x.ParentSublocationOdsCode,
+                    x.RecipientOdsCode,
+                    x.RecipientOdsOrganisation?.Name,
+                    x.GetQuantityForItem(orderItem.CatalogueItemId),
+                    x.ParentSublocation.SublocationOrganisation.Name));
 
             var expected = new SelectServiceRecipientQuantityModel(
                 order.OrderType,
@@ -258,27 +255,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             [Frozen] IRoutingService routingService,
             [Frozen] IGpPracticeService mockGpPracticeService,
             [Frozen] IOrderService mockOrderService,
-            [Frozen] IOdsService odsService,
-            QuantityController controller,
-            string location)
+            QuantityController controller)
         {
             var orderItem = order.OrderItems.First();
 
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
             orderItem.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.ForEach(x => x.Quantity = null));
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.ForEach(x => x.Quantity = null));
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
             mockGpPracticeService.GetNumberOfPatients(Arg.Any<IEnumerable<string>>())
                 .Returns(
-                    order.OrderRecipients.Select(
-                            x => new GpPracticeSize { OdsCode = x.OdsCode, NumberOfPatients = NumberOfPatients })
-                        .ToList());
-
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(
-                 order.OrderRecipients.Select(
-                            x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
+                    order.FlattenedRecipients.Select(x =>
+                            new GpPracticeSize { OdsCode = x.RecipientOdsCode, NumberOfPatients = NumberOfPatients })
                         .ToList());
 
             routingService.GetRoute(
@@ -292,8 +282,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            var recipients = order.OrderRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
+            IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients.Select(x =>
+                new ServiceRecipientQuantityDto(
+                    x.ParentSublocationOdsCode,
+                    x.RecipientOdsCode,
+                    x.RecipientOdsOrganisation?.Name,
+                    x.GetQuantityForItem(orderItem.CatalogueItemId),
+                    x.ParentSublocation.SublocationOrganisation.Name));
 
             var expected = new SelectServiceRecipientQuantityModel(
                 order.OrderType,
@@ -316,9 +311,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             RoutingResult routingResult,
             [Frozen] IRoutingService routingService,
             [Frozen] IOrderService mockOrderService,
-            [Frozen] IOdsService odsService,
-            QuantityController controller,
-            string location)
+            QuantityController controller)
         {
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
 
@@ -326,19 +319,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             solution.CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
             solution.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
-            order.OrderRecipients.ForEach(r => r.SetQuantityForItem(solution.CatalogueItemId, NumberOfPatients));
+            order.FlattenedRecipients.ForEach(r => r.SetQuantityForItem(solution.CatalogueItemId, NumberOfPatients));
 
             var orderItem = order.OrderItems.ElementAt(1);
 
             orderItem.OrderItemPrice.ProvisioningType = ProvisioningType.Patient;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Where(i => i.CatalogueItemId == orderItem.CatalogueItemId).ForEach(x => x.Quantity = null));
+            order.FlattenedRecipients.ForEach(r =>
+                r.OrderItemSublocationRecipients.Where(i => i.CatalogueItemId == orderItem.CatalogueItemId)
+                    .ForEach(x => x.Quantity = null));
 
             mockOrderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
-
-            odsService.GetServiceRecipientsById(internalOrgId, Arg.Any<IEnumerable<string>>()).Returns(
-                 order.OrderRecipients.Select(
-                            x => new ServiceRecipient { OrgId = x.OdsCode, Location = location })
-                        .ToList());
 
             routingService.GetRoute(
                     RoutingPoint.SelectQuantityBackLink,
@@ -351,8 +341,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
             var actualResult = result.Should().BeOfType<ViewResult>().Subject;
             var model = actualResult.Model.Should().BeOfType<SelectServiceRecipientQuantityModel>().Subject;
 
-            var recipients = order.OrderRecipients.Select(
-                x => new ServiceRecipientDto(x.OdsCode, x.OdsOrganisation?.Name, x.GetQuantityForItem(orderItem.CatalogueItemId), location));
+            IEnumerable<ServiceRecipientQuantityDto> recipients = order.FlattenedRecipients.Select(x =>
+                new ServiceRecipientQuantityDto(
+                    x.ParentSublocationOdsCode,
+                    x.RecipientOdsCode,
+                    x.RecipientOdsOrganisation?.Name,
+                    x.GetQuantityForItem(orderItem.CatalogueItemId),
+                    x.ParentSublocation.SublocationOrganisation.Name));
 
             var expected = new SelectServiceRecipientQuantityModel(
                 order.OrderType,
@@ -418,11 +413,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var result = await controller.SelectServiceRecipientQuantity(internalOrgId, callOffId, orderItem.CatalogueItemId, model);
 
-            foreach (var dto in actual)
+            foreach (OrderItemRecipientQuantityDto dto in actual)
             {
                 model.SubLocations.SelectMany(x => x.ServiceRecipients)
-                    .First(x => x.OdsCode == dto.OdsCode)
-                    .Quantity.Should().Be(dto.Quantity == 0 ? 1 : dto.Quantity);
+                    .First(x => x.RecipientOdsCode == dto.RecipientOdsCode
+                        && x.ParentSublocationOdsCode == dto.ParentSublocationOdsCode)
+                    .Quantity.Should()
+                    .Be(dto.Quantity == 0 ? 1 : dto.Quantity);
             }
 
             var actualResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -531,10 +528,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
-            var expected = new ViewServiceRecipientQuantityModel(orderItem, order.OrderRecipients)
+            var expected = new ViewServiceRecipientQuantityModel(orderItem, order.FlattenedRecipients)
             {
-                InternalOrgId = internalOrgId,
-                CallOffId = callOffId,
+                InternalOrgId = internalOrgId, CallOffId = callOffId,
             };
 
             actual.Should().NotBeNull();

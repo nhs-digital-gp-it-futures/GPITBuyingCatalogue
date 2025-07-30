@@ -190,6 +190,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             byte[] fileContents,
             ManageOrdersController controller)
         {
+            order.CommencementDate = DateTime.Now.AddMonths(-6);
+            order.MaximumTerm = 12;
             order.Completed = null;
 
             orderServiceMock.GetOrder(order.CallOffId).Returns(order);
