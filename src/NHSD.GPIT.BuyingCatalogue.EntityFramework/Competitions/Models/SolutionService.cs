@@ -42,7 +42,9 @@ public class SolutionService : ICompetitionPriceEntity
     public int? Quantity { get; set; }
 
     /// <summary>
-    /// Gets or sets the quantities for each service recipient, when the <see cref="Price"/> is based on the practice list size.
+    ///     Gets or sets the quantities for each service recipient, when the <see cref="Price" /> is based on the practice list
+    ///     size.
     /// </summary>
-    public ICollection<ServiceQuantity> Quantities { get; set; } = new HashSet<ServiceQuantity>();
+    public ICollection<ServiceQuantitySublocationRecipient> Quantities { get; set; } =
+        new HashSet<ServiceQuantitySublocationRecipient>();
 }

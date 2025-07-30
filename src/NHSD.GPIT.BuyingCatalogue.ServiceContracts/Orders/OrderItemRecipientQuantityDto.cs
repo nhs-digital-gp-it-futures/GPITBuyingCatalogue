@@ -2,7 +2,9 @@
 {
     public class OrderItemRecipientQuantityDto
     {
-        public string OdsCode { get; set; }
+        public string ParentSublocationOdsCode { get; set; }
+
+        public string RecipientOdsCode { get; set; }
 
         public int Quantity { get; set; }
     }

@@ -1,0 +1,175 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models
+@using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsAnchorButton
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.NhsSearchIcon
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Buttons
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.InsetText
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Table
+@using ValidationSummaryTagHelper = NHSD.GPIT.BuyingCatalogue.UI.Components.TagHelpers.ValidationSummaryTagHelper
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectMergerOrSplitRecipientsModel;
+
+@{
+    ViewBag.Title = Model.Title;
+}
+<partial name="Partials/_BackLink" model="Model" />
+<script type="text/javascript" src="@Url.Content("~/js/Recipients.min.js")" asp-append-version="true"></script>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary />
+        <nhs-page-title model="@Model" />
+
+        @if ((Model.SubLocations?.Any() ?? false) && Model.OrganisationType != OrganisationType.GP)
+        {
+            if (Model.HasImportedRecipients is true
+            || (Model.PreviouslySelected?.Any() ?? false))
+            {
+                    @if (Model.HasImportedRecipients is true)
+                    {
+                        <nhs-inset-text>
+                            <p>
+                                <span>Your Service Recipients have been imported successfully.</span>
+
+                                If you need to make changes, you can do so manually or re-import them.
+                            </p>
+                        </nhs-inset-text>
+                    }
+
+                @if (Model.IsAmendment is true && (Model.PreviouslySelected?.Any() ?? false))
+                {
+                    <div id="previously-selected-service-recipients">
+                        <nhs-details label-text="View service recipients from the previous revision" data-test-id="existing-recipients-details">
+                            <p>
+                                The previous revision had @Model.PreviouslySelected.Count Service @PluralOrSingular(Model.PreviouslySelected.Count)
+                            </p>
+
+                            @foreach (var location in Model.PreviouslySelected.GroupBy(x => x.Location))
+                            {
+                                <nhs-expander label-text="@location.Key"
+                                              bold-title="true"
+                                              data-test-id="existing-recipient-group-summary">
+                                    <ul>
+                                        @foreach (var item in location)
+                                        {
+                                            <li>@item.Description</li>
+                                        }
+                                    </ul>
+                                </nhs-expander>
+                            }
+                        </nhs-details>
+                    </div>
+                }
+            }
+            <div class="bc-u-max-width-full">
+                <nhs-button-group>
+                    <vc:nhs-anchor-button url="@Url.Action(null, values: new { selectionMode = SelectionMode.All })"
+                                          text="Select all"
+                                          type="Secondary"/>
+                    <vc:nhs-anchor-button url="@Url.Action(null, values: new { selectionMode = SelectionMode.None })"
+                                          text="Deselect all"
+                                          type="Secondary"/>
+                    <button id="show-dialog" class="nhsuk-button nhsuk-button--secondary bc-u-float-right nhsuk-button--js-only">
+                        <vc:nhs-search-icon/>
+                        Search for Service Recipients
+                    </button>
+                </nhs-button-group>
+            </div>
+        }
+
+        <form method="post" id="sr-form">
+            <input type="hidden" asp-for="Title" />
+            <input type="hidden" asp-for="Caption" />
+            <input type="hidden" asp-for="Advice" />
+            <input type="hidden" asp-for="OrganisationName" />
+            <input type="hidden" asp-for="IsAmendment" />
+
+            @if (Model.SubLocations?.Any() ?? false)
+            {
+                @if (Model.OrganisationType != OrganisationType.GP)
+                {
+                    <h3 style="white-space:nowrap">Sublocations for @Model.OrganisationName</h3>
+                }
+
+                @foreach (var (location, lIndex) in Model.SubLocations.Select((x, i) => (x, i)))
+                {
+                    var expandWhenNotValid = !ViewData.ModelState.IsValid && lIndex == 0;
+
+                    <input type="hidden" asp-for="@Model.SubLocations[lIndex].Name" />
+                    <nhs-expander-v2 id="recipients-expander" open="@(expandWhenNotValid || Model.ShouldExpand is true || location.ServiceRecipients.Any(x => x.Selected))">
+                        <nhs-expander-summary label-text="@location.Name" bold-title="true">
+                            <span class="nhsuk-details__summary-text_secondary nhsuk-content--js-only">
+                                <b>@(location.ServiceRecipients.Count(r => r.Selected)) </b>
+                                recipients selected
+                            </span>
+                        </nhs-expander-summary>
+                        <nhs-expander-content>
+                        <nhs-table id="sr-table">
+                            <nhs-table-column>
+                                <div class="nhsuk-checkboxes__item  nhsuk-content--js-only">
+                                    <input type="checkbox" class="nhsuk-checkboxes__input" name="selectAll@(lIndex)" id="selectAll@(lIndex)" checked="@Model.SubLocations[lIndex].AllRecipientsSelected" />
+                                    <label for="selectAll@(lIndex)" class="nhsuk-label nhsuk-checkboxes__label bold-label">
+                                        Organisation
+                                    </label>
+                                </div>
+                                <div class="nhsuk-label bold-label non-js-only">Organisation</div>
+                            </nhs-table-column>
+                            <nhs-table-column>ODS code</nhs-table-column>
+                            @foreach (var (item, rIndex) in location.ServiceRecipients.Select((x, i) => (x, i)))
+                            {
+                                <nhs-table-row-container id="@item.OdsCode" class="recipient">
+                                    <nhs-table-cell>
+                                        <nhs-checkbox-container>
+                                            <nhs-checkbox asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Selected"
+                                                          label-text="@item.Name"
+                                                          hidden-input="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].Name"
+                                                          checkbox-class="main-srs gather-data"/>
+                                        </nhs-checkbox-container>
+                                    </nhs-table-cell>
+                                    <nhs-table-cell>
+                                        <div class="nhsuk-input--width-10 nhsuk-u-margin-top-2">@item.OdsCode</div>
+                                        <input type="hidden" asp-for="@Model.SubLocations[lIndex].ServiceRecipients[rIndex].OdsCode" />
+                                    </nhs-table-cell>
+                                </nhs-table-row-container>
+                            }
+                        </nhs-table>
+                        </nhs-expander-content>
+                    </nhs-expander-v2>
+                }
+                <br />
+                <nhs-button-group>
+                    <nhs-submit-button />
+                    @if (Model.IsAmendment is true)
+                    {
+                        <vc:nhs-anchor-button type="Secondary" text="Cancel"
+                                              url="@Model.BackLink"/>
+                    }
+
+                </nhs-button-group>
+
+            }
+            else
+            {
+                <nhs-submit-button />
+            }
+        </form>
+    </div>
+</div>
+
+<vc:nhs-modal-search
+    id="search-recipients-modal"
+    show-dialog-button-id="show-dialog"
+    table-partial-view="ServiceRecipients/_recipientTable"
+    table-data="@Model.GetSearchRecipients()"
+    callback-function="updateRecipients"
+    title="Search for Service Recipients"
+    advice="Find and select the Service Recipients you want to include in this order."
+    placeholder="Search by ODS code or organisation name"
+    not-found-text="There are no Service Recipients that match. Try entering different search criteria."
+    apply-button-text="Apply recipients"
+    clear-search="true"
+    clear-selection="true"/>
+
+@{
+    string PluralOrSingular(int total) => total == 1 ? "Recipient:" : "Recipients:";
+}

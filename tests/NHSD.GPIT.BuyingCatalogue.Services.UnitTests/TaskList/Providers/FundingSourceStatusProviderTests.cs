@@ -92,10 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             FundingSourceStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                DeliveryDates = TaskProgress.Completed,
-            };
+            var state = new OrderProgress { DeliveryDates = TaskProgress.Completed };
 
             order.OrderItems.ForEach(x => x.OrderItemFunding = null);
             order.OrderItems.First().OrderItemFunding = funding;
@@ -114,10 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
             Order order,
             FundingSourceStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                DeliveryDates = TaskProgress.Completed,
-            };
+            var state = new OrderProgress { DeliveryDates = TaskProgress.Completed };
 
             order.Revision = revision;
 

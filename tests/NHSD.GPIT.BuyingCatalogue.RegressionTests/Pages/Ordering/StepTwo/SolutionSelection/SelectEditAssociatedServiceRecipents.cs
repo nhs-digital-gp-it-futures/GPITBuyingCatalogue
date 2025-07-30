@@ -19,8 +19,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         public void EditServiceRecipient(string associatedServiceName)
         {
             CommonActions.PageLoadedCorrectGetIndex(
-              typeof(ServiceRecipientsController),
-              nameof(ServiceRecipientsController.SelectServiceRecipients)).Should().BeTrue();
+                    typeof(ServiceRecipientsController),
+                    nameof(ServiceRecipientsController))
+                .Should()
+                .BeTrue();
 
             CommonActions.ClickFirstCheckbox();
 

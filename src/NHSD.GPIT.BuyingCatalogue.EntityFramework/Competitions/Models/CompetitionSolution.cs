@@ -42,9 +42,11 @@ public class CompetitionSolution : ICompetitionPriceEntity
     public ICollection<SolutionScore> Scores { get; set; } = new HashSet<SolutionScore>();
 
     /// <summary>
-    /// Gets or sets the quantities for each service recipient, when the <see cref="Price"/> is based on the practice list size.
+    ///     Gets or sets the quantities for each service recipient, when the <see cref="Price" /> is based on the practice list
+    ///     size.
     /// </summary>
-    public ICollection<SolutionQuantity> Quantities { get; set; } = new HashSet<SolutionQuantity>();
+    public ICollection<SolutionQuantitySublocationRecipient> Quantities { get; set; } =
+        new HashSet<SolutionQuantitySublocationRecipient>();
 
     public bool HasScoreType(ScoreType type) => Scores.Any(x => x.ScoreType == type);
 

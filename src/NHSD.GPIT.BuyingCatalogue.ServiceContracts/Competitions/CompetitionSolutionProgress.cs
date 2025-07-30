@@ -1,24 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 
-public readonly struct CompetitionSolutionProgress
+public readonly struct CompetitionSolutionProgress(
+    CompetitionSolution competitionSolution,
+    ICollection<CompetitionSublocationRecipient> competitionRecipients)
 {
-    private readonly CompetitionSolution competitionSolution;
-    private readonly ICollection<OdsOrganisation> competitionRecipients;
-
-    public CompetitionSolutionProgress(
-        CompetitionSolution competitionSolution,
-        ICollection<OdsOrganisation> competitionRecipients)
-    {
-        this.competitionSolution = competitionSolution;
-        this.competitionRecipients = competitionRecipients;
-    }
-
     public TaskProgress Progress => (PriceProgress, QuantityProgress) switch
     {
         (TaskProgress.Completed, TaskProgress.Completed) => TaskProgress.Completed,
@@ -48,12 +38,14 @@ public readonly struct CompetitionSolutionProgress
         {
             bool HasQuantities(
                 CompetitionSolution solution,
-                ICollection<OdsOrganisation> recipients) => (solution.Quantity.HasValue || (solution.Quantities.Any()
-                    && recipients.All(x => solution.Quantities.Any(y => y.OdsCode == x.Id))))
-                && (!solution.SolutionServices.Any()
-                    || solution.SolutionServices.All(
-                        x => x.Quantity.HasValue || (x.Quantities.Any()
-                            && recipients.All(y => x.Quantities.Any(z => z.OdsCode == y.Id)))));
+                ICollection<CompetitionSublocationRecipient> recipients)
+            {
+                return (solution.Quantity.HasValue || (solution.Quantities.Any()
+                        && recipients.All(x => solution.Quantities.Any(y => y.RecipientOdsCode == x.RecipientOdsCode))))
+                    && (!solution.SolutionServices.Any()
+                        || solution.SolutionServices.All(x => x.Quantity.HasValue || (x.Quantities.Any()
+                            && recipients.All(y => x.Quantities.Any(z => z.RecipientOdsCode == y.RecipientOdsCode)))));
+            }
 
             if (PriceProgress is not TaskProgress.Completed) return TaskProgress.CannotStart;
 

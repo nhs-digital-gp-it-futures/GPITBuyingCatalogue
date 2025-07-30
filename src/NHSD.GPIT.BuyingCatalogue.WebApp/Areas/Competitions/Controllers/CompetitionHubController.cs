@@ -12,6 +12,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
@@ -19,7 +20,6 @@ using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Models.PricingModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Quantities;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services;
-using OdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 
@@ -313,7 +313,7 @@ public class CompetitionHubController : Controller
         var competition = await competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competitionId);
         var competitionSolution = competition.CompetitionSolutions.FirstOrDefault(x => x.SolutionId == solutionId);
 
-        (IPrice price, CatalogueItem item, IEnumerable<ServiceRecipientDto> recipientQuantities) =
+        (IPrice price, CatalogueItem item, IEnumerable<ServiceRecipientQuantityDto> recipientQuantities) =
             await GetRecipientQuantityDetails(competition, competitionSolution, internalOrgId, serviceId);
 
         var model = new SelectServiceRecipientQuantityModel(item, price, recipientQuantities)
@@ -337,15 +337,15 @@ public class CompetitionHubController : Controller
             return View(ServiceRecipientViewName, model);
         }
 
-        var quantities = model.SubLocations.SelectMany(x => x.ServiceRecipients)
-            .Select(
-                x => new ServiceRecipientDto
-                {
-                    OdsCode = x.OdsCode,
-                    Quantity = string.IsNullOrWhiteSpace(x.InputQuantity)
-                        ? x.Quantity
-                        : int.Parse(x.InputQuantity),
-                })
+        List<ServiceRecipientQuantityDto> quantities = model.SubLocations.SelectMany(x => x.ServiceRecipients)
+            .Select(x => new ServiceRecipientQuantityDto
+            {
+                ParentSublocationOdsCode = x.ParentSublocationOdsCode,
+                RecipientOdsCode = x.RecipientOdsCode,
+                Quantity = string.IsNullOrWhiteSpace(x.InputQuantity)
+                    ? x.Quantity
+                    : int.Parse(x.InputQuantity),
+            })
             .ToList();
 
         if (serviceId is null)
@@ -446,21 +446,34 @@ public class CompetitionHubController : Controller
         return RedirectToAction(nameof(Hub), new { internalOrgId, competitionId, solutionId });
     }
 
-    internal async Task<IEnumerable<ServiceRecipientDto>> GetRecipientQuantities(
-        ICollection<OdsOrganisation> competitionRecipients,
+    internal async Task<IEnumerable<ServiceRecipientQuantityDto>> GetRecipientQuantities(
+        IReadOnlyList<CompetitionSublocationRecipient> competitionRecipients,
         ICollection<RecipientQuantityBase> recipientQuantities,
         string internalOrgId)
     {
-        var competitionRecipientIds = competitionRecipients.Select(x => x.Id);
+        List<string> competitionRecipientIds = competitionRecipients.Select(x => x.RecipientOdsCode).ToList();
         var practiceListSizes = await gpPracticeService.GetNumberOfPatients(competitionRecipientIds);
-        var organisations = await odsService.GetServiceRecipientsById(internalOrgId, competitionRecipientIds);
+        IEnumerable<ServiceRecipient> organisations =
+            await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                competitionRecipientIds);
 
         return competitionRecipients.Select(
-            x => new ServiceRecipientDto(
-                x.Id,
-                x.Name,
-                recipientQuantities?.FirstOrDefault(y => x.Id == y.OdsCode)?.Quantity ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.Id)?.NumberOfPatients,
-                organisations?.FirstOrDefault(y => x.Id == y.OrgId).Location));
+            x =>
+            {
+                var quantity = recipientQuantities?.FirstOrDefault(y => x.RecipientOdsCode == y.RecipientOdsCode)
+                        ?.Quantity
+                    ?? practiceListSizes?.FirstOrDefault(y => y.OdsCode == x.RecipientOdsCode)?.NumberOfPatients;
+
+                var location = organisations?.FirstOrDefault(y => x.RecipientOdsCode == y.OrgId)?.Location;
+
+                return new ServiceRecipientQuantityDto(
+                    x.ParentSublocationOdsCode,
+                    x.RecipientOdsCode,
+                    x.RecipientOrganisation.Name,
+                    quantity,
+                    location);
+            });
     }
 
     private static (IPrice Price, CatalogueItem CatalogueItem, int? Quantity) GetGlobalQuantityDetails(
@@ -501,7 +514,8 @@ public class CompetitionHubController : Controller
         };
     }
 
-    private async Task<(IPrice Price, CatalogueItem CatalogueItem, IEnumerable<ServiceRecipientDto> RecipientQuantities)>
+    private async Task<(IPrice Price, CatalogueItem CatalogueItem, IEnumerable<ServiceRecipientQuantityDto>
+            RecipientQuantities)>
         GetRecipientQuantityDetails(
             Competition competition,
             CompetitionSolution competitionSolution,
@@ -512,7 +526,7 @@ public class CompetitionHubController : Controller
         {
             return (competitionSolution.Price, competitionSolution.Solution.CatalogueItem,
                 await GetRecipientQuantities(
-                    competition.Recipients,
+                    competition.FlattenedRecipients.ToList(),
                     competitionSolution.Quantities.Cast<RecipientQuantityBase>().ToList(),
                     internalOrgId));
         }
@@ -522,7 +536,7 @@ public class CompetitionHubController : Controller
 
         return (service.Price, service.Service,
             await GetRecipientQuantities(
-                competition.Recipients,
+                competition.FlattenedRecipients.ToList(),
                 service.Quantities.Cast<RecipientQuantityBase>().ToList(),
                 internalOrgId));
     }

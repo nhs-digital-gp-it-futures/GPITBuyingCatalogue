@@ -16,7 +16,6 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public Order()
         {
             OrderItems = new HashSet<OrderItem>();
-            OrderRecipients = new HashSet<OrderRecipient>();
             OrderEvents = new HashSet<OrderEvent>();
         }
 
@@ -105,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
 
         public ICollection<OrderItem> OrderItems { get; set; }
 
-        public ICollection<OrderRecipient> OrderRecipients { get; set; }
+        public ICollection<OrderSublocation> OrderSublocations { get; set; } = [];
 
         public AssociatedServicesOnlyDetails AssociatedServicesOnlyDetails { get; set; }
 
@@ -118,6 +117,10 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models
         public int? CompetitionId { get; set; }
 
         public Competition Competition { get; set; }
+
+        public IEnumerable<OrderSublocationRecipient> FlattenedRecipients => OrderSublocations
+            ?.Where(x => x.SublocationRecipients is { Count: > 0 })
+            .SelectMany(x => x.SublocationRecipients);
 
         public IEnumerable<CatalogueItem> GetServices(CatalogueItemType catalogueItemType)
         {

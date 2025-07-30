@@ -23,13 +23,16 @@ public class CompetitionOrderService : ICompetitionOrderService
 
     public async Task<CallOffId> CreateDirectAwardOrder(string internalOrgId, int competitionId, CatalogueItemId solutionId)
     {
-        var competition = await dbContext.Competitions
+        Competition competition = await dbContext.Competitions
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
             .ThenInclude(x => x.Supplier)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.SolutionServices)
+            .Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
+            .ThenInclude(z => z.RecipientOrganisation)
             .IgnoreQueryFilters()
             .AsNoTracking()
             .AsSplitQuery()
@@ -64,21 +67,23 @@ public class CompetitionOrderService : ICompetitionOrderService
 
     public async Task<CallOffId> CreateOrder(string internalOrgId, int competitionId, CatalogueItemId solutionId)
     {
-        var competition = await dbContext.Competitions.Include(x => x.Recipients)
+        Competition competition = await dbContext.Competitions.Include(x => x.CompetitionSublocations)
+            .ThenInclude(y => y.SublocationRecipients)
+            .ThenInclude(z => z.RecipientOrganisation)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Solution)
             .ThenInclude(x => x.CatalogueItem)
             .ThenInclude(x => x.Supplier)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Quantities)
-            .ThenInclude(x => x.CompetitionRecipient)
+            .ThenInclude(x => x.CompetitionSublocationRecipient)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.Price)
             .ThenInclude(x => x.Tiers)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.SolutionServices)
             .ThenInclude(x => x.Quantities)
-            .ThenInclude(x => x.CompetitionRecipient)
+            .ThenInclude(x => x.CompetitionSublocationRecipient)
             .Include(x => x.CompetitionSolutions)
             .ThenInclude(x => x.SolutionServices)
             .ThenInclude(x => x.Price)
@@ -158,34 +163,45 @@ public class CompetitionOrderService : ICompetitionOrderService
             },
         };
 
-    private static Order CreateOrder(int orderNumber, Competition competition, CompetitionSolution competitionSolution, IEnumerable<OrderItem> orderItems) => new Order
+    private static Order CreateOrder(
+        int orderNumber,
+        Competition competition,
+        CompetitionSolution competitionSolution,
+        IEnumerable<OrderItem> orderItems)
     {
-        OrderNumber = orderNumber,
-        OrderType = OrderTypeEnum.Solution,
-        Revision = 1,
-        Description = $"Order created from competition: {competition.Id}",
-        Created = DateTime.UtcNow,
-        MaximumTerm = competition.ContractLength,
-        OrderRecipients = competition.Recipients.Select(x => new OrderRecipient(x.Id)).ToList(),
-        OrderItems = orderItems.ToList(),
-        OrderingPartyId = competition.OrganisationId,
-        SupplierId = competitionSolution.Solution.CatalogueItem.SupplierId,
-        CompetitionId = competition.Id,
-        SelectedFrameworkId = competition.FrameworkId,
-    };
+        return new Order
+        {
+            OrderNumber = orderNumber,
+            OrderType = OrderTypeEnum.Solution,
+            Revision = 1,
+            Description = $"Order created from competition: {competition.Id}",
+            Created = DateTime.UtcNow,
+            MaximumTerm = competition.ContractLength,
+            OrderSublocations = competition.CompetitionSublocations.Select(x => new OrderSublocation(x)).ToList(),
+            OrderItems = orderItems.ToList(),
+            OrderingPartyId = competition.OrganisationId,
+            SupplierId = competitionSolution.Solution.CatalogueItem.SupplierId,
+            CompetitionId = competition.Id,
+            SelectedFrameworkId = competition.FrameworkId,
+        };
+    }
 
     private static void AssignRecipientQuantities(Order order, CompetitionSolution winningSolution)
     {
         var competitionItemQuantities = winningSolution.Quantities
-            .Select(x => new { ItemId = x.SolutionId, x.Quantity, x.CompetitionRecipient.OdsCode })
+            .Select(x => new { ItemId = x.SolutionId, x.Quantity, x.CompetitionSublocationRecipient.RecipientOdsCode })
             .Concat(
                 winningSolution.SolutionServices.SelectMany(
                     x => x.Quantities.Select(
-                        y => new { ItemId = y.ServiceId, y.Quantity, y.CompetitionRecipient.OdsCode })));
+                        y => new
+                        {
+                            ItemId = y.ServiceId, y.Quantity, y.CompetitionSublocationRecipient.RecipientOdsCode,
+                        })));
 
         foreach (var itemQuantity in competitionItemQuantities)
         {
-            var orderRecipient = order.OrderRecipients.FirstOrDefault(x => x.OdsCode == itemQuantity.OdsCode);
+            OrderSublocationRecipient orderRecipient =
+                order.FlattenedRecipients.FirstOrDefault(x => x.RecipientOdsCode == itemQuantity.RecipientOdsCode);
 
             orderRecipient?.SetQuantityForItem(itemQuantity.ItemId, itemQuantity.Quantity);
         }

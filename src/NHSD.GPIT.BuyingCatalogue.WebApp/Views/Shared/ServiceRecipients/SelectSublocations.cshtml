@@ -1,0 +1,69 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.SelectSublocationsModel
+@{
+    ViewBag.Title = Model.Title;
+    var disabledSublocations = Model.RenderedSublocations.Where(x => x.Hidden).ToList();
+}
+<partial name="Partials/_BackLink" model="Model" />
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-validation-summary />
+        <nhs-page-title model="@Model"/>
+        
+        @if (Model.IsAmendment is true)
+        {
+            <nhs-inset-text><p>You cannot remove sublocations during an amendment. If you are happy with the sublocations from the previous revision, you can continue without making a selection.</p></nhs-inset-text>
+        }
+
+        @if (disabledSublocations.Count > 0)
+        {
+            <div id="previously-selected-sublocations">
+                <p>
+                    The previous revision had @disabledSublocations.Count @PluralOrSingular(disabledSublocations.Count)
+                </p>
+
+                <ul>
+                    @foreach (var item in disabledSublocations)
+                    {
+                        <li>@item.Text</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <form method="post">
+            <hidden-inputs title="@Model.Title" caption="@Model.Caption" />
+            <input type="hidden" asp-for="@Model.BackLink" />
+            <input type="hidden" asp-for="@Model.FormLabelText" />
+
+            <nhs-fieldset-form-label asp-for="@Model" label-text="@Model.FormLabelText" size="Small">
+                <nhs-checkbox-container>
+                    @for (var i = 0; i < Model.RenderedSublocations.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.RenderedSublocations[i].Text" />
+                        
+                        if (Model.RenderedSublocations[i].Hidden)
+                        {
+                            <input type="hidden" asp-for="@Model.RenderedSublocations[i].Selected" />
+                            <input type="hidden" asp-for="@Model.RenderedSublocations[i].Value" />
+                        }
+                        else
+                        {
+                            <nhs-checkbox asp-for="@Model.RenderedSublocations[i].Selected"
+                                          label-text="@Model.RenderedSublocations[i].Text"
+                                          hidden-input="@Model.RenderedSublocations[i].Value"/>
+                        }
+                    }
+                </nhs-checkbox-container>
+            </nhs-fieldset-form-label>
+            <nhs-submit-button/>
+        </form>
+    </div>
+</div>
+
+@{
+    string PluralOrSingular(int total)
+    {
+        return total == 1 ? "sublocation:" : "sublocations:";
+    }
+}

@@ -87,4 +87,288 @@ public static class OrderTests
 
         order.ContractExpired.Should().Be(value);
     }
+
+    [Theory]
+    [MockAutoData]
+    public static void OrderRecipients_DeterminesRecipientsForOrder_DoesNotExist(
+        Order previousOrder,
+        Order currentOrder,
+        CatalogueItemId catalogueItemId)
+    {
+        previousOrder.OrderNumber = currentOrder.OrderNumber;
+
+        previousOrder.Revision = 1;
+        currentOrder.Revision = 2;
+
+        ICollection<OrderSublocationRecipient> result = currentOrder.DetermineOrderRecipients(
+            previousOrder,
+            catalogueItemId);
+
+        Assert.Equal([], result);
+    }
+
+    [Theory]
+    [MockAutoData]
+    public static void OrderRecipients_DeterminesRecipientsForOrder_ExistsInCurrentButNotPreviousOrder(
+        Order previousOrder,
+        Order currentOrder,
+        OrderItem orderItem)
+    {
+        previousOrder.OrderNumber = currentOrder.OrderNumber;
+
+        previousOrder.Revision = 1;
+        currentOrder.Revision = 2;
+
+        currentOrder.OrderItems.Add(orderItem);
+
+        ICollection<OrderSublocationRecipient> result = currentOrder.DetermineOrderRecipients(
+            previousOrder,
+            orderItem.CatalogueItemId);
+
+        result.Should().BeEquivalentTo(currentOrder.FlattenedRecipients);
+    }
+
+    public static IEnumerable<object[]> OrderRecipientsWithOrderItemsAndExpectedResults()
+    {
+        var framework = new Catalogue.Models.Framework { Id = new Random().Next().ToString() };
+
+        var orderingPartyId = 667;
+
+        var catalogueItemId = new CatalogueItemId(556, "334");
+
+        var orderItem = new OrderItem { CatalogueItemId = catalogueItemId };
+
+        return
+        [
+            [
+                // Catalogue Item did not exist in previous order
+                new Order
+                {
+                    Id = 1001,
+                    OrderNumber = 5555,
+                    Revision = 1,
+                    Description = "My order",
+                    OrderingPartyId = orderingPartyId,
+                    SelectedFramework = framework,
+                    OrderItems = [new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1001 }],
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            OrderId = 1001,
+                            SublocationOdsCode = "XXXX",
+                            OwnerOdsCode = "AA-FF",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient
+                                {
+                                    OrderId = 1001,
+                                    ParentSublocationOdsCode = "XXXX",
+                                    RecipientOdsCode = "AAAA",
+                                    OrderItemSublocationRecipients =
+                                        [],
+                                },
+                                new OrderSublocationRecipient
+                                {
+                                    OrderId = 1001,
+                                    ParentSublocationOdsCode = "XXXX",
+                                    RecipientOdsCode = "AAAB",
+                                    OrderItemSublocationRecipients =
+                                        [],
+                                },
+                                new OrderSublocationRecipient
+                                {
+                                    OrderId = 1001,
+                                    ParentSublocationOdsCode = "XXXX",
+                                    RecipientOdsCode = "AAAC",
+                                    OrderItemSublocationRecipients =
+                                        [new OrderItemSublocationRecipient(1001, "AAAC", catalogueItemId)],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                new Order
+                {
+                    Id = 1002,
+                    OrderNumber = 5555,
+                    Revision = 2,
+                    Description = "My order",
+                    OrderingPartyId = orderingPartyId,
+                    SelectedFramework = framework,
+                    OrderItems = [new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1002 }],
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            OrderId = 1002,
+                            SublocationOdsCode = "XXXX",
+                            OwnerOdsCode = "AA-FF",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient
+                                {
+                                    OrderId = 1002,
+                                    ParentSublocationOdsCode = "XXXX",
+                                    RecipientOdsCode = "AAAA",
+                                    OrderItemSublocationRecipients =
+                                        [new OrderItemSublocationRecipient(1002, "AAAA", catalogueItemId)],
+                                },
+                                new OrderSublocationRecipient
+                                {
+                                    OrderId = 1002,
+                                    ParentSublocationOdsCode = "XXXX",
+                                    RecipientOdsCode = "AAAB",
+                                    OrderItemSublocationRecipients =
+                                        [new OrderItemSublocationRecipient(1002, "AAAB", catalogueItemId)],
+                                },
+                                new OrderSublocationRecipient
+                                {
+                                    OrderId = 1002,
+                                    ParentSublocationOdsCode = "XXXX",
+                                    RecipientOdsCode = "AAAC",
+                                    OrderItemSublocationRecipients =
+                                        [new OrderItemSublocationRecipient(1002, "AAAC", catalogueItemId)],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                catalogueItemId,
+                new List<OrderSublocationRecipient>
+                {
+                    new()
+                    {
+                        OrderId = 1002,
+                        ParentSublocationOdsCode = "XXXX",
+                        RecipientOdsCode = "AAAA",
+                        OrderItemSublocationRecipients =
+                            [new OrderItemSublocationRecipient(1002, "AAAA", catalogueItemId)],
+                    },
+                    new()
+                    {
+                        OrderId = 1002,
+                        ParentSublocationOdsCode = "XXXX",
+                        RecipientOdsCode = "AAAB",
+                        OrderItemSublocationRecipients =
+                            [new OrderItemSublocationRecipient(1002, "AAAB", catalogueItemId)],
+                    },
+                },
+            ],
+            [
+                // Recipient did not exist in previous order
+                new Order
+                {
+                    Id = 1001,
+                    OrderNumber = 5555,
+                    Revision = 1,
+                    Description = "My order",
+                    OrderingPartyId = orderingPartyId,
+                    SelectedFramework = framework,
+                    OrderItems = [new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1001 }],
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            OrderId = 1001,
+                            SublocationOdsCode = "XXXX",
+                            OwnerOdsCode = "AA-FF",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient
+                                {
+                                    OrderId = 1001,
+                                    ParentSublocationOdsCode = "XXXX",
+                                    RecipientOdsCode = "AAAA",
+                                    OrderItemSublocationRecipients =
+                                        [new OrderItemSublocationRecipient(1001, "AAAA", catalogueItemId)],
+                                },
+                                new OrderSublocationRecipient
+                                {
+                                    OrderId = 1001,
+                                    ParentSublocationOdsCode = "XXXX",
+                                    RecipientOdsCode = "AAAB",
+                                    OrderItemSublocationRecipients =
+                                        [new OrderItemSublocationRecipient(1001, "AAAB", catalogueItemId)],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                new Order
+                {
+                    Id = 1002,
+                    OrderNumber = 5555,
+                    Revision = 2,
+                    Description = "My order",
+                    OrderingPartyId = orderingPartyId,
+                    SelectedFramework = framework,
+                    OrderItems = [new OrderItem { CatalogueItemId = catalogueItemId, OrderId = 1002 }],
+                    OrderSublocations =
+                    [
+                        new OrderSublocation
+                        {
+                            OrderId = 1002,
+                            SublocationOdsCode = "XXXX",
+                            OwnerOdsCode = "AA-FF",
+                            SublocationRecipients =
+                            [
+                                new OrderSublocationRecipient
+                                {
+                                    OrderId = 1002,
+                                    ParentSublocationOdsCode = "XXXX",
+                                    RecipientOdsCode = "AAAA",
+                                    OrderItemSublocationRecipients =
+                                        [new OrderItemSublocationRecipient(1002, "AAAA", catalogueItemId)],
+                                },
+                                new OrderSublocationRecipient
+                                {
+                                    OrderId = 1002,
+                                    ParentSublocationOdsCode = "XXXX",
+                                    RecipientOdsCode = "AAAB",
+                                    OrderItemSublocationRecipients =
+                                        [new OrderItemSublocationRecipient(1002, "AAAB", catalogueItemId)],
+                                },
+                                new OrderSublocationRecipient
+                                {
+                                    OrderId = 1002,
+                                    ParentSublocationOdsCode = "XXXX",
+                                    RecipientOdsCode = "AAAC",
+                                    OrderItemSublocationRecipients =
+                                        [new OrderItemSublocationRecipient(1002, "AAAC", catalogueItemId)],
+                                },
+                            ],
+                        },
+                    ],
+                },
+                catalogueItemId,
+                new List<OrderSublocationRecipient>
+                {
+                    new()
+                    {
+                        OrderId = 1002,
+                        ParentSublocationOdsCode = "XXXX",
+                        RecipientOdsCode = "AAAC",
+                        OrderItemSublocationRecipients =
+                            [new OrderItemSublocationRecipient(1002, "AAAC", catalogueItemId)],
+                    },
+                },
+            ],
+        ];
+    }
+
+    [Theory]
+    [MockMemberAutoData(nameof(OrderRecipientsWithOrderItemsAndExpectedResults))]
+    public static void OrderRecipients_DeterminesRecipientsForOrder_Scenarios(
+        Order previousOrder,
+        Order currentOrder,
+        CatalogueItemId catalogueItemId,
+        List<OrderSublocationRecipient> expectedRecipients)
+    {
+        ICollection<OrderSublocationRecipient> result = currentOrder.DetermineOrderRecipients(
+            previousOrder,
+            catalogueItemId);
+
+        result.Should().BeEquivalentTo(expectedRecipients);
+    }
 }

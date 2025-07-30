@@ -16,5 +16,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.Extensions
             foreach (var item in items)
                 collection.Add(item);
         }
+
+        public static void RemoveRange<T>(this ICollection<T> collection, IEnumerable<T> items)
+        {
+            if (collection is null)
+                throw new ArgumentNullException(nameof(collection));
+
+            if (items is null)
+                return;
+
+            foreach (T item in items)
+                collection.Remove(item);
+        }
     }
 }

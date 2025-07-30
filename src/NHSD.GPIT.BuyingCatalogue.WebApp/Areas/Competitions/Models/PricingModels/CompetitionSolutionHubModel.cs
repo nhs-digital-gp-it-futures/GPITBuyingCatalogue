@@ -27,9 +27,11 @@ public class CompetitionSolutionHubModel : NavBaseModel
                     competitionSolution.SolutionId,
                     competitionSolution.Solution.CatalogueItem,
                     competitionSolution.Quantity,
-                    competition.Recipients.ToDictionary(
+                    competition.FlattenedRecipients.ToDictionary(
                         x => x,
-                        x => competitionSolution.Quantities.FirstOrDefault(y => y.OdsCode == x.Id)?.Quantity),
+                        x => competitionSolution.Quantities
+                            .FirstOrDefault(y => y.RecipientOdsCode == x.RecipientOdsCode)
+                            ?.Quantity),
                     competitionSolution.Price)
                 {
                     InternalOrgId = internalOrgId,
@@ -37,20 +39,19 @@ public class CompetitionSolutionHubModel : NavBaseModel
                     ContractLength = competition.ContractLength,
                 },
             }.Union(
-                competitionSolution.SolutionServices.Select(
-                    x => new CatalogueItemHubModel(
-                        competitionSolution.SolutionId,
-                        x.Service,
-                        x.Quantity,
-                        competition.Recipients.ToDictionary(
-                            y => y,
-                            y => x.Quantities.FirstOrDefault(z => z.OdsCode == y.Id)?.Quantity),
-                        x.Price)
-                    {
-                        InternalOrgId = internalOrgId,
-                        CompetitionId = competitionSolution.CompetitionId,
-                        ContractLength = competition.ContractLength,
-                    }))
+                competitionSolution.SolutionServices.Select(x => new CatalogueItemHubModel(
+                    competitionSolution.SolutionId,
+                    x.Service,
+                    x.Quantity,
+                    competition.FlattenedRecipients.ToDictionary(
+                        y => y,
+                        y => x.Quantities.FirstOrDefault(z => z.RecipientOdsCode == y.RecipientOdsCode)?.Quantity),
+                    x.Price)
+                {
+                    InternalOrgId = internalOrgId,
+                    CompetitionId = competitionSolution.CompetitionId,
+                    ContractLength = competition.ContractLength,
+                }))
             .ToList();
     }
 

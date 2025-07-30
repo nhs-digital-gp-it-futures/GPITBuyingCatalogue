@@ -100,9 +100,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
             CompetitionTaskList.SelectServiceRecipientsManually();
 
             CommonActions.PageLoadedCorrectGetIndex(
-               typeof(ServiceRecipientsController),
-               nameof(ServiceRecipientsController.SelectServiceRecipients))
-                   .Should().BeTrue();
+                    typeof(ServiceRecipientsController),
+                    nameof(ServiceRecipientsController))
+                .Should()
+                .BeTrue();
         }
 
         public void SelectOrderRecipients()
@@ -110,9 +111,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
             CommonActions.ClickLinkElement(OrderRecipientsObjects.ServiceRecipientsLink);
 
             CommonActions.PageLoadedCorrectGetIndex(
-               typeof(ServiceRecipientsController),
-               nameof(ServiceRecipientsController.SelectServiceRecipients))
-                   .Should().BeTrue();
+                    typeof(ServiceRecipientsController),
+                    nameof(ServiceRecipientsController))
+                .Should()
+                .BeTrue();
         }
 
         public void SelectSolutionsAndServicesTask(bool isAssociatedServiceOnly)

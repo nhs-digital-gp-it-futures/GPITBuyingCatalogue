@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
@@ -286,6 +285,7 @@ public static class CompetitionResultsControllerTests
         Competition competition,
         CompetitionSolution competitionSolution,
         Solution solution,
+        int expectedRecipientCount,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsController controller)
     {
@@ -297,8 +297,10 @@ public static class CompetitionResultsControllerTests
         competition.CompetitionSolutions = new List<CompetitionSolution> { competitionSolution };
 
         competitionsService.GetCompetitionForResults(organisation.InternalIdentifier, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionTotalRecipientCount(organisation.InternalIdentifier, competition.Id)
+            .Returns(expectedRecipientCount);
 
-        var expectedModel = new OrderingInformationModel(competition, competitionSolution);
+        var expectedModel = new OrderingInformationModel(competition, competitionSolution, expectedRecipientCount);
 
         var result = (await controller.OrderingInformation(
             organisation.InternalIdentifier,
@@ -330,13 +332,14 @@ public static class CompetitionResultsControllerTests
     public static async Task RecipientsCsv_ReturnsFileResult(
         string internalOrgId,
         Competition competition,
-        List<OdsOrganisation> competitionRecipients,
+        List<CompetitionSublocation> competitionSublocations,
         [Frozen] ICompetitionsService competitionsService,
         CompetitionResultsController controller)
     {
-        competition.Recipients = competitionRecipients;
+        competition.CompetitionSublocations = competitionSublocations;
 
-        competitionsService.GetCompetitionWithRecipients(internalOrgId, competition.Id).Returns(competition);
+        competitionsService.GetCompetitionWithSublocationsAndSublocationRecipients(internalOrgId, competition.Id)
+            .Returns(competition);
 
         var result = (await controller.RecipientsCsv(internalOrgId, competition.Id)).As<FileResult>();
 

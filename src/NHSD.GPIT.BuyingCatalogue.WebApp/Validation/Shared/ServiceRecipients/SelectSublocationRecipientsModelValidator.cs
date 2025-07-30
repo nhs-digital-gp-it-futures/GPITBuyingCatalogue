@@ -1,0 +1,32 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentValidation;
+using NHSD.GPIT.BuyingCatalogue.Framework.Models;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels;
+
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared.ServiceRecipients
+{
+    public class SelectSublocationRecipientsModelValidator : AbstractValidator<SelectSublocationRecipientsModel>
+    {
+        public const string NoRecipientsSelectedMessage = "Select one or more service recipients";
+
+        public SelectSublocationRecipientsModelValidator()
+        {
+            RuleFor(x => x.RenderedServiceRecipients)
+                .Must(HaveMadeASelection)
+                .WithMessage(NoRecipientsSelectedMessage)
+                .OverridePropertyName("RenderedServiceRecipients[0].Selected");
+        }
+
+        private static bool HaveMadeASelection(IReadOnlyList<SelectOption<string>> checkboxSelections)
+        {
+            if (checkboxSelections is null or { Count: 0 })
+                return false;
+
+            var checkedCheckboxSelectionCount =
+                checkboxSelections.Count(x => x.Selected);
+
+            return checkedCheckboxSelectionCount > 0;
+        }
+    }
+}

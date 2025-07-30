@@ -112,7 +112,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         [MockAutoData]
         public static void Get_Amended_NewRecipient_ReturnsInProgress(
             Order order,
-            OrderRecipient orderRecipient,
+            OrderSublocation newOrderSublocation,
             SolutionOrServiceStatusProvider service)
         {
             var state = new OrderProgress
@@ -129,7 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 var matchingItem = amendedOrder.OrderItems.FirstOrDefault(a => a.CatalogueItemId == i.CatalogueItemId);
                 matchingItem.CatalogueItem = i.CatalogueItem;
             });
-            amendedOrder.OrderRecipients.Add(orderRecipient);
+            amendedOrder.OrderSublocations.Add(newOrderSublocation);
 
             var actual = service.Get(new OrderWrapper(amendedOrder, [order]), state);
 
@@ -206,11 +206,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
         }
 
         [Theory]
-        [MockInlineAutoData(1, TaskProgress.Completed)]
-        [MockInlineAutoData(2, TaskProgress.Amended)]
-        public static void Get_SolutionSelected_EverythingPopulated_ReturnsCompleted(
-            int revision,
-            TaskProgress expectedTaskProgress,
+        [MockAutoData]
+        public static void Get_SolutionSelected_NoQuantitiesSelected_ReturnsInProgress(
             Order order,
             SolutionOrServiceStatusProvider service)
         {
@@ -219,39 +216,62 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.TaskList.Providers
                 ServiceRecipients = TaskProgress.Completed,
             };
 
-            order.Revision = revision;
+            order.Revision = 1;
             order.OrderType = OrderTypeEnum.Solution;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.ForEach(x =>
+            {
+                x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            });
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            order.FlattenedRecipients.ForEach(x => x.OrderItemSublocationRecipients.ForEach(y => y.Quantity = null));
 
             var actual = service.Get(new OrderWrapper(order), state);
 
-            actual.Should().Be(expectedTaskProgress);
+            actual.Should().Be(TaskProgress.InProgress);
         }
 
         [Theory]
-        [MockInlineAutoData(1, TaskProgress.Completed)]
-        [MockInlineAutoData(2, TaskProgress.Amended)]
-        public static void Get_SolutionSelected_With_Everything_But_DeliveryDates_Returns_InProgress_For_An_Amendment(
-            int revision,
-            TaskProgress expectedTaskProgress,
+        [MockAutoData]
+        public static void Get_SolutionSelected_EverythingPopulated_ReturnsCompleted(
             Order order,
             SolutionOrServiceStatusProvider service)
         {
-            var state = new OrderProgress
-            {
-                ServiceRecipients = TaskProgress.Completed,
-            };
+            var state = new OrderProgress { ServiceRecipients = TaskProgress.Completed };
 
-            order.Revision = revision;
+            order.Revision = 1;
             order.OrderType = OrderTypeEnum.Solution;
-            order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService);
+            order.OrderItems.ForEach(x =>
+            {
+                x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            });
             order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.ForEach(i => i.DeliveryDate = null));
 
-            var actual = service.Get(new OrderWrapper(order), state);
+            TaskProgress actual = service.Get(new OrderWrapper(order), state);
 
-            actual.Should().Be(expectedTaskProgress);
+            actual.Should().Be(TaskProgress.Completed);
+        }
+
+        [Theory]
+        [MockAutoData]
+        public static void Get_SolutionSelected_EverythingPopulated_Amendment_ReturnsCompleted(
+            Order previousOrder,
+            Order order,
+            SolutionOrServiceStatusProvider service)
+        {
+            var state = new OrderProgress { ServiceRecipients = TaskProgress.Completed };
+
+            order.Revision = 2;
+            order.OrderType = OrderTypeEnum.Solution;
+            order.OrderItems.ForEach(x =>
+            {
+                x.CatalogueItem.CatalogueItemType = CatalogueItemType.AdditionalService;
+            });
+            order.OrderItems.First().CatalogueItem.CatalogueItemType = CatalogueItemType.Solution;
+
+            TaskProgress actual = service.Get(new OrderWrapper(order, [previousOrder]), state);
+
+            actual.Should().Be(TaskProgress.Amended);
         }
     }
 }

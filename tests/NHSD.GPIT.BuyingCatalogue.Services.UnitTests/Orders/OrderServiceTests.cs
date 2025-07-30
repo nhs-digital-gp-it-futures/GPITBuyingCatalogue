@@ -16,7 +16,6 @@ using Newtonsoft.Json.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Identity;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Organisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Users.Models;
@@ -26,17 +25,25 @@ using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Csv;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Email;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations;
 using NHSD.GPIT.BuyingCatalogue.Services.Orders;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
 using Notify.Client;
 using NSubstitute;
 using Xunit;
+using EntityOdsOrganisation = NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models.OdsOrganisation;
+using ServiceContractOdsOrganisation = NHSD.GPIT.BuyingCatalogue.ServiceContracts.Organisations.OdsOrganisation;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 {
     [SuppressMessage("Usage", "xUnit1004:Test methods should not be skipped", Justification = "Skipping tests that use Temporal queries")]
     public static class OrderServiceTests
     {
+        private const int CommonOrganisationId = 21;
+        private const int CommonOrderNumber = 10001;
+        private const string CommonOrganisationInternalIdentifier = "BB-FFGG";
+        private const string CommonOrganisationExternalIdentifier = "FFGG";
+
         [Fact]
         public static void Constructors_VerifyGuardClauses()
         {
@@ -50,22 +57,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task GetOrderWithCatalogueItemAndPrices_ReturnsExpectedResults(
-           Order order,
-           OrderItem orderItem,
-           CatalogueItem catalogueItem,
-           Organisation organisation,
-           EntityFramework.Catalogue.Models.Framework selectedFramework,
-           [Frozen] BuyingCatalogueDbContext context,
-           OrderService service)
+            Order order,
+            OrderItem orderItem,
+            CatalogueItem catalogueItem,
+            EntityFramework.Catalogue.Models.Framework selectedFramework,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
         {
-            order.OrderingPartyId = organisation.Id;
-            order.OrderingParty = organisation;
-
             order.SelectedFrameworkId = selectedFramework.Id;
             order.SelectedFramework = selectedFramework;
 
             orderItem.CatalogueItem = catalogueItem;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
 
@@ -76,7 +79,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var result = (await service.GetOrderWithCatalogueItemAndPrices(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
 
-            result.OrderingParty.Should().BeEquivalentTo(organisation);
             result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
             result.OrderItems.Count.Should().Be(1);
             var actual = result.OrderItems.First();
@@ -102,7 +104,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.SelectedFramework = selectedFramework;
 
             orderItem.CatalogueItem = catalogueItem;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
 
@@ -127,19 +129,15 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Order order,
             OrderItem orderItem,
             CatalogueItem catalogueItem,
-            Organisation organisation,
             EntityFramework.Catalogue.Models.Framework selectedFramework,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
-            order.OrderingPartyId = organisation.Id;
-            order.OrderingParty = organisation;
-
             order.SelectedFrameworkId = selectedFramework.Id;
             order.SelectedFramework = selectedFramework;
 
             orderItem.CatalogueItem = catalogueItem;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
             order.OrderItems.Clear();
             order.OrderItems.Add(orderItem);
 
@@ -150,7 +148,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
 
             var result = (await service.GetOrderWithOrderItemsForFunding(order.CallOffId, order.OrderingParty.InternalIdentifier)).Order;
 
-            result.OrderingParty.Should().BeEquivalentTo(organisation);
             result.SelectedFramework.Should().BeEquivalentTo(selectedFramework);
             result.OrderItems.Count.Should().Be(1);
             var actual = result.OrderItems.First();
@@ -197,7 +194,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             Organisation orderingParty,
             List<OrderItem> orderItems,
             EntityFramework.Catalogue.Models.Framework framework,
-            List<OrderRecipient> orderRecipients,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
@@ -213,7 +209,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             order.OrderingPartyContact = orderingPartyContact;
             order.OrderingParty = orderingParty;
             order.SelectedFramework = framework;
-            order.OrderRecipients = orderRecipients;
 
             context.Orders.Add(order);
 
@@ -236,9 +231,819 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             result.OrderingPartyContact.Should().NotBeNull();
             result.OrderingParty.Should().NotBeNull();
             result.SelectedFramework.Should().NotBeNull();
-            result.OrderRecipients.Count.Should().BeGreaterThan(0);
-            result.OrderRecipients.ForEach(i => i.OrderItemRecipients.Should().NotBeNull());
-            result.OrderRecipients.ForEach(i => i.OdsOrganisation.Should().NotBeNull());
+            result.FlattenedRecipients.Count().Should().BeGreaterThan(0);
+            result.FlattenedRecipients.ForEach(i => i.OrderItemSublocationRecipients.Should().NotBeNull());
+            result.FlattenedRecipients.ForEach(i => i.RecipientOdsOrganisation.Should().NotBeNull());
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetOrderWithSublocations_ReturnsOrder(
+            Organisation organisation,
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.OrderingParty = organisation;
+
+            context.Add(order);
+
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            OrderWrapper result = await service.GetOrderWithSublocations(
+                order.CallOffId,
+                organisation.InternalIdentifier);
+
+            result.Order.Should()
+                .BeEquivalentTo(
+                    order,
+                    opt => opt
+                        .Excluding(m => m.OrderSublocations));
+            result.Order.OrderSublocations.Should()
+                .BeEquivalentTo(
+                    order.OrderSublocations,
+                    opt => opt.Excluding(m => m.Order).Excluding(m => m.SublocationRecipients));
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task GetOrdersWithSublocationsAndSublocationRecipients_ReturnsOrder(
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            context.Add(order);
+
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            OrderWrapper result = await service.GetOrderWithSublocationsAndSublocationRecipients(
+                order.CallOffId,
+                order.OrderingParty.InternalIdentifier);
+
+            result.Should().NotBeNull();
+
+            result.Order.Should()
+                .BeEquivalentTo(
+                    order,
+                    opt => opt.Excluding(m => m.OrderSublocations));
+            result.Order.OrderSublocations.Should()
+                .BeEquivalentTo(
+                    order.OrderSublocations,
+                    opt => opt.Excluding(m => m.Order)
+                        .Excluding(m => m.SublocationOrganisation)
+                        .Excluding(m => m.SublocationRecipients));
+
+            foreach (OrderSublocation expectedOrderSublocation in order.OrderSublocations)
+            {
+                ICollection<OrderSublocationRecipient> actualSublocationRecipients = result.Order.OrderSublocations
+                    .First(x => x.SublocationOdsCode == expectedOrderSublocation.SublocationOdsCode)
+                    .SublocationRecipients;
+
+                expectedOrderSublocation.SublocationRecipients.Should()
+                    .BeEquivalentTo(
+                        actualSublocationRecipients,
+                        opt => opt.Excluding(m => m.Order)
+                            .Excluding(m => m.ParentSublocation)
+                            .Excluding(m => m.OrderItemSublocationRecipients));
+            }
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData(false, false)]
+        [MockInMemoryDbInlineAutoData(true, true)]
+        public static async Task GetOrderHasAnySublocations_ReturnsBool(
+            bool hasSublocation,
+            bool expectedResult,
+            Order order,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            if (!hasSublocation)
+            {
+                order.OrderSublocations = [];
+            }
+
+            context.Add(order);
+
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var result = await service.GetOrderHasAnySublocations(
+                order.CallOffId,
+                order.OrderingParty.InternalIdentifier);
+
+            Assert.Equal(expectedResult, result);
+        }
+
+        public static IEnumerable<object[]> OrderCountData()
+        {
+            return
+            [
+                [
+                    CommonOrganisationFactory(21),
+                    CommonOrderFactory(
+                        23,
+                        21,
+                        6678,
+                        0,
+                        [
+                            CommonOrderSublocationFactory(
+                                23,
+                                "XXXX",
+                                [
+                                    CommonOrderSublocationRecipientFactory(23, "AAAA", "XXXX"),
+                                    CommonOrderSublocationRecipientFactory(23, "AAAB", "XXXX"),
+                                    CommonOrderSublocationRecipientFactory(23, "AAAC", "XXXX"),
+                                ]),
+                            CommonOrderSublocationFactory(
+                                23,
+                                "XXXY",
+                                [
+                                    CommonOrderSublocationRecipientFactory(23, "BAAA", "XXXY"),
+                                    CommonOrderSublocationRecipientFactory(23, "BAAB", "XXXY"),
+                                    CommonOrderSublocationRecipientFactory(23, "BAAC", "XXXY"),
+                                ]),
+                            CommonOrderSublocationFactory(
+                                23,
+                                "XXXZ",
+                                [
+                                    CommonOrderSublocationRecipientFactory(23, "CAAA", "XXXZ"),
+                                    CommonOrderSublocationRecipientFactory(23, "CAAB", "XXXZ"),
+                                ]),
+                        ]),
+                    8,
+                ],
+                [
+                    CommonOrganisationFactory(31),
+                    CommonOrderFactory(
+                        76,
+                        31,
+                        8192,
+                        0,
+                        [
+                            CommonOrderSublocationFactory(
+                                76,
+                                "ZXXX",
+                                [
+                                ]),
+                            CommonOrderSublocationFactory(
+                                76,
+                                "ZXXY",
+                                [
+                                ]),
+                            CommonOrderSublocationFactory(
+                                76,
+                                "ZXXZ",
+                                [
+                                ]),
+                        ]),
+                    0,
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(OrderCountData))]
+        public static async Task GetOrderTotalRecipientCount_ReturnsInt(
+            Organisation organisation,
+            Order order,
+            int expectedRecipientCount,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.OrderingParty = organisation;
+
+            context.Add(order);
+
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            var result = await service.GetOrderTotalRecipientCount(order.CallOffId, organisation.InternalIdentifier);
+
+            Assert.Equal(expectedRecipientCount, result);
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData("", true, typeof(ArgumentException))]
+        [MockInMemoryDbInlineAutoData(null, true, typeof(ArgumentNullException))]
+        [MockInMemoryDbInlineAutoData("MY-ORG-ID", false, typeof(ArgumentException))]
+        public static async Task SetSublocations_RejectsNullParams(
+            string internalOrgId,
+            bool populateSublocations,
+            Type expectedExceptionType,
+            HashSet<string> orderSublocations,
+            OrderService service)
+        {
+            var callOffId = new CallOffId(10001, 0);
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                if (!populateSublocations)
+                {
+                    await service.SetSublocations(
+                        callOffId,
+                        internalOrgId,
+                        []);
+                }
+                else
+                {
+                    await service.SetSublocations(
+                        callOffId,
+                        internalOrgId,
+                        orderSublocations);
+                }
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(expectedExceptionType);
+        }
+
+        public static IEnumerable<object[]> SetSublocationsSingleOrderNotValidData()
+        {
+            Order completeOrder = CommonOrderFactory(
+                45,
+                32,
+                7864,
+                0,
+                [CommonOrderSublocationFactory(45, "XXXA", [], true)]);
+            completeOrder.Completed = new DateTime(2024, 01, 03);
+
+            Order terminatedOrder = CommonOrderFactory(
+                11,
+                76,
+                4312,
+                0,
+                [CommonOrderSublocationFactory(11, "XXXB", [], true)]);
+            terminatedOrder.IsTerminated = true;
+
+            Order deletedOrder = CommonOrderFactory(
+                51,
+                55,
+                9841,
+                0,
+                [CommonOrderSublocationFactory(51, "XXXC", [], true)]);
+            deletedOrder.IsDeleted = true;
+
+            Order expiredOrder = CommonOrderFactory(
+                36,
+                66,
+                4327,
+                0,
+                [CommonOrderSublocationFactory(36, "XXXD", [], true)]);
+            expiredOrder.CommencementDate = new DateTime(2024, 01, 01);
+            expiredOrder.MaximumTerm = 3;
+
+            var addHashSet = new HashSet<string> { "XXYY" };
+
+            return
+            [
+                [
+                    CommonOrganisationFactory(78), CommonOrderFactory(
+                        61,
+                        78,
+                        0,
+                        0,
+                        [
+                            CommonOrderSublocationFactory(
+                                61,
+                                "XXXZ",
+                                [],
+                                true),
+                        ]),
+                    addHashSet,
+                    "One or more requested Ids not found or not valid for this organisation.",
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsSingleOrderNotValidData))]
+        public static async Task SetSublocations_RejectsInvalidOperations(
+            Organisation organisation,
+            Order order,
+            HashSet<string> sublocationOdsCodes,
+            string expectedMessage,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            order.OrderingParty = organisation;
+
+            context.Add(order);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocations(
+                    order.CallOffId,
+                    organisation.InternalIdentifier,
+                    sublocationOdsCodes);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be(expectedMessage);
+        }
+
+        public static IEnumerable<object[]> SetSublocationsNotMostRecentRevisionInvalid()
+        {
+            return
+            [
+                [
+                    CommonOrganisationFactory(78),
+                    new List<Order>
+                    {
+                        CommonOrderFactory(45, 78, 5555, 0, [CommonOrderSublocationFactory(45, "XXXA", [], true)]),
+                        CommonOrderFactory(87, 78, 5555, 1, [CommonOrderSublocationFactory(87, "XXXA", [])]),
+                        CommonOrderFactory(92, 78, 5555, 2, [CommonOrderSublocationFactory(92, "XXXA", [])]),
+                    },
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsNotMostRecentRevisionInvalid))]
+        public static async Task SetSublocations_RejectsNotMostRecentOrder(
+            Organisation organisation,
+            List<Order> orders,
+            HashSet<string> sublocationOdsCodes,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            context.Add(organisation);
+            context.AddRange(orders);
+
+            Order workingOrder = orders.First(x => x.Revision == 1);
+
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocations(
+                    workingOrder.CallOffId,
+                    organisation.InternalIdentifier,
+                    sublocationOdsCodes);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be("Can only set sublocations on the most recent order.");
+        }
+
+        public static IEnumerable<object[]> SetSublocationsData()
+        {
+            return
+            [
+                // Adds
+                [
+                    CommonOrganisationFactory(78), CommonOrderFactory(33, 78, 6887, 0, []),
+                    new List<EntityOdsOrganisation>
+                    {
+                        CommonEntityOdsOrganisationFactory("XXXX"),
+                        CommonEntityOdsOrganisationFactory("XXXY"),
+                        CommonEntityOdsOrganisationFactory("XXXZ"),
+                    },
+                    new List<ServiceContractOdsOrganisation>
+                    {
+                        CommonServiceContractOdsOrganisationFactory("XXXX"),
+                        CommonServiceContractOdsOrganisationFactory("XXXY"),
+                        CommonServiceContractOdsOrganisationFactory("XXXZ"),
+                    },
+                    new HashSet<string> { "XXXX", "XXXY" },
+                    new List<OrderSublocation>
+                    {
+                        CommonOrderSublocationFactory(33, "XXXX"), CommonOrderSublocationFactory(33, "XXXY"),
+                    },
+                ],
+
+                // Removes
+                [
+                    CommonOrganisationFactory(31),
+                    CommonOrderFactory(
+                        467,
+                        31,
+                        6443,
+                        0,
+                        [
+                            CommonOrderSublocationFactory(467, "YXXA"), CommonOrderSublocationFactory(467, "YXXB"),
+                            CommonOrderSublocationFactory(467, "YXXC"),
+                        ]),
+                    new List<EntityOdsOrganisation>
+                    {
+                        CommonEntityOdsOrganisationFactory("YXXA"),
+                        CommonEntityOdsOrganisationFactory("YXXB"),
+                        CommonEntityOdsOrganisationFactory("YXXC"),
+                    },
+                    new List<ServiceContractOdsOrganisation>
+                    {
+                        CommonServiceContractOdsOrganisationFactory("YXXA"),
+                        CommonServiceContractOdsOrganisationFactory("YXXB"),
+                        CommonServiceContractOdsOrganisationFactory("YXXC"),
+                    },
+                    new HashSet<string> { "YXXB", "YXXC" },
+                    new List<OrderSublocation>
+                    {
+                        CommonOrderSublocationFactory(467, "YXXB"), CommonOrderSublocationFactory(467, "YXXC"),
+                    },
+                ],
+
+                // Adds and removes
+                [
+                    CommonOrganisationFactory(87),
+                    CommonOrderFactory(
+                        721,
+                        87,
+                        55,
+                        0,
+                        [
+                            CommonOrderSublocationFactory(721, "ZXXA"), CommonOrderSublocationFactory(721, "ZXXB"),
+                            CommonOrderSublocationFactory(721, "ZXXC"),
+                        ]),
+                    new List<EntityOdsOrganisation>
+                    {
+                        CommonEntityOdsOrganisationFactory("ZXXA"),
+                        CommonEntityOdsOrganisationFactory("ZXXB"),
+                        CommonEntityOdsOrganisationFactory("ZXXC"),
+                        CommonEntityOdsOrganisationFactory("ZXXD"),
+                        CommonEntityOdsOrganisationFactory("ZXXE"),
+                        CommonEntityOdsOrganisationFactory("ZXXF"),
+                    },
+                    new List<ServiceContractOdsOrganisation>
+                    {
+                        CommonServiceContractOdsOrganisationFactory("ZXXA"),
+                        CommonServiceContractOdsOrganisationFactory("ZXXB"),
+                        CommonServiceContractOdsOrganisationFactory("ZXXC"),
+                        CommonServiceContractOdsOrganisationFactory("ZXXD"),
+                        CommonServiceContractOdsOrganisationFactory("ZXXE"),
+                        CommonServiceContractOdsOrganisationFactory("ZXXF"),
+                    },
+                    new HashSet<string> { "ZXXB", "ZXXC", "ZXXD", "ZXXE" },
+                    new List<OrderSublocation>
+                    {
+                        CommonOrderSublocationFactory(721, "ZXXB"),
+                        CommonOrderSublocationFactory(721, "ZXXC"),
+                        CommonOrderSublocationFactory(721, "ZXXD"),
+                        CommonOrderSublocationFactory(721, "ZXXE"),
+                    },
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsData))]
+        public static async Task SetSublocations_SetsSublocations(
+            Organisation organisation,
+            Order order,
+            List<EntityOdsOrganisation> validSublocationsAsEntityModels,
+            List<ServiceContractOdsOrganisation> validSublocationsAsServiceModels,
+            HashSet<string> setSublocationOdsCodes,
+            List<OrderSublocation> expectedOrderSublocations,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] IOdsService odsService,
+            OrderService service)
+        {
+            order.OrderingParty = organisation;
+
+            context.AddRange(validSublocationsAsEntityModels);
+            context.Add(organisation);
+            context.Add(order);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier)
+                .Returns(validSublocationsAsServiceModels);
+
+            await service.SetSublocations(
+                order.CallOffId,
+                organisation.InternalIdentifier,
+                setSublocationOdsCodes);
+
+            OrderWrapper actualOrder = await service.GetOrderWithSublocations(
+                order.CallOffId,
+                organisation.InternalIdentifier);
+
+            actualOrder.Order.OrderSublocations.Should()
+                .BeEquivalentTo(
+                    expectedOrderSublocations,
+                    opt => opt.WithoutStrictOrdering()
+                        .Excluding(m => m.Order)
+                        .Excluding(m => m.SublocationOrganisation)
+                        .Excluding(m => m.SublocationRecipients));
+        }
+
+        [Theory]
+        [MockInMemoryDbInlineAutoData("", true, typeof(ArgumentException))]
+        [MockInMemoryDbInlineAutoData(null, true, typeof(ArgumentNullException))]
+        [MockInMemoryDbInlineAutoData("MY-ORG-ID", false, typeof(ArgumentException))]
+        public static async Task SetSublocationsAndRecipients_RejectsNullParams(
+            string internalOrgId,
+            bool populateSublocations,
+            Type expectedExceptionType,
+            List<OrderSublocation> orderSublocations,
+            OrderService service)
+        {
+            var callOffId = new CallOffId(10001, 0);
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                if (!populateSublocations)
+                {
+                    await service.SetSublocationsAndRecipients(
+                        callOffId,
+                        internalOrgId,
+                        []);
+                }
+                else
+                {
+                    await service.SetSublocationsAndRecipients(
+                        callOffId,
+                        internalOrgId,
+                        orderSublocations);
+                }
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(expectedExceptionType);
+        }
+
+        [Theory]
+        [MockInMemoryDbAutoData]
+        public static async Task SetSublocationsAndRecipients_RejectsAmendment(
+            string internalOrgId,
+            OrderService service)
+        {
+            var callOffId = new CallOffId(10001, 3);
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocationsAndRecipients(
+                    callOffId,
+                    internalOrgId,
+                    []);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be("Can only set sublocations and recipients on new orders.");
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsNotMostRecentRevisionInvalid))]
+        public static async Task SetSublocationsAndRecipients_RejectsNotMostRecentOrder(
+            Organisation organisation,
+            List<Order> orders,
+            List<OrderSublocation> sublocations,
+            [Frozen] BuyingCatalogueDbContext context,
+            OrderService service)
+        {
+            context.Add(organisation);
+            context.AddRange(orders);
+
+            Order workingOrder = orders.First(x => x.Revision == 1);
+
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocationsAndRecipients(
+                    workingOrder.CallOffId,
+                    organisation.InternalIdentifier,
+                    sublocations);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be("Can only set sublocations on the most recent order.");
+        }
+
+        public static IEnumerable<object[]> SetSublocationsAndRecipientsSingleOrderNotValidData()
+        {
+            Order completeOrder = CommonOrderFactory(
+                45,
+                32,
+                7864,
+                0,
+                [CommonOrderSublocationFactory(45, "XXXA", [], true)]);
+            completeOrder.Completed = new DateTime(2024, 01, 03);
+
+            Order terminatedOrder = CommonOrderFactory(
+                11,
+                76,
+                4312,
+                0,
+                [CommonOrderSublocationFactory(11, "XXXB", [], true)]);
+            terminatedOrder.IsTerminated = true;
+
+            Order expiredOrder = CommonOrderFactory(
+                36,
+                66,
+                4327,
+                0,
+                [CommonOrderSublocationFactory(36, "XXXD", [], true)]);
+            expiredOrder.CommencementDate = new DateTime(2024, 01, 01);
+            expiredOrder.MaximumTerm = 3;
+
+            return
+            [
+                [
+                    CommonOrganisationFactory(98), CommonOrderFactory(
+                        61,
+                        78,
+                        0,
+                        0,
+                        [
+                        ]),
+                    new List<OrderSublocation> { CommonOrderSublocationFactory(61, "XXXA") },
+                    new List<ServiceContractOdsOrganisation>(),
+                    new List<ServiceRecipient>(),
+                    "Provided sublocations not valid for this organisation.",
+                ],
+                [
+                    CommonOrganisationFactory(13), CommonOrderFactory(
+                        77,
+                        78,
+                        0,
+                        0,
+                        [
+                        ]),
+                    new List<OrderSublocation>
+                    {
+                        CommonOrderSublocationFactory(
+                            77,
+                            "XXXA",
+                            [CommonOrderSublocationRecipientFactory(77, "AAAA", "XXXA")]),
+                    },
+                    new List<ServiceContractOdsOrganisation> { CommonServiceContractOdsOrganisationFactory("XXXA") },
+                    new List<ServiceRecipient>(),
+                    "Provided recipients not valid for this organisation or its sublocations.",
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsAndRecipientsSingleOrderNotValidData))]
+        public static async Task SetSublocationsAndRecipients_RejectsInvalidOperations(
+            Organisation organisation,
+            Order order,
+            List<OrderSublocation> sublocationsToSet,
+            List<ServiceContractOdsOrganisation> validSublocations,
+            List<ServiceRecipient> validServiceRecipients,
+            string expectedMessage,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] IOdsService odsService,
+            OrderService service)
+        {
+            order.OrderingParty = organisation;
+
+            context.Add(order);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns(validSublocations);
+            odsService.GetServiceRecipientsBySublocation(Arg.Any<string>()).ReturnsForAnyArgs(validServiceRecipients);
+
+            Exception exception = await Record.ExceptionAsync(async () =>
+            {
+                await service.SetSublocationsAndRecipients(
+                    order.CallOffId,
+                    organisation.InternalIdentifier,
+                    sublocationsToSet);
+            });
+
+            exception.Should().NotBeNull();
+            exception!.GetType().Should().Be(typeof(InvalidOperationException));
+            exception!.Message.Should().Be(expectedMessage);
+        }
+
+        public static IEnumerable<object[]> SetSublocationsAndRecipientsSingleOrderData()
+        {
+            return
+            [
+                // Blank order
+                [
+                    CommonOrganisationFactory(45), CommonOrderFactory(65, 45),
+                    new List<OrderSublocation>
+                    {
+                        CommonOrderSublocationFactory(
+                            45,
+                            "XXXA",
+                            [
+                                CommonOrderSublocationRecipientFactory(45, "AAAA", "XXXA", true),
+                                CommonOrderSublocationRecipientFactory(45, "AAAB", "XXXA", true),
+                            ],
+                            true),
+                    },
+                    new List<ServiceContractOdsOrganisation> { CommonServiceContractOdsOrganisationFactory("XXXA") },
+                    new List<ServiceRecipient>
+                    {
+                        new() { LocationOrgId = "XXXA", OrgId = "AAAA" },
+                        new() { LocationOrgId = "XXXA", OrgId = "AAAB" },
+                    },
+                ],
+
+                // Order with existing sublocations
+                [
+                    CommonOrganisationFactory(487),
+                    CommonOrderFactory(
+                        31,
+                        487,
+                        0,
+                        0,
+                        [
+                            CommonOrderSublocationFactory(
+                                487,
+                                "XXXX",
+                                [CommonOrderSublocationRecipientFactory(487, "CAAA", "XXXX", true)],
+                                true),
+                        ]),
+                    new List<OrderSublocation>
+                    {
+                        CommonOrderSublocationFactory(
+                            31,
+                            "XXXB",
+                            [
+                                CommonOrderSublocationRecipientFactory(45, "BAAA", "XXXB", true),
+                                CommonOrderSublocationRecipientFactory(45, "BAAB", "XXXB", true),
+                            ],
+                            true),
+                    },
+                    new List<ServiceContractOdsOrganisation> { CommonServiceContractOdsOrganisationFactory("XXXB") },
+                    new List<ServiceRecipient>
+                    {
+                        new() { LocationOrgId = "XXXB", OrgId = "BAAA" },
+                        new() { LocationOrgId = "XXXB", OrgId = "BAAB" },
+                    },
+                ],
+            ];
+        }
+
+        [Theory]
+        [MockInMemoryDbMemberAutoData(nameof(SetSublocationsAndRecipientsSingleOrderData))]
+        public static async Task SetSublocationsAndRecipients_SetsSublocationsAndRecipients(
+            Organisation organisation,
+            Order order,
+            List<OrderSublocation> sublocationsToSet,
+            List<ServiceContractOdsOrganisation> validSublocations,
+            List<ServiceRecipient> validServiceRecipients,
+            [Frozen] BuyingCatalogueDbContext context,
+            [Frozen] IOdsService odsService,
+            OrderService service)
+        {
+            order.OrderingParty = organisation;
+
+            context.Add(order);
+            await context.SaveChangesAsync();
+
+            context.ChangeTracker.Clear();
+
+            odsService.GetSublocationsByParentOdsCode(organisation.ExternalIdentifier).Returns(validSublocations);
+            odsService.GetServiceRecipientsBySublocation(Arg.Any<string>()).ReturnsForAnyArgs(validServiceRecipients);
+
+            await service.SetSublocationsAndRecipients(
+                order.CallOffId,
+                organisation.InternalIdentifier,
+                sublocationsToSet);
+
+            OrderWrapper actualWrapper = await service.GetOrderWithSublocationsAndSublocationRecipients(
+                order.CallOffId,
+                order.OrderingParty.InternalIdentifier);
+
+            ICollection<OrderSublocation> actualSublocations = actualWrapper.Order.OrderSublocations;
+
+            actualSublocations.Should()
+                .BeEquivalentTo(
+                    sublocationsToSet,
+                    opt => opt.WithoutStrictOrdering()
+                        .Excluding(m => m.Order)
+                        .Excluding(m => m.SublocationOrganisation)
+                        .Excluding(m => m.SublocationRecipients));
+
+            foreach (OrderSublocation expectedSublocation in sublocationsToSet)
+            {
+                OrderSublocation actualSublocation =
+                    actualSublocations.First(x => x.SublocationOdsCode == expectedSublocation.SublocationOdsCode);
+
+                actualSublocation.SublocationRecipients.Should()
+                    .BeEquivalentTo(
+                        expectedSublocation.SublocationRecipients,
+                        opt => opt.WithoutStrictOrdering()
+                            .Excluding(m => m.Order)
+                            .Excluding(m => m.OrderItemSublocationRecipients)
+                            .Excluding(m => m.ParentSublocation));
+            }
         }
 
         [Theory]
@@ -383,7 +1188,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             result.SupplierContact.Email.Should().Be(order.SupplierContact.Email);
             result.SupplierContact.Phone.Should().Be(order.SupplierContact.Phone);
 
-            result.OrderRecipients.Count.Should().Be(order.OrderRecipients.Count);
+            result.FlattenedRecipients.Count().Should().Be(order.FlattenedRecipients.Count());
             result.OrderItems.Count.Should().Be(order.OrderItems.Count);
         }
 
@@ -434,11 +1239,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.OrderTerminations.Count().Should().Be(1);
             context.Orders.Count().Should().Be(1);
             context.OrderDeletionApprovals.Count().Should().Be(1);
+            context.OrderSublocations.Count().Should().Be(3);
             context.OrderItems.Count().Should().Be(3);
             context.OrderItemFunding.Count().Should().Be(3);
             context.OrderItemPriceTiers.Count().Should().Be(9);
             context.OrderItemPrices.Count().Should().Be(3);
-            context.OrderItemRecipients.Count().Should().Be(9);
+            context.OrderItemSublocationRecipients.Count().Should().Be(27);
 
             await service.HardDeleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier);
 
@@ -449,11 +1255,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             context.OrderTerminations.Should().BeEmpty();
             context.Orders.Should().BeEmpty();
             context.OrderDeletionApprovals.Should().BeEmpty();
+            context.OrderSublocations.Should().BeEmpty();
             context.OrderItems.Should().BeEmpty();
             context.OrderItemFunding.Should().BeEmpty();
             context.OrderItemPriceTiers.Should().BeEmpty();
             context.OrderItemPrices.Should().BeEmpty();
-            context.OrderItemRecipients.Should().BeEmpty();
+            context.OrderItemSublocationRecipients.Should().BeEmpty();
         }
 
         [Theory]
@@ -522,6 +1329,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> adminTokens = null;
@@ -555,6 +1363,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 settings);
 
             await service.TerminateOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id, terminationDate, reason);
@@ -579,6 +1388,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> userTokens = null;
@@ -612,6 +1422,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 settings);
 
             var expectedOrderSummaryCsv = NotificationClient.PrepareUpload(bytes, true);
@@ -658,6 +1469,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> adminTokens = null;
@@ -691,6 +1503,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 settings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
@@ -713,6 +1526,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings settings)
         {
             Dictionary<string, dynamic> userTokens = null;
@@ -747,6 +1561,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 settings);
 
             var expectedOrderSummaryCsv = NotificationClient.PrepareUpload(bytes, true);
@@ -773,6 +1588,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings orderMessageSettings)
         {
             order.OrderType = OrderTypeEnum.Solution;
@@ -789,6 +1605,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 orderMessageSettings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
@@ -806,6 +1623,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             [Frozen] IGovNotifyEmailService mockEmailService,
             [Frozen] ICsvService mockCsvService,
             [Frozen] IOrderPdfService mockPdfService,
+            [Frozen] IOdsService mockOdsService,
             OrderMessageSettings orderMessageSettings)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
@@ -822,6 +1640,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
                 mockCsvService,
                 mockEmailService,
                 mockPdfService,
+                mockOdsService,
                 orderMessageSettings);
 
             await service.CompleteOrder(order.CallOffId, order.OrderingParty.InternalIdentifier, user.Id);
@@ -1177,7 +1996,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
         [MockInMemoryDbAutoData]
         public static async Task SetOrderPracticeReorganisationRecipient_UpdatesDatabase(
             Order order,
-            OdsOrganisation odsOrganisation,
+            EntityOdsOrganisation odsOrganisation,
             [Frozen] BuyingCatalogueDbContext context,
             OrderService service)
         {
@@ -1264,6 +2083,83 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Orders
             updatedOrder.OrderTermination.OrderId.Should().Be(id);
             updatedOrder.OrderTermination.DateOfTermination.Should().Be(terminationDate);
             updatedOrder.OrderTermination.Reason.Should().Be(reason);
+        }
+
+        private static Organisation CommonOrganisationFactory(int customId = 0)
+        {
+            return new Organisation
+            {
+                Id = customId == 0 ? CommonOrganisationId : customId,
+                InternalIdentifier = CommonOrganisationInternalIdentifier,
+                ExternalIdentifier = CommonOrganisationExternalIdentifier,
+                Name = "A Local ICB",
+            };
+        }
+
+        private static Order CommonOrderFactory(
+            int customId = 0,
+            int customOrganisationId = 0,
+            int customOrderNumber = 0,
+            int customRevision = 0,
+            ICollection<OrderSublocation> orderSublocations = null)
+        {
+            var random = new Random();
+            return new Order
+            {
+                Id = customId == 0 ? random.Next() : customId,
+                OrderNumber = customOrderNumber == 0 ? CommonOrderNumber : customOrderNumber,
+                Revision = customRevision,
+                Description = $"An order {customId}",
+                OrderingPartyId = customOrganisationId == 0 ? CommonOrganisationId : customOrganisationId,
+                SelectedFramework = new EntityFramework.Catalogue.Models.Framework { Id = random.Next().ToString() },
+                OrderSublocations = orderSublocations,
+            };
+        }
+
+        private static OrderSublocation CommonOrderSublocationFactory(
+            int orderId,
+            string sublocationOdsCode,
+            List<OrderSublocationRecipient> sublocationRecipients = null,
+            bool hasOrganisation = false)
+        {
+            return new OrderSublocation
+            {
+                OrderId = orderId,
+                SublocationOdsCode = sublocationOdsCode,
+                OwnerOdsCode = CommonOrganisationExternalIdentifier,
+                SublocationRecipients = sublocationRecipients,
+                SublocationOrganisation =
+                    hasOrganisation ? CommonEntityOdsOrganisationFactory(sublocationOdsCode) : null,
+            };
+        }
+
+        private static OrderSublocationRecipient CommonOrderSublocationRecipientFactory(
+            int orderId,
+            string recipientOdsCode,
+            string parentSublocationOdsCode,
+            bool hasOrganisation = false)
+        {
+            return new OrderSublocationRecipient
+            {
+                OrderId = orderId,
+                RecipientOdsCode = recipientOdsCode,
+                ParentSublocationOdsCode = parentSublocationOdsCode,
+                RecipientOdsOrganisation =
+                    hasOrganisation ? CommonEntityOdsOrganisationFactory(recipientOdsCode) : null,
+            };
+        }
+
+        private static EntityOdsOrganisation CommonEntityOdsOrganisationFactory(string id)
+        {
+            return new EntityOdsOrganisation { Id = id, Name = $"An organisation - {id}", IsActive = true };
+        }
+
+        private static ServiceContractOdsOrganisation CommonServiceContractOdsOrganisationFactory(string id)
+        {
+            return new ServiceContractOdsOrganisation
+            {
+                OdsCode = id, OrganisationName = $"An organisation - {id}", IsActive = true,
+            };
         }
     }
 }

@@ -32,8 +32,6 @@ public interface ICompetitionsService
 
     Task<Competition> GetCompetitionWithWeightings(string internalOrgId, int competitionId);
 
-    Task<Competition> GetCompetitionWithRecipients(string internalOrgId, int competitionId);
-
     Task<Competition> GetCompetitionWithServices(string internalOrgId, int competitionId, bool shouldTrack = false);
 
     Task<Competition> GetCompetitionWithServicesAndFramework(string internalOrgId, int competitionId, bool shouldTrack = false);
@@ -42,9 +40,17 @@ public interface ICompetitionsService
 
     Task<Competition> GetCompetitionWithSolutionsHub(string internalOrgId, int competitionId);
 
+    Task<Competition> GetCompetitionWithSublocations(string internalOrgId, int competitionId);
+
+    Task<Competition> GetCompetitionWithSublocationsAndSublocationRecipients(string internalOrgId, int competitionId);
+
+    Task<int> GetCompetitionTotalRecipientCount(string internalOrgId, int competitionId);
+
     Task<CompetitionTaskListModel> GetCompetitionTaskList(string internalOrgId, int competitionId);
 
     Task<ICollection<CompetitionSolution>> GetNonShortlistedSolutions(string internalOrgId, int competitionId);
+
+    Task<bool> GetCompetitionHasAnySublocations(string internalOrgId, int competitionId);
 
     Task AddCompetitionSolutions(string internalOrgId, int competitionId, IEnumerable<CompetitionSolution> competitionSolutions);
 
@@ -68,7 +74,15 @@ public interface ICompetitionsService
         CatalogueItemId solutionId,
         CatalogueItemId serviceId);
 
-    Task SetCompetitionRecipients(int competitionId, IEnumerable<string> odsCodes);
+    Task SetSublocations(
+        string internalOrgId,
+        int competitionId,
+        HashSet<string> sublocationOdsCodes);
+
+    Task SetCompetitionSublocationsAndRecipients(
+        string internalOrgId,
+        int competitionId,
+        ICollection<CompetitionSublocation> competitionSublocations);
 
     Task SetContractLength(string internalOrgId, int competitionId, int contractLength);
 

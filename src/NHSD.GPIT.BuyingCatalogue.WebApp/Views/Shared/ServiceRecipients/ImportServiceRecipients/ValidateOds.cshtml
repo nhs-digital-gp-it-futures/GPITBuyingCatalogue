@@ -9,11 +9,11 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Caption"
-                        advice="We cannot import all the Service Recipients in your CSV file."/>
+                        advice="We cannot import all the service recipients in your CSV file."/>
 
         <div data-test-id="validate-ods-table">
             <nhs-table label-text="Failed imports">
-                <nhs-table-column>Service Recipient</nhs-table-column>
+                <nhs-table-column>Service recipient</nhs-table-column>
                 <nhs-table-column>ODS code</nhs-table-column>
 
                 @for (var i = 0; i < Model.InvalidServiceRecipients.Count; i++)
@@ -30,27 +30,26 @@
             </nhs-table>
         </div>
 
-        <h2>Why have these Service Recipients failed to import?</h2>
+        <h2>Why have these service recipients failed to import?</h2>
         <p>We’ve not been able to match your ODS codes with the ones we have on record. This is because either:</p>
 
         <ul>
             <li>the wrong ODS code has been entered in your CSV file</li>
             <li>there is an ODS code missing from your CSV file</li>
-            <li>the ODS code does not belong to a Service Recipient for your organisation</li>
-            <li>the Service Recipient no longer exists</li>
-            <li>the Service Recipient is new and has not yet been added to our records. You can <a href="@Url.Action(nameof(HomeController.ContactUs), typeof(HomeController).ControllerName())">contact us to find out when it will be added</a></li>
+            <li>the ODS code does not belong to a service recipient for your organisation</li>
+            <li>the service recipient no longer exists</li>
+            <li>the service recipient is new and has not yet been added to our records. You can <a href="@Url.Action(nameof(HomeController.ContactUs), typeof(HomeController).ControllerName())">contact us to find out when it will be added</a></li>
         </ul>
 
-        <p>If you continue with your import, any Service Recipients that have failed to import will not be included.</p>
+        <p>If you continue with your import, any service recipients that have failed to import will not be included.</p>
 
-        <vc:nhs-anchor-button type="Primary"
-                                         text="Save and continue"
-                                         url="@Model.ValidateNamesLink" />
-
-        <div>
+        <nhs-button-group>
+            <vc:nhs-anchor-button type="Primary"
+                                  text="Save and continue"
+                                  url="@Model.ContinueLink" />
             <a href="@Model.CancelLink">
                 Cancel
             </a>
-        </div>
+        </nhs-button-group>
     </div>
 </div>
