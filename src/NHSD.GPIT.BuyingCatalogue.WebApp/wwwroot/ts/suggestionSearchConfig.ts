@@ -86,7 +86,7 @@ class suggestionSearchConfig {
             return;
         }
 
-        const url = this.ajaxUrl.concat("?", this.queryParameterName, "=", trimmedQuery);
+        const url = this.ajaxUrl.concat("?", this.queryParameterName, "=", trimmedQuery, "&", "pad=1");
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url);
         xhr.onload = () => {
