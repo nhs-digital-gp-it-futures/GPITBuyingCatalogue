@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
@@ -7,6 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 {
     public interface IPrice
     {
+        private const int DefaultQuantityOffset = 0;
+
         public ICollection<IPriceTier> PriceTiers { get; }
 
         public string Description { get; set; }
@@ -28,7 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
         public string RangeDescription { get; set; }
 
         public bool IsPerServiceRecipient() => ProvisioningType.IsPerServiceRecipient()
-            || CataloguePriceQuantityCalculationType is Catalogue.Models.CataloguePriceQuantityCalculationType.PerServiceRecipient;
+            || CataloguePriceQuantityCalculationType is Catalogue.Models.CataloguePriceQuantityCalculationType
+                .PerServiceRecipient;
 
         public string ToPriceUnitString()
         {
@@ -44,19 +48,24 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
             return $"{priceTier.LowerRange}{upperRange} {RangeDescription}".Trim();
         }
 
-        public decimal CostForBillingPeriod(int quantity)
+        public decimal CostForBillingPeriod(int quantity) => CostForBillingPeriod(quantity, DefaultQuantityOffset);
+
+        public decimal CostForBillingPeriod(int quantity, int quantityOffset)
         {
-            var costPerTier = CostPerTierForBillingPeriod(quantity);
+            var costPerTier = CalculateCostPerTier(quantity, quantityOffset);
             return costPerTier.Sum(pcm => pcm.Cost);
         }
 
-        public IList<PriceCalculationModel> CostPerTierForBillingPeriod(int quantity)
+        public IList<PriceCalculationModel> CalculateCostPerTier(int quantity) =>
+            CalculateCostPerTier(quantity, DefaultQuantityOffset);
+
+        public IList<PriceCalculationModel> CalculateCostPerTier(int quantity, int quantityOffset)
         {
             return CataloguePriceCalculationType switch
             {
                 CataloguePriceCalculationType.SingleFixed => CalculateCostSingleFixed(quantity),
-                CataloguePriceCalculationType.Cumulative => CalculateCostCumulative(quantity),
-                CataloguePriceCalculationType.Volume or _ => CalculateCostVolume(quantity),
+                CataloguePriceCalculationType.Cumulative => CalculateCostCumulative(quantity, quantityOffset),
+                _ => CalculateCostVolume(quantity),
             };
         }
 
@@ -67,47 +76,44 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
                 : decimal.Zero;
         }
 
-        public decimal CalculateCostPerMonth(int quantity)
+        public decimal CalculateCostPerMonth(int quantity) => CalculateCostPerMonth(quantity, DefaultQuantityOffset);
+
+        public decimal CalculateCostPerYear(int quantity) => CalculateCostPerMonth(quantity, DefaultQuantityOffset) * 12;
+
+        public decimal CalculateCostPerMonth(int quantity, int quantityOffset)
         {
             if (BillingPeriod is null)
-            {
                 return decimal.Zero;
-            }
 
-            var cost = CostForBillingPeriod(quantity);
+            var cost = CostForBillingPeriod(quantity, quantityOffset);
 
             return BillingPeriod == TimeUnit.PerMonth
                 ? cost
                 : cost / 12;
         }
 
-        public decimal CalculateCostPerYear(int quantity)
-        {
-            if (BillingPeriod is null)
-            {
-                return decimal.Zero;
-            }
-
-            var cost = CostForBillingPeriod(quantity);
-
-            return BillingPeriod == TimeUnit.PerYear
-                ? cost
-                : cost * 12;
-        }
-
-        private List<PriceCalculationModel> CalculateCostCumulative(int quantity)
+        private IList<PriceCalculationModel> CalculateCostCumulative(int quantity, int quantityOffset)
         {
             var output = new List<PriceCalculationModel>();
 
-            foreach (var (tier, index) in PriceTiers.OrderBy(t => t.LowerRange).Select((x, i) => (x, i)))
+            foreach ((IPriceTier tier, var index) in PriceTiers.OrderBy(t => t.LowerRange).Select((x, i) => (x, i)))
             {
-                var tierQuantity = quantity < tier.Quantity
-                    ? (quantity < 0 ? 0 : quantity)
-                    : tier.Quantity;
+                int tierEnd = tier.UpperRange ?? int.MaxValue;
 
-                output.Add(new(index + 1, tierQuantity, tier.Price, tierQuantity * tier.Price));
+                if (quantityOffset >= tierEnd)
+                    continue;
+
+                int tierCapacity = tierEnd - Math.Max(quantityOffset, tier.LowerRange) + 1;
+                int tierQuantity = Math.Min(quantity, tierCapacity);
 
                 quantity -= tierQuantity;
+
+                output.Add(
+                    new PriceCalculationModel(
+                        index + 1,
+                        tierQuantity,
+                        tier.Price,
+                        tierQuantity * tier.Price));
             }
 
             return output;
