@@ -115,7 +115,9 @@ class suggestionSearchConfig {
     }
 
     onConfirm(result) {
-        window.location.href = result.url;
+        const url = new URL(result.url, window.location.origin);
+        url.searchParams.delete('page');
+        window.location.href = url.toString();
     }
 
     addFormEvents() {
