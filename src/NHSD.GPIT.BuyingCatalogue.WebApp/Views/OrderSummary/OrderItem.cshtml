@@ -68,17 +68,17 @@ else
             @if (Model.IsAmendment && !Model.OrderType.MergerOrSplit)
                 {
                     <td>
-                        @if (Model.IsServiceRecipientAdded(recipient.OdsCode))
+                        @if (Model.IsServiceRecipientAdded(recipient.RecipientOdsCode))
                         {
                             @("Added")
                         }
                     </td>
                 }
                 <td>
-                    @($"{recipient.OdsOrganisation.Name} ({recipient.OdsCode})")
+                    @($"{recipient.RecipientOdsOrganisation?.Name} ({recipient.RecipientOdsCode})")
                 </td>
                 <td>
-                    @($"{Model.CallOffId}-{recipient.OdsCode}-{ViewContext.HttpContext.NextLineId()}")
+                    @($"{Model.CallOffId}-{recipient.RecipientOdsCode}-{ViewContext.HttpContext.NextLineId()}")
                 </td>
                 <td>
                     @deliveryDateText

@@ -110,7 +110,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
             TaskListBackLinkProvider provider)
         {
             order.OrderType = OrderTypeEnum.Solution;
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
             order.OrderItems.ForEach(x =>
             {
                 x.Quantity = 0;
@@ -223,7 +223,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Routing.Providers
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
             order.OrderItems.ForEach(x => x.CatalogueItem.CatalogueItemType = CatalogueItemType.AssociatedService);
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.FlattenedRecipients.ForEach(r => r.OrderItemSublocationRecipients.Clear());
 
             var result = provider.Process(new OrderWrapper(order), new RouteValues(internalOrgId, callOffId, catalogueItemId));
 

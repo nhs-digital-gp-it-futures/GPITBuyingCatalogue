@@ -170,14 +170,28 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var prices = await GetPrices(orderId);
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
-            var items = await dbContext.OrderRecipients
-                .Include(x => x.OrderItemRecipients)
+            CallOffId callOffId = await dbContext.CallOffId(orderId);
+
+            List<int> previousOrderIds = await dbContext.Orders
+                .Where(x => x.OrderNumber == callOffId.OrderNumber && x.Revision < callOffId.Revision)
+                .Select(x => x.Id)
+                .ToListAsync();
+
+            var previousRecipients =
+                dbContext.OrderItemSublocationRecipients.Where(or => previousOrderIds.Contains(or.OrderId))
+                    .Select(or =>
+                        new { or.CatalogueItemId, OdsCode = or.RecipientOdsCode });
+
+            List<FullOrderCsvModel> items = await dbContext.OrderSublocationRecipients
+                .Include(x => x.OrderItemSublocationRecipients)
                 .ThenInclude(x => x.OrderItem)
                 .ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(or => or.OrderId == orderId)
                 .SelectMany(
-                    or => or.OrderItemRecipients,
+                    or => or.OrderItemSublocationRecipients.Where(y =>
+                        !previousRecipients.Any(z =>
+                            z.OdsCode == y.RecipientOdsCode && z.CatalogueItemId == y.CatalogueItemId)),
                     (or, oir) => new FullOrderCsvModel
                     {
                         CallOffId = or.Order.CallOffId,
@@ -187,11 +201,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         ServiceRecipientId =
                             !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
                                 ? or.Order.OrderingParty.ExternalIdentifier
-                                : or.OdsCode,
+                                : or.RecipientOdsCode,
                         ServiceRecipientName =
                             !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
                                 ? or.Order.OrderingParty.Name
-                                : or.OdsOrganisation.Name,
+                                : or.RecipientOdsOrganisation.Name,
                         SupplierId = $"{supplierId}",
                         SupplierName = supplierName,
                         ProductId = oir.OrderItem.CatalogueItemId.ToString(),
@@ -199,10 +213,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                         ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
                         QuantityOrdered =
-                            or.OrderItemRecipients.FirstOrDefault(
-                                x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
-                                ? (oir.OrderItem.Quantity ?? 0)
-                                : or.OrderItemRecipients
+                            or.OrderItemSublocationRecipients.FirstOrDefault(x =>
+                                x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                                ? oir.OrderItem.Quantity ?? 0
+                                : or.OrderItemSublocationRecipients
                                     .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
                                     .Quantity ?? oir.OrderItem.Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
@@ -210,10 +224,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
-                        M1Planned = or.OrderItemRecipients.FirstOrDefault(
-                            x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                        M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
+                            x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                             ? null
-                            : or.OrderItemRecipients
+                            : or.OrderItemSublocationRecipients
                                 .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
                                 .DeliveryDate,
                         FundingType =
@@ -257,23 +271,23 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var prices = await GetPrices(orderId);
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
-            var items = await dbContext.OrderRecipients
-                .Include(x => x.OrderItemRecipients)
+            List<MergerOrderCsvModel> items = await dbContext.OrderSublocationRecipients
+                .Include(x => x.OrderItemSublocationRecipients)
                 .ThenInclude(x => x.OrderItem)
                 .ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(or => or.OrderId == orderId)
                 .SelectMany(
-                    or => or.OrderItemRecipients,
+                    or => or.OrderItemSublocationRecipients,
                     (or, oir) => new MergerOrderCsvModel
                     {
                         CallOffId = or.Order.CallOffId,
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
                         CommencementDate = or.Order.CommencementDate,
-                        ServiceRecipientId = or.OdsCode,
-                        ServiceRecipientName = or.OdsOrganisation.Name,
-                        ServiceRecipientToClose = $"{or.OdsOrganisation.Name} ({or.OdsCode})",
+                        ServiceRecipientId = or.RecipientOdsCode,
+                        ServiceRecipientName = or.RecipientOdsOrganisation.Name,
+                        ServiceRecipientToClose = $"{or.RecipientOdsOrganisation.Name} ({or.RecipientOdsCode})",
                         ServiceRecipientToRetain =
                             $"{or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Name} ({or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode})",
                         SupplierId = $"{supplierId}",
@@ -283,10 +297,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                         ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
                         QuantityOrdered =
-                            or.OrderItemRecipients.FirstOrDefault(
-                                x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
-                                ? (oir.OrderItem.Quantity ?? 0)
-                                : or.OrderItemRecipients
+                            or.OrderItemSublocationRecipients.FirstOrDefault(x =>
+                                x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                                ? oir.OrderItem.Quantity ?? 0
+                                : or.OrderItemSublocationRecipients
                                     .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
                                     .Quantity ?? oir.OrderItem.Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
@@ -294,10 +308,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
-                        M1Planned = or.OrderItemRecipients.FirstOrDefault(
-                            x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                        M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
+                            x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                             ? null
-                            : or.OrderItemRecipients
+                            : or.OrderItemSublocationRecipients
                                 .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
                                 .DeliveryDate,
                         FundingType =
@@ -337,14 +351,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             var prices = await GetPrices(orderId);
             var (supplierId, supplierName) = await GetSupplierDetails(orderId);
 
-            var items = await dbContext.OrderRecipients
-                .Include(x => x.OrderItemRecipients)
+            List<SplitOrderCsvModel> items = await dbContext.OrderSublocationRecipients
+                .Include(x => x.OrderItemSublocationRecipients)
                 .ThenInclude(x => x.OrderItem)
                 .ThenInclude(x => x.OrderItemFunding)
                 .AsNoTracking()
                 .Where(or => or.OrderId == orderId)
                 .SelectMany(
-                    or => or.OrderItemRecipients,
+                    or => or.OrderItemSublocationRecipients,
                     (or, oir) => new SplitOrderCsvModel
                     {
                         CallOffId = or.Order.CallOffId,
@@ -352,8 +366,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         OrganisationName = or.Order.OrderingParty.Name,
                         CommencementDate = or.Order.CommencementDate,
                         ServiceRecipientId = or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode,
-                        ServiceRecipientName = or.OdsOrganisation.Name,
-                        ServiceRecipientToRetain = $"{or.OdsOrganisation.Name} ({or.OdsCode})",
+                        ServiceRecipientName = or.RecipientOdsOrganisation.Name,
+                        ServiceRecipientToRetain = $"{or.RecipientOdsOrganisation.Name} ({or.RecipientOdsCode})",
                         ServiceRecipientToSplit =
                             $"{or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationRecipient.Name} ({or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode})",
                         SupplierId = $"{supplierId}",
@@ -363,10 +377,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         ProductType = oir.OrderItem.CatalogueItem.CatalogueItemType.DisplayName(),
                         ProductTypeId = (int)oir.OrderItem.CatalogueItem.CatalogueItemType,
                         QuantityOrdered =
-                            or.OrderItemRecipients.FirstOrDefault(
-                                x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
-                                ? (oir.OrderItem.Quantity ?? 0)
-                                : or.OrderItemRecipients
+                            or.OrderItemSublocationRecipients.FirstOrDefault(x =>
+                                x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                                ? oir.OrderItem.Quantity ?? 0
+                                : or.OrderItemSublocationRecipients
                                     .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
                                     .Quantity ?? oir.OrderItem.Quantity ?? 0,
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
@@ -374,10 +388,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
                         Price = prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
-                        M1Planned = or.OrderItemRecipients.FirstOrDefault(
-                            x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
+                        M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
+                            x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
                             ? null
-                            : or.OrderItemRecipients
+                            : or.OrderItemSublocationRecipients
                                 .FirstOrDefault(x => x.CatalogueItemId == oir.OrderItem.CatalogueItemId)
                                 .DeliveryDate,
                         FundingType =

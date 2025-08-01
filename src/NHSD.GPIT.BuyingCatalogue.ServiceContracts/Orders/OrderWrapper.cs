@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
@@ -38,9 +37,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
                     return null;
                 }
 
-                var output = previous.First().Clone();
+                Order output = previous.First().Clone();
 
-                foreach (var amendment in previous.Skip(1))
+                foreach (Order amendment in previous.Skip(1))
                 {
                     output.Apply(amendment);
                 }
@@ -68,17 +67,17 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
 
         public bool IsAmendment => Order.CallOffId.IsAmendment;
 
-        public bool HasNewOrderRecipients => Order.OrderRecipients
-            .Any(r => Previous?.OrderRecipients?
-            .FirstOrDefault(x => x.OdsCode == r.OdsCode) == null);
+        public bool HasNewOrderRecipients => Order.FlattenedRecipients
+            .Any(r => Previous?.FlattenedRecipients?
+                .FirstOrDefault(x => x.RecipientOdsCode == r.RecipientOdsCode) == null);
 
         public bool HasNewOrderItems => Order.OrderItems
             .Any(r => Previous?.OrderItems?
-            .FirstOrDefault(x => x.CatalogueItemId == r.CatalogueItemId) == null);
+                .FirstOrDefault(x => x.CatalogueItemId == r.CatalogueItemId) == null);
 
         public ICollection<OrderItem> OrderItems =>
             Order.OrderItems.Where(oi => DetermineOrderRecipients(oi.CatalogueItemId).Count > 0)
-            .ToList();
+                .ToList();
 
         public Order Last => previous.Any()
             ? previous.Last()
@@ -104,41 +103,28 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders
         /// </summary>
         public Order RolledUp => rolledUpLazy.Value;
 
-        public IEnumerable<string> AddedRecipientsOdsCodes()
+        public ICollection<OrderSublocationRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId)
         {
-            var codes = Order.AddedOrderRecipients(Previous)
-                .Select(r => r.OdsCode);
-            if (Order.AssociatedServicesOnlyDetails?.PracticeReorganisationOdsCode != null)
-            {
-                codes = codes.Append(Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode);
-            }
-
-            return codes;
+            return Order.DetermineOrderRecipients(Previous, catalogueItemId);
         }
-
-        public IEnumerable<string> PreviousRecipientsOdsCodes()
-        {
-            return (Previous?.OrderRecipients ?? Enumerable.Empty<OrderRecipient>())
-                .Select(r => r.OdsCode);
-        }
-
-        public ICollection<OrderRecipient> DetermineOrderRecipients(CatalogueItemId catalogueItemId) => Order.DetermineOrderRecipients(Previous, catalogueItemId);
 
         public bool CanComplete()
         {
-            return Order.CanComplete(RolledUp.OrderRecipients, OrderItems);
+            return Order.CanComplete(RolledUp.FlattenedRecipients.ToList(), OrderItems);
         }
 
-        public OrderRecipient InitialiseOrderRecipient(string odsCode)
+        public OrderSublocationRecipient CreateRecipientWithExistingOrderContext(
+            string recipientOdsCode,
+            string parentSublocationOdsCode)
         {
-            var newRecipient = new OrderRecipient(Order.Id, odsCode);
+            OrderSublocationRecipient newRecipient = new(recipientOdsCode, parentSublocationOdsCode);
             if (Order.DeliveryDate.HasValue)
             {
                 Order.OrderItems.ToList().ForEach(i =>
                 {
                     if (Previous == null
-                    || !Previous.Exists(i.CatalogueItemId)
-                    || !Previous.OrderRecipients.Exists(odsCode))
+                        || !Previous.Exists(i.CatalogueItemId)
+                        || Previous.FlattenedRecipients.All(x => x.RecipientOdsCode != recipientOdsCode))
                     {
                         newRecipient.SetDeliveryDateForItem(i.CatalogueItemId, Order.DeliveryDate.Value);
                     }

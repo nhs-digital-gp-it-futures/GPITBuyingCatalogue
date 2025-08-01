@@ -415,9 +415,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                     routeValues = callInfo.Arg<RouteValues>();
                 });
 
-            var organisations = order.OrderRecipients.Select(x => new ServiceRecipient() { OrgId = x.OdsCode, Location = "Test" });
+            List<ServiceRecipient> organisations = order.FlattenedRecipients
+                .Select(x => new ServiceRecipient { OrgId = x.RecipientOdsCode, Location = "Test" })
+                .ToList();
 
-            odsService.GetServiceRecipientsById(
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
                     internalOrgId,
                     Arg.Any<IEnumerable<string>>())
                 .Returns(organisations);
@@ -432,7 +434,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             routeValues.CatalogueItemId.Should().Be(catalogueItemId);
             routeValues.Source.Should().BeNull();
 
-            var expected = new EditDatesModel(orderWrapper, catalogueItemId, organisations.ToDictionary(x => x.OrgId, x => x.Location));
+            var expected = new EditDatesModel(orderWrapper, catalogueItemId);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -449,9 +451,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             DeliveryDatesController controller)
         {
             order.SetupCatalogueSolution();
-            order.OrderRecipients = new List<OrderRecipient>();
 
             var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+
+            order.OrderSublocations.Clear();
 
             var orderWrapper = new OrderWrapper(order);
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(orderWrapper);
@@ -495,9 +498,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
         {
             order.SetupCatalogueSolution();
 
-            order.OrderRecipients.ForEach(x => x.OrderItemRecipients.FirstOrDefault().DeliveryDate = null);
+            CatalogueItemId catalogueItemId = order.OrderItems.First().CatalogueItemId;
 
-            var catalogueItemId = order.OrderItems.First().CatalogueItemId;
+            order.FlattenedRecipients.ForEach(x =>
+                x.OrderItemSublocationRecipients.ForEach(y => y.DeliveryDate = null));
 
             var orderWrapper = new OrderWrapper(order);
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId)
@@ -516,11 +520,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
                     routeValues = callInfo.Arg<RouteValues>();
                 });
 
-            var organisations = order.OrderRecipients.Select(x => new ServiceRecipient() { OrgId = x.OdsCode, Location = "Test" });
+            List<ServiceRecipient> organisations = order.FlattenedRecipients
+                .Select(x => new ServiceRecipient { OrgId = x.RecipientOdsCode, Location = "Test" })
+                .ToList();
 
-            odsService.GetServiceRecipientsById(
-                internalOrgId,
-                Arg.Any<IEnumerable<string>>())
+            odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                    internalOrgId,
+                    Arg.Any<IEnumerable<string>>())
                 .Returns(organisations);
 
             var result = await controller.EditDates(internalOrgId, callOffId, catalogueItemId);
@@ -533,7 +539,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             routeValues.CatalogueItemId.Should().Be(catalogueItemId);
             routeValues.Source.Should().BeNull();
 
-            var expected = new EditDatesModel(new OrderWrapper(order), catalogueItemId, organisations.ToDictionary(x => x.OrgId, x => x.Location));
+            var expected = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
             var actual = result.Should().BeOfType<ViewResult>().Subject;
 
             actual.Model.Should().BeEquivalentTo(expected, x => x.Excluding(m => m.BackLink));
@@ -709,9 +715,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
 
-            order.OrderRecipients.ForEach(x => x.OrderItemRecipients
+            order.FlattenedRecipients.ToList()
+                .ForEach(x => x.OrderItemSublocationRecipients
                     .Where(y => y.CatalogueItemId != solutionId)
-                    .ForEach(z => x.OrderItemRecipients.Remove(z)));
+                    .ToList()
+                    .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
 
             var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
 
@@ -761,9 +769,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
 
             var solutionId = order.OrderItems.ElementAt(0).CatalogueItemId;
 
-            order.OrderRecipients.ForEach(x => x.OrderItemRecipients
+            order.FlattenedRecipients.ToList()
+                .ForEach(x => x.OrderItemSublocationRecipients
                     .Where(y => y.CatalogueItemId != solutionId)
-                    .ForEach(z => x.OrderItemRecipients.Remove(z)));
+                    .ToList()
+                    .ForEach(z => x.OrderItemSublocationRecipients.Remove(z)));
 
             var catalogueItemId = order.OrderItems.ElementAt(1).CatalogueItemId;
 
@@ -831,7 +841,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             [Frozen] IOrderService orderService,
             [Frozen] IDeliveryDateService deliveryDateService,
             DeliveryDatesController controller,
-            ICollection<OrderRecipient> recipients)
+            ICollection<OrderSublocationRecipient> recipients)
         {
             orderService.GetOrderWithOrderItems(callOffId, internalOrgId).Returns(new OrderWrapper(order));
 
@@ -861,7 +871,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Con
             await deliveryDateService.Received().SetDeliveryDates(order.Id, catalogueItemId, Arg.Any<List<RecipientDeliveryDateDto>>());
 
             recipientDates.Count.Should().Be(recipients.Count);
-            recipientDates.Select(x => x.OdsCode).Should().BeEquivalentTo(recipients.Select(x => x.OdsCode));
+            recipientDates.Select(x => x.OdsCode).Should().BeEquivalentTo(recipients.Select(x => x.RecipientOdsCode));
 
             return recipientDates;
         }

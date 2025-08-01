@@ -9,27 +9,27 @@ public class ServiceRecipientsStatusProvider : ITaskProgressProvider
 {
     public TaskProgress Get(OrderWrapper wrapper, OrderProgress state)
     {
-        if (wrapper?.Order == null
-            || state == null)
+        if (wrapper?.Order is null
+            || state is null || state.CommencementDateStatus != TaskProgress.Completed)
         {
             return TaskProgress.CannotStart;
         }
 
-        if (state.CommencementDateStatus != TaskProgress.Completed)
+        if (wrapper.Order.HasSublocationsWithNoRecipients())
         {
-            return TaskProgress.CannotStart;
+            return TaskProgress.InProgress;
         }
 
-        if (wrapper.HasNewOrderRecipients)
+        if (!wrapper.Order.FlattenedRecipients.Any())
         {
-            return wrapper.IsAmendment ? TaskProgress.Amended : TaskProgress.Completed;
+            return TaskProgress.NotStarted;
         }
 
-        if (wrapper.IsAmendment && wrapper.Order.OrderRecipients.Any())
+        if (wrapper.HasNewOrderRecipients && wrapper.IsAmendment)
         {
-            return TaskProgress.Completed;
+            return TaskProgress.Amended;
         }
 
-        return TaskProgress.NotStarted;
+        return TaskProgress.Completed;
     }
 }

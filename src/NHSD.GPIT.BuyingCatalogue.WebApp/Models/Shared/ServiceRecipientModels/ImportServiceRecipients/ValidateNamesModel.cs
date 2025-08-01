@@ -17,6 +17,8 @@ public class ValidateNamesModel : NavBaseModel
         NameDiscrepancies = mismatchedNames.Select(p => new ServiceRecipientNameDiscrepancy(p.Expected, p.Actual, p.OdsCode)).ToList();
     }
 
+    public string ContinueLink { get; set; }
+
     public string CancelLink { get; set; }
 
     public IList<ServiceRecipientNameDiscrepancy> NameDiscrepancies { get; set; }

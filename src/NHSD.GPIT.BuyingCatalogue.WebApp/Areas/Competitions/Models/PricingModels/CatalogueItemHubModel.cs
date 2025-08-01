@@ -2,7 +2,6 @@
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 
@@ -18,7 +17,7 @@ public class CatalogueItemHubModel
         CatalogueItemId solutionId,
         CatalogueItem catalogueItem,
         int? globalQuantity,
-        Dictionary<OdsOrganisation, int?> recipientQuantities,
+        Dictionary<CompetitionSublocationRecipient, int?> recipientQuantities,
         CompetitionCatalogueItemPrice selectedPrice)
     {
         SolutionId = solutionId;
@@ -54,7 +53,7 @@ public class CatalogueItemHubModel
 
     public int? ContractLength { get; set; }
 
-    public Dictionary<OdsOrganisation, int?> OdsOrganisations { get; set; }
+    public Dictionary<CompetitionSublocationRecipient, int?> OdsOrganisations { get; set; }
 
     public CompetitionCatalogueItemPrice Price { get; set; }
 

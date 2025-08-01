@@ -119,6 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp
             services.AddSingleton<IRoutingService, RoutingService>();
             services.AddSingleton<IOrderTaskProgressProviderService, OrderTaskProgressProviderService>();
             services.AddSingleton<OrganisationRestrictActionFilterAttribute>();
+            services.AddSingleton<OrderIsEditableActionFilterAttribute>();
             services.AddScoped<IOrderPdfService, OrderPdfService>();
 
             if (!IsE2ETestEnvironment())

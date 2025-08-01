@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.TaskList;
@@ -59,19 +61,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.TaskList.Providers
 
         private static bool SolutionsCompleted(OrderWrapper orderWrapper)
         {
-            if (!orderWrapper.Order.OrderItems.Any())
+            if (orderWrapper.Order.OrderItems.Count == 0)
             {
                 return false;
             }
 
             return orderWrapper.Order.OrderItems.All(x =>
             {
-                var recpients = orderWrapper.DetermineOrderRecipients(x.CatalogueItemId);
-                var allQuantites = recpients.AllQuantitiesEntered(x);
+                ICollection<OrderSublocationRecipient> recipients =
+                    orderWrapper.DetermineOrderRecipients(x.CatalogueItemId);
+                var allQuantities = recipients.AllQuantitiesEntered(x);
 
                 return x.CatalogueItem != null
                     && x.OrderItemPrice != null
-                    && allQuantites;
+                    && allQuantities;
             });
         }
     }

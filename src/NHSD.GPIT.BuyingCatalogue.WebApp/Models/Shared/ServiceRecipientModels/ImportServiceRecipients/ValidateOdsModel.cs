@@ -18,7 +18,7 @@ public class ValidateOdsModel : NavBaseModel
 
     public string CancelLink { get; set; }
 
-    public string ValidateNamesLink { get; set; }
+    public string ContinueLink { get; set; }
 
     public IList<ServiceRecipientImportModel> InvalidServiceRecipients { get; set; }
 }

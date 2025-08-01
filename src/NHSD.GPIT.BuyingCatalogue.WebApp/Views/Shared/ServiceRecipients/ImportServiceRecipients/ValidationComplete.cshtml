@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients.ValidationCompleteModel
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<partial name="Partials/_BackLink" model="@Model" />
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title title="@Model.Title"
+                        caption="@Model.Caption"/>
+        
+        <p>@Model.AdviceBody</p>
+        
+        <p>@Model.NextStep</p>
+
+        <form method="post">
+            @for (int i = 0; i < Model.Sublocations.Count; i++)
+            {
+                <input type="hidden" asp-for="@Model.Sublocations[i].OdsCode" />
+                @for (int j = 0; j < Model.Sublocations[i].ServiceRecipients.Count; j++)
+                {
+                    <input type="hidden" asp-for="@Model.Sublocations[i].ServiceRecipients[j].Name" />
+                    <input type="hidden" asp-for="@Model.Sublocations[i].ServiceRecipients[j].OdsCode" />
+                    <input type="hidden" asp-for="@Model.Sublocations[i].ServiceRecipients[j].Location" />
+                }
+            }
+            <nhs-button-group>
+                <nhs-submit-button/>
+                <a href="@Model.CancelLink">
+                    Cancel
+                </a>
+            </nhs-button-group>
+        </form>
+    </div>
+</div>

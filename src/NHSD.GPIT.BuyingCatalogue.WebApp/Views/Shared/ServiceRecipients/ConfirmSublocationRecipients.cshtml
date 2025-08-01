@@ -1,0 +1,37 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ConfirmSublocationRecipientsModel;
+@{
+    ViewBag.Title = Model.Title;
+}
+<partial name="Partials/_BackLink" model="Model"/>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+        <nhs-page-title model="@Model"/>
+        <div id="selected-service-recipients">
+            @foreach (var sublocation in Model.Sublocations)
+            {
+                <nhs-expander label-text="@($"{sublocation.Name} ({sublocation.ServiceRecipientCount} selected)")"
+                              bold-title="true" open="@(sublocation.ServiceRecipientCount > 0)">
+                    <ul>
+                        @foreach (var sublocationRecipient in sublocation.ServiceRecipients)
+                        {
+                            <li>@sublocationRecipient.Description</li>
+                        }
+                    </ul>
+
+                </nhs-expander>
+            }
+        </div>
+
+        <div class="nhsuk-u-margin-top-6">
+            <p>
+                You can
+                <a href="@Model.AddRemoveRecipientsLink">add or remove Service Recipients</a>
+                if needed, or edit them later if you continue with your order.
+            </p>
+        </div>
+        <div class="nhsuk-u-margin-top-6">
+            <vc:nhs-anchor-button text="Save and continue" url="@Model.SaveAndContinueLink" type="Primary" />
+        </div>
+    </div>
+</div>

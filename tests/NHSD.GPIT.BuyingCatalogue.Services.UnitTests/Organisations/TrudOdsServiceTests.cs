@@ -28,7 +28,7 @@ public class TrudOdsServiceTests
         string odsCode,
         TrudOdsService service)
     {
-        (MappedOdsOrganisation _, string error) = await service.GetOrganisationByOdsCode(odsCode);
+        (MappedOdsOrganisation _, var error) = await service.GetValidatedBuyerOrganisationByOdsCode(odsCode);
 
         error.Should().Be(TrudOdsService.InvalidOrganisationError);
     }
@@ -46,7 +46,7 @@ public class TrudOdsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        (MappedOdsOrganisation _, string error) = await service.GetOrganisationByOdsCode(organisation.Id);
+        (MappedOdsOrganisation _, var error) = await service.GetValidatedBuyerOrganisationByOdsCode(organisation.Id);
 
         error.Should().Be(TrudOdsService.InvalidOrgTypeError);
     }
@@ -77,7 +77,7 @@ public class TrudOdsServiceTests
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
 
-        (MappedOdsOrganisation _, string error) = await service.GetOrganisationByOdsCode(organisation.Id);
+        (MappedOdsOrganisation _, var error) = await service.GetValidatedBuyerOrganisationByOdsCode(organisation.Id);
 
         error.Should().Be(TrudOdsService.InvalidOrgTypeError);
     }
@@ -121,7 +121,8 @@ public class TrudOdsServiceTests
             },
         };
 
-        (MappedOdsOrganisation mappedOrganisation, string _) = await service.GetOrganisationByOdsCode(organisation.Id);
+        (MappedOdsOrganisation mappedOrganisation, var _) =
+            await service.GetValidatedBuyerOrganisationByOdsCode(organisation.Id);
 
         mappedOrganisation.Should().NotBeNull();
         mappedOrganisation.Should().BeEquivalentTo(expectedOrg);
@@ -218,6 +219,99 @@ public class TrudOdsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
+    public static async Task GetSublocationsByParentOdsCode_ReturnsSublocationOdsOrganisations(
+        RelationshipType relationshipType,
+        RoleType roleType,
+        OdsOrganisation parentOdsOrganisation,
+        List<OdsOrganisation> sublocationOdsOrganisations,
+        [Frozen] OdsSettings settings,
+        [Frozen] BuyingCatalogueDbContext context,
+        TrudOdsService service)
+    {
+        var roleId = settings.SubLocationRoleId;
+        roleType.Id = roleId;
+
+        var relationshipTypeId = settings.InGeographyOfRelType;
+        relationshipType.Id = relationshipTypeId;
+
+        sublocationOdsOrganisations.ForEach(
+            x =>
+            {
+                x.IsActive = true;
+                x.Roles = new List<OrganisationRole> { new(x.Id, roleId) };
+            });
+
+        IEnumerable<OrganisationRelationship> organisationRelationships = sublocationOdsOrganisations.Select(
+            x => new OrganisationRelationship
+            {
+                OwnerOrganisationId = parentOdsOrganisation.Id,
+                RelationshipTypeId = relationshipTypeId,
+                TargetOrganisationId = x.Id,
+            });
+
+        context.OrganisationRelationships.AddRange(organisationRelationships);
+        context.OdsOrganisations.Add(parentOdsOrganisation);
+        context.OdsOrganisations.AddRange(sublocationOdsOrganisations);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        List<MappedOdsOrganisation> results = (await service.GetSublocationsByParentOdsCode(parentOdsOrganisation.Id))
+            .ToList();
+
+        results.Should().NotBeEmpty();
+        results.Should().HaveCount(sublocationOdsOrganisations.Count);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
+    public static async Task GetServiceRecipientsBySublocation_ReturnsServiceRecipients(
+        RelationshipType relationshipType,
+        RoleType roleType,
+        OdsOrganisation sublocationOdsOrganisation,
+        List<OdsOrganisation> serviceRecipientOdsOrganisations,
+        [Frozen] OdsSettings settings,
+        [Frozen] BuyingCatalogueDbContext context,
+        TrudOdsService service)
+    {
+        var roleId = settings.GetPrimaryRoleId(OrganisationType.GP);
+        roleType.Id = roleId;
+
+        var relationshipTypeId = settings.IsCommissionedByRelType;
+        relationshipType.Id = relationshipTypeId;
+
+        serviceRecipientOdsOrganisations.ForEach(
+            x =>
+            {
+                x.IsActive = true;
+                x.Roles = new List<OrganisationRole> { new(x.Id, roleId) };
+            });
+
+        IEnumerable<OrganisationRelationship> organisationRelationships = serviceRecipientOdsOrganisations.Select(
+            x => new OrganisationRelationship
+            {
+                OwnerOrganisationId = sublocationOdsOrganisation.Id,
+                RelationshipTypeId = relationshipTypeId,
+                TargetOrganisationId = x.Id,
+            });
+
+        context.OrganisationRelationships.AddRange(organisationRelationships);
+        context.OdsOrganisations.Add(sublocationOdsOrganisation);
+        context.OdsOrganisations.AddRange(serviceRecipientOdsOrganisations);
+
+        await context.SaveChangesAsync();
+        context.ChangeTracker.Clear();
+
+        List<ServiceRecipient> results =
+            (await service.GetServiceRecipientsBySublocation(sublocationOdsOrganisation.Id))
+            .ToList();
+
+        results.Should().NotBeEmpty();
+        results.Should().HaveCount(serviceRecipientOdsOrganisations.Count);
+    }
+
+    [Theory]
+    [MockInMemoryDbAutoData]
     public static async Task UpdateOrganisationDetails_InvalidOdsOrganisation_Returns(
         string odsCode,
         [Frozen] IOrganisationsService organisationsService,
@@ -274,18 +368,21 @@ public class TrudOdsServiceTests
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task GetServiceRecipientsById_InvalidOrganisation_ReturnsEmpty(
+    public static async Task GetServiceRecipientsByParentInternalIdentifierAndOdsCodes_InvalidOrganisation_ReturnsEmpty(
         string internalOrgId,
         TrudOdsService service)
     {
-        var result = await service.GetServiceRecipientsById(internalOrgId, Enumerable.Empty<string>());
+        IEnumerable<ServiceRecipient> result =
+            await service.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                Enumerable.Empty<string>());
 
         result.Should().BeEmpty();
     }
 
     [Theory]
     [MockInMemoryDbAutoData]
-    public static async Task GetServiceRecipientsById_ReturnsExpected(
+    public static async Task GetServiceRecipientsByParentInternalIdentifierAndOdsCodes_ReturnsExpected(
         RelationshipType relationshipType,
         RoleType roleType,
         Organisation organisation,
@@ -333,13 +430,18 @@ public class TrudOdsServiceTests
 
         var selectedOrgs = organisations.Take(2).ToList();
 
-        var result = await service.GetServiceRecipientsById(organisation.InternalIdentifier, selectedOrgs.Select(x => x.Id));
+        IEnumerable<ServiceRecipient> result = await service.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+            organisation.InternalIdentifier,
+            selectedOrgs.Select(x => x.Id));
 
         result.Should().NotBeEmpty();
         result.Should()
             .BeEquivalentTo(
                 selectedOrgs.Select(
-                    x => new ServiceRecipient { Name = x.Name, OrgId = x.Id, Location = subLocation.Name, }),
+                    x => new ServiceRecipient
+                    {
+                        Name = x.Name, OrgId = x.Id, Location = subLocation.Name, LocationOrgId = subLocation.Id,
+                    }),
                 opt => opt.Excluding(m => m.PrimaryRoleId));
     }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Competitions.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Competitions;
@@ -72,9 +73,14 @@ public class CompetitionTaskListModel
 
     private void SetSectionOneStatuses(Competition competition)
     {
-        ServiceRecipients = CompletedOrNotStarted(competition, c => c.Recipients.Any());
+        ServiceRecipients = CompletedInProgressOrNotStarted(
+            competition,
+            c => c.CompetitionSublocations.Count > 0
+                && c.CompetitionSublocations.All(sl => sl.SublocationRecipients.Count > 0),
+            c => c.CompetitionSublocations.Count > 0
+                && c.CompetitionSublocations.Any(sl => sl.SublocationRecipients.Count == 0));
 
-        if (ServiceRecipients is TaskProgress.NotStarted) return;
+        if (ServiceRecipients is not TaskProgress.Completed) return;
 
         ContractLength = CompletedOrNotStarted(competition, c => c.ContractLength.HasValue);
     }
@@ -148,8 +154,8 @@ public class CompetitionTaskListModel
 
         if (CompareAndScoreSolutions is not (TaskProgress.NotApplicable or TaskProgress.Completed)) return;
 
-        var solutionProgressStatuses = competition.CompetitionSolutions
-            .Select(x => new CompetitionSolutionProgress(x, competition.Recipients))
+        List<CompetitionSolutionProgress> solutionProgressStatuses = competition.CompetitionSolutions
+            .Select(x => new CompetitionSolutionProgress(x, competition.FlattenedRecipients.ToList()))
             .ToList();
 
         CalculatePrice = CompletedInProgressOrNotStarted(

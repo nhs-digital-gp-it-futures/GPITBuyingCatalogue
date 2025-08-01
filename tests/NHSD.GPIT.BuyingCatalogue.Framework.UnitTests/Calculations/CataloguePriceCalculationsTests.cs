@@ -26,7 +26,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem orderItem = BuildOrderItem(fixture, new[] { tier }, calculationType);
+            OrderItem orderItem = BuildOrderItem(fixture, [tier], calculationType);
 
             var result = ((IPrice)orderItem.OrderItemPrice).CostForBillingPeriod(quantity);
 
@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem orderItem = BuildOrderItem(fixture, new[] { tier }, calculationType);
+            OrderItem orderItem = BuildOrderItem(fixture, [tier], calculationType);
 
             var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(quantity);
 
@@ -65,7 +65,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem orderItem = BuildOrderItem(fixture, new[] { tier }, calculationType);
+            OrderItem orderItem = BuildOrderItem(fixture, [tier], calculationType);
 
             var result = ((IPrice)orderItem.OrderItemPrice).CostForBillingPeriod(quantity);
 
@@ -83,7 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem orderItem = BuildOrderItem(fixture, new[] { tier }, calculationType);
+            OrderItem orderItem = BuildOrderItem(fixture, [tier], calculationType);
 
             var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(quantity);
 
@@ -104,11 +104,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             IFixture fixture)
         {
             (decimal Price, int LowerRange, int? UpperRange)[] tiers =
-            {
+            [
                 (3.14M, 1, 999),
                 (2M, 1000, 4999),
                 (1.5M, 5000, null),
-            };
+            ];
 
             var calculationType = CataloguePriceCalculationType.SingleFixed;
 
@@ -130,11 +130,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             IFixture fixture)
         {
             (decimal Price, int LowerRange, int? UpperRange)[] tiers =
-            {
+            [
                 (3.14M, 1, 999),
                 (2M, 1000, 4999),
                 (1.5M, 5000, null),
-            };
+            ];
 
             var calculationType = CataloguePriceCalculationType.SingleFixed;
 
@@ -166,11 +166,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             IFixture fixture)
         {
             (decimal Price, int LowerRange, int? UpperRange)[] tiers =
-            {
+            [
                 (3.14M, 1, 999),
                 (2M, 1000, 4999),
                 (1.5M, 5000, null),
-            };
+            ];
 
             var calculationType = CataloguePriceCalculationType.Volume;
 
@@ -192,11 +192,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             IFixture fixture)
         {
             (decimal Price, int LowerRange, int? UpperRange)[] tiers =
-            {
+            [
                 (3.14M, 1, 999),
                 (2M, 1000, 4999),
                 (1.5M, 5000, null),
-            };
+            ];
 
             var calculationType = CataloguePriceCalculationType.Volume;
 
@@ -231,11 +231,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             IFixture fixture)
         {
             (decimal Price, int LowerRange, int? UpperRange)[] tiers =
-            {
+            [
                 (3.14M, 1, 999),
                 (2M, 1000, 4999),
                 (1.5M, 5000, null),
-            };
+            ];
 
             var calculationType = CataloguePriceCalculationType.Cumulative;
 
@@ -259,11 +259,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             IFixture fixture)
         {
             (decimal Price, int LowerRange, int? UpperRange)[] tiers =
-            {
+            [
                 (3.14M, 1, 999),
                 (2M, 1000, 4999),
                 (1.5M, 5000, null),
-            };
+            ];
 
             var calculationType = CataloguePriceCalculationType.Cumulative;
 
@@ -299,15 +299,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         {
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem orderItem = BuildOrderItem(fixture, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            OrderItem orderItem = BuildOrderItem(fixture, [tier], CataloguePriceCalculationType.SingleFixed);
             orderItem.OrderItemPrice.BillingPeriod = billingPeriod;
-            var recipient = fixture.Build<OrderRecipient>()
-                 .Create();
+            OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
+                .Create();
             recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
 
-            var order = fixture.Build<Order>()
+            OrderSublocation sublocation = fixture.Build<OrderSublocation>()
+                .With(o => o.SublocationRecipients, new List<OrderSublocationRecipient> { recipient })
+                .Create();
+
+            Order order = fixture.Build<Order>()
                 .With(o => o.OrderItems, new HashSet<OrderItem> { orderItem })
-                .With(o => o.OrderRecipients, new HashSet<OrderRecipient> { recipient })
+                .With(o => o.OrderSublocations, new List<OrderSublocation> { sublocation })
                 .Create();
 
             order.TotalOneOffCost(null).Should().Be(oneOff);
@@ -330,16 +334,20 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem orderItem = BuildOrderItem(fixture, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            OrderItem orderItem = BuildOrderItem(fixture, [tier], CataloguePriceCalculationType.SingleFixed);
             orderItem.OrderItemPrice.BillingPeriod = billingPeriod;
-            var recipient = fixture.Build<OrderRecipient>()
-                 .Create();
+            OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
+                .Create();
             recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
 
-            var order = fixture.Build<Order>()
+            OrderSublocation sublocation = fixture.Build<OrderSublocation>()
+                .With(o => o.SublocationRecipients, new List<OrderSublocationRecipient> { recipient })
+                .Create();
+
+            Order order = fixture.Build<Order>()
                 .With(o => o.Revision, 1)
                 .With(o => o.OrderItems, new HashSet<OrderItem> { orderItem })
-                .With(o => o.OrderRecipients, new HashSet<OrderRecipient> { recipient })
+                .With(o => o.OrderSublocations, new List<OrderSublocation> { sublocation })
                 .With(o => o.MaximumTerm, maximumTerm)
                 .Create();
 
@@ -358,20 +366,24 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem oneOffCostOrderItem = BuildOrderItem(fixture, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            OrderItem oneOffCostOrderItem = BuildOrderItem(fixture, [tier], CataloguePriceCalculationType.SingleFixed);
             oneOffCostOrderItem.OrderItemPrice.BillingPeriod = null;
 
-            OrderItem perMonthOrderItem = BuildOrderItem(fixture, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            OrderItem perMonthOrderItem = BuildOrderItem(fixture, [tier], CataloguePriceCalculationType.SingleFixed);
             perMonthOrderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
-            var recipient = fixture.Build<OrderRecipient>()
-                 .Create();
+            OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
+                .Create();
             recipient.SetQuantityForItem(oneOffCostOrderItem.CatalogueItemId, 1);
             recipient.SetQuantityForItem(perMonthOrderItem.CatalogueItemId, 1);
 
-            var order = fixture.Build<Order>()
+            OrderSublocation sublocation = fixture.Build<OrderSublocation>()
+                .With(o => o.SublocationRecipients, new List<OrderSublocationRecipient> { recipient })
+                .Create();
+
+            Order order = fixture.Build<Order>()
                 .With(o => o.Revision, 1)
-                .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { oneOffCostOrderItem, perMonthOrderItem }))
-                .With(o => o.OrderRecipients, new HashSet<OrderRecipient> { recipient })
+                .With(o => o.OrderItems, new HashSet<OrderItem>([oneOffCostOrderItem, perMonthOrderItem]))
+                .With(o => o.OrderSublocations, new List<OrderSublocation> { sublocation })
                 .With(o => o.MaximumTerm, maximumTerm)
                 .Create();
 
@@ -394,21 +406,30 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem perMonthOrderItemUsedForTotal = BuildOrderItem(fixture, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            OrderItem perMonthOrderItemUsedForTotal = BuildOrderItem(
+                fixture,
+                [tier],
+                CataloguePriceCalculationType.SingleFixed);
             perMonthOrderItemUsedForTotal.CatalogueItemId = perMonthOrderItemUsedForTotal.CatalogueItem.Id;
             perMonthOrderItemUsedForTotal.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
-            var recipient = fixture.Build<OrderRecipient>()
-                 .Create();
+
+            OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
+                .Create();
             recipient.SetQuantityForItem(perMonthOrderItemUsedForTotal.CatalogueItemId, 1);
             recipient.SetDeliveryDateForItem(perMonthOrderItemUsedForTotal.CatalogueItemId, amendmentPlannedDelivery);
 
-            var order = fixture.Build<Order>()
+            OrderSublocation sublocation = fixture.Build<OrderSublocation>()
+                .With(o => o.SublocationRecipients, new List<OrderSublocationRecipient> { recipient })
+                .Create();
+
+            Order order = fixture.Build<Order>()
                 .With(o => o.Revision, revision)
                 .With(o => o.CommencementDate, commencementDate)
                 .With(o => o.DeliveryDate, amendmentPlannedDelivery)
-                .With(o => o.OrderItems, new HashSet<OrderItem>(new[] { perMonthOrderItemUsedForTotal }))
-                .With(o => o.OrderRecipients, new HashSet<OrderRecipient> { recipient })
+                .With(o => o.OrderItems, new HashSet<OrderItem>([perMonthOrderItemUsedForTotal]))
+                .With(o => o.OrderSublocations, new List<OrderSublocation> { sublocation })
                 .With(o => o.MaximumTerm, maximumTerm)
+                .With(o => o.OrderNumber, new Random().Next(0, 999999))
                 .Create();
 
             var orderWrapper = new OrderWrapper(order);
@@ -436,7 +457,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         {
             order.Revision = revision;
             var orderItem = order.OrderItems.First();
-            order.OrderRecipients.ForEach(r => r.OrderItemRecipients.Clear());
+            order.OrderSublocations.ForEach(sl =>
+                sl.SublocationRecipients.ForEach(sr => sr.OrderItemSublocationRecipients.Clear()));
             var orderWrapper = new OrderWrapper(order);
             orderWrapper.TotalCostForOrderItem(orderItem.CatalogueItem.Id).Should().Be(0);
         }
@@ -453,55 +475,55 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
         [Theory]
         [MockAutoData]
         public static void OrderItem_TotalCost_PerMonth_ReturnsExpected(
-            OrderRecipient recpient,
+            OrderSublocationRecipient recipient,
             int quantity,
             OrderItem orderItem,
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = TimeUnit.PerMonth;
             orderItem.OrderItemPrice = orderItemPrice;
-            recpient.OrderItemRecipients.Clear();
-            recpient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
+            recipient.OrderItemSublocationRecipients.Clear();
+            recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
 
             var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerMonth(quantity);
 
-            orderItem.TotalCost(new[] { recpient }).Should().Be(expectedResult);
+            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
         }
 
         [Theory]
         [MockAutoData]
         public static void OrderItem_TotalCost_PerYear_ReturnsExpected(
-            OrderRecipient recpient,
+            OrderSublocationRecipient recipient,
             int quantity,
             OrderItem orderItem,
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = TimeUnit.PerYear;
             orderItem.OrderItemPrice = orderItemPrice;
-            recpient.OrderItemRecipients.Clear();
-            recpient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
+            recipient.OrderItemSublocationRecipients.Clear();
+            recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
 
             var expectedResult = ((IPrice)orderItemPrice).CalculateCostPerYear(quantity);
 
-            orderItem.TotalCost(new[] { recpient }).Should().Be(expectedResult);
+            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
         }
 
         [Theory]
         [MockAutoData]
         public static void OrderItem_TotalCost_OneOff_ReturnsExpected(
-            OrderRecipient recpient,
+            OrderSublocationRecipient recipient,
             int quantity,
             OrderItem orderItem,
             OrderItemPrice orderItemPrice)
         {
             orderItemPrice.BillingPeriod = null;
             orderItem.OrderItemPrice = orderItemPrice;
-            recpient.OrderItemRecipients.Clear();
-            recpient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
+            recipient.OrderItemSublocationRecipients.Clear();
+            recipient.SetQuantityForItem(orderItem.CatalogueItemId, quantity);
 
             var expectedResult = ((IPrice)orderItemPrice).CalculateOneOffCost(quantity);
 
-            orderItem.TotalCost(new[] { recpient }).Should().Be(expectedResult);
+            orderItem.TotalCost([recipient]).Should().Be(expectedResult);
         }
 
         [Fact]
@@ -529,25 +551,31 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem orderItem = BuildOrderItem(fixture, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            OrderSublocation sublocation = fixture.Build<OrderSublocation>().Create();
+
+            OrderItem orderItem = BuildOrderItem(fixture, [tier], CataloguePriceCalculationType.SingleFixed);
             orderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
-            var recipient = fixture.Build<OrderRecipient>()
-                .Without(i => i.OrderItemRecipients)
+            OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
+                .With(r => r.ParentSublocationOdsCode, sublocation.SublocationOdsCode)
+                .Without(r => r.OrderItemSublocationRecipients)
                 .Create();
             recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
 
-            var amendedRecipient = fixture.Build<OrderRecipient>()
-                .Without(i => i.OrderItemRecipients)
+            sublocation.SublocationRecipients = [recipient];
+
+            Order order = BuildOrder(fixture, maximumTerm, [orderItem], commencementDate, [sublocation]);
+
+            OrderSublocationRecipient amendedRecipient = fixture.Build<OrderSublocationRecipient>()
+                .With(r => r.ParentSublocationOdsCode, sublocation.SublocationOdsCode)
+                .Without(i => i.OrderItemSublocationRecipients)
                 .Create();
             amendedRecipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
             amendedRecipient.SetDeliveryDateForItem(orderItem.CatalogueItemId, amendmentPlannedDelivery);
 
-            Order order = BuildOrder(fixture, maximumTerm, new[] { orderItem }, commencementDate, new[] { recipient });
-
-            var amendedOrder = order.BuildAmendment(2);
+            Order amendedOrder = order.BuildAmendment(2);
             amendedOrder.DeliveryDate = amendmentPlannedDelivery;
             amendedOrder.OrderItems = new HashSet<OrderItem> { orderItem };
-            amendedOrder.OrderRecipients.Add(amendedRecipient);
+            amendedOrder.OrderSublocations.First().SublocationRecipients = [amendedRecipient];
 
             var orderWrapper = new OrderWrapper(amendedOrder, [order]);
 
@@ -562,58 +590,74 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
             var maximumTerm = 12;
             var price = 12M;
             var commencementDate = new DateTime(2000, 1, 1);
-            var revision2PlannedDelivery = commencementDate.AddMonths(6);
-            var revision3PlannedDelivery = commencementDate.AddMonths(9);
+            DateTime revision2PlannedDelivery = commencementDate.AddMonths(6);
+            DateTime revision3PlannedDelivery = commencementDate.AddMonths(9);
             var expectedOriginalTotal = 12 * 12;
             var expectedRevision2Total = 12 * 6;
             var expectedRevision3Total = 12 * 3;
 
             (decimal Price, int LowerRange, int? UpperRange) tier = (price, 1, null);
 
-            OrderItem orderItem = BuildOrderItem(fixture, new[] { tier }, CataloguePriceCalculationType.SingleFixed);
+            OrderItem orderItem = BuildOrderItem(fixture, [tier], CataloguePriceCalculationType.SingleFixed);
             orderItem.OrderItemPrice.BillingPeriod = TimeUnit.PerMonth;
-            var recipient = fixture.Build<OrderRecipient>()
-                .Without(i => i.OrderItemRecipients)
+
+            OrderSublocation sublocation = fixture.Build<OrderSublocation>().Create();
+
+            OrderSublocationRecipient recipient = fixture.Build<OrderSublocationRecipient>()
+                .With(r => r.ParentSublocationOdsCode, sublocation.SublocationOdsCode)
+                .Without(i => i.OrderItemSublocationRecipients)
                 .Create();
             recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
 
-            var revision2Recipient = fixture.Build<OrderRecipient>()
-                .Without(i => i.OrderItemRecipients)
+            OrderSublocationRecipient revision2Recipient = fixture.Build<OrderSublocationRecipient>()
+                .With(r => r.ParentSublocationOdsCode, sublocation.SublocationOdsCode)
+                .Without(i => i.OrderItemSublocationRecipients)
                 .Create();
             revision2Recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
             revision2Recipient.SetDeliveryDateForItem(orderItem.CatalogueItemId, revision2PlannedDelivery);
 
-            var revision3Recipient = fixture.Build<OrderRecipient>()
-                .Without(i => i.OrderItemRecipients)
+            OrderSublocationRecipient revision3Recipient = fixture.Build<OrderSublocationRecipient>()
+                .With(r => r.ParentSublocationOdsCode, sublocation.SublocationOdsCode)
+                .Without(i => i.OrderItemSublocationRecipients)
                 .Create();
             revision3Recipient.SetQuantityForItem(orderItem.CatalogueItemId, 1);
             revision3Recipient.SetDeliveryDateForItem(orderItem.CatalogueItemId, revision3PlannedDelivery);
 
-            Order order = BuildOrder(fixture, maximumTerm, new[] { orderItem }, commencementDate, new[] { recipient });
+            sublocation.SublocationRecipients = [recipient];
 
-            var revision2 = order.BuildAmendment(2);
+            Order order = BuildOrder(fixture, maximumTerm, [orderItem], commencementDate, [sublocation]);
+
+            Order revision2 = order.BuildAmendment(2);
             revision2.DeliveryDate = revision2PlannedDelivery;
             revision2.OrderItems = new HashSet<OrderItem> { orderItem };
-            revision2.OrderRecipients = new HashSet<OrderRecipient> { revision2Recipient };
+            revision2.OrderSublocations.First().SublocationRecipients = [revision2Recipient];
 
-            var revision3 = order.BuildAmendment(3);
+            Order revision3 = order.BuildAmendment(3);
             revision3.DeliveryDate = revision3PlannedDelivery;
             revision3.OrderItems = new HashSet<OrderItem> { orderItem };
-            revision3.OrderRecipients = new HashSet<OrderRecipient> { revision3Recipient };
+            revision3.OrderSublocations.First().SublocationRecipients = [revision3Recipient];
 
             var orderWrapper = new OrderWrapper(revision3, [order, revision2]);
 
             orderWrapper.TotalPreviousCost().Should().Be(expectedOriginalTotal + expectedRevision2Total);
-            orderWrapper.TotalCost().Should().Be(expectedOriginalTotal + expectedRevision2Total + expectedRevision3Total);
+            orderWrapper.TotalCost()
+                .Should()
+                .Be(expectedOriginalTotal + expectedRevision2Total + expectedRevision3Total);
         }
 
-        private static Order BuildOrder(IFixture fixture, int maximumTerm, OrderItem[] orderItems, DateTime commencementDate, OrderRecipient[] recipients)
+        private static Order BuildOrder(
+            IFixture fixture,
+            int maximumTerm,
+            OrderItem[] orderItems,
+            DateTime commencementDate,
+            OrderSublocation[] sublocations)
         {
             return fixture.Build<Order>()
                 .With(o => o.Revision, 1)
                 .With(o => o.CommencementDate, commencementDate)
+                .With(o => o.OrderNumber, new Random().Next(0, 999999))
                 .With(o => o.OrderItems, new HashSet<OrderItem>(orderItems))
-                .With(o => o.OrderRecipients, new HashSet<OrderRecipient>(recipients))
+                .With(o => o.OrderSublocations, new List<OrderSublocation>(sublocations))
                 .With(o => o.MaximumTerm, maximumTerm)
                 .Create();
         }

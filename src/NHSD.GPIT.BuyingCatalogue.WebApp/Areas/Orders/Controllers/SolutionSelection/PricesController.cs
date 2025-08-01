@@ -9,6 +9,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Orders;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Routing;
+using NHSD.GPIT.BuyingCatalogue.WebApp.ActionFilters;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Pricing;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSelection
@@ -41,6 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("price/select")]
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> SelectPrice(
             string internalOrgId,
             CallOffId callOffId,
@@ -66,7 +68,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("price/select")]
-        public async Task<IActionResult> SelectPrice(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, SelectPriceModel model)
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
+        public async Task<IActionResult> SelectPrice(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            SelectPriceModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -85,6 +92,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("price/{priceId}/confirm")]
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> ConfirmPrice(
             string internalOrgId,
             CallOffId callOffId,
@@ -121,6 +129,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("price/{priceId}/confirm")]
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> ConfirmPrice(
             string internalOrgId,
             CallOffId callOffId,
@@ -150,6 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpGet("price/edit")]
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
         public async Task<IActionResult> EditPrice(
             string internalOrgId,
             CallOffId callOffId,
@@ -190,7 +200,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Controllers.SolutionSele
         }
 
         [HttpPost("price/edit")]
-        public async Task<IActionResult> EditPrice(string internalOrgId, CallOffId callOffId, CatalogueItemId catalogueItemId, ConfirmPriceModel model)
+        [ServiceFilter(typeof(OrderIsEditableActionFilterAttribute))]
+        public async Task<IActionResult> EditPrice(
+            string internalOrgId,
+            CallOffId callOffId,
+            CatalogueItemId catalogueItemId,
+            ConfirmPriceModel model)
         {
             if (!ModelState.IsValid)
             {

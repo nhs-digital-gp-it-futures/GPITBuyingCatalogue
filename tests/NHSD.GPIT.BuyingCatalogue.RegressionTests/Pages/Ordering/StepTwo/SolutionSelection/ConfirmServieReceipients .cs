@@ -16,8 +16,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         public void ConfirmServiceReceipientsChanges()
         {
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.ConfirmChanges)).Should().BeTrue();
+                    typeof(ServiceRecipientsController),
+                    nameof(ServiceRecipientsController))
+                .Should()
+                .BeTrue();
 
             CommonActions.ClickSave();
         }
@@ -25,8 +27,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepTwo.Solut
         public void ConfirmServiceRecipientsChangesForSplitAndMerges()
         {
             CommonActions.PageLoadedCorrectGetIndex(
-                typeof(ServiceRecipientsController),
-                nameof(ServiceRecipientsController.SelectRecipientForPracticeReorganisation)).Should().BeTrue();
+                    typeof(ServiceRecipientsController),
+                    nameof(ServiceRecipientsController))
+                .Should()
+                .BeTrue();
             CommonActions.ClickFirstRadio();
             CommonActions.ClickSave();
 
