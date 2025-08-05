@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_InProgressOrder_ReturnsExpectedResult(
-            string internalOrgId,
+            [Frozen] string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             AspNetUser aspNetUser,
             OrderProgress orderTaskList,
@@ -298,6 +298,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             byte[] result,
             OrderController controller)
         {
+            order.IsTerminated = false;
+            order.IsDeleted = false;
+            order.CommencementDate = DateTime.UtcNow.AddMonths(2);
+            order.MaximumTerm = 12;
             order.Completed = DateTime.UtcNow;
 
             await DownloadReturnsExpectedResult(internalOrgId, order, orderServiceMock, pdfServiceMock, result, controller, "order-summary-completed");
@@ -530,6 +534,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             EntityFramework.Ordering.Models.Order order)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.IsTerminated = false;
+            order.IsDeleted = false;
+            order.CommencementDate = DateTime.UtcNow.AddMonths(2);
+            order.MaximumTerm = 12;
             order.Completed = DateTime.UtcNow;
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
@@ -543,6 +551,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             EntityFramework.Ordering.Models.Order order)
         {
             order.OrderType = OrderTypeEnum.Solution;
+            order.IsTerminated = false;
+            order.IsDeleted = false;
+            order.CommencementDate = DateTime.UtcNow.AddMonths(2);
+            order.MaximumTerm = 12;
             order.Completed = DateTime.UtcNow;
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
