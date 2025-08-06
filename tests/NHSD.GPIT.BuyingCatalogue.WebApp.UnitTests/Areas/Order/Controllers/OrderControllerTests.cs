@@ -52,7 +52,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_InProgressOrder_ReturnsExpectedResult(
-            [Frozen] string internalOrgId,
+            string internalOrgId,
             EntityFramework.Ordering.Models.Order order,
             AspNetUser aspNetUser,
             OrderProgress orderTaskList,
