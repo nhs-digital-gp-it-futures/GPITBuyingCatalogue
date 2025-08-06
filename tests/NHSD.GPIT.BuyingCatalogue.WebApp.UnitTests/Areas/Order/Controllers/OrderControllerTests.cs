@@ -61,6 +61,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             OrderController controller)
         {
             order.LastUpdatedByUser = aspNetUser;
+            order.IsTerminated = false;
+            order.IsDeleted = false;
+            order.CommencementDate = DateTime.UtcNow.AddMonths(2);
+            order.MaximumTerm = 12;
             order.Completed = null;
 
             orderServiceMock.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
