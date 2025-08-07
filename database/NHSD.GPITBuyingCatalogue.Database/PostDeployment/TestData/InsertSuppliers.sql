@@ -1,4 +1,5 @@
-﻿DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
+﻿GO
+DECLARE @bobEmail AS nvarchar(50) = N'BobSmith@email.com';
 DECLARE @bobUser AS int = (SELECT Id FROM users.AspNetUsers WHERE Email = @bobEmail);
 DECLARE @now AS datetime = GETUTCDATE();
 
