@@ -13,8 +13,8 @@ resource "azurerm_app_service_custom_hostname_binding" "webapp_host_binding" {
 }
 
 resource "azurerm_app_service_certificate_binding" "webapp_cert_binding" {
-  hostname_binding_id = azurerm_app_service_custom_hostname_binding.webapp_host_binding.id
+  hostname_binding_id = join("", azurerm_app_service_custom_hostname_binding.webapp_host_binding[*].id)
   ssl_state           = "SniEnabled"
-  certificate_id      = var.ssl_cert_id
+  certificate_id      = azurerm_app_service_certificate.webapp.id
   count               = var.create_host_binding
 }

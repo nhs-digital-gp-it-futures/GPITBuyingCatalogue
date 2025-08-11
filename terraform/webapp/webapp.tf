@@ -20,7 +20,6 @@ module "webapp" {
   docker_registry_id              = data.azurerm_container_registry.acr.id
   create_slot                     = local.is_live_environment ? 1 : 0
   create_host_binding             = !local.use_app_gateway ? 1 : 0
-  ssl_cert_id                     = data.azurerm_key_vault_certificate.ssl_cert.id
   keyvault_cert_id                = data.azurerm_key_vault_secret.ssl_cert.id
   notify_api_key                  = var.notify_api_key
   blob_storage_connection_string  = module.documentstorageaccount.primary_connection_string

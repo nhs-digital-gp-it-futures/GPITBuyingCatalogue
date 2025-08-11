@@ -78,10 +78,6 @@ variable "keyvault_cert_id" {
   type = string
 }
 
-variable "ssl_cert_id" {
-  type = string
-}
-
 variable "notify_api_key" {
   type = string
 }
