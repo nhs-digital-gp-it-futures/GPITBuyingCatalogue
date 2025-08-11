@@ -34,10 +34,6 @@ variable "always_on" {
   type = string
 }
 
-variable "cert_name" {
-  type = string
-}
-
 variable "aspnet_environment" {
   type = string
 }
@@ -78,7 +74,11 @@ variable "create_host_binding" {
   type = string
 }
 
-variable "ssl_thumbprint" {
+variable "keyvault_cert_id" {
+  type = string
+}
+
+variable "ssl_cert_id" {
   type = string
 }
 
