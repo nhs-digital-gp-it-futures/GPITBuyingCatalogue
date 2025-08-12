@@ -99,21 +99,25 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
             foreach ((IPriceTier tier, var index) in PriceTiers.OrderBy(t => t.LowerRange).Select((x, i) => (x, i)))
             {
                 int tierEnd = tier.UpperRange ?? int.MaxValue;
+                int tierQuantity = 0;
 
-                if (quantityOffset >= tierEnd)
-                    continue;
+                if (quantityOffset < tierEnd)
+                {
+                    int tierStart = quantityOffset <= 0
+                        ? 0
+                        : Math.Max(quantityOffset, tier.LowerRange + 1);
 
-                int tierCapacity = tierEnd - Math.Max(quantityOffset, tier.LowerRange) + 1;
-                int tierQuantity = Math.Min(quantity, tierCapacity);
+                    int tierCapacity = tierEnd - tierStart;
+                    tierQuantity = Math.Min(quantity, tierCapacity);
 
-                quantity -= tierQuantity;
+                    quantity -= tierQuantity;
+                }
 
                 output.Add(
                     new PriceCalculationModel(
                         index + 1,
                         tierQuantity,
-                        tier.Price,
-                        tierQuantity * tier.Price));
+                        tier.Price));
             }
 
             return output;

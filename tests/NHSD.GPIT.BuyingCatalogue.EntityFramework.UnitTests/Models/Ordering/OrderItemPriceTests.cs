@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
@@ -10,6 +11,50 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Models.Ordering;
 
 public static class OrderItemPriceTests
 {
+    public static IEnumerable<object[]> TieredPricingTestData => new object[][]
+    {
+        [
+            760_644,
+            0,
+            new List<PriceCalculationModel>
+            {
+                new(1, 89_999, 0.1660M),
+                new(2, 670_645, 0.1330M),
+                new(3, 0, 0.08M, 0),
+            },
+        ],
+        [
+            16_277,
+            760_644,
+            new List<PriceCalculationModel>
+            {
+                new(1, 0, 0.1660M, 0),
+                new(2, 16_277, 0.1330M),
+                new(3, 0, 0.08M, 0),
+            },
+        ],
+        [
+            1_792_389,
+            0,
+            new List<PriceCalculationModel>
+            {
+                new(1, 89_999, 0.1660M),
+                new(2, 899_999, 0.1330M),
+                new(3, 802_391, 0.08M),
+            },
+        ],
+        [
+            61_324,
+            1_792_389,
+            new List<PriceCalculationModel>
+            {
+                new(1, 0, 0.1660M, 0),
+                new(2, 0, 0.1330M, 0),
+                new(3, 61_324, 0.08M),
+            },
+        ],
+    };
+
     [Theory]
     [MockAutoData]
     public static void Construct_WithPrice_SetsPropertiesAsExpected(
@@ -29,37 +74,14 @@ public static class OrderItemPriceTests
     }
 
     [Theory]
-    [MockAutoData]
-    public static void CalculateCumulativeCostPerTier_WithNoOffset_ReturnsExpectedPrice(
+    [MockMemberAutoData(nameof(TieredPricingTestData))]
+    public static void CalculateCumulativeCostPerTier_ReturnsExpectedPrice(
+        int quantity,
+        int quantityOffset,
+        List<PriceCalculationModel> expectedPriceCalculations,
         OrderItemPrice orderItemPrice)
     {
-        const int quantity = 760_644;
-        const decimal expectedPrice = 8_677.96825M;
-
-        orderItemPrice.BillingPeriod = TimeUnit.PerYear;
-        orderItemPrice.CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative;
-        orderItemPrice.CataloguePriceType = CataloguePriceType.Tiered;
-
-        orderItemPrice.OrderItemPriceTiers = new List<OrderItemPriceTier>
-        {
-            new() { LowerRange = 1, UpperRange = 89_999, Price = 0.1660M, },
-            new() { LowerRange = 90_000, UpperRange = 899_999, Price = 0.1330M, },
-            new() { LowerRange = 900_000, UpperRange = null, Price = 0.08M, },
-        };
-
-        var total = ((IPrice)orderItemPrice).CalculateCostPerMonth(quantity);
-
-        total.Should().Be(expectedPrice);
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static void CalculateCumulativeCostPerTier_WithOffset_ReturnsExpectedPrice(
-        OrderItemPrice orderItemPrice)
-    {
-        const int quantity = 16_277;
-        const int quantityOffset = 760_644;
-        const decimal expectedPrice = 180.4034M;
+        var expectedPrice = expectedPriceCalculations.Sum(x => x.Cost) / 12;
 
         orderItemPrice.BillingPeriod = TimeUnit.PerYear;
         orderItemPrice.CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative;
@@ -74,16 +96,17 @@ public static class OrderItemPriceTests
 
         var total = ((IPrice)orderItemPrice).CalculateCostPerMonth(quantity, quantityOffset);
 
-        total.Should().BeApproximately(expectedPrice, 0.0001M);
+        total.Should().Be(expectedPrice);
     }
 
     [Theory]
-    [MockAutoData]
-    public static void CalculateCostPerTier_WithNoOffset_ReturnsExpectedTiers(
+    [MockMemberAutoData(nameof(TieredPricingTestData))]
+    public static void CalculateCostPerTier_ReturnsExpectedTiers(
+        int quantity,
+        int quantityOffset,
+        List<PriceCalculationModel> expectedPriceCalculations,
         OrderItemPrice orderItemPrice)
     {
-        const int quantity = 760_644;
-
         orderItemPrice.BillingPeriod = TimeUnit.PerYear;
         orderItemPrice.CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative;
         orderItemPrice.CataloguePriceType = CataloguePriceType.Tiered;
@@ -93,49 +116,11 @@ public static class OrderItemPriceTests
             new() { LowerRange = 1, UpperRange = 89_999, Price = 0.1660M, },
             new() { LowerRange = 90_000, UpperRange = 899_999, Price = 0.1330M, },
             new() { LowerRange = 900_000, UpperRange = null, Price = 0.08M, },
-        };
-
-        var expectedPriceCalculations = new List<PriceCalculationModel>
-        {
-            new(1, 89_999, 0.1660M, 89_999 * 0.1660M),
-            new(2, 670_645, 0.1330M, 670_645 * 0.1330M),
-            new(3, 0, 0.08M, 0),
-        };
-
-        var tiers = ((IPrice)orderItemPrice).CalculateCostPerTier(quantity);
-
-        tiers.Should().HaveCount(3);
-        tiers.Should().BeEquivalentTo(expectedPriceCalculations);
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static void CalculateCostPerTier_WithOffset_ReturnsExpectedTiers(
-        OrderItemPrice orderItemPrice)
-    {
-        const int quantity = 16_277;
-        const int quantityOffset = 760_644;
-
-        orderItemPrice.BillingPeriod = TimeUnit.PerYear;
-        orderItemPrice.CataloguePriceCalculationType = CataloguePriceCalculationType.Cumulative;
-        orderItemPrice.CataloguePriceType = CataloguePriceType.Tiered;
-
-        orderItemPrice.OrderItemPriceTiers = new List<OrderItemPriceTier>
-        {
-            new() { LowerRange = 1, UpperRange = 89_999, Price = 0.1660M, },
-            new() { LowerRange = 90_000, UpperRange = 899_999, Price = 0.1330M, },
-            new() { LowerRange = 900_000, UpperRange = null, Price = 0.08M, },
-        };
-
-        var expectedPriceCalculations = new List<PriceCalculationModel>
-        {
-            new(1, 0, 0.1660M, 0),
-            new(2, quantity, 0.1330M, quantity * 0.1330M),
-            new(3, 0, 0.08M, 0),
         };
 
         var tiers = ((IPrice)orderItemPrice).CalculateCostPerTier(quantity, quantityOffset);
 
-        tiers.Should().HaveCount(2);
+        tiers.Should().HaveCount(expectedPriceCalculations.Count);
+        tiers.Should().BeEquivalentTo(expectedPriceCalculations);
     }
 }
