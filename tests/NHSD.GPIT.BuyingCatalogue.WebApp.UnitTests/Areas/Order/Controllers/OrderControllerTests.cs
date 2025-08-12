@@ -61,6 +61,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             OrderController controller)
         {
             order.LastUpdatedByUser = aspNetUser;
+            order.IsTerminated = false;
+            order.IsDeleted = false;
+            order.CommencementDate = DateTime.UtcNow.AddMonths(2);
+            order.MaximumTerm = 12;
             order.Completed = null;
 
             orderServiceMock.GetOrderForTaskListStatuses(order.CallOffId, internalOrgId).Returns(Task.FromResult(new OrderWrapper(order)));
@@ -298,6 +302,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             byte[] result,
             OrderController controller)
         {
+            order.IsTerminated = false;
+            order.IsDeleted = false;
+            order.CommencementDate = DateTime.UtcNow.AddMonths(2);
+            order.MaximumTerm = 12;
             order.Completed = DateTime.UtcNow;
 
             await DownloadReturnsExpectedResult(internalOrgId, order, orderServiceMock, pdfServiceMock, result, controller, "order-summary-completed");
@@ -530,6 +538,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             EntityFramework.Ordering.Models.Order order)
         {
             order.OrderType = OrderTypeEnum.AssociatedServiceOther;
+            order.IsTerminated = false;
+            order.IsDeleted = false;
+            order.CommencementDate = DateTime.UtcNow.AddMonths(2);
+            order.MaximumTerm = 12;
             order.Completed = DateTime.UtcNow;
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
@@ -543,6 +555,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers
             EntityFramework.Ordering.Models.Order order)
         {
             order.OrderType = OrderTypeEnum.Solution;
+            order.IsTerminated = false;
+            order.IsDeleted = false;
+            order.CommencementDate = DateTime.UtcNow.AddMonths(2);
+            order.MaximumTerm = 12;
             order.Completed = DateTime.UtcNow;
 
             OrderController.GetAdvice(new OrderWrapper(order), true)
