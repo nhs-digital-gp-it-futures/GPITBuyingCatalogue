@@ -56,7 +56,7 @@ else
     }
     else
     {
-        @foreach (var recipient in Model.RolledUpRecipientsForItem)
+        @foreach (var recipient in Model.RolledUpRecipientsForItem.OrderBy(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
         {
             var quantity = recipient.GetQuantityForItem(Model.CatalogueItem.Id);
             var deliveryDate = recipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);

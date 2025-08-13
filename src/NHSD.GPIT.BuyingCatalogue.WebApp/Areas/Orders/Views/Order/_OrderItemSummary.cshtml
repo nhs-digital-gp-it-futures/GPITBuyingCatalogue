@@ -45,7 +45,7 @@
                 <nhs-table-column>Planned delivery date</nhs-table-column>
                 <nhs-table-column>Quantity</nhs-table-column>
 
-                @foreach (var serviceRecipient in Model.RolledUpRecipientsForItem)
+                @foreach (var serviceRecipient in Model.RolledUpRecipientsForItem.OrderBy(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
                 {
                     var quantity = serviceRecipient.GetQuantityForItem(Model.CatalogueItem.Id);
                     var deliveryDate = serviceRecipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
