@@ -42,7 +42,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
 
         public string EstimationPeriod { get; set; }
 
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
 
         public int OrderType { get; set; }
 

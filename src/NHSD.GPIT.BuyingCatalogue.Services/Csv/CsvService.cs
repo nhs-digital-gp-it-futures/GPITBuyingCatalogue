@@ -42,22 +42,22 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             switch (orderType.Value)
             {
                 case OrderTypeEnum.AssociatedServiceMerger:
-                {
-                    await WriteMergerCsv(orderId, stream);
-                    break;
-                }
+                    {
+                        await WriteMergerCsv(orderId, stream);
+                        break;
+                    }
 
                 case OrderTypeEnum.AssociatedServiceSplit:
-                {
-                    await WriteSplitCsv(orderId, stream);
-                    break;
-                }
+                    {
+                        await WriteSplitCsv(orderId, stream);
+                        break;
+                    }
 
                 default:
-                {
-                    await WriteDefaultOrderCsv(orderId, stream, showRevisions);
-                    break;
-                }
+                    {
+                        await WriteDefaultOrderCsv(orderId, stream, showRevisions);
+                        break;
+                    }
             }
         }
 
@@ -90,7 +90,19 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ToListAsync();
         }
 
-        private async Task<Dictionary<CatalogueItemId, decimal>> GetPrices(int orderId)
+        // private async Task<Dictionary<CatalogueItemId, decimal>> GetPrices(int orderId)
+        // {
+        //    return await dbContext.OrderItems
+        //        .Include(x => x.OrderItemPrice)
+        //        .ThenInclude(x => x.OrderItemPriceTiers)
+        //        .AsNoTracking()
+        //        .Where(x => x.OrderId == orderId)
+        //        .ToDictionaryAsync(
+        //            x => x.CatalogueItemId,
+        //            x => x.OrderItemPrice?.OrderItemPriceTiers?.FirstOrDefault()?.Price ?? decimal.Zero);
+        // }
+
+        private async Task<Dictionary<CatalogueItemId, decimal?>> GetPrices(int orderId)
         {
             return await dbContext.OrderItems
                 .Include(x => x.OrderItemPrice)
@@ -99,7 +111,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .Where(x => x.OrderId == orderId)
                 .ToDictionaryAsync(
                     x => x.CatalogueItemId,
-                    x => x.OrderItemPrice?.OrderItemPriceTiers?.FirstOrDefault()?.Price ?? decimal.Zero);
+                    x => x.OrderItemPrice?.OrderItemPriceTiers?.FirstOrDefault()?.Price);
         }
 
         private async Task<(int SupplierId, string SupplierName)> GetSupplierDetails(int orderId)
@@ -222,7 +234,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
-                        Price = prices[oir.OrderItem.CatalogueItemId],
+                        Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
+                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
+                            ? null
+                            : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
                         M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
                             x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
@@ -306,7 +321,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
-                        Price = prices[oir.OrderItem.CatalogueItemId],
+                        Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
+                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
+                            ? null
+                            : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
                         M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
                             x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
@@ -386,7 +404,10 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         UnitOfOrder = oir.OrderItem.OrderItemPrice.Description,
                         UnitTime = TimeUnitDescription(billingPeriods[oir.OrderItem.CatalogueItemId]),
                         EstimationPeriod = TimeUnitDescription(oir.OrderItem.EstimationPeriod),
-                        Price = prices[oir.OrderItem.CatalogueItemId],
+                        Price = (oir.OrderItem.OrderItemPrice.CataloguePriceType == CataloguePriceType.Tiered
+                            && oir.OrderItem.OrderItemPrice.CataloguePriceCalculationType == CataloguePriceCalculationType.Cumulative)
+                            ? (decimal?)null
+                            : prices[oir.OrderItem.CatalogueItemId],
                         OrderType = (int)oir.OrderItem.OrderItemPrice.ProvisioningType,
                         M1Planned = or.OrderItemSublocationRecipients.FirstOrDefault(x =>
                             x.CatalogueItemId == oir.OrderItem.CatalogueItemId) == null
