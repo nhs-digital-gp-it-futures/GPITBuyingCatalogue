@@ -103,11 +103,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces
 
                 if (quantityOffset < tierEnd)
                 {
-                    int tierStart = quantityOffset <= 0
-                        ? 0
-                        : Math.Max(quantityOffset, tier.LowerRange + 1);
-
-                    int tierCapacity = tierEnd - tierStart;
+                    int tierCapacity = tierEnd - Math.Max(quantityOffset, tier.LowerRange) + 1;
                     tierQuantity = Math.Min(quantity, tierCapacity);
 
                     quantity -= tierQuantity;

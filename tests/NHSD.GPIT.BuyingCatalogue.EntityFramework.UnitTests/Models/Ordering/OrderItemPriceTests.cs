@@ -39,8 +39,8 @@ public static class OrderItemPriceTests
             new List<PriceCalculationModel>
             {
                 new(1, 89_999, 0.1660M),
-                new(2, 899_999, 0.1330M),
-                new(3, 802_391, 0.08M),
+                new(2, 810_000, 0.1330M),
+                new(3, 892_390, 0.08M),
             },
         ],
         [
