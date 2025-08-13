@@ -90,18 +90,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ToListAsync();
         }
 
-        // private async Task<Dictionary<CatalogueItemId, decimal>> GetPrices(int orderId)
-        // {
-        //    return await dbContext.OrderItems
-        //        .Include(x => x.OrderItemPrice)
-        //        .ThenInclude(x => x.OrderItemPriceTiers)
-        //        .AsNoTracking()
-        //        .Where(x => x.OrderId == orderId)
-        //        .ToDictionaryAsync(
-        //            x => x.CatalogueItemId,
-        //            x => x.OrderItemPrice?.OrderItemPriceTiers?.FirstOrDefault()?.Price ?? decimal.Zero);
-        // }
-
         private async Task<Dictionary<CatalogueItemId, decimal?>> GetPrices(int orderId)
         {
             return await dbContext.OrderItems
