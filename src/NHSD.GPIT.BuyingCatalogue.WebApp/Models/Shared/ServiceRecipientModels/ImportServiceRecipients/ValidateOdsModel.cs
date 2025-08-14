@@ -16,8 +16,6 @@ public class ValidateOdsModel : NavBaseModel
         InvalidServiceRecipients = invalidServiceRecipients.OrderBy(s => s.Organisation).ToList();
     }
 
-    public string CancelLink { get; set; }
-
     public string ContinueLink { get; set; }
 
     public IList<ServiceRecipientImportModel> InvalidServiceRecipients { get; set; }

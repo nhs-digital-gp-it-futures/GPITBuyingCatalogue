@@ -26,15 +26,13 @@ public sealed class ValidationCompleteModel : NavBaseModel
     public ValidationCompleteModel(
         string caption,
         ValidationStatus validationStatus,
-        IReadOnlyList<SublocationModel> sublocations,
-        string cancelLink)
+        IReadOnlyList<SublocationModel> sublocations)
     {
         Title = "Upload validated";
         Caption = caption;
         InteractionNoun = "competition";
         Sublocations = sublocations;
         ValidationStatus = validationStatus;
-        CancelLink = cancelLink;
 
         switch (validationStatus)
         {
@@ -66,6 +64,4 @@ public sealed class ValidationCompleteModel : NavBaseModel
     public IReadOnlyList<SublocationModel> Sublocations { get; init; }
 
     public string InteractionNoun { get; init; }
-
-    public string CancelLink { get; init; }
 }
