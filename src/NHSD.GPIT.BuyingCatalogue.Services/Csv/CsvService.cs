@@ -90,7 +90,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .ToListAsync();
         }
 
-        private async Task<Dictionary<CatalogueItemId, decimal?>> GetPrices(int orderId)
+        private async Task<Dictionary<CatalogueItemId, decimal>> GetPrices(int orderId)
         {
             return await dbContext.OrderItems
                 .Include(x => x.OrderItemPrice)
@@ -99,7 +99,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                 .Where(x => x.OrderId == orderId)
                 .ToDictionaryAsync(
                     x => x.CatalogueItemId,
-                    x => x.OrderItemPrice?.OrderItemPriceTiers?.FirstOrDefault()?.Price);
+                    x => x.OrderItemPrice?.OrderItemPriceTiers?.FirstOrDefault()?.Price ?? decimal.Zero);
         }
 
         private async Task<(int SupplierId, string SupplierName)> GetSupplierDetails(int orderId)
