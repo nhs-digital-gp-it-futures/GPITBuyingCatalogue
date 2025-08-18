@@ -23,15 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Controllers;
 public class CompetitionImportServiceRecipientsController : Controller
 {
     internal const int OdsCodeLength = 8;
-    internal const int OrganisationNameLength = 256;
     internal const string InvalidFormat = "The selected file does not meet the required format";
     internal const string EmptyFile = "The selected file is empty";
 
     internal static readonly string OdsCodeExceedsLimit =
         $"At least one of your ODS codes is more than {OdsCodeLength} characters";
-
-    internal static readonly string OrganisationExceedsLimit =
-        $"At least one of your Service Recipient names is more than {OrganisationNameLength} characters";
 
     private const string CompetitionCacheKey = "competitions";
     private readonly IServiceRecipientImportService importService;
@@ -109,7 +105,7 @@ public class CompetitionImportServiceRecipientsController : Controller
     public async Task<IActionResult> Validate(
         string internalOrgId,
         int competitionId,
-        bool? acceptLossOfOdsIfMismatch)
+        bool? foundMismatchedOdsCodes)
     {
         var cacheKey = new DistributedCacheKey(User.UserId(), internalOrgId, CompetitionCacheKey, competitionId);
         var cachedRecipients = await importService.GetCached(cacheKey);
@@ -117,76 +113,22 @@ public class CompetitionImportServiceRecipientsController : Controller
         if (cachedRecipients is null)
             return RedirectToAction(nameof(Index), new { internalOrgId, competitionId });
 
-        var backAndCancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId });
+        if (foundMismatchedOdsCodes is null or false)
+        {
+            var odsValidationResult = await ValidateOdsCodes(
+                internalOrgId,
+                competitionId,
+                cachedRecipients);
 
-        ValidationStatus validationStatus = acceptLossOfOdsIfMismatch is true
+            if (odsValidationResult is not null)
+            {
+                return odsValidationResult;
+            }
+        }
+
+        var validationStatus = foundMismatchedOdsCodes is true
             ? ValidationStatus.PartialSuccess
             : ValidationStatus.Success;
-
-        HashSet<string> requestedRecipientOdsCodes = cachedRecipients.Select(x => x.OdsCode).ToHashSet();
-
-        IReadOnlyList<ServiceRecipient> organisationServiceRecipients =
-            await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                internalOrgId,
-                requestedRecipientOdsCodes);
-
-        HashSet<string> actualServiceRecipientsAsHashSet =
-            organisationServiceRecipients.Select(x => x.OrgId).ToHashSet();
-
-        if (actualServiceRecipientsAsHashSet.Count == 0)
-        {
-            validationStatus = ValidationStatus.Failure;
-            return RedirectToAction(
-                nameof(ValidationComplete),
-                new { internalOrgId, competitionId, validationStatus });
-        }
-
-        HashSet<string> mismatchedOdsCodes =
-            requestedRecipientOdsCodes.Except(actualServiceRecipientsAsHashSet).ToHashSet();
-
-        var shouldShowValidateOdsScreen = mismatchedOdsCodes.Count > 0 && acceptLossOfOdsIfMismatch is not true;
-
-        if (shouldShowValidateOdsScreen)
-        {
-            var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
-
-            var model = new ValidateOdsModel(
-                cachedRecipients.Where(x => mismatchedOdsCodes.Contains(x.OdsCode)))
-            {
-                BackLink = backAndCancelLink,
-                Caption = competitionName,
-                CancelLink = backAndCancelLink,
-                ContinueLink = Url.Action(
-                    nameof(Validate),
-                    new { internalOrgId, competitionId, acceptLossOfOdsIfMismatch = true }),
-            };
-
-            return View("ServiceRecipients/ImportServiceRecipients/ValidateOds", model);
-        }
-
-        List<(string Expected, string Actual, string OdsCode)> mismatchedNames =
-            GetMismatchedNames(cachedRecipients.ToList(), organisationServiceRecipients);
-
-        var shouldShowValidateNamesScreen = mismatchedNames.Count > 0;
-
-        if (shouldShowValidateNamesScreen)
-        {
-            var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
-
-            var continueLink = Url.Action(
-                nameof(ValidationComplete),
-                typeof(CompetitionImportServiceRecipientsController).ControllerName(),
-                new { internalOrgId, competitionId, validationStatus = ValidationStatus.PartialSuccess });
-
-            var model = new ValidateNamesModel(mismatchedNames)
-            {
-                BackLink = backAndCancelLink,
-                CancelLink = backAndCancelLink,
-                Caption = competitionName,
-                ContinueLink = continueLink,
-            };
-            return View("ServiceRecipients/ImportServiceRecipients/ValidateNames", model);
-        }
 
         return RedirectToAction(
             nameof(ValidationComplete),
@@ -224,13 +166,13 @@ public class CompetitionImportServiceRecipientsController : Controller
                 })
             .ToList();
 
-        var cancelLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId });
-
         var model = new ValidationCompleteModel(
             competitionName,
             validationStatus,
-            recipientsAsSublocations,
-            cancelLink);
+            recipientsAsSublocations)
+        {
+            BackLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId }),
+        };
 
         return View("ServiceRecipients/ImportServiceRecipients/ValidationComplete", model);
     }
@@ -341,7 +283,7 @@ public class CompetitionImportServiceRecipientsController : Controller
 
         foreach (var recipient in importedRecipients)
         {
-            if (string.IsNullOrWhiteSpace(recipient.Organisation) || string.IsNullOrWhiteSpace(recipient.OdsCode))
+            if (string.IsNullOrWhiteSpace(recipient.OdsCode))
             {
                 return (false, InvalidFormat);
             }
@@ -350,13 +292,51 @@ public class CompetitionImportServiceRecipientsController : Controller
             {
                 return (false, OdsCodeExceedsLimit);
             }
-
-            if (recipient.Organisation.Length > OrganisationNameLength)
-            {
-                return (false, OrganisationExceedsLimit);
-            }
         }
 
         return (true, null);
+    }
+
+    private async Task<IActionResult> ValidateOdsCodes(
+        string internalOrgId,
+        int competitionId,
+        IList<ServiceRecipientImportModel> cachedRecipients)
+    {
+        var requestedRecipientOdsCodes = cachedRecipients.Select(x => x.OdsCode).ToHashSet();
+
+        var organisationServiceRecipients =
+            await odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
+                internalOrgId,
+                requestedRecipientOdsCodes);
+
+        var actualServiceRecipientsAsHashSet =
+            organisationServiceRecipients.Select(x => x.OrgId).ToHashSet();
+
+        if (actualServiceRecipientsAsHashSet.Count == 0)
+        {
+            return RedirectToAction(
+                nameof(ValidationComplete),
+                new { internalOrgId, competitionId, validationStatus = ValidationStatus.Failure });
+        }
+
+        var foundMismatchedOdsCodes =
+            requestedRecipientOdsCodes.Except(actualServiceRecipientsAsHashSet).ToHashSet();
+
+        if (foundMismatchedOdsCodes.Count == 0)
+            return null;
+
+        var competitionName = await competitionsService.GetCompetitionName(internalOrgId, competitionId);
+
+        var model = new ValidateOdsModel(
+            cachedRecipients.Where(x => foundMismatchedOdsCodes.Contains(x.OdsCode)))
+        {
+            BackLink = Url.Action(nameof(CancelImport), new { internalOrgId, competitionId }),
+            Caption = competitionName,
+            ContinueLink = Url.Action(
+                nameof(Validate),
+                new { internalOrgId, competitionId, foundMismatchedOdsCodes = true }),
+        };
+
+        return View("ServiceRecipients/ImportServiceRecipients/ValidateOds", model);
     }
 }

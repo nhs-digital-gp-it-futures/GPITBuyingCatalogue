@@ -45,7 +45,7 @@ public class ServiceRecipientImportService : CsvServiceBase, IServiceRecipientIm
         {
             records = await csvReader
                 .GetRecordsAsync<ServiceRecipientImportModel>()
-                .Where(x => !string.IsNullOrWhiteSpace(x.Organisation) && !string.IsNullOrWhiteSpace(x.OdsCode))
+                .Where(x => !string.IsNullOrWhiteSpace(x.OdsCode))
                 .ToListAsync();
         }
         catch (HeaderValidationException)
