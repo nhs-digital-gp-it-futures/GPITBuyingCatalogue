@@ -249,6 +249,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                             == CataloguePriceCalculationType.Cumulative
                                 ? GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers)
                                 : string.Empty,
+                        IcbCode = or.Order.OrderingParty.InternalIdentifier,
+                        IcbName = or.Order.OrderingParty.Name,
+                        SubIcbCode = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOdsCode,
+                        SubIcbName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOrganisation.Name,
                     })
                 .ToListAsync();
 
