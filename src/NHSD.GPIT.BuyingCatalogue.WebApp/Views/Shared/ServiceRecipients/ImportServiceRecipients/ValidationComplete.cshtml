@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients.ValidationCompleteModel
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients.ValidationCompleteModel
 @{
     ViewBag.Title = Model.Title;
 }
@@ -9,9 +8,9 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@Model.Title"
                         caption="@Model.Caption"/>
-        
+
         <p>@Model.AdviceBody</p>
-        
+
         <p>@Model.NextStep</p>
 
         <form method="post">
@@ -27,7 +26,7 @@
             }
             <nhs-button-group>
                 <nhs-submit-button/>
-                <a href="@Model.CancelLink">
+                <a href="@Model.BackLink">
                     Cancel
                 </a>
             </nhs-button-group>
