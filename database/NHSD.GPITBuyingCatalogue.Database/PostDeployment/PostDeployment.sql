@@ -42,7 +42,7 @@
 :r ./TestData/OdsOrganisationsSeedData/InsertOrganisationRoles.sql
 :r ./TestData/OdsOrganisationsSeedData/InsertOrganisationRelationships.sql
 
--- Insert Organisation Data\
+-- Insert Organisation Data
 :r ./TestData/CreateIntegratedCareBoards.sql
 :r ./TestData/InsertRelatedOrganisations.sql
 
@@ -57,28 +57,8 @@
 :r ./TestData/InsertStandardsCapabilities.sql
 :r ./TestData/InsertEpics.sql
 
--- Insert test suppliers (required for solutions)
-:r ./TestData/InsertSuppliers.sql
-
 -- Insert Solutions
 :r ./TestData/InsertSolutions.sql
-:r ./TestData/InsertAdditionalServices.sql
-:r ./TestData/InsertAssociatedServices.sql
-
--- Insert and enrich solutions data
-:r ./ProdLikeData/MergeSuppliers.sql
-:r ./ProdLikeData/MergeCatalogueItems.sql
-:r ./ProdLikeData/MergeSolutions.sql
-:r ./ProdLikeData/MergeAdditionalServices.sql
-:r ./ProdLikeData/MergeAssociatedServices.sql
-:r ./ProdLikeData/MergeMarketingContacts.sql
-:r ./ProdLikeData/MergeCatalogueItemEpics.sql
-:r ./ProdLikeData/MergeCatalogueItemCapabilities.sql
-:r ./ProdLikeData/MergeFrameworkSolutions.sql
-:r ./ProdLikeData/MergeCataloguePrices.sql
-:r ./TestData/InsertSupplierServiceAssociations.sql
-:r ./TestData/Solutions/InsertServiceLevels.sql
-:r ./TestData/InsertWorkOffPlans.sql
 
 -- Insert Orders, Filters and Competitions
 :r ./TestData/InsertTestOrderSeedData.sql
