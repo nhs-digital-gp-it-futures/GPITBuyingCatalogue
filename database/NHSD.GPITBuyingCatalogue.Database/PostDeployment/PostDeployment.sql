@@ -57,8 +57,20 @@
 :r ./TestData/InsertStandardsCapabilities.sql
 :r ./TestData/InsertEpics.sql
 
--- Insert Solutions
-:r ./TestData/InsertSolutions.sql
+-- Insert Solutions and Catalogue Items
+:r ./TestData/Solutions/MergeSuppliers.sql
+:r ./TestData/Solutions/MergeCatalogueItems.sql
+:r ./TestData/Solutions/MergeSolutions.sql
+:r ./TestData/Solutions/MergeAssociatedServices.sql
+:r ./TestData/Solutions/MergeAdditionalServices.sql
+:r ./TestData/Solutions/MergeCatalogueItemCapabilities.sql
+:r ./TestData/Solutions/MergeCatalogueItemEpics.sql
+:r ./TestData/Solutions/MergeCataloguePrices.sql
+:r ./TestData/Solutions/MergeCataloguePriceTiers.sql
+:r ./TestData/Solutions/MergeServiceLevelAgreements.sql
+:r ./TestData/Solutions/MergeServiceAvailabilityTimes.sql
+:r ./TestData/Solutions/MergeServiceLevelContacts.sql
+:r ./TestData/Solutions/MergeServiceLevels.sql
 
 -- Insert Orders, Filters and Competitions
 :r ./TestData/InsertTestOrderSeedData.sql

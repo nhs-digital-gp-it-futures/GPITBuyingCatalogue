@@ -109,7 +109,7 @@
     <PostDeploy Include="PostDeployment\PostDeployment.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="**/*.sql"/>
+    <Build Include="**/*.sql" />
     <None Include="PostDeployment/**/*.sql" />
     <Build Remove="obj/**/*.sql" />
     <Build Remove="bin/**/*.sql" />
@@ -161,6 +161,7 @@
     <Folder Include="OdsOrganisations\Tables\Staging" />
     <Folder Include="OdsOrganisations\Stored Procedures" />
     <Folder Include="PostDeployment\TestData\OdsOrganisationsSeedData" />
+    <Folder Include="PostDeployment\TestData\Solutions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SqlServer.Dacpacs.Azure.Master" Version="160.2.4">
