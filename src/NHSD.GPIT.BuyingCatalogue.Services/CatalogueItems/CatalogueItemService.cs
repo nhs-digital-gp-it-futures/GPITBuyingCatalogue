@@ -22,4 +22,11 @@ public class CatalogueItemService : ICatalogueItemService
 
     public async Task<CatalogueItem> GetCatalogueItem(CatalogueItemId catalogueItemId)
         => await dbContext.CatalogueItems.AsNoTracking().FirstOrDefaultAsync(x => x.Id == catalogueItemId);
+
+    public async Task<CatalogueItem> GetCatalogueItemWithSupplierServiceAssociations(CatalogueItemId catalogueItemId) =>
+        await dbContext.CatalogueItems.AsNoTracking()
+            .Include(ci => ci.Supplier)
+            .Include(ci => ci.Solution)
+            .Include(ci => ci.SupplierServiceAssociations)
+            .FirstOrDefaultAsync(ci => ci.Id == catalogueItemId);
 }

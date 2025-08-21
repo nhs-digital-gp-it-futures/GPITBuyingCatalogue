@@ -26,12 +26,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         }
 
         public ManageListPricesModel(
-            CatalogueItem solution,
+            CatalogueItemId catalogueItemId,
             CatalogueItem service,
             ICollection<CataloguePrice> prices)
         : this(prices)
         {
-            CatalogueItemId = solution.Id;
+            CatalogueItemId = catalogueItemId;
             ServiceId = service.Id;
             CatalogueItemName = service.Name;
             CatalogueItemType = service.CatalogueItemType;

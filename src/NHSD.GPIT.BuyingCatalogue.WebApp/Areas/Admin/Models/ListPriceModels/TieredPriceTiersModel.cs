@@ -23,13 +23,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         }
 
         public TieredPriceTiersModel(
-            CatalogueItem solution,
+            CatalogueItemId catalogueItemId,
             CatalogueItem service,
             CataloguePrice price,
             int maximumNumberOfTiers)
         : this(price, maximumNumberOfTiers)
         {
-            CatalogueItemId = solution.Id;
+            CatalogueItemId = catalogueItemId;
             CatalogueItemName = service.Name;
             CatalogueItemType = service.CatalogueItemType;
             ServiceId = service.Id;

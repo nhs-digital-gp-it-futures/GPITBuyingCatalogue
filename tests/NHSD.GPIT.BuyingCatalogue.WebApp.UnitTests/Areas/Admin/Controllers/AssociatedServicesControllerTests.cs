@@ -11,9 +11,10 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CatalogueItems;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using Xunit;
@@ -48,11 +49,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         public static async Task Get_AssociatedServices_ValidId_ReturnsViewWithExpectedModel(
             CatalogueItem catalogueItem,
             List<AssociatedService> associatedServices,
-            [Frozen] ISolutionsService mockSolutionService,
+            [Frozen] ICatalogueItemService mockCatalogueItemService,
             [Frozen] IAssociatedServicesService mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
-            mockSolutionService.GetSolutionWithServiceAssociations(catalogueItem.Id).Returns(catalogueItem);
+            mockCatalogueItemService.GetCatalogueItemWithSupplierServiceAssociations(catalogueItem.Id).Returns(catalogueItem);
 
             var catalogueItems = associatedServices.Select(a => a.CatalogueItem).ToList();
             mockAssociatedServicesService.GetAllAssociatedServicesForSupplier(catalogueItem.Supplier.Id).Returns(catalogueItems);
@@ -61,7 +62,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().BeOfType<ViewResult>();
 
-            await mockSolutionService.Received().GetSolutionWithServiceAssociations(catalogueItem.Id);
+            await mockCatalogueItemService.Received().GetCatalogueItemWithSupplierServiceAssociations(catalogueItem.Id);
             actual.As<ViewResult>().ViewName.Should().BeNull();
             actual.As<ViewResult>().Model.Should().BeEquivalentTo(new AssociatedServicesModel(catalogueItem, catalogueItems), opt => opt.Excluding(m => m.BackLink));
         }
@@ -70,16 +71,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [MockAutoData]
         public static async Task Get_AssociatedServices_InvalidId_ReturnsBadRequestResult(
             CatalogueItemId catalogueItemId,
-            [Frozen] ISolutionsService mockService,
+            [Frozen] ICatalogueItemService mockCatalogueItemService,
             AssociatedServicesController controller)
         {
-            mockService.GetSolutionWithServiceAssociations(catalogueItemId).Returns(default(CatalogueItem));
+            mockCatalogueItemService.GetCatalogueItemWithSupplierServiceAssociations(catalogueItemId).Returns(default(CatalogueItem));
 
             var actual = await controller.AssociatedServices(catalogueItemId);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
-            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Catalogue Item found for Id: {catalogueItemId}");
         }
 
         [Theory]
@@ -117,63 +118,61 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                                 .Where(a => a.Selected)
                                 .Select(a => a.CatalogueItemId))));
 
-            actual.Should().BeOfType<RedirectToActionResult>();
+            var result = actual.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
-            actual.As<RedirectToActionResult>().ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
-            actual.As<RedirectToActionResult>().RouteValues["solutionId"].Should().Be(catalogueItemId);
+            result.ActionName.Should().Be(nameof(CatalogueSolutionsController.ManageCatalogueSolution));
+            result.ControllerName.Should().Be(typeof(CatalogueSolutionsController).ControllerName());
+            result.RouteValues.Should().ContainKey("solutionId").WhoseValue.Should().Be(catalogueItemId);
         }
 
         [Theory]
         [MockAutoData]
         public static async Task Get_AddAssociatedService_ValidId_ReturnsViewWithExpectedModel(
-            CatalogueItem catalogueItem,
-            [Frozen] ISolutionsService mockSolutionService,
+            Supplier supplier,
+            CatalogueItemId catalogueItemId,
+            [Frozen] ISuppliersService supplierService,
             AssociatedServicesController controller)
         {
-            mockSolutionService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
+            supplierService.GetSupplier(catalogueItemId.SupplierId).Returns(supplier);
 
-            var actual = await controller.AddAssociatedService(catalogueItem.Id);
+            var actual = await controller.AddAssociatedService(catalogueItemId);
 
-            await mockSolutionService.Received().GetSolutionThin(catalogueItem.Id);
+            await supplierService.Received().GetSupplier(catalogueItemId.SupplierId);
 
             actual.Should().BeOfType<ViewResult>();
 
             actual.As<ViewResult>().ViewName.Should().BeNull();
-            actual.As<ViewResult>().Model.Should().BeEquivalentTo(new AddAssociatedServiceModel(catalogueItem), opt => opt.Excluding(m => m.BackLink));
+            actual.As<ViewResult>().Model.Should().BeEquivalentTo(new AddAssociatedServiceModel(supplier), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
         [MockAutoData]
         public static async Task Get_AddAssociatedService_InvalidId_ReturnsBadRequestResult(
             CatalogueItemId catalogueItemId,
-            [Frozen] ISolutionsService mockService,
+            [Frozen] ISuppliersService supplierService,
             AssociatedServicesController controller)
         {
-            mockService.GetSolutionThin(catalogueItemId).Returns(default(CatalogueItem));
+            supplierService.GetSupplier(catalogueItemId.SupplierId).Returns((Supplier)null);
 
             var actual = await controller.AddAssociatedService(catalogueItemId);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
-            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {catalogueItemId}");
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Supplier found for Id: {catalogueItemId.SupplierId}");
         }
 
         [Theory]
         [MockAutoData]
         public static async Task Post_AddAssociatedService_Redirects(
-            CatalogueItem catalogueItem,
-            CatalogueItemId assocaitedServiceId,
+            CatalogueItemId catalogueItemId,
+            CatalogueItemId associatedServiceId,
             AddAssociatedServiceModel model,
-            [Frozen] ISolutionsService mockSolutionService,
             [Frozen] IAssociatedServicesService mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
-            mockSolutionService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
+            mockAssociatedServicesService.AddAssociatedService(Arg.Any<CatalogueItemId>(), Arg.Any<AssociatedServicesDetailsModel>()).Returns(associatedServiceId);
 
-            mockAssociatedServicesService.AddAssociatedService(Arg.Any<CatalogueItem>(), Arg.Any<AssociatedServicesDetailsModel>()).Returns(assocaitedServiceId);
-
-            var actual = await controller.AddAssociatedService(catalogueItem.Id, model);
+            var actual = await controller.AddAssociatedService(catalogueItemId, model);
 
             actual.Should().BeOfType<RedirectToActionResult>();
             actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AssociatedServicesController.EditAssociatedService));
@@ -182,27 +181,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditAssociatedService_ValidIds_ReturnsViewWithExpectedModel(
-            Solution solution,
+            Supplier supplier,
+            CatalogueItemId catalogueItemId,
             AssociatedService associatedService,
             List<CataloguePrice> listPrices,
-            [Frozen] ISolutionsService mockSolutionService,
+            [Frozen] ISuppliersService supplierService,
             [Frozen] IAssociatedServicesService mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
             associatedService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
             associatedService.CatalogueItem.CataloguePrices.AddRange(listPrices);
 
-            mockSolutionService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            supplierService.GetSupplier(catalogueItemId.SupplierId).Returns(supplier);
 
             mockAssociatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
             mockAssociatedServicesService.GetAllSolutionsForAssociatedService(associatedService.CatalogueItemId)
                 .Returns(Enumerable.Empty<CatalogueItem>().ToList());
 
-            var expectedModel = new EditAssociatedServiceModel(solution.CatalogueItem, associatedService.CatalogueItem);
+            var expectedModel = new EditAssociatedServiceModel(supplier, catalogueItemId, associatedService.CatalogueItem);
 
-            var actual = await controller.EditAssociatedService(solution.CatalogueItemId, associatedService.CatalogueItemId);
+            var actual = await controller.EditAssociatedService(catalogueItemId, associatedService.CatalogueItemId);
 
-            await mockSolutionService.Received().GetSolutionThin(solution.CatalogueItemId);
+            await supplierService.Received().GetSupplier(catalogueItemId.SupplierId);
             await mockAssociatedServicesService.Received().GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId);
 
             actual.Should().BeOfType<ViewResult>();
@@ -213,35 +213,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async Task Get_EditAssociatedService_InvalidSolutionId_ReturnsBadRequestResult(
-            CatalogueItemId solutionId,
+        public static async Task Get_EditAssociatedService_InvalidSupplierId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
             CatalogueItemId associatedServiceId,
-            [Frozen] ISolutionsService mockSolutionService,
+            [Frozen] ISuppliersService supplierService,
             AssociatedServicesController controller)
         {
-            mockSolutionService.GetSolutionThin(solutionId).Returns(default(CatalogueItem));
+            supplierService.GetSupplier(catalogueItemId.SupplierId).Returns((Supplier)null);
 
-            var actual = await controller.EditAssociatedService(solutionId, associatedServiceId);
+            var actual = await controller.EditAssociatedService(catalogueItemId, associatedServiceId);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
-            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Supplier found for Id: {catalogueItemId.SupplierId}");
         }
 
         [Theory]
         [MockAutoData]
         public static async Task Get_EditAssociatedService_InvalidAssociatedServiceId_ReturnsBadRequestResult(
-            CatalogueItem solution,
+            Supplier supplier,
+            CatalogueItemId catalogueItemId,
             CatalogueItemId associatedServiceId,
-            [Frozen] ISolutionsService mockSolutionService,
+            [Frozen] ISuppliersService supplierService,
             [Frozen] IAssociatedServicesService mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
-            mockSolutionService.GetSolutionThin(solution.Id).Returns(solution);
+            supplierService.GetSupplier(catalogueItemId.SupplierId).Returns(supplier);
 
             mockAssociatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns(default(CatalogueItem));
 
-            var actual = await controller.EditAssociatedService(solution.Id, associatedServiceId);
+            var actual = await controller.EditAssociatedService(catalogueItemId, associatedServiceId);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
@@ -251,60 +252,62 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditAssociatedServiceDetails_ValidIds_ReturnsViewWithExpectedModel(
-            CatalogueItem solution,
+            Supplier supplier,
+            CatalogueItemId catalogueItemId,
             AssociatedService associatedService,
             List<SolutionMergerAndSplitTypesModel> solutionMergerAndSplitTypes,
-            [Frozen] ISolutionsService mockSolutionService,
+            [Frozen] ISuppliersService suppliersService,
             [Frozen] IAssociatedServicesService mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
-            mockSolutionService.GetSolutionThin(solution.Id).Returns(solution);
+            suppliersService.GetSupplier(catalogueItemId.SupplierId).Returns(supplier);
 
             var catalogueItem = associatedService.CatalogueItem;
             mockAssociatedServicesService.GetAssociatedServiceWithCataloguePrices(catalogueItem.Id).Returns(catalogueItem);
 
             mockAssociatedServicesService.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(catalogueItem.Id).Returns(solutionMergerAndSplitTypes);
 
-            var actual = await controller.EditAssociatedServiceDetails(solution.Id, catalogueItem.Id);
+            var actual = await controller.EditAssociatedServiceDetails(catalogueItemId, catalogueItem.Id);
 
-            await mockSolutionService.Received().GetSolutionThin(solution.Id);
+            await suppliersService.Received().GetSupplier(catalogueItemId.SupplierId);
             await mockAssociatedServicesService.Received().GetAssociatedServiceWithCataloguePrices(catalogueItem.Id);
 
             actual.Should().BeOfType<ViewResult>();
 
             actual.As<ViewResult>().ViewName.Should().BeNull();
-            actual.As<ViewResult>().Model.Should().BeEquivalentTo(new EditAssociatedServiceDetailsModel(solution.SupplierId, solution.Supplier.Name, catalogueItem, solutionMergerAndSplitTypes), opt => opt.Excluding(m => m.BackLink));
+            actual.As<ViewResult>().Model.Should().BeEquivalentTo(new EditAssociatedServiceDetailsModel(supplier, catalogueItem, solutionMergerAndSplitTypes), opt => opt.Excluding(m => m.BackLink));
         }
 
         [Theory]
         [MockAutoData]
-        public static async Task Get_EditAssociatedServiceDetails_InvalidSolutionId_ReturnsBadRequestResult(
-            CatalogueItemId solutionId,
+        public static async Task Get_EditAssociatedServiceDetails_InvalidSupplierId_ReturnsBadRequestResult(
+            CatalogueItemId catalogueItemId,
             CatalogueItemId associatedServiceId,
-            [Frozen] ISolutionsService mockSolutionService,
+            [Frozen] ISuppliersService supplierService,
             AssociatedServicesController controller)
         {
-            mockSolutionService.GetSolutionThin(solutionId).Returns(default(CatalogueItem));
+            supplierService.GetSupplier(catalogueItemId.SupplierId).Returns((Supplier)null);
 
-            var actual = await controller.EditAssociatedServiceDetails(solutionId, associatedServiceId);
+            var actual = await controller.EditAssociatedServiceDetails(catalogueItemId, associatedServiceId);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
-            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Supplier found for Id: {catalogueItemId.SupplierId}");
         }
 
         [Theory]
         [MockAutoData]
         public static async Task Get_EditAssociatedServicesDetails_InvalidAssociatedServiceId_ReturnsBadRequestResult(
-            Solution solution,
+            Supplier supplier,
+            CatalogueItemId catalogueItemId,
             CatalogueItemId associatedServiceId,
-            [Frozen] ISolutionsService solutionsService,
+            [Frozen] ISuppliersService supplierService,
             [Frozen] IAssociatedServicesService mockAssociatedService,
             AssociatedServicesController controller)
         {
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            supplierService.GetSupplier(catalogueItemId.SupplierId).Returns(supplier);
             mockAssociatedService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns(default(CatalogueItem));
 
-            var actual = await controller.EditAssociatedServiceDetails(solution.CatalogueItemId, associatedServiceId);
+            var actual = await controller.EditAssociatedServiceDetails(catalogueItemId, associatedServiceId);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
@@ -314,60 +317,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_EditAssociatedServiceDetails_Valid_ReturnsViewWithExpectedRouteValues(
-            Solution solution,
+            Supplier supplier,
+            CatalogueItemId catalogueItemId,
             AssociatedService associatedService,
-            [Frozen] ISolutionsService solutionsService,
+            [Frozen] ISuppliersService supplierService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServicesController controller)
         {
             var catalogueItem = associatedService.CatalogueItem;
 
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            supplierService.GetSupplier(catalogueItemId.SupplierId).Returns(supplier);
             associatedServicesService.GetAssociatedService(catalogueItem.Id).Returns(catalogueItem);
 
-            var model = new EditAssociatedServiceDetailsModel(solution.CatalogueItem.SupplierId, solution.CatalogueItem.Supplier.Name, catalogueItem, null);
+            var model = new EditAssociatedServiceDetailsModel(supplier, catalogueItem, null);
 
-            var actual = await controller.EditAssociatedServiceDetails(solution.CatalogueItemId, catalogueItem.Id, model);
+            var actual = await controller.EditAssociatedServiceDetails(catalogueItemId, catalogueItem.Id, model);
 
-            actual.Should().BeOfType<RedirectToActionResult>();
+            var result = actual.Should().BeOfType<RedirectToActionResult>().Subject;
 
-            actual.As<RedirectToActionResult>().ActionName.Should().Be(nameof(AssociatedServicesController.EditAssociatedService));
-            actual.As<RedirectToActionResult>().RouteValues["solutionId"].Should().Be(solution.CatalogueItemId);
-            actual.As<RedirectToActionResult>().RouteValues["associatedServiceId"].Should().Be(catalogueItem.Id);
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static async Task Post_EditAssociatedServiceDetails_InvalidSolutionId_ReturnsBadRequestResult(
-            [Frozen] ISolutionsService mockSolutionService,
-            AssociatedServicesController controller,
-            EditAssociatedServiceDetailsModel model,
-            CatalogueItemId solutionId,
-            CatalogueItemId associatedServiceId)
-        {
-            mockSolutionService.GetSolutionThin(solutionId).Returns(default(CatalogueItem));
-
-            var actual = await controller.EditAssociatedServiceDetails(solutionId, associatedServiceId, model);
-
-            actual.Should().BeOfType<BadRequestObjectResult>();
-
-            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Solution found for Id: {solutionId}");
+            result.ActionName.Should().Be(nameof(AssociatedServicesController.EditAssociatedService));
+            result.RouteValues.Should().ContainKey("solutionId").WhoseValue.Should().Be(catalogueItemId);
+            result.RouteValues.Should().ContainKey("associatedServiceId").WhoseValue.Should().Be(catalogueItem.Id);
         }
 
         [Theory]
         [MockAutoData]
         public static async Task Post_EditAssociatedServiceDetails_InvalidAssociatedServiceId_ReturnsBadRequestResult(
-            Solution solution,
+            CatalogueItemId catalogueItemId,
             CatalogueItemId associatedServiceId,
             EditAssociatedServiceDetailsModel model,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService mockService,
             AssociatedServicesController controller)
         {
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
             mockService.GetAssociatedService(associatedServiceId).Returns(default(CatalogueItem));
 
-            var actual = await controller.EditAssociatedServiceDetails(solution.CatalogueItemId, associatedServiceId, model);
+            var actual = await controller.EditAssociatedServiceDetails(catalogueItemId, associatedServiceId, model);
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
@@ -377,42 +361,36 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_SetPublicationStatus_CallsSavePublicationStatus(
-            CatalogueItem catalogueItem,
-            [Frozen] ISolutionsService mockSolutionService,
+            CatalogueItem associatedService,
             [Frozen] IAssociatedServicesService mockAssociatedServicesService,
             [Frozen] IPublicationStatusService mockPublicationStatusService,
             AssociatedServicesController controller)
         {
-            catalogueItem.PublishedStatus = PublicationStatus.Draft;
+            associatedService.PublishedStatus = PublicationStatus.Draft;
 
             var model = new EditAssociatedServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
 
-            mockSolutionService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
+            mockAssociatedServicesService.GetAssociatedService(associatedService.Id).Returns(associatedService);
 
-            mockAssociatedServicesService.GetAssociatedService(catalogueItem.Id).Returns(catalogueItem);
+            await controller.SetPublicationStatus(associatedService.Id, associatedService.Id, model);
 
-            await controller.SetPublicationStatus(catalogueItem.Id, catalogueItem.Id, model);
-
-            await mockPublicationStatusService.Received().SetPublicationStatus(catalogueItem.Id, model.SelectedPublicationStatus);
+            await mockPublicationStatusService.Received().SetPublicationStatus(associatedService.Id, model.SelectedPublicationStatus);
         }
 
         [Theory]
         [MockAutoData]
         public static async Task Post_SetPublicationStatus_ReturnsRedirectToActionResult(
-            CatalogueItem catalogueItem,
-            [Frozen] ISolutionsService mockSolutionService,
+            CatalogueItem associatedService,
             [Frozen] IAssociatedServicesService mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
-            catalogueItem.PublishedStatus = PublicationStatus.Draft;
+            associatedService.PublishedStatus = PublicationStatus.Draft;
 
             var model = new EditAssociatedServiceModel { SelectedPublicationStatus = PublicationStatus.Published };
 
-            mockSolutionService.GetSolutionThin(catalogueItem.Id).Returns(catalogueItem);
+            mockAssociatedServicesService.GetAssociatedService(associatedService.Id).Returns(associatedService);
 
-            mockAssociatedServicesService.GetAssociatedService(catalogueItem.Id).Returns(catalogueItem);
-
-            var actual = (await controller.SetPublicationStatus(catalogueItem.Id, catalogueItem.Id, model)).As<RedirectToActionResult>();
+            var actual = (await controller.SetPublicationStatus(associatedService.Id, associatedService.Id, model)).As<RedirectToActionResult>();
 
             actual.Should().NotBeNull();
             actual.ActionName.Should().Be(nameof(AssociatedServicesController.AssociatedServices));
@@ -421,21 +399,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_SetPublicationStatus_InvalidModel_ReturnsViewWithModel(
-            Solution solution,
+            Supplier supplier,
+            CatalogueItemId catalogueItemId,
             AssociatedService associatedService,
-            [Frozen] ISolutionsService mockSolutionService,
+            [Frozen] ISuppliersService supplierService,
             [Frozen] IAssociatedServicesService mockAssociatedServicesService,
             AssociatedServicesController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var model = new EditAssociatedServiceModel(solution.CatalogueItem, associatedService.CatalogueItem);
+            var model = new EditAssociatedServiceModel(supplier, catalogueItemId, associatedService.CatalogueItem);
 
-            mockSolutionService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            supplierService.GetSupplier(catalogueItemId.SupplierId).Returns(supplier);
 
             mockAssociatedServicesService.GetAssociatedService(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var actual = (await controller.SetPublicationStatus(solution.CatalogueItemId, associatedService.CatalogueItemId, model)).As<ViewResult>();
+            var actual = (await controller.SetPublicationStatus(catalogueItemId, associatedService.CatalogueItemId, model)).As<ViewResult>();
 
             actual.Should().NotBeNull();
             actual.ViewName.Should().Be(nameof(AssociatedServicesController.EditAssociatedService));

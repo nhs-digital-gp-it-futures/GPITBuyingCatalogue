@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         public AssociatedServicesModel(CatalogueItem catalogueItem, IReadOnlyList<CatalogueItem> associatedServices)
         {
             SolutionId = catalogueItem.Id;
-            SolutionName = catalogueItem.Name;
+            CatalogueItemName = catalogueItem.Name;
 
             SelectableAssociatedServices = associatedServices.Select(s => new SelectableAssociatedService
             {
@@ -31,11 +31,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         public CatalogueItemId SolutionId { get; set; }
 
-        public string SolutionName { get; set; }
+        public string CatalogueItemName { get; set; }
 
         public List<SelectableAssociatedService> SelectableAssociatedServices { get; } = new();
 
-        public SolutionMergerAndSplitTypesModel SolutionMergerAndSplits => new SolutionMergerAndSplitTypesModel(SolutionName, SelectableAssociatedServices
+        public SolutionMergerAndSplitTypesModel SolutionMergerAndSplits => new(CatalogueItemName, SelectableAssociatedServices
             .Where(s => s.Selected)
             .Select(s => s.PracticeReorganisation));
     }

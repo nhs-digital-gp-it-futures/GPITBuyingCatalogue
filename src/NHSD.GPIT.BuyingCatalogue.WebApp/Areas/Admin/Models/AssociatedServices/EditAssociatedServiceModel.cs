@@ -15,12 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         {
         }
 
-        public EditAssociatedServiceModel(CatalogueItem solution, CatalogueItem associatedService)
+        public EditAssociatedServiceModel(Supplier supplier, CatalogueItemId catalogueItemId, CatalogueItem associatedService)
             : this()
         {
-            SolutionId = solution.Id;
-            SolutionName = solution.Name;
-            SupplierName = solution.Supplier.Name;
+            SolutionId = catalogueItemId;
+            SupplierName = supplier.Name;
             AssociatedServiceId = associatedService.Id;
             AssociatedServiceName = associatedService.Name;
             SelectedPublicationStatus = associatedService.PublishedStatus;
@@ -39,8 +38,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
                     : TaskProgress.NotStarted;
         }
 
-        public EditAssociatedServiceModel(CatalogueItem solution, CatalogueItem associatedService, IList<CatalogueItem> relatedSolutions)
-            : this(solution, associatedService)
+        public EditAssociatedServiceModel(Supplier supplier, CatalogueItemId catalogueItemId, CatalogueItem associatedService, IList<CatalogueItem> relatedSolutions)
+            : this(supplier, catalogueItemId, associatedService)
         {
             RelatedSolutions = relatedSolutions;
         }
@@ -48,8 +47,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         public CatalogueItemId SolutionId { get; init; }
 
         public CatalogueItemId AssociatedServiceId { get; init; }
-
-        public string SolutionName { get; init; }
 
         public string AssociatedServiceName { get; init; }
 

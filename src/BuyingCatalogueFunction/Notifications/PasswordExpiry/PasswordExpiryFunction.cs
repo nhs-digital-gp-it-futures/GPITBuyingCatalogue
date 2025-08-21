@@ -73,7 +73,7 @@ public class PasswordExpiryFunction
             {
                 await Evaluate(today, user, defaultEmailPreference);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 logger.LogError("Password Expiry: User {UserId}. Check inner exception", user.Id);
             }

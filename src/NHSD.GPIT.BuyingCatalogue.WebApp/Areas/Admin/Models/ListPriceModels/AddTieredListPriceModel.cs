@@ -26,22 +26,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         }
 
         public AddTieredListPriceModel(
-            CatalogueItem solution,
+            CatalogueItemId catalogueItemId,
             CatalogueItem service)
         {
-            CatalogueItemId = solution.Id;
+            CatalogueItemId = catalogueItemId;
             CatalogueItemName = service.Name;
             CatalogueItemType = service.CatalogueItemType;
             ServiceId = service.Id;
         }
 
         public AddTieredListPriceModel(
-            CatalogueItem solution,
+            CatalogueItemId catalogueItemId,
             CatalogueItem service,
             CataloguePrice cataloguePrice)
             : this(cataloguePrice)
         {
-            CatalogueItemId = solution.Id;
+            CatalogueItemId = catalogueItemId;
             CatalogueItemName = service.Name;
             CatalogueItemType = service.CatalogueItemType;
             ServiceId = service.Id;

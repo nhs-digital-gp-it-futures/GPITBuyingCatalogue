@@ -12,11 +12,41 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
     public static class EditAssociatedServiceDetailsModelTests
     {
         [Theory]
-        [InlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient, CataloguePriceCalculationType.Volume, true, CataloguePriceType.Flat, true)]
-        [InlineAutoData(ProvisioningType.Patient, CataloguePriceQuantityCalculationType.PerServiceRecipient, CataloguePriceCalculationType.Volume, false, CataloguePriceType.Tiered, false)]
-        [InlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerSolutionOrService, CataloguePriceCalculationType.Volume, false, CataloguePriceType.Flat, true)]
-        [InlineAutoData(ProvisioningType.Declarative, CataloguePriceQuantityCalculationType.PerServiceRecipient, CataloguePriceCalculationType.Cumulative, false, CataloguePriceType.Flat, true)]
-        [InlineAutoData(ProvisioningType.OnDemand, CataloguePriceQuantityCalculationType.PerSolutionOrService, CataloguePriceCalculationType.Cumulative, false, CataloguePriceType.Tiered, false)]
+        [MockInlineAutoData(
+            ProvisioningType.Declarative,
+            CataloguePriceQuantityCalculationType.PerServiceRecipient,
+            CataloguePriceCalculationType.Volume,
+            true,
+            CataloguePriceType.Flat,
+            true)]
+        [MockInlineAutoData(
+            ProvisioningType.Patient,
+            CataloguePriceQuantityCalculationType.PerServiceRecipient,
+            CataloguePriceCalculationType.Volume,
+            false,
+            CataloguePriceType.Tiered,
+            false)]
+        [MockInlineAutoData(
+            ProvisioningType.Declarative,
+            CataloguePriceQuantityCalculationType.PerSolutionOrService,
+            CataloguePriceCalculationType.Volume,
+            false,
+            CataloguePriceType.Flat,
+            true)]
+        [MockInlineAutoData(
+            ProvisioningType.Declarative,
+            CataloguePriceQuantityCalculationType.PerServiceRecipient,
+            CataloguePriceCalculationType.Cumulative,
+            false,
+            CataloguePriceType.Flat,
+            true)]
+        [MockInlineAutoData(
+            ProvisioningType.OnDemand,
+            CataloguePriceQuantityCalculationType.PerSolutionOrService,
+            CataloguePriceCalculationType.Cumulative,
+            false,
+            CataloguePriceType.Tiered,
+            false)]
         public static void CreateModel_VariedProvisioningAndCalculationTypes(
             ProvisioningType provisioningType,
             CataloguePriceQuantityCalculationType cataloguePriceQuantityCalculationType,
@@ -24,8 +54,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
             bool expectedHaveCorrectProvisioningAndCalculationTypes,
             CataloguePriceType cataloguePriceType,
             bool expectedNotHaveTieredPrices,
-            int supplierId,
-            string supplierName,
+            Supplier supplier,
             List<SolutionMergerAndSplitTypesModel> solutionMergerAndSplitTypes)
         {
             var associatedServiceItem = new CatalogueItem()
@@ -40,15 +69,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
                 },
             };
 
-            var cataloguePrice = new CataloguePrice();
-            cataloguePrice.ProvisioningType = provisioningType;
-            cataloguePrice.CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType;
-            cataloguePrice.CataloguePriceCalculationType = cataloguePriceCalculationType;
-            cataloguePrice.CataloguePriceType = cataloguePriceType;
+            var cataloguePrice = new CataloguePrice
+            {
+                ProvisioningType = provisioningType, CataloguePriceQuantityCalculationType = cataloguePriceQuantityCalculationType,
+                CataloguePriceCalculationType = cataloguePriceCalculationType,
+                CataloguePriceType = cataloguePriceType,
+            };
             associatedServiceItem.CataloguePrices = new List<CataloguePrice>() { cataloguePrice };
-            var model = new EditAssociatedServiceDetailsModel(supplierId, supplierName, associatedServiceItem, solutionMergerAndSplitTypes);
+            var model = new EditAssociatedServiceDetailsModel(
+                supplier,
+                associatedServiceItem,
+                solutionMergerAndSplitTypes);
 
-            model.HaveCorrectProvisioningAndCalculationTypes.Should().Be(expectedHaveCorrectProvisioningAndCalculationTypes);
+            model.HaveCorrectProvisioningAndCalculationTypes.Should()
+                .Be(expectedHaveCorrectProvisioningAndCalculationTypes);
             model.NotHaveTieredPrices.Should().Be(expectedNotHaveTieredPrices);
         }
     }

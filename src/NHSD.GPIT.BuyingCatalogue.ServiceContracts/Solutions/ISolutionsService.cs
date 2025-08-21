@@ -24,8 +24,6 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
 
         Task<CatalogueItem> GetSolutionWithWorkOffPlans(CatalogueItemId solutionId);
 
-        Task<CatalogueItem> GetSolutionWithServiceAssociations(CatalogueItemId solutionId);
-
         Task<CatalogueItem> GetSolutionWithCataloguePrice(CatalogueItemId solutionId);
 
         Task<CatalogueItem> GetSolutionWithDataProcessingInformation(CatalogueItemId solutionId);

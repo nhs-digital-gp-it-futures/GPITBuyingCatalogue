@@ -10,12 +10,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
         [Theory]
         [MockAutoData]
         public static void AddAssociatedService_ValidCatalogueItem_NoRelatedServices_PropertiesSetAsExpected(
-            CatalogueItem catalogueItem)
+            Supplier supplier)
         {
-            var actual = new AddAssociatedServiceModel(catalogueItem);
+            var actual = new AddAssociatedServiceModel(supplier);
 
-            actual.SolutionId.Should().Be(catalogueItem.Id);
-            actual.SupplierName.Should().Be(catalogueItem.Supplier.Name);
+            actual.SupplierId.Should().Be(supplier.Id);
+            actual.SupplierName.Should().Be(supplier.Name);
         }
     }
 }

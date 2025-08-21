@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
 {
@@ -22,11 +23,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         }
 
         public EditTieredListPriceModel(
-            CatalogueItem solution,
+            CatalogueItemId catalogueItemId,
             CatalogueItem service,
             CataloguePrice price,
             int maximumNumberOfTiers)
-            : base(solution, service, price)
+            : base(catalogueItemId, service, price)
         {
             Tiers = price.CataloguePriceTiers.ToList();
             SelectedPublicationStatus

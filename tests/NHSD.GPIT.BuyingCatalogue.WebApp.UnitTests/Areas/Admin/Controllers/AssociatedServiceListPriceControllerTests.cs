@@ -13,7 +13,6 @@ using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 using Xunit;
@@ -35,19 +34,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_Index_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
-            var model = new ManageListPricesModel(solution.CatalogueItem, associatedService.CatalogueItem, associatedService.CatalogueItem.CataloguePrices);
-
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            var model = new ManageListPricesModel(parentCatalogueItemId, associatedService.CatalogueItem, associatedService.CatalogueItem.CataloguePrices);
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.Index(solution.CatalogueItemId, associatedService.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.Index(parentCatalogueItemId, associatedService.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.ViewName.Should().Be("ListPrices/ManageListPrices");
@@ -61,33 +57,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async Task Get_Index_SolutionNotFound(
-            CatalogueItemId solutionId,
-            CatalogueItemId associatedServiceId,
-            [Frozen] ISolutionsService solutionsService,
-            AssociatedServiceListPriceController controller)
-        {
-            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
-
-            var result = (await controller.Index(solutionId, associatedServiceId)).As<NotFoundResult>();
-
-            result.Should().NotBeNull();
-        }
-
-        [Theory]
-        [MockAutoData]
         public static async Task Get_Index_AssociatedServiceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             CatalogueItemId associatedServiceId,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
-
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns((CatalogueItem)null);
 
-            var result = (await controller.Index(solution.CatalogueItemId, associatedServiceId)).As<NotFoundResult>();
+            var result = (await controller.Index(parentCatalogueItemId, associatedServiceId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -95,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_ListPriceType_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
@@ -104,7 +82,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.ListPriceType(solution.CatalogueItemId, associatedService.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.ListPriceType(parentCatalogueItemId, associatedService.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -113,14 +91,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_ListPriceType_AssociatedServiceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             CatalogueItemId associatedServiceId,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns((CatalogueItem)null);
 
-            var result = (await controller.ListPriceType(solution.CatalogueItemId, associatedServiceId)).As<NotFoundResult>();
+            var result = (await controller.ListPriceType(parentCatalogueItemId, associatedServiceId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -128,14 +106,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static void Post_ListPriceType_InvalidModel_ReturnsView(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             ListPriceTypeModel model,
             AssociatedServiceListPriceController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = controller.ListPriceType(solution.CatalogueItemId, associatedService.CatalogueItemId, model).As<ViewResult>();
+            var result = controller.ListPriceType(parentCatalogueItemId, associatedService.CatalogueItemId, model).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model);
@@ -144,14 +122,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static void Post_ListPriceType_Flat_RedirectsCorrectly(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             ListPriceTypeModel model,
             AssociatedServiceListPriceController controller)
         {
             model.SelectedCataloguePriceType = CataloguePriceType.Flat;
 
-            var result = controller.ListPriceType(solution.CatalogueItemId, associatedService.CatalogueItemId, model).As<RedirectToActionResult>();
+            var result = controller.ListPriceType(parentCatalogueItemId, associatedService.CatalogueItemId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.AddFlatListPrice));
@@ -160,14 +138,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static void Post_ListPriceType_Tiered_RedirectsCorrectly(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             ListPriceTypeModel model,
             AssociatedServiceListPriceController controller)
         {
             model.SelectedCataloguePriceType = CataloguePriceType.Tiered;
 
-            var result = controller.ListPriceType(solution.CatalogueItemId, associatedService.CatalogueItemId, model).As<RedirectToActionResult>();
+            var result = controller.ListPriceType(parentCatalogueItemId, associatedService.CatalogueItemId, model).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.AddTieredListPrice));
@@ -176,19 +154,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_AddTieredListPrice_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
-            var model = new AddTieredListPriceModel(solution.CatalogueItem, associatedService.CatalogueItem);
-
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            var model = new AddTieredListPriceModel(parentCatalogueItemId, associatedService.CatalogueItem);
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.AddTieredListPrice(parentCatalogueItemId, associatedService.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -197,22 +172,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_AddTieredListPrice_WithPriceId_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice cataloguePrice,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
             associatedService.CatalogueItem.CataloguePrices.Add(cataloguePrice);
 
-            var model = new AddTieredListPriceModel(solution.CatalogueItem, associatedService.CatalogueItem, cataloguePrice);
-
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            var model = new AddTieredListPriceModel(parentCatalogueItemId, associatedService.CatalogueItem, cataloguePrice);
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, cataloguePrice.CataloguePriceId)).As<ViewResult>();
+            var result = (await controller.AddTieredListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, cataloguePrice.CataloguePriceId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should()
@@ -225,33 +197,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async Task Get_AddTieredListPrice_SolutionNotFound(
-            CatalogueItemId solutionId,
-            CatalogueItemId associatedServiceId,
-            [Frozen] ISolutionsService solutionsService,
-            AssociatedServiceListPriceController controller)
-        {
-            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
-
-            var result = (await controller.AddTieredListPrice(solutionId, associatedServiceId)).As<NotFoundResult>();
-
-            result.Should().NotBeNull();
-        }
-
-        [Theory]
-        [MockAutoData]
         public static async Task Get_AddTieredListPrice_AssociatedServiceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             CatalogueItemId associatedServiceId,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
-
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns((CatalogueItem)null);
 
-            var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, associatedServiceId)).As<NotFoundResult>();
+            var result = (await controller.AddTieredListPrice(parentCatalogueItemId, associatedServiceId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -259,14 +213,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_AddTieredListPrice_InvalidModel_ReturnsView(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             AddTieredListPriceModel model,
             AssociatedServiceListPriceController controller)
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, model)).As<ViewResult>();
+            var result = (await controller.AddTieredListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model);
@@ -275,12 +229,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_AddTieredListPrice_Redirects(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             AddTieredListPriceModel model,
             AssociatedServiceListPriceController controller)
         {
-            var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, model)).As<RedirectToActionResult>();
+            var result = (await controller.AddTieredListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, model)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.TieredPriceTiers));
@@ -289,23 +243,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_TieredPriceTiers_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             [Frozen] PriceTiersCapSettings priceTiersSetting,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
             associatedService.CatalogueItem.CataloguePrices.Add(price);
 
-            var model = new TieredPriceTiersModel(solution.CatalogueItem, associatedService.CatalogueItem, price, priceTiersSetting.MaximumNumberOfPriceTiers);
-
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
+            var model = new TieredPriceTiersModel(parentCatalogueItemId, associatedService.CatalogueItem, price, priceTiersSetting.MaximumNumberOfPriceTiers);
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.TieredPriceTiers(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
+            var result = (await controller.TieredPriceTiers(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should()
@@ -318,35 +269,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async Task Get_TieredPriceTiers_SolutionNotFound(
-            CatalogueItemId solutionId,
-            CatalogueItemId associatedServiceId,
-            int cataloguePriceId,
-            [Frozen] ISolutionsService solutionsService,
-            AssociatedServiceListPriceController controller)
-        {
-            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
-
-            var result = (await controller.TieredPriceTiers(solutionId, associatedServiceId, cataloguePriceId)).As<NotFoundResult>();
-
-            result.Should().NotBeNull();
-        }
-
-        [Theory]
-        [MockAutoData]
         public static async Task Get_TieredPriceTiers_AssociatedServiceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             CatalogueItemId associatedServiceId,
             int cataloguePriceId,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
-
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns((CatalogueItem)null);
 
-            var result = (await controller.TieredPriceTiers(solution.CatalogueItemId, associatedServiceId, cataloguePriceId)).As<NotFoundResult>();
+            var result = (await controller.TieredPriceTiers(parentCatalogueItemId, associatedServiceId, cataloguePriceId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -354,18 +286,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_TieredPriceTiers_PriceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             int cataloguePriceId,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
-
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.TieredPriceTiers(solution.CatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
+            var result = (await controller.TieredPriceTiers(parentCatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -373,7 +302,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_TieredPriceTiers_InvalidModel_ReturnsView(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             TieredPriceTiersModel model,
@@ -388,7 +317,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             model.Tiers = price.CataloguePriceTiers.ToList();
 
-            var result = (await controller.TieredPriceTiers(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<ViewResult>();
+            var result = (await controller.TieredPriceTiers(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model);
@@ -397,19 +326,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_TieredPriceTiers_Redirects(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             TieredPriceTiersModel model,
             AssociatedServiceListPriceController controller)
         {
-            var result = (await controller.TieredPriceTiers(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+            var result = (await controller.TieredPriceTiers(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Index));
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "solutionId", solution.CatalogueItemId },
+                { "solutionId", parentCatalogueItemId },
                 { "associatedServiceId", associatedService.CatalogueItemId },
             });
         }
@@ -417,7 +346,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_AddTieredPriceTier_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             [Frozen] IAssociatedServicesService associatedServicesService,
@@ -432,7 +361,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, false)).As<ViewResult>();
+            var result = (await controller.AddTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, false)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -441,7 +370,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_AddTieredPriceTier_IsEditing_CorrectBacklink(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             [Frozen] IUrlHelper urlHelper,
@@ -452,7 +381,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            _ = (await controller.AddTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, true)).As<ViewResult>();
+            _ = (await controller.AddTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, true)).As<ViewResult>();
 
             urlHelper.Received().Action(Arg.Is<UrlActionContext>(match => match.Action == nameof(controller.EditTieredListPrice)));
         }
@@ -460,7 +389,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_AddTieredPriceTier_IsNotEditing_CorrectBacklink(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             [Frozen] IUrlHelper urlHelper,
@@ -471,7 +400,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            _ = (await controller.AddTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, false)).As<ViewResult>();
+            _ = (await controller.AddTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, false)).As<ViewResult>();
 
             urlHelper.Received().Action(Arg.Is<UrlActionContext>(match => match.Action == nameof(controller.TieredPriceTiers)));
         }
@@ -479,7 +408,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_AddTieredPriceTier_AssociatedServiceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             CatalogueItemId associatedServiceId,
             int cataloguePriceId,
             [Frozen] IAssociatedServicesService associatedServicesService,
@@ -487,7 +416,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns((CatalogueItem)null);
 
-            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, associatedServiceId, cataloguePriceId, false)).As<NotFoundResult>();
+            var result = (await controller.AddTieredPriceTier(parentCatalogueItemId, associatedServiceId, cataloguePriceId, false)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -495,7 +424,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_AddTieredPriceTier_PriceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             int cataloguePriceId,
             [Frozen] IAssociatedServicesService associatedServicesService,
@@ -503,7 +432,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId, false)).As<NotFoundResult>();
+            var result = (await controller.AddTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId, false)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -511,7 +440,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_AddTieredPriceTier_InvalidModel_ReturnsView(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             AddEditTieredPriceTierModel model,
@@ -519,7 +448,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             controller.ModelState.AddModelError("some-key", "some-error");
 
-            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<ViewResult>();
+            var result = (await controller.AddTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model);
@@ -528,7 +457,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_AddTieredPriceTier_Redirects(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             AddEditTieredPriceTierModel model,
@@ -537,13 +466,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             model.InputPrice = "3.14";
             model.IsEditing = false;
 
-            var result = (await controller.AddTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+            var result = (await controller.AddTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.TieredPriceTiers));
             result.RouteValues.Should().BeEquivalentTo(new RouteValueDictionary
             {
-                { "solutionId", solution.CatalogueItemId },
+                { "solutionId", parentCatalogueItemId },
                 { "cataloguePriceId", price.CataloguePriceId },
                 { "associatedServiceId", associatedService.CatalogueItemId },
             });
@@ -551,35 +480,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async Task Get_EditTieredListPrice_SolutionNotFound(
-            CatalogueItemId solutionId,
-            CatalogueItemId associatedServiceId,
-            int cataloguePriceId,
-            [Frozen] ISolutionsService solutionsService,
-            AssociatedServiceListPriceController controller)
-        {
-            solutionsService.GetSolutionThin(solutionId).Returns((CatalogueItem)null);
-
-            var result = (await controller.EditTieredListPrice(solutionId, associatedServiceId, cataloguePriceId)).As<NotFoundResult>();
-
-            result.Should().NotBeNull();
-        }
-
-        [Theory]
-        [MockAutoData]
         public static async Task Get_EditTieredListPrice_AssociatedServiceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             CatalogueItemId associatedServiceId,
             int cataloguePriceId,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
-
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns((CatalogueItem)null);
 
-            var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, associatedServiceId, cataloguePriceId)).As<NotFoundResult>();
+            var result = (await controller.EditTieredListPrice(parentCatalogueItemId, associatedServiceId, cataloguePriceId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -587,18 +497,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTieredListPrice_PriceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             int cataloguePriceId,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
-
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
+            var result = (await controller.EditTieredListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -606,23 +513,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTieredListPrice_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             [Frozen] PriceTiersCapSettings priceTiersSetting,
-            [Frozen] ISolutionsService solutionsService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
             associatedService.CatalogueItem.CataloguePrices.Add(price);
 
-            solutionsService.GetSolutionThin(solution.CatalogueItemId).Returns(solution.CatalogueItem);
-
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var model = new EditTieredListPriceModel(solution.CatalogueItem, associatedService.CatalogueItem, price, priceTiersSetting.MaximumNumberOfPriceTiers);
+            var model = new EditTieredListPriceModel(parentCatalogueItemId, associatedService.CatalogueItem, price, priceTiersSetting.MaximumNumberOfPriceTiers);
 
-            var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
+            var result = (await controller.EditTieredListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should()
@@ -637,7 +541,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_EditTieredListPrice_InvalidModel_ReturnsView(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             EditTieredListPriceModel model,
@@ -652,7 +556,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<ViewResult>();
+            var result = (await controller.EditTieredListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -661,7 +565,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_EditTieredListPrice_SamePublicationStatus(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             EditTieredListPriceModel model,
@@ -677,7 +581,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var pricingUnit = model.GetPricingUnit();
 
-            var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+            var result = (await controller.EditTieredListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
             await listPriceService.Received().UpdateListPrice(
                     associatedService.CatalogueItemId,
@@ -701,7 +605,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_EditTieredListPrice_Redirects(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             EditTieredListPriceModel model,
@@ -717,7 +621,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var pricingUnit = model.GetPricingUnit();
 
-            var result = (await controller.EditTieredListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+            var result = (await controller.EditTieredListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
             await listPriceService.Received().UpdateListPrice(
                     associatedService.CatalogueItemId,
@@ -742,7 +646,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTieredPriceTier_AssociatedServiceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             CatalogueItemId associatedServiceId,
             int cataloguePriceId,
             int cataloguePriceTierId,
@@ -751,7 +655,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns((CatalogueItem)null);
 
-            var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, associatedServiceId, cataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
+            var result = (await controller.EditTieredPriceTier(parentCatalogueItemId, associatedServiceId, cataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -759,7 +663,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTieredPriceTier_PriceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             int cataloguePriceId,
             int cataloguePriceTierId,
@@ -768,7 +672,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
+            var result = (await controller.EditTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -776,7 +680,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTieredPriceTier_PriceTierNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             int cataloguePriceTierId,
@@ -787,7 +691,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
+            var result = (await controller.EditTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, cataloguePriceTierId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -795,7 +699,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTieredPriceTier_IsEditing_CorrectBacklink(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             CataloguePriceTier tier,
@@ -808,7 +712,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            _ = await controller.EditTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id, true);
+            _ = await controller.EditTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id, true);
 
             urlHelper.Received().Action(
                 Arg.Is<UrlActionContext>(match => match.Action == nameof(controller.EditTieredListPrice)));
@@ -817,7 +721,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTieredPriceTier_IsNotEditing_CorrectBacklink(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             CataloguePriceTier tier,
@@ -830,7 +734,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            _ = await controller.EditTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id, false);
+            _ = await controller.EditTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id, false);
 
             urlHelper.Received().Action(
                 Arg.Is<UrlActionContext>(match => match.Action == nameof(controller.TieredPriceTiers)));
@@ -839,7 +743,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTieredPriceTier_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             CataloguePriceTier tier,
@@ -853,7 +757,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.EditTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id)).As<ViewResult>();
+            var result = (await controller.EditTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should()
@@ -988,7 +892,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTierPrice_AssociatedServiceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             CatalogueItemId associatedServiceId,
             int cataloguePriceId,
             int tierId,
@@ -997,7 +901,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns((CatalogueItem)null);
 
-            var result = (await controller.EditTierPrice(solution.CatalogueItemId, associatedServiceId, cataloguePriceId, tierId, 0)).As<NotFoundResult>();
+            var result = (await controller.EditTierPrice(parentCatalogueItemId, associatedServiceId, cataloguePriceId, tierId, 0)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -1005,7 +909,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTierPrice_PriceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             int cataloguePriceId,
             int cataloguePriceTierId,
@@ -1014,7 +918,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.EditTierPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId, cataloguePriceTierId, 0)).As<NotFoundResult>();
+            var result = (await controller.EditTierPrice(parentCatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId, cataloguePriceTierId, 0)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -1022,7 +926,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTierPrice_TierNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             int cataloguePriceTierId,
@@ -1033,7 +937,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.EditTierPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, cataloguePriceTierId, 0)).As<NotFoundResult>();
+            var result = (await controller.EditTierPrice(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, cataloguePriceTierId, 0)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -1041,7 +945,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditTierPrice_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             CataloguePriceTier cataloguePriceTier,
@@ -1058,7 +962,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.EditTierPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, cataloguePriceTier.Id, model.TierIndex)).As<ViewResult>();
+            var result = (await controller.EditTierPrice(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, cataloguePriceTier.Id, model.TierIndex)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1105,7 +1009,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_DeleteListPrice_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             int cataloguePriceId,
             [Frozen] IAssociatedServicesService associatedServicesService,
@@ -1118,7 +1022,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 associatedService.CatalogueItem.Name,
                 "This list price will be deleted");
 
-            var result = (await controller.DeleteListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId)).As<ViewResult>();
+            var result = (await controller.DeleteListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1127,7 +1031,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_DeleteListPrice_Redirects(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             DeleteItemConfirmationModel model,
@@ -1140,7 +1044,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.DeleteListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+            var result = (await controller.DeleteListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
             await listPriceService.Received().DeleteListPrice(associatedService.CatalogueItemId, price.CataloguePriceId);
 
@@ -1151,7 +1055,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_DeleteListPrice_PublishedPrice_DoesNotDelete(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             DeleteItemConfirmationModel model,
@@ -1164,9 +1068,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.DeleteListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+            var result = (await controller.DeleteListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
-            await listPriceService.DidNotReceive().DeleteListPrice(solution.CatalogueItemId, price.CataloguePriceId);
+            await listPriceService.DidNotReceive().DeleteListPrice(parentCatalogueItemId, price.CataloguePriceId);
 
             result.Should().NotBeNull();
             result.ActionName.Should().Be(nameof(controller.Index));
@@ -1175,7 +1079,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_DeleteTieredPriceTier_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             int cataloguePriceId,
             int tierId,
@@ -1189,7 +1093,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
                 associatedService.CatalogueItem.Name,
                 "This pricing tier will be deleted");
 
-            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId, tierId)).As<ViewResult>();
+            var result = (await controller.DeleteTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId, tierId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1198,7 +1102,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_DeleteTieredPriceTier_Redirects(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             CataloguePriceTier tier,
@@ -1213,7 +1117,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id, model)).As<RedirectToActionResult>();
+            var result = (await controller.DeleteTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id, model)).As<RedirectToActionResult>();
 
             await listPriceService.Received().DeletePriceTier(associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id);
 
@@ -1224,7 +1128,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_DeleteTieredPriceTier_PublishedPrice_DoesNotDelete(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             CataloguePriceTier tier,
@@ -1239,7 +1143,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id, model)).As<RedirectToActionResult>();
+            var result = (await controller.DeleteTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id, model)).As<RedirectToActionResult>();
 
             await listPriceService.DidNotReceive().DeletePriceTier(associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id);
 
@@ -1250,7 +1154,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_DeleteTieredPriceTier_IsEditing_Redirects(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             CataloguePriceTier tier,
@@ -1265,7 +1169,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.DeleteTieredPriceTier(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id, model, true)).As<RedirectToActionResult>();
+            var result = (await controller.DeleteTieredPriceTier(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id, model, true)).As<RedirectToActionResult>();
 
             await listPriceService.Received().DeletePriceTier(associatedService.CatalogueItemId, price.CataloguePriceId, tier.Id);
 
@@ -1276,14 +1180,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_AddFlatListPrice_AssociatedServiceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             CatalogueItemId associatedServiceId,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
         {
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId).Returns((CatalogueItem)null);
 
-            var result = (await controller.AddFlatListPrice(solution.CatalogueItemId, associatedServiceId)).As<NotFoundResult>();
+            var result = (await controller.AddFlatListPrice(parentCatalogueItemId, associatedServiceId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -1291,7 +1195,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_AddFlatListPrice_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             [Frozen] IAssociatedServicesService associatedServicesService,
             AssociatedServiceListPriceController controller)
@@ -1302,7 +1206,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.AddFlatListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId)).As<ViewResult>();
+            var result = (await controller.AddFlatListPrice(parentCatalogueItemId, associatedService.CatalogueItemId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
@@ -1373,7 +1277,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditFlatListPrice_PriceNotFound(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             int cataloguePriceId,
             [Frozen] IAssociatedServicesService associatedServicesService,
@@ -1381,7 +1285,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         {
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
+            var result = (await controller.EditFlatListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, cataloguePriceId)).As<NotFoundResult>();
 
             result.Should().NotBeNull();
         }
@@ -1389,7 +1293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Get_EditFlatListPrice_ReturnsViewWithModel(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             [Frozen] IAssociatedServicesService associatedServicesService,
@@ -1403,7 +1307,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
-            var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
+            var result = (await controller.EditFlatListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId)).As<ViewResult>();
 
             result.Should().NotBeNull();
             result.Model.Should()
@@ -1434,7 +1338,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_EditFlatListPrice_SamePublicationStatus(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             AddEditFlatListPriceModel model,
@@ -1451,7 +1355,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var pricingUnit = model.GetPricingUnit();
 
-            var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+            var result = (await controller.EditFlatListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
             await listPriceService.Received().UpdateListPrice(
                     associatedService.CatalogueItemId,
@@ -1477,7 +1381,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
         [Theory]
         [MockAutoData]
         public static async Task Post_EditFlatListPrice_Redirects(
-            Solution solution,
+            CatalogueItemId parentCatalogueItemId,
             AssociatedService associatedService,
             CataloguePrice price,
             AddEditFlatListPriceModel model,
@@ -1494,7 +1398,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             var pricingUnit = model.GetPricingUnit();
 
-            var result = (await controller.EditFlatListPrice(solution.CatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
+            var result = (await controller.EditFlatListPrice(parentCatalogueItemId, associatedService.CatalogueItemId, price.CataloguePriceId, model)).As<RedirectToActionResult>();
 
             await listPriceService.Received().UpdateListPrice(
                     associatedService.CatalogueItemId,

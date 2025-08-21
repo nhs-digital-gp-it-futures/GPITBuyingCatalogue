@@ -122,17 +122,17 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static Task AddAssociatedService_NullCatalogueItem_ThrowsException(
+        public static Task AddAssociatedService_DefaultCatalogueItemId_ThrowsException(
         AssociatedServicesDetailsModel model,
         AssociatedServicesService service)
         {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddAssociatedService(null, model));
+            return Assert.ThrowsAsync<ArgumentException>(() => service.AddAssociatedService(default, model));
         }
 
         [Theory]
         [MockInMemoryDbAutoData]
         public static Task AddAssociatedService_NullModel_ThrowsException(
-            CatalogueItem item,
+            CatalogueItemId item,
             AssociatedServicesService service)
         {
             return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddAssociatedService(item, null));
@@ -142,22 +142,18 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
         [MockInMemoryDbAutoData]
         public static async Task AddAssociatedService_UpdatesDatabase(
            [Frozen] BuyingCatalogueDbContext context,
-           CatalogueItem solution,
+           CatalogueItemId catalogueItemId,
            AssociatedServicesDetailsModel model,
            AssociatedServicesService service)
         {
-            context.CatalogueItems.Add(solution);
-            await context.SaveChangesAsync();
-            context.ChangeTracker.Clear();
-
-            var result = await service.AddAssociatedService(solution, model);
+            var result = await service.AddAssociatedService(catalogueItemId, model);
 
             var dbSolution = await context.CatalogueItems.Include(c => c.AssociatedService).FirstAsync(c => c.Id == result);
 
             dbSolution.Should().NotBeNull();
             dbSolution.Name.Should().Be(model.Name);
             dbSolution.CatalogueItemType.Should().Be(CatalogueItemType.AssociatedService);
-            dbSolution.SupplierId.Should().Be(solution.SupplierId);
+            dbSolution.SupplierId.Should().Be(catalogueItemId.SupplierId);
             dbSolution.PublishedStatus.Should().Be(PublicationStatus.Draft);
             dbSolution.AssociatedService.Should().NotBeNull();
             dbSolution.AssociatedService.Description.Should().Be(model.Description);

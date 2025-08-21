@@ -10,7 +10,6 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.ListPrice;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -20,18 +19,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Route("admin/catalogue-solutions/manage/{solutionId}/associated-services/{associatedServiceId}/list-prices")]
     public class AssociatedServiceListPriceController : Controller
     {
-        private readonly ISolutionsService solutionsService;
         private readonly IAssociatedServicesService associatedServicesService;
         private readonly IListPriceService listPriceService;
         private readonly PriceTiersCapSettings priceTiersCapSettings;
 
         public AssociatedServiceListPriceController(
-            ISolutionsService solutionsService,
             IAssociatedServicesService associatedServicesService,
             IListPriceService listPriceService,
             PriceTiersCapSettings priceTiersCapSettings)
         {
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.listPriceService = listPriceService ?? throw new ArgumentNullException(nameof(listPriceService));
             this.priceTiersCapSettings = priceTiersCapSettings ?? throw new ArgumentNullException(nameof(priceTiersCapSettings));
@@ -40,15 +36,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return NotFound();
-
             var service = await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
             if (service is null)
                 return NotFound();
 
-            var model = new ManageListPricesModel(solution, service, service.CataloguePrices)
+            var model = new ManageListPricesModel(solutionId, service, service.CataloguePrices)
             {
                 BackLink = Url.Action(
                     nameof(AssociatedServicesController.EditAssociatedService),
@@ -107,23 +99,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             CatalogueItemId associatedServiceId,
             int? cataloguePriceId = null)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return NotFound();
-
             var associatedService =
                 await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
             if (associatedService is null)
                 return NotFound();
 
             AddTieredListPriceModel model = cataloguePriceId is not null
-                ? new(solution, associatedService, associatedService.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId))
+                ? new(solutionId, associatedService, associatedService.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId))
                 {
                     DeleteListPriceUrl = Url.Action(
                             nameof(DeleteListPrice),
                             new { solutionId, associatedServiceId, cataloguePriceId }),
                 }
-                : new(solution, associatedService);
+                : new(solutionId, associatedService);
 
             model.BackLink = Url.Action(nameof(ListPriceType), new { solutionId, associatedServiceId });
 
@@ -205,10 +193,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             CatalogueItemId associatedServiceId,
             int cataloguePriceId)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return NotFound();
-
             var associatedService = await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
             if (associatedService is null)
                 return NotFound();
@@ -217,7 +201,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (price is null)
                 return NotFound();
 
-            var model = new TieredPriceTiersModel(solution, associatedService, price, priceTiersCapSettings.MaximumNumberOfPriceTiers)
+            var model = new TieredPriceTiersModel(solutionId, associatedService, price, priceTiersCapSettings.MaximumNumberOfPriceTiers)
             {
                 BackLink = Url.Action(nameof(AddTieredListPrice), new { solutionId, associatedServiceId, cataloguePriceId }),
                 AddTieredPriceTierUrl = Url.Action(
@@ -308,10 +292,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             CatalogueItemId associatedServiceId,
             int cataloguePriceId)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return NotFound();
-
             var associatedService = await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
             if (associatedService is null)
                 return NotFound();
@@ -320,7 +300,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (price is null)
                 return NotFound();
 
-            var model = new EditTieredListPriceModel(solution, associatedService, price, priceTiersCapSettings.MaximumNumberOfPriceTiers)
+            var model = new EditTieredListPriceModel(solutionId, associatedService, price, priceTiersCapSettings.MaximumNumberOfPriceTiers)
             {
                 BackLink = Url.Action(nameof(Index), new { solutionId, associatedServiceId }),
                 AddPricingTierUrl = Url.Action(

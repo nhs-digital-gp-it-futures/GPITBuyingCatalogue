@@ -14,12 +14,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         {
         }
 
-        public EditAssociatedServiceDetailsModel(int supplierId, string supplierName, CatalogueItem associatedServiceItem, List<SolutionMergerAndSplitTypesModel> list)
+        public EditAssociatedServiceDetailsModel(Supplier supplier, CatalogueItem associatedServiceItem, List<SolutionMergerAndSplitTypesModel> list)
         {
             Id = associatedServiceItem.Id;
             ServiceName = Name = associatedServiceItem.Name;
-            SupplierName = supplierName;
-            SupplierId = supplierId;
+            SupplierName = supplier.Name;
+            SupplierId = supplier.Id;
             Description = associatedServiceItem.AssociatedService.Description;
             OrderGuidance = associatedServiceItem.AssociatedService.OrderGuidance;
             PracticeMerger = (associatedServiceItem.AssociatedService.PracticeReorganisationType & PracticeReorganisationTypeEnum.Merger) == PracticeReorganisationTypeEnum.Merger;

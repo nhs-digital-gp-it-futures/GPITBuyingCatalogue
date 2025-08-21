@@ -8,7 +8,7 @@
     <div class="nhsuk-grid-column-full">
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
-                        caption="@Model.SolutionName"
+                        caption="@Model.CatalogueItemName"
                         advice="Select any services that help implement or optimise the live operation of your Catalogue Solution." />
 
         <vc:nhs-action-link url="@Url.Action(
@@ -23,7 +23,7 @@
         <form method="post">
             <input type="hidden" asp-for="@Model.BackLink" />
             <input type="hidden" asp-for="@Model.BackLinkText" />
-            <input type="hidden" asp-for="@Model.SolutionName" />
+            <input type="hidden" asp-for="@Model.CatalogueItemName" />
 
             @if (Model.SelectableAssociatedServices.Any())
             {

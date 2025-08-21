@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.CatalogueItems;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
-using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
@@ -16,32 +17,28 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
     [Route("admin/catalogue-solutions/manage/{solutionId}/associated-services")]
-    public sealed class AssociatedServicesController : Controller
+    public sealed class AssociatedServicesController(
+        ICatalogueItemService catalogueItemsService,
+        IAssociatedServicesService associatedServicesService,
+        IPublicationStatusService publicationStatusService,
+        ISuppliersService suppliersService)
+        : Controller
     {
-        private readonly ISolutionsService solutionsService;
-        private readonly IAssociatedServicesService associatedServicesService;
-        private readonly IPublicationStatusService publicationStatusService;
-
-        public AssociatedServicesController(
-            ISolutionsService solutionsService,
-            IAssociatedServicesService associatedServicesService,
-            IPublicationStatusService publicationStatusService)
-        {
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
-            this.publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
-        }
+        private readonly ICatalogueItemService catalogueItemsService = catalogueItemsService ?? throw new ArgumentNullException(nameof(catalogueItemsService));
+        private readonly IAssociatedServicesService associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
+        private readonly IPublicationStatusService publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
+        private readonly ISuppliersService suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
 
         [HttpGet]
         public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionWithServiceAssociations(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+            var catalogueItem = await catalogueItemsService.GetCatalogueItemWithSupplierServiceAssociations(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
 
-            var associatedServices = await associatedServicesService.GetAllAssociatedServicesForSupplier(solution.Supplier.Id);
+            var associatedServices = await associatedServicesService.GetAllAssociatedServicesForSupplier(catalogueItem.Supplier.Id);
 
-            var model = new AssociatedServicesModel(solution, associatedServices)
+            var model = new AssociatedServicesModel(catalogueItem, associatedServices)
             {
                 BackLink = Url.Action(
                     nameof(CatalogueSolutionsController.ManageCatalogueSolution),
@@ -58,11 +55,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (model.SelectableAssociatedServices is not null)
+            if (model.SelectableAssociatedServices is null)
             {
-                var associatedServices = model.SelectableAssociatedServices.Where(a => a.Selected).Select(a => a.CatalogueItemId);
-                await associatedServicesService.RelateAssociatedServicesToSolution(solutionId, associatedServices);
+                return RedirectToAction(
+                    nameof(CatalogueSolutionsController.ManageCatalogueSolution),
+                    typeof(CatalogueSolutionsController).ControllerName(),
+                    new { solutionId });
             }
+
+            var associatedServices = model.SelectableAssociatedServices.Where(a => a.Selected).Select(a => a.CatalogueItemId);
+            await associatedServicesService.RelateAssociatedServicesToSolution(solutionId, associatedServices);
 
             return RedirectToAction(
                 nameof(CatalogueSolutionsController.ManageCatalogueSolution),
@@ -73,11 +75,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("add-associated-service")]
         public async Task<IActionResult> AddAssociatedService(CatalogueItemId solutionId)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+            var supplier = await suppliersService.GetSupplier(solutionId.SupplierId);
+            if (supplier is null)
+                return BadRequest($"No Supplier found for Id: {solutionId.SupplierId}");
 
-            var model = new AddAssociatedServiceModel(solution)
+            var model = new AddAssociatedServiceModel(supplier)
             {
                 BackLink = Url.Action(nameof(AssociatedServices), new { solutionId }),
             };
@@ -91,8 +93,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-
             var newModel = new AssociatedServicesDetailsModel
             {
                 Name = model.Name,
@@ -102,13 +102,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 PracticeReorganisationType = model.PracticeReorganisation,
             };
 
-            var associatedServiceId = await associatedServicesService.AddAssociatedService(solution, newModel);
+            var associatedServiceId = await associatedServicesService.AddAssociatedService(solutionId, newModel);
 
             return RedirectToAction(
                 nameof(EditAssociatedService),
                 new
                 {
-                    solutionId = solution.Id,
+                    solutionId,
                     associatedServiceId,
                 });
         }
@@ -116,16 +116,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{associatedServiceId}/edit-associated-service")]
         public async Task<IActionResult> EditAssociatedService(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+            var supplier = await suppliersService.GetSupplier(solutionId.SupplierId);
+            if (supplier is null)
+                return BadRequest($"No Supplier found for Id: {solutionId.SupplierId}");
 
             var associatedService = await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
             if (associatedService is null)
                 return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
 
             var relatedSolutions = await associatedServicesService.GetAllSolutionsForAssociatedService(associatedServiceId);
-            var model = new EditAssociatedServiceModel(solution, associatedService, relatedSolutions)
+            var model = new EditAssociatedServiceModel(supplier, solutionId, associatedService, relatedSolutions)
             {
                 BackLink = Url.Action(nameof(AssociatedServices), new { solutionId }),
             };
@@ -138,7 +138,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var solution = await solutionsService.GetSolutionThin(solutionId);
                 var relatedSolutions = await associatedServicesService.GetAllSolutionsForAssociatedService(associatedServiceId);
                 model.RelatedSolutions = relatedSolutions;
 
@@ -153,9 +152,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpGet("{associatedServiceId}/edit-associated-service-details")]
         public async Task<IActionResult> EditAssociatedServiceDetails(CatalogueItemId solutionId, CatalogueItemId associatedServiceId)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+            var supplier = await suppliersService.GetSupplier(solutionId.SupplierId);
+            if (supplier is null)
+                return BadRequest($"No Supplier found for Id: {solutionId.SupplierId}");
 
             var associatedService = await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
             if (associatedService is null)
@@ -163,7 +162,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var solutionMergersAndSplits = await associatedServicesService.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(associatedServiceId);
 
-            var model = new EditAssociatedServiceDetailsModel(solution.SupplierId, solution.Supplier.Name, associatedService, solutionMergersAndSplits)
+            var model = new EditAssociatedServiceDetailsModel(supplier, associatedService, solutionMergersAndSplits)
             {
                 BackLink = Url.Action(nameof(EditAssociatedService), new { solutionId, associatedServiceId }),
             };
@@ -174,10 +173,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         [HttpPost("{associatedServiceId}/edit-associated-service-details")]
         public async Task<IActionResult> EditAssociatedServiceDetails(CatalogueItemId solutionId, CatalogueItemId associatedServiceId, EditAssociatedServiceDetailsModel model)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
-
             var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
             if (associatedService is null)
                 return BadRequest($"No Associated Service found for Id: {associatedServiceId}");

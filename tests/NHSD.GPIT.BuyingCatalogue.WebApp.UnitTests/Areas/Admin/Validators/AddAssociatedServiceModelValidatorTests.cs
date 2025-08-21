@@ -64,7 +64,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             AddAssociatedServiceModel model,
             AddAssociatedServiceModelValidator validator)
         {
-            associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default).Returns(true);
+            associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SupplierId, default).Returns(true);
 
             var result = validator.TestValidate(model);
 
@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             AddAssociatedServiceModel model,
             AddAssociatedServiceModelValidator validator)
         {
-            associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default).Returns(false);
+            associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SupplierId, default).Returns(false);
 
             var result = validator.TestValidate(model);
 

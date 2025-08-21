@@ -160,12 +160,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ToListAsync();
 
         public async Task<CatalogueItemId> AddAssociatedService(
-            CatalogueItem solution,
+            CatalogueItemId catalogueItemId,
             AssociatedServicesDetailsModel model)
         {
-            ArgumentNullException.ThrowIfNull(solution);
-
             ArgumentNullException.ThrowIfNull(model);
+
+            if (catalogueItemId == default)
+                throw new ArgumentException(@"Invalid catalogue item id specified", nameof(catalogueItemId));
 
             var associatedService = new CatalogueItem
             {
@@ -177,7 +178,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                     PracticeReorganisationType = model.PracticeReorganisationType,
                 },
                 CatalogueItemType = CatalogueItemType.AssociatedService,
-                SupplierId = solution.SupplierId,
+                SupplierId = catalogueItemId.SupplierId,
                 PublishedStatus = PublicationStatus.Draft,
             };
 

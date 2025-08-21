@@ -11,13 +11,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         {
         }
 
-        public AddAssociatedServiceModel(CatalogueItem catalogueItem)
+        public AddAssociatedServiceModel(Supplier supplier)
         {
-            SolutionId = catalogueItem.Id;
-            SupplierName = catalogueItem.Supplier.Name;
+            SupplierId = supplier.Id;
+            SupplierName = supplier.Name;
         }
 
-        public CatalogueItemId SolutionId { get; set; }
+        public int SupplierId { get; set; }
 
         public string SupplierName { get; set; }
 

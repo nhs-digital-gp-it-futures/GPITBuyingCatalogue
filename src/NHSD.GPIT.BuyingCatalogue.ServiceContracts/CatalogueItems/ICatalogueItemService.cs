@@ -9,4 +9,6 @@ public interface ICatalogueItemService
     Task<string> GetCatalogueItemName(CatalogueItemId catalogueItemId);
 
     Task<CatalogueItem> GetCatalogueItem(CatalogueItemId catalogueItemId);
+
+    Task<CatalogueItem> GetCatalogueItemWithSupplierServiceAssociations(CatalogueItemId catalogueItemId);
 }
