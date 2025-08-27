@@ -72,10 +72,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                     CataloguePriceCalculationType.Cumulative.Name(),
                     CataloguePriceCalculationType.Cumulative.Description(),
                     CataloguePriceCalculationType.Cumulative),
-                new(
-                    CataloguePriceCalculationType.Volume.Name(),
-                    CataloguePriceCalculationType.Volume.Description(),
-                    CataloguePriceCalculationType.Volume),
             };
 
         public CatalogueItemId? ServiceId { get; set; }
