@@ -50,7 +50,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
                 Previous?.FlattenedRecipients.ToList(),
                 solution,
                 Previous?.OrderItem(solution.CatalogueItemId),
-                Order.IsAmendment,
                 new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(solution.CatalogueItemId)));
 
             if (Order.OrderType.MergerOrSplit)

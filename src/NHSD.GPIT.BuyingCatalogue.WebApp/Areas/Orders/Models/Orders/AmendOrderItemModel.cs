@@ -9,6 +9,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 {
     public class AmendOrderItemModel : OrderingBaseModel
     {
+        private readonly Dictionary<string, OrderSublocationRecipient> rolledUpRecipients;
+        private readonly Dictionary<string, OrderSublocationRecipient> previousRecipients;
+
         public AmendOrderItemModel(
             CallOffId callOffId,
             OrderType orderType,
@@ -16,30 +19,33 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             ICollection<OrderSublocationRecipient> previousRecipients,
             OrderItem orderItem,
             OrderItem previous,
-            bool isAmendment,
             FundingTypeDescriptionModel fundingTypeDescription)
         {
             ArgumentNullException.ThrowIfNull(orderItem);
 
             CallOffId = callOffId;
             OrderType = orderType;
-            IsAmendment = isAmendment;
             IsOrderItemAdded = previous == null;
             OrderItem = orderItem;
             Previous = previous;
             FundingTypeDescriptionModel = fundingTypeDescription;
-            RolledUpRecipientsForItem = recipients
+            rolledUpRecipients = recipients
                 .ForCatalogueItem(orderItem.CatalogueItemId)
-                .ToList();
-            PreviousRecipientsForItem =
-                (previousRecipients?.ForCatalogueItem(orderItem.CatalogueItemId) ?? []).ToList();
+                .ToDictionary(
+                    x => x.RecipientOdsCode,
+                    x => x);
+
+            this.previousRecipients =
+                (previousRecipients?.ForCatalogueItem(orderItem.CatalogueItemId) ?? []).ToDictionary(
+                    x => x.RecipientOdsCode,
+                    x => x);
         }
 
         public CallOffId CallOffId { get; }
 
         public OrderType OrderType { get; }
 
-        public bool IsAmendment { get; }
+        public bool IsAmendment => CallOffId.IsAmendment;
 
         public bool CanEdit { get; set; }
 
@@ -49,11 +55,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public CatalogueItem CatalogueItem => OrderItem.CatalogueItem;
 
-        public List<OrderSublocationRecipient> RolledUpRecipientsForItem { get; }
+        public ICollection<OrderSublocationRecipient> RolledUpRecipientsForItem => rolledUpRecipients.Values;
 
         public int RolledUpTotalQuantity => OrderItem.TotalQuantity(RolledUpRecipientsForItem);
 
-        public int PreviousTotalQuantity => Previous?.TotalQuantity(PreviousRecipientsForItem) ?? 0;
+        public int PreviousTotalQuantity => Previous?.TotalQuantity(previousRecipients.Values) ?? 0;
 
         public string FundingTypeDescription
         {
@@ -68,23 +74,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
 
         public string PracticeReorganisationName { get; set; }
 
-        private List<OrderSublocationRecipient> PreviousRecipientsForItem { get; }
-
         private OrderItem OrderItem { get; }
 
         private OrderItem Previous { get; }
 
         private FundingTypeDescriptionModel FundingTypeDescriptionModel { get; }
 
-        public bool IsServiceRecipientAdded(string odsCode)
-        {
-            OrderSublocationRecipient rolledUpRecipient =
-                RolledUpRecipientsForItem.FirstOrDefault(x => x.RecipientOdsCode == odsCode);
-            OrderSublocationRecipient previousRecipient =
-                PreviousRecipientsForItem.FirstOrDefault(x => x.RecipientOdsCode == odsCode);
-
-            return (rolledUpRecipient != null && previousRecipient == null)
-                || Previous == null;
-        }
+        public bool IsServiceRecipientAdded(string odsCode) =>
+            (rolledUpRecipients.ContainsKey(odsCode) && !previousRecipients.ContainsKey(odsCode))
+            || IsOrderItemAdded;
     }
 }

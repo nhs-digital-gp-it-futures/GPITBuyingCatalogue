@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, [tier], calculationType);
 
-            var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(quantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CalculateCostPerTier(quantity);
 
             var expected = new PriceCalculationModel(1, quantity, price, cost);
 
@@ -85,7 +85,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, [tier], calculationType);
 
-            var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(quantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CalculateCostPerTier(quantity);
 
             var expected = new PriceCalculationModel(1, quantity, price, cost);
 
@@ -140,7 +140,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, tiers, calculationType);
 
-            var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(quantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CalculateCostPerTier(quantity);
 
             var template = new List<PriceCalculationModel>()
             {
@@ -202,7 +202,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, tiers, calculationType);
 
-            var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(quantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CalculateCostPerTier(quantity);
 
             var template = new List<PriceCalculationModel>()
             {
@@ -269,7 +269,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Framework.UnitTests.Calculations
 
             OrderItem orderItem = BuildOrderItem(fixture, tiers, calculationType);
 
-            var result = ((IPrice)orderItem.OrderItemPrice).CostPerTierForBillingPeriod(quantity);
+            var result = ((IPrice)orderItem.OrderItemPrice).CalculateCostPerTier(quantity);
 
             var template = new List<PriceCalculationModel>()
             {

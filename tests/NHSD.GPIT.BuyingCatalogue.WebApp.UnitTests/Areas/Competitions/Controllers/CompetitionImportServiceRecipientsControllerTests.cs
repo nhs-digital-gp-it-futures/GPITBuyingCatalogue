@@ -26,7 +26,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Competitions.Controll
 public static class CompetitionImportServiceRecipientsControllerTests
 {
     private const string MismatchOdsCode = "MISMATCH";
-    private const string MismatchOrganisationName = "MISMATCH organisation name";
 
     [Fact]
     public static void Constructors_VerifyGuardClauses()
@@ -176,7 +175,6 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 expectedModel,
                 opt => opt
                     .Excluding(m => m.BackLink)
-                    .Excluding(m => m.CancelLink)
                     .Excluding(m => m.ContinueLink));
     }
 
@@ -247,7 +245,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 Arg.Any<HashSet<string>>())
             .Returns([]);
 
-        var result = (await controller.Validate(organisation.InternalIdentifier, competition.Id, true))
+        var result = (await controller.Validate(organisation.InternalIdentifier, competition.Id, false))
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
@@ -260,57 +258,6 @@ public static class CompetitionImportServiceRecipientsControllerTests
                     { "competitionId", competition.Id },
                     { "validationStatus", ValidationStatus.Failure },
                 });
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task Validate_MismatchedNames_ReturnsViewWithModel(
-        Organisation organisation,
-        Competition competition,
-        List<ServiceRecipient> serviceRecipients,
-        [Frozen] IServiceRecipientImportService importService,
-        [Frozen] ICompetitionsService competitionsService,
-        [Frozen] IOdsService odsService,
-        CompetitionImportServiceRecipientsController controller)
-    {
-        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
-            .ToList();
-
-        importedServiceRecipients.First().Organisation = MismatchOrganisationName;
-
-        var serviceRecipient = serviceRecipients.First();
-
-        var mismatchedNames = new List<(string, string, string)>
-        {
-            (MismatchOrganisationName, serviceRecipient.Name, serviceRecipient.OrgId),
-        };
-
-        var expectedModel = new ValidateNamesModel(
-            mismatchedNames)
-        { Caption = competition.Name };
-
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
-
-        competitionsService.GetCompetitionName(organisation.InternalIdentifier, competition.Id)
-            .Returns(competition.Name);
-
-        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                organisation.InternalIdentifier,
-                Arg.Any<HashSet<string>>())
-            .Returns(serviceRecipients);
-
-        var result = (await controller.Validate(organisation.InternalIdentifier, competition.Id, false))
-            .As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should()
-            .BeEquivalentTo(
-                expectedModel,
-                opt => opt
-                    .Excluding(m => m.BackLink)
-                    .Excluding(m => m.CancelLink)
-                    .Excluding(m => m.ContinueLink));
     }
 
     [Theory]
@@ -384,8 +331,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         var expectedModel = new ValidationCompleteModel(
             competition.Name,
             ValidationStatus.Success,
-            sublocationsAsViewModel,
-            string.Empty);
+            sublocationsAsViewModel);
 
         var result = (await controller.ValidationComplete(
                 organisation.InternalIdentifier,
@@ -397,7 +343,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         result.Model.Should()
             .BeEquivalentTo(
                 expectedModel,
-                opt => opt.Excluding(m => m.Caption).Excluding(m => m.CancelLink));
+                opt => opt.Excluding(m => m.Caption).Excluding(m => m.BackLink));
     }
 
     [Theory]
@@ -407,7 +353,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
         int competitionId,
         CompetitionImportServiceRecipientsController controller)
     {
-        var model = new ValidationCompleteModel("MY competition", ValidationStatus.Failure, [], string.Empty);
+        var model = new ValidationCompleteModel("MY competition", ValidationStatus.Failure, []);
 
         var result =
             (await controller.ValidationComplete(internalOrgId, competitionId, model))
@@ -499,7 +445,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
                     {
                         Name = "Surgery 1",
                         OrgId = "AAAA",
-                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        PrimaryRoleId = nameof(OrganisationType.GP),
                         Location = "NHS Big Location XXXX",
                         LocationOrgId = "XXXX",
                     },
@@ -507,7 +453,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
                     {
                         Name = "Surgery 2",
                         OrgId = "AAAB",
-                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        PrimaryRoleId = nameof(OrganisationType.GP),
                         Location = "NHS Big Location XXXX",
                         LocationOrgId = "XXXX",
                     },
@@ -515,7 +461,7 @@ public static class CompetitionImportServiceRecipientsControllerTests
                     {
                         Name = "Surgery 34",
                         OrgId = "AAAC",
-                        PrimaryRoleId = OrganisationType.GP.ToString(),
+                        PrimaryRoleId = nameof(OrganisationType.GP),
                         Location = "NHS Unrelated Big Location XXXA",
                         LocationOrgId = "XXXA",
                     },
@@ -652,14 +598,6 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 CompetitionImportServiceRecipientsController.InvalidFormat,
                 new List<ServiceRecipientImportModel>
                 {
-                    new() { Organisation = string.Empty, OdsCode = "ABC123", },
-                },
-            },
-            new object[]
-            {
-                CompetitionImportServiceRecipientsController.InvalidFormat,
-                new List<ServiceRecipientImportModel>
-                {
                     new() { Organisation = "Fake Org", OdsCode = string.Empty },
                 },
             },
@@ -669,14 +607,6 @@ public static class CompetitionImportServiceRecipientsControllerTests
                 new List<ServiceRecipientImportModel>
                 {
                     new() { Organisation = "Fake Org", OdsCode = new('A', 10) },
-                },
-            },
-            new object[]
-            {
-                CompetitionImportServiceRecipientsController.OrganisationExceedsLimit,
-                new List<ServiceRecipientImportModel>
-                {
-                    new() { Organisation = new('A', 300), OdsCode = "ABC123" },
                 },
             },
         };

@@ -56,7 +56,7 @@ else
     }
     else
     {
-        @foreach (var recipient in Model.RolledUpRecipientsForItem)
+        @foreach (var recipient in Model.RolledUpRecipientsForItem.OrderBy(x => Model.IsServiceRecipientAdded(x.RecipientOdsCode)))
         {
             var quantity = recipient.GetQuantityForItem(Model.CatalogueItem.Id);
             var deliveryDate = recipient.GetDeliveryDateForItem(Model.CatalogueItem.Id);
@@ -143,8 +143,8 @@ else
                     </tr>
                 <thead>
                         @{
-                            var rolledUpCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.RolledUpTotalQuantity);
-                            var previousCosts = ((IPrice)Model.OrderItemPrice).CostPerTierForBillingPeriod(Model.PreviousTotalQuantity);
+                            var rolledUpCosts = ((IPrice)Model.OrderItemPrice).CalculateCostPerTier(Model.RolledUpTotalQuantity);
+                            var previousCosts = ((IPrice)Model.OrderItemPrice).CalculateCostPerTier(Model.PreviousTotalQuantity);
                             @for (var i = 0; i < rolledUpCosts.Count; i++)
                             {
                             <tr>
