@@ -15,6 +15,7 @@ using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.OdsOrganisations.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Services.Csv;
 using NHSD.GPIT.BuyingCatalogue.UnitTest.Framework.Attributes;
@@ -497,6 +498,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             workingSublocation.SublocationRecipients = [recipient];
 
             Order amend = order.BuildAmendment(2);
+
+            foreach (var sublocation in amend.OrderSublocations)
+            {
+                sublocation.SublocationOdsCode ??= "SUBICB001";
+                sublocation.SublocationOrganisation ??= BuildTestOdsOrganisation();
+            }
+
             OrderSublocationRecipient addedRecipient = BuildOrderRecipient(fixture, [orderItem]);
             amend.OrderSublocations.First().SublocationRecipients.Add(addedRecipient);
             amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
@@ -559,6 +567,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             workingSublocation.SublocationRecipients = [recipient];
 
             Order amend = order.BuildAmendment(2);
+
+            foreach (var sublocation in amend.OrderSublocations)
+            {
+                sublocation.SublocationOdsCode ??= "SUBICB001";
+                sublocation.SublocationOrganisation ??= BuildTestOdsOrganisation();
+            }
+
             OrderItem addedOrderItem = BuildOrderItem(
                 fixture,
                 addedCatalogueItem,
@@ -651,6 +666,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             workingSublocation.SublocationRecipients = [recipient];
 
             Order amend = order.BuildAmendment(2);
+
+            foreach (var sublocation in amend.OrderSublocations)
+            {
+                sublocation.SublocationOdsCode ??= "SUBICB001";
+                sublocation.SublocationOrganisation ??= BuildTestOdsOrganisation();
+            }
+
             OrderSublocationRecipient addedRecipient = BuildOrderRecipient(fixture, [orderItem]);
             amend.OrderSublocations.First().SublocationRecipients.Add(addedRecipient);
             amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
@@ -777,6 +799,21 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
                         OrderItem = orderItem,
                     });
             }
+        }
+
+        private static OdsOrganisation BuildTestOdsOrganisation(string id = "ODS123", string name = "Test Sub-ICB")
+        {
+            return new OdsOrganisation
+            {
+                Id = id,
+                Name = name,
+                AddressLine1 = "1 Test Street",
+                Town = "Test Town",
+                County = "Test County",
+                Postcode = "TT1 1TT",
+                Country = "Testland",
+                IsActive = true,
+            };
         }
 
         public class CallOffIdConverter : DefaultTypeConverter
