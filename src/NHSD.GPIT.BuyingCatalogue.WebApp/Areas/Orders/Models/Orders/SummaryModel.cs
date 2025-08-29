@@ -75,7 +75,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
                 Previous?.FlattenedRecipients.ToList(),
                 item,
                 Previous?.OrderItem(item.CatalogueItemId),
-                Order.IsAmendment,
                 new FundingTypeDescriptionModel(OrderWrapper.FundingTypesForItem(item.CatalogueItemId)))
             {
                 InternalOrgId = InternalOrgId, CanEdit = Order.OrderStatus == OrderStatus.InProgress,

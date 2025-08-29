@@ -67,10 +67,6 @@ public static class ImportServiceRecipientsControllerTests
             [ImportServiceRecipientsController.EmptyFile, new List<ServiceRecipientImportModel>()],
             [
                 ImportServiceRecipientsController.InvalidFormat,
-                new List<ServiceRecipientImportModel> { new() { Organisation = string.Empty, OdsCode = "ABC123" } },
-            ],
-            [
-                ImportServiceRecipientsController.InvalidFormat,
                 new List<ServiceRecipientImportModel> { new() { Organisation = "Fake Org", OdsCode = string.Empty } },
             ],
             [
@@ -78,13 +74,6 @@ public static class ImportServiceRecipientsControllerTests
                 new List<ServiceRecipientImportModel>
                 {
                     new() { Organisation = "Fake Org", OdsCode = new string('A', 10) },
-                },
-            ],
-            [
-                ImportServiceRecipientsController.OrganisationExceedsLimit,
-                new List<ServiceRecipientImportModel>
-                {
-                    new() { Organisation = new string('A', 300), OdsCode = "ABC123" },
                 },
             ],
         ];
@@ -204,7 +193,6 @@ public static class ImportServiceRecipientsControllerTests
                 expectedModel,
                 opt => opt
                     .Excluding(m => m.BackLink)
-                    .Excluding(m => m.CancelLink)
                     .Excluding(m => m.ContinueLink));
     }
 
@@ -277,7 +265,7 @@ public static class ImportServiceRecipientsControllerTests
                 Arg.Any<HashSet<string>>())
             .Returns([]);
 
-        var result = (await controller.Validate(organisation.InternalIdentifier, order.CallOffId, true))
+        var result = (await controller.Validate(organisation.InternalIdentifier, order.CallOffId, false))
             .As<RedirectToActionResult>();
 
         result.Should().NotBeNull();
@@ -290,56 +278,6 @@ public static class ImportServiceRecipientsControllerTests
                     { "callOffId", order.CallOffId },
                     { "validationStatus", ValidationStatus.Failure },
                 });
-    }
-
-    [Theory]
-    [MockAutoData]
-    public static async Task Validate_MismatchedNames_ReturnsViewWithModel(
-        Organisation organisation,
-        EntityFramework.Ordering.Models.Order order,
-        List<ServiceRecipient> serviceRecipients,
-        [Frozen] IServiceRecipientImportService importService,
-        [Frozen] IOrderService ordersService,
-        [Frozen] IOdsService odsService,
-        ImportServiceRecipientsController controller)
-    {
-        List<ServiceRecipientImportModel> importedServiceRecipients = serviceRecipients
-            .Select(r => new ServiceRecipientImportModel { Organisation = r.Name, OdsCode = r.OrgId })
-            .ToList();
-
-        importedServiceRecipients.First().Organisation = MismatchOrganisationName;
-
-        ServiceRecipient serviceRecipient = serviceRecipients.First();
-
-        var mismatchedNames = new List<(string, string, string)>
-        {
-            (MismatchOrganisationName, serviceRecipient.Name, serviceRecipient.OrgId),
-        };
-
-        var expectedModel = new ValidateNamesModel(
-            mismatchedNames) { Caption = order.CallOffId.ToString() };
-
-        importService.GetCached(Arg.Any<DistributedCacheKey>()).Returns(importedServiceRecipients);
-
-        ordersService.GetOrderThin(order.CallOffId, organisation.InternalIdentifier)
-            .Returns(new OrderWrapper(order));
-
-        odsService.GetServiceRecipientsByParentInternalIdentifierAndOdsCodes(
-                organisation.InternalIdentifier,
-                Arg.Any<HashSet<string>>())
-            .Returns(serviceRecipients);
-
-        var result = (await controller.Validate(organisation.InternalIdentifier, order.CallOffId, false))
-            .As<ViewResult>();
-
-        result.Should().NotBeNull();
-        result.Model.Should()
-            .BeEquivalentTo(
-                expectedModel,
-                opt => opt
-                    .Excluding(m => m.BackLink)
-                    .Excluding(m => m.CancelLink)
-                    .Excluding(m => m.ContinueLink));
     }
 
     [Theory]
@@ -486,8 +424,7 @@ public static class ImportServiceRecipientsControllerTests
         var expectedModel = new ValidationCompleteModel(
             order.Description,
             ValidationStatus.Success,
-            sublocationsAsViewModel,
-            string.Empty);
+            sublocationsAsViewModel);
 
         var result = (await controller.ValidationComplete(
                 organisation.InternalIdentifier,
@@ -499,7 +436,7 @@ public static class ImportServiceRecipientsControllerTests
         result.Model.Should()
             .BeEquivalentTo(
                 expectedModel,
-                opt => opt.Excluding(m => m.Caption).Excluding(m => m.CancelLink));
+                opt => opt.Excluding(m => m.Caption).Excluding(m => m.BackLink));
     }
 
     [Theory]
@@ -509,7 +446,7 @@ public static class ImportServiceRecipientsControllerTests
         CallOffId callOffId,
         ImportServiceRecipientsController controller)
     {
-        var model = new ValidationCompleteModel("MY competition", ValidationStatus.Failure, [], string.Empty);
+        var model = new ValidationCompleteModel("MY competition", ValidationStatus.Failure, []);
 
         var result =
             (await controller.ValidationComplete(internalOrgId, callOffId, model))

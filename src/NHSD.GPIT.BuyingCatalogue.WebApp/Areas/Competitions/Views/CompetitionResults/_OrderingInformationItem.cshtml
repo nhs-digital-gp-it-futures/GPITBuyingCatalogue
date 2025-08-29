@@ -2,7 +2,7 @@
 @model OrderingInformationItem
 
 @{
-    var tierCosts = Model.Price.CostPerTierForBillingPeriod(Model.Quantity);
+    var tierCosts = Model.Price.CalculateCostPerTier(Model.Quantity);
 }
 
 <h3>
