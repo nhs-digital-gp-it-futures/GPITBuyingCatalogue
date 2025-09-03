@@ -1,4 +1,5 @@
-﻿@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
+﻿@using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums
+@using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.TagHelpers.Tags;
 @using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels;
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierModels.EditSupplierModel
@@ -14,7 +15,7 @@
                         caption="@Model.SupplierName"
                         advice="Provide information about this supplier." />
 
-        <nhs-table data-test-id="edit-supplier-table">
+        <nhs-table data-test-id="edit-supplier-table" label-text="Supplier details">
             <nhs-table-column>Section</nhs-table-column>
             <nhs-table-column>Mandatory</nhs-table-column>
             <nhs-table-column>Status</nhs-table-column>
@@ -56,12 +57,34 @@
                 </nhs-table-cell>
                 <nhs-table-cell>
                     <a id="EditSupplierContactsLink"
-                       asp-controller="@typeof(SuppliersController).ControllerName()"
+                       asp-controller="@(typeof(SuppliersController).ControllerName())"
                        asp-action="@nameof(SuppliersController.ManageSupplierContacts)"
                        asp-route-supplierId="@Model.SupplierId">Edit</a>
                 </nhs-table-cell>
             </nhs-table-row-container>
         </nhs-table>
+
+        <nhs-table data-test-id="edit-supplier-table" label-text="Supplier services">
+            <nhs-table-column>Section</nhs-table-column>
+            <nhs-table-column>Mandatory</nhs-table-column>
+            <nhs-table-column>Status</nhs-table-column>
+            <nhs-table-column>Action</nhs-table-column>
+            <nhs-table-row-container>
+                <nhs-table-cell>Associated services</nhs-table-cell>
+                <nhs-table-cell>No</nhs-table-cell>
+                <nhs-table-cell>
+                    <nhs-tag colour="@NhsTagsTagHelper.TagColour.White"
+                             text="@TaskProgress.Optional" />
+                </nhs-table-cell>
+                <nhs-table-cell>
+                    <a
+                       asp-controller="@(typeof(SupplierServicesController).ControllerName())"
+                       asp-action="@nameof(SupplierServicesController.AssociatedServices)"
+                       asp-route-supplierId="@Model.SupplierId">Edit</a>
+                </nhs-table-cell>
+            </nhs-table-row-container>
+        </nhs-table>
+
         <form method="post">
             <input type="hidden" asp-for="SupplierId" />
             <input type="hidden" asp-for="SupplierName" />

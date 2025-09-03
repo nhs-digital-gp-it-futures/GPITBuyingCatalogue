@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices
 {
     public sealed class EditAssociatedServiceModel : NavBaseModel
     {
@@ -15,10 +15,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         {
         }
 
-        public EditAssociatedServiceModel(Supplier supplier, CatalogueItemId catalogueItemId, CatalogueItem associatedService)
+        public EditAssociatedServiceModel(Supplier supplier, CatalogueItem associatedService)
             : this()
         {
-            SolutionId = catalogueItemId;
+            SupplierId = supplier.Id;
             SupplierName = supplier.Name;
             AssociatedServiceId = associatedService.Id;
             AssociatedServiceName = associatedService.Name;
@@ -38,13 +38,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
                     : TaskProgress.NotStarted;
         }
 
-        public EditAssociatedServiceModel(Supplier supplier, CatalogueItemId catalogueItemId, CatalogueItem associatedService, IList<CatalogueItem> relatedSolutions)
-            : this(supplier, catalogueItemId, associatedService)
+        public EditAssociatedServiceModel(Supplier supplier, CatalogueItem associatedService, IList<CatalogueItem> relatedSolutions)
+            : this(supplier, associatedService)
         {
             RelatedSolutions = relatedSolutions;
         }
 
-        public CatalogueItemId SolutionId { get; init; }
+        public int SupplierId { get; init; }
 
         public CatalogueItemId AssociatedServiceId { get; init; }
 

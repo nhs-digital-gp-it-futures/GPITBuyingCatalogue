@@ -43,9 +43,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             var model = new ManageListPricesModel(solutionId, service, service.CataloguePrices)
             {
                 BackLink = Url.Action(
-                    nameof(AssociatedServicesController.EditAssociatedService),
-                    typeof(AssociatedServicesController).ControllerName(),
-                    new { solutionId, associatedServiceId }),
+                    nameof(SupplierServicesController.EditAssociatedService),
+                    typeof(SupplierServicesController).ControllerName(),
+                    new { supplierId = solutionId.SupplierId, associatedServiceId }),
                 AddListPriceUrl = (service.AssociatedService.PracticeReorganisationType == PracticeReorganisationTypeEnum.None) ?
                     Url.Action(nameof(ListPriceType), new { solutionId, associatedServiceId }) :
                     Url.Action(nameof(AddFlatListPrice), new { solutionId, associatedServiceId }),

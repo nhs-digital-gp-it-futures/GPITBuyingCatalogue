@@ -1,0 +1,64 @@
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices.AssociatedServicesModel;
+@{
+    ViewBag.Title = "Associated Services";
+}
+<partial name="Partials/_BackLink" model="Model"/>
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+        <nhs-validation-summary/>
+        <nhs-page-title title="@ViewBag.Title"
+                        caption="@Model.SupplierName"
+                        advice="Select any services that help implement or optimise the live operation of your catalogue items."/>
+
+        <vc:nhs-action-link url="@Url.Action(
+                                     nameof(SupplierServicesController.AddAssociatedService),
+                                     typeof(SupplierServicesController).ControllerName(),
+                                     new { supplierId = Model.SupplierId })" text=" Add an Associated Service"/>
+
+        <p>
+            If an Associated Service is not listed, you can add it using the link. It’ll then be available for selection
+            on all your catalogue items.
+        </p>
+
+        @if (Model.AssociatedServices.Any())
+        {
+            <nhs-fieldset-form-container asp-for="@Model.AssociatedServices">
+                <nhs-table data-test-id="associated-services-table" label-text="Associated Services available">
+                    <nhs-table-column>
+                        Associated Service
+                    </nhs-table-column>
+                    <nhs-table-column>
+                        Description
+                    </nhs-table-column>
+                    <nhs-table-column>
+                        Status
+                    </nhs-table-column>
+                    <nhs-table-column>Action</nhs-table-column>
+                    @foreach (var associatedService in Model.AssociatedServices)
+                    {
+                        <nhs-table-row-container>
+                            <nhs-table-cell>
+                                @associatedService.CatalogueItem.Name
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                @associatedService.Description
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <nhs-tag status-enum="@associatedService.CatalogueItem.PublishedStatus"/>
+                            </nhs-table-cell>
+                            <nhs-table-cell>
+                                <a asp-action="@nameof(SupplierServicesController.EditAssociatedService)"
+                                   asp-controller="@typeof(SupplierServicesController).ControllerName()"
+                                   asp-route-supplierId="@Model.SupplierId"
+                                   asp-route-associatedServiceId="@associatedService.CatalogueItemId"
+                                   data-test-id="edit-link" class="nhsuk-breadcrumb__link">Edit</a>
+                            </nhs-table-cell>
+                        </nhs-table-row-container>
+                    }
+                </nhs-table>
+            </nhs-fieldset-form-container>
+        }
+
+        <nhs-submit-button/>
+    </div>
+</div>

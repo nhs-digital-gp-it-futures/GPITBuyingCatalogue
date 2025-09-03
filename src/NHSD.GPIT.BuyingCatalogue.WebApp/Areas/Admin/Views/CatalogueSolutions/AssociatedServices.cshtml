@@ -1,5 +1,5 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.AssociatedServicesModel;
+@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.SolutionAssociatedServicesModel;
 @{
     ViewBag.Title = "Associated Services";
 }
@@ -11,10 +11,10 @@
                         caption="@Model.CatalogueItemName"
                         advice="Select any services that help implement or optimise the live operation of your Catalogue Solution." />
 
-        <vc:nhs-action-link url="@Url.Action(
-            nameof(AssociatedServicesController.AddAssociatedService),
-            typeof(AssociatedServicesController).ControllerName(),
-            new { SolutionId = Model.SolutionId })" text=" Add an Associated Service" />
+        @* <vc:nhs-action-link url="@Url.Action( *@
+        @*     nameof(CatalogueSolutionsController.AddAssociatedService), *@
+        @*     typeof(AssociatedServicesController).ControllerName(), *@
+        @*     new { SolutionId = Model.SolutionId })" text=" Add an Associated Service" /> *@
 
         <p>
             If an Associated Service is not listed, you can add it using the link. It’ll then be available for selection on all your Catalogue Solutions.
@@ -41,7 +41,6 @@
                         <nhs-table-column>
                             Status
                         </nhs-table-column>
-                        <nhs-table-column>Action</nhs-table-column>
                         @for (int i = 0; i < Model.SelectableAssociatedServices.Count; i++)
                         {
                             <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].Name" />
@@ -71,13 +70,6 @@
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     <nhs-tag status-enum="@Model.SelectableAssociatedServices[i].PublishedStatus" />
-                                </nhs-table-cell>
-                                <nhs-table-cell>
-                                    <a asp-action="@nameof(AssociatedServicesController.EditAssociatedService)"
-                               asp-controller="@typeof(AssociatedServicesController).ControllerName()"
-                               asp-route-solutionId="@Model.SolutionId"
-                               asp-route-associatedServiceId="@Model.SelectableAssociatedServices[i].CatalogueItemId"
-                                       data-test-id="edit-link" class="nhsuk-breadcrumb__link">Edit</a>
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         }

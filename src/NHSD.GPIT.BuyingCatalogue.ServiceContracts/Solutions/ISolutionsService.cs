@@ -83,5 +83,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions
         Task SaveContacts(CatalogueItemId solutionId, IList<SupplierContact> supplierContacts);
 
         Task<List<WorkOffPlan>> GetWorkOffPlans(CatalogueItemId solutionId);
+
+        Task<CatalogueItem> GetCatalogueItemWithSupplierServiceAssociations(CatalogueItemId catalogueItemId);
     }
 }

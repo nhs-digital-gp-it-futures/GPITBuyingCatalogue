@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
