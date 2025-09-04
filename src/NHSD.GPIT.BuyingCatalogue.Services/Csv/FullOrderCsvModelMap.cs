@@ -34,8 +34,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             new(nameof(FullOrderCsvModel.TieredArray), "Tiered Array"),
             new(nameof(FullOrderCsvModel.InitialTerm), "Initial Term"),
             new(nameof(FullOrderCsvModel.MaximumTerm), "Contract Length (Months)"),
-            new(nameof(FullOrderCsvModel.IcbCode), "ICB Code"),
-            new(nameof(FullOrderCsvModel.IcbName), "ICB Name"),
             new(nameof(FullOrderCsvModel.SubIcbCode), "Sub ICB Code"),
             new(nameof(FullOrderCsvModel.SubIcbName), "Sub ICB Name"),
         };
@@ -71,8 +69,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.TieredArray).Index(25).Name(GetName(nameof(FullOrderCsvModel.TieredArray)));
             Map(o => o.InitialTerm).Index(26).Name(GetName(nameof(FullOrderCsvModel.InitialTerm)));
             Map(o => o.MaximumTerm).Index(27).Name(GetName(nameof(FullOrderCsvModel.MaximumTerm)));
-            Map(o => o.IcbCode).Index(28).Name(GetName(nameof(FullOrderCsvModel.IcbCode)));
-            Map(o => o.IcbName).Index(29).Name(GetName(nameof(FullOrderCsvModel.IcbName)));
             Map(o => o.SubIcbCode).Index(30).Name(GetName(nameof(FullOrderCsvModel.SubIcbCode)));
             Map(o => o.SubIcbName).Index(31).Name(GetName(nameof(FullOrderCsvModel.SubIcbName)));
         }
