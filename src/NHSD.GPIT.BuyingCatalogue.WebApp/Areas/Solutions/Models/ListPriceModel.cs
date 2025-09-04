@@ -46,7 +46,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
 
             ItemType = item.CatalogueItemType;
             IndexValue = 2;
-            PriceFor = "Catalogue Solution";
+            PriceFor = "catalogue solution";
             SetPaginationFooter();
         }
 

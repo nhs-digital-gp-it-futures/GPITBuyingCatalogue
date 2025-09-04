@@ -11,16 +11,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage
         public static readonly PageTitleModel PageTitle = new()
         {
             Title = TitleText,
-            Advice = "Select the type of Associated Service you want to order.",
+            Advice = "Select the type of associated service you want to order.",
         };
 
         public static readonly PageTitleModel NoSuppliersForMergerAndSplitSPageTitle = new()
         {
             Title = TitleText,
-            Advice = "There are currently no suppliers offering practice mergers or splits. However, you can continue to order another type of Associated Service.",
+            Advice = "There are currently no suppliers offering practice mergers or splits. However, you can continue to order another type of associated service.",
         };
 
-        private const string TitleText = "What type of Associated Service do you want to order?";
+        private const string TitleText = "What type of associated service do you want to order?";
 
         public DetermineAssociatedServiceTypeModel()
         {
@@ -66,7 +66,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage
 
                 result.Add(new(
                     "Something else",
-                    "This is for ordering any other type of Associated Service.",
+                    "This is for ordering any other type of associated service.",
                     OrderTypeEnum.AssociatedServiceOther));
 
                 return result;

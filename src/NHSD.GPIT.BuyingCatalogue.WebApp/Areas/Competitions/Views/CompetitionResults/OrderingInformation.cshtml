@@ -15,13 +15,13 @@
                         advice="This is what you're ordering based on this competition."/>
 
         <nhs-card>
-            <h2>Catalogue Solution</h2>
+            <h2>Catalogue solution</h2>
             <partial name="_OrderingInformationItem" model="Model.SolutionDisplay"/>
             <br/>
 
             @if (additionalServices.Any())
             {
-                <h2>Additional Services</h2>
+                <h2>Additional services</h2>
                 @foreach (var additionalService in additionalServices)
                 {
                     <partial name="_OrderingInformationItem" model="additionalService"/>
@@ -31,7 +31,7 @@
 
             @if (associatedServices.Any())
             {
-                <h2>Associated Services</h2>
+                <h2>Associated services</h2>
                 @foreach (var associatedService in associatedServices)
                 {
                     <partial name="_OrderingInformationItem" model="associatedService"/>
@@ -62,9 +62,9 @@
                 </nhs-summary-list-row>
             </nhs-summary-list>
 
-            <h2>Service Recipients</h2>
+            <h2>Service recipients</h2>
             <nhs-summary-list>
-                <nhs-summary-list-row label-text="Total Service Recipients">@Model.NumberOfRecipients</nhs-summary-list-row>
+                <nhs-summary-list-row label-text="Total service recipients">@Model.NumberOfRecipients</nhs-summary-list-row>
             </nhs-summary-list>
 
             <form method="post">

@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
             if (isDefault)
             {
                 CommonActions.ClickSave();
-                CommonActions.HintText().Should().Be("Provide details of any specific requirements for your Associated Services.".FormatForComparison());
+                CommonActions.HintText().Should().Be("Provide details of any specific requirements for your associated services.".FormatForComparison());
                 CommonActions.ClickSave();
             }
             else

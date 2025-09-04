@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By AssociatedServiceDetails => By.Id("AssociatedServiceDetails");
 
-        public static By ChangeSolutionLink => By.LinkText("Change Catalogue Solution");
+        public static By ChangeSolutionLink => By.LinkText("Change catalogue solution");
 
         public static By ChangeAdditionalServicesLink =>
             new ByChained(ByExtensions.DataTestId("additional-services-action"), By.TagName("a"));

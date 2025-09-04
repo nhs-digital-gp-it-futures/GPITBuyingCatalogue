@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.PublicBrowse
     {
         public static By HomeBreadcrumbLink => By.LinkText("Home");
 
-        public static By CatalogueSolutionsBreadcrumbLink => By.LinkText("Catalogue Solutions");
+        public static By CatalogueSolutionsBreadcrumbLink => By.LinkText("catalogue solutions");
 
         public static By CapabilitiesBreadcrumbLink => By.LinkText("Capabilities");
 

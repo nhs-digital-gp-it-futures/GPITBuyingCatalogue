@@ -59,7 +59,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+                return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
 
             var model = new EditAdditionalServiceModel(solution, additionalService)
             {
@@ -130,7 +130,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+                return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
 
             var model = new EditAdditionalServiceDetailsModel(solution, additionalService)
             {
@@ -152,7 +152,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+                return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
 
             var additionalServiceDetailsModel = new AdditionalServicesDetailsModel
             {
@@ -175,7 +175,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+                return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
 
             var capabilities = await capabilitiesService.GetCapabilitiesByCategory();
 
@@ -196,7 +196,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
             if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+                return BadRequest($"No additional service with Id {additionalServiceId} found for Solution {solutionId}");
 
             var saveRequestModel = new SaveCatalogueItemCapabilitiesModel
             {

@@ -4,7 +4,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 {
     public static class HomeObjects
     {
-        public static By ManageCatalogueSolutionsLink => By.LinkText("Manage Catalogue Solutions");
+        public static By ManageCatalogueSolutionsLink => By.LinkText("Manage catalogue solutions");
 
         public static By ManageFrameworksLink => By.LinkText("Manage frameworks");
 

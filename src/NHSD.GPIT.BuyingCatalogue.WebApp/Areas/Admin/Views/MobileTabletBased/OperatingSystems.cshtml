@@ -13,7 +13,7 @@
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
-                            advice="Let buyers know which operating systems will work with your Catalogue Solution." />
+                            advice="Let buyers know which operating systems will work with your catalogue solution." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.SolutionId" />
                 <input type="hidden" asp-for="@Model.BackLink" />
@@ -21,7 +21,7 @@
 
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-text="Supported operating systems"
-                                         label-hint="Select the operating systems supported by your Catalogue Solution.">
+                                         label-hint="Select the operating systems supported by your catalogue solution.">
                     <nhs-checkbox-container>
                         @for (var i = 0; i < Model.OperatingSystems.Length; i++)
                         {

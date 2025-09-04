@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Contrac
         [ModelBinder(typeof(NumberModelBinder))]
         public int? Quantity { get; set; }
 
-        public override string Advice => IsEdit ? "Edit this Associated Service milestone." : "Add an Associated Service milestone.";
+        public override string Advice => IsEdit ? "Edit this associated service milestone." : "Add an associated service milestone.";
 
         public IEnumerable<SelectOption<string>> OrderItemOptions => AssociatedServices.Select(x =>
             new SelectOption<string>(x.CatalogueItem.Name, x.CatalogueItem.Id.ToString())).ToList();

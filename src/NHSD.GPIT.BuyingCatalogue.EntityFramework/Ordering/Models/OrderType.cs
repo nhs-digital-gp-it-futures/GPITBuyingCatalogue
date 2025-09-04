@@ -85,16 +85,16 @@ public record OrderType(OrderTypeEnum Value) : IParsable<OrderType>
 
     public string GetPracticeReorganisationRecipientTitle() => Value switch
     {
-        OrderTypeEnum.AssociatedServiceSplit => "Service Recipient to be split",
-        OrderTypeEnum.AssociatedServiceMerger => "Service Recipient to be retained",
+        OrderTypeEnum.AssociatedServiceSplit => "service recipient to be split",
+        OrderTypeEnum.AssociatedServiceMerger => "service recipient to be retained",
         _ => throw new InvalidOperationException($"Unsupported orderType {Value}"),
     };
 
     public string GetServiceRecipientsTitle() => Value switch
     {
-        OrderTypeEnum.AssociatedServiceSplit => "Service Recipients to receive patients",
-        OrderTypeEnum.AssociatedServiceMerger => "Service Recipients to be merged",
-        _ => "Service Recipients, planned delivery dates and quantities",
+        OrderTypeEnum.AssociatedServiceSplit => "service recipients to receive patients",
+        OrderTypeEnum.AssociatedServiceMerger => "service recipients to be merged",
+        _ => "service recipients, planned delivery dates and quantities",
     };
 
     public static OrderType Parse(string s, IFormatProvider provider)

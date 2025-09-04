@@ -50,9 +50,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
             Advice = orderType.Value switch
             {
                 OrderTypeEnum.AssociatedServiceSplit =>
-                    "Select the Service Recipient that will be losing patients as part of the split.",
+                    "Select the service recipient that will be losing patients as part of the split.",
                 OrderTypeEnum.AssociatedServiceMerger =>
-                    "Select the Service Recipient that will still exist after the merger.",
+                    "Select the service recipient that will still exist after the merger.",
                 _ => throw new ArgumentOutOfRangeException(nameof(orderType)),
             };
         }

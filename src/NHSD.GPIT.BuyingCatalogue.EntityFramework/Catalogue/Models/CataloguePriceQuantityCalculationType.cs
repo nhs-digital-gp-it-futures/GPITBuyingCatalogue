@@ -6,6 +6,6 @@ public enum CataloguePriceQuantityCalculationType
 {
     [Display(Name = "Per solution or service")]
     PerSolutionOrService = 1,
-    [Display(Name = "Per Service Recipient")]
+    [Display(Name = "Per service recipient")]
     PerServiceRecipient = 2,
 }

@@ -4,7 +4,7 @@
 @using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.ContractBilling.ContractBillingItemModel
 @{
-    ViewBag.Title = "Bespoke Associated Service milestone";
+    ViewBag.Title = "Bespoke associated service milestone";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -26,8 +26,8 @@
 
                 <nhs-select asp-for="SelectedOrderItemId"
                             asp-items="@Model.OrderItemOptions"
-                            label-text="Associated Service name"
-                            label-hint="Select the Associated Service this milestone will apply to." />
+                            label-text="associated service name"
+                            label-hint="Select the associated service this milestone will apply to." />
                 
                 <nhs-input asp-for="Name"
                            label-text="Milestone name"
@@ -39,7 +39,7 @@
                 
                 <nhs-input asp-for="Quantity" input-width="Five"
                               label-text="Number of units to be billed on milestone achievement"
-                              label-hint="Enter the number of Associated Service units that will be billable once this milestone is achieved." />
+                              label-hint="Enter the number of associated service units that will be billable once this milestone is achieved." />
 
                 <nhs-button-group>
                     <nhs-submit-button text="Save and continue"/>

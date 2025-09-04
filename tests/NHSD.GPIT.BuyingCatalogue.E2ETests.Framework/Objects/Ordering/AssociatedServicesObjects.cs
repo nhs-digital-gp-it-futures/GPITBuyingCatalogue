@@ -14,6 +14,6 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By NothingToSelect => By.Id("nothing-to-select");
 
-        public static By AddAssociateServiceLink => By.LinkText("Add Associated Services");
+        public static By AddAssociateServiceLink => By.LinkText("Add associated services");
     }
 }

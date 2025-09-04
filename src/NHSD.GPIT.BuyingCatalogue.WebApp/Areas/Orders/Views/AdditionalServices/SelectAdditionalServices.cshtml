@@ -1,14 +1,14 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.SelectAdditionalServicesModel
 @{
-    ViewBag.Title = "Add Additional Services";
+    ViewBag.Title = "Add additional services";
 
     var serviceText = "These are optional add-ons to the main solution that provide extra functionality."
-        + (Model.IsAmendment ? " We're only showing Additional Services that weren't added to the original order." : "");
+        + (Model.IsAmendment ? " We're only showing additional services that weren't added to the original order." : "");
 
     var advice = Model.IsAmendment && !Model.Services.Any()
-        ? "All the Additional Services available with this Catalogue Solution have already been added to this order."
-        : "Select the Additional Services that you want to add to your order.";
+        ? "All the additional services available with this catalogue solution have already been added to this order."
+        : "Select the additional services that you want to add to your order.";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -25,7 +25,7 @@
             @if (Model.Services.Any())
             {
                 <div id="services-to-select">
-                    <h3>Additional Services available</h3>
+                    <h3>Additional services available</h3>
                     <p>@serviceText</p>
                     <p>
                         <a href="@Url.Action(
@@ -51,7 +51,7 @@
                 @if (!Model.IsAmendment)
                 {
                     <div id="nothing-to-select">
-                        <p>There are no Additional Services available for this Catalogue Solution.</p>
+                        <p>There are no additional services available for this catalogue solution.</p>
                     </div>
                 }
             }
@@ -59,7 +59,7 @@
             @if (Model.ExistingServices.Any())
             {
                 <div id="existing-services" class="nhsuk-u-margin-top-9">
-                    <h3>Additional Services already added</h3>
+                    <h3>Additional services already added</h3>
 
                     <ul>
                         @foreach (var (service, i) in Model.ExistingServices.Select((x, i) => (x, i)))

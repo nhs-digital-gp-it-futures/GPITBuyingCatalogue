@@ -12,7 +12,7 @@
         : $"Order {Model.CallOffId}";
 
     var advice = mergerSplit
-        ? "Make sure the correct planned delivery dates have been applied for each of your Service Recipients."
+        ? "Make sure the correct planned delivery dates have been applied for each of your service recipients."
         : "Make sure the correct dates are applied to the items you're ordering.";
 }
 
@@ -30,13 +30,13 @@
         {
             var practiceReorganisationRecipientTitle = Model.OrderType.Value switch
             {
-                OrderTypeEnum.AssociatedServiceSplit => "Service Recipient to be split",
-                OrderTypeEnum.AssociatedServiceMerger => "Retained Service Recipient",
+                OrderTypeEnum.AssociatedServiceSplit => "service recipient to be split",
+                OrderTypeEnum.AssociatedServiceMerger => "Retained service recipient",
                 _ => throw new InvalidOperationException($"Unsupported orderType {Model.OrderType.Value}"),
             };
 
             <nhs-summary-list>
-                <nhs-summary-list-row label-text="Catalogue Solution">
+                <nhs-summary-list-row label-text="catalogue solution">
                     @Model.SolutionName
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="@practiceReorganisationRecipientTitle">
@@ -53,7 +53,7 @@
             new { Model.InternalOrgId, Model.CallOffId });
 
             <p>
-                <strong>Planned delivery date for the majority of Service Recipients:</strong>
+                <strong>Planned delivery date for the majority of service recipients:</strong>
                 @GetFormattedDate(Model.DeliveryDate)
                 <span>&nbsp;</span>
                 <a id="change-delivery-date-link"
@@ -70,7 +70,7 @@
             var catalogueItemId = Model.SolutionId.Value;
             var itemName = Model.OrderItemName(catalogueItemId);
 
-            <h2>Catalogue Solution</h2>
+            <h2>Catalogue solution</h2>
             
             var url = Url.Action(nameof(DeliveryDatesController.EditDates), typeof(DeliveryDatesController).ControllerName(),
                 new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList });
@@ -106,7 +106,7 @@
 
         @if (Model.AdditionalServiceIds.Any())
         {
-            <h2>Additional Services</h2>
+            <h2>Additional services</h2>
 
             @foreach (var catalogueItemId in Model.AdditionalServiceIds.Where(x => Model.OrderItemDates(x).Any()))
             {
@@ -149,7 +149,7 @@
         {
             if (!mergerSplit)
             {
-                <h2>Associated Services</h2>
+                <h2>Associated services</h2>
             }
 
             @foreach (var catalogueItemId in Model.AssociatedServiceIds)

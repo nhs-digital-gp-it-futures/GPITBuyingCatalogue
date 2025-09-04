@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
         internal static readonly PageTitleModel SelectionPageTitle = new()
         {
             Title = TitleText,
-            Advice = "You'll only be able to select suppliers that offer either mergers or splits as Additional Services with their solutions.",
+            Advice = "You'll only be able to select suppliers that offer either mergers or splits as additional services with their solutions.",
         };
 
         private const string TitleText = "Find supplier";
@@ -45,7 +45,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
         {
             return OrderType.Value switch
             {
-                OrderTypeEnum.AssociatedServiceOther => "You’ll only be able to find suppliers that offer Associated Services with their solutions.",
+                OrderTypeEnum.AssociatedServiceOther => "You’ll only be able to find suppliers that offer associated services with their solutions.",
                 _ => string.Empty,
             };
         }

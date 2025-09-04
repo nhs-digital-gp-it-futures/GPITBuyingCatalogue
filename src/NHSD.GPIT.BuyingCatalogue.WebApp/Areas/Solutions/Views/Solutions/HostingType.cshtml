@@ -2,7 +2,7 @@
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.HostingTypesModel;
 <div>
     <partial name="_solutionSummary" model="Model" />
-    <p>These are the ways this Catalogue Solution can be hosted:</p>
+    <p>These are the ways this catalogue solution can be hosted:</p>
 
     @if (Model.PublicCloud.Status() == NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums.TaskProgress.Completed)
     {
@@ -11,7 +11,7 @@
             {
                 <p>@Model.PublicCloud.Summary</p>
                 <p>
-                    <a href="@Model.PublicCloud.Link" target="_blank">Find out more information on how this Catalogue Solution is hosted (opens in a new tab)</a>
+                    <a href="@Model.PublicCloud.Link" target="_blank">Find out more information on how this catalogue solution is hosted (opens in a new tab)</a>
                 </p>
             }
 
@@ -31,7 +31,7 @@
             {
                 <p>@Model.PrivateCloud.Summary</p>
                 <p>
-                    <a href="@Model.PrivateCloud.Link" target="_blank">Find out more information on how this Catalogue Solution is hosted (opens in a new tab)</a>
+                    <a href="@Model.PrivateCloud.Link" target="_blank">Find out more information on how this catalogue solution is hosted (opens in a new tab)</a>
                 </p>
             }
 
@@ -57,7 +57,7 @@
             {
                 <p>@Model.HybridHostingType.Summary</p>
                 <p>
-                    <a href="@Model.HybridHostingType.Link" target="_blank">Find out more information on how this Catalogue Solution is hosted (opens in a new tab)</a>
+                    <a href="@Model.HybridHostingType.Link" target="_blank">Find out more information on how this catalogue solution is hosted (opens in a new tab)</a>
                 </p>
             }
 
@@ -83,7 +83,7 @@
             {
                 <p>@Model.OnPremise.Summary</p>
                 <p>
-                    <a href="@Model.OnPremise.Link" target="_blank">Find out more information on how this Catalogue Solution is hosted (opens in a new tab)</a>
+                    <a href="@Model.OnPremise.Link" target="_blank">Find out more information on how this catalogue solution is hosted (opens in a new tab)</a>
                 </p>
             }
 

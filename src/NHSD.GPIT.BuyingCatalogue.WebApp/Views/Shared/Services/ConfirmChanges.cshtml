@@ -25,7 +25,7 @@
                 : $"any {itemName} you remove.";
 
             var calloutSuffix = Model.CatalogueItemType == CatalogueItemType.Solution
-                ? "entered as well as any Additional Services and Associated Services you've added."
+                ? "entered as well as any additional services and associated services you've added."
                 : "entered.";
         }
 
@@ -38,7 +38,7 @@
             <input type="hidden" asp-for="BackLink" />
 
             <nhs-warning-callout label-text="Changing @article @Model.CatalogueItemType.Name()">
-                Changing @article @Model.CatalogueItemType.Name() will remove any Service Recipients, quantities and prices you've previously @calloutSuffix
+                Changing @article @Model.CatalogueItemType.Name() will remove any service recipients, quantities and prices you've previously @calloutSuffix
             </nhs-warning-callout>
 
             <h2>Changes to your @itemName</h2>

@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.Services.SelectServicesModel
 @{
-    ViewBag.Title = "Add Associated Services";
+    ViewBag.Title = "Add associated services";
 
     Model.Services.RemoveAll(x => x.IsSelected);
 }
@@ -14,8 +14,8 @@
 
         @{
             var advice = Model.AssociatedServicesOnly
-            ? "These are all the Associated Services available for your chosen Catalogue Solution. Select any you want to order."
-            : $"Select any Associated Services you want to add to this {Model.EntityType.ToLowerInvariant()} or continue if you do not want to add any.";
+            ? "These are all the associated services available for your chosen catalogue solution. Select any you want to order."
+            : $"Select any associated services you want to add to this {Model.EntityType.ToLowerInvariant()} or continue if you do not want to add any.";
         }
 
         <nhs-page-title title="@ViewBag.Title"
@@ -31,8 +31,8 @@
             @if (Model.Services.Any())
             {
                 <div id="services-to-select">
-                    <h3>Select Associated Services</h3>
-                    <p>These are products that support the implementation of a solution, for example, training or data migration. To order a merger or split for any of your practices, you’ll need to create a separate Associated Services only order</p>
+                    <h3>Select associated services</h3>
+                    <p>These are products that support the implementation of a solution, for example, training or data migration. To order a merger or split for any of your practices, you’ll need to create a separate associated services only order</p>
                     <p>
                         <a href="@Url.Action(
                                       nameof(SolutionsController.AssociatedServices),
@@ -57,7 +57,7 @@
             else
             {
                 <div id="nothing-to-select">
-                    <p>There are no Associated Services available for this Catalogue Solution.</p>
+                    <p>There are no associated services available for this catalogue solution.</p>
                 </div>
             }
 

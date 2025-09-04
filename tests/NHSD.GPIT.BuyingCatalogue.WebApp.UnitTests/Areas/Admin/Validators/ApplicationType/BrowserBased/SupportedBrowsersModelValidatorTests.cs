@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators.Appl
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.MobileResponsive)
-                .WithErrorMessage("Select yes if your Catalogue Solution is mobile responsive");
+                .WithErrorMessage("Select yes if your catalogue solution is mobile responsive");
         }
 
         [Theory]

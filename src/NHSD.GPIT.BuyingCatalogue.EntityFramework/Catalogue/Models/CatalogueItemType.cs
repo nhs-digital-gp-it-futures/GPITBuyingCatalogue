@@ -4,13 +4,13 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
 {
     public enum CatalogueItemType
     {
-        [Display(Name = "Catalogue Solution")]
+        [Display(Name = "catalogue solution")]
         Solution = 1,
 
-        [Display(Name = "Additional Service")]
+        [Display(Name = "additional service")]
         AdditionalService = 2,
 
-        [Display(Name = "Associated Service")]
+        [Display(Name = "associated service")]
         AssociatedService = 3,
     }
 }

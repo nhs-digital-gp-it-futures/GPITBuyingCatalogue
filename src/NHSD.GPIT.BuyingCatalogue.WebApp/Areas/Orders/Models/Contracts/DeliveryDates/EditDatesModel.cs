@@ -48,8 +48,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Deliver
                 [
                     new KeyValuePair<string, RecipientDateModel[]>(
                         OrderType.Value == OrderTypeEnum.AssociatedServiceSplit
-                            ? "Service Recipients receiving patients"
-                            : "Service Recipients to be merged",
+                            ? "service recipients receiving patients"
+                            : "service recipients to be merged",
                         recipientDates),
                 ]
                 : recipientDates

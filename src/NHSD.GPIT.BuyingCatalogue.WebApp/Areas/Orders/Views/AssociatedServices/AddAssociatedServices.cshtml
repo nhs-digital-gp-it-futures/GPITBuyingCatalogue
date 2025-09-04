@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection.AssociatedServices.AddAssociatedServicesModel
 @{
-    ViewBag.Title = "Do you want to add any Associated Services to your order?";
+    ViewBag.Title = "Do you want to add any associated services to your order?";
 }
 
 <partial name="Partials/_BackLink" model="Model" />
@@ -11,7 +11,7 @@
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
-                        advice="These are products that support the implementation of a solution, for example, training or data migration. To order a merger or split for any of your practices, you’ll need to create a separate Associated Services only order." />
+                        advice="These are products that support the implementation of a solution, for example, training or data migration. To order a merger or split for any of your practices, you’ll need to create a separate associated services only order." />
 
         <form method="post" autocomplete="off">
             <input type="hidden" asp-for="BackLink" />

@@ -1,7 +1,7 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.AssociatedServicesModel;
 @{
-    ViewBag.Title = "Associated Services";
+    ViewBag.Title = "associated services";
 }
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
@@ -9,15 +9,15 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
-                        advice="Select any services that help implement or optimise the live operation of your Catalogue Solution." />
+                        advice="Select any services that help implement or optimise the live operation of your catalogue solution." />
 
         <vc:nhs-action-link url="@Url.Action(
             nameof(AssociatedServicesController.AddAssociatedService),
             typeof(AssociatedServicesController).ControllerName(),
-            new { SolutionId = Model.SolutionId })" text=" Add an Associated Service" />
+            new { SolutionId = Model.SolutionId })" text=" Add an associated service" />
 
         <p>
-            If an Associated Service is not listed, you can add it using the link. It’ll then be available for selection on all your Catalogue Solutions.
+            If an associated service is not listed, you can add it using the link. It’ll then be available for selection on all your catalogue solutions.
         </p>
 
         <form method="post">
@@ -28,12 +28,12 @@
             @if (Model.SelectableAssociatedServices.Any())
             {
                 <nhs-fieldset-form-container asp-for="@Model.SelectableAssociatedServices">
-                    <nhs-table data-test-id="associated-services-table" label-text="Associated Services available">
+                    <nhs-table data-test-id="associated-services-table" label-text="associated services available">
                         <nhs-table-column>
 
                         </nhs-table-column>
                         <nhs-table-column>
-                            Associated Service
+                            associated service
                         </nhs-table-column>
                         <nhs-table-column>
                             Description

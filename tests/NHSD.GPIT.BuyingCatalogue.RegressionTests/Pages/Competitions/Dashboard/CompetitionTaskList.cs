@@ -90,8 +90,8 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Competitions.Dashboard
 
         public void SelectServiceRecipientsManually()
         {
-            CommonActions.HintText().Should().Be("Select how you want to add Service Recipients.".FormatForComparison());
-            CommonActions.ClickRadioButtonWithText("Select Service Recipients manually");
+            CommonActions.HintText().Should().Be("Select how you want to add service recipients.".FormatForComparison());
+            CommonActions.ClickRadioButtonWithText("Select service recipients manually");
             CommonActions.ClickSave();
         }
     }

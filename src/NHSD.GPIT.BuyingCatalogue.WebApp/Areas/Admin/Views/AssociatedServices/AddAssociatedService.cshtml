@@ -9,10 +9,10 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SupplierName"
-                        advice="Provide the following details for your Associated Service." />
+                        advice="Provide the following details for your associated service." />
 
         <nhs-inset-text>
-            <p>This Associated Service will be available for selection with any of your Catalogue Solutions.</p>
+            <p>This associated service will be available for selection with any of your catalogue solutions.</p>
         </nhs-inset-text>
 
         <form method="post">
@@ -21,16 +21,16 @@
             <input type="hidden" asp-for="@Model.SupplierName" />
 
             <nhs-input asp-for="Name"
-                       label-text="Associated Service name" />
+                       label-text="associated service name" />
             <nhs-textarea asp-for="Description"
-                          label-text="Associated Service description"
-                          label-hint="Describe how this Associated Service helps implement or optimise the live operation of your Catalogue Solution." />
+                          label-text="associated service description"
+                          label-hint="Describe how this associated service helps implement or optimise the live operation of your catalogue solution." />
             <nhs-textarea asp-for="OrderGuidance"
                           label-text="Order guidance"
-                          label-hint="Help buyers understand how they should order the Associated Services by providing typical order volumes and implementation timescales." />
+                          label-hint="Help buyers understand how they should order the associated services by providing typical order volumes and implementation timescales." />
             <nhs-fieldset-form-label asp-for="@Model"
-                                     label-text="Does this Associated Service support practice reorganisation? (optional)"
-                                     label-hint="Select all the types of practice reorganisation this Associated Service supports."
+                                     label-text="Does this associated service support practice reorganisation? (optional)"
+                                     label-hint="Select all the types of practice reorganisation this associated service supports."
                                      size="ExtraSmall">
                 <nhs-checkbox-container>
                     <nhs-checkbox asp-for="PracticeSplit" label-text="Practice split" />

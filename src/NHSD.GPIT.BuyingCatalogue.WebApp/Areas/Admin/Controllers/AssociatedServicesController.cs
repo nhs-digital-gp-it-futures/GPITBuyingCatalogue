@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var associatedService = await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
             if (associatedService is null)
-                return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
+                return BadRequest($"No associated service found for Id: {associatedServiceId}");
 
             var relatedSolutions = await associatedServicesService.GetAllSolutionsForAssociatedService(associatedServiceId);
             var model = new EditAssociatedServiceModel(solution, associatedService, relatedSolutions)
@@ -159,7 +159,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var associatedService = await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
             if (associatedService is null)
-                return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
+                return BadRequest($"No associated service found for Id: {associatedServiceId}");
 
             var solutionMergersAndSplits = await associatedServicesService.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(associatedServiceId);
 
@@ -180,7 +180,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
             if (associatedService is null)
-                return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
+                return BadRequest($"No associated service found for Id: {associatedServiceId}");
 
             if (!ModelState.IsValid)
                 return View(model);

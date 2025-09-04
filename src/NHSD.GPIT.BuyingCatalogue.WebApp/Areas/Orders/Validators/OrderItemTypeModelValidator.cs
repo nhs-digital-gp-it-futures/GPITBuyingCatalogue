@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators
 {
     public class OrderItemTypeModelValidator : AbstractValidator<OrderItemTypeModel>
     {
-        internal const string SelectedOrderItemTypeError = "Select Catalogue Solution or Associated Service";
+        internal const string SelectedOrderItemTypeError = "Select catalogue solution or associated service";
 
         public OrderItemTypeModelValidator()
         {

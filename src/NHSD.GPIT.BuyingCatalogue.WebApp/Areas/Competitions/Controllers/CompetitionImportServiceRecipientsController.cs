@@ -31,7 +31,7 @@ public class CompetitionImportServiceRecipientsController : Controller
         $"At least one of your ODS codes is more than {OdsCodeLength} characters";
 
     internal static readonly string OrganisationExceedsLimit =
-        $"At least one of your Service Recipient names is more than {OrganisationNameLength} characters";
+        $"At least one of your service recipient names is more than {OrganisationNameLength} characters";
 
     private const string CompetitionCacheKey = "competitions";
     private readonly IServiceRecipientImportService importService;

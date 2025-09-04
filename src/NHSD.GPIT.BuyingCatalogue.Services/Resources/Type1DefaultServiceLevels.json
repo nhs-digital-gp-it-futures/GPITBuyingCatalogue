@@ -1,12 +1,12 @@
 [
   {
-    "TypeOfService": "Catalogue Solution availability including interfaces to national systems",
+    "TypeOfService": "catalogue solution availability including interfaces to national systems",
     "ServiceLevel": "99.9% availability during each calendar month and less than 10 minutes downtime in total",
     "HowMeasured": "Measured on a per practice basis by suppliers monitoring tools and reported to service management",
     "ServiceCredits": true
   },
   {
-    "TypeOfService": "Catalogue Solution responsiveness",
+    "TypeOfService": "catalogue solution responsiveness",
     "ServiceLevel": "99.9% of transactions take less than 2 seconds",
     "HowMeasured": "Measured per transaction within the boundaries of the suppliers datacentre and reported to service management",
     "ServiceCredits": true

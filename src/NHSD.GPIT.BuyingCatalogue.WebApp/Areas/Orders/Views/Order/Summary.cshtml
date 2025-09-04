@@ -274,8 +274,8 @@
             @if (additionalServices.Any())
             {
                 var heading = additionalServices.Count == 1
-                ? "Additional Service"
-                : "Additional Services";
+                ? "Additional service"
+                : "Additional services";
 
                 <h2 id="additional-services-title">@heading details</h2>
                 @foreach (var additionalService in additionalServices)
@@ -287,7 +287,7 @@
 
             @if (solutions.Any() || additionalServices.Any())
             {
-                <h2 id="milestones-title">Milestones and payment triggers for Catalogue Solution and Additional Services</h2>
+                <h2 id="milestones-title">Milestones and payment triggers for catalogue solution and additional services</h2>
 
                 <nhs-expander-v2 open="true">
                     <nhs-expander-summary label-text="Milestones and payment triggers" bold-title="true"></nhs-expander-summary>
@@ -303,7 +303,7 @@
                         else
                         {
                             <h3>@Model.BespokeMilestoneLabelText</h3>
-                            <p>No bespoke milestones have been added for Catalogue Solution or Additional Services.</p>
+                            <p>No bespoke milestones have been added for catalogue solution or additional services.</p>
                         }
                     </nhs-expander-content>
                     @if (Model.Order.OrderStatus == OrderStatus.InProgress)
@@ -318,8 +318,8 @@
             @if (associatedServices.Any())
             {
                 var heading = associatedServices.Count == 1
-                ? "Associated Service"
-                : "Associated Services";
+                ? "Associated service"
+                : "Associated services";
 
                 <h2 id="associated-services-title">@heading details</h2>
                 @foreach (var associatedService in associatedServices)
@@ -337,7 +337,7 @@
                     <partial name="_OrderItemSummary" model="@itemModel" />
                 }
 
-                <h2 id="as-milestones-title">Milestones and payment triggers for Associated Services</h2>
+                <h2 id="as-milestones-title">Milestones and payment triggers for associated services</h2>
 
                 <nhs-expander-v2 open="true">
                 <nhs-expander-summary label-text="Milestones and payment triggers" bold-title="true"></nhs-expander-summary>
@@ -345,11 +345,11 @@
                     <h3>Default milestones and payment triggers</h3>
 
                     <p>
-                        The delivery date is the default milestone for an Associated Service and triggers the requirement that payment is made 30 days later.
+                        The delivery date is the default milestone for an associated service and triggers the requirement that payment is made 30 days later.
                         However, you can add bespoke milestones that you've agreed with the supplier to act as payment triggers for this order.
                     </p>
                     <p>
-                        The default milestone will apply to any Associated Services not assigned a bespoke milestone.
+                        The default milestone will apply to any associated services not assigned a bespoke milestone.
                     </p>
 
                     @if (Model.HasBespokeBilling)
@@ -359,17 +359,17 @@
                     else
                     {
                         <h3>@Model.BespokeBillingLabelText</h3>
-                        <p>No bespoke milestones have been added for Associated Services.</p>
+                        <p>No bespoke milestones have been added for associated services.</p>
                     }
 
-                    <h3 id="requirements-title">Associated Service specific requirements</h3>
+                    <h3 id="requirements-title">Associated service specific requirements</h3>
                     @if (Model.HasSpecificRequirements)
                     {
                         <partial name="RequirementTable" model="new RequirementTableModel(Model.RequirementLabelText, Model.BespokeBilling.Requirements, false, Model.CallOffId, Model.InternalOrgId)" />
                     }
                     else
                     {
-                        <p>No specific requirements have been added for Associated Services.</p>
+                        <p>No specific requirements have been added for associated services.</p>
                     }
                 </nhs-expander-content>
                     @if (Model.Order.OrderStatus == OrderStatus.InProgress)

@@ -23,20 +23,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public List<string> DoItems => new()
         {
             "update your order description and change your primary contact details and those for the supplier",
-            "add Service Recipients to your Catalogue Solution and any Additional Services in the order",
-            "add new Additional Services",
+            "add service recipients to your catalogue solution and any additional services in the order",
+            "add new additional services",
             "assign funding sources to cover the increased cost of the order",
         };
 
         public List<string> DontItems => new()
         {
-            "add a new Catalogue Solution",
+            "add a new catalogue solution",
             "change the supplier",
-            "change the timescales for this Call-off Agreement",
-            "remove Service Recipients from the order",
+            "change the timescales for this call-off agreement",
+            "remove service recipients from the order",
             "change the price of any items previously included in the order",
             "change the quantity of items previously included in the order",
-            "make any changes to an Associated Service - to do this you'll need to create a new order",
+            "make any changes to an associated service - to do this you'll need to create a new order",
         };
     }
 }

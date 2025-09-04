@@ -5,10 +5,10 @@
 }
 
 <partial name="_solutionSummary" model="Model"/>
-<p>These are the levels of service the supplier has committed to for this Catalogue Solution:</p>
+<p>These are the levels of service the supplier has committed to for this catalogue solution:</p>
 
 <h2 class="nhsuk-heading-m">Contact details</h2>
-<p>This is how you can contact support services for this Catalogue Solution.</p>
+<p>This is how you can contact support services for this catalogue solution.</p>
 <nhs-card-v2>
     <nhs-card-content>
         <nhs-table data-test-id="service-contacts-table">
@@ -38,7 +38,7 @@
 <hr/>
 
 <h2 class="nhsuk-heading-s">Service availability</h2>
-<p>This is when you can contact support services for this Catalogue Solution.</p>
+<p>This is when you can contact support services for this catalogue solution.</p>
 
 @foreach (var serviceAvailabilityTime in Model.ServiceAvailabilityTimes.OrderBy(sat => sat.Category).ThenBy(sat => sat.TimeFrom))
 {
@@ -76,7 +76,7 @@
 }
 <hr>
 <h2 class="nhsuk-heading-s">Service levels</h2>
-<p>These are the levels of service provided for this Catalogue Solution.</p>
+<p>These are the levels of service provided for this catalogue solution.</p>
 
 @foreach (var serviceLevel in Model.ServiceLevels)
 {

@@ -8,9 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
     public static class CatalogueItemTypeTests
     {
         [Theory]
-        [InlineData(CatalogueItemType.AdditionalService, "Additional Service")]
-        [InlineData(CatalogueItemType.AssociatedService, "Associated Service")]
-        [InlineData(CatalogueItemType.Solution, "Catalogue Solution")]
+        [InlineData(CatalogueItemType.AdditionalService, "additional service")]
+        [InlineData(CatalogueItemType.AssociatedService, "associated service")]
+        [InlineData(CatalogueItemType.Solution, "catalogue solution")]
         public static void DisplayName_ReturnsExpectedName(CatalogueItemType itemType, string expectedName)
         {
             var displayName = itemType.DisplayName();

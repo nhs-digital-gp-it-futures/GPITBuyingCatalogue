@@ -13,8 +13,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.SolutionSelection
     {
         public const string AmendmentTitle = "Amend items from the previous order";
         public const string CompletedTitle = "Edit solutions and services";
-        public const string MergerSplitTitle = "Edit Associated Service";
-        public const string InProgressTitle = "Catalogue Solution and services";
+        public const string MergerSplitTitle = "Edit associated service";
+        public const string InProgressTitle = "Catalogue solution and services";
 
         private readonly Dictionary<CatalogueItemId, TaskListOrderItemModel> taskModels = new();
 
