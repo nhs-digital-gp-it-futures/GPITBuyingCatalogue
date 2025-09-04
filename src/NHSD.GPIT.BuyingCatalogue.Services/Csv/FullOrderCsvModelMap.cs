@@ -69,8 +69,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
             Map(o => o.TieredArray).Index(25).Name(GetName(nameof(FullOrderCsvModel.TieredArray)));
             Map(o => o.InitialTerm).Index(26).Name(GetName(nameof(FullOrderCsvModel.InitialTerm)));
             Map(o => o.MaximumTerm).Index(27).Name(GetName(nameof(FullOrderCsvModel.MaximumTerm)));
-            Map(o => o.SubIcbCode).Index(30).Name(GetName(nameof(FullOrderCsvModel.SubIcbCode)));
-            Map(o => o.SubIcbName).Index(31).Name(GetName(nameof(FullOrderCsvModel.SubIcbName)));
+            Map(o => o.SubIcbCode).Index(28).Name(GetName(nameof(FullOrderCsvModel.SubIcbCode)));
+            Map(o => o.SubIcbName).Index(29).Name(GetName(nameof(FullOrderCsvModel.SubIcbName)));
         }
     }
 }
