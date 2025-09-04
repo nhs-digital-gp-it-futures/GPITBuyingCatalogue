@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices.AssociatedServicesModel;
 @{
-    ViewBag.Title = "Associated Services";
+    ViewBag.Title = "Associated services";
 }
 <partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
@@ -8,24 +8,19 @@
         <nhs-validation-summary/>
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SupplierName"
-                        advice="Select any services that help implement or optimise the live operation of your catalogue items."/>
+                        advice="If an associated service is not listed, you can add it using the link. It’ll then be available for selection on all your catalogue items."/>
 
         <vc:nhs-action-link url="@Url.Action(
                                      nameof(SupplierServicesController.AddAssociatedService),
                                      typeof(SupplierServicesController).ControllerName(),
-                                     new { supplierId = Model.SupplierId })" text=" Add an Associated Service"/>
-
-        <p>
-            If an Associated Service is not listed, you can add it using the link. It’ll then be available for selection
-            on all your catalogue items.
-        </p>
+                                     new { supplierId = Model.SupplierId })" text=" Add an associated service"/>
 
         @if (Model.AssociatedServices.Any())
         {
             <nhs-fieldset-form-container asp-for="@Model.AssociatedServices">
-                <nhs-table data-test-id="associated-services-table" label-text="Associated Services available">
+                <nhs-table data-test-id="associated-services-table" label-text="Associated services available">
                     <nhs-table-column>
-                        Associated Service
+                        Associated service
                     </nhs-table-column>
                     <nhs-table-column>
                         Description
@@ -58,7 +53,6 @@
                 </nhs-table>
             </nhs-fieldset-form-container>
         }
-
-        <nhs-submit-button/>
+        <vc:nhs-anchor-button text="Save and continue" url="@(Model.BackLink)" type="Primary"/>
     </div>
 </div>

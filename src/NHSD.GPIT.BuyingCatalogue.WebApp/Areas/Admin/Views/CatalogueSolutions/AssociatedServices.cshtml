@@ -1,66 +1,63 @@
 ﻿@using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.SolutionAssociatedServicesModel;
 @{
-    ViewBag.Title = "Associated Services";
+    ViewBag.Title = "Associated services";
 }
-<partial name="Partials/_BackLink" model="Model" />
+<partial name="Partials/_BackLink" model="Model"/>
 <div class="nhsuk-grid-row">
     <div class="nhsuk-grid-column-full">
-        <nhs-validation-summary />
+        <nhs-validation-summary/>
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.CatalogueItemName"
-                        advice="Select any services that help implement or optimise the live operation of your Catalogue Solution." />
+                        advice="Select any services that help implement or optimise the live operation of your Catalogue Solution."/>
 
-        @* <vc:nhs-action-link url="@Url.Action( *@
-        @*     nameof(CatalogueSolutionsController.AddAssociatedService), *@
-        @*     typeof(AssociatedServicesController).ControllerName(), *@
-        @*     new { SolutionId = Model.SolutionId })" text=" Add an Associated Service" /> *@
+        <vc:nhs-action-link url="@Url.Action(
+                                     nameof(SupplierServicesController.AssociatedServices),
+                                     typeof(SupplierServicesController).ControllerName(),
+                                     new { supplierId = Model.SolutionId.SupplierId })"
+                            text=" Manage associated services"/>
 
         <p>
-            If an Associated Service is not listed, you can add it using the link. It’ll then be available for selection on all your Catalogue Solutions.
+            If an associated service is not listed, you can add it using the manage associated services link. It’ll then
+            be available for selection on all your Catalogue Solutions.
         </p>
 
         <form method="post">
-            <input type="hidden" asp-for="@Model.BackLink" />
-            <input type="hidden" asp-for="@Model.BackLinkText" />
-            <input type="hidden" asp-for="@Model.CatalogueItemName" />
+            <input type="hidden" asp-for="@Model.BackLink"/>
+            <input type="hidden" asp-for="@Model.BackLinkText"/>
+            <input type="hidden" asp-for="@Model.CatalogueItemName"/>
 
             @if (Model.SelectableAssociatedServices.Any())
             {
                 <nhs-fieldset-form-container asp-for="@Model.SelectableAssociatedServices">
-                    <nhs-table data-test-id="associated-services-table" label-text="Associated Services available">
+                    <nhs-table data-test-id="associated-services-table" label-text="Associated services available">
                         <nhs-table-column>
 
                         </nhs-table-column>
                         <nhs-table-column>
-                            Associated Service
+                            Associated service
                         </nhs-table-column>
                         <nhs-table-column>
                             Description
                         </nhs-table-column>
                         <nhs-table-column>
-                            Status
+                            Order guidance
                         </nhs-table-column>
                         @for (int i = 0; i < Model.SelectableAssociatedServices.Count; i++)
                         {
-                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].Name" />
-                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].Description" />
-                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].PublishedStatus" />
-                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].PracticeReorganisation" />
+                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].Name"/>
+                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].Description"/>
+                            <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].OrderGuidance"/>
+                            <input type="hidden"
+                                   asp-for="@Model.SelectableAssociatedServices[i].PracticeReorganisation"/>
                             <nhs-table-row-container>
                                 <nhs-table-cell>
-                                    @if (Model.SelectableAssociatedServices[i].PublishedStatus == PublicationStatus.Published)
-                                    {
-                                        <nhs-checkbox-container>
-                                            <nhs-checkbox asp-for="@Model.SelectableAssociatedServices[i].Selected"
-                                              hidden-input="@Model.SelectableAssociatedServices[i].CatalogueItemId" />
-                                        </nhs-checkbox-container>
-                                    }
-                                    else
-                                    {
-                                        <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].CatalogueItemId" />
-                                    }
-                                    <input type="hidden" asp-for="@Model.SelectableAssociatedServices[i].PracticeReorganisation" />
+                                    <nhs-checkbox-container>
+                                        <nhs-checkbox asp-for="@Model.SelectableAssociatedServices[i].Selected"
+                                                      hidden-input="@Model.SelectableAssociatedServices[i].CatalogueItemId"/>
+                                    </nhs-checkbox-container>
+                                    <input type="hidden"
+                                           asp-for="@Model.SelectableAssociatedServices[i].PracticeReorganisation"/>
                                 </nhs-table-cell>
                                 <nhs-table-cell>
                                     @Model.SelectableAssociatedServices[i].Name
@@ -69,7 +66,7 @@
                                     @Model.SelectableAssociatedServices[i].Description
                                 </nhs-table-cell>
                                 <nhs-table-cell>
-                                    <nhs-tag status-enum="@Model.SelectableAssociatedServices[i].PublishedStatus" />
+                                    @Model.SelectableAssociatedServices[i].OrderGuidance
                                 </nhs-table-cell>
                             </nhs-table-row-container>
                         }
@@ -77,7 +74,7 @@
                 </nhs-fieldset-form-container>
             }
 
-            <nhs-submit-button />
+            <nhs-submit-button/>
 
         </form>
     </div>

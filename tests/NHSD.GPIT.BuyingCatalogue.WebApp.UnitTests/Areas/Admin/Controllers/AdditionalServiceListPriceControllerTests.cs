@@ -183,32 +183,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
         [Theory]
         [MockAutoData]
-        public static async Task Get_AddTieredListPrice_WithPriceId_ReturnsViewWithModel(
-            CatalogueItemId parentCatalogueItemId,
-            AdditionalService additionalService,
-            CataloguePrice cataloguePrice,
-            [Frozen] IAdditionalServicesService additionalServicesService,
-            AdditionalServiceListPriceController controller)
-        {
-            additionalService.CatalogueItem.CataloguePrices.Add(cataloguePrice);
-
-            var model = new AddTieredListPriceModel(parentCatalogueItemId, additionalService.CatalogueItem, cataloguePrice);
-
-            additionalServicesService.GetAdditionalService(parentCatalogueItemId, additionalService.CatalogueItemId).Returns(additionalService.CatalogueItem);
-
-            var result = (await controller.AddTieredListPrice(parentCatalogueItemId, additionalService.CatalogueItemId, cataloguePrice.CataloguePriceId)).As<ViewResult>();
-
-            result.Should().NotBeNull();
-            result.Model.Should()
-                .BeEquivalentTo(
-                    model,
-                    opt =>
-                        opt.Excluding(m => m.BackLink)
-                            .Excluding(m => m.DeleteListPriceUrl));
-        }
-
-        [Theory]
-        [MockAutoData]
         public static async Task Get_AddTieredListPrice_SolutionNotFound(
             CatalogueItemId solutionId,
             CatalogueItemId additionalServiceId,

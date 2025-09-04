@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
             {
                 Name = s.CatalogueItem.Name,
                 Description = s.Description,
-                PublishedStatus = s.CatalogueItem.PublishedStatus,
+                OrderGuidance = s.OrderGuidance,
                 CatalogueItemId = s.CatalogueItemId,
                 Selected = false,
                 PracticeReorganisation = s.PracticeReorganisationType,
@@ -53,7 +53,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
             {
                 Name = s.CatalogueItem.Name,
                 Description = s.Description,
-                PublishedStatus = s.CatalogueItem.PublishedStatus,
+                OrderGuidance = s.OrderGuidance,
                 CatalogueItemId = s.CatalogueItemId,
                 Selected = true,
                 PracticeReorganisation = s.PracticeReorganisationType,

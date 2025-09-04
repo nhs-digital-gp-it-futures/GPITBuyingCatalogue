@@ -18,7 +18,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public ManageListPricesModel(
             CatalogueItem catalogueItem,
             ICollection<CataloguePrice> prices)
-        : this(prices)
+            : this(prices)
         {
             CatalogueItemId = catalogueItem.Id;
             CatalogueItemName = catalogueItem.Name;
@@ -29,13 +29,24 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             CatalogueItemId catalogueItemId,
             CatalogueItem service,
             ICollection<CataloguePrice> prices)
-        : this(prices)
+            : this(prices)
         {
             CatalogueItemId = catalogueItemId;
             ServiceId = service.Id;
             CatalogueItemName = service.Name;
             CatalogueItemType = service.CatalogueItemType;
         }
+
+        public ManageListPricesModel(
+            int supplierId,
+            CatalogueItem service,
+            ICollection<CataloguePrice> prices)
+            : this(service, prices)
+        {
+            SupplierId = supplierId;
+        }
+
+        public int? SupplierId { get; set; }
 
         public CatalogueItemId ServiceId { get; set; }
 

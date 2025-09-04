@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
 
         public string Description { get; set; }
 
-        public PublicationStatus PublishedStatus { get; set; }
+        public string OrderGuidance { get; set; }
 
         public bool Selected { get; set; }
 

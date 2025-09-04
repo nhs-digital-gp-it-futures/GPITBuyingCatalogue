@@ -32,7 +32,7 @@
                 <nhs-table-cell>Yes</nhs-table-cell>
                 <nhs-table-cell><nhs-tag status-enum="@Model.ListPriceStatus" /></nhs-table-cell>
                 <nhs-table-cell>
-                    <a asp-controller="@typeof(AssociatedServiceListPriceController).ControllerName()"
+                    <a asp-controller="@(typeof(AssociatedServiceListPriceController).ControllerName())"
                        asp-action="@nameof(AssociatedServiceListPriceController.Index)"
                        asp-route-supplierId="@Model.SupplierId"
                        asp-route-associatedServiceId="@Model.AssociatedServiceId">

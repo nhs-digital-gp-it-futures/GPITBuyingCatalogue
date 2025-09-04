@@ -12,14 +12,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         }
 
         public EditTieredListPriceModel(CatalogueItem catalogueItem, CataloguePrice price, int maximumNumberOfTiers)
-            : base(catalogueItem, price)
+            : base(catalogueItem)
         {
-            Tiers = price.CataloguePriceTiers.ToList();
-            SelectedPublicationStatus
-                = CataloguePricePublicationStatus
-                = price.PublishedStatus;
-
-            MaximumNumberOfTiers = maximumNumberOfTiers;
+            SetPriceDetails(price, maximumNumberOfTiers);
         }
 
         public EditTieredListPriceModel(
@@ -27,14 +22,19 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
             CatalogueItem service,
             CataloguePrice price,
             int maximumNumberOfTiers)
-            : base(catalogueItemId, service, price)
+            : base(catalogueItemId, service)
         {
-            Tiers = price.CataloguePriceTiers.ToList();
-            SelectedPublicationStatus
-                = CataloguePricePublicationStatus
-                    = price.PublishedStatus;
+            SetPriceDetails(price, maximumNumberOfTiers);
+        }
 
-            MaximumNumberOfTiers = maximumNumberOfTiers;
+        public EditTieredListPriceModel(
+            int supplierId,
+            CatalogueItem service,
+            CataloguePrice price,
+            int maximumNumberOfTiers)
+            : this(service, price, maximumNumberOfTiers)
+        {
+            SupplierId = supplierId;
         }
 
         public IList<CataloguePriceTier> Tiers { get; set; }
@@ -42,5 +42,26 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public int MaximumNumberOfTiers { get; set; }
 
         public string AddPricingTierUrl { get; set; }
+
+        private void SetPriceDetails(CataloguePrice price, int maximumNumberOfTiers)
+        {
+            CataloguePriceId = price.CataloguePriceId;
+            UnitDescription = price.PricingUnit.Description;
+            UnitDefinition = price.PricingUnit.Definition;
+            RangeDefinition = price.PricingUnit.RangeDescription;
+
+            SelectedCalculationType = price.CataloguePriceCalculationType;
+            SelectedProvisioningType = price.ProvisioningType;
+
+            AssignBillingPeriod(price);
+            AssignQuantityCalculationType(price);
+
+            Tiers = price.CataloguePriceTiers.ToList();
+            SelectedPublicationStatus
+                = CataloguePricePublicationStatus
+                    = price.PublishedStatus;
+
+            MaximumNumberOfTiers = maximumNumberOfTiers;
+        }
     }
 }

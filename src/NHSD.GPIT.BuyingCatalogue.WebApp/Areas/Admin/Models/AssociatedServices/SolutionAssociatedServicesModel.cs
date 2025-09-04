@@ -25,7 +25,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
                 {
                     Name = s.CatalogueItem.Name,
                     Description = s.Description,
-                    PublishedStatus = s.CatalogueItem.PublishedStatus,
+                    OrderGuidance = s.OrderGuidance,
                     CatalogueItemId = s.CatalogueItemId,
                     Selected = catalogueItem.SupplierServiceAssociations.Any(ssa => ssa.AssociatedServiceId == s.CatalogueItemId),
                     PracticeReorganisation = s.PracticeReorganisationType,
