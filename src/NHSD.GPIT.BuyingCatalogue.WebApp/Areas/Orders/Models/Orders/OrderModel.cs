@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         {
             new(OrderSummaryField.OrderDescription, "Provide a description of your order."),
             new(OrderSummaryField.OrderingParty, "Provide information about the primary contact for your order."),
-            new(OrderSummaryField.Supplier, "Find the supplier you want to order from and select a supplier contact."),
+            new(OrderSummaryField.Supplier, "Find the supplier you want to order from and select a contact."),
             new(OrderSummaryField.CommencementDate, "Provide the commencement date, the length of the contract and its initial period."),
             new(OrderSummaryField.ServiceRecipients, "Select the organisations you want to receive this solution."),
             new(OrderSummaryField.SolutionsAndServices, "Select a solution or services, prices and quantities."),
