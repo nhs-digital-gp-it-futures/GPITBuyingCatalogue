@@ -96,7 +96,7 @@
                     @if (Model.Order.OrderingPartyContact != null)
                     {
                         <nhs-table-row-container data-test-id="ordering-party-contact">
-                            <nhs-table-row-header-cell>Call-off ordering party contact</nhs-table-row-header-cell>
+                            <nhs-table-row-header-cell>Primary contact</nhs-table-row-header-cell>
                             <nhs-table-cell>
                                 @($"{Model.Order.OrderingPartyContact.FirstName} {Model.Order.OrderingPartyContact.LastName}")<br/>
                                 @($"{Model.Order.OrderingPartyContact.Email}")<br />
