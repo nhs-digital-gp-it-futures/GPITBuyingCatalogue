@@ -5,9 +5,11 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -986,8 +988,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             AssociatedService associatedService,
             int cataloguePriceId,
             [Frozen] IAssociatedServicesService associatedServicesService,
+            [Frozen] HeaderDictionary headerDictionary,
             AssociatedServiceListPriceController controller)
         {
+            headerDictionary.IsReadOnly = false;
+            headerDictionary[HeaderNames.Referer] = "https://localhost:5001/path";
+
             associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedService.CatalogueItemId).Returns(associatedService.CatalogueItem);
 
             var model = new DeleteItemConfirmationModel(

@@ -5,9 +5,11 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -924,8 +926,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             int cataloguePriceId,
             [Frozen] IListPriceService service,
+            [Frozen] HeaderDictionary headerDictionary,
             CatalogueSolutionListPriceController controller)
         {
+            headerDictionary.IsReadOnly = false;
+            headerDictionary[HeaderNames.Referer] = "https://localhost:5001/path";
+
             service.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new DeleteItemConfirmationModel(
