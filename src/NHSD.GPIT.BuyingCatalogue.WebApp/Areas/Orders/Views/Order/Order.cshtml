@@ -45,7 +45,7 @@
                                         url="@Model.DescriptionUrl"
                                         status="@Model.Progress.DescriptionStatus" />
 
-                    <nhs-task-list-item label-text="Call-off Ordering Party contact details"
+                    <nhs-task-list-item label-text="Primary contact details"
                                         label-hint="@Model.StatusDescription(OrderSummaryField.OrderingParty)"
                                         data-test-id="test-calloff-party"
                                         url="@Url.Action(nameof(OrderingPartyController.OrderingParty), typeof(OrderingPartyController).ControllerName(), new { Model.InternalOrgId, Model.CallOffId })"
