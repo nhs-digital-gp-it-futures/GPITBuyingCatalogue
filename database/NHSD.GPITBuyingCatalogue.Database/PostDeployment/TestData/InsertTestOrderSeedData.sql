@@ -23,12 +23,13 @@ BEGIN
     DECLARE
         @SupplierId INT = 99999, --notEmis Health,
         @CatalogueSolutionId NVARCHAR(14) = '99999-89', --NotEmis Web GP
-        @CatalogueSolutionPriceId INT = 19, --NotEmis Web GP Tiered Price
         @AdditionalServiceId NVARCHAR(14) = '99999-89-A01', --NotEmis Web GP additional service
-        @AdditionalServicePriceId INT = 29, --NotEmis Web GP Additional Service Flat Price
         @AssociatedServicesOnly INT = 0,
         @LastBuyerContactId INT,
         @LastSupplierContactId INT;
+
+    DECLARE @CatalogueSolutionPriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @CatalogueSolutionId AND PublishedStatusId = 3); --NotEmis Web GP Price
+    DECLARE @AdditionalServicePriceId INT = (SELECT TOP 1 CataloguePriceId FROM catalogue.CataloguePrices WHERE CatalogueItemId = @AdditionalServiceId AND PublishedStatusId = 3); --NotEmis Web GP additional service Price
 
     DECLARE @TestOrdersContacts TABLE(
         Id INT NOT NULL,
@@ -285,7 +286,7 @@ BEGIN
     SELECT
         @orderId,
         @CatalogueSolutionId,
-        0,
+        CP.CataloguePriceId,
         CP.TimeUnitId,
         CP.ProvisioningTypeId,
         CP.CataloguePriceTypeId,
@@ -338,7 +339,7 @@ BEGIN
     SELECT
         @orderId,
         @AdditionalServiceId,
-        0,
+        CP.CataloguePriceId,
         CP.TimeUnitId,
         CP.ProvisioningTypeId,
         CP.CataloguePriceTypeId,
