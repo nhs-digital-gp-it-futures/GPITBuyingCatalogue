@@ -1,73 +1,78 @@
 ﻿:r ./InfrastructureUsers.sql
-:r ./InsertOrganisationTypes.sql
 :r ./InsertRoles.sql
 
-:r ./OdsOrganisationsSeedData/InsertOdsOrganisations.sql
-:r ./OdsOrganisationsSeedData/InsertRoleTypes.sql
-:r ./OdsOrganisationsSeedData/InsertRelationshipTypes.sql
-:r ./OdsOrganisationsSeedData/InsertOrganisationRoles.sql
-:r ./OdsOrganisationsSeedData/InsertOrganisationRelationships.sql
-
-:r ./CreateExecutiveAgency.sql
-:r ./CreateExecutiveAgencyUser.sql
-:r ./CreateIntegratedCareBoards.sql
-:r ./CreateCommissioningSupportUnits.sql
-:r ./CreateTestUsers.sql
-
+-- Lookup data
 :r ./Seed/InsertSeedIntegrations.sql
 :r ./InsertAllowedEmailDomains.sql
 :r ./InsertCapabilityStatuses.sql
-:r ./TestData/InsertCapabilityCategories.sql
 :r ./InsertCompliancyLevels.sql
 :r ./InsertPublicationStatuses.sql
 :r ./InsertSolutionCapabilityStatuses.sql
 :r ./InsertSolutionEpicStatuses.sql
 :r ./InsertCatalogueItemTypes.sql
-:r ./TestData/InsertFrameworks.sql
-:r ./TestData/InsertCapabilities.sql
 :r ./InsertCataloguePriceTypes.sql
 :r ./InsertCataloguePriceCalculationTypes.sql
 :r ./InsertCataloguePriceQuantityCalculationTypes.sql
-:r ./TestData/InsertEpics.sql
 :r ./InsertPricingUnits.sql
 :r ./InsertProvisioningTypes.sql
-:r ./InsertSuppliers.sql
 :r ./InsertStandardTypes.sql
-:r ./TestData/InsertStandards.sql
-:r ./TestData/InsertStandardsCapabilities.sql
-
 :r ./InsertOrderTriageValues.sql
 :r ./InsertOrderItemFundingTypes.sql
 :r ./InsertTimeUnits.sql
-:r ./InsertSolutions.sql
-:r ./InsertAdditionalServices.sql
-:r ./InsertAssociatedServices.sql
-:r ./InsertRelatedOrganisations.sql
-
 :r ./InsertEmailPreferenceRoleTypes.sql
 :r ./InsertEmailPreferenceTypes.sql
 :r ./InsertEventTypes.sql
 :r ./InsertEmailNotificationType.sql
-
-:r ./ProdLikeData/MergeSuppliers.sql
-:r ./ProdLikeData/MergeCatalogueItems.sql
-:r ./ProdLikeData/MergeSolutions.sql
-:r ./ProdLikeData/MergeAdditionalServices.sql
-:r ./ProdLikeData/MergeAssociatedServices.sql
-:r ./ProdLikeData/MergeMarketingContacts.sql
-:r ./ProdLikeData/MergeCatalogueItemEpics.sql
-:r ./ProdLikeData/MergeCatalogueItemCapabilities.sql
-:r ./ProdLikeData/MergeFrameworkSolutions.sql
-:r ./ProdLikeData/MergeCataloguePrices.sql
-
-:r ./OrderSeedData/InsertTestOrderSeedData.sql
-:r ./InsertSupplierServiceAssociations.sql
 :r ./InsertDefaultImplementationPlan.sql
+:r ./InsertOrganisationTypes.sql
 
+-- Organisation Data
+:r ./CreateExecutiveAgency.sql
+:r ./CreateExecutiveAgencyUser.sql
+:r ./CreateCommissioningSupportUnits.sql
+
+-----------------------------------------------------------------
+--                          TEST DATA                          --
+-----------------------------------------------------------------
+
+-- Insert ODS Organisation Data
+:r ./TestData/OdsOrganisationsSeedData/InsertOdsOrganisations.sql
+:r ./TestData/OdsOrganisationsSeedData/InsertRoleTypes.sql
+:r ./TestData/OdsOrganisationsSeedData/InsertRelationshipTypes.sql
+:r ./TestData/OdsOrganisationsSeedData/InsertOrganisationRoles.sql
+:r ./TestData/OdsOrganisationsSeedData/InsertOrganisationRelationships.sql
+
+-- Insert Organisation Data
+:r ./TestData/CreateIntegratedCareBoards.sql
+:r ./TestData/InsertRelatedOrganisations.sql
+
+-- Insert Test Users
+:r ./TestData/CreateTestUsers.sql
+
+-- Insert lookup test data (required for Solutions)
+:r ./TestData/InsertFrameworks.sql
+:r ./TestData/InsertStandards.sql
+:r ./TestData/InsertCapabilityCategories.sql
+:r ./TestData/InsertCapabilities.sql
+:r ./TestData/InsertStandardsCapabilities.sql
+:r ./TestData/InsertEpics.sql
+
+-- Insert Solutions and Catalogue Items
+:r ./TestData/Solutions/MergeSuppliers.sql
+:r ./TestData/Solutions/MergeCatalogueItems.sql
+:r ./TestData/Solutions/MergeSolutions.sql
+:r ./TestData/Solutions/MergeAssociatedServices.sql
+:r ./TestData/Solutions/MergeAdditionalServices.sql
+:r ./TestData/Solutions/MergeCatalogueItemCapabilities.sql
+:r ./TestData/Solutions/MergeCatalogueItemEpics.sql
+:r ./TestData/Solutions/MergeCataloguePrices.sql
+:r ./TestData/Solutions/MergeCataloguePriceTiers.sql
+:r ./TestData/Solutions/MergeServiceLevelAgreements.sql
+:r ./TestData/Solutions/MergeServiceAvailabilityTimes.sql
+:r ./TestData/Solutions/MergeServiceLevelContacts.sql
+:r ./TestData/Solutions/MergeServiceLevels.sql
+
+-- Insert Orders, Filters and Competitions
+:r ./TestData/InsertTestOrderSeedData.sql
 :r ./TestData/InsertFilters.sql
 :r ./TestData/Competitions/InsertCompetitions.sql
-:r ./TestData/Solutions/InsertServiceLevels.sql
-:r ./TestData/InsertWorkOffPlans.sql
-
-:r ./MigrationForCompetitionSublocationRecipients.sql
-:r ./MigrationForOrderSublocationRecipients.sql

@@ -1,11 +1,13 @@
 ﻿IF UPPER('$(INSERT_TEST_DATA)') = 'TRUE'
 BEGIN
 
+DECLARE @organisationId NVARCHAR(3) = (SELECT Id FROM organisations.Organisations WHERE ExternalIdentifier = 'QWO');
+
 SET IDENTITY_INSERT [filtering].[Filters] ON
 
-INSERT [filtering].[Filters] ([Id], [Name], [Description], [OrganisationId], [FrameworkId], [Created], [LastUpdated], [LastUpdatedBy], [IsDeleted]) VALUES (1, N'Single result filter', N'This filter should return a single result for EMIS Web GP', 40, NULL, GETUTCDATE(), GETUTCDATE(), 3, 0)
-INSERT [filtering].[Filters] ([Id], [Name], [Description], [OrganisationId], [FrameworkId], [Created], [LastUpdated], [LastUpdatedBy], [IsDeleted]) VALUES (2, N'Multiple result filter', N'This filter uses the Productivity Capability to return multiple results. No additional filters have been applied.', 40, NULL, GETUTCDATE(), GETUTCDATE(), 3,  0)
-INSERT [filtering].[Filters] ([Id], [Name], [Description], [OrganisationId], [FrameworkId], [Created], [LastUpdated], [LastUpdatedBy], [IsDeleted]) VALUES (3, N'No results filter', N'This filter uses a combination of Capabilities and additional filters to return no results.', 40, NULL, GETUTCDATE(), GETUTCDATE(), 3,  0)
+INSERT [filtering].[Filters] ([Id], [Name], [Description], [OrganisationId], [FrameworkId], [Created], [LastUpdated], [LastUpdatedBy], [IsDeleted]) VALUES (1, N'Single result filter', N'This filter should return a single result for EMIS Web GP', @organisationId, NULL, GETUTCDATE(), GETUTCDATE(), 3, 0)
+INSERT [filtering].[Filters] ([Id], [Name], [Description], [OrganisationId], [FrameworkId], [Created], [LastUpdated], [LastUpdatedBy], [IsDeleted]) VALUES (2, N'Multiple result filter', N'This filter uses the Productivity Capability to return multiple results. No additional filters have been applied.', @organisationId, NULL, GETUTCDATE(), GETUTCDATE(), 3,  0)
+INSERT [filtering].[Filters] ([Id], [Name], [Description], [OrganisationId], [FrameworkId], [Created], [LastUpdated], [LastUpdatedBy], [IsDeleted]) VALUES (3, N'No results filter', N'This filter uses a combination of Capabilities and additional filters to return no results.', @organisationId, NULL, GETUTCDATE(), GETUTCDATE(), 3,  0)
 
 SET IDENTITY_INSERT [filtering].[Filters] OFF
 
@@ -35,3 +37,5 @@ INSERT [filtering].[FilterCapabilities] ([FilterId], [CapabilityId]) VALUES (3, 
 INSERT [filtering].[FilterCapabilities] ([FilterId], [CapabilityId]) VALUES (3, 41)
 
 END
+
+GO
