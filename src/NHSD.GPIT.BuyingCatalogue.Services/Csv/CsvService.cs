@@ -197,6 +197,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         CallOffId = or.Order.CallOffId,
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
+                        SubIcbCode = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOdsCode,
+                        SubIcbName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOrganisation.Name,
                         CommencementDate = or.Order.CommencementDate,
                         ServiceRecipientId =
                             !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
@@ -249,12 +255,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                             == CataloguePriceCalculationType.Cumulative
                                 ? GetTieredArray(oir.OrderItem.OrderItemPrice.OrderItemPriceTiers)
                                 : string.Empty,
-                        SubIcbCode = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                                ? string.Empty
-                                : or.ParentSublocation.SublocationOdsCode,
-                        SubIcbName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
-                                ? string.Empty
-                                : or.ParentSublocation.SublocationOrganisation.Name,
                     })
                 .ToListAsync();
 
@@ -293,6 +293,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         CallOffId = or.Order.CallOffId,
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
+                        SubIcbCode = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOdsCode,
+                        SubIcbName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOrganisation.Name,
                         CommencementDate = or.Order.CommencementDate,
                         ServiceRecipientId = or.RecipientOdsCode,
                         ServiceRecipientName = or.RecipientOdsOrganisation.Name,
@@ -376,6 +382,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
                         CallOffId = or.Order.CallOffId,
                         OdsCode = or.Order.OrderingParty.ExternalIdentifier,
                         OrganisationName = or.Order.OrderingParty.Name,
+                        SubIcbCode = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOdsCode,
+                        SubIcbName = !(oir.OrderItem.OrderItemPrice as IPrice).IsPerServiceRecipient()
+                                ? string.Empty
+                                : or.ParentSublocation.SublocationOrganisation.Name,
                         CommencementDate = or.Order.CommencementDate,
                         ServiceRecipientId = or.Order.AssociatedServicesOnlyDetails.PracticeReorganisationOdsCode,
                         ServiceRecipientName = or.RecipientOdsOrganisation.Name,

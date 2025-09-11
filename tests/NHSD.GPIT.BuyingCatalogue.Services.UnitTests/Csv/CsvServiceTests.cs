@@ -8,10 +8,12 @@ using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
+using Bogus.DataSets;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 using FluentAssertions;
+using Microsoft.AspNetCore.SignalR;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Interfaces;
@@ -29,6 +31,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Call Off Agreement ID",
             "Call Off Ordering Party ID",
             "Call Off Ordering Party Name",
+            "Sub ICB Code",
+            "Sub ICB Name",
             "Call Off Commencement Date",
             "Service Recipient ID",
             "Service Recipient Name",
@@ -61,6 +65,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Call Off Agreement ID",
             "Call Off Ordering Party ID",
             "Call Off Ordering Party Name",
+            "Sub ICB Code",
+            "Sub ICB Name",
             "Call Off Commencement Date",
             "Practice to close / become branch site (ODS code)",
             "Practice to be retained (ODS code)",
@@ -93,6 +99,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Call Off Agreement ID",
             "Call Off Ordering Party ID",
             "Call Off Ordering Party Name",
+            "Sub ICB Code",
+            "Sub ICB Name",
             "Call Off Commencement Date",
             "Practice to split (ODS code)",
             "Practice to be retained (ODS code)",
