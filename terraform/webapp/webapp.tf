@@ -6,8 +6,8 @@ module "webapp" {
   project                         = var.project
   rg_name                         = azurerm_resource_group.webapp.name
   webapp_name                     = "${var.project}-${var.environment}-webapp"
-  sku_tier                        = local.is_live_environment ? "PremiumV2" : "Standard"
-  sku_size                        = local.is_live_environment ? "P2v2" : "S1"
+  sku_tier                        = local.web_sku_tier
+  sku_size                        = local.web_sku_size
   repository_name                 = "nhsd/buying-catalogue/nhsdgpitbuyingcataloguewebapp"
   always_on                       = local.shortenv == "production" ? "true" : "false"
   aspnet_environment              = var.environment
