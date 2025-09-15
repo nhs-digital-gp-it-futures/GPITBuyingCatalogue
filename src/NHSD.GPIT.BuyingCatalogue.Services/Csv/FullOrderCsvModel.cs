@@ -65,5 +65,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Csv
         public string PricingType { get; set; }
 
         public string TieredArray { get; set; }
+
+        public string SubIcbCode { get; set; }
+
+        public string SubIcbName { get; set; }
     }
 }

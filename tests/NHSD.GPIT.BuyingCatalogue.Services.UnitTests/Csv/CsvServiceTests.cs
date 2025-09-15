@@ -29,6 +29,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Call Off Agreement ID",
             "Call Off Ordering Party ID",
             "Call Off Ordering Party Name",
+            "Sub ICB Code",
+            "Sub ICB Name",
             "Call Off Commencement Date",
             "Service Recipient ID",
             "Service Recipient Name",
@@ -61,6 +63,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Call Off Agreement ID",
             "Call Off Ordering Party ID",
             "Call Off Ordering Party Name",
+            "Sub ICB Code",
+            "Sub ICB Name",
             "Call Off Commencement Date",
             "Practice to close / become branch site (ODS code)",
             "Practice to be retained (ODS code)",
@@ -93,6 +97,8 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             "Call Off Agreement ID",
             "Call Off Ordering Party ID",
             "Call Off Ordering Party Name",
+            "Sub ICB Code",
+            "Sub ICB Name",
             "Call Off Commencement Date",
             "Practice to split (ODS code)",
             "Practice to be retained (ODS code)",
@@ -497,8 +503,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             workingSublocation.SublocationRecipients = [recipient];
 
             Order amend = order.BuildAmendment(2);
+
             OrderSublocationRecipient addedRecipient = BuildOrderRecipient(fixture, [orderItem]);
-            amend.OrderSublocations.First().SublocationRecipients.Add(addedRecipient);
+            var amendSublocation = amend.OrderSublocations.First();
+            amendSublocation.SublocationOrganisation = workingSublocation.SublocationOrganisation;
+            amendSublocation.SublocationRecipients.Add(addedRecipient);
             amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
 
             dbContext.Orders.Add(order);
@@ -559,6 +568,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             workingSublocation.SublocationRecipients = [recipient];
 
             Order amend = order.BuildAmendment(2);
+
             OrderItem addedOrderItem = BuildOrderItem(
                 fixture,
                 addedCatalogueItem,
@@ -570,7 +580,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             OrderSublocationRecipient addedRecipient = BuildOrderRecipient(
                 fixture,
                 [orderItem, addedOrderItem]);
-            amend.OrderSublocations.First().SublocationRecipients.Add(addedRecipient);
+            var amendSublocation = amend.OrderSublocations.First();
+            amendSublocation.SublocationOrganisation = workingSublocation.SublocationOrganisation;
+            amendSublocation.SublocationRecipients.Add(addedRecipient);
             amend.OrderItems.Add(addedOrderItem);
             amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
 
@@ -651,8 +663,11 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.Csv
             workingSublocation.SublocationRecipients = [recipient];
 
             Order amend = order.BuildAmendment(2);
+
             OrderSublocationRecipient addedRecipient = BuildOrderRecipient(fixture, [orderItem]);
-            amend.OrderSublocations.First().SublocationRecipients.Add(addedRecipient);
+            var amendSublocation = amend.OrderSublocations.First();
+            amendSublocation.SublocationOrganisation = workingSublocation.SublocationOrganisation;
+            amendSublocation.SublocationRecipients.Add(addedRecipient);
             amend.OrderItems.First().OrderItemFunding = BuildFunding(fixture, OrderItemFundingType.NoFundingRequired);
 
             dbContext.Orders.Add(order);
