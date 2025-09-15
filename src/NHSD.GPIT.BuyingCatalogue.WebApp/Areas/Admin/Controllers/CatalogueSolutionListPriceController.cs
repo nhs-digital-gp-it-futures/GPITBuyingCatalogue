@@ -81,24 +81,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         }
 
         [HttpGet("add-tiered-list-price")]
-        public async Task<IActionResult> AddTieredListPrice(CatalogueItemId solutionId, int? cataloguePriceId = null)
+        public async Task<IActionResult> AddTieredListPrice(CatalogueItemId solutionId)
         {
             var solution = await listPriceService.GetCatalogueItemWithListPrices(solutionId);
             if (solution is null)
                 return NotFound();
 
-            AddTieredListPriceModel model = cataloguePriceId is not null
-                ? new(solution, solution.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId))
-                {
-                    DeleteListPriceUrl = Url.Action(
-                        nameof(DeleteListPrice),
-                        new { solutionId, cataloguePriceId }),
-                }
-                : new(solution);
-
-            model.BackLink = Url.Action(
-                nameof(ListPriceType),
-                new { solutionId });
+            var model = new AddTieredListPriceModel(solution)
+            {
+                BackLink = Url.Action(
+                    nameof(ListPriceType),
+                    new { solutionId }),
+            };
 
             return View("ListPrices/AddTieredListPrice", model);
         }
@@ -174,7 +168,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new TieredPriceTiersModel(solution, price, priceTiersCapSettings.MaximumNumberOfPriceTiers)
             {
-                BackLink = Url.Action(nameof(AddTieredListPrice), new { solutionId, cataloguePriceId }),
+                BackLink = Url.Action(nameof(EditTieredListPrice), new { solutionId, cataloguePriceId }),
                 AddTieredPriceTierUrl = Url.Action(
                     nameof(AddTieredPriceTier),
                     typeof(CatalogueSolutionListPriceController).ControllerName(),
@@ -446,7 +440,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
                 solution.Name,
                 "This list price will be deleted")
             {
-                BackLink = HttpContext.Request.Headers.Referer.ToString(),
+                BackLink = new Uri(HttpContext.Request.Headers.Referer).AbsolutePath,
             };
 
             return View("ListPrices/DeleteItem", model);

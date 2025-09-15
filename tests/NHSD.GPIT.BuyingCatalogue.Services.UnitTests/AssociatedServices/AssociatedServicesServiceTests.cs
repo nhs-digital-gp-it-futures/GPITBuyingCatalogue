@@ -122,42 +122,29 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.UnitTests.AssociatedServices
 
         [Theory]
         [MockInMemoryDbAutoData]
-        public static Task AddAssociatedService_NullCatalogueItem_ThrowsException(
-        AssociatedServicesDetailsModel model,
-        AssociatedServicesService service)
-        {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddAssociatedService(null, model));
-        }
-
-        [Theory]
-        [MockInMemoryDbAutoData]
         public static Task AddAssociatedService_NullModel_ThrowsException(
-            CatalogueItem item,
+            int supplierId,
             AssociatedServicesService service)
         {
-            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddAssociatedService(item, null));
+            return Assert.ThrowsAsync<ArgumentNullException>(() => service.AddAssociatedService(supplierId, null));
         }
 
         [Theory]
         [MockInMemoryDbAutoData]
         public static async Task AddAssociatedService_UpdatesDatabase(
-           [Frozen] BuyingCatalogueDbContext context,
-           CatalogueItem solution,
+            int supplierId,
            AssociatedServicesDetailsModel model,
+           [Frozen] BuyingCatalogueDbContext context,
            AssociatedServicesService service)
         {
-            context.CatalogueItems.Add(solution);
-            await context.SaveChangesAsync();
-            context.ChangeTracker.Clear();
-
-            var result = await service.AddAssociatedService(solution, model);
+            var result = await service.AddAssociatedService(supplierId, model);
 
             var dbSolution = await context.CatalogueItems.Include(c => c.AssociatedService).FirstAsync(c => c.Id == result);
 
             dbSolution.Should().NotBeNull();
             dbSolution.Name.Should().Be(model.Name);
             dbSolution.CatalogueItemType.Should().Be(CatalogueItemType.AssociatedService);
-            dbSolution.SupplierId.Should().Be(solution.SupplierId);
+            dbSolution.SupplierId.Should().Be(supplierId);
             dbSolution.PublishedStatus.Should().Be(PublicationStatus.Draft);
             dbSolution.AssociatedService.Should().NotBeNull();
             dbSolution.AssociatedService.Description.Should().Be(model.Description);

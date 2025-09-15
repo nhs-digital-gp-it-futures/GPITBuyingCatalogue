@@ -17,48 +17,22 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         {
         }
 
-        public AddTieredListPriceModel(CatalogueItem catalogueItem, CataloguePrice cataloguePrice)
-            : this(cataloguePrice)
-        {
-            CatalogueItemId = catalogueItem.Id;
-            CatalogueItemName = catalogueItem.Name;
-            CatalogueItemType = catalogueItem.CatalogueItemType;
-        }
-
         public AddTieredListPriceModel(
-            CatalogueItem solution,
+            CatalogueItemId catalogueItemId,
             CatalogueItem service)
         {
-            CatalogueItemId = solution.Id;
+            CatalogueItemId = catalogueItemId;
             CatalogueItemName = service.Name;
             CatalogueItemType = service.CatalogueItemType;
             ServiceId = service.Id;
         }
 
         public AddTieredListPriceModel(
-            CatalogueItem solution,
-            CatalogueItem service,
-            CataloguePrice cataloguePrice)
-            : this(cataloguePrice)
+            int supplierId,
+            CatalogueItem service)
+            : this(service)
         {
-            CatalogueItemId = solution.Id;
-            CatalogueItemName = service.Name;
-            CatalogueItemType = service.CatalogueItemType;
-            ServiceId = service.Id;
-        }
-
-        private AddTieredListPriceModel(CataloguePrice cataloguePrice)
-        {
-            CataloguePriceId = cataloguePrice.CataloguePriceId;
-            UnitDescription = cataloguePrice.PricingUnit.Description;
-            UnitDefinition = cataloguePrice.PricingUnit.Definition;
-            RangeDefinition = cataloguePrice.PricingUnit.RangeDescription;
-
-            SelectedCalculationType = cataloguePrice.CataloguePriceCalculationType;
-            SelectedProvisioningType = cataloguePrice.ProvisioningType;
-
-            AssignBillingPeriod(cataloguePrice);
-            AssignQuantityCalculationType(cataloguePrice);
+            SupplierId = supplierId;
         }
 
         public override IEnumerable<SelectOption<CataloguePriceCalculationType>> AvailableCalculationTypes =>
@@ -74,14 +48,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
                     CataloguePriceCalculationType.Cumulative),
             };
 
+        public int? SupplierId { get; set; }
+
         public CatalogueItemId? ServiceId { get; set; }
 
         public override PricingUnit GetPricingUnit()
             => new()
             {
-                Description = UnitDescription,
-                Definition = UnitDefinition,
-                RangeDescription = RangeDefinition,
+                Description = UnitDescription, Definition = UnitDefinition, RangeDescription = RangeDefinition,
             };
     }
 }

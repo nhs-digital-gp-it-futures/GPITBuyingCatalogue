@@ -13,7 +13,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [MockAutoData]
         public static void Validate_SolutionMergerAndSplits_SetsModelError(
             List<SelectableAssociatedService> services,
-            AssociatedServicesModel model,
+            SolutionAssociatedServicesModel model,
             AssociatedServicesModelValidator validator)
         {
             services.ForEach(s =>
@@ -33,7 +33,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [MockAutoData]
         public static void Validate_Valid_NoModelError(
-            AssociatedServicesModel model,
+            SolutionAssociatedServicesModel model,
             AssociatedServicesModelValidator validator)
         {
             var result = validator.TestValidate(model);

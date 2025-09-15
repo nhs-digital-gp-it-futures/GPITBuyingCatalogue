@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Suppliers;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ApplicationTypeModels;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models.SuggestionSearch;
@@ -28,17 +30,20 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         private readonly ISolutionsService solutionsService;
         private readonly ISuppliersService suppliersService;
         private readonly ICapabilitiesService capabilitiesService;
+        private readonly IAssociatedServicesService associatedServicesService;
         private readonly ISolutionPublicationStatusService publicationStatusService;
 
         public CatalogueSolutionsController(
             ISolutionsService solutionsService,
             ISuppliersService suppliersService,
             ICapabilitiesService capabilitiesService,
+            IAssociatedServicesService associatedServicesService,
             ISolutionPublicationStatusService publicationStatusService)
         {
             this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
             this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
             this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
+            this.associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
             this.publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
         }
 
@@ -379,6 +384,46 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             await capabilitiesService.AddCapabilitiesToCatalogueItem(solutionId, saveRequestModel);
 
             return RedirectToAction(nameof(ManageCatalogueSolution), new { solutionId });
+        }
+
+        [HttpGet("manage/{solutionId}/associated-services")]
+        public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId)
+        {
+            var catalogueItem = await solutionsService.GetCatalogueItemWithSupplierServiceAssociations(solutionId);
+            if (catalogueItem is null)
+                return BadRequest($"No Catalogue Item found for Id: {solutionId}");
+
+            var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(catalogueItem.Supplier.Id);
+
+            var model = new SolutionAssociatedServicesModel(catalogueItem, associatedServices)
+            {
+                BackLink = Url.Action(
+                    nameof(ManageCatalogueSolution),
+                    new { solutionId }),
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("manage/{solutionId}/associated-services")]
+        public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, SolutionAssociatedServicesModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (model.SelectableAssociatedServices is null)
+            {
+                return RedirectToAction(
+                    nameof(ManageCatalogueSolution),
+                    new { solutionId });
+            }
+
+            var associatedServices = model.SelectableAssociatedServices.Where(a => a.Selected).Select(a => a.CatalogueItemId);
+            await associatedServicesService.RelateAssociatedServicesToSolution(solutionId, associatedServices);
+
+            return RedirectToAction(
+                nameof(ManageCatalogueSolution),
+                new { solutionId });
         }
 
         private async Task<IEnumerable<CatalogueItem>> GetFilteredItems(string search)

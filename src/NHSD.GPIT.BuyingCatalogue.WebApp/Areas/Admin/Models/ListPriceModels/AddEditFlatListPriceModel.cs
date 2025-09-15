@@ -45,16 +45,16 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ListPriceModels
         public IEnumerable<SelectOption<string>> AvailableBillingPeriods => new List<SelectOption<string>>
         {
             new("None", null, true),
-            new(TimeUnit.PerMonth.Description(), TimeUnit.PerMonth.ToString(), false),
-            new(TimeUnit.PerYear.Description(), TimeUnit.PerYear.ToString(), false),
+            new(TimeUnit.PerMonth.Description(), nameof(TimeUnit.PerMonth), false),
+            new(TimeUnit.PerYear.Description(), nameof(TimeUnit.PerYear), false),
         };
 
-        public IEnumerable<SelectOption<string>> AvailableProvisioningTypes => new SelectOption<string>[]
-        {
-            new(ProvisioningType.Patient.Name(), ProvisioningType.Patient.ToString()),
-            new(ProvisioningType.Declarative.Name(), ProvisioningType.Declarative.ToString()),
-            new(ProvisioningType.OnDemand.Name(), ProvisioningType.OnDemand.ToString()),
-        };
+        public IEnumerable<SelectOption<string>> AvailableProvisioningTypes =>
+        [
+            new(ProvisioningType.Patient.Name(), nameof(ProvisioningType.Patient)),
+            new(ProvisioningType.Declarative.Name(), nameof(ProvisioningType.Declarative)),
+            new(ProvisioningType.OnDemand.Name(), nameof(ProvisioningType.OnDemand)),
+        ];
 
         public IEnumerable<SelectOption<CataloguePriceQuantityCalculationType>>
             AvailableQuantityCalculationTypes => new List<SelectOption<CataloguePriceQuantityCalculationType>>

@@ -193,8 +193,8 @@
                     <nhs-table-cell>No</nhs-table-cell>
                     <nhs-table-cell><nhs-tag status-enum="@Model.AssociatedServicesStatus" /></nhs-table-cell>
                     <nhs-table-cell>
-                        <a asp-controller="@typeof(AssociatedServicesController).ControllerName()"
-                           asp-action="@nameof(AssociatedServicesController.AssociatedServices)"
+                        <a asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                           asp-action="@nameof(CatalogueSolutionsController.AssociatedServices)"
                            asp-route-solutionId="@Model.SolutionId">Edit</a>
                     </nhs-table-cell>
                 </nhs-table-row-container>
@@ -286,4 +286,3 @@
         </form>
     </div>
 </div>
-

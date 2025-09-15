@@ -7,7 +7,7 @@ using NHSD.GPIT.BuyingCatalogue.Framework.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices
 {
     public sealed class EditAssociatedServiceModel : NavBaseModel
     {
@@ -15,12 +15,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         {
         }
 
-        public EditAssociatedServiceModel(CatalogueItem solution, CatalogueItem associatedService)
+        public EditAssociatedServiceModel(Supplier supplier, CatalogueItem associatedService)
             : this()
         {
-            SolutionId = solution.Id;
-            SolutionName = solution.Name;
-            SupplierName = solution.Supplier.Name;
+            SupplierId = supplier.Id;
+            SupplierName = supplier.Name;
             AssociatedServiceId = associatedService.Id;
             AssociatedServiceName = associatedService.Name;
             SelectedPublicationStatus = associatedService.PublishedStatus;
@@ -39,17 +38,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
                     : TaskProgress.NotStarted;
         }
 
-        public EditAssociatedServiceModel(CatalogueItem solution, CatalogueItem associatedService, IList<CatalogueItem> relatedSolutions)
-            : this(solution, associatedService)
+        public EditAssociatedServiceModel(Supplier supplier, CatalogueItem associatedService, IList<CatalogueItem> relatedSolutions)
+            : this(supplier, associatedService)
         {
             RelatedSolutions = relatedSolutions;
         }
 
-        public CatalogueItemId SolutionId { get; init; }
+        public int SupplierId { get; init; }
 
         public CatalogueItemId AssociatedServiceId { get; init; }
-
-        public string SolutionName { get; init; }
 
         public string AssociatedServiceName { get; init; }
 
