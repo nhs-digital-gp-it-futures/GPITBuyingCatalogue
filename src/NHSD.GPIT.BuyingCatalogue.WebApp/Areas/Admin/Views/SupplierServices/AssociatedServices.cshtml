@@ -13,7 +13,7 @@
         <vc:nhs-action-link url="@Url.Action(
                                      nameof(SupplierServicesController.AddAssociatedService),
                                      typeof(SupplierServicesController).ControllerName(),
-                                     new { supplierId = Model.SupplierId })" text=" Add an associated service"/>
+                                     new { supplierId = Model.SupplierId })" text="Add an associated service"/>
 
         @if (Model.AssociatedServices.Any())
         {
