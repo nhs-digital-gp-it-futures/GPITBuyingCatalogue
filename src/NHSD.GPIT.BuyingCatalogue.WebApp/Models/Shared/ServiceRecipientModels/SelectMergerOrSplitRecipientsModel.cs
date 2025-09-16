@@ -117,7 +117,7 @@ public sealed class SelectMergerOrSplitRecipientsModel : NavBaseModel
         {
             case OrderTypeEnum.AssociatedServiceSplit:
             {
-                Title = "Service Recipients splitting";
+                Title = "Service recipients splitting";
                 Advice =
                     "Select all the practices that will be involved in the split you’re ordering. They must all be using the same Catalogue Solution.";
                 break;
@@ -125,7 +125,7 @@ public sealed class SelectMergerOrSplitRecipientsModel : NavBaseModel
 
             case OrderTypeEnum.AssociatedServiceMerger:
             {
-                Title = "Service Recipients merging";
+                Title = "Service recipients merging";
                 Advice =
                     "Select all the practices that will be involved in the merger you’re ordering. They must all be using the same Catalogue Solution.";
                 break;

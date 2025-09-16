@@ -23,7 +23,7 @@
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-fieldset-form-label asp-for="MatchDates"
                                          label-text="@labelText"
-                                         label-hint="If you choose not to match, then the planned delivery date for the majority of your Service Recipients will be applied. You'll be able to edit them later."
+                                         label-hint="If you choose not to match, then the planned delivery date for the majority of your service recipients will be applied. You'll be able to edit them later."
                                          size="Small">
                     <nhs-radio-buttons asp-for="MatchDates"
                                        values="@Model.Options.Cast<object>()"

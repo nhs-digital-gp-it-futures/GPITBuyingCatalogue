@@ -23,7 +23,7 @@
                                     url="@Url.Action(nameof(CompetitionTaskListController.ShortlistedSolutions), typeof(CompetitionTaskListController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.SolutionSelection"/>
 
-                <nhs-task-list-item label-text="Service Recipients"
+                <nhs-task-list-item label-text="Service recipients"
                                     label-hint="Confirm who’ll be receiving the winning solution to help calculate total costs."
                                     url="@Url.Action(nameof(CompetitionRecipientsController.UploadOrSelectServiceRecipients), typeof(CompetitionRecipientsController).ControllerName(), routeValues)"
                                     status="@Model.TaskListModel.ServiceRecipients"/>
