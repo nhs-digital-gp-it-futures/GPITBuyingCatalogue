@@ -73,7 +73,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
         public void SupplierInformationAndContactForSplitOrder()
         {
             CommonActions.ClickLinkElement(SupplierObjects.SupplierContactDetailsLink);
-            CommonActions.HintText().Should().Be("There is only one supplier that provides an Associated Service supporting mergers and splits.".FormatForComparison());
+            CommonActions.HintText().Should().Be("There is only one supplier that provides an associated service supporting mergers and splits.".FormatForComparison());
         }
 
         public void SupplierInformationAndContactForMergerOrder()

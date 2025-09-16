@@ -3,7 +3,7 @@
 @using NHSD.GPIT.BuyingCatalogue.UI.Components.Views.Shared.Components.ActionLink
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement.RequirementModel
 @{
-    ViewBag.Title = "Associated Service requirements";
+    ViewBag.Title = "Associated service requirements";
 
     var addARequirementLink = Url.Action(
         nameof(RequirementController.AddRequirement),
@@ -18,7 +18,7 @@
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="Order @Model.CallOffId"
-                        advice="Provide details of any specific requirements for your Associated Services." />
+                        advice="Provide details of any specific requirements for your associated services." />
         
         <div class="nhsuk-u-margin-bottom-9">
             <nhs-details label-text="What are specific requirements?">

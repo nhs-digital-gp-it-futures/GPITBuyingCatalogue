@@ -98,7 +98,7 @@ public class SupplierServicesController(
         var associatedService =
             await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
         if (associatedService is null)
-            return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
+            return BadRequest($"No associated service found for Id: {associatedServiceId}");
 
         var relatedSolutions = await associatedServicesService.GetAllSolutionsForAssociatedService(associatedServiceId);
         var model = new EditAssociatedServiceModel(supplier, associatedService, relatedSolutions)
@@ -141,7 +141,7 @@ public class SupplierServicesController(
         var associatedService =
             await associatedServicesService.GetAssociatedServiceWithCataloguePrices(associatedServiceId);
         if (associatedService is null)
-            return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
+            return BadRequest($"No associated service found for Id: {associatedServiceId}");
 
         var solutionMergersAndSplits =
             await associatedServicesService.GetSolutionsWithMergerAndSplitTypesForButExcludingAssociatedService(
@@ -163,7 +163,7 @@ public class SupplierServicesController(
     {
         var associatedService = await associatedServicesService.GetAssociatedService(associatedServiceId);
         if (associatedService is null)
-            return BadRequest($"No Associated Service found for Id: {associatedServiceId}");
+            return BadRequest($"No associated service found for Id: {associatedServiceId}");
 
         if (!ModelState.IsValid)
             return View(model);

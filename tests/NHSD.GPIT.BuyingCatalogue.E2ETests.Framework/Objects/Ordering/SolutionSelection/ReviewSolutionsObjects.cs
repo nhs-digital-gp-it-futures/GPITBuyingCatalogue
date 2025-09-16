@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Solution
 
         public static By AddAssociatedServiceLink => By.XPath("//a[contains(@href, '/associated-services/add')]");
 
-        public static By ChangeAssociatedServiceLink => By.LinkText("Change Associated Services");
+        public static By ChangeAssociatedServiceLink => By.LinkText("Change associated services");
 
         public static By RemoveSolutionService(string service) => By.LinkText($"Remove {service}");
     }

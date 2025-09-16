@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
 {
     public class AddAssociatedServicesModelValidator : AbstractValidator<AddAssociatedServicesModel>
     {
-        public const string AdditionalServicesRequiredMissingErrorMessage = "Select yes if you want to add any Associated Services";
+        public const string AdditionalServicesRequiredMissingErrorMessage = "Select yes if you want to add any associated services";
 
         public AddAssociatedServicesModelValidator()
         {

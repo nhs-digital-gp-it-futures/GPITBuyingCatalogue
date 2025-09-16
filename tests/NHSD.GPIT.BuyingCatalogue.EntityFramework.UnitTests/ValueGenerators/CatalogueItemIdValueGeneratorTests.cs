@@ -203,7 +203,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
                 AssociatedService = new AssociatedService { },
                 Supplier = supplier,
                 SupplierId = supplier.Id,
-                Name = "Associated Service",
+                Name = "Associated service",
             };
 
             context.CatalogueItems.Add(associatedService);

@@ -743,7 +743,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Associated Service", "Order")]
+        [Trait("Edit associated service", "Order")]
         public void OrderWithSolutionUnder40K_EditAssociatedService()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -762,7 +762,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Associated Service", "Order")]
+        [Trait("Edit associated service", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditAssociatedService()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -781,7 +781,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Associated Service", "Order")]
+        [Trait("Edit associated service", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -800,7 +800,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Associated Service", "Order")]
+        [Trait("Edit associated service", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditAssociatedService()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -1611,7 +1611,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Associated Service", "Order")]
+        [Trait("Edit associated service", "Order")]
         public void OrderWithSolutionUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -1630,7 +1630,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Associated Service", "Order")]
+        [Trait("Edit associated service", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditAssociatedService_AddMultipleAssociatedServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();

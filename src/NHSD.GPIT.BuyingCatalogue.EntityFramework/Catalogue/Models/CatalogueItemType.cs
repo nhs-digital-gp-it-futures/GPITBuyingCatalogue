@@ -10,7 +10,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models
         [Display(Name = "Additional service")]
         AdditionalService = 2,
 
-        [Display(Name = "Associated Service")]
+        [Display(Name = "Associated service")]
         AssociatedService = 3,
     }
 }

@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.Extensions
     {
         [Theory]
         [InlineData(CatalogueItemType.AdditionalService, "Additional service")]
-        [InlineData(CatalogueItemType.AssociatedService, "Associated Service")]
+        [InlineData(CatalogueItemType.AssociatedService, "Associated service")]
         [InlineData(CatalogueItemType.Solution, "Catalogue solution")]
         public static void DisplayName_ReturnsExpectedName(CatalogueItemType itemType, string expectedName)
         {

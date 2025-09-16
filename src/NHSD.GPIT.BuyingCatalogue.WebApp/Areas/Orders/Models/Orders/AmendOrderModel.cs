@@ -36,7 +36,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
             "remove service recipients from the order",
             "change the price of any items previously included in the order",
             "change the quantity of items previously included in the order",
-            "make any changes to an Associated Service - to do this you'll need to create a new order",
+            "make any changes to an associated service - to do this you'll need to create a new order",
         };
     }
 }

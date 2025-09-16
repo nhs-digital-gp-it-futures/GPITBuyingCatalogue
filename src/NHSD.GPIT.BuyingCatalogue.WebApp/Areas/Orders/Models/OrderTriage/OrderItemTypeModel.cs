@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage
                 "Order clinical IT systems and their related services.",
                 CatalogueItemType.Solution),
             new(
-                "Associated Service only",
+                "Associated service only",
                 "Order products to support the implementation of a solution. For example, training or data migration or arranging the merging or splitting of existing practices.",
                 CatalogueItemType.AssociatedService),
         };

@@ -4,7 +4,7 @@
 @using ValidationSummaryTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.ValidationSummaryTagHelper
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Requirement.RequirementDetailsModel
 @{
-    ViewBag.Title = "Associated Service requirement";
+    ViewBag.Title = "Associated service requirement";
 }
 <partial name="Partials/_BackLink" model="Model" />
 
@@ -23,11 +23,11 @@
 
                 <nhs-select asp-for="SelectedOrderItemId"
                             asp-items="@Model.OrderItemOptions"
-                            label-text="Associated Service name"
-                            label-hint="Select the Associated Service this requirement will apply to." />
+                            label-text="Associated service name"
+                            label-hint="Select the associated service this requirement will apply to." />
 
                 <nhs-textarea asp-for="Details"
-                              label-text="What specific requirements do you have for this Associated Service"/>
+                              label-text="What specific requirements do you have for this associated service"/>
 
 
                 <nhs-button-group>

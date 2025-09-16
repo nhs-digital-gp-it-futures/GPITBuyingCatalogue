@@ -8,8 +8,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
     public class EditAssociatedServiceDetailsModelValidator : AbstractValidator<EditAssociatedServiceDetailsModel>
     {
-        private const string MultipleSolutions = "You cannot make these changes as the following solutions reference this service and already have an Associated Service of this type:";
-        private const string SingleSolution = "You cannot make these changes as the following solution references this service and already has an Associated Service of this type:";
+        private const string MultipleSolutions = "You cannot make these changes as the following solutions reference this service and already have an associated service of this type:";
+        private const string SingleSolution = "You cannot make these changes as the following solution references this service and already has an associated service of this type:";
         private readonly IAssociatedServicesService associatedServicesService;
 
         public EditAssociatedServiceDetailsModelValidator(IAssociatedServicesService associatedServicesService)
@@ -30,7 +30,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateServiceName)
-                .WithMessage("Associated Service name already exists. Enter a different name")
+                .WithMessage("Associated service name already exists. Enter a different name")
                 .OverridePropertyName(m => m.Name);
 
             RuleFor(m => m.SolutionMergerAndSplits)
@@ -48,7 +48,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .Must(model => model.PracticeReorganisation != PracticeReorganisationTypeEnum.None ?
                     model.HaveCorrectProvisioningAndCalculationTypes && model.NotHaveTieredPrices
                     : true)
-                .WithMessage("This Associated Service has invalid price types for mergers and splits. You must edit the price types first")
+                .WithMessage("This associated service has invalid price types for mergers and splits. You must edit the price types first")
                 .OverridePropertyName("practice-reorganisation");
         }
 

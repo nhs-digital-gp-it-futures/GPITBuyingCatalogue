@@ -20,7 +20,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
         internal static readonly PageTitleModel SingleSupplierConfirmationPageTitle = new()
         {
             Title = "Supplier information",
-            Advice = "There is only one supplier that provides an Associated Service supporting mergers and splits.",
+            Advice = "There is only one supplier that provides an associated service supporting mergers and splits.",
         };
 
         public ConfirmSupplierModel()

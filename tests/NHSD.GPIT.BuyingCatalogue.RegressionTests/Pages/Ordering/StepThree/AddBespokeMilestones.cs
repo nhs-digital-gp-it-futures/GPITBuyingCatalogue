@@ -34,14 +34,14 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.StepThree
         public void AssociatedServicesAddBespokeMilestones(int value)
         {
             CommonActions.ClickLinkElement(ImplementationPlanObjects.AssociatedServicesAddBespokeMilestone);
-            CommonActions.HintText().Should().Be("Add an Associated Service milestone.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Add an associated service milestone.".FormatForComparison());
             CommonActions.ClickDropDownListItem(value);
             AssociatedServicesEnterMilestoneName();
 
             CommonActions.HintText().Should().Be("Review the default milestones that will act as payment triggers and create bespoke ones if required.".FormatForComparison());
             CommonActions.ClickSave();
 
-            CommonActions.HintText().Should().Be("Provide details of any specific requirements for your Associated Services.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Provide details of any specific requirements for your associated services.".FormatForComparison());
             CommonActions.ClickSave();
         }
 

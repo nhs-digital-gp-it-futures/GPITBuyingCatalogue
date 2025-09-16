@@ -43,7 +43,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.Require
         [StringLength(500)]
         public string Details { get; set; }
 
-        public override string Advice => IsEdit ? "Edit Associated Service requirement." : "Add Associated Service requirement.";
+        public override string Advice => IsEdit ? "Edit associated service requirement." : "Add associated service requirement.";
 
         public IEnumerable<SelectOption<string>> OrderItemOptions => AssociatedServices.Select(x =>
             new SelectOption<string>(x.CatalogueItem.Name, x.CatalogueItem.Id.ToString())).ToList();

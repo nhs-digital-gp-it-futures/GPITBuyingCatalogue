@@ -58,7 +58,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.OrderType
         {
             CommonActions.ClickLastRadio();
             CommonActions.ClickSave();
-            CommonActions.HintText().Should().Be("Select the type of Associated Service you want to order.".FormatForComparison());
+            CommonActions.HintText().Should().Be("Select the type of associated service you want to order.".FormatForComparison());
 
             CommonActions.ClickRadioButtonWithValue(associatedServiceType.ToString());
             CommonActions.ClickSave();

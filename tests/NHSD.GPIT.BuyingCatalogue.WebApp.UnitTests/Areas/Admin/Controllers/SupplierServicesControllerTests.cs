@@ -187,7 +187,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
-            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Associated Service found for Id: {associatedServiceId}");
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No associated service found for Id: {associatedServiceId}");
         }
 
         [Theory]
@@ -250,7 +250,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
-            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Associated Service found for Id: {associatedServiceId}");
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No associated service found for Id: {associatedServiceId}");
         }
 
         [Theory]
@@ -293,7 +293,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             actual.Should().BeOfType<BadRequestObjectResult>();
 
-            actual.As<BadRequestObjectResult>().Value.Should().Be($"No Associated Service found for Id: {associatedServiceId}");
+            actual.As<BadRequestObjectResult>().Value.Should().Be($"No associated service found for Id: {associatedServiceId}");
         }
 
         [Theory]

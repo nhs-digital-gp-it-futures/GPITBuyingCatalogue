@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin.AssociatedS
 
         public static By AddAssociatedServiceContinueButton => By.LinkText("Continue");
 
-        public static By AddAssociatedServiceLink => By.LinkText("Add an Associated Service");
+        public static By AddAssociatedServiceLink => By.LinkText("Add an associated service");
 
         public static By AssociatedServicesTable => ByExtensions.DataTestId("associated-services-table");
 

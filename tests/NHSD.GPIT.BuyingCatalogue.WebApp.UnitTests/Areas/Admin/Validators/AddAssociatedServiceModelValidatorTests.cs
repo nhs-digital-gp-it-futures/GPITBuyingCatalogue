@@ -69,7 +69,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
-                .WithErrorMessage("Associated Service name already exists. Enter a different name");
+                .WithErrorMessage("Associated service name already exists. Enter a different name");
         }
 
         [Theory]

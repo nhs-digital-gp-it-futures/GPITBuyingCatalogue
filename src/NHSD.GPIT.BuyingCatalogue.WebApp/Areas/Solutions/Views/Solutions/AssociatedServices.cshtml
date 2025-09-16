@@ -7,19 +7,19 @@
 
 @model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models.AssociatedServicesModel
 @{
-    ViewBag.Title = "Solution Associated Services";
+    ViewBag.Title = "Solution associated services";
     var tieredPriceServices = Model.Services.Where(ci => ci.CataloguePrices.Any(p => p.CataloguePriceType == CataloguePriceType.Tiered)).ToList();
     var flatPriceServices = Model.Services.Where(ci => ci.CataloguePrices.Any(p => p.CataloguePriceType == CataloguePriceType.Flat)).ToList();
 }
 
 <div>
     <partial name="_solutionSummary" model="Model" />
-    <p>Associated Services help you to implement or optimise the live operation of a catalogue solution or additional service, for example, training or data migration.</p>
-    <p><strong>These are the Associated Services offered with this catalogue solution:</strong></p>
+    <p>Associated services help you to implement or optimise the live operation of a catalogue solution or additional service, for example, training or data migration.</p>
+    <p><strong>These are the associated services offered with this catalogue solution:</strong></p>
 
     @if (!Model.HasServices())
     {
-        <h2>No Associated Services setup</h2>
+        <h2>No associated services setup</h2>
     }
     else
     {
