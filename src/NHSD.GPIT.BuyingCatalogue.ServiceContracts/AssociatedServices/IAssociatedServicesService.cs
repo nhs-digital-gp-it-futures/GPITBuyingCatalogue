@@ -8,9 +8,9 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
 {
     public interface IAssociatedServicesService
     {
-        Task<List<CatalogueItem>> GetAllAssociatedServicesForSupplier(int? supplierId);
+        Task<List<AssociatedService>> GetAllAssociatedServicesForSupplier(int supplierId);
 
-        Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSupplier(int? supplierId);
+        Task<List<AssociatedService>> GetPublishedAssociatedServicesForSupplier(int supplierId);
 
         Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId? catalogueItemId, PracticeReorganisationTypeEnum? practiceReorganisationType = null);
 
@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices
 
         Task EditDetails(CatalogueItemId associatedServiceId, AssociatedServicesDetailsModel model);
 
-        Task<CatalogueItemId> AddAssociatedService(CatalogueItem solution, AssociatedServicesDetailsModel model);
+        Task<CatalogueItemId> AddAssociatedService(int supplierId, AssociatedServicesDetailsModel model);
 
         Task<List<CatalogueItem>> GetAllSolutionsForAssociatedService(CatalogueItemId associatedServiceId);
     }

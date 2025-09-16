@@ -1,4 +1,4 @@
-﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices.EditAssociatedServiceModel;
+﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices.EditAssociatedServiceModel;
 @{
     ViewBag.Title = $"Associated Service information";
 }
@@ -19,9 +19,9 @@
                 <nhs-table-cell>Details</nhs-table-cell>
                 <nhs-table-cell>Yes</nhs-table-cell>
                 <nhs-table-cell><nhs-tag status-enum="@Model.DetailsStatus" /></nhs-table-cell>
-                <nhs-table-cell><a asp-action="@nameof(AssociatedServicesController.EditAssociatedServiceDetails)"
-                   asp-controller="@typeof(AssociatedServicesController).ControllerName()"
-                   asp-route-solutionId="@Model.SolutionId"
+                <nhs-table-cell><a asp-action="@nameof(SupplierServicesController.EditAssociatedServiceDetails)"
+                   asp-controller="@typeof(SupplierServicesController).ControllerName()"
+                   asp-route-supplierId="@Model.SupplierId"
                    asp-route-associatedServiceId="@Model.AssociatedServiceId"
                    style="white-space: nowrap;">
                     Edit
@@ -32,9 +32,9 @@
                 <nhs-table-cell>Yes</nhs-table-cell>
                 <nhs-table-cell><nhs-tag status-enum="@Model.ListPriceStatus" /></nhs-table-cell>
                 <nhs-table-cell>
-                    <a asp-controller="@typeof(AssociatedServiceListPriceController).ControllerName()"
+                    <a asp-controller="@(typeof(AssociatedServiceListPriceController).ControllerName())"
                        asp-action="@nameof(AssociatedServiceListPriceController.Index)"
-                       asp-route-solutionId="@Model.SolutionId"
+                       asp-route-supplierId="@Model.SupplierId"
                        asp-route-associatedServiceId="@Model.AssociatedServiceId">
                         Edit
                     </a>
@@ -54,9 +54,9 @@
                                     <nhs-table-cell>@referentialSolution.Id</nhs-table-cell>
                                     <nhs-table-cell>@referentialSolution.Name</nhs-table-cell>
                                     <nhs-table-cell>
-                                        <a asp-action="@nameof(AssociatedServicesController.AssociatedServices)"
-                                   asp-controller="@typeof(AssociatedServicesController).ControllerName()"
-                                   asp-route-solutionId="@referentialSolution.Id"
+                                        <a asp-action="@nameof(CatalogueSolutionsController.AssociatedServices)"
+                                        asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
+                                        asp-route-solutionId="@referentialSolution.Id"
                                            data-test-id="edit-service-association-@referentialSolution.Id" style="white-space: nowrap;">
                                         Edit
                                         </a>
@@ -75,9 +75,8 @@
                 </nhs-inset-text>
         }
 
-        <form method="post" asp-action="SetPublicationStatus" asp-route-solutionId="@Model.SolutionId" asp-route-associatedServiceId="@Model.AssociatedServiceId">
-            <input type="hidden" asp-for="SolutionId" />
-            <input type="hidden" asp-for="SolutionName" />
+        <form method="post" asp-action="SetPublicationStatus" asp-route-supplierId="@Model.SupplierId" asp-route-associatedServiceId="@Model.AssociatedServiceId">
+            <input type="hidden" asp-for="SupplierId" />
             <input type="hidden" asp-for="SupplierName" />
             <input type="hidden" asp-for="AssociatedServiceId" />
             <input type="hidden" asp-for="AssociatedServiceName" />

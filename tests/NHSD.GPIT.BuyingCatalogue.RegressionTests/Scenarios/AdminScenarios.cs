@@ -91,7 +91,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             AdminPages.AddAdditionalService(ListPriceTypes.Flat_price);
 
-            AdminPages.AddAssociatedService(ListPriceTypes.Flat_price);
+            AdminPages.SelectAssociatedServices(ListPriceTypes.Flat_price);
 
             AdminPages.AddWorkOffPlans();
 
@@ -122,7 +122,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             AdminPages.AddAdditionalService(ListPriceTypes.Tiered_price);
 
-            AdminPages.AddAssociatedService(ListPriceTypes.Tiered_price);
+            AdminPages.SelectAssociatedServices(ListPriceTypes.Tiered_price);
 
             AdminPages.AddWorkOffPlans();
 
@@ -153,7 +153,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             AdminPages.AddAdditionalService(ListPriceTypes.Flat_price);
 
-            AdminPages.AddAssociatedService(ListPriceTypes.Flat_price);
+            AdminPages.SelectAssociatedServices(ListPriceTypes.Flat_price);
 
             AdminPages.AddWorkOffPlans();
 
@@ -184,7 +184,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
 
             AdminPages.AddAdditionalService(ListPriceTypes.Tiered_price);
 
-            AdminPages.AddAssociatedService(ListPriceTypes.Tiered_price);
+            AdminPages.SelectAssociatedServices(ListPriceTypes.Tiered_price);
 
             AdminPages.AddWorkOffPlans();
 

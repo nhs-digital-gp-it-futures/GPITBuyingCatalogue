@@ -5,9 +5,11 @@ using AutoFixture;
 using AutoFixture.Idioms;
 using AutoFixture.Xunit2;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Net.Http.Headers;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Settings;
@@ -158,31 +160,6 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
 
             result.Should().NotBeNull();
             result.Model.Should().BeEquivalentTo(model, opt => opt.Excluding(m => m.BackLink));
-        }
-
-        [Theory]
-        [MockAutoData]
-        public static async Task Get_AddTieredListPrice_WithPriceId_ReturnsViewWithModel(
-            Solution solution,
-            CataloguePrice cataloguePrice,
-            [Frozen] IListPriceService listPriceService,
-            CatalogueSolutionListPriceController controller)
-        {
-            solution.CatalogueItem.CataloguePrices.Add(cataloguePrice);
-
-            var model = new AddTieredListPriceModel(solution.CatalogueItem, cataloguePrice);
-
-            listPriceService.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
-
-            var result = (await controller.AddTieredListPrice(solution.CatalogueItemId, cataloguePrice.CataloguePriceId)).As<ViewResult>();
-
-            result.Should().NotBeNull();
-            result.Model.Should()
-                .BeEquivalentTo(
-                    model,
-                    opt =>
-                        opt.Excluding(m => m.BackLink)
-                            .Excluding(m => m.DeleteListPriceUrl));
         }
 
         [Theory]
@@ -949,8 +926,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Controllers
             Solution solution,
             int cataloguePriceId,
             [Frozen] IListPriceService service,
+            [Frozen] HeaderDictionary headerDictionary,
             CatalogueSolutionListPriceController controller)
         {
+            headerDictionary.IsReadOnly = false;
+            headerDictionary[HeaderNames.Referer] = "https://localhost:5001/path";
+
             service.GetCatalogueItemWithListPrices(solution.CatalogueItemId).Returns(solution.CatalogueItem);
 
             var model = new DeleteItemConfirmationModel(

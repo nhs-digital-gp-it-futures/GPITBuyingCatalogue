@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 {
@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
         private bool NotBeADuplicateServiceName(AddAssociatedServiceModel model)
         {
-            return !associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SolutionId.SupplierId, default).GetAwaiter().GetResult();
+            return !associatedServicesService.AssociatedServiceExistsWithNameForSupplier(model.Name, model.SupplierId, default).GetAwaiter().GetResult();
         }
     }
 }

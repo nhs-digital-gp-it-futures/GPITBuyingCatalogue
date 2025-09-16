@@ -4,9 +4,10 @@ using AutoFixture.Xunit2;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
+using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
-using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.PublicationStatusValidation;
 using Xunit;
 
@@ -17,11 +18,11 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [MockAutoData]
         public static void Validate_SamePublicationStatus_NoModelError(
-            Solution solution,
+            Supplier supplier,
             AssociatedService associatedService,
             EditAssociatedServiceModelValidator validator)
         {
-            var model = new EditAssociatedServiceModel(solution.CatalogueItem, associatedService.CatalogueItem);
+            var model = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem);
 
             var result = validator.TestValidate(model);
 
@@ -31,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
         [Theory]
         [MockAutoData]
         public static void Validate_MissingDetails_SetsModelError(
-            Solution solution,
+            Supplier supplier,
             AssociatedService associatedService,
             EditAssociatedServiceModelValidator validator)
         {
@@ -39,7 +40,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             associatedService.Description = string.Empty;
             associatedService.CatalogueItem.Name = string.Empty;
 
-            var model = new EditAssociatedServiceModel(solution.CatalogueItem, associatedService.CatalogueItem)
+            var model = new EditAssociatedServiceModel(supplier, associatedService.CatalogueItem)
             {
                 SelectedPublicationStatus = PublicationStatus.Published,
             };

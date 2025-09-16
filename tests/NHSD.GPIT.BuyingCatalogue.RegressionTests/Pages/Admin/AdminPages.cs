@@ -203,10 +203,10 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin
             SolutionAdditionalService.AddAdditionalService(solutionId, listPriceTypes.ToString());
         }
 
-        public void AddAssociatedService(ListPriceTypes listPriceTypes)
+        public void SelectAssociatedServices(ListPriceTypes listPriceTypes)
         {
             var solutionId = GetSolutionID();
-            SolutionAssociatedService.AddAssociatedService(solutionId, listPriceTypes.ToString());
+            SolutionAssociatedService.SelectAssociatedServices(solutionId);
         }
 
         public void AddWorkOffPlans()

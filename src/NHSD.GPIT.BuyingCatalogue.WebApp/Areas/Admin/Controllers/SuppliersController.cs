@@ -15,14 +15,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
     [Authorize(Policy = "AdminOnly")]
     [Area("Admin")]
     [Route("admin/manage-suppliers")]
-    public sealed class SuppliersController : Controller
+    public sealed class SuppliersController(
+        ISuppliersService suppliersService)
+        : Controller
     {
-        private readonly ISuppliersService suppliersService;
-
-        public SuppliersController(ISuppliersService suppliersService)
-        {
-            this.suppliersService = suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
-        }
+        private readonly ISuppliersService suppliersService =
+            suppliersService ?? throw new ArgumentNullException(nameof(suppliersService));
 
         [HttpGet]
         public async Task<IActionResult> Index(
@@ -30,10 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var suppliers = await suppliersService.GetAllSuppliers(search);
 
-            var model = new ManageSuppliersModel(suppliers)
-            {
-                DisableScripting = !string.IsNullOrWhiteSpace(search),
-            };
+            var model = new ManageSuppliersModel(suppliers) { DisableScripting = !string.IsNullOrWhiteSpace(search), };
 
             return View(model);
         }
@@ -44,11 +39,12 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             var suppliers = await suppliersService.GetSuppliersBySearchTerm(search);
 
-            return Json(suppliers.Select(r =>
-                new HtmlEncodedSuggestionSearchResult(
-                    r.Name,
-                    r.Id.ToString(),
-                    Url.Action(nameof(EditSupplier), new { supplierId = r.Id.ToString() }))));
+            return Json(
+                suppliers.Select(r =>
+                    new HtmlEncodedSuggestionSearchResult(
+                        r.Name,
+                        r.Id.ToString(),
+                        Url.Action(nameof(EditSupplier), new { supplierId = r.Id.ToString() }))));
         }
 
         [HttpGet("{supplierId}")]
@@ -116,13 +112,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("EditSupplierDetails", model);
 
-            var supplier = await suppliersService.AddSupplier(new ServiceContracts.Models.EditSupplierModel
-            {
-                SupplierName = model.SupplierName,
-                SupplierLegalName = model.SupplierLegalName,
-                AboutSupplier = model.AboutSupplier,
-                SupplierWebsite = model.SupplierWebsite,
-            });
+            var supplier = await suppliersService.AddSupplier(
+                new ServiceContracts.Models.EditSupplierModel
+                {
+                    SupplierName = model.SupplierName,
+                    SupplierLegalName = model.SupplierLegalName,
+                    AboutSupplier = model.AboutSupplier,
+                    SupplierWebsite = model.SupplierWebsite,
+                });
 
             return RedirectToAction(
                 nameof(EditSupplier),
@@ -137,7 +134,10 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
 
             var model = new EditSupplierDetailsModel(supplier)
             {
-                BackLink = Url.Action(nameof(EditSupplier), typeof(SuppliersController).ControllerName(), new { supplierId }),
+                BackLink = Url.Action(
+                    nameof(EditSupplier),
+                    typeof(SuppliersController).ControllerName(),
+                    new { supplierId }),
             };
 
             return View(model);
@@ -149,13 +149,15 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View("EditSupplierDetails", model);
 
-            var supplier = await suppliersService.EditSupplierDetails(supplierId, new ServiceContracts.Models.EditSupplierModel
-            {
-                SupplierName = model.SupplierName,
-                SupplierLegalName = model.SupplierLegalName,
-                AboutSupplier = model.AboutSupplier,
-                SupplierWebsite = model.SupplierWebsite,
-            });
+            var supplier = await suppliersService.EditSupplierDetails(
+                supplierId,
+                new ServiceContracts.Models.EditSupplierModel
+                {
+                    SupplierName = model.SupplierName,
+                    SupplierLegalName = model.SupplierLegalName,
+                    AboutSupplier = model.AboutSupplier,
+                    SupplierWebsite = model.SupplierWebsite,
+                });
 
             return RedirectToAction(
                 nameof(EditSupplier),
@@ -280,7 +282,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.SolutionsReferencingThisContact = await suppliersService.GetSolutionsReferencingSupplierContact(contactId);
+                model.SolutionsReferencingThisContact =
+                    await suppliersService.GetSolutionsReferencingSupplierContact(contactId);
                 return View(model);
             }
 

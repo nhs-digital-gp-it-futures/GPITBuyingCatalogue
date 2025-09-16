@@ -221,10 +221,10 @@
             ? Url.Action(
                 nameof(AssociatedServiceListPriceController.EditTierPrice),
                 typeof(AssociatedServiceListPriceController).ControllerName(),
-                new { solutionId = Model.CatalogueItemId, associatedServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
+                new { supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, tierIndex = index })
             : Url.Action(
                 nameof(AssociatedServiceListPriceController.EditTieredPriceTier),
                 typeof(AssociatedServiceListPriceController).ControllerName(),
-                new { solutionId = Model.CatalogueItemId, associatedServiceId = Model.ServiceId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
+                new { supplierId = Model.SupplierId, associatedServiceId = Model.CatalogueItemId, cataloguePriceId = tier.CataloguePriceId, tierId = tier.Id, isEditing = true });
     }
 }

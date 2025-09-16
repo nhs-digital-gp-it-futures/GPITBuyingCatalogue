@@ -28,9 +28,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
 
         private CataloguePrice GetCataloguePrice(TieredPriceTiersModel model, int cataloguePriceId)
         {
-            var catalogueItemId = model.CatalogueItemType == CatalogueItemType.Solution
-                ? model.CatalogueItemId
-                : model.ServiceId!.Value;
+            var catalogueItemId = model.CatalogueItemType == CatalogueItemType.AdditionalService
+                ? model.ServiceId!.Value
+                : model.CatalogueItemId;
 
             var catalogueItem = listPriceService.GetCatalogueItemWithListPrices(catalogueItemId).GetAwaiter().GetResult();
             var price = catalogueItem.CataloguePrices.First(p => p.CataloguePriceId == cataloguePriceId);

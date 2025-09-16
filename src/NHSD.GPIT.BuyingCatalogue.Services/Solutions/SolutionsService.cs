@@ -122,13 +122,6 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
                     .ThenInclude(wp => wp.Standard)
                 .FirstOrDefaultAsync(ci => ci.Id == solutionId);
 
-        public async Task<CatalogueItem> GetSolutionWithServiceAssociations(CatalogueItemId solutionId) =>
-            await dbContext.CatalogueItems.AsNoTracking()
-            .Include(ci => ci.Supplier)
-            .Include(ci => ci.Solution)
-            .Include(ci => ci.SupplierServiceAssociations)
-            .FirstOrDefaultAsync(ci => ci.Id == solutionId);
-
         public async Task<SolutionLoadingStatusesModel> GetSolutionLoadingStatuses(CatalogueItemId solutionId)
         {
             var solution = await dbContext.CatalogueItems
@@ -628,6 +621,13 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.Solutions
             await dbContext.WorkOffPlans
                 .Include(wp => wp.Standard)
                 .Where(wp => wp.SolutionId == solutionId).ToListAsync();
+
+        public async Task<CatalogueItem> GetCatalogueItemWithSupplierServiceAssociations(CatalogueItemId catalogueItemId) =>
+            await dbContext.CatalogueItems.AsNoTracking()
+                .Include(ci => ci.Supplier)
+                .Include(ci => ci.Solution)
+                .Include(ci => ci.SupplierServiceAssociations)
+                .FirstOrDefaultAsync(ci => ci.Id == catalogueItemId);
 
         internal static ApplicationTypeDetail RemoveApplicationType(ApplicationTypeDetail applicationTypeDetail, ApplicationType applicationType)
         {

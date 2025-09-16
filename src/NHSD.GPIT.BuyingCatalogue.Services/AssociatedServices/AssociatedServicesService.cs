@@ -6,46 +6,35 @@ using Microsoft.EntityFrameworkCore;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
+using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AssociatedServices;
 
 namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
 {
-    public sealed class AssociatedServicesService : IAssociatedServicesService
+    public sealed class AssociatedServicesService(BuyingCatalogueDbContext dbContext) : IAssociatedServicesService
     {
-        private readonly BuyingCatalogueDbContext dbContext;
+        private readonly BuyingCatalogueDbContext dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
-        public AssociatedServicesService(BuyingCatalogueDbContext dbContext)
+        public Task<List<AssociatedService>> GetAllAssociatedServicesForSupplier(int supplierId)
         {
-            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-        }
-
-        public Task<List<CatalogueItem>> GetAllAssociatedServicesForSupplier(int? supplierId)
-        {
-            return dbContext.CatalogueItems
-                .Include(s => s.CatalogueItemCapabilities)
-                .ThenInclude(sc => sc.Capability)
-                .Include(c => c.Supplier)
-                .Include(c => c.AssociatedService)
+            return dbContext.AssociatedServices
+                .Include(s => s.CatalogueItem)
+                .ThenInclude(c => c.Supplier)
                 .Where(
-                    c => c.SupplierId == supplierId.GetValueOrDefault()
-                        && c.CatalogueItemType == CatalogueItemType.AssociatedService)
-                .OrderBy(c => c.Name)
+                    c => c.CatalogueItem.SupplierId == supplierId)
+                .OrderBy(c => c.CatalogueItem.Name)
                 .ToListAsync();
         }
 
-        public Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSupplier(int? supplierId)
+        public Task<List<AssociatedService>> GetPublishedAssociatedServicesForSupplier(int supplierId)
         {
-            return dbContext.CatalogueItems
-                .Include(s => s.CatalogueItemCapabilities)
-                .ThenInclude(sc => sc.Capability)
-                .Include(c => c.Supplier)
-                .Include(c => c.AssociatedService)
-                .Where(
-                    c => c.SupplierId == supplierId.GetValueOrDefault()
-                        && c.CatalogueItemType == CatalogueItemType.AssociatedService
-                        && c.PublishedStatus == PublicationStatus.Published)
-                .OrderBy(c => c.Name)
+            return dbContext.AssociatedServices
+                .Include(s => s.CatalogueItem)
+                .ThenInclude(c => c.Supplier)
+                .Where(c => c.CatalogueItem.SupplierId == supplierId
+                    && c.CatalogueItem.PublishedStatus == PublicationStatus.Published)
+                .OrderBy(c => c.CatalogueItem.Name)
                 .ToListAsync();
         }
 
@@ -133,9 +122,12 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .Where(i => i.Id == solutionId)
                 .FirstAsync();
 
-            solution.SupplierServiceAssociations.Clear();
+            var enumeratedServices = associatedServices.ToList();
+            var toAdd = enumeratedServices.Where(x => solution.SupplierServiceAssociations.All(ssa => ssa.AssociatedServiceId != x)).Select(x => new SupplierServiceAssociation(solutionId, x));
+            var toRemove = solution.SupplierServiceAssociations.Where(ssa => !enumeratedServices.Contains(ssa.AssociatedServiceId));
 
-            solution.SupplierServiceAssociations = associatedServices.Select(a => new SupplierServiceAssociation(solutionId, a)).ToList();
+            dbContext.SupplierServiceAssociations.RemoveRange(toRemove);
+            dbContext.SupplierServiceAssociations.AddRange(toAdd);
 
             await dbContext.SaveChangesAsync();
         }
@@ -160,11 +152,9 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ToListAsync();
 
         public async Task<CatalogueItemId> AddAssociatedService(
-            CatalogueItem solution,
+            int supplierId,
             AssociatedServicesDetailsModel model)
         {
-            ArgumentNullException.ThrowIfNull(solution);
-
             ArgumentNullException.ThrowIfNull(model);
 
             var associatedService = new CatalogueItem
@@ -177,7 +167,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                     PracticeReorganisationType = model.PracticeReorganisationType,
                 },
                 CatalogueItemType = CatalogueItemType.AssociatedService,
-                SupplierId = solution.SupplierId,
+                SupplierId = supplierId,
                 PublishedStatus = PublicationStatus.Draft,
             };
 

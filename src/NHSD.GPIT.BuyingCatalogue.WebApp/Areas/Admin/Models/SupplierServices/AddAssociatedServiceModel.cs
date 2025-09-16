@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
-using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Models;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.SupplierServices
 {
     public sealed class AddAssociatedServiceModel : NavBaseModel
     {
@@ -11,13 +10,13 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices
         {
         }
 
-        public AddAssociatedServiceModel(CatalogueItem catalogueItem)
+        public AddAssociatedServiceModel(Supplier supplier)
         {
-            SolutionId = catalogueItem.Id;
-            SupplierName = catalogueItem.Supplier.Name;
+            SupplierId = supplier.Id;
+            SupplierName = supplier.Name;
         }
 
-        public CatalogueItemId SolutionId { get; set; }
+        public int SupplierId { get; set; }
 
         public string SupplierName { get; set; }
 

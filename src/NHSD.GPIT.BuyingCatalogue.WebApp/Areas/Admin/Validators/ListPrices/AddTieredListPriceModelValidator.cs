@@ -53,9 +53,9 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
         }
 
         private static CatalogueItemId GetCatalogueItemId(AddTieredListPriceModel model) =>
-            model.CatalogueItemType == CatalogueItemType.Solution
-                ? model.CatalogueItemId
-                : model.ServiceId!.Value;
+            model.CatalogueItemType == CatalogueItemType.AdditionalService
+                ? model.ServiceId!.Value
+                : model.CatalogueItemId;
 
         private bool NotBeADuplicate(AddTieredListPriceModel model) =>
             !listPriceService.HasDuplicateTieredPrice(
