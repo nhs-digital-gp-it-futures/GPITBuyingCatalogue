@@ -291,7 +291,7 @@
 
                     @if (Model.RolledUp.GetAdditionalServices().Any())
                     {
-                        <h2>@(Model.RolledUp.GetAdditionalServices().Count() > 1 ? "Additional Services" : "Additional Service")</h2>
+                        <h2>@(Model.RolledUp.GetAdditionalServices().Count() > 1 ? "Additional services" : "Additional service")</h2>
                         @foreach (var service in Model.RolledUp.GetAdditionalServices())
                         {
                             var itemModel = Model.BuildAmendOrderItemModel(service);

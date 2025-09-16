@@ -23,8 +23,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         public List<string> DoItems => new()
         {
             "update your order description and change your primary contact details and those for the supplier",
-            "add service recipients to your catalogue solution and any Additional Services in the order",
-            "add new Additional Services",
+            "add service recipients to your catalogue solution and any additional services in the order",
+            "add new additional services",
             "assign funding sources to cover the increased cost of the order",
         };
 

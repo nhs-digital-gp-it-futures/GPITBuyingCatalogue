@@ -28,7 +28,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering.Solution
 
         public static By EditCatalogueItemQuantityLink(string catalogueItemID) => By.Id($"Quantity_{catalogueItemID}");
 
-        public static By ChangeAdditionalServiceLink => By.LinkText("Change Additional Services");
+        public static By ChangeAdditionalServiceLink => By.LinkText("Change additional services");
 
         public static By AddAdditionalServiceLink => By.XPath("//a[contains(@href, '/additional-services/add')]");
 

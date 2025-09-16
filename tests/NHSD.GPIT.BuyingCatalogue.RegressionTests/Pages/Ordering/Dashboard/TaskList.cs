@@ -79,7 +79,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Ordering.Dashboard
         public void SupplierInformationAndContactForMergerOrder()
         {
             CommonActions.ClickLinkElement(SupplierObjects.SupplierContactDetailsLink);
-            CommonActions.HintText().Should().Be("You'll only be able to select suppliers that offer either mergers or splits as Additional Services with their solutions.".FormatForComparison());
+            CommonActions.HintText().Should().Be("You'll only be able to select suppliers that offer either mergers or splits as additional services with their solutions.".FormatForComparison());
             CommonActions.ClickLastRadio();
             CommonActions.ClickSave();
         }

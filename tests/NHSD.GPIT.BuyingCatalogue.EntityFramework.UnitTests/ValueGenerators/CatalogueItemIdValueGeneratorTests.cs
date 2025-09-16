@@ -186,7 +186,7 @@ namespace NHSD.GPIT.BuyingCatalogue.EntityFramework.UnitTests.ValueGenerators
                 },
                 Supplier = supplier,
                 SupplierId = supplier.Id,
-                Name = "Additional Service",
+                Name = "Additional service",
             };
 
             context.CatalogueItems.Add(additionalService);

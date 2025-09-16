@@ -64,7 +64,7 @@
 
         @if (!Model.OrderType.AssociatedServicesOnly)
         {
-            <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-6">Additional Services</h2>
+            <h2 class="nhsuk-heading-l nhsuk-u-margin-bottom-6">Additional services</h2>
             <nhs-card-v2>
                 @if (Model.AdditionalServicesAvailable)
                 {
@@ -79,24 +79,24 @@
                         }
                         else
                         {
-                            <p>No Additional Services have been added to this order yet.</p>
+                            <p>No additional services have been added to this order yet.</p>
                         }
                     </nhs-card-content>
                     <nhs-card-footer>
                         @if (Model.UnselectedAdditionalServicesAvailable)
                         {
-                            <vc:add-or-change href="@addAdditionalServicesLink" noun-phrase="Additional Services" />
+                            <vc:add-or-change href="@addAdditionalServicesLink" noun-phrase="Additional services" />
                         }
                         else
                         {
-                            <vc:inline-information text="All the Additional Services available for this catalogue solution have already been added." />
+                            <vc:inline-information text="All the additional services available for this catalogue solution have already been added." />
                         }
                     </nhs-card-footer>
                 }
                 else
                 {
                     <nhs-card-content>
-                        <vc:inline-information text="There are no Additional Services available for this catalogue solution." />
+                        <vc:inline-information text="There are no additional services available for this catalogue solution." />
                     </nhs-card-content>
                 }
             </nhs-card-v2>

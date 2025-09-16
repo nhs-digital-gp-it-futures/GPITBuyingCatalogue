@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices.AdditionalServicesModel;
 @{
-    ViewBag.Title = "Additional Services";
+    ViewBag.Title = "Additional services";
 }
 <partial name="Partials/_BackLink" model="Model" />
 <div class="nhsuk-grid-row">
@@ -12,16 +12,16 @@
         <vc:nhs-action-link url="@Url.Action(
             nameof(AdditionalServicesController.AddAdditionalService),
             typeof(AdditionalServicesController).ControllerName(),
-            new { solutionId = Model.ItemId })" text="Add an Additional Service" />
+            new { solutionId = Model.ItemId })" text="Add an additional service" />
 
         <p>
-            Use the link to add information on each of the Additional Services available with your catalogue solution.
+            Use the link to add information on each of the additional services available with your catalogue solution.
         </p>
         @if (Model.AdditionalServices.Any())
         {
-            <nhs-table data-test-id="additional-services-table" label-text="Additional Services available">
+            <nhs-table data-test-id="additional-services-table" label-text="Additional services available">
                 <nhs-table-column>
-                    Additional Service
+                    Additional service
                 </nhs-table-column>
                 <nhs-table-column>
                     Description

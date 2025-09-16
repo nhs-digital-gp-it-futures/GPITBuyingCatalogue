@@ -9,7 +9,7 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
-                        advice="Provide details about your Additional Service." />
+                        advice="Provide details about your additional service." />
 
         <form method="post">
             <input type="hidden" asp-for="Id" />
@@ -20,10 +20,10 @@
             <input type="hidden" asp-for="CatalogueItemName" />
 
             <nhs-input asp-for="Name"
-                       label-text="Additional Service name" />
+                       label-text="Additional service name" />
             <nhs-textarea asp-for="Description"
-                          label-text="Additional Service description"
-                          label-hint="Describe the extra functionality provided by your Additional Service."
+                          label-text="Additional service description"
+                          label-hint="Describe the extra functionality provided by your additional service."
                           number-of-rows="5" />
             <nhs-submit-button />
         </form>

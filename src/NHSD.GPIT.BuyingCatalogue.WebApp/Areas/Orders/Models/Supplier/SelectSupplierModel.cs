@@ -16,7 +16,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Supplier
         internal static readonly PageTitleModel SelectionPageTitle = new()
         {
             Title = TitleText,
-            Advice = "You'll only be able to select suppliers that offer either mergers or splits as Additional Services with their solutions.",
+            Advice = "You'll only be able to select suppliers that offer either mergers or splits as additional services with their solutions.",
         };
 
         private const string TitleText = "Find supplier";

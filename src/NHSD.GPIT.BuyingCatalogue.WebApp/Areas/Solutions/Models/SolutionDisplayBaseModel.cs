@@ -174,7 +174,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 {
                     Action = nameof(SolutionsController.AdditionalServices),
                     Controller = ControllerName,
-                    Name = "Additional Services",
+                    Name = "Additional services",
                     Show = contentStatus.ShowAdditionalServices,
                     RouteData = new Dictionary<string, string> { { "solutionId", SolutionId.ToString() }, },
                 },

@@ -14,18 +14,18 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
 
             RuleFor(m => m)
                 .Must(NotBeADuplicateService)
-                .WithMessage("Additional Service name already exists. Enter a different name")
+                .WithMessage("Additional service name already exists. Enter a different name")
                 .OverridePropertyName(m => m.Name);
 
             RuleFor(m => m.Name)
                 .NotEmpty()
-                .WithMessage("Enter an Additional Service name")
+                .WithMessage("Enter an additional service name")
                 .NotEqual(m => m.CatalogueItemName)
-                .WithMessage("Additional Service name cannot be the same as its catalogue solution");
+                .WithMessage("Additional service name cannot be the same as its catalogue solution");
 
             RuleFor(m => m.Description)
                 .NotEmpty()
-                .WithMessage("Enter an Additional Service description");
+                .WithMessage("Enter an additional service description");
         }
 
         private bool NotBeADuplicateService(EditAdditionalServiceDetailsModel model)

@@ -11,7 +11,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By AddCatalogueSolution => By.LinkText("Add a catalogue solution");
 
-        public static By AddAdditionalService => By.LinkText("Add an Additional Service");
+        public static By AddAdditionalService => By.LinkText("Add an additional service");
 
         public static By AddAssociatedService => By.LinkText("Add an Associated Service");
     }
