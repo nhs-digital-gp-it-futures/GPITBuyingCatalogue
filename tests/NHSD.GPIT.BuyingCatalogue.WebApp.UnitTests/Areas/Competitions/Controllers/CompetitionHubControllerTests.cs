@@ -78,7 +78,7 @@ public static class CompetitionHubControllerTests
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
         {
@@ -141,7 +141,7 @@ public static class CompetitionHubControllerTests
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new CompetitionSolutionHubModel(internalOrgId, competitionSolution, competition)
         {
@@ -997,7 +997,7 @@ public static class CompetitionHubControllerTests
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var expectedModel = new SelectServicesModel(
             solutionServices.Select(x => x.Service).ToList(),
@@ -1048,7 +1048,7 @@ public static class CompetitionHubControllerTests
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var model = new SelectServicesModel(
             solutionServices.Select(x => x.Service).ToList(),
@@ -1096,7 +1096,7 @@ public static class CompetitionHubControllerTests
 
         competitionsService.GetCompetitionWithSolutionsHub(internalOrgId, competition.Id).Returns(competition);
 
-        associatedServicesService.GetPublishedAssociatedServicesForSolution(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
+        associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(competitionSolution.SolutionId, PracticeReorganisationTypeEnum.None).Returns(associatedServices.Select(x => x.CatalogueItem).ToList());
 
         var model = new SelectServicesModel(
             solutionServices.Select(x => x.Service).ToList(),

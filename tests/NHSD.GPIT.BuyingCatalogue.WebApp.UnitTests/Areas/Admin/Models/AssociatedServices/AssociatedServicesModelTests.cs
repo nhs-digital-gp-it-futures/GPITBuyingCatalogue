@@ -26,14 +26,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
                 PracticeReorganisation = s.PracticeReorganisationType,
             }).ToList();
 
-            var actual = new SolutionAssociatedServicesModel(
+            var actual = new CatalogueItemAssociatedServicesModel(
                 catalogueItem,
                 associatedServices);
 
             actual.SelectableAssociatedServices.Should().BeEquivalentTo(expected);
             actual.SolutionMergerAndSplits.Should().BeEquivalentTo(new SolutionMergerAndSplitTypesModel(catalogueItem.Name, []));
             actual.CatalogueItemName.Should().Be(catalogueItem.Name);
-            actual.SolutionId.Should().Be(catalogueItem.Id);
+            actual.CatalogueItemId.Should().Be(catalogueItem.Id);
         }
 
         [Theory]
@@ -59,14 +59,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Associat
                 PracticeReorganisation = s.PracticeReorganisationType,
             }).ToList();
 
-            var actual = new SolutionAssociatedServicesModel(
+            var actual = new CatalogueItemAssociatedServicesModel(
                 catalogueItem,
                 associatedServices);
 
             actual.SelectableAssociatedServices.Should().BeEquivalentTo(expected);
             actual.SolutionMergerAndSplits.Should().BeEquivalentTo(new SolutionMergerAndSplitTypesModel(catalogueItem.Name, associatedServices.Select(s => s.PracticeReorganisationType)));
             actual.CatalogueItemName.Should().Be(catalogueItem.Name);
-            actual.SolutionId.Should().Be(catalogueItem.Id);
+            actual.CatalogueItemId.Should().Be(catalogueItem.Id);
         }
     }
 }

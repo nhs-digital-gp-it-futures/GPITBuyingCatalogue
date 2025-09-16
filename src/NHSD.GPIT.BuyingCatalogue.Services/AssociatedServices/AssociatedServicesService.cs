@@ -38,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ToListAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetPublishedAssociatedServicesForSolution(CatalogueItemId? catalogueItemId, PracticeReorganisationTypeEnum? practiceReorganisationType = null)
+        public async Task<List<CatalogueItem>> GetPublishedAssociatedServicesForCatalogueItem(CatalogueItemId? catalogueItemId, PracticeReorganisationTypeEnum? practiceReorganisationType = null)
         {
             if (catalogueItemId is null)
             {
@@ -113,7 +113,7 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
                 .ToListAsync();
         }
 
-        public async Task RelateAssociatedServicesToSolution(
+        public async Task RelateAssociatedServicesToCatalogueItem(
             CatalogueItemId solutionId,
             IEnumerable<CatalogueItemId> associatedServices)
         {
@@ -144,10 +144,14 @@ namespace NHSD.GPIT.BuyingCatalogue.Services.AssociatedServices
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<CatalogueItem>> GetAllSolutionsForAssociatedService(CatalogueItemId associatedServiceId)
+        public async Task<List<CatalogueItem>> GetAssociatedServiceReferences(CatalogueItemId associatedServiceId)
             => await dbContext
                 .SupplierServiceAssociations
                 .Where(ssa => ssa.AssociatedServiceId == associatedServiceId)
+                .Include(x => x.CatalogueItem)
+                .ThenInclude(x => x.Solution)
+                .Include(x => x.CatalogueItem)
+                .ThenInclude(x => x.AdditionalService)
                 .Select(ssa => ssa.CatalogueItem)
                 .ToListAsync();
 

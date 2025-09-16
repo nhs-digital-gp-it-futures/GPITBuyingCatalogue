@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Catalogue.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Enums;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
@@ -14,13 +16,14 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
             string additionalServiceName,
             string additionalServiceDescription,
             Solution solution,
-            AdditionalService additionalService)
+            AdditionalService additionalService,
+            List<AssociatedService> associatedServices)
         {
             additionalService.CatalogueItem.PublishedStatus = PublicationStatus.Draft;
             additionalService.CatalogueItem.Name = additionalServiceName;
             additionalService.FullDescription = additionalServiceDescription;
 
-            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem);
+            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem, associatedServices.Select(x => x.CatalogueItem).ToList());
 
             model.DetailsStatus.Should().Be(TaskProgress.Completed);
         }
@@ -35,7 +38,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.Addition
             additionalService.CatalogueItem.Name = null;
             additionalService.FullDescription = null;
 
-            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem);
+            var model = new EditAdditionalServiceModel(solution.CatalogueItem, additionalService.CatalogueItem, []);
 
             model.DetailsStatus.Should().Be(TaskProgress.NotStarted);
         }

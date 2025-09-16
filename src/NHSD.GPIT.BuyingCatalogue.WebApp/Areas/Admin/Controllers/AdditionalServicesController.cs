@@ -6,209 +6,241 @@ using Microsoft.AspNetCore.Mvc;
 using NHSD.GPIT.BuyingCatalogue.EntityFramework.Ordering.Models;
 using NHSD.GPIT.BuyingCatalogue.Framework.Extensions;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.ServiceContracts.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Capabilities;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Models.AdditionalServices;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.PublishStatus;
 using NHSD.GPIT.BuyingCatalogue.ServiceContracts.Solutions;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AdditionalServices;
+using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.AssociatedServices;
 using NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CapabilityModels;
 
-namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers
+namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Controllers;
+
+[Authorize(Policy = "AdminOnly")]
+[Area("Admin")]
+[Route("admin/catalogue-solutions/manage/{solutionId}/additional-services")]
+public sealed class AdditionalServicesController(
+    ISolutionsService solutionsService,
+    IAdditionalServicesService additionalServicesService,
+    IAssociatedServicesService associatedServicesService,
+    ICapabilitiesService capabilitiesService,
+    IPublicationStatusService publicationStatusService)
+    : Controller
 {
-    [Authorize(Policy = "AdminOnly")]
-    [Area("Admin")]
-    [Route("admin/catalogue-solutions/manage/{solutionId}/additional-services")]
-    public sealed class AdditionalServicesController : Controller
+    private readonly ISolutionsService solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
+    private readonly IAdditionalServicesService additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
+    private readonly IAssociatedServicesService associatedServicesService = associatedServicesService ?? throw new ArgumentNullException(nameof(associatedServicesService));
+    private readonly ICapabilitiesService capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
+    private readonly IPublicationStatusService publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
+
+    [HttpGet]
+    public async Task<IActionResult> Index(CatalogueItemId solutionId)
     {
-        private readonly ISolutionsService solutionsService;
-        private readonly IAdditionalServicesService additionalServicesService;
-        private readonly ICapabilitiesService capabilitiesService;
-        private readonly IPublicationStatusService publicationStatusService;
+        var solution = await solutionsService.GetSolutionThin(solutionId);
+        if (solution is null)
+            return BadRequest($"No Solution found for Id: {solutionId}");
 
-        public AdditionalServicesController(
-            ISolutionsService solutionsService,
-            IAdditionalServicesService additionalServicesService,
-            ICapabilitiesService capabilitiesService,
-            IPublicationStatusService publicationStatusService)
+        var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId);
+
+        return View(new AdditionalServicesModel(solution, additionalServices));
+    }
+
+    [HttpGet("{additionalServiceId}/edit-additional-service")]
+    public async Task<IActionResult> EditAdditionalService(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+    {
+        var solution = await solutionsService.GetSolutionThin(solutionId);
+        if (solution is null)
+            return BadRequest($"No Solution found for Id: {solutionId}");
+
+        var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+        if (additionalService is null)
+            return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+
+        var associatedServices =
+            await associatedServicesService.GetPublishedAssociatedServicesForCatalogueItem(additionalServiceId);
+
+        var model = new EditAdditionalServiceModel(solution, additionalService, associatedServices)
         {
-            this.solutionsService = solutionsService ?? throw new ArgumentNullException(nameof(solutionsService));
-            this.additionalServicesService = additionalServicesService ?? throw new ArgumentNullException(nameof(additionalServicesService));
-            this.capabilitiesService = capabilitiesService ?? throw new ArgumentNullException(nameof(capabilitiesService));
-            this.publicationStatusService = publicationStatusService ?? throw new ArgumentNullException(nameof(publicationStatusService));
+            BackLink = Url.Action(nameof(Index), new { solutionId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("{additionalServiceId}/edit-additional-service")]
+    public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditAdditionalServiceModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(
+                nameof(EditAdditionalService),
+                model);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index(CatalogueItemId solutionId)
+        await publicationStatusService.SetPublicationStatus(additionalServiceId, model.SelectedPublicationStatus);
+
+        return RedirectToAction(nameof(Index), new { solutionId });
+    }
+
+    [HttpGet("add-additional-service")]
+    public async Task<IActionResult> AddAdditionalService(CatalogueItemId solutionId)
+    {
+        var solution = await solutionsService.GetSolutionThin(solutionId);
+        if (solution is null)
+            return BadRequest($"No Solution found for Id: {solutionId}");
+
+        var model = new EditAdditionalServiceDetailsModel(solution)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+            BackLink = Url.Action(nameof(Index), new { solutionId }),
+        };
 
-            var additionalServices = await additionalServicesService.GetAdditionalServicesBySolutionId(solutionId);
+        return View("EditAdditionalServiceDetails", model);
+    }
 
-            return View(new AdditionalServicesModel(solution, additionalServices));
-        }
-
-        [HttpGet("{additionalServiceId}/edit-additional-service")]
-        public async Task<IActionResult> EditAdditionalService(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
-        {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
-
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
-
-            var model = new EditAdditionalServiceModel(solution, additionalService)
-            {
-                BackLink = Url.Action(nameof(Index), new { solutionId }),
-            };
-
-            return View(model);
-        }
-
-        [HttpPost("{additionalServiceId}/edit-additional-service")]
-        public async Task<IActionResult> SetPublicationStatus(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditAdditionalServiceModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(
-                    nameof(EditAdditionalService),
-                    model);
-            }
-
-            await publicationStatusService.SetPublicationStatus(additionalServiceId, model.SelectedPublicationStatus);
-
-            return RedirectToAction(nameof(Index), new { solutionId });
-        }
-
-        [HttpGet("add-additional-service")]
-        public async Task<IActionResult> AddAdditionalService(CatalogueItemId solutionId)
-        {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
-
-            var model = new EditAdditionalServiceDetailsModel(solution)
-            {
-                BackLink = Url.Action(nameof(Index), new { solutionId }),
-            };
-
+    [HttpPost("add-additional-service")]
+    public async Task<IActionResult> AddAdditionalService(CatalogueItemId solutionId, EditAdditionalServiceDetailsModel model)
+    {
+        if (!ModelState.IsValid)
             return View("EditAdditionalServiceDetails", model);
-        }
 
-        [HttpPost("add-additional-service")]
-        public async Task<IActionResult> AddAdditionalService(CatalogueItemId solutionId, EditAdditionalServiceDetailsModel model)
+        var solution = await solutionsService.GetSolutionThin(solutionId);
+        if (solution is null)
+            return BadRequest($"No Solution found for Id: {solutionId}");
+
+        var additionalServiceDetailsModel = new AdditionalServicesDetailsModel
         {
-            if (!ModelState.IsValid)
-                return View("EditAdditionalServiceDetails", model);
+            Name = model.Name,
+            Description = model.Description,
+            UserId = User.UserId(),
+        };
 
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+        var additionalServiceId = await additionalServicesService.AddAdditionalService(solution, additionalServiceDetailsModel);
 
-            var additionalServiceDetailsModel = new AdditionalServicesDetailsModel
-            {
-                Name = model.Name,
-                Description = model.Description,
-                UserId = User.UserId(),
-            };
+        return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
+    }
 
-            var additionalServiceId = await additionalServicesService.AddAdditionalService(solution, additionalServiceDetailsModel);
+    [HttpGet("{additionalServiceId}/edit-additional-service-details")]
+    public async Task<IActionResult> EditAdditionalServiceDetails(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+    {
+        var solution = await solutionsService.GetSolutionThin(solutionId);
+        if (solution is null)
+            return BadRequest($"No Solution found for Id: {solutionId}");
 
-            return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
-        }
+        var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+        if (additionalService is null)
+            return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
 
-        [HttpGet("{additionalServiceId}/edit-additional-service-details")]
-        public async Task<IActionResult> EditAdditionalServiceDetails(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+        var model = new EditAdditionalServiceDetailsModel(solution, additionalService)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+            BackLink = Url.Action(nameof(EditAdditionalService), new { solutionId, additionalServiceId }),
+        };
 
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+        return View(model);
+    }
 
-            var model = new EditAdditionalServiceDetailsModel(solution, additionalService)
-            {
-                BackLink = Url.Action(nameof(EditAdditionalService), new { solutionId, additionalServiceId }),
-            };
-
+    [HttpPost("{additionalServiceId}/edit-additional-service-details")]
+    public async Task<IActionResult> EditAdditionalServiceDetails(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditAdditionalServiceDetailsModel model)
+    {
+        if (!ModelState.IsValid)
             return View(model);
-        }
 
-        [HttpPost("{additionalServiceId}/edit-additional-service-details")]
-        public async Task<IActionResult> EditAdditionalServiceDetails(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditAdditionalServiceDetailsModel model)
+        var solution = await solutionsService.GetSolutionThin(solutionId);
+        if (solution is null)
+            return BadRequest($"No Solution found for Id: {solutionId}");
+
+        var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+        if (additionalService is null)
+            return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+
+        var additionalServiceDetailsModel = new AdditionalServicesDetailsModel
         {
-            if (!ModelState.IsValid)
-                return View(model);
+            Name = model.Name,
+            Description = model.Description,
+            UserId = User.UserId(),
+        };
 
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+        await additionalServicesService.EditAdditionalService(solutionId, additionalServiceId, additionalServiceDetailsModel);
 
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+        return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
+    }
 
-            var additionalServiceDetailsModel = new AdditionalServicesDetailsModel
-            {
-                Name = model.Name,
-                Description = model.Description,
-                UserId = User.UserId(),
-            };
+    [HttpGet("{additionalServiceId}/edit-capabilities")]
+    public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+    {
+        var solution = await solutionsService.GetSolutionThin(solutionId);
+        if (solution is null)
+            return BadRequest($"No Solution found for Id: {solutionId}");
 
-            await additionalServicesService.EditAdditionalService(solutionId, additionalServiceId, additionalServiceDetailsModel);
+        var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+        if (additionalService is null)
+            return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
 
-            return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
-        }
+        var capabilities = await capabilitiesService.GetCapabilitiesByCategory();
 
-        [HttpGet("{additionalServiceId}/edit-capabilities")]
-        public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+        var model = new EditCapabilitiesModel(additionalService, capabilities)
         {
-            var solution = await solutionsService.GetSolutionThin(solutionId);
-            if (solution is null)
-                return BadRequest($"No Solution found for Id: {solutionId}");
+            BackLink = Url.Action(nameof(EditAdditionalService), new { solutionId, additionalServiceId }),
+            SolutionName = solution.Name,
+        };
 
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+        return View(model);
+    }
 
-            var capabilities = await capabilitiesService.GetCapabilitiesByCategory();
-
-            var model = new EditCapabilitiesModel(additionalService, capabilities)
-            {
-                BackLink = Url.Action(nameof(EditAdditionalService), new { solutionId, additionalServiceId }),
-                SolutionName = solution.Name,
-            };
-
+    [HttpPost("{additionalServiceId}/edit-capabilities")]
+    public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditCapabilitiesModel model)
+    {
+        if (!ModelState.IsValid)
             return View(model);
-        }
 
-        [HttpPost("{additionalServiceId}/edit-capabilities")]
-        public async Task<IActionResult> EditCapabilities(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, EditCapabilitiesModel model)
+        var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+        if (additionalService is null)
+            return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+
+        var saveRequestModel = new SaveCatalogueItemCapabilitiesModel
         {
-            if (!ModelState.IsValid)
-                return View(model);
+            UserId = User.UserId(),
+            Capabilities = model.CapabilityCategories
+                .SelectMany(cc => cc.Capabilities.Where(c => c.Selected))
+                .ToDictionary(c => c.Id, c => c.Epics.Where(e => e.Selected).Select(e => e.Id).ToArray()),
+        };
 
-            var additionalService = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
-            if (additionalService is null)
-                return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
+        await capabilitiesService.AddCapabilitiesToCatalogueItem(additionalServiceId, saveRequestModel);
 
-            var saveRequestModel = new SaveCatalogueItemCapabilitiesModel
-            {
-                UserId = User.UserId(),
-                Capabilities = model.CapabilityCategories
-                    .SelectMany(cc => cc.Capabilities.Where(c => c.Selected))
-                    .ToDictionary(c => c.Id, c => c.Epics.Where(e => e.Selected).Select(e => e.Id).ToArray()),
-            };
+        return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
+    }
 
-            await capabilitiesService.AddCapabilitiesToCatalogueItem(additionalServiceId, saveRequestModel);
+    [HttpGet("{additionalServiceId}/associated-services")]
+    public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, CatalogueItemId additionalServiceId)
+    {
+        var catalogueItem = await additionalServicesService.GetAdditionalService(solutionId, additionalServiceId);
+        if (catalogueItem is null)
+            return BadRequest($"No Additional Service with Id {additionalServiceId} found for Solution {solutionId}");
 
-            return RedirectToAction(nameof(EditAdditionalService), new { solutionId, additionalServiceId });
-        }
+        var associatedServices = await associatedServicesService.GetPublishedAssociatedServicesForSupplier(catalogueItem.Supplier.Id);
+
+        var model = new CatalogueItemAssociatedServicesModel(catalogueItem, associatedServices)
+        {
+            BackLink = Url.Action(
+                nameof(EditAdditionalService),
+                new { solutionId, additionalServiceId }),
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("{additionalServiceId}/associated-services")]
+    public async Task<IActionResult> AssociatedServices(CatalogueItemId solutionId, CatalogueItemId additionalServiceId, CatalogueItemAssociatedServicesModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var associatedServices = model.SelectableAssociatedServices.Where(a => a.Selected).Select(a => a.CatalogueItemId);
+        await associatedServicesService.RelateAssociatedServicesToCatalogueItem(additionalServiceId, associatedServices);
+
+        return RedirectToAction(
+            nameof(EditAdditionalService),
+            new { solutionId, additionalServiceId });
     }
 }
