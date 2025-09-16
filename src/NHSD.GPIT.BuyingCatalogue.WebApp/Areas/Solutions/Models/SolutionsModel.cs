@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
     {
         public static readonly PageTitleModel SearchResultsPageTitle = new()
         {
-            Title = "Catalogue Solutions",
+            Title = "Catalogue solutions",
         };
 
         public AdditionalFiltersModel AdditionalFilters { get; set; }

@@ -10,7 +10,7 @@
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
-                            advice="Provide the following information about the NHS assured integrations your Catalogue Solution works with." />
+                            advice="Provide the following information about the NHS assured integrations your catalogue solution works with." />
 
             <form method="post">
                 <input type="hidden" asp-for="@Model.BackLink" />
@@ -26,7 +26,7 @@
 
                 <nhs-textarea asp-for="AdditionalInformation"
                               label-text="Additional Information"
-                              label-hint="Provide additional information about how your Catalogue Solution integrates with the other system." />
+                              label-hint="Provide additional information about how your catalogue solution integrates with the other system." />
 
                 <nhs-submit-button />
             </form>

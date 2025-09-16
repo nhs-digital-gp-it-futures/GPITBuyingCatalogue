@@ -31,7 +31,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models
             CataloguePriceType priceType,
             CataloguePriceCalculationType calculationType)
         {
-            var baseHeading = $"The total price for this {itemType.Name()} will be calculated";
+            var baseHeading = $"The total price for this {itemType.Name().ToLowerInvariant()} will be calculated";
             if (calculationType == CataloguePriceCalculationType.Cumulative)
                 return $"{baseHeading} cumulatively.";
 

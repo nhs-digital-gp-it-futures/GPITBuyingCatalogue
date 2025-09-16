@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ListPrices
 {
     public class EditTieredListPriceModelValidator : AbstractValidator<EditTieredListPriceModel>
     {
-        internal const string CannotUnpublishError = "This list price cannot be unpublished as it is the only one for this Catalogue Solution";
+        internal const string CannotUnpublishError = "This list price cannot be unpublished as it is the only one for this catalogue solution";
 
         private const int StartingLowerRange = 1;
 

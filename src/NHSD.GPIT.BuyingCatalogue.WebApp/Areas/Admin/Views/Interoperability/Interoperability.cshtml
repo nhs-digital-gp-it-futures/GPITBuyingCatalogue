@@ -10,7 +10,7 @@
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
-                            advice="Provide information on the integrations your Catalogue Solution works with." />
+                            advice="Provide information on the integrations your catalogue solution works with." />
 
             <h2>NHS assured integrations (optional)</h2>
 
@@ -19,7 +19,7 @@
                     IM1, GP Connect and the NHS App offer integrations specified and assured by the NHS. They allow clinical information and data to be shared quickly and efficiently between IT systems.
                 </p>
                 <p>
-                    If your Catalogue Solution uses any of these integrations, you must provide information on them using the add integrations links.
+                    If your catalogue solution uses any of these integrations, you must provide information on them using the add integrations links.
                 </p>
                 <p>
                     You can find more information about <a href="https://digital.nhs.uk/services/gp-it-futures-systems/im1-pairing-integration">IM1 integrations</a>, <a href="https://digital.nhs.uk/services/gp-connect">GP Connect integrations</a> and <a href="https://digital.nhs.uk/services/nhs-app">NHS App integrations</a> on the NHS website.
@@ -29,7 +29,7 @@
             <h3>IM1 integrations</h3>
             <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddIm1Integration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId })" text="Add an IM1 integration" />
             <p>
-                Use the link to add information on each of the IM1 integrations your Catalogue Solution works with.
+                Use the link to add information on each of the IM1 integrations your catalogue solution works with.
             </p>
 
             @if (Model.IM1Integrations.Any())
@@ -82,7 +82,7 @@
             <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddGpConnectIntegration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId })" text="Add a GP Connect integration" />
 
             <p>
-                Use the link to add information on each of the GP Connect integrations your Catalogue Solution works with.
+                Use the link to add information on each of the GP Connect integrations your catalogue solution works with.
             </p>
 
             @if (Model.GpConnectIntegrations.Any())
@@ -129,7 +129,7 @@
             <vc:nhs-action-link url="@Url.Action(nameof(InteroperabilityController.AddNhsAppIntegration), typeof(InteroperabilityController).ControllerName(), new { solutionId = @Model.CatalogueItemId})" text="Add NHS App integrations" />
 
             <p>
-                Use the link to add all the NHS App integrations your Catalogue Solution works with.
+                Use the link to add all the NHS App integrations your catalogue solution works with.
             </p>
             @if (Model.NhsAppIntegrations.Any())
             {
@@ -168,7 +168,7 @@
                            label-hint="Provide a URL to a page that gives information about your own integrations that fully or partially integrate with other systems. " />
                 <nhs-inset-text>
                     <p>
-                        If you are providing a URL, it must link to a page detailing all the supplier asserted integrations for your Catalogue Solution. It’s your responsibility to keep this page up to date.
+                        If you are providing a URL, it must link to a page detailing all the supplier asserted integrations for your catalogue solution. It’s your responsibility to keep this page up to date.
                     </p>
                 </nhs-inset-text>
                 <br/>

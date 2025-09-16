@@ -119,7 +119,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Models
                 {
                     Action = nameof(SolutionsController.Index),
                     Controller = typeof(SolutionsController).ControllerName(),
-                    Name = "Catalogue Solutions",
+                    Name = "Catalogue solutions",
                     Show = true,
                     RouteData = new Dictionary<string, string> { { "area", typeof(SolutionsController).AreaName() }, },
                 },

@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
 {
     public class SelectSolutionModelValidator : AbstractValidator<SelectSolutionModel>
     {
-        public const string NoSelectionMadeErrorMessage = "Select a Catalogue Solution";
+        public const string NoSelectionMadeErrorMessage = "Select a catalogue solution";
 
         public SelectSolutionModelValidator()
         {

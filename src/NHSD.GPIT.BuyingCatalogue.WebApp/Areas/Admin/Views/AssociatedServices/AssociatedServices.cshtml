@@ -9,7 +9,7 @@
         <nhs-validation-summary />
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SolutionName"
-                        advice="Select any services that help implement or optimise the live operation of your Catalogue Solution." />
+                        advice="Select any services that help implement or optimise the live operation of your catalogue solution." />
 
         <vc:nhs-action-link url="@Url.Action(
             nameof(AssociatedServicesController.AddAssociatedService),
@@ -17,7 +17,7 @@
             new { SolutionId = Model.SolutionId })" text=" Add an Associated Service" />
 
         <p>
-            If an Associated Service is not listed, you can add it using the link. It’ll then be available for selection on all your Catalogue Solutions.
+            If an Associated Service is not listed, you can add it using the link. It’ll then be available for selection on all your catalogue solutions.
         </p>
 
         <form method="post">

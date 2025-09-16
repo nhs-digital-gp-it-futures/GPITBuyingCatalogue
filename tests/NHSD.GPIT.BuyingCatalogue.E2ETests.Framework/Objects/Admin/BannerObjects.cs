@@ -8,7 +8,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 
         public static By SupplierOrganisationsLink => By.LinkText("Supplier organisations");
 
-        public static By CatalogueSolutionsLink => By.LinkText("Catalogue Solutions");
+        public static By CatalogueSolutionsLink => By.LinkText("Catalogue solutions");
 
         public static By LogOutLink => By.LinkText("Log out");
     }

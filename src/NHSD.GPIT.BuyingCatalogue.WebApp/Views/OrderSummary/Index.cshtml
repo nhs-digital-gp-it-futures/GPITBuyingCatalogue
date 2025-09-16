@@ -279,7 +279,7 @@
 
                     @if (Model.RolledUp.GetSolutions().Any())
                     {
-                        <h2>@(Model.RolledUp.GetSolutions().Count() > 1 ? "Catalogue Solutions" : "Catalogue Solution")</h2>
+                        <h2>@(Model.RolledUp.GetSolutions().Count() > 1 ? "Catalogue solutions" : "Catalogue solution")</h2>
                         @foreach (var solution in Model.RolledUp.GetSolutions())
                         {
                             var itemModel = Model.BuildAmendOrderItemModel(solution);

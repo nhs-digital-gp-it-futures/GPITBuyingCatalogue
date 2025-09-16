@@ -7,12 +7,12 @@
 }
 
 <partial name="_solutionSummary" model="Model" />
-<p>These are the development plans for this Catalogue Solution:</p>
+<p>These are the development plans for this catalogue solution:</p>
 <nhs-expander label-text="@roadmapTitle" open="false">
     @if (!string.IsNullOrWhiteSpace(Model.RoadmapLink))
     {
-        <p data-test-id="supplier-roadmap-section">The supplier has provided a roadmap detailing the development plans for this Catalogue Solution.</p>
-        <p><a href="@Model.RoadmapLink" target="_blank">View supplier’s roadmap for this Catalogue Solution (opens in a new tab)</a></p>
+        <p data-test-id="supplier-roadmap-section">The supplier has provided a roadmap detailing the development plans for this catalogue solution.</p>
+        <p><a href="@Model.RoadmapLink" target="_blank">View supplier’s roadmap for this catalogue solution (opens in a new tab)</a></p>
     }
     <p data-test-id="program-roadmap-section">The GP IT Futures Capabilities and Standards roadmap outlines future changes to the Capabilities and Standards model.</p>
     <p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391133519/Roadmap" target="_blank">View GP IT Futures Capabilities and Standards roadmap (opens in a new tab)</a></p>
@@ -21,7 +21,7 @@
 @if (Model.WorkOffPlans.Any()) 
 { 
     <h2 data-test-id="work-off-plans-section">Work-off Plans</h2>
-    <p>This Catalogue Solution is subject to a Compliance Work-off Plan. It means the supplier has agreed to complete any outstanding work to meet a Standard within an agreed timeframe.</p>
+    <p>This catalogue solution is subject to a Compliance Work-off Plan. It means the supplier has agreed to complete any outstanding work to meet a Standard within an agreed timeframe.</p>
     <p><a href="https://gpitbjss.atlassian.net/wiki/spaces/GPITF/pages/1391134310/Introduction+to+Capabilities+and+Standards" target="_blank">More information about these requirements (opens in a new tab)</a></p>
 
     @foreach(var standard in standardsInOrder)

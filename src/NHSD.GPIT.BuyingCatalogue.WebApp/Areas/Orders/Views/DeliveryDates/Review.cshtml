@@ -36,7 +36,7 @@
             };
 
             <nhs-summary-list>
-                <nhs-summary-list-row label-text="Catalogue Solution">
+                <nhs-summary-list-row label-text="Catalogue solution">
                     @Model.SolutionName
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="@practiceReorganisationRecipientTitle">
@@ -70,7 +70,7 @@
             var catalogueItemId = Model.SolutionId.Value;
             var itemName = Model.OrderItemName(catalogueItemId);
 
-            <h2>Catalogue Solution</h2>
+            <h2>Catalogue solution</h2>
             
             var url = Url.Action(nameof(DeliveryDatesController.EditDates), typeof(DeliveryDatesController).ControllerName(),
                 new { Model.InternalOrgId, Model.CallOffId, catalogueItemId, source = RoutingSource.TaskList });

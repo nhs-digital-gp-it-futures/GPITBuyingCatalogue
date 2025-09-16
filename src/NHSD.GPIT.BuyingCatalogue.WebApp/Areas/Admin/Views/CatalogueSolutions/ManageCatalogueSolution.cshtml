@@ -16,7 +16,7 @@
                 <li class="nhsuk-breadcrumb__item">
                     <a asp-action="@nameof(CatalogueSolutionsController.Index)"
                        asp-controller="@typeof(CatalogueSolutionsController).ControllerName()"
-                       class="nhsuk-breadcrumb__link">Manage Catalogue Solutions</a>
+                       class="nhsuk-breadcrumb__link">Manage catalogue solutions</a>
                 </li>
             </ol>
         </div>
@@ -28,7 +28,7 @@
         <nhs-validation-summary RadioId="SelectedPublicationStatus"/>
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.SupplierName"
-                        advice="Explain what your Catalogue Solution is for and how it works. This information will be published on the Buying Catalogue to help buyers understand if it meets their needs." />
+                        advice="Explain what your catalogue solution is for and how it works. This information will be published on the Buying Catalogue to help buyers understand if it meets their needs." />
         @if (!string.IsNullOrWhiteSpace(Model.LastUpdatedByName))
         {
             <nhs-summary-list>
@@ -51,7 +51,7 @@
         <nhs-fieldset-form-container asp-for="@Model"
                                      label-text="Sections"
                                      size="Large"
-                                     label-hint="Provide as much information as possible for buyers. You can save your progress at any point, but a Catalogue Solution listing page cannot be published until all mandatory fields have been completed.">
+                                     label-hint="Provide as much information as possible for buyers. You can save your progress at any point, but a catalogue solution listing page cannot be published until all mandatory fields have been completed.">
 
             <nhs-table data-test-id="manage-solution-table">
                 <nhs-table-column>Section</nhs-table-column>
@@ -273,7 +273,7 @@
             <input type="hidden" asp-for="SlaStatus" />
             <input type="hidden" asp-for="CapabilitiesStatus" />
             <nhs-fieldset-form-label asp-for="@Model"
-                                     label-text="Catalogue Solution status"
+                                     label-text="Catalogue solution status"
                                      label-hint="Select one option."
                                      size="Large">
                 <nhs-radio-buttons asp-for="SelectedPublicationStatus"
