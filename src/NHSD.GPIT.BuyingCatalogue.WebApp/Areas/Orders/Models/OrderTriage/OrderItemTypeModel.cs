@@ -23,7 +23,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.OrderTriage
         public IList<SelectOption<CatalogueItemType>> AvailableOrderItemTypes => new List<SelectOption<CatalogueItemType>>
         {
             new(
-                "Catalogue Solution and other services",
+                "Catalogue solution and other services",
                 "Order clinical IT systems and their related services.",
                 CatalogueItemType.Solution),
             new(

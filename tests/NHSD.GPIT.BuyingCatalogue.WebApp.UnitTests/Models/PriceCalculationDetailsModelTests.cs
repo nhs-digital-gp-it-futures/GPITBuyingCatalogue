@@ -60,7 +60,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
                 priceType,
                 CataloguePriceCalculationType.Cumulative);
 
-            Assert.Equal($"The total price for this Catalogue Solution will be calculated cumulatively.", model.DetailsHeading);
+            Assert.Equal($"The total price for this catalogue solution will be calculated cumulatively.", model.DetailsHeading);
         }
 
         [Theory]
@@ -75,7 +75,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
                 priceType,
                 calculationType);
 
-            var expectedHeading = $"The total price for this Catalogue Solution will be calculated as a {priceType.ToString().ToLowerInvariant()}";
+            var expectedHeading = $"The total price for this catalogue solution will be calculated as a {priceType.ToString().ToLowerInvariant()}";
             expectedHeading += $" {calculationType.Name().ToLowerInvariant()} price (excluding VAT).";
 
             Assert.Equal(expectedHeading, model.DetailsHeading);
@@ -93,7 +93,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Models
                 priceType,
                 calculationType);
 
-            var expectedHeading = $"The total price for this Catalogue Solution will be calculated as a {priceType.ToString().ToLowerInvariant()}";
+            var expectedHeading = $"The total price for this catalogue solution will be calculated as a {priceType.ToString().ToLowerInvariant()}";
             expectedHeading += " price based on volume (excluding VAT).";
 
             Assert.Equal(expectedHeading, model.DetailsHeading);

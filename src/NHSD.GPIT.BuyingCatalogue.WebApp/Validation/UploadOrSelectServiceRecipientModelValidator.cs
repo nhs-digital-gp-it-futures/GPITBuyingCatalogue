@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation
 {
     public class UploadOrSelectServiceRecipientModelValidator : AbstractValidator<UploadOrSelectServiceRecipientModel>
     {
-        internal const string SelectedServiceRecipientOptionsError = "Select how you would like to add Service Recipients";
+        internal const string SelectedServiceRecipientOptionsError = "Select how you would like to add service recipients";
 
         public UploadOrSelectServiceRecipientModelValidator()
         {

@@ -13,7 +13,7 @@
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
-                            advice="Let buyers know about any third-party components or device capabilities needed for your Catalogue Solution." />
+                            advice="Let buyers know about any third-party components or device capabilities needed for your catalogue solution." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.SolutionId" />
                 <input type="hidden" asp-for="@Model.BackLink" />
@@ -21,11 +21,11 @@
 
                 <nhs-textarea asp-for="ThirdPartyComponents"
                               label-text="Third-party components (optional)"
-                              label-hint="Provide information on any third-party components required for your Catalogue Solution to function, for example integration software, such as a QR code scanner, or Google search." />
+                              label-hint="Provide information on any third-party components required for your catalogue solution to function, for example integration software, such as a QR code scanner, or Google search." />
 
                 <nhs-textarea asp-for="DeviceCapabilities"
                               label-text="Device capabilities (optional)"
-                              label-hint="Provide information on any device capabilities required for your Catalogue Solution to function, for example a camera or a certain type of connection port." />
+                              label-hint="Provide information on any device capabilities required for your catalogue solution to function, for example a camera or a certain type of connection port." />
 
                 <nhs-submit-button />
             </form>

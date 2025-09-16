@@ -26,13 +26,13 @@
         {
             var practiceReorganisationRecipientTitle = Model.OrderType.Value switch
             {
-                OrderTypeEnum.AssociatedServiceSplit => "Service Recipient to be split",
-                OrderTypeEnum.AssociatedServiceMerger => "Retained Service Recipient",
+                OrderTypeEnum.AssociatedServiceSplit => "Service recipient to be split",
+                OrderTypeEnum.AssociatedServiceMerger => "Retained service recipient",
                 _ => throw new InvalidOperationException($"Unsupported orderType {Model.OrderType.Value}"),
             };
 
             <nhs-summary-list>
-                <nhs-summary-list-row label-text="Catalogue Solution">
+                <nhs-summary-list-row label-text="Catalogue solution">
                     @Model.SolutionName
                 </nhs-summary-list-row>
                 <nhs-summary-list-row label-text="@practiceReorganisationRecipientTitle">
@@ -41,7 +41,7 @@
             </nhs-summary-list>
         }
         <p>
-            <strong>Planned delivery date for the majority of Service Recipients:</strong>
+            <strong>Planned delivery date for the majority of service recipients:</strong>
             @deliveryDate
             @if (Model.DisplayEditLink)
             {

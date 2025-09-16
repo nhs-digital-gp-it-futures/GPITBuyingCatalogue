@@ -39,7 +39,7 @@
 
                 <nhs-inset-text>As this service supports the merging or splitting of practices, the provisioning and calculation types cannot be changed.</nhs-inset-text>
                 <nhs-summary-list>
-                    <nhs-summary-list-row label-text="Provisioning type">Declarative per Service Recipient</nhs-summary-list-row>
+                    <nhs-summary-list-row label-text="Provisioning type">Declarative per service recipient</nhs-summary-list-row>
                     <nhs-summary-list-row label-text="Calculation type">Volume</nhs-summary-list-row>
                 </nhs-summary-list>   
             }
@@ -47,7 +47,7 @@
             {
                 @if (Model.CatalogueItemType == CatalogueItemType.AssociatedService && Model.CataloguePriceId is not null)
                 {
-                    <nhs-inset-text>For Associated Services that support mergers and splits, the provisioning type must be declarative per Service Recipient and the calculation type must be volume.</nhs-inset-text>
+                    <nhs-inset-text>For Associated Services that support mergers and splits, the provisioning type must be declarative per service recipient and the calculation type must be volume.</nhs-inset-text>
                 }
                 <nhs-fieldset-form-label asp-for="SelectedProvisioningType" label-text="Provisioning type" size="Medium">
                     <nhs-radio-button-container>

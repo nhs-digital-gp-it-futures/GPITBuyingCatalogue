@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutionsModels.CatalogueSolutionsModel
 @{
-    ViewBag.Title = "Manage Catalogue Solutions";
+    ViewBag.Title = "Manage catalogue solutions";
 
     ViewBag.HeadingTitles = new[] { "Solution ID", "Solution name", "Supplier", "Last updated", "Status", "Action", };
 }
@@ -37,7 +37,7 @@
 
         <form method="post">
             <input type="hidden" asp-for="SearchTerm"/>
-            <nhs-expander label-text="Filter Catalogue Solutions">
+            <nhs-expander label-text="Filter catalogue solutions">
                 <nhs-fieldset-form-label asp-for="@Model"
                                          label-hint="Select one option.">
                     <nhs-radio-buttons asp-for="SelectedPublicationStatus"

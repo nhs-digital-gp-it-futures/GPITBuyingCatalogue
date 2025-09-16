@@ -7,7 +7,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.ItemName"
-                        advice="Add any services that provide extra functionality to your Catalogue Solution." />
+                        advice="Add any services that provide extra functionality to your catalogue solution." />
 
         <vc:nhs-action-link url="@Url.Action(
             nameof(AdditionalServicesController.AddAdditionalService),
@@ -15,7 +15,7 @@
             new { solutionId = Model.ItemId })" text="Add an Additional Service" />
 
         <p>
-            Use the link to add information on each of the Additional Services available with your Catalogue Solution.
+            Use the link to add information on each of the Additional Services available with your catalogue solution.
         </p>
         @if (Model.AdditionalServices.Any())
         {

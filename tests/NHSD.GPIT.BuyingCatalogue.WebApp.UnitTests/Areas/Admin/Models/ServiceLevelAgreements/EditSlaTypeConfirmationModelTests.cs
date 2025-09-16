@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Models.ServiceL
 
             actual.SolutionName.Should().Be(solution.CatalogueItem.Name);
 
-            actual.Advice.Should().Be($"If you change from a {SlaType.Type1} to a {SlaType.Type2} Catalogue Solution, the SLA information that was previously entered will be replaced");
+            actual.Advice.Should().Be($"If you change from a {SlaType.Type1} to a {SlaType.Type2} catalogue solution, the SLA information that was previously entered will be replaced");
         }
     }
 }

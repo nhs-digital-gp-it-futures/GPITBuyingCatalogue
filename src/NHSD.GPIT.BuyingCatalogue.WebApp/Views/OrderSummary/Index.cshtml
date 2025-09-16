@@ -279,7 +279,7 @@
 
                     @if (Model.RolledUp.GetSolutions().Any())
                     {
-                        <h2>@(Model.RolledUp.GetSolutions().Count() > 1 ? "Catalogue Solutions" : "Catalogue Solution")</h2>
+                        <h2>@(Model.RolledUp.GetSolutions().Count() > 1 ? "Catalogue solutions" : "Catalogue solution")</h2>
                         @foreach (var solution in Model.RolledUp.GetSolutions())
                         {
                             var itemModel = Model.BuildAmendOrderItemModel(solution);
@@ -423,7 +423,7 @@
                                                     <br />
                                                     <br />
                                                     <p>
-                                                        This is the total estimated cost for the entire duration of the Call-off Agreement, which is usually 3 years.
+                                                        This is the total estimated cost for the entire duration of the call-off agreement, which is usually 3 years.
                                                         The figure is made up of the one-off costs and the yearly cost multiplied by 3.
                                                     </p>
                                                 }
@@ -621,7 +621,7 @@
                                                 caption="Order @Model.Order.CallOffId" />
                             </div>
                         </div>
-                        <p>Both parties are entering into a Call-off Agreement in accordance with the provisions of the framework being procured from.</p>
+                        <p>Both parties are entering into a call-off agreement in accordance with the provisions of the framework being procured from.</p>
                         <p>The supplier will provide the solution and any services included in this Call-off Order Form for the duration identified. They must do this subject to the Call-off Terms and the information provided in this Call-off Order Form.</p>
                         <p>No amendments to the Call-off Terms will be valid unless documented in a relevant template. A template will only be valid if it has been attached to this Call-off Order Form prior to it being signed by both parties.</p>
                         <div class="nhsuk-grid-row">

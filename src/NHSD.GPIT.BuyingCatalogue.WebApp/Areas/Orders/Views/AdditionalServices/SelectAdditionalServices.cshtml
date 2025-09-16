@@ -7,7 +7,7 @@
         + (Model.IsAmendment ? " We're only showing Additional Services that weren't added to the original order." : "");
 
     var advice = Model.IsAmendment && !Model.Services.Any()
-        ? "All the Additional Services available with this Catalogue Solution have already been added to this order."
+        ? "All the Additional Services available with this catalogue solution have already been added to this order."
         : "Select the Additional Services that you want to add to your order.";
 }
 
@@ -51,7 +51,7 @@
                 @if (!Model.IsAmendment)
                 {
                     <div id="nothing-to-select">
-                        <p>There are no Additional Services available for this Catalogue Solution.</p>
+                        <p>There are no Additional Services available for this catalogue solution.</p>
                     </div>
                 }
             }

@@ -7,8 +7,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Competitions.Validators;
 public sealed class SelectSolutionsModelValidator : AbstractValidator<SelectSolutionsModel>
 {
     internal const string DirectAwardSelectionMissingError = "Select yes if you want to use a direct award";
-    internal const string NotEnoughSelectionsError = "Select at least 2 Catalogue Solutions for your shortlist";
-    internal const string TooManySelectionsError = "You’ve selected more than 8 Catalogue Solutions";
+    internal const string NotEnoughSelectionsError = "Select at least 2 catalogue solutions for your shortlist";
+    internal const string TooManySelectionsError = "You’ve selected more than 8 catalogue solutions";
 
     internal const string SelectedSolutionsPropertyName = "Solutions[0].Selected";
 

@@ -91,7 +91,7 @@
                 Browse the
                 <a asp-action="@nameof(SolutionsController.Index)"
                    asp-controller="@typeof(SolutionsController).ControllerName()"
-                   asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a> available and create a shortlist.
+                   asp-area="@typeof(SolutionsController).AreaName()">Catalogue solutions</a> available and create a shortlist.
             </p>
             <vc:nhs-anchor-button text="Create new shortlist"
                                      url="@(Url.Action(nameof(SolutionsController.Index), typeof(SolutionsController).ControllerName(), new { Area = typeof(SolutionsController).AreaName() }))"

@@ -107,7 +107,7 @@
                     Browse the
                     <a asp-action="@nameof(SolutionsController.Index)"
                        asp-controller="@typeof(SolutionsController).ControllerName()"
-                       asp-area="@typeof(SolutionsController).AreaName()">Catalogue Solutions</a> available to order.
+                       asp-area="@typeof(SolutionsController).AreaName()">Catalogue solutions</a> available to order.
                 </p>
                 <vc:nhs-anchor-button text="Create new order"
                                          url="@Url.Action(nameof(OrderController.ReadyToStart), typeof(OrderController).ControllerName(), new { internalOrgId = Model.InternalOrgId, area = typeof(OrderController).AreaName() })"

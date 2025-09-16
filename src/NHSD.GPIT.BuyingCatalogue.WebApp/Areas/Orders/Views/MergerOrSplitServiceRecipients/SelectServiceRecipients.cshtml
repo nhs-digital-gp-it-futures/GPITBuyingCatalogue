@@ -29,7 +29,7 @@
                     {
                         <nhs-inset-text>
                             <p>
-                                <span>Your Service Recipients have been imported successfully.</span>
+                                <span>Your service recipients have been imported successfully.</span>
 
                                 If you need to make changes, you can do so manually or re-import them.
                             </p>
@@ -71,7 +71,7 @@
                                           type="Secondary"/>
                     <button id="show-dialog" class="nhsuk-button nhsuk-button--secondary bc-u-float-right nhsuk-button--js-only">
                         <vc:nhs-search-icon/>
-                        Search for Service Recipients
+                        Search for service recipients
                     </button>
                 </nhs-button-group>
             </div>
@@ -162,10 +162,10 @@
     table-partial-view="ServiceRecipients/_recipientTable"
     table-data="@Model.GetSearchRecipients()"
     callback-function="updateRecipients"
-    title="Search for Service Recipients"
-    advice="Find and select the Service Recipients you want to include in this order."
+    title="Search for service recipients"
+    advice="Find and select the service recipients you want to include in this order."
     placeholder="Search by ODS code or organisation name"
-    not-found-text="There are no Service Recipients that match. Try entering different search criteria."
+    not-found-text="There are no service recipients that match. Try entering different search criteria."
     apply-button-text="Apply recipients"
     clear-search="true"
     clear-selection="true"/>
