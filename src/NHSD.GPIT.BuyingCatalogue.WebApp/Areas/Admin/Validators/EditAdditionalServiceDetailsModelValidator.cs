@@ -21,7 +21,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
                 .NotEmpty()
                 .WithMessage("Enter an Additional Service name")
                 .NotEqual(m => m.CatalogueItemName)
-                .WithMessage("Additional Service name cannot be the same as its Catalogue Solution");
+                .WithMessage("Additional Service name cannot be the same as its catalogue solution");
 
             RuleFor(m => m.Description)
                 .NotEmpty()

@@ -98,7 +98,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Admin.Validators
             var result = validator.TestValidate(model);
 
             result.ShouldHaveValidationErrorFor(m => m.Name)
-                .WithErrorMessage("Additional Service name cannot be the same as its Catalogue Solution");
+                .WithErrorMessage("Additional Service name cannot be the same as its catalogue solution");
         }
     }
 }

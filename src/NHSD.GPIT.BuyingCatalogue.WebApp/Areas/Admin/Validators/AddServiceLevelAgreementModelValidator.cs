@@ -9,7 +9,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators
         {
             RuleFor(s => s.SlaLevel)
                 .NotNull()
-                .WithMessage("Select a type of Catalogue Solution");
+                .WithMessage("Select a type of catalogue solution");
         }
     }
 }

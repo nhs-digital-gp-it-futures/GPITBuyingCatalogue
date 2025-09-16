@@ -14,7 +14,7 @@
 
         @{
             var advice = Model.AssociatedServicesOnly
-            ? "These are all the Associated Services available for your chosen Catalogue Solution. Select any you want to order."
+            ? "These are all the Associated Services available for your chosen catalogue solution. Select any you want to order."
             : $"Select any Associated Services you want to add to this {Model.EntityType.ToLowerInvariant()} or continue if you do not want to add any.";
         }
 
@@ -57,7 +57,7 @@
             else
             {
                 <div id="nothing-to-select">
-                    <p>There are no Associated Services available for this Catalogue Solution.</p>
+                    <p>There are no Associated Services available for this catalogue solution.</p>
                 </div>
             }
 

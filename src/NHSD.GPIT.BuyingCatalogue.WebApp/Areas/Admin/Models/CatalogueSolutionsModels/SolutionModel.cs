@@ -15,8 +15,8 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.CatalogueSolutions
         internal const string AddHeading = "Add a solution";
         internal const string EditHeading = "Details";
 
-        internal const string AddDescription = "Provide the following information about your Catalogue Solution.";
-        internal const string EditDescription = "These are the current details for this Catalogue Solution.";
+        internal const string AddDescription = "Provide the following information about your catalogue solution.";
+        internal const string EditDescription = "These are the current details for this catalogue solution.";
 
         public SolutionModel()
         {

@@ -39,7 +39,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
 
             model.Recipients.Count.Should().Be(1);
-            model.Recipients.First().Key.Should().Be("Service Recipients to be merged");
+            model.Recipients.First().Key.Should().Be("Service recipients to be merged");
             model.Recipients.First().Value.Length.Should().Be(order.FlattenedRecipients.Count());
         }
 
@@ -55,7 +55,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Models.Contract
             var model = new EditDatesModel(new OrderWrapper(order), catalogueItemId);
 
             model.Recipients.Count.Should().Be(1);
-            model.Recipients.First().Key.Should().Be("Service Recipients receiving patients");
+            model.Recipients.First().Key.Should().Be("Service recipients receiving patients");
             model.Recipients.First().Value.Length.Should().Be(order.FlattenedRecipients.Count());
         }
 

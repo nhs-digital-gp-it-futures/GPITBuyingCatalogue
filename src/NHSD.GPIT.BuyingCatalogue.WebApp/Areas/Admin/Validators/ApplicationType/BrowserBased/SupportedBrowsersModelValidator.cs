@@ -12,7 +12,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Validators.ApplicationTyp
         {
             RuleFor(m => m.MobileResponsive)
                 .NotEmpty()
-                .WithMessage("Select yes if your Catalogue Solution is mobile responsive");
+                .WithMessage("Select yes if your catalogue solution is mobile responsive");
 
             RuleFor(m => m.Browsers)
                 .Must(b => b.Any(c => c.Checked == true))

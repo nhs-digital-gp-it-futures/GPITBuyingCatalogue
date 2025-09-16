@@ -12,7 +12,7 @@
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
-                            advice="Let buyers know the connection speed and screen resolution needed to use your Catalogue Solution." />
+                            advice="Let buyers know the connection speed and screen resolution needed to use your catalogue solution." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.SolutionId" />
                 <input type="hidden" asp-for="@Model.BackLink" />
@@ -20,12 +20,12 @@
                 <nhs-select asp-for="SelectedConnectionSpeed"
                             asp-items="@Model.ConnectionSpeeds"
                             label-text="Connection speed"
-                            label-hint="Select the minimum bandwidth required for your Catalogue Solution to function." />
+                            label-hint="Select the minimum bandwidth required for your catalogue solution to function." />
 
                 <nhs-select asp-for="SelectedScreenResolution"
                             asp-items="@Model.ScreenResolutions"
                             label-text="Screen resolution and aspect ratio (optional)"
-                            label-hint="Select the minimum recommended screen resolution and aspect ratio for your Catalogue Solution to function." />
+                            label-hint="Select the minimum recommended screen resolution and aspect ratio for your catalogue solution to function." />
                 <nhs-submit-button />
             </form>
         </div>

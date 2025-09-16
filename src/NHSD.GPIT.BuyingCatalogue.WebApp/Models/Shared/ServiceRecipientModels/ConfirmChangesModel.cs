@@ -7,7 +7,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 {
     public sealed class ConfirmChangesModel : NavBaseModel
     {
-        public const string TitleText = "Confirm Service Recipients";
+        public const string TitleText = "Confirm service recipients";
         private string addRemoveRecipientsLink;
 
         public ConfirmChangesModel()
@@ -56,7 +56,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels
 
         private void GetTitleAndAdviceFromOrderType(OrderType orderType)
         {
-            Title = "Confirm Service Recipients";
+            Title = "Confirm service recipients";
             Advice = orderType.Value switch
             {
                 OrderTypeEnum.AssociatedServiceSplit => "Review the practices involved in the split you’re ordering.",

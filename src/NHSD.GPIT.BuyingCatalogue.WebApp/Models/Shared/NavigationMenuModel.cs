@@ -32,7 +32,7 @@ public readonly struct NavigationMenuModel
                             urlHelper.Action(nameof(HomeController.Index), typeof(HomeController).ControllerName())),
 
                         new(
-                            "Catalogue Solutions",
+                            "Catalogue solutions",
                             urlHelper.Action(
                                 nameof(SolutionsController.Index),
                                 typeof(SolutionsController).ControllerName(),
@@ -81,7 +81,7 @@ public readonly struct NavigationMenuModel
                                 })),
 
                         new(
-                            "Catalogue Solutions",
+                            "Catalogue solutions",
                             urlHelper.Action(
                                 nameof(SolutionsController.Index),
                                 typeof(SolutionsController).ControllerName(),
@@ -121,7 +121,7 @@ public readonly struct NavigationMenuModel
                                 typeof(SuppliersController).ControllerName(),
                                 new { area = typeof(OrganisationsController).AreaName() })),
                         new(
-                            "Catalogue Solutions",
+                            "Catalogue solutions",
                             urlHelper.Action(
                                 nameof(CatalogueSolutionsController.Index),
                                 typeof(CatalogueSolutionsController).ControllerName(),

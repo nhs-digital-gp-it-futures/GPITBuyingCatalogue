@@ -5,7 +5,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Validators.SolutionSelec
 {
     public class RecipientForPracticeReorganisationModelValidator : AbstractValidator<RecipientForPracticeReorganisationModel>
     {
-        internal const string ErrorMessage = "Select a Service Recipient";
+        internal const string ErrorMessage = "Select a service recipient";
 
         public RecipientForPracticeReorganisationModelValidator()
         {

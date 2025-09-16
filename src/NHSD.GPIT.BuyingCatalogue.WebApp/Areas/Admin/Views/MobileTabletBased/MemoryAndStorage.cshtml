@@ -13,7 +13,7 @@
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
-                            advice="Let buyers know the minimum requirements for your Catalogue Solution to function." />
+                            advice="Let buyers know the minimum requirements for your catalogue solution to function." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.SolutionId" />
                 <input type="hidden" asp-for="@Model.BackLink" />
@@ -22,10 +22,10 @@
                 <nhs-select asp-for="SelectedMemorySize"
                             asp-items="@Model.MemorySizes"
                             label-text="Memory size"
-                            label-hint="Select the minimum memory size required for your Catalogue Solution to function." />
+                            label-hint="Select the minimum memory size required for your catalogue solution to function." />
                 <nhs-textarea asp-for="Description"
                               label-text="Storage space"
-                              label-hint="Provide information about how much storage space a device will need to use your Catalogue Solution." />
+                              label-hint="Provide information about how much storage space a device will need to use your catalogue solution." />
 
                 <nhs-submit-button />
             </form>

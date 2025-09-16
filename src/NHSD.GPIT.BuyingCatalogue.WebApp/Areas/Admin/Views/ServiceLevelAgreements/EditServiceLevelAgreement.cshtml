@@ -5,7 +5,7 @@
 <partial name="Partials/_BackLink" model="Model" />
 <nhs-page-title title="@ViewBag.Title"
                 caption="@Model.CatalogueItem.Name"
-                advice="Let buyers know what support is provided for your Catalogue Solution and how they can contact you." />
+                advice="Let buyers know what support is provided for your catalogue solution and how they can contact you." />
 
 <p class="nhsuk-heading-m">Current solution type: @ConvertSlaType(Model.ServiceLevelAgreements.SlaType)</p>
 @if (Model.CatalogueItem.PublishedStatus is not PublicationStatus.Published) {
@@ -15,7 +15,7 @@
                         typeof(ServiceLevelAgreementsController).ControllerName(),
                         new  { solutionId = Model.CatalogueItem.Id })" />
 
-    <p>Use the link to select the Catalogue Solution type that this Service Level Agreement covers.</p>
+    <p>Use the link to select the catalogue solution type that this Service Level Agreement covers.</p>
 } else
 {
     <nhs-inset-text>You cannot change the solution type while the solution is published.</nhs-inset-text>

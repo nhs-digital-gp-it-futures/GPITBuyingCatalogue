@@ -149,7 +149,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Solutions.Controllers
 
             result.Should().NotBeNull();
             result.ContentType.Should().Be("application/pdf");
-            result.FileDownloadName.Should().Be($"{filter.Name} Catalogue Solutions.pdf");
+            result.FileDownloadName.Should().Be($"{filter.Name} catalogue solutions.pdf");
             result.FileContents.Should().BeEquivalentTo(fileContents);
         }
 

@@ -27,7 +27,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Admin
 
         public static By AddSolutionLink => By.LinkText("Add a solution");
 
-        public static By CatalogueSolutionLink => By.LinkText("Manage Catalogue Solutions");
+        public static By CatalogueSolutionLink => By.LinkText("Manage catalogue solutions");
 
         public static By CatalogueSolutionTable => ByExtensions.DataTestId("manage-catalogue-solution-list");
 

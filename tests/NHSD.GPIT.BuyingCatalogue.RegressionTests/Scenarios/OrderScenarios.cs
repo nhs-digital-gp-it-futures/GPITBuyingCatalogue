@@ -553,7 +553,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -572,7 +572,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionAndAdditionalServiceUnder40K_EditCatalogueSolution()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -591,7 +591,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionAndAssociatedServiceUnder40K_EditCatalogueSolution()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -610,7 +610,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionAdditionalAndAssociatedServiceUnder40K_EditCatalogueSolution()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -629,7 +629,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderAssociatedServiceOnly_EditCatalogueSolution()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -1399,7 +1399,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -1418,7 +1418,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -1437,7 +1437,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditional_AddultipleAssociatedServices()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -1456,7 +1456,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleServiceRecipients()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -1475,7 +1475,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_MultipleServiceRecipients()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -1494,7 +1494,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAssociatedServices_MultipleServiceRecipients()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -1513,7 +1513,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -1532,7 +1532,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithAssociatedServiceOnly_EditCatalogueSolution_AddMultipleAssociatedServices_AddMultipleServiceRecipients()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
@@ -1554,7 +1554,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Scenarios
         }
 
         [Fact]
-        [Trait("Edit Catalogue Solution", "Order")]
+        [Trait("Edit catalogue solution", "Order")]
         public void OrderWithSolutionUnder40K_EditCatalogueSolution_AddMultipleAdditionalServices_AddOneAssociatedService()
         {
             OrderingPages.OrderingDashboard.CreateNewOrder();
