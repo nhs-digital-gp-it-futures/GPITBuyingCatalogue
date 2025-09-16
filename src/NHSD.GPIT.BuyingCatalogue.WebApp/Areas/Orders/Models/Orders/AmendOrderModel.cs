@@ -32,7 +32,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Orders
         {
             "add a new Catalogue Solution",
             "change the supplier",
-            "change the timescales for this Call-off agreement",
+            "change the timescales for this call-off agreement",
             "remove Service Recipients from the order",
             "change the price of any items previously included in the order",
             "change the quantity of items previously included in the order",
