@@ -13,7 +13,7 @@
             <nhs-validation-summary />
             <nhs-page-title title="@ViewBag.Title"
                             caption="@Model.SolutionName"
-                            advice="Let buyers know the minimum requirements for your Catalogue Solution to function." />
+                            advice="Let buyers know the minimum requirements for your catalogue solution to function." />
             <form method="post">
                 <input type="hidden" asp-for="@Model.SolutionId" />
                 <input type="hidden" asp-for="@Model.BackLink" />
@@ -22,20 +22,20 @@
                 <nhs-select asp-for="SelectedMemorySize"
                             asp-items="@Model.MemorySizes"
                             label-text="Memory size"
-                            label-hint="Select the minimum memory size required for your Catalogue Solution to function." />
+                            label-hint="Select the minimum memory size required for your catalogue solution to function." />
 
                 <nhs-textarea asp-for="StorageSpace"
                               label-text="Storage space"
-                              label-hint="Provide information about how much storage space a device will need to use your Catalogue Solution." />
+                              label-hint="Provide information about how much storage space a device will need to use your catalogue solution." />
 
                 <nhs-textarea asp-for="ProcessingPower"
                               label-text="Processing power"
-                              label-hint="Provide information on the minimum CPU power required for your Catalogue Solution to function on desktop." />
+                              label-hint="Provide information on the minimum CPU power required for your catalogue solution to function on desktop." />
 
                 <nhs-select asp-for="SelectedResolution"
                             asp-items="@Model.Resolutions"
                             label-text="Screen resolution and aspect ratio (optional)"
-                            label-hint="Select the minimum recommended screen resolution and aspect ratio for your Catalogue Solution to function on desktop." />
+                            label-hint="Select the minimum recommended screen resolution and aspect ratio for your catalogue solution to function on desktop." />
 
                 <nhs-submit-button />
             </form>

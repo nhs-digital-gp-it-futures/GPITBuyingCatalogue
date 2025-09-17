@@ -1,6 +1,6 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Models.Shared.ServiceRecipientModels.ImportServiceRecipients.ImportServiceRecipientModel
 @{
-    ViewBag.Title = "Upload Service Recipients";
+    ViewBag.Title = "Upload service recipients";
 }
 
 <partial name="Partials/_BackLink" model="@Model"/>
@@ -10,12 +10,12 @@
 
         <nhs-page-title title="@ViewBag.Title"
                         caption="@Model.Caption"
-                        advice="Create a CSV with your Service Recipients in the first column and their ODS codes in the second column."/>
+                        advice="Create a CSV with your service recipients in the first column and their ODS codes in the second column."/>
 
         <p>
-            Add your Service Recipients to a template and upload them into your order.
+            Add your service recipients to a template and upload them into your order.
             You’ll be able to edit them later.
-            If you upload Service Recipients more than once for this item, they’ll be overwritten each time.
+            If you upload service recipients more than once for this item, they’ll be overwritten each time.
         </p>
 
         <vc:nhs-anchor-button text="Download template (CSV)"

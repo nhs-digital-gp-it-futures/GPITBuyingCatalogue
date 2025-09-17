@@ -44,7 +44,7 @@ namespace NHSD.GPIT.BuyingCatalogue.E2ETests.Framework.Objects.Ordering
 
         public static By CatalogueSolutionsEditSolutionEditServiceRecipientsButton => By.ClassName("nhsuk-button--secondary");
 
-        public static By CatalogueSolutionsEditSolutionDeleteSolutionLink => By.LinkText("Delete Catalogue Solution");
+        public static By CatalogueSolutionsEditSolutionDeleteSolutionLink => By.LinkText("Delete catalogue solution");
 
         public static By CatalogueSolutionsDeleteSolutionCancelLink => By.LinkText("Cancel");
     }

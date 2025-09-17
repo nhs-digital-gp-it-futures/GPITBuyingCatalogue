@@ -3,16 +3,16 @@
     string title, advice, caption;
     if (Model.OrderType.AssociatedServicesOnly)
     {
-        title = "Which Catalogue Solution does the service help implement?";
+        title = "Which catalogue solution does the service help implement?";
         advice = Model.CatalogueSolutions.Count > 1
-                    ? "Select the Catalogue Solution the Associated Service you want to order supports."
+                    ? "Select the catalogue solution the Associated Service you want to order supports."
                     : "There is only one solution with this type of Associated Service.";
         caption = $"Order {Model.CallOffId}";
     }
     else
     {
-        title = "Catalogue Solutions";
-        advice = "Select the Catalogue Solution you want to order.";
+        title = "Catalogue solutions";
+        advice = "Select the catalogue solution you want to order.";
         caption = Model.SupplierName;
     }
 
@@ -39,7 +39,7 @@
                 if (Model.CatalogueSolutions.Count > 1)
                 {
 
-                    <h3>Which Catalogue Solution is the service linked with?</h3>
+                    <h3>Which catalogue solution is the service linked with?</h3>
                     if (Model.OrderType.MergerOrSplit)
                     {
                         <p>These are the solutions from this supplier that have Associated Services supporting mergers or splits.</p>

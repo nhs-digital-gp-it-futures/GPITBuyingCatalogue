@@ -6,7 +6,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Validation.Shared;
 
 public class SelectMergerOrSplitRecipientsModelValidator : AbstractValidator<SelectMergerOrSplitRecipientsModel>
 {
-    public const string SelectAtLeastErrorMessage = "Select at least {0} Service Recipients";
+    public const string SelectAtLeastErrorMessage = "Select at least {0} service recipients";
 
     public SelectMergerOrSplitRecipientsModelValidator()
     {

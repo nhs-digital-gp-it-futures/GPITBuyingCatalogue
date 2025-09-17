@@ -19,7 +19,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Admin.Models.ServiceLevelAgreem
 
             var newSlaType = catalogueItem.Solution.ServiceLevelAgreement.SlaType == SlaType.Type1 ? SlaType.Type2 : SlaType.Type1;
 
-            Advice = $"If you change from a {catalogueItem.Solution.ServiceLevelAgreement.SlaType} to a {newSlaType} Catalogue Solution, the SLA information that was previously entered will be replaced";
+            Advice = $"If you change from a {catalogueItem.Solution.ServiceLevelAgreement.SlaType} to a {newSlaType} catalogue solution, the SLA information that was previously entered will be replaced";
         }
 
         public string SolutionName { get; set; }

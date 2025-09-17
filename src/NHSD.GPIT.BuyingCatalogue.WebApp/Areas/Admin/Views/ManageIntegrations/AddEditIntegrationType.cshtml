@@ -15,13 +15,13 @@
         @if (Model.ShouldShowFilterLink)
         {
             <nhs-inset-text>
-                <p>This integration type is implemented by one or more Catalogue Solutions.</p>
+                <p>This integration type is implemented by one or more catalogue solutions.</p>
                 <a asp-action="@(nameof(SolutionsController.Index))"
                    asp-controller="@(typeof(SolutionsController).ControllerName())"
                    asp-area="@(typeof(SolutionsController).AreaName())"
                    asp-route-selectedIntegrations="@(Model.FilterQueryString)"
                    target="_blank">
-                    View the Catalogue Solutions that implement this integration type (opens in a new tab)
+                    View the catalogue solutions that implement this integration type (opens in a new tab)
                 </a>
             </nhs-inset-text>
         }

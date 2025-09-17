@@ -10,7 +10,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         <nhs-validation-summary RadioId="SelectedHostingType"/>
                 <nhs-page-title title="@ViewBag.Title"
-                                advice="@(anyHostingTypes ? "Select a hosting type that supports your Catalogue Solution. You can add other options later." : "All hosting types already added.")" />
+                                advice="@(anyHostingTypes ? "Select a hosting type that supports your catalogue solution. You can add other options later." : "All hosting types already added.")" />
         <form method="post">
             <input type="hidden" asp-for="@Model.HostingTypesAvailableForSelection" value="@anyHostingTypes" />
 

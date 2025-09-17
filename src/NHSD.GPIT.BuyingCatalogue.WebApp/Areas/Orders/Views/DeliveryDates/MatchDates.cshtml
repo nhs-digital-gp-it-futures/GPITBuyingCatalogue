@@ -1,7 +1,7 @@
 ﻿@model NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Orders.Models.Contracts.DeliveryDates.MatchDatesModel
 @{
     ViewBag.Title = $"Match planned delivery dates for {Model.ItemType}";
-    var advice = $"Select if you want the same delivery dates you used for your Catalogue Solution to be applied to your {Model.ItemType}.";
+    var advice = $"Select if you want the same delivery dates you used for your catalogue solution to be applied to your {Model.ItemType}.";
     var labelText = $"Do you want to use the same delivery dates for your {Model.ItemType}?";
 }
 
@@ -23,7 +23,7 @@
             <div class="nhsuk-u-margin-bottom-9">
                 <nhs-fieldset-form-label asp-for="MatchDates"
                                          label-text="@labelText"
-                                         label-hint="If you choose not to match, then the planned delivery date for the majority of your Service Recipients will be applied. You'll be able to edit them later."
+                                         label-hint="If you choose not to match, then the planned delivery date for the majority of your service recipients will be applied. You'll be able to edit them later."
                                          size="Small">
                     <nhs-radio-buttons asp-for="MatchDates"
                                        values="@Model.Options.Cast<object>()"

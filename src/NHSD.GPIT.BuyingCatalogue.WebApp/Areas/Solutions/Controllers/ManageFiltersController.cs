@@ -232,7 +232,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.Areas.Solutions.Controllers
 
             var result = await pdfService.Convert(new(pdfService.BaseUri(), uri));
 
-            var fileName = $"{filter.Name} Catalogue Solutions.pdf";
+            var fileName = $"{filter.Name} catalogue solutions.pdf";
             return File(result, "application/pdf", fileName);
         }
 

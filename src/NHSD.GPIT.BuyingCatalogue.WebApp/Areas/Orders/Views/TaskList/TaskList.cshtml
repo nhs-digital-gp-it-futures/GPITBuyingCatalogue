@@ -28,7 +28,7 @@
     <div class="nhsuk-grid-column-two-thirds">
         @if (Model.CatalogueSolution != null || Model.OrderType.AssociatedServicesOnly)
         {
-            <h2 class="nhsuk-u-margin-bottom-6">Catalogue Solution</h2>
+            <h2 class="nhsuk-u-margin-bottom-6">Catalogue solution</h2>
             <nhs-card-v2>
                 <nhs-card-content>
                 @if (Model.OrderType.AssociatedServicesOnly)
@@ -46,7 +46,7 @@
                     {
                         if (Model.AlternativeSolutionsAvailable)
                         {
-                            <vc:add-or-change href="@changeCatalogueSolutionLink" noun-phrase="catalogue solution" is-change="true" />
+                            <vc:add-or-change href="@changeCatalogueSolutionLink" noun-phrase="Catalogue solution" is-change="true" />
                         }
                         else
                         {
@@ -55,7 +55,7 @@
                     }
                     else
                     {
-                        <vc:inline-information text="You cannot change your Catalogue Solution when amending an order." />
+                        <vc:inline-information text="You cannot change your catalogue solution when amending an order." />
                     }
                 </nhs-card-footer>
 
@@ -89,14 +89,14 @@
                         }
                         else
                         {
-                            <vc:inline-information text="All the Additional Services available for this Catalogue Solution have already been added." />
+                            <vc:inline-information text="All the Additional Services available for this catalogue solution have already been added." />
                         }
                     </nhs-card-footer>
                 }
                 else
                 {
                     <nhs-card-content>
-                        <vc:inline-information text="There are no Additional Services available for this Catalogue Solution." />
+                        <vc:inline-information text="There are no Additional Services available for this catalogue solution." />
                     </nhs-card-content>
                 }
             </nhs-card-v2>
@@ -114,7 +114,7 @@
             else if (!Model.AssociatedServicesAvailable)
             {
                 <nhs-card-content>
-                    <vc:inline-information text="There are no Associated Services available for this Catalogue Solution." />
+                    <vc:inline-information text="There are no Associated Services available for this catalogue solution." />
                 </nhs-card-content>
             }
             else
@@ -144,7 +144,7 @@
                     }
                     else if (!Model.UnselectedAssociatedServicesAvailable)
                     {
-                        <vc:inline-information text="All the Associated Services available for this Catalogue Solution have already been added." />
+                        <vc:inline-information text="All the Associated Services available for this catalogue solution have already been added." />
                     }
                     else
                     {

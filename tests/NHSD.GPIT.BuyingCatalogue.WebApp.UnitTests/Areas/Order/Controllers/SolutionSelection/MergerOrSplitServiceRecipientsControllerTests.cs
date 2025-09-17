@@ -343,7 +343,7 @@ namespace NHSD.GPIT.BuyingCatalogue.WebApp.UnitTests.Areas.Order.Controllers.Sol
 
             var expected = new ConfirmChangesModel
             {
-                Title = "Confirm Service Recipients",
+                Title = "Confirm service recipients",
                 Caption = $"Order {callOffId}",
                 Selected = serviceRecipients
                     .Where(r => r.OrgId != recipientIdFromList)

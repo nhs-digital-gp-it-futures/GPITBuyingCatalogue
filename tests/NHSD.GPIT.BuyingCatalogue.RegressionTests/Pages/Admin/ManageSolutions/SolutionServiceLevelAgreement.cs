@@ -34,7 +34,7 @@ namespace NHSD.GPIT.BuyingCatalogue.RegressionTests.Pages.Admin.ManageSolutions
 
         public void AddSlaType()
         {
-            CommonActions.ClickRadioButtonWithText("Type 1 Catalogue Solution");
+            CommonActions.ClickRadioButtonWithText("Type 1 catalogue solution");
 
             CommonActions.ClickSave();
 

@@ -12,7 +12,7 @@
                 <nhs-validation-summary RadioId="SelectedApplicationType"/>
                 <nhs-page-title title="@ViewBag.Title"
                                 caption="@Model.SolutionName"
-                                advice="@(anyApplicationTypes ? "Select an application type that supports your Catalogue Solution. You can add other options later." : "All application types already added.")" />
+                                advice="@(anyApplicationTypes ? "Select an application type that supports your catalogue solution. You can add other options later." : "All application types already added.")" />
                 <form method="post">
                     <input type="hidden" asp-for="@Model.ApplicationTypesAvailableForSelection" value="@anyApplicationTypes" />
 
